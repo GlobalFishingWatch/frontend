@@ -1,13 +1,32 @@
+import { useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useGetVesselEventsQuery } from 'queries/map/vessel-events-api'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { EventTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { IconButton } from '@globalfishingwatch/ui-components'
+import { LONGLINE_FISHING_EVENTS_DATASET } from '@platform/config/map/datasets'
 
+import { fetchDatasetsByIdsThunk } from 'features/_map/datasets/datasets.slice'
+import { useHighlightedEventsConnect } from 'features/_map/timebar/timebar.hooks'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
+import { useVisibleVesselEvents } from 'features/_map/workspace/vessels/vessel-events.hooks'
+import UserLoggedIconButton from 'features/_user/UserLoggedIconButton'
+import { useVesselEventBounds } from 'features/_vessels/vessel/activity/event/event.bounds'
 import { selectVesselInfoData } from 'features/_vessels/vessel/selectors/vessel.selectors'
-import { getVesselIdentities } from 'features/_vessels/vessel/vessel.utils'
+import {
+  selectLonglineSetsOnMap,
+  selectVesselIdentityId,
+  selectVesselIdentitySource,
+} from 'features/_vessels/vessel/vessel.config.selectors'
+import { parseLonglineSetsToCSV } from 'features/_vessels/vessel/vessel.download'
+import { useVesselProfileLayer } from 'features/_vessels/vessel/vessel.hooks'
+import type { VesselEvent } from 'features/_vessels/vessel/vessel.types'
+import { getVesselIdentities, getVesselProperty } from 'features/_vessels/vessel/vessel.utils'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import InsightError from './InsightErrorMessage'
 import { removeNonTunaRFMO } from './insights.utils'
@@ -15,12 +34,19 @@ import LonglineSetsGraph from './LonglineSetsGraph'
 
 import styles from './Insights.module.css'
 
-export const LONGLINE_FISHING_EVENTS_DATASET = 'public-global-longline-fishing-events:v4.0'
-
 const InsightLongline = () => {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const { start, end } = useSelector(selectTimeRange)
   const vessel = useSelector(selectVesselInfoData)
+  const longlineSetsOnMap = useSelector(selectLonglineSetsOnMap)
+  const identityId = useSelector(selectVesselIdentityId)
+  const identitySource = useSelector(selectVesselIdentitySource)
+  const { replaceQueryParams } = useReplaceQueryParams()
+  const { setVesselEventVisibility } = useVisibleVesselEvents()
+  const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
+  const vesselLayer = useVesselProfileLayer()
+  const fitEventBounds = useVesselEventBounds(vesselLayer)
   const identities = getVesselIdentities(vessel, {
     identitySource: VesselIdentitySourceEnum.SelfReported,
   })
@@ -35,10 +61,75 @@ const InsightLongline = () => {
     { skip: !identities?.length }
   )
 
+  useEffect(() => {
+    dispatch(fetchDatasetsByIdsThunk({ ids: [LONGLINE_FISHING_EVENTS_DATASET] }))
+  }, [dispatch])
+
+  const onEventHover = useCallback(
+    (event?: VesselEvent) => {
+      dispatchHighlightedEvents(event?.id ? [event.id] : [])
+    },
+    [dispatchHighlightedEvents]
+  )
+
+  const onEventMapClick = useCallback(
+    (event: VesselEvent) => {
+      const { lon, lat } = event.position || {}
+      fitEventBounds({
+        ...event,
+        ...(lon !== undefined && lat !== undefined && { coordinates: [lon, lat] }),
+      } as VesselEvent)
+    },
+    [fitEventBounds]
+  )
+
+  const onShowOnMapClick = () => {
+    if (!longlineSetsOnMap) {
+      setVesselEventVisibility({ event: EventTypes.Fishing, visible: true })
+    }
+    replaceQueryParams({ longlineSetsOnMap: longlineSetsOnMap ? undefined : true })
+  }
+
+  const onDownloadClick = async () => {
+    const csv = parseLonglineSetsToCSV(data!.map(removeNonTunaRFMO))
+    const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
+    const { saveAs } = await import('file-saver')
+    const shipname = getVesselProperty(vessel, 'shipname', { identityId, identitySource })
+    const flag = getVesselProperty(vessel, 'flag', { identityId, identitySource })
+    saveAs(blob, `${shipname}(${flag})-longline-sets-${start}-${end}.csv`)
+    trackEvent({
+      category: TrackCategory.VesselProfile,
+      action: 'vessel_longline_sets_download',
+    })
+  }
+
   return (
     <div id="longline" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
         <label>{t((t) => t.vessel.insights.longline)}</label>
+        <div className={styles.insightTitleActions}>
+          <UserLoggedIconButton
+            loginSource="vessel-download"
+            size="medium"
+            icon="download"
+            className="print-hidden"
+            disabled={isFetching || !data?.length}
+            onClick={onDownloadClick}
+            tooltip={t((t) => t.vessel.insights.longlineDownload)}
+            loginTooltip={t((t) => t.download.eventsDownloadLogin)}
+          />
+          <IconButton
+            size="medium"
+            disabled={isFetching || !data?.length}
+            icon={longlineSetsOnMap ? 'remove-from-map' : 'view-on-map'}
+            onClick={onShowOnMapClick}
+            tooltip={
+              longlineSetsOnMap
+                ? t((t) => t.vessel.insights.longlineHideFromMap)
+                : t((t) => t.vessel.insights.longlineShowOnMap)
+            }
+          />
+        </div>
       </div>
       {error ? (
         <InsightError error={error as ParsedAPIError} />
@@ -47,7 +138,11 @@ const InsightLongline = () => {
       ) : data.length === 0 ? (
         <p className={styles.secondary}>{t((t) => t.vessel.insights.longlineEventsEmpty)}</p>
       ) : (
-        <LonglineSetsGraph data={data.map(removeNonTunaRFMO)} />
+        <LonglineSetsGraph
+          data={data.map(removeNonTunaRFMO)}
+          onEventHover={longlineSetsOnMap ? onEventHover : undefined}
+          onEventMapClick={longlineSetsOnMap ? onEventMapClick : undefined}
+        />
       )}
     </div>
   )

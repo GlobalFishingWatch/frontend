@@ -14,12 +14,7 @@ import type {
   DatasetConfiguration,
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
-import {
-  DatasetCategory,
-  DatasetSubCategory,
-  DatasetTypes,
-  USER_FOURWINGS_VALUE_COLUMN,
-} from '@globalfishingwatch/api-types'
+import { DatasetCategory, DatasetSubCategory, DatasetTypes } from '@globalfishingwatch/api-types'
 import type { PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
 import {
   cleanProperties,
@@ -47,15 +42,7 @@ import type { FileType } from 'utils/files'
 
 export const MIN_NAME_LENGTH = 3
 
-export const GRIDDED_RESERVED_COLUMNS = ['lat', 'lon', USER_FOURWINGS_VALUE_COLUMN, 'band']
-
-export const getReservedBandName = (bandNames?: (string | number | boolean)[]) =>
-  bandNames?.find((band) => GRIDDED_RESERVED_COLUMNS.includes(String(band).trim().toLowerCase()))
-
 export function getDatasetMetadataValidations(datasetMetadata: DatasetMetadata) {
-  const reservedBandName = getReservedBandName(
-    getDatasetConfiguration(datasetMetadata, 'userFourwingsV1')?.bands
-  )
   const errors = {
     name:
       !datasetMetadata.name?.trim() || datasetMetadata.name.trim().length < MIN_NAME_LENGTH
@@ -63,12 +50,6 @@ export function getDatasetMetadataValidations(datasetMetadata: DatasetMetadata) 
             min: String(MIN_NAME_LENGTH),
           })
         : null,
-    bands: reservedBandName
-      ? t((t) => t.datasetUpload.errors.reservedBandName, {
-          band: String(reservedBandName),
-          reserved: GRIDDED_RESERVED_COLUMNS.join(', '),
-        })
-      : null,
   }
   const isValid = Object.values(errors).every((error) => !error)
   return { isValid, errors }
@@ -163,12 +144,16 @@ export const getPointsDatasetMetadata = ({ name, data, sourceFormat }: ExtractMe
   }
 }
 
+export type GriddedSourceFormat = Extract<FileType, 'GeoTIFF' | 'NetCDF'>
+
 export const getGriddedDatasetMetadata = ({
   name,
-  bands,
+  sourceFormat = 'GeoTIFF',
+  variable,
 }: {
   name: string
-  bands: string[]
+  sourceFormat?: GriddedSourceFormat
+  variable?: string
 }): DatasetMetadata => {
   return {
     name,
@@ -179,10 +164,13 @@ export const getGriddedDatasetMetadata = ({
     configuration: {
       userFourwingsV1: {
         agregationMode: 'AVG',
-        bands,
+        // GDAL band index, 1-based. NetCDF sends it too — the variable picks the grid, the
+        // band stays 1 and is not offered in the UI
+        band: 1,
+        ...(sourceFormat === 'NetCDF' && { variable }),
       },
       frontend: {
-        sourceFormat: 'GeoTIFF',
+        sourceFormat,
         geometryType: 'gridded',
       },
     },

@@ -412,6 +412,8 @@
     "requiredFields": "Champs requis {{fields}}",
     "SARDelayDisclaimer": "En pause pendant le passage de Sentinel-1A à Sentinel-1C et 1D. <0>En savoir plus.</0>",
     "title": "Jeu de données",
+    "typeGridded": "Gridded / Raster",
+    "typeGriddedDescription": "Display a heatmap from a GeoTIFF raster (EPSG:4326)",
     "typePoints": " Points",
     "typePointsDescription": "Afficher une ou plusieurs points avec labels de votre jeu de données",
     "typePolygons": " Polygones",
@@ -438,6 +440,9 @@
       "geoJSON": {
         "noValidFeatures": "Aucune donnée géospatiale valide trouvée dans le fichier geoJSON"
       },
+      "geotiff": {
+        "invalidData": "GeoTIFF data could not be read"
+      },
       "invalidDatesFeatures": "Certains de vos {{featureType}} ne contiennent pas de date valide. Ils n'apparaîtront pas sur la carte, quel que soit le filtre horaire.",
       "kml": {
         "invalidData": "Aucun type de géométrie trouvé dans les données KML",
@@ -457,6 +462,12 @@
     "fieldMultiplePlaceholder": "Sélectionnez un ou plusieurs champs de votre jeu de données",
     "fieldNumericPlaceholder": "Sélectionnez un champ numérique dans votre jeu de données",
     "fieldPlaceholder": "Sélectionnez un champ dans votre jeu de données",
+    "gridded": {
+      "aggregation": "Aggregation",
+      "band": "Band to import",
+      "unit": "Unit",
+      "unitPlaceholder": "e.g., 'detections', '°C', 'm/s"
+    },
     "maxValuesExceededForFiltering": "Maximum values exceeded for filtering ({{max}})",
     "maxValuesExceededForFilteringTooltip": "This field has too many unique values ({{max}}+). Consider grouping or categorizing your data to enable filtering.",
     "noFilters": "To add filters to your dataset, your file must have at least one property with more than 2 distinct values.",
@@ -653,6 +664,13 @@
     "loitering_other": "Événements de dérive",
     "loiteringAction": "La dérive a commencé à {{start}} pendant {{duration}}",
     "loiteringActionIn": "Dérive dans {{regionName}}",
+    "longlineCategoryEntirelyDay": "day",
+    "longlineCategoryEntirelyNight": "night",
+    "longlineCategoryMostlyDay": "mostly day",
+    "longlineCategoryMostlyNight": "mostly night",
+    "longlineSet": "Longline set ({{category}})",
+    "longlineSetAction": "Longline set ({{category}}) started at {{start}} for {{duration}}",
+    "longlineSetActionIn": "Longline set in {{regionName}}",
     "minuteAbbreviated": "{{count}}'",
     "minuteAbbreviated_one": "{{count}}'",
     "minuteAbbreviated_other": "{{count}}'",
@@ -846,6 +864,7 @@
     "toggleVisibility": "Afficher/cacher calque",
     "type": "Type",
     "user_context_fit_bounds": "Center map on polygons",
+    "user_gridded_fit_bounds": "Center map on gridded heatmap",
     "user_points_fit_bounds": "Center map on points",
     "user_points_fit_bounds_out_of_timerange": "The dataset has no points in your selected time range. Change the time range to fit the points?",
     "user_polygons_fit_bounds_out_of_timerange": "The dataset has no polygons in your selected time range. Change the time range to fit the polygons?",
@@ -873,6 +892,7 @@
     "highRes": "Voir les cartes thermiques haute résolution",
     "highResDisabled": "High resolution heatmaps are disabled when using a vessel group filter",
     "legend_help": "Zone approximatie des cellules de la grille par rapport à l'équateur",
+    "legendBrushHelp": "Click or drag to adjust the value",
     "loading": "Chargement",
     "lowRes": "Voir les cartes thermiques basse résolution",
     "mapLoadingWait": "Veuillez patienter jusqu'à ce que la carte soit chargée",
@@ -1318,15 +1338,22 @@
       "IUUBlackListsCount": "Le navire figure sur la liste des navires INN d'une ORGP",
       "IUUBlackListsEmpty": "Le navire ne figure pas sur la liste des navires INN d'une ORGP",
       "longline": "Longline settings at day and night",
+      "longlineDownload": "Download longline sets",
       "longlineEntirelyDaySets_one": "{{count}} day set",
       "longlineEntirelyDaySets_other": "{{count}} day sets",
+      "longlineEntirelyDaySetsLabel": "day sets",
       "longlineEntirelyNightSets_one": "{{count}} night set",
       "longlineEntirelyNightSets_other": "{{count}} night sets",
+      "longlineEntirelyNightSetsLabel": "night sets",
       "longlineEventsEmpty": "No longline sets detected",
+      "longlineHideFromMap": "Hide longline sets from the map",
       "longlineMostlyDaySets_one": "{{count}} mostly day set (<2 hrs overlap with night)",
       "longlineMostlyDaySets_other": "{{count}} mostly day sets (<2 hrs overlap with night)",
+      "longlineMostlyDaySetsLabel": "mostly day sets (<2 hrs overlap with night)",
       "longlineMostlyNightSets_one": "{{count}} mostly night set (<2 hrs overlap with daylight)",
       "longlineMostlyNightSets_other": "{{count}} mostly night sets (<2 hrs overlap with daylight)",
+      "longlineMostlyNightSetsLabel": "mostly night sets (<2 hrs overlap with daylight)",
+      "longlineShowOnMap": "Show longline sets on the map",
       "MOULists": "Listes des Mémorandums d'entente de Paris et de Tokyo",
       "MOUListsEmpty": "Battant un ou plusieurs pavillons ne figurant pas sur les listes noires ou grises du Mémorandum d'entente de Tokyo ou de Paris",
       "MOUParisBlackListsCount": "Pavillon figurant sur la liste noire du Mémorandum d'entente de Paris ({{flags}})",
@@ -1537,9 +1564,7 @@
       "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} événement de pêche par le navire {{vessels}} détecté en dehors d'une zone soumise à une autorisation connue d'une ORGP",
       "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} événements de pêche par les navires {{vessels}} détectés en dehors de zones soumises à une autorisation connue d'une ORGP",
       "gaps_one": "{{count}} événement de désactivation de l'AIS détecté pour le navire {{vessels}}",
-      "gaps_other": "{{count}} événements de désactivation de l'AIS détectés pour les navires {{vessels}}",
-      "longline_one": "{{count}} longline set from {{vessels}} vessels detected",
-      "longline_other": "{{count}} longline sets from {{vessels}} vessels detected"
+      "gaps_other": "{{count}} événements de désactivation de l'AIS détectés pour les navires {{vessels}}"
     }
   },
   "workspace": {

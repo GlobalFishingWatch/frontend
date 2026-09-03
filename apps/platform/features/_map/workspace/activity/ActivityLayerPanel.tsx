@@ -380,6 +380,15 @@ function ActivityLayerPanel({
                 {filtersAllowed.map(({ id, label }) => (
                   <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
                 ))}
+                {(dataview.config?.minVisibleValue !== undefined ||
+                  dataview.config?.maxVisibleValue !== undefined) && (
+                  <DatasetSchemaField
+                    key="visibleValues"
+                    dataview={dataview}
+                    field="visibleValues"
+                    label={t((t) => t.common.visibleValues)}
+                  />
+                )}
                 {showTurningTidesFilters && <TurningTidesTags dataview={dataview} />}
               </div>
             </div>
@@ -388,6 +397,7 @@ function ActivityLayerPanel({
                 <MapLegend
                   dataview={dataview}
                   showPlaceholder={!bivariateDataviews?.includes(dataview.id)}
+                  brushClassName={styles.brushIdle}
                 />
               </div>
               {bivariateDataviews?.[0] === dataview.id && (

@@ -104,6 +104,10 @@
   display: none;
 }
 
+.LayerPanel:not(.expandedContainerOpen, :hover) .brushIdle {
+  opacity: 0;
+}
+
 .properties {
   padding: 0 var(--space-S) var(--space-S);
   z-index: 1;

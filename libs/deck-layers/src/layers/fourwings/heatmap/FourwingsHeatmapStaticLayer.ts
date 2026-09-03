@@ -1,53 +1,45 @@
-import type {
-  Color,
-  DefaultProps,
-  Layer,
-  LayerContext,
-  LayersList,
-  PickingInfo,
-  UpdateParameters,
-} from '@deck.gl/core'
+import type { DefaultProps, Layer, LayerContext, LayersList, UpdateParameters } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import { PathStyleExtension } from '@deck.gl/extensions'
-import type { _Tile2DHeader as Tile2DHeader } from '@deck.gl/geo-layers'
-import { MVTLayer } from '@deck.gl/geo-layers'
-import { PathLayer } from '@deck.gl/layers'
+import type {
+  _Tile2DHeader as Tile2DHeader,
+  _TileLoadProps as TileLoadProps,
+  TileLayerProps,
+} from '@deck.gl/geo-layers'
+import { TileLayer } from '@deck.gl/geo-layers'
 import { scaleLinear } from 'd3-scale'
 import { debounce } from 'es-toolkit'
-import type { Feature, Geometry } from 'geojson'
 import { stringify } from 'qs'
 
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
-import type {
-  FourwingsFeature,
-  FourwingsMVTStaticFeature,
-  FourwingsStaticFeature,
-  FourwingsStaticFeatureProperties,
-} from '@globalfishingwatch/deck-loaders'
+import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
+import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 
 import type { ColorRampId } from '#config/colorRamps.config'
-import { COLOR_HIGHLIGHT_LINE } from '#config/colors.config'
 import { LayerGroup } from '#config/sort.config'
-import { GFWMVTLoader } from '#layers/_shared/api'
 import {
+  FOURWINGS_MAX_CACHE_BYTE_SIZE,
   FOURWINGS_MAX_ZOOM,
+  FOURWINGS_TILE_SIZE,
   HEATMAP_API_TILES_URL,
-  HEATMAP_STATIC_PROPERTY_ID,
-  MAX_RAMP_VALUES,
 } from '#layers/fourwings/fourwings.config'
-import { getSteps } from '#layers/fourwings/fourwings.stats'
 import type { GetViewportDataParams } from '#layers/fourwings/fourwings.types'
-import { getLayerGroupOffset } from '#utils'
+import { EMPTY_FOURWINGS_TILE_DATA } from '#layers/fourwings/fourwings-tile.utils'
 import { getColorRamp } from '#utils/colorRamps'
 
+import { fetchFourwingsTileData } from './fourwings-heatmap.fetch'
 import type {
+  FourwingsChunk,
   FourwingsHeatmapStaticLayerProps,
-  FourwingsHeatmapStaticPickingInfo,
-  FourwingsHeatmapStaticPickingObject,
   FourwingsTileLayerState,
 } from './fourwings-heatmap.types'
-import { FourwingsAggregationOperation } from './fourwings-heatmap.types'
-import { EMPTY_CELL_COLOR, filterCells, getZoomOffsetByResolution } from './fourwings-heatmap.utils'
+import { FourwingsAggregationOperation, FourwingsComparisonMode } from './fourwings-heatmap.types'
+import {
+  getFourwingsColorDomain,
+  getSublayersVisibleValuesHash,
+  getURLFromTemplate,
+  getZoomOffsetByResolution,
+} from './fourwings-heatmap.utils'
+import { FourwingsHeatmapLayer } from './FourwingsHeatmapLayer'
 
 const defaultProps: DefaultProps<FourwingsHeatmapStaticLayerProps> = {
   maxRequests: 100,
@@ -56,6 +48,24 @@ const defaultProps: DefaultProps<FourwingsHeatmapStaticLayerProps> = {
   aggregationOperation: FourwingsAggregationOperation.Sum,
   tilesUrl: HEATMAP_API_TILES_URL,
   resolution: 'default',
+}
+
+/**
+ * A static dataset has no time dimension, so the tile is requested with `temporal-aggregation=true`
+ */
+const STATIC_AVAILABLE_INTERVALS = ['YEAR'] as const
+const STATIC_START_TIME = 0
+const STATIC_END_TIME = Date.UTC(1971, 0, 1)
+export const STATIC_START_FRAME = 0
+export const STATIC_END_FRAME = 1
+
+const EMPTY_STATIC_CHUNK: FourwingsChunk = {
+  id: 'static',
+  interval: STATIC_AVAILABLE_INTERVALS[0],
+  start: STATIC_START_TIME,
+  end: STATIC_END_TIME,
+  bufferedStart: STATIC_START_TIME,
+  bufferedEnd: STATIC_END_TIME,
 }
 
 export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmapStaticLayerProps> {
@@ -81,7 +91,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       return ''
     }
     const colorRamps = this.props.sublayers?.map(({ colorRamp }) => colorRamp).join(',')
-    return `${colorRamps}|${this.state.rampDirty}`
+    return `${colorRamps}|${this.state.rampDirty}|${getSublayersVisibleValuesHash(this.props.sublayers)}`
   }
 
   get debounceTime(): number {
@@ -114,22 +124,18 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   _calculateColorDomain = () => {
-    // TODO use to get the real bin value considering the NO_DATA_VALUE and negatives
-    // NO_DATA_VALUE = 0
-    // SCALE_VALUE = 0.01
-    // OFFSET_VALUE = 0
-    const { minVisibleValue, maxVisibleValue } = this.props
-    const currentZoomData = this.getData()
-    if (!currentZoomData.length) {
-      return this.getColorDomain()
-    }
-    const values = currentZoomData.flatMap((d) => d?.properties?.[HEATMAP_STATIC_PROPERTY_ID] || [])
-    const allValues =
-      values.length > MAX_RAMP_VALUES
-        ? values.filter((d, i) => filterCells(d, i, minVisibleValue, maxVisibleValue))
-        : values
-
-    return getSteps(allValues)
+    // Single dataview layer, so every sublayer carries the same range
+    const { minVisibleValue, maxVisibleValue } = this.props.sublayers?.[0] || {}
+    const colorDomain = getFourwingsColorDomain({
+      features: this.getData(),
+      aggregationOperation: this.props.aggregationOperation,
+      startFrame: STATIC_START_FRAME,
+      endFrame: STATIC_END_FRAME,
+      timeRangeKey: getTimeRangeKey(STATIC_START_FRAME, STATIC_END_FRAME),
+      minVisibleValue,
+      maxVisibleValue,
+    })
+    return colorDomain.length ? colorDomain : this.getColorDomain()
   }
 
   _updateColorDomain = () => {
@@ -160,185 +166,119 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     this.setState({ rampDirty: true, viewportLoaded: false })
   }
 
-  getPickingInfo = ({
-    info,
-  }: {
-    info: PickingInfo<FourwingsMVTStaticFeature>
-  }): FourwingsHeatmapStaticPickingInfo => {
-    if (!info.object) {
-      info.object = {} as FourwingsMVTStaticFeature
+  /** No interval and no date-range: an aggregated tile has no time dimension */
+  _getTileUrl = (tile: TileLoadProps) => {
+    const { tilesUrl = HEATMAP_API_TILES_URL, sublayers } = this.props
+    const filters = sublayers.flatMap((sublayer) => sublayer.filter || [])
+    const params = {
+      format: '4WINGS',
+      'temporal-aggregation': true,
+      datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
+      ...(filters.length && { filters }),
     }
-    const { cell, ...properties } = info.object?.properties || {}
-    const object: FourwingsHeatmapStaticPickingObject = {
-      ...info.object,
-      id: this.props.id,
-      properties: {
-        ...properties,
-        cellId: cell,
-      },
-      layerId: this.root.id,
-      category: this.props.category,
-      subcategory: this.props.subcategory,
-      sublayers: this.props.sublayers,
-    }
-    const { minVisibleValue, maxVisibleValue } = this.props
-    if (object?.properties?.[HEATMAP_STATIC_PROPERTY_ID]) {
-      if (
-        (minVisibleValue && object?.properties?.[HEATMAP_STATIC_PROPERTY_ID] < minVisibleValue) ||
-        (maxVisibleValue && object?.properties?.[HEATMAP_STATIC_PROPERTY_ID] > maxVisibleValue)
-      ) {
-        return { ...info, object: undefined } as any
-      }
-      object.properties.values = [[object.properties?.[HEATMAP_STATIC_PROPERTY_ID]]]
-      object.sublayers = object.sublayers?.map((sublayer) => ({
-        ...sublayer,
-        value: object.properties?.[HEATMAP_STATIC_PROPERTY_ID],
-      }))
-    }
-    return { ...info, object }
+    return getURLFromTemplate(`${tilesUrl}?${stringify(params, { arrayFormat: 'indices' })}`, tile)
   }
 
-  getFillColor = (feature: Feature<Geometry, FourwingsStaticFeatureProperties>) => {
-    const { scales } = this.state
-    const scale = scales?.[0]
-    if (
-      !scale ||
-      !feature.properties?.[HEATMAP_STATIC_PROPERTY_ID] ||
-      (this.props.minVisibleValue &&
-        feature.properties?.[HEATMAP_STATIC_PROPERTY_ID] < this.props.minVisibleValue) ||
-      (this.props.maxVisibleValue &&
-        feature.properties?.[HEATMAP_STATIC_PROPERTY_ID] > this.props.maxVisibleValue)
-    ) {
-      return EMPTY_CELL_COLOR
+  _getTileData: TileLayerProps['getTileData'] = (tile: TileLoadProps) => {
+    if (tile.signal?.aborted) {
+      return EMPTY_FOURWINGS_TILE_DATA
     }
+    return fetchFourwingsTileData({
+      tile,
+      // the chunk and interval only feed the frame math, which an aggregated tile does not use
+      chunk: EMPTY_STATIC_CHUNK,
+      interval: STATIC_AVAILABLE_INTERVALS[0],
+      sublayers: this.props.sublayers,
+      startTime: STATIC_START_TIME,
+      endTime: STATIC_END_TIME,
+      aggregationOperation: this.props.aggregationOperation,
+      temporalAggregation: true,
+      getUrl: () => this._getTileUrl(tile),
+    })
+  }
 
-    const color = scale(feature.properties?.[HEATMAP_STATIC_PROPERTY_ID])
-    if (!color) {
-      return EMPTY_CELL_COLOR
-    }
-
-    return [color.r, color.g, color.b, color.a * 255] as Color
+  _getTileDataCacheKey = (): string => {
+    const sublayersIds = this.props.sublayers?.map((s) => s.id).join(',')
+    const sublayersDatasets = this.props.sublayers?.flatMap((s) => s.datasets || []).join(',')
+    const sublayersFilters = this.props.sublayers?.flatMap((s) => s.filter || []).join(',')
+    return [sublayersIds, sublayersDatasets, sublayersFilters].join('-')
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
-    const { minVisibleValue, maxVisibleValue, sublayers } = props
+    const { sublayers } = props
     const oldColors = oldProps.sublayers?.map(({ colorRamp }) => colorRamp).join(',')
     const colors = sublayers?.map(({ colorRamp }) => colorRamp).join(',')
     const isColorChanged = oldColors !== colors
+
     const isVisibleValuesChanged =
-      minVisibleValue !== oldProps.minVisibleValue || maxVisibleValue !== oldProps.maxVisibleValue
+      getSublayersVisibleValuesHash(sublayers) !== getSublayersVisibleValuesHash(oldProps.sublayers)
     if (isVisibleValuesChanged || isColorChanged) {
       this._updateColorDomain()
     }
   }
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList {
-    const {
-      tilesUrl,
-      sublayers,
-      resolution,
-      minVisibleValue,
-      maxVisibleValue,
-      maxZoom,
-      highlightedFeatures,
-      aggregationOperation,
-      group = LayerGroup.HeatmapStatic,
-    } = this.props
-    const { colorDomain, colorRanges } = this.state
-    const { zoom } = this.context.viewport
-    const filters = sublayers.flatMap((sublayer) => sublayer.filter || [])
-    const params = {
-      datasets: sublayers.flatMap((sublayer) => sublayer.datasets),
-      format: 'MVT',
-      'temporal-aggregation': true,
-      ...(filters.length && { filters }),
-    }
+    const { resolution = 'default', maxZoom, group = LayerGroup.HeatmapStatic } = this.props
+    const { colorDomain, colorRanges, scales } = this.state
 
-    const layers: any[] = [
-      new MVTLayer<FourwingsStaticFeatureProperties>(
-        this.props as any,
-        this.getSubLayerProps({
-          id: `static-${resolution}-${aggregationOperation}`,
-          data: `${tilesUrl}?${stringify(params)}`,
-          maxZoom,
-          binary: false,
-          pickable: true,
-          loaders: [GFWMVTLoader],
-          zoomOffset: getZoomOffsetByResolution(resolution!, zoom),
-          onTileLoad: this._onTileLoad,
-          onTileError: this._onLayerError,
-          onViewportLoad: this._onViewportLoad,
-          getPolygonOffset: (params: any) => getLayerGroupOffset(group, params),
-          getFillColor: this.getFillColor,
-          stroked: false,
-          updateTriggers: {
-            getFillColor: [colorDomain, colorRanges, minVisibleValue, maxVisibleValue],
-          },
-        })
-      ),
-    ]
-
-    const layerHighlightedFeature = highlightedFeatures?.find((f) => f.layerId === this.root.id)
-
-    if (layerHighlightedFeature) {
-      layers.push(
-        new PathLayer(
-          this.props,
-          this.getSubLayerProps({
-            pickable: false,
-            material: false,
-            _normalize: false,
-            positionFormat: 'XY',
-            data: [layerHighlightedFeature],
-            id: `fourwings-cell-highlight`,
-            widthUnits: 'pixels',
-            widthMinPixels: 4,
-            getPath: (feature: FourwingsFeature | Feature) =>
-              (feature as FourwingsFeature).coordinates
-                ? (feature as FourwingsFeature).coordinates
-                : (feature as Feature<any>).geometry.coordinates[0].flat(),
-            getColor: COLOR_HIGHLIGHT_LINE,
-            getOffset: 0.5,
-            getPolygonOffset: (params: any) =>
-              getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
-            extensions: [new PathStyleExtension({ offset: true })],
-          })
-        )
-      )
-    }
-
-    return layers
+    return new TileLayer(
+      this.props as any,
+      this.getSubLayerProps({
+        id: `static-${resolution}-${this.props.aggregationOperation}`,
+        tileSize: FOURWINGS_TILE_SIZE,
+        // these have to travel as TileLayer props, not captured in the renderSubLayers
+        // closure: that is what makes deck push a new ramp down to the rendered cells
+        colorDomain,
+        colorRanges,
+        scales,
+        group,
+        comparisonMode: FourwingsComparisonMode.Compare,
+        // synthetic single-frame window, see STATIC_AVAILABLE_INTERVALS
+        startTime: STATIC_START_TIME,
+        endTime: STATIC_END_TIME,
+        availableIntervals: [...STATIC_AVAILABLE_INTERVALS],
+        tilesCache: {
+          zoom: Math.round(this.context.viewport.zoom),
+          ...EMPTY_STATIC_CHUNK,
+        },
+        minZoom: 0,
+        maxZoom,
+        maxCacheByteSize: FOURWINGS_MAX_CACHE_BYTE_SIZE,
+        zoomOffset: getZoomOffsetByResolution(resolution, this.context.viewport.zoom),
+        maxRequests: this.props.maxRequests,
+        debounceTime: this.props.debounceTime,
+        onTileLoad: this._onTileLoad,
+        onTileError: this._onLayerError,
+        onViewportLoad: this._onViewportLoad,
+        getTileData: this._getTileData,
+        updateTriggers: {
+          getTileData: [this._getTileDataCacheKey()],
+        },
+        renderSubLayers: (props: any) => new FourwingsHeatmapLayer(props),
+      })
+    )
   }
 
   getLayerInstance() {
-    const layer = this.getSubLayers()[0] as MVTLayer
+    const layer = this.getSubLayers()[0] as TileLayer
     return layer
-  }
-
-  _getLayerDataInWGS84(layer: any) {
-    if (!layer) {
-      return []
-    }
-    return layer.props.tile?.dataInWGS84?.map((f: FourwingsStaticFeature) => ({
-      ...f,
-      coordinates: f.geometry.coordinates[0].flat(),
-    })) as FourwingsStaticFeature[]
   }
 
   getTilesData() {
     const layer = this.getLayerInstance()
     const tiles = layer?.state?.tileset?.selectedTiles ?? []
 
-    if (!tiles.length) {
-      return [] as FourwingsStaticFeature[]
+    if (!layer || !tiles.length) {
+      return [] as FourwingsFeature[]
     }
 
-    return tiles
-      .filter((tile) => tile.isSelected && tile.isVisible && tile.isLoaded)
-      .flatMap((tile) => {
-        const subLayer = tile.layers?.[0]
-        return this._getLayerDataInWGS84(subLayer) ?? []
-      })
+    return tiles.flatMap((tile) => {
+      if (!tile.isSelected || !tile.isVisible || !tile.isLoaded) {
+        return []
+      }
+      const subLayer = tile.layers?.[0] as FourwingsHeatmapLayer
+      return subLayer?.getData?.() ?? []
+    }) as FourwingsFeature[]
   }
 
   getData() {

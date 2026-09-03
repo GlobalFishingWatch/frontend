@@ -412,6 +412,8 @@
     "requiredFields": "Bidang yang harus diisi {{fields}}",
     "SARDelayDisclaimer": "Paused while we move from Sentinel-1A to Sentinel-1C and 1D. <0>Learn more.</0>",
     "title": "Dataset",
+    "typeGridded": "Gridded / Raster",
+    "typeGriddedDescription": "Display a heatmap from a GeoTIFF raster (EPSG:4326)",
     "typePoints": " Poin",
     "typePointsDescription": "Tampilkan satu atau beberapa posisi dengan label di dataset Anda",
     "typePolygons": " Poligon",
@@ -438,6 +440,9 @@
       "geoJSON": {
         "noValidFeatures": "Tidak ditemukan jenis fitur valid dalam file geoJSON ini"
       },
+      "geotiff": {
+        "invalidData": "GeoTIFF data could not be read"
+      },
       "invalidDatesFeatures": "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
       "kml": {
         "invalidData": "Data KLM tidak memiliki bentuk geometri yang valid",
@@ -457,6 +462,12 @@
     "fieldMultiplePlaceholder": "Pilih satu atau beberapa bidang dari dataset Anda",
     "fieldNumericPlaceholder": "Pilih bidang numerik dari dataset Anda",
     "fieldPlaceholder": "Pilih bidang dari dataset Anda",
+    "gridded": {
+      "aggregation": "Aggregation",
+      "band": "Band to import",
+      "unit": "Unit",
+      "unitPlaceholder": "e.g., 'detections', '°C', 'm/s"
+    },
     "maxValuesExceededForFiltering": "Maximum values exceeded for filtering ({{max}})",
     "maxValuesExceededForFilteringTooltip": "This field has too many unique values ({{max}}+). Consider grouping or categorizing your data to enable filtering.",
     "noFilters": "To add filters to your dataset, your file must have at least one property with more than 2 distinct values.",
@@ -653,6 +664,13 @@
     "loitering_other": "Peristiwa berkeliaran",
     "loiteringAction": "Berkeliaran dimulai pada {{start}} selama {{duration}}",
     "loiteringActionIn": "Berkeliaran di {{regionName}}",
+    "longlineCategoryEntirelyDay": "day",
+    "longlineCategoryEntirelyNight": "night",
+    "longlineCategoryMostlyDay": "mostly day",
+    "longlineCategoryMostlyNight": "mostly night",
+    "longlineSet": "Longline set ({{category}})",
+    "longlineSetAction": "Longline set ({{category}}) started at {{start}} for {{duration}}",
+    "longlineSetActionIn": "Longline set in {{regionName}}",
     "minuteAbbreviated": "{{count}}'",
     "minuteAbbreviated_one": "{{count}}'",
     "minuteAbbreviated_other": "{{count}}'",
@@ -846,6 +864,7 @@
     "toggleVisibility": "Alihkan visibilitas lapisan",
     "type": "Jenis",
     "user_context_fit_bounds": "Center map on polygons",
+    "user_gridded_fit_bounds": "Center map on gridded heatmap",
     "user_points_fit_bounds": "Center map on points",
     "user_points_fit_bounds_out_of_timerange": "The dataset has no points in your selected time range. Change the time range to fit the points?",
     "user_polygons_fit_bounds_out_of_timerange": "The dataset has no polygons in your selected time range. Change the time range to fit the polygons?",
@@ -873,6 +892,7 @@
     "highRes": "See high resolution heatmaps",
     "highResDisabled": "High resolution heatmaps are disabled when using a vessel group filter",
     "legend_help": "Perkiraan area grid sel di Khatulistiwa",
+    "legendBrushHelp": "Click or drag to adjust the value",
     "loading": "Memuat",
     "lowRes": "See low resolution heatmaps",
     "mapLoadingWait": "Harap tunggu sampai peta dimuat",
@@ -1318,15 +1338,22 @@
       "IUUBlackListsCount": "The vessel is present on an RFMO IUU vessel list",
       "IUUBlackListsEmpty": "The vessel is not present on an RFMO IUU vessel list",
       "longline": "Longline settings at day and night",
+      "longlineDownload": "Download longline sets",
       "longlineEntirelyDaySets_one": "{{count}} day set",
       "longlineEntirelyDaySets_other": "{{count}} day sets",
+      "longlineEntirelyDaySetsLabel": "day sets",
       "longlineEntirelyNightSets_one": "{{count}} night set",
       "longlineEntirelyNightSets_other": "{{count}} night sets",
+      "longlineEntirelyNightSetsLabel": "night sets",
       "longlineEventsEmpty": "No longline sets detected",
+      "longlineHideFromMap": "Hide longline sets from the map",
       "longlineMostlyDaySets_one": "{{count}} mostly day set (<2 hrs overlap with night)",
       "longlineMostlyDaySets_other": "{{count}} mostly day sets (<2 hrs overlap with night)",
+      "longlineMostlyDaySetsLabel": "mostly day sets (<2 hrs overlap with night)",
       "longlineMostlyNightSets_one": "{{count}} mostly night set (<2 hrs overlap with daylight)",
       "longlineMostlyNightSets_other": "{{count}} mostly night sets (<2 hrs overlap with daylight)",
+      "longlineMostlyNightSetsLabel": "mostly night sets (<2 hrs overlap with daylight)",
+      "longlineShowOnMap": "Show longline sets on the map",
       "MOULists": "Tokyo and Paris MOU Lists",
       "MOUListsEmpty": "Flying under a flag/flags not present on the Tokyo or Paris MOU black or grey lists",
       "MOUParisBlackListsCount": "Flag present on the Paris MOU black list ({{flags}})",
@@ -1537,9 +1564,7 @@
       "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} fishing events from {{vessels}} vessels detected outside known RFMO authorized areas",
       "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} fishing events from {{vessels}} vessels detected outside known RFMO authorized areas",
       "gaps_one": "{{count}} AIS Off Event from {{vessels}} vessels detected",
-      "gaps_other": "{{count}} AIS Off Event from {{vessels}} vessels detected",
-      "longline_one": "{{count}} longline set from {{vessels}} vessels detected",
-      "longline_other": "{{count}} longline sets from {{vessels}} vessels detected"
+      "gaps_other": "{{count}} AIS Off Event from {{vessels}} vessels detected"
     }
   },
   "workspace": {

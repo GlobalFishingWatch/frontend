@@ -39,6 +39,10 @@ export type MimeExtention =
   | '.TIF'
   | '.tiff'
   | '.TIFF'
+  | '.nc'
+  | '.NC'
+  | '.nc4'
+  | '.NC4'
 type MimeType =
   | 'application/json'
   | 'application/geo+json'
@@ -50,6 +54,7 @@ type MimeType =
   | 'application/vnd.google-earth.kml+xml'
   | 'application/vnd.google-earth.kmz'
   | 'image/tiff'
+  | 'application/netcdf'
 
 export type MimeExtentionWithoutShp = Exclude<MimeExtention, '.shp' | '.SHP'>
 
@@ -72,6 +77,10 @@ const MIME_TYPES_BY_EXTENSION: Record<MimeExtentionWithoutShp, MimeType[]> = {
   '.TIF': ['image/tiff'],
   '.tiff': ['image/tiff'],
   '.TIFF': ['image/tiff'],
+  '.nc': ['application/netcdf'],
+  '.NC': ['application/netcdf'],
+  '.nc4': ['application/netcdf'],
+  '.NC4': ['application/netcdf'],
 }
 
 export type DatasetGeometryTypesSupported = Extract<
@@ -83,7 +92,7 @@ const FILES_TYPES_BY_GEOMETRY_TYPE: Record<DatasetGeometryTypesSupported, FileTy
   polygons: ['GeoJSON', 'KML', 'Shapefile'],
   tracks: ['CSV', 'GeoJSON', 'KML', 'Shapefile'],
   points: ['CSV', 'GeoJSON', 'KML', 'Shapefile'],
-  gridded: ['GeoTIFF'],
+  gridded: ['GeoTIFF', 'NetCDF'],
 }
 
 export const getFileTypes = (datasetGeometryType: DatasetGeometryTypesSupported) =>
@@ -102,6 +111,7 @@ export const FILE_TYPES_CONFIG: Record<FileType, FileConfig> = {
   CSV: { id: 'CSV', files: ['.csv', '.tsv', '.CSV', '.TSV'], icon: 'csv' },
   KML: { id: 'KML', files: ['.kml', '.kmz', '.KML', '.KMZ'], icon: 'kml' },
   GeoTIFF: { id: 'GeoTIFF', files: ['.tif', '.tiff', '.TIF', '.TIFF'], icon: 'csv' },
+  NetCDF: { id: 'NetCDF', files: ['.nc', '.nc4', '.NC', '.NC4'], icon: 'csv' },
 }
 
 export type FileTypeResult = { fileType: FileType | undefined; zipContent: JSZipObject[] }

@@ -71,12 +71,51 @@ describe('FourwingsHeatmapLayer', () => {
 
     it('hides cells outside the visible value range', () => {
       const f = feature([[10, 10]])
-      expect(makeLayer({ minVisibleValue: 30 }).getCompareFillColor(f, target)).toEqual(
+      // The range lives on the sublayer, not on the layer: several dataviews merge into one
+      // heatmap and each keeps its own range
+      expect(
+        makeLayer({ sublayers: [{ id: 'ais', minVisibleValue: 30 }] }).getCompareFillColor(f, target)
+      ).toEqual(EMPTY_CELL_COLOR)
+      expect(
+        makeLayer({ sublayers: [{ id: 'ais', maxVisibleValue: 10 }] }).getCompareFillColor(f, target)
+      ).toEqual(EMPTY_CELL_COLOR)
+    })
+
+    it('ignores the layer level range, which only carries the first merged dataview', () => {
+      const f = feature([[10, 10]])
+      expect(makeLayer({ minVisibleValue: 30 }).getCompareFillColor(f, target)).not.toEqual(
         EMPTY_CELL_COLOR
       )
-      expect(makeLayer({ maxVisibleValue: 10 }).getCompareFillColor(f, target)).toEqual(
-        EMPTY_CELL_COLOR
-      )
+    })
+
+    it('filters each sublayer by its own visible range before choosing the cell value', () => {
+      const f = feature([
+        [30, 30],
+        [10, 10],
+      ])
+      // sublayer aggregations: [60, 20]. Without the per sublayer range 60 wins, but ais is
+      // filtered out so the cell must fall back to vms → scale(20) = 51
+      const layer = makeLayer({
+        sublayers: [
+          { id: 'ais', maxVisibleValue: 50 },
+          { id: 'vms' },
+        ],
+      })
+      expect(layer.getCompareFillColor(f, target)).toEqual([51, 51, 51, 255])
+    })
+
+    it('hides the cell when every sublayer is outside its own visible range', () => {
+      const f = feature([
+        [30, 30],
+        [10, 10],
+      ])
+      const layer = makeLayer({
+        sublayers: [
+          { id: 'ais', maxVisibleValue: 50 },
+          { id: 'vms', minVisibleValue: 30 },
+        ],
+      })
+      expect(layer.getCompareFillColor(f, target)).toEqual(EMPTY_CELL_COLOR)
     })
 
     it('returns empty color without a color domain', () => {
@@ -145,9 +184,32 @@ describe('FourwingsHeatmapLayer', () => {
     })
 
     it('drops the object when no sublayer value is within visible limits', () => {
-      const info = makeLayer({ minVisibleValue: 50 }).getPickingInfo({
-        info: { object: { aggregatedValues: [42, 7] } } as any,
-      })
+      const info = makeLayer({
+        sublayers: [
+          { id: 'ais', minVisibleValue: 50 },
+          { id: 'vms', minVisibleValue: 50 },
+        ],
+      }).getPickingInfo({ info: { object: { aggregatedValues: [42, 7] } } as any })
+      expect(info.object).toBeUndefined()
+    })
+
+    it('keeps the object when a sublayer passes its own visible range', () => {
+      const info = makeLayer({
+        sublayers: [
+          { id: 'ais', minVisibleValue: 50 },
+          { id: 'vms' },
+        ],
+      }).getPickingInfo({ info: { object: { aggregatedValues: [42, 7] } } as any })
+      expect(info.object).toBeDefined()
+    })
+
+    it('drops the object when every sublayer fails its own visible range', () => {
+      const info = makeLayer({
+        sublayers: [
+          { id: 'ais', minVisibleValue: 50 },
+          { id: 'vms', minVisibleValue: 10 },
+        ],
+      }).getPickingInfo({ info: { object: { aggregatedValues: [42, 7] } } as any })
       expect(info.object).toBeUndefined()
     })
   })
