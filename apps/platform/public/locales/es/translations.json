@@ -413,7 +413,7 @@
     "SARDelayDisclaimer": "En pausa mientras pasamos de Sentinel-1A a Sentinel-1C y 1D. <0>Más información.</0>",
     "title": "Datos",
     "typeGridded": "Gridded / Raster",
-    "typeGriddedDescription": "Display a heatmap from a GeoTIFF raster (EPSG:4326)",
+    "typeGriddedDescription": "Display a heatmap from a GeoTIFF or NetCDF raster (EPSG:4326)",
     "typePoints": " Puntos",
     "typePointsDescription": "Mostrar una o varias posiciones con etiquetas en los datos",
     "typePolygons": " Polígonos",
@@ -451,6 +451,9 @@
         "noPolygonData": "No se encontraron datos de polígono en el KML"
       },
       "name": "El nombre del conjunto de datos debe tener al menos {{min}} caracteres",
+      "netcdf": {
+        "invalidData": "NetCDF data could not be read"
+      },
       "shapefile": {
         "invalidData": "Los datos del shapefile no tienen un tipo de geometría válido",
         "invalidMultipleFiles": "Aún no se admiten shapefiles que contengan varios componentes (varios nombres de archivo)",
@@ -466,7 +469,8 @@
       "aggregation": "Aggregation",
       "band": "Band to import",
       "unit": "Unit",
-      "unitPlaceholder": "e.g., 'detections', '°C', 'm/s"
+      "unitPlaceholder": "e.g., 'detections', '°C', 'm/s",
+      "variable": "Variable to import"
     },
     "maxValuesExceededForFiltering": "Valores máximos excedidos para el filtrado ({{max}})",
     "maxValuesExceededForFilteringTooltip": "Este campo tiene demasiados valores únicos ({{max}}+). Considere agrupar o categorizar sus datos para habilitar el filtrado.",
