@@ -54,4 +54,4 @@ You are an expert in TypeScript, React 19, Vite 8, TanStack Router, Redux Toolki
 ## Performance
 
 - Prefer efficient data fetching (RTK Query cache, abort signals) and avoid unnecessary re-renders
-- Do not add `useMemo` / `useCallback` by default unless the file already relies on them or profiling shows a need (React Compiler is not enabled yet)
+- Do not add `useMemo` / `useCallback` by default unless the file already relies on them or profiling shows a need (platform enables React Compiler via `@vitejs/plugin-react` + `oxc-transform-react`; leave existing memoization in place)
