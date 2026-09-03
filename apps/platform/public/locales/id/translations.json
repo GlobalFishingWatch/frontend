@@ -451,6 +451,9 @@
         "noPolygonData": "Tidak ada data poligon yang ditemukan di KML"
       },
       "name": "Dataset name must be at least {{min}} characters long",
+      "netcdf": {
+        "invalidData": "NetCDF data could not be read"
+      },
       "shapefile": {
         "invalidData": "Data shapefile tidak memiliki bentuk geometri yang valid",
         "invalidMultipleFiles": "Shapefile yang berisi beberapa komponen (beberapa nama file) belum didukung",
@@ -466,7 +469,8 @@
       "aggregation": "Aggregation",
       "band": "Band to import",
       "unit": "Unit",
-      "unitPlaceholder": "e.g., 'detections', '°C', 'm/s"
+      "unitPlaceholder": "e.g., 'detections', '°C', 'm/s",
+      "variable": "Variable to import"
     },
     "maxValuesExceededForFiltering": "Maximum values exceeded for filtering ({{max}})",
     "maxValuesExceededForFilteringTooltip": "This field has too many unique values ({{max}}+). Consider grouping or categorizing your data to enable filtering.",
@@ -939,6 +943,39 @@
     "topics": "Topics",
     "useCases": "Use Cases",
     "vessels": "Vessels"
+  },
+  "onboarding": {
+    "areaReport": {
+      "description": "Pick an MPA, EEZ, or draw your own region. Get a report on vessels present, encounters, port visits, and downloadable activity data.",
+      "title": "Run a report on an area"
+    },
+    "copilotExamples": {
+      "carrierEncounters": "Encounters between carriers and fishing vessels in IOTC",
+      "galapagosEffort": "Fishing effort inside the Galápagos Marine Reserve last month",
+      "lasPalmasVisits": "Which vessels visited the Tenerife port in December?",
+      "loiteringWestAfrica": "Loitering events off the coast of West Africa",
+      "nightLightYellowSea": "Night light detections in the Yellow Sea last winter",
+      "northSeaTrawling": "Compare trawling hours in the North Sea between 2023 and 2024",
+      "peruEffort": "AIS and VMS apparent fishing effort in the Peruvian EEZ",
+      "senegalPortVisits": "Port visits by Spanish-flagged vessels in Senegal",
+      "squidPacific": "Chinese squid jiggers fishing in southeast Pacific in 2024",
+      "trackVessel": "Track the vessel with MMSI 412331107 over the past year"
+    },
+    "copilotLabel": "What do you want to see?",
+    "createAccount": "Create an account",
+    "getStarted": "Get started",
+    "header": "Welcome",
+    "intro": "We use satellite signals and machine learning to make activity at sea visible. Pick a way in or <1>learn more</1>.",
+    "login": "Log in to get the most out of the platform (free, 2 minutes)",
+    "searchVessel": {
+      "description": "Find one of 400,000+ vessels by name, MMSI, IMO, or callsign. See where it's been, when, and with whom.",
+      "title": "Search for a vessel"
+    },
+    "title": "What would you like to do today?",
+    "userGuide": {
+      "description": "We support the understanding, visualization and analysis needs of governments, researchers, NGOs, journalists and more.",
+      "title": "Learn how to use the tools"
+    }
   },
   "portsReport": {
     "seePortReport": "See all entry events to this port",
