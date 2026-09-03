@@ -221,7 +221,7 @@
     "@vitest/coverage-istanbul": "4.1.10",
     "@vitest/coverage-v8": "4.1.10",
     "@vitest/ui": "4.1.10",
-    "@xmldom/xmldom": "0.9.11",
+    "@xmldom/xmldom": "0.9.12",
     "babel-plugin-react-compiler": "1.0.0",
     "baseline-browser-mapping": "2.11.14",
     "circular-dependency-plugin": "5.2.2",
