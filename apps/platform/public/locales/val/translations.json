@@ -451,6 +451,9 @@
         "noPolygonData": "crwdns132559:0crwdne132559:0"
       },
       "name": "crwdns132561:0{{min}}crwdne132561:0",
+      "netcdf": {
+        "invalidData": "crwdns138463:0crwdne138463:0"
+      },
       "shapefile": {
         "invalidData": "crwdns132563:0crwdne132563:0",
         "invalidMultipleFiles": "crwdns132565:0crwdne132565:0",
@@ -466,7 +469,8 @@
       "aggregation": "crwdns138421:0crwdne138421:0",
       "band": "crwdns138431:0crwdne138431:0",
       "unit": "crwdns138425:0crwdne138425:0",
-      "unitPlaceholder": "crwdns138427:0crwdne138427:0"
+      "unitPlaceholder": "crwdns138427:0crwdne138427:0",
+      "variable": "crwdns138465:0crwdne138465:0"
     },
     "maxValuesExceededForFiltering": "crwdns132579:0{{max}}crwdne132579:0",
     "maxValuesExceededForFilteringTooltip": "crwdns132581:0{{max}}crwdne132581:0",
