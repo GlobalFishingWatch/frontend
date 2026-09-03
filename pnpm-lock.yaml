@@ -258,6 +258,9 @@ importers:
       google-spreadsheet:
         specifier: 5.3.0
         version: 5.3.0(google-auth-library@11.0.2(supports-color@7.2.0))
+      h5wasm:
+        specifier: 0.10.3
+        version: 0.10.3
       html-react-parser:
         specifier: 6.1.7
         version: 6.1.7(@types/react@19.2.18)(react@19.2.8)
@@ -309,6 +312,9 @@ importers:
       mjolnir.js:
         specifier: 3.0.1
         version: 3.0.1
+      netcdfjs:
+        specifier: 4.0.0
+        version: 4.0.0
       nitro:
         specifier: 3.0.260610-beta
         version: 3.0.260610-beta(chokidar@5.0.0)(dotenv@17.4.2)(ioredis@5.11.1(supports-color@7.2.0))(jiti@2.7.0)(lru-cache@11.5.2)(rollup@4.61.1)(vite@8.2.1)
@@ -1000,12 +1006,18 @@ importers:
       geotiff:
         specifier: 3.x
         version: 3.0.5
+      h5wasm:
+        specifier: 0.10.3
+        version: 0.10.3
       jszip:
         specifier: 3.x
         version: 3.10.1
       luxon:
         specifier: 3.x
         version: 3.7.2
+      netcdfjs:
+        specifier: 4.x
+        version: 4.0.0
       shpjs:
         specifier: 6.x
         version: 6.2.0(geotiff@3.0.5)
@@ -9165,6 +9177,9 @@ packages:
       crossws:
         optional: true
 
+  h5wasm@0.10.3:
+    resolution: {integrity: sha512-W4Jy5ExtX/VNbyD8GdOBckDuj6AL16TemppVNxZsV3rJZEWCv2sxlCzOttZLer3zkMttbDYsWHl0qt1z3Bln+Q==}
+
   has-ansi@2.0.0:
     resolution: {integrity: sha512-C8vBJ8DwUCx19vhm7urhTuUsr4/IyP6l4VzNQDv+ryHQObW3TTTp9yB68WpYgRe2bbaGuZ/se74IqFeVnMnLZg==}
     engines: {node: '>=0.10.0'}
@@ -9497,6 +9512,9 @@ packages:
 
   invariant@2.2.4:
     resolution: {integrity: sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==}
+
+  iobuffer@6.0.1:
+    resolution: {integrity: sha512-SZWYkWNfjIXIBYSDpXDYIgshqtbOPsi4lviawAEceR1Kqk+sHDlcQjWrzNQsii80AyBY0q5c8HCTNjqo74ul+Q==}
 
   ioredis@5.11.1:
     resolution: {integrity: sha512-ehuGcf94bQXhfagULNXrJdfnWO38v070jxSx/qE87Kjzmu2fU7ro5EFAb+OPituLqgfyuQaym5DlrNydW2sJ9A==}
@@ -10648,6 +10666,9 @@ packages:
 
   neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
+
+  netcdfjs@4.0.0:
+    resolution: {integrity: sha512-98DBig9KmiCZC6kU0Y8OXR5Gj39KenMgp6sblpSdg+5oVscTjhm5r5oLiznlqBZyhRGQqlAMEyWjQnMh4/iPOA==}
 
   next-react-memory-stats@1.0.2:
     resolution: {integrity: sha512-CDf3RchKaEe3WES3d4fXgJPDNFsiR88BihcZPQ85NQPiLrdUMSbHx0ZNDDbkRZM5FNovK4eQYMTz19FxwNfsTQ==}
@@ -24161,6 +24182,8 @@ snapshots:
     optionalDependencies:
       crossws: 0.4.10(srvx@0.11.22)
 
+  h5wasm@0.10.3: {}
+
   has-ansi@2.0.0:
     dependencies:
       ansi-regex: 2.1.1
@@ -24599,6 +24622,8 @@ snapshots:
   invariant@2.2.4:
     dependencies:
       loose-envify: 1.4.0
+
+  iobuffer@6.0.1: {}
 
   ioredis@5.11.1(supports-color@7.2.0):
     dependencies:
@@ -25928,6 +25953,10 @@ snapshots:
   negotiator@0.6.3: {}
 
   neo-async@2.6.2: {}
+
+  netcdfjs@4.0.0:
+    dependencies:
+      iobuffer: 6.0.1
 
   next-react-memory-stats@1.0.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
     dependencies:
