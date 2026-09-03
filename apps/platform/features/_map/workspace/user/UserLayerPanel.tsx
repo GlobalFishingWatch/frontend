@@ -56,6 +56,7 @@ import Filters from '../shared/LayerFilters'
 import LayerProperties from '../shared/LayerProperties'
 import { showSchemaFilter } from '../shared/LayerSchemaFilter.utils'
 import LayerSwitch from '../shared/LayerSwitch'
+import MapLegend from '../shared/MapLegend'
 import Remove from '../shared/Remove'
 import Title from '../shared/Title'
 
@@ -127,8 +128,7 @@ function UserPanel({
     property: 'bbox',
     type: 'userFourwingsV1',
   })
-  const polygonColor = getDatasetConfigurationProperty({ dataset, property: 'polygonColor' })
-  const hasLegend = polygonColor !== undefined
+  const hasLegend = datasetGeometryType === 'gridded'
   const changeColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
       id: dataview.id,
@@ -389,7 +389,7 @@ function UserPanel({
             [styles.dragging]: isSorting && activeIndex > -1,
           })}
         >
-          <div id={`legend_${dataview.id}`}></div>
+          <MapLegend dataview={dataview} layerId={mergedDataviewId || dataview.id} />
         </div>
       )}
     </div>
