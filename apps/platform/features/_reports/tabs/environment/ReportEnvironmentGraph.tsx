@@ -13,6 +13,7 @@ import {
 import { getAvailableIntervalsInDataviews } from '@globalfishingwatch/deck-layer-composer'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
+import { DATASETS_USER_SOURCE_ID } from 'features/_map/datasets/datasets.slice'
 import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
 import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
 import { showSchemaFilter } from 'features/_map/workspace/shared/LayerSchemaFilter.utils'
@@ -157,7 +158,7 @@ function ReportEnvironmentGraph({
                 mean: formatI18nNumber(mean, { maximumFractionDigits: 2 }) as string,
                 unit: unit ?? '',
               })}{' '}
-          {dataset?.source && (
+          {dataset?.source && dataset.source !== DATASETS_USER_SOURCE_ID && (
             <span>
               {t((t) => t.analysis.dataSource)}: {htmlSafeParse(dataset.source)}
             </span>
