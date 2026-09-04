@@ -140,11 +140,12 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
 
   _updateColorDomain = () => {
     const colorDomain = this._calculateColorDomain() as number[]
-    const colorRanges = this._getColorRanges()[0]
-    if (colorDomain?.length && colorRanges?.length) {
+    const colorRanges = this._getColorRanges()
+    if (colorDomain?.length && colorRanges[0]?.length) {
       this.setState({
         colorDomain,
-        scales: [scaleLinear(colorDomain, colorRanges)],
+        colorRanges,
+        scales: [scaleLinear(colorDomain, colorRanges[0])],
         rampDirty: false,
       })
     }
