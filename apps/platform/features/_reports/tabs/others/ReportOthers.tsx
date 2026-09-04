@@ -5,11 +5,14 @@ import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import { selectOthersActiveReportDataviewsGrouped } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
 import { isPolygonsDataviewReportSupported } from 'features/_reports/report-area/area-reports.utils'
+import { isUserHeatmapDataviewReportSupported } from 'features/_reports/report-dataview-category.utils'
+import type { ReportGraphProps } from 'features/_reports/reports-timeseries.hooks'
 import {
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
 } from 'features/_reports/reports-timeseries.hooks'
+import ReportEnvironmentGraph from 'features/_reports/tabs/environment/ReportEnvironmentGraph'
 import ReportPointsGraph from 'features/_reports/tabs/others/ReportPointsGraph'
 import ReportPolygonsGraph from 'features/_reports/tabs/others/ReportPolygonsGraph'
 
@@ -27,7 +30,7 @@ function ReportOthers() {
   if (!Object.keys(otherDataviewsGrouped)?.length) return null
   return (
     <div className={reportStyles.section}>
-      {Object.values(otherDataviewsGrouped).map((dataviews) => {
+      {Object.values(otherDataviewsGrouped).map((dataviews, index) => {
         const dataview = dataviews[0]
         const mergedDataviewId = getMergedDataviewId(dataviews)
 
@@ -44,6 +47,19 @@ function ReportOthers() {
               })),
             }
           : undefined
+
+        if (isUserHeatmapDataviewReportSupported(dataview)) {
+          // No evolution graph yet.
+          return (
+            <ReportEnvironmentGraph
+              key={mergedDataviewId}
+              dataview={dataview}
+              data={layerTimeseriesWithCurrentColors as ReportGraphProps}
+              isLoading={loading}
+              index={index}
+            />
+          )
+        }
 
         if (isPolygonsDataviewReportSupported(dataview)) {
           return (

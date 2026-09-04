@@ -39,6 +39,14 @@ export const isContextDataviewReportSupported = (dataview: Dataview | UrlDatavie
   return isPointsDataviewReportSupported(dataview) || isPolygonsDataviewReportSupported(dataview)
 }
 
+export const isUserHeatmapDataviewReportSupported = (dataview: Dataview | UrlDataviewInstance) => {
+  return (
+    dataview.category === DataviewCategory.User &&
+    (dataview.config?.type === DataviewType.HeatmapStatic ||
+      dataview.config?.type === DataviewType.HeatmapAnimated)
+  )
+}
+
 export const getReportCategoryFromDataview = (
   dataview: Dataview | UrlDataviewInstance
 ): ReportCategory => {
@@ -46,6 +54,9 @@ export const getReportCategoryFromDataview = (
     isContextDataviewReportSupported(dataview) &&
     dataview.category !== DataviewCategory.Environment
   ) {
+    return ReportCategory.Others
+  }
+  if (isUserHeatmapDataviewReportSupported(dataview)) {
     return ReportCategory.Others
   }
   return dataview.category as unknown as ReportCategory
