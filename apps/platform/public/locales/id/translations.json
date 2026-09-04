@@ -1448,6 +1448,7 @@
     "resolution": "Resolution",
     "sectionActivity": "Aktivitas",
     "sectionAreas": "Area",
+    "sectionEventsTooltip": "No events available for this vessel.",
     "sectionInsights": "Insights",
     "sectionInsightsTooltip": "Insights not available for VMS vessels.",
     "sectionRelatedVessel": "Related vessels",
