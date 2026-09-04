@@ -429,6 +429,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         new VesselTrackPositionLayer(
           this.getSubLayerProps({
             visible,
+            pickable: true,
             data: [hoveredFeature],
             getColor: color,
             name,
@@ -502,6 +503,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       new VesselTrackPositionLayer(
         this.getSubLayerProps({
           visible,
+          pickable: true,
           data,
           getColor: color,
           name,
