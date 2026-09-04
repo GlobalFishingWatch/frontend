@@ -23,6 +23,7 @@ type LegendScale = {
   domain: number[]
   ranges: DeckLegendAtom['ranges']
   sublayerIndex: number
+  type: DeckLegendAtom['type']
 }
 
 const getLegendLabelTranslated = (legend?: DeckLegendAtom, tFn = t) => {
@@ -99,9 +100,10 @@ const MapLegendWrapper = ({
             domain: deckLegend.domain as number[],
             ranges: deckLegend.ranges,
             sublayerIndex: legendSublayerIndex,
+            type: deckLegend.type,
           }
         : undefined,
-    [hasScale, deckLegend.domain, deckLegend.ranges, legendSublayerIndex]
+    [hasScale, deckLegend.domain, deckLegend.ranges, deckLegend.type, legendSublayerIndex]
   )
   useEffect(() => {
     if (currentScale) {
@@ -116,7 +118,7 @@ const MapLegendWrapper = ({
     return null
   }
 
-  const scale = currentScale || lastScale
+  const scale = currentScale || (lastScale?.type === deckLegend.type ? lastScale : undefined)
   if (!scale) {
     return showPlaceholder ? <MapLegendPlaceholder /> : null
   }
