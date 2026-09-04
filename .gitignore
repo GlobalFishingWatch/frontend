@@ -186,3 +186,4 @@ local.globalfishingwatch.org.pem
 .github/instructions/nx.instructions.md
 
 .nx/migrate-runs
+apps/platform-e2e/specs/
