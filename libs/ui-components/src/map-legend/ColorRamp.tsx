@@ -1,10 +1,13 @@
-import React, { Fragment, useMemo } from 'react'
+import React, { Fragment, useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import { scaleLinear } from 'd3-scale'
 
+import type { ColorRampBrushConfig } from './ColorRampBrush'
+import { ColorRampBrush } from './ColorRampBrush'
 import {
   formatLegendValue,
   parseLegendNumber,
+  roundLegendDecimals,
   roundLegendNumber,
   SCIENTIFIC_NOTATION_E,
 } from './map-legend.utils'
@@ -12,12 +15,20 @@ import type { UILegendColorRamp } from './types'
 
 import styles from './MapLegend.module.css'
 
+type PercentScale = ((value: number) => number) | null
+
+const toPercent = (scale: PercentScale, value: number) => {
+  const scaled = scale?.(value) as number
+  return isNaN(scaled) || scaled < 0 ? 0 : scaled
+}
+
 type ColorRampLegendProps = {
   layer: UILegendColorRamp
   className?: string
   roundValues?: boolean
   currentValueClassName?: string
   labelComponent?: React.ReactNode
+  brush?: ColorRampBrushConfig
 }
 
 export function ColorRampLegend({
@@ -26,38 +37,77 @@ export function ColorRampLegend({
   roundValues = true,
   currentValueClassName = '',
   labelComponent = null,
+  brush,
 }: ColorRampLegendProps) {
-  const { gridArea, values, colors, loading, label, unit, currentValue, type } = layer
+  const { gridArea, values, colors, loading, label, unit, currentValue, type, gradient } = layer
   // Omit bucket that goes from -Infinity --> 0 on non-divergent scales.
   const omitFirstBucket = !layer.divergent
-  const domainValues = omitFirstBucket ? values?.slice(1) : values
+
+  const domainValues = useMemo(
+    () => (omitFirstBucket ? values?.slice(1) : values),
+    [omitFirstBucket, values]
+  )
   const cleanValues = values?.filter((value) => value)
   const skipOddLabels = cleanValues && cleanValues.length >= 6 && !layer.divergent
 
-  // This scale is only used to draw non discrete gradient, and current value positioning
-  const heatmapLegendScale = useMemo(() => {
-    if (!values || !domainValues) return null
+  const stepPercents = useMemo(() => {
+    if (!domainValues?.length) return []
+    const isDiscrete = type === 'colorramp-discrete' && !!colors?.length
+    return domainValues.map((_, i) =>
+      isDiscrete ? ((i + 1) * 100) / colors.length : (i * 100) / domainValues.length
+    )
+  }, [domainValues, colors, type])
+
+  const rampScale = useMemo(() => {
+    if (!domainValues?.length || !stepPercents.length) return null
 
     // Reuse d3 logic when values go beyond max value
-    const adjustedDomain = [...domainValues]
+    const adjustedDomain = [...domainValues] as number[]
     if (adjustedDomain[0] === -Infinity) {
       adjustedDomain[0] = adjustedDomain[1] + adjustedDomain[2]
     }
+    return scaleLinear().domain(adjustedDomain).range(stepPercents)
+  }, [domainValues, stepPercents])
 
-    const rangeValues = adjustedDomain.map((item, i) => (i * 100) / adjustedDomain.length)
+  const valueToPercent = useCallback((value: number) => toPercent(rampScale, value), [rampScale])
 
-    return (value: number) => {
-      const scaled = scaleLinear().range(rangeValues).domain(adjustedDomain)(value)
-      return isNaN(scaled) || scaled < 0 ? 0 : scaled
-    }
-  }, [domainValues, values])
+  const brushScale = useMemo(() => {
+    if (!rampScale) return null
+    const range = rampScale.range() as number[]
+    if (range[0] === 0) return rampScale
+    const firstValue = values?.[0] as number
+    const floor = omitFirstBucket && Number.isFinite(firstValue) ? firstValue : 0
+    return scaleLinear()
+      .domain([floor, ...(rampScale.domain() as number[])])
+      .range([0, ...range])
+  }, [rampScale, omitFirstBucket, values])
+
+  const brushValueToPercent = useCallback(
+    (value: number) => toPercent(brushScale, value),
+    [brushScale]
+  )
+
+  const percentToValue = useCallback(
+    (percent: number) => {
+      const value = brushScale?.invert(percent) as number
+      return isNaN(value) ? 0 : value
+    },
+    [brushScale]
+  )
 
   const backgroundStyle = useMemo(() => {
-    if (!colors || type === 'colorramp-discrete') return {}
-    return {
-      backgroundImage: `linear-gradient(to right, ${colors?.map((color) => color).join()})`,
+    if (!colors?.length) return {}
+    if (type !== 'colorramp-discrete') {
+      return {
+        backgroundImage: `linear-gradient(to right, ${colors?.map((color) => color).join()})`,
+      }
     }
-  }, [colors, type])
+    if (!gradient) return {}
+    const stops = colors.map((color, i) => `${color} ${(i * 100) / colors.length}%`)
+    return {
+      backgroundImage: `linear-gradient(to right, ${[...stops, `${colors[colors.length - 1]} 100%`].join()})`,
+    }
+  }, [colors, type, gradient])
 
   const Label = labelComponent ? (
     labelComponent
@@ -133,14 +183,14 @@ export function ColorRampLegend({
       {domainValues?.length > 0 && (
         <Fragment>
           <div className={styles.ramp} style={backgroundStyle}>
-            {currentValue !== null && currentValue !== undefined && heatmapLegendScale && (
+            {currentValue !== null && currentValue !== undefined && rampScale && (
               <span
                 className={cx(styles.currentValue, currentValueClassName, {
-                  [styles.offsetLeft]: heatmapLegendScale(currentValue as number) < 10,
-                  [styles.offsetRight]: heatmapLegendScale(currentValue as number) > 90,
+                  [styles.offsetLeft]: valueToPercent(currentValue as number) < 10,
+                  [styles.offsetRight]: valueToPercent(currentValue as number) > 90,
                 })}
                 style={{
-                  left: `${Math.min(heatmapLegendScale(currentValue as number) as number, 100)}%`,
+                  left: `${Math.min(valueToPercent(currentValue as number), 100)}%`,
                 }}
               >
                 {formatLegendValue({
@@ -152,7 +202,7 @@ export function ColorRampLegend({
                 })}
               </span>
             )}
-            {type === 'colorramp-discrete' && (
+            {type === 'colorramp-discrete' && !gradient && (
               <div className={styles.discreteSteps}>
                 {colors.map((color, i) => (
                   <span
@@ -162,6 +212,16 @@ export function ColorRampLegend({
                   />
                 ))}
               </div>
+            )}
+            {brush && rampScale && !layer.divergent && (
+              <ColorRampBrush
+                unit={unit}
+                {...brush}
+                valueToPercent={brushValueToPercent}
+                percentToValue={percentToValue}
+                formatValue={(value) => formatLegendValue({ number: value, roundValues }) as string}
+                roundValue={roundValues ? roundLegendNumber : roundLegendDecimals}
+              />
             )}
           </div>
           <div className={styles.stepsContainer}>
@@ -189,7 +249,7 @@ export function ColorRampLegend({
                     [styles.lastStep]:
                       !skipOddLabels && !layer.divergent && i === domainValues.length - 1,
                   })}
-                  style={{ left: `${(i * 100) / domainValues.length}%` }}
+                  style={{ left: `${stepPercents[i]}%` }}
                   key={i}
                 >
                   {getValueLabel(valueLabel)}

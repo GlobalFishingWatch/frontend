@@ -50,6 +50,11 @@ export type VesselProfileState = {
    * @default true
    */
   includeRelatedIdentities?: boolean
+  /** Renders the longline sets events on the map instead of the regular fishing events.
+   * Only reachable from the LONGLINE insight, so gated by the longlineSetsInsight feature flag,
+   * and cleared whenever vesselSection is not "insights"
+   */
+  longlineSetsOnMap?: boolean
 }
 
 export type VesselProfileStateProperty = keyof VesselProfileState

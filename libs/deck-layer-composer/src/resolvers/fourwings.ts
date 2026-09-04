@@ -1,6 +1,7 @@
 import { uniq } from 'es-toolkit'
 
 import {
+  DatasetStatus,
   DatasetTypes,
   DataviewCategory,
   DataviewType,
@@ -20,7 +21,7 @@ import {
   FourwingsAggregationOperation,
   FourwingsComparisonMode,
 } from '@globalfishingwatch/deck-layers'
-import type { ColorRampId } from '@globalfishingwatch/deck-layers/config'
+import type { ColorRampId, LayerGroup } from '@globalfishingwatch/deck-layers/config'
 import { getUTCDateTime } from '@globalfishingwatch/deck-layers/utils'
 import {
   FOURWINGS_REAL_TIME_INTERVALS,
@@ -84,6 +85,8 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
       unit: units[0]!,
       filter: sublayer?.filter,
       filterIds: sublayer?.filterIds,
+      minVisibleValue: sublayer?.minVisibleValue,
+      maxVisibleValue: sublayer?.maxVisibleValue,
       vesselGroups: sublayer?.vesselGroups,
       vesselGroupsLength: sublayer?.vesselGroupsLength,
       extentStart,
@@ -109,9 +112,20 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
         )
       : allAvailableIntervals
 
-  // TODO: get this from the dataset config
-  const aggregationOperation =
-    dataview.category === DataviewCategory.Environment
+  const datasetAggregationMode = dataview.config?.sublayers
+    ?.flatMap((sublayer) => sublayer.datasets || [])
+    .map((dataset) => {
+      return getDatasetConfigurationProperty({
+        dataset,
+        property: 'agregationMode',
+        type: 'userFourwingsV1',
+      })
+    })
+    .find(Boolean)
+
+  const aggregationOperation = datasetAggregationMode
+    ? (datasetAggregationMode.toLowerCase() as FourwingsAggregationOperation)
+    : dataview.category === DataviewCategory.Environment
       ? FourwingsAggregationOperation.Avg
       : FourwingsAggregationOperation.Sum
 
@@ -121,7 +135,11 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
 
   const allVisibleDatasets = (dataview.config?.sublayers || []).flatMap((sublayer) =>
     sublayer.visible
-      ? sublayer.datasets.filter((dataset) => dataset.type === DatasetTypes.Fourwings)
+      ? sublayer.datasets.filter(
+          (dataset) =>
+            dataset.status === DatasetStatus.Done &&
+            (dataset.type === DatasetTypes.Fourwings || dataset.type === DatasetTypes.UserFourwings)
+        )
       : []
   )
   const { extentStart, extentEnd } = getDatasetsExtent<string>(allVisibleDatasets)
@@ -163,6 +181,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
     category: dataview.category!,
     subcategory: dataview.config?.type,
     static: dataview.config?.type === DataviewType.HeatmapStatic,
+    group: dataview.config?.group as LayerGroup,
     sublayers,
     comparisonMode,
     visualizationMode,
@@ -170,8 +189,6 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
     availableIntervals,
     intervalCacheMode: timeMode === 'realTime' ? 'NONE' : 'DATE',
     skipColorDomainSampling,
-    minVisibleValue: dataview.config?.minVisibleValue,
-    maxVisibleValue: dataview.config?.maxVisibleValue,
     visible: dataview.config?.visible ?? true,
     color: dataview.config?.color,
     colorRampWhiteEnd: dataview.config?.colorRampWhiteEnd ?? false,

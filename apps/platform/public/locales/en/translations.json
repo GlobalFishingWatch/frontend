@@ -50,6 +50,7 @@
       "tooltipAmmount": "{{ammount}} hours ({{percentage}}% of total)"
     },
     "insideYourArea": "inside your area",
+    "inTheArea": "in the area",
     "kilometers": "kilometers",
     "linkToReport": "Check the dynamic report here",
     "migramar": {
@@ -110,10 +111,10 @@
     "showFullReport": "See full analysis for this area",
     "statsDisclaimerDynamic": "During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.",
     "statsDisclaimerStatic": "The average value for your area is {{mean}} {{unit}}. The minimum and maximum are {{min}} {{unit}} and {{max}} {{unit}}.",
-    "summary": "<strong>{{vessels}} vessels{{sources}} </strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summary": "<strong>{{vessels}} vessels{{sources}} </strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "summaryEventsNoVessels": "<strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
-    "summaryNoVessels": "<strong>{{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "summaryNoVessels": "<strong>{{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "timeoutError": "This is taking more than expected, please wait",
     "timeRangeTooLong": "Reports are only supported for time ranges up to one year.",
     "title": "Report",
@@ -411,6 +412,8 @@
     "requiredFields": "Required fields {{fields}}",
     "SARDelayDisclaimer": "Paused while we move from Sentinel-1A to Sentinel-1C and 1D. <0>Learn more.</0>",
     "title": "Dataset",
+    "typeGridded": "Gridded / Raster",
+    "typeGriddedDescription": "Display a heatmap from a GeoTIFF raster (EPSG:4326)",
     "typePoints": "Points",
     "typePointsDescription": "Display one or multiple positions with labels in your dataset",
     "typePolygons": " Polygons",
@@ -437,6 +440,9 @@
       "geoJSON": {
         "noValidFeatures": "No valid feature types found in the geoJSON file"
       },
+      "geotiff": {
+        "invalidData": "GeoTIFF data could not be read"
+      },
       "invalidDatesFeatures": "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
       "kml": {
         "invalidData": "KML data does not have a valid geometry type",
@@ -445,6 +451,9 @@
         "noPolygonData": "No polygon data found in the KML"
       },
       "name": "Dataset name must be at least {{min}} characters long",
+      "netcdf": {
+        "invalidData": "NetCDF data could not be read"
+      },
       "shapefile": {
         "invalidData": "Shapefile data does not have a valid geometry type",
         "invalidMultipleFiles": "Shapefiles containing multiple components (multiple file names) are not supported yet",
@@ -456,6 +465,13 @@
     "fieldMultiplePlaceholder": "Select one or more fields from your dataset",
     "fieldNumericPlaceholder": "Select a numerical field from your dataset",
     "fieldPlaceholder": "Select a field from your dataset",
+    "gridded": {
+      "aggregation": "Aggregation",
+      "band": "Band to import",
+      "unit": "Unit",
+      "unitPlaceholder": "e.g., 'detections', '°C', 'm/s",
+      "variable": "Variable to import"
+    },
     "maxValuesExceededForFiltering": "Maximum values exceeded for filtering ({{max}})",
     "maxValuesExceededForFilteringTooltip": "This field has too many unique values ({{max}}+). Consider grouping or categorizing your data to enable filtering.",
     "noFilters": "To add filters to your dataset, your file must have at least one property with more than 2 distinct values.",
@@ -652,6 +668,13 @@
     "loitering_other": "Loitering events",
     "loiteringAction": "Loitering started at {{start}} for {{duration}}",
     "loiteringActionIn": "Loitering in {{regionName}}",
+    "longlineCategoryEntirelyDay": "day",
+    "longlineCategoryEntirelyNight": "night",
+    "longlineCategoryMostlyDay": "mostly day",
+    "longlineCategoryMostlyNight": "mostly night",
+    "longlineSet": "Longline set ({{category}})",
+    "longlineSetAction": "Longline set ({{category}}) started at {{start}} for {{duration}}",
+    "longlineSetActionIn": "Longline set in {{regionName}}",
     "minuteAbbreviated": "{{count}}'",
     "minuteAbbreviated_one": "{{count}}'",
     "minuteAbbreviated_other": "{{count}}'",
@@ -845,6 +868,7 @@
     "toggleVisibility": "Toggle layer visibility",
     "type": "Type",
     "user_context_fit_bounds": "Center map on polygons",
+    "user_gridded_fit_bounds": "Center map on gridded heatmap",
     "user_points_fit_bounds": "Center map on points",
     "user_points_fit_bounds_out_of_timerange": "The dataset has no points in your selected time range. Change the time range to fit the points?",
     "user_polygons_fit_bounds_out_of_timerange": "The dataset has no polygons in your selected time range. Change the time range to fit the polygons?",
@@ -872,6 +896,7 @@
     "highRes": "See high resolution heatmaps",
     "highResDisabled": "High resolution heatmaps are disabled when using a vessel group filter",
     "legend_help": "Approximate grid cell area at equator",
+    "legendBrushHelp": "Click or drag to adjust the value",
     "loading": "Loading",
     "lowRes": "See low resolution heatmaps",
     "mapLoadingWait": "Please wait until map loads.",
@@ -918,6 +943,39 @@
     "topics": "Topics",
     "useCases": "Use Cases",
     "vessels": "Vessels"
+  },
+  "onboarding": {
+    "areaReport": {
+      "description": "Pick an MPA, EEZ, or draw your own region. Get a report on vessels present, encounters, port visits, and downloadable activity data.",
+      "title": "Run a report on an area"
+    },
+    "copilotExamples": {
+      "carrierEncounters": "Encounters between carriers and fishing vessels in IOTC",
+      "galapagosEffort": "Fishing effort inside the Galápagos Marine Reserve last month",
+      "lasPalmasVisits": "Which vessels visited the Tenerife port in December?",
+      "loiteringWestAfrica": "Loitering events off the coast of West Africa",
+      "nightLightYellowSea": "Night light detections in the Yellow Sea last winter",
+      "northSeaTrawling": "Compare trawling hours in the North Sea between 2023 and 2024",
+      "peruEffort": "AIS and VMS apparent fishing effort in the Peruvian EEZ",
+      "senegalPortVisits": "Port visits by Spanish-flagged vessels in Senegal",
+      "squidPacific": "Chinese squid jiggers fishing in southeast Pacific in 2024",
+      "trackVessel": "Track the vessel with MMSI 412331107 over the past year"
+    },
+    "copilotLabel": "What do you want to see?",
+    "createAccount": "Create an account",
+    "getStarted": "Get started",
+    "header": "Welcome",
+    "intro": "We use satellite signals and machine learning to make activity at sea visible. Pick a way in or <1>learn more</1>.",
+    "login": "Log in to get the most out of the platform (free, 2 minutes)",
+    "searchVessel": {
+      "description": "Find one of 400,000+ vessels by name, MMSI, IMO, or callsign. See where it's been, when, and with whom.",
+      "title": "Search for a vessel"
+    },
+    "title": "What would you like to do today?",
+    "userGuide": {
+      "description": "We support the understanding, visualization and analysis needs of governments, researchers, NGOs, journalists and more.",
+      "title": "Learn how to use the tools"
+    }
   },
   "portsReport": {
     "seePortReport": "See all entry events to this port",
@@ -1317,15 +1375,22 @@
       "IUUBlackListsCount": "The vessel is present on an RFMO IUU vessel list",
       "IUUBlackListsEmpty": "The vessel is not present on an RFMO IUU vessel list",
       "longline": "Longline settings at day and night",
+      "longlineDownload": "Download longline sets",
       "longlineEntirelyDaySets_one": "{{count}} entirely day set",
       "longlineEntirelyDaySets_other": "{{count}} entirely day sets",
+      "longlineEntirelyDaySetsLabel": "day sets",
       "longlineEntirelyNightSets_one": "{{count}} entirely night set",
       "longlineEntirelyNightSets_other": "{{count}} entirely night sets",
+      "longlineEntirelyNightSetsLabel": "night sets",
       "longlineEventsEmpty": "No longline sets detected",
+      "longlineHideFromMap": "Hide longline sets from the map",
       "longlineMostlyDaySets_one": "{{count}} mostly day set (<2 hrs overlap with dawn and/or dusk)",
       "longlineMostlyDaySets_other": "{{count}} mostly day sets (<2 hrs overlap with dawn and/or dusk)",
+      "longlineMostlyDaySetsLabel": "mostly day sets (<2 hrs overlap with night)",
       "longlineMostlyNightSets_one": "{{count}} mostly night set (<2 hrs overlap with dawn and/or dusk)",
       "longlineMostlyNightSets_other": "{{count}} mostly night sets (<2 hrs overlap with dawn and/or dusk)",
+      "longlineMostlyNightSetsLabel": "mostly night sets (<2 hrs overlap with daylight)",
+      "longlineShowOnMap": "Show longline sets on the map",
       "MOULists": "Tokyo and Paris MOU Lists",
       "MOUListsEmpty": "Flying under a flag/flags not present on the Tokyo or Paris MOU black or grey lists",
       "MOUParisBlackListsCount": "Flag present on the Paris MOU black list ({{flags}})",
@@ -1384,6 +1449,7 @@
     "sectionActivity": "Activity",
     "sectionAreas": "Areas",
     "sectionInsights": "Insights",
+    "sectionInsightsTooltip": "Insights not available for VMS vessels.",
     "sectionRelatedVessel": "Related vessels",
     "sectionRelatedVessels": "Related vessels",
     "sectionSummary": "Summary",
@@ -1535,9 +1601,7 @@
       "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} fishing events from {{vessels}} vessels detected outside known RFMO authorized areas",
       "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} fishing events from {{vessels}} vessels detected outside known RFMO authorized areas",
       "gaps_one": "{{count}} AIS Off Event from {{vessels}} vessels detected",
-      "gaps_other": "{{count}} AIS Off Event from {{vessels}} vessels detected",
-      "longline_one": "{{count}} longline set from {{vessels}} vessels detected",
-      "longline_other": "{{count}} longline sets from {{vessels}} vessels detected"
+      "gaps_other": "{{count}} AIS Off Event from {{vessels}} vessels detected"
     }
   },
   "workspace": {

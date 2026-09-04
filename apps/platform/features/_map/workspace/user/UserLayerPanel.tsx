@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetStatus, DataviewType } from '@globalfishingwatch/api-types'
 import {
   getDatasetConfiguration,
@@ -57,6 +56,7 @@ import Filters from '../shared/LayerFilters'
 import LayerProperties from '../shared/LayerProperties'
 import { showSchemaFilter } from '../shared/LayerSchemaFilter.utils'
 import LayerSwitch from '../shared/LayerSwitch'
+import MapLegend from '../shared/MapLegend'
 import Remove from '../shared/Remove'
 import Title from '../shared/Title'
 
@@ -90,17 +90,22 @@ function UserPanel({
   const layerActive = dataview?.config?.visible ?? true
   const dataset = getUserDataviewDataset(dataview)
   const datasetGeometryType = getDatasetGeometryType(dataset)
+  const datasetError = dataset?.status === DatasetStatus.Error
+  const datasetImportLogs = Object.values(dataset?.configuration ?? {}).find(
+    (config): config is { importLogs: string } => Boolean((config as any)?.importLogs)
+  )?.importLogs
   const { instance, loaded, hasFeaturesColoredByField, error } = useUserLayerMetadata(
     dataview,
     mergedDataviewId
   )
   const layerLoaded = loaded && !error
   const layerLoadedDebounced = useDebounce(layerLoaded, 300)
-  const layerLoading = layerActive && !layerLoadedDebounced && !error
+  const layerLoading = layerActive && !layerLoadedDebounced && !error && !datasetError
+  const layerImporting = layerActive && dataset?.status === DatasetStatus.Importing
   const isBaseUserLayer =
     instance instanceof UserPointsTileLayer || instance instanceof UserContextTileLayer
 
-  useAutoRefreshImportingDataset(layerActive ? dataset : ({} as Dataset), 5000)
+  useAutoRefreshImportingDataset(layerActive ? dataset : undefined, 5000)
 
   const {
     items,
@@ -118,8 +123,12 @@ function UserPanel({
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
   )
-  const polygonColor = getDatasetConfigurationProperty({ dataset, property: 'polygonColor' })
-  const hasLegend = polygonColor !== undefined
+  const datasetBbox = getDatasetConfigurationProperty({
+    dataset,
+    property: 'bbox',
+    type: 'userFourwingsV1',
+  })
+  const hasLegend = datasetGeometryType === 'gridded'
   const changeColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
       id: dataview.id,
@@ -188,8 +197,6 @@ function UserPanel({
     : t((t: any) => t.dataview[dataview?.id].title, {
         defaultValue: dataview?.name || dataview?.id,
       })
-  const datasetError = dataset.status === DatasetStatus.Error
-
   const hasLayerProperties = hasSchemaFilterSelection || hasFeaturesColoredByField
 
   return (
@@ -204,7 +211,7 @@ function UserPanel({
     >
       <div className={styles.header}>
         <LayerSwitch
-          disabled={dataset?.status === DatasetStatus.Error}
+          disabled={datasetError}
           active={layerActive}
           className={styles.switch}
           dataview={dataview}
@@ -278,7 +285,19 @@ function UserPanel({
               <FitBounds
                 hasError={Boolean(error)}
                 layer={instance as UserTracksLayer}
-                disabled={isBaseUserLayer ? false : layerLoading}
+                bbox={datasetBbox}
+                tooltip={
+                  datasetGeometryType === 'gridded'
+                    ? t((t) => t.layer.user_gridded_fit_bounds)
+                    : undefined
+                }
+                disabled={
+                  datasetGeometryType === 'gridded'
+                    ? layerImporting || !datasetBbox
+                    : isBaseUserLayer
+                      ? false
+                      : layerLoading
+                }
                 dataviewId={dataview.id}
               />
               {hasSchemaFilters &&
@@ -308,8 +327,8 @@ function UserPanel({
           {datasetError && (
             <InfoError
               error={datasetError}
-              loading={dataset.status === DatasetStatus.Importing}
-              tooltip={error || t((t) => t.layer.seeDescription)}
+              loading={layerImporting}
+              tooltip={error || datasetImportLogs || t((t) => t.layer.seeDescription)}
               size="small"
               // onClick={() =>
               //   !datasetError &&
@@ -323,7 +342,7 @@ function UserPanel({
           <Remove
             testId={`user-layer-remove-${dataset.id}`}
             dataview={dataview}
-            loading={layerLoading && dataset?.status !== DatasetStatus.Importing}
+            loading={layerLoading && !layerImporting}
           />
           {showSortHandler && (
             <IconButton
@@ -339,9 +358,9 @@ function UserPanel({
         </div>
         <IconButton
           testId={`user-layer-status-${dataset.id}`}
-          icon={layerActive ? (error ? 'warning' : 'more') : undefined}
-          type={error ? 'warning' : 'default'}
-          loading={layerLoading || dataset?.status === DatasetStatus.Importing}
+          icon={layerActive ? (error || datasetError ? 'warning' : 'more') : undefined}
+          type={error || datasetError ? 'warning' : 'default'}
+          loading={layerLoading || layerImporting}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
         />
@@ -370,7 +389,7 @@ function UserPanel({
             [styles.dragging]: isSorting && activeIndex > -1,
           })}
         >
-          <div id={`legend_${dataview.id}`}></div>
+          <MapLegend dataview={dataview} layerId={mergedDataviewId || dataview.id} />
         </div>
       )}
     </div>

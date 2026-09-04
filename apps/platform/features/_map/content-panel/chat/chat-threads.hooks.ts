@@ -3,23 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { useAtom, useSetAtom } from 'jotai'
-import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 import { useDeleteThreadMutation, useGetThreadsQuery } from 'queries/map/chat-api'
 
+import { activeThreadAtom, newActiveThread } from 'features/_map/content-panel/chat/chat.atoms'
 import { selectUserId } from 'features/_user/selectors/user.permissions.selectors'
-
-const CHAT_ACTIVE_THREAD_KEY = 'chatActiveThread'
-
-type ActiveThread = { id: string; isNew: boolean; isLoading: boolean }
-
-const activeThreadAtom = atomWithStorage<ActiveThread>(
-  CHAT_ACTIVE_THREAD_KEY,
-  { id: typeof crypto !== 'undefined' ? crypto.randomUUID() : '', isNew: true, isLoading: false },
-  createJSONStorage<ActiveThread>(() =>
-    typeof window === 'undefined' ? (undefined as unknown as Storage) : sessionStorage
-  ),
-  { getOnInit: true }
-)
 
 export function useSetThreadLoading(threadId: string, loading: boolean) {
   const setActiveThread = useSetAtom(activeThreadAtom)
@@ -56,7 +43,7 @@ export function useChatThreads() {
   const deleteThread = useCallback(
     (id: string) => {
       if (id === activeThreadId) {
-        setActiveThread({ id: crypto.randomUUID(), isNew: true, isLoading: false })
+        setActiveThread(newActiveThread())
       }
       return deleteThreadMutation({ threadId: id, resourceId: String(userId) })
         .unwrap()
@@ -73,7 +60,7 @@ export function useChatThreads() {
   )
 
   const newThread = useCallback(() => {
-    setActiveThread({ id: crypto.randomUUID(), isNew: true, isLoading: false })
+    setActiveThread(newActiveThread())
   }, [setActiveThread])
 
   const setActiveThreadId = useCallback(

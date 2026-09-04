@@ -1,11 +1,6 @@
-import type { FilterByPolygomParams } from './reports-geo.utils'
+import { handleWorkerRequests } from '@globalfishingwatch/data-transforms/worker'
+
+import type { FilterByPolygomParams, FilteredPolygons } from './reports-geo.utils'
 import { filterByPolygon } from './reports-geo.utils'
 
-addEventListener(
-  'message',
-  (event: MessageEvent<{ id: number; params: FilterByPolygomParams }>) => {
-    const { id, params } = event.data
-    const result = filterByPolygon(params)
-    postMessage({ id, result })
-  }
-)
+handleWorkerRequests<FilterByPolygomParams, FilteredPolygons[]>((params) => filterByPolygon(params))

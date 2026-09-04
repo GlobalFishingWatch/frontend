@@ -37,6 +37,13 @@
   align-items: center;
 }
 
+.insightTitleActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+  margin-left: auto;
+}
+
 .coverageBar {
   margin-top: var(--space-M);
   position: relative;

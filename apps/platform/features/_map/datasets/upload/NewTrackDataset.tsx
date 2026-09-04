@@ -56,7 +56,6 @@ function NewTrackDataset({
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
   const [timeFilterError, setTimeFilterError] = useState<string>('')
-  const [dataParseError, setDataParseError] = useState<string>('')
   const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [sourceData, setSourceData] = useState<DataList | undefined>()
@@ -149,7 +148,7 @@ function NewTrackDataset({
         setProcessingData(false)
       } catch (e: any) {
         setProcessingData(false)
-        onDatasetParseError(e, setDataParseError)
+        onDatasetParseError(e)
       }
     },
     [setDatasetMetadata, startTimeProperty, t, onDatasetParseError]
@@ -248,14 +247,6 @@ function NewTrackDataset({
     )
   }
 
-  if (dataParseError) {
-    return (
-      <div className={styles.processingData}>
-        <p className={styles.errorMsg}>{dataParseError}</p>
-      </div>
-    )
-  }
-
   return (
     <div className={styles.container}>
       {!isEditing && (
@@ -267,7 +258,7 @@ function NewTrackDataset({
       )}
       <div className={styles.content}>
         <InputText
-          value={datasetMetadata?.name}
+          value={datasetMetadata?.name ?? ''}
           label={t((t) => t.datasetUpload.datasetName)}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ name: e.target.value })}

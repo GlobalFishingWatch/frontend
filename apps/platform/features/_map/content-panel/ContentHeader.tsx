@@ -22,7 +22,7 @@ function ContentHeader({ title }: ContentHeaderProps) {
         icon="close"
         type="solid"
         aria-label={t((t) => t.common.close)}
-        onClick={() => closeSidePanel()}
+        onClick={closeSidePanel}
       />
     </div>
   )

@@ -10,6 +10,13 @@ export const parseLegendNumber = (number: number) => {
   return number % 1 === 0 ? number : parseFloat(number.toFixed(MIN_DECIMALS_SCIENTIFIC_NOTATION))
 }
 
+export const roundLegendDecimals = (number: number) => {
+  if (typeof number !== 'number') {
+    return number
+  }
+  return parseFloat(number.toFixed(DECIMALS))
+}
+
 export const roundLegendNumber = (number: number) => {
   return Math.abs(number) > 1 ? Math.floor(number) : parseLegendNumber(number)
 }

@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import { useMapHoverInteraction } from '@globalfishingwatch/deck-layer-composer'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 
-import PopupWrapper from 'features/_map/map/popups/PopupWrapper'
 import { getSafeElementById } from 'utils/dom'
 
 import { selectClickedEvent } from '../map.slice'
@@ -12,6 +11,7 @@ import { useClickedEventConnect } from '../map-interactions.hooks'
 import { MAP_CONTAINER_ID } from '../map-viewport.hooks'
 
 import PopupByCategory from './PopupByCategory'
+import PopupWrapper from './PopupWrapper'
 
 import styles from './Popup.module.css'
 

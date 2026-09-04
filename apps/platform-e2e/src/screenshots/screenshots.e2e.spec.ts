@@ -18,10 +18,10 @@ for (const { id, url } of MAP_URLS) {
   test.describe(`Screenshot comparison - ${id}`, () => {
     test.beforeEach(async ({ page }) => {
       await page.addInitScript(() => {
-        localStorage.setItem('MarineManagerPopup', '{"visible":false,"showAgain":false}')
         localStorage.setItem('VesselProfilePopup', '{"visible":false,"showAgain":false}')
-        localStorage.setItem('WelcomePopup', '{"visible":false,"showAgain":false}')
         localStorage.setItem('DeepSeaMiningPopup', '{"visible":false,"showAgain":false}')
+        // Map onboarding side panel — auto-opens on a first visit and would shift every layout below.
+        localStorage.setItem('OnboardingPanelDismissed', 'true')
         // We need to ensure this is set to ensure the highlight popup is using the same
         // HIGHLIGHT_DATAVIEW_INSTANCE_ID but the import is not working in the e2e tests
         localStorage.setItem('HighlightPopup', '"sentinel2"')

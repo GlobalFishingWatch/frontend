@@ -5,7 +5,6 @@ import { Link } from '@tanstack/react-router'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
-import { resetSidebarScroll } from 'features/_map/sidebar/sidebar.utils'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { cleanReportPayload } from 'features/_map/workspace/workspace.utils'
 import { useFitAreaInViewport } from 'features/_reports/report-area/area-reports.hooks'
@@ -17,11 +16,6 @@ const GlobalReportLink = ({ reportCategory }: { reportCategory: ReportCategory }
   const { t } = useTranslation()
   const workspace = useSelector(selectWorkspace)
   const fitAreaInViewport = useFitAreaInViewport()
-
-  const handleOnClick = () => {
-    fitAreaInViewport()
-    resetSidebarScroll()
-  }
 
   return (
     <Link
@@ -38,7 +32,7 @@ const GlobalReportLink = ({ reportCategory }: { reportCategory: ReportCategory }
         zoom: 0,
         bivariateDataviews: null,
       })}
-      onClick={handleOnClick}
+      onClick={fitAreaInViewport}
     >
       <IconButton
         icon="analysis"

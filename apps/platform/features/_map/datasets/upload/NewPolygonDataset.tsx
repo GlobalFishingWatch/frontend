@@ -57,7 +57,6 @@ function NewPolygonDataset({
   const [devMode, setDevMode] = useState(false)
   const [error] = useState<string>('')
   const [timeFilterError, setTimeFilterError] = useState<string>('')
-  const [dataParseError, setDataParseError] = useState<string>('')
   const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [geojson, setGeojson] = useState<PolygonFeatureCollection | undefined>()
@@ -109,7 +108,7 @@ function NewPolygonDataset({
         setProcessingData(false)
       } catch (e: any) {
         setProcessingData(false)
-        onDatasetParseError(e, setDataParseError)
+        onDatasetParseError(e)
       }
     },
     [setDatasetMetadata, onDatasetParseError]
@@ -170,14 +169,6 @@ function NewPolygonDataset({
     )
   }
 
-  if (dataParseError) {
-    return (
-      <div className={styles.processingData}>
-        <p className={styles.errorMsg}>{dataParseError}</p>
-      </div>
-    )
-  }
-
   return (
     <div className={styles.container}>
       {!dataset && (
@@ -188,7 +179,7 @@ function NewPolygonDataset({
         />
       )}
       <InputText
-        value={datasetMetadata?.name}
+        value={datasetMetadata?.name ?? ''}
         label={t((t) => t.datasetUpload.datasetName)}
         className={styles.input}
         onChange={(e) => setDatasetMetadata({ name: e.target.value })}

@@ -1,6 +1,6 @@
 import type { DatasetFilters } from '@globalfishingwatch/api-types'
 
-export type BBox = [number, number, number, number]
+export type Bbox = [number, number, number, number]
 
 export type SegmentColumns = {
   latitude: string | number

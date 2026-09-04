@@ -37,6 +37,7 @@ export type UILegendColorRamp = BaseLegend & {
   values?: number[]
   colors?: string[]
   currentValue?: number | number[]
+  gradient?: boolean
 }
 
 export type UILegendBivariate = BaseLegend & {

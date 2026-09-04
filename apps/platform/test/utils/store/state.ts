@@ -10397,6 +10397,9 @@ export const REDUX_STORE_DEFAULT_STATE = {
     featureFlags: {
       hotspotButton: false,
       polygonsReport: false,
+      reportPreview: false,
+      griddedHeatmap: false,
+      legendBrush: false,
     },
     options: {
       addDatasetIdHash: true,

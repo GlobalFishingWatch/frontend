@@ -133,6 +133,28 @@ const DebugFeatureFlags: React.FC = () => {
           <p>See reports of polygon areas</p>
           <div className={styles.header}>
             <Switch
+              id="option_gridded_heatmap"
+              active={featureFlags.griddedHeatmap}
+              onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.GriddedHeatmap))}
+            />
+            <label htmlFor="option_gridded_heatmap">
+              <strong>Feature flag:</strong> Gridded heatmap
+            </label>
+          </div>
+          <p>Allow users to upload gridded heatmap datasets (.tiff files)</p>
+          <div className={styles.header}>
+            <Switch
+              id="option_legend_brush"
+              active={featureFlags.legendBrush}
+              onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.LegendBrush))}
+            />
+            <label htmlFor="option_legend_brush">
+              <strong>Feature flag:</strong> Legend brush
+            </label>
+          </div>
+          <p>Filter activity, detections and environment layers by dragging the legend</p>
+          <div className={styles.header}>
+            <Switch
               id="option_report_preview"
               active={featureFlags.reportPreview}
               onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.ReportPreview))}

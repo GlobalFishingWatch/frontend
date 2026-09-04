@@ -59,11 +59,14 @@ Durable facts about this repo live in `.claude/memory/`, one fact per file, impo
 - Date any claim that will age ("as of 2026-08"), so a stale note is recognisable as stale.
 
 @.claude/memory/platform-dist-workspace-link.md
+@.claude/memory/deck-loaders-parsers-run-in-prebuilt-workers.md
 @.claude/memory/lib-build-target-name.md
 @.claude/memory/app-dependency-catalog.md
 @.claude/memory/platform-config-package.md
 @.claude/memory/platform-testing.md
+@.claude/memory/browser-testing-uses-platform-e2e.md
 @.claude/memory/skills-lib.md
 @.claude/memory/encode-url-skill-maintenance.md
 @.claude/memory/typescript7-migration.md
 @.claude/memory/locales-source-is-the-only-editable.md
+@.claude/memory/popup-component-naming.md
