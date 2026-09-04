@@ -32,7 +32,9 @@ jobs:
       # --- Setting up dependencies and cache ---------------------------------
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/setup@v2
+        with:
+          install: false # the explicit --frozen-lockfile step below owns installing
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:

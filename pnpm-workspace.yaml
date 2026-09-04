@@ -1,3 +1,6 @@
+# pnpm reads only auth/registry settings from .npmrc, so this lives here.
+autoInstallPeers: true
+
 packages:
   - 'linting'
   - 'apps/*'

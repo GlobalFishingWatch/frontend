@@ -21,14 +21,16 @@ ENV NX_DEFAULT_OUTPUT_STYLE=stream
 # resolve the workspace graph.
 # ARGs are declared after install so different APP_NAME values across
 # parallel matrix jobs share the same cached install layer.
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc* ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY patches/ patches/
 COPY linting/package.json linting/
 COPY apps/platform/package.json apps/platform/
 # libs/* are workspace members too — without their manifests pnpm skips the
 # per-lib node_modules/@globalfishingwatch/* links a lib needs to import a sibling.
 COPY --parents libs/*/package.json ./
-RUN corepack enable && corepack install
+ENV PNPM_HOME=/usr/local/share/pnpm
+ENV PATH="$PNPM_HOME/bin:$PATH"
+RUN SHELL=/bin/sh ENV=/root/.shrc npx --yes get-pnpm 12
 RUN pnpm install --frozen-lockfile
 
 # All possible build args — each app uses what it needs, unused ones are empty
