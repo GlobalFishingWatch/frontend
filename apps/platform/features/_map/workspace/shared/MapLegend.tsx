@@ -25,6 +25,7 @@ const BRUSH_CATEGORIES = [
   DataviewCategory.Activity,
   DataviewCategory.Detections,
   DataviewCategory.Environment,
+  DataviewCategory.User,
 ]
 
 type LegendScale = {

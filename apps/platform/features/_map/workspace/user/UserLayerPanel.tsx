@@ -197,7 +197,10 @@ function UserPanel({
     : t((t: any) => t.dataview[dataview?.id].title, {
         defaultValue: dataview?.name || dataview?.id,
       })
-  const hasLayerProperties = hasSchemaFilterSelection || hasFeaturesColoredByField
+  const hasVisibleValuesSelection =
+    dataview.config?.minVisibleValue !== undefined || dataview.config?.maxVisibleValue !== undefined
+  const hasLayerProperties =
+    hasSchemaFilterSelection || hasFeaturesColoredByField || hasVisibleValuesSelection
 
   return (
     <div
@@ -371,12 +374,20 @@ function UserPanel({
             [styles.dragging]: isSorting && activeIndex > -1,
           })}
         >
-          {hasSchemaFilterSelection && (
+          {(hasSchemaFilterSelection || hasVisibleValuesSelection) && (
             <div className={styles.filters}>
               <div className={styles.filters}>
                 {filtersAllowed.map(({ id, label }) => (
                   <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
                 ))}
+                {hasVisibleValuesSelection && (
+                  <DatasetSchemaField
+                    key="visibleValues"
+                    dataview={dataview}
+                    field="visibleValues"
+                    label={t((t) => t.common.visibleValues)}
+                  />
+                )}
               </div>
             </div>
           )}
@@ -389,7 +400,11 @@ function UserPanel({
             [styles.dragging]: isSorting && activeIndex > -1,
           })}
         >
-          <MapLegend dataview={dataview} layerId={mergedDataviewId || dataview.id} />
+          <MapLegend
+            dataview={dataview}
+            layerId={mergedDataviewId || dataview.id}
+            brushClassName={styles.brushIdle}
+          />
         </div>
       )}
     </div>
