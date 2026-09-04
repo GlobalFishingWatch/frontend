@@ -54,7 +54,6 @@ const ReportActivityDatasetComparison = () => {
     const mainDataviewColor = allDataviewInstances?.find((d) => d.id === comparisonDatasets?.main)
       ?.config?.color
     return resolveLibraryLayers(allDataviews, {
-      experimentalLayers: false,
       avoidColors: mainDataviewColor ? [mainDataviewColor] : [],
     })
   }, [allDataviews, i18nReady, comparisonDatasets?.main, allDataviewInstances])

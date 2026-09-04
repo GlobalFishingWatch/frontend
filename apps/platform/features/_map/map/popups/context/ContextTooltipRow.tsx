@@ -7,7 +7,6 @@ import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishin
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { selectTrackCorrectionOpen } from 'features/_vessels/track-correction/track-selection.selectors'
-import { selectFeatureFlags } from 'features/debug/debug.slice'
 import { selectIsAnyReportLocation } from 'router/routes.selectors'
 import { htmlSafeParse } from 'utils/html-parser'
 
@@ -52,12 +51,11 @@ const ContextTooltipRow = ({
   const { t } = useTranslation()
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
-  const { reportPreview } = useSelector(selectFeatureFlags)
   const { option, options, setPreferredCategory, canSwitch, hasAny } =
     useAreaTooltipSparklineCategory()
   const { onClick: fitAreaBounds, loading: fitAreaLoading } = useFitAreaBounds(feature)
   const showSparklinePreview =
-    reportPreview && showFeaturesDetails && showSparkline && !isAnyReportLocation && hasAny
+    showFeaturesDetails && showSparkline && !isAnyReportLocation && hasAny
   const areaInViewport = useAreaInViewport(feature, showSparklinePreview)
   const renderSparkline = showSparklinePreview && areaInViewport === true
 

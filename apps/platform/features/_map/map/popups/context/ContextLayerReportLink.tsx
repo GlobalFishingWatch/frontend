@@ -19,7 +19,6 @@ import { DEFAULT_BUFFER_OPERATION, DEFAULT_BUFFER_UNIT } from 'features/_reports
 import { selectReportAreaId, selectReportDatasetId } from 'features/_reports/reports.selectors'
 import { resetReportData } from 'features/_reports/tabs/activity/reports-activity.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectFeatureFlags } from 'features/debug/debug.slice'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import type { QueryParams } from 'types'
 
@@ -49,10 +48,8 @@ const ContextLayerReportLink = ({
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const reportLayersVisible = useSelector(selectReportLayersVisible)
-  const featureFlags = useSelector(selectFeatureFlags)
   const isDataviewReportAnalysable = getIsDataviewReportSupported(
     reportLayersVisible!,
-    featureFlags,
     feature?.layerId
   )
   const workspace = useSelector(selectWorkspace)
