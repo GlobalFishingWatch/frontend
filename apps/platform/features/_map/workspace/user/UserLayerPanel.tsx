@@ -394,7 +394,7 @@ function UserPanel({
           {hasFeaturesColoredByField && <UserLayerTrackPanel dataview={dataview} />}
         </div>
       )}
-      {layerActive && hasLegend && (
+      {layerActive && hasLegend && !error && !datasetError && (
         <div
           className={cx(styles.properties, styles.drag, {
             [styles.dragging]: isSorting && activeIndex > -1,
