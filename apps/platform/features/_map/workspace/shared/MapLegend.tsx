@@ -21,13 +21,6 @@ import { getEventLabel } from 'utils/analytics'
 
 import styles from './MapLegend.module.css'
 
-const BRUSH_CATEGORIES = [
-  DataviewCategory.Activity,
-  DataviewCategory.Detections,
-  DataviewCategory.Environment,
-  DataviewCategory.User,
-]
-
 type LegendScale = {
   domain: number[]
   ranges: DeckLegendAtom['ranges']
@@ -147,8 +140,7 @@ const MapLegendWrapper = ({
     unit: deckLegend.unit,
   }
 
-  const showBrush =
-    legendBrush && !isBivariate && !isSymbols && BRUSH_CATEGORIES.includes(dataview.category!)
+  const showBrush = legendBrush && !isBivariate && !isSymbols
   const { minVisibleValue, maxVisibleValue } = dataview.config || {}
   const hasRange = minVisibleValue !== undefined || maxVisibleValue !== undefined
 
