@@ -124,27 +124,26 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   _calculateColorDomain = () => {
-    // Single dataview layer, so every sublayer carries the same range
-    const { minVisibleValue, maxVisibleValue } = this.props.sublayers?.[0] || {}
+    // The visible-value bounds are deliberately not passed: like the dynamic layers, brushing the
+    // legend filters cells out of the map (FourwingsHeatmapLayer) but leaves the ramp alone
     const colorDomain = getFourwingsColorDomain({
       features: this.getData(),
       aggregationOperation: this.props.aggregationOperation,
       startFrame: STATIC_START_FRAME,
       endFrame: STATIC_END_FRAME,
       timeRangeKey: getTimeRangeKey(STATIC_START_FRAME, STATIC_END_FRAME),
-      minVisibleValue,
-      maxVisibleValue,
     })
     return colorDomain.length ? colorDomain : this.getColorDomain()
   }
 
   _updateColorDomain = () => {
     const colorDomain = this._calculateColorDomain() as number[]
-    const colorRanges = this._getColorRanges()[0]
-    if (colorDomain?.length && colorRanges?.length) {
+    const colorRanges = this._getColorRanges()
+    if (colorDomain?.length && colorRanges[0]?.length) {
       this.setState({
         colorDomain,
-        scales: [scaleLinear(colorDomain, colorRanges)],
+        colorRanges,
+        scales: [scaleLinear(colorDomain, colorRanges[0])],
         rampDirty: false,
       })
     }
@@ -210,9 +209,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     const colors = sublayers?.map(({ colorRamp }) => colorRamp).join(',')
     const isColorChanged = oldColors !== colors
 
-    const isVisibleValuesChanged =
-      getSublayersVisibleValuesHash(sublayers) !== getSublayersVisibleValuesHash(oldProps.sublayers)
-    if (isVisibleValuesChanged || isColorChanged) {
+    if (isColorChanged) {
       this._updateColorDomain()
     }
   }

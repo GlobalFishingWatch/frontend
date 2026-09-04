@@ -74,12 +74,22 @@ export function ColorRampBrush({
     return track ? clamp(((clientX - track.left) / track.width) * 100) : 0
   }
 
-  const commit = (next: [number, number]) => {
-    const low = Math.min(...next)
-    const high = Math.max(...next)
+  const commit = (next: [number, number], movedBound?: Bound) => {
+    const lowBound: Bound = next[0] <= next[1] ? 0 : 1
+    const highBound: Bound = lowBound === 0 ? 1 : 0
+    const stored: ColorRampBrushRange = [min, max]
+    const boundValue = (bound: Bound, isLow: boolean) => {
+      if (movedBound !== undefined && bound !== movedBound) {
+        return stored[bound]
+      }
+      const percent = next[bound]
+      return (isLow ? percent <= 0 : percent >= 100)
+        ? undefined
+        : roundValue(percentToValue(percent))
+    }
     const committed: ColorRampBrushRange = [
-      low <= 0 ? undefined : roundValue(percentToValue(low)),
-      high >= 100 ? undefined : roundValue(percentToValue(high)),
+      boundValue(lowBound, true),
+      boundValue(highBound, false),
     ]
     if (committed[0] === min && committed[1] === max) {
       setDrag(undefined)
@@ -128,7 +138,7 @@ export function ColorRampBrush({
       return
     }
     if (drag.moved) {
-      commit(drag.percents)
+      commit(drag.percents, drag.fromHandle ? drag.bound : undefined)
       return
     }
     setDrag(undefined)
@@ -148,7 +158,7 @@ export function ColorRampBrush({
     event.preventDefault()
     const next: [number, number] = [...percents]
     next[bound] = clamp(next[bound] + step * (event.shiftKey ? 10 : 1))
-    commit(next)
+    commit(next, bound)
   }
 
   const commitBound = (bound: Bound, raw: string) => {

@@ -304,12 +304,13 @@ const getFilterOptionsSelectedInDataview = (
       return []
     }
     // Activity and detections are counts and hours, so the decimals the ckmeans ramp breaks
-    // carry are noise. Environmental units can be genuinely fractional, so those keep them.
-    // Matches how the legend itself rounds (see MapLegend's roundValues).
+    // carry are noise. Environmental and user-uploaded units can be genuinely fractional
+    // (a gridded presence layer runs 0-0.5), so those keep them.
+    const keepsDecimals =
+      dataview.category === DataviewCategory.Environment ||
+      dataview.category === DataviewCategory.User
     const format = (value: number) =>
-      formatI18nNumber(
-        dataview.category === DataviewCategory.Environment ? value : Math.round(value)
-      ) as string
+      formatI18nNumber(keepsDecimals ? value : Math.round(value)) as string
     // The deck layers compare inclusively, hence ≥ / ≤ rather than > / <.
     // Only a bound actually present in the config gets a tag: environmental datasets do carry a
     // static range, and the unset side used to fall back to it, but since the legend brush landed

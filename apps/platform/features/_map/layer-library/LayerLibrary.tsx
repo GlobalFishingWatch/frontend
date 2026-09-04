@@ -19,7 +19,6 @@ import { selectUserDatasets } from 'features/_user/selectors/user.permissions.se
 import { selectIsGFWUser, selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { selectAllVisibleVesselGroups } from 'features/_user/vessel-groups/vessel-groups.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectDebugOptions } from 'features/debug/debug.slice'
 import {
   selectLayerLibraryModal,
   selectLayerLibraryUniqueCategory,
@@ -40,7 +39,6 @@ const LayerLibrary: FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const initialCategory = useSelector(selectLayerLibraryModal)
   const layerLibraryUniqueCategory = useSelector(selectLayerLibraryUniqueCategory)
-  const debugOptions = useSelector(selectDebugOptions)
   const isGFWUser = useSelector(selectIsGFWUser)
   const guestUser = useSelector(selectIsGuestUser)
   const [currentCategory, setCurrentCategory] = useState<DataviewCategory>(
@@ -71,10 +69,8 @@ const LayerLibrary: FC = () => {
     if (!i18nReady) {
       return []
     }
-    return resolveLibraryLayers(dataviews, {
-      experimentalLayers: debugOptions.experimentalLayers,
-    })
-  }, [dataviews, debugOptions.experimentalLayers, i18nReady])
+    return resolveLibraryLayers(dataviews)
+  }, [dataviews, i18nReady])
 
   const uniqCategories = useMemo(() => {
     if (layerLibraryUniqueCategory) {

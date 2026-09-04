@@ -1,5 +1,9 @@
 import type { Workspace } from '@globalfishingwatch/api-types'
-import { WORKSPACE_PRIVATE_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
+import {
+  DataviewCategory,
+  WORKSPACE_PRIVATE_ACCESS,
+  WORKSPACE_PUBLIC_ACCESS,
+} from '@globalfishingwatch/api-types'
 import { DEFAULT_VIEWPORT } from '@platform/config/map/app'
 import {
   AIS_DATAVIEW_INSTANCE_ID,
@@ -140,6 +144,11 @@ const workspace: Workspace<WorkspaceState> = {
     //     },
     //   },
     // },
+    {
+      category: DataviewCategory.Environment,
+      dataviewId: 'bathymetry-contour',
+      id: 'bathymetry-contour',
+    },
     {
       id: PORT_VISITS_EVENTS_SOURCE_ID,
       dataviewId: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
@@ -14,23 +13,17 @@ import { useActivityDataviewId } from 'features/_map/map/map-layers.hooks'
 import MapLegendPlaceholder from 'features/_map/workspace/shared/MapLegendPlaceholder'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectFeatureFlags } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { getEventLabel } from 'utils/analytics'
 
 import styles from './MapLegend.module.css'
 
-const BRUSH_CATEGORIES = [
-  DataviewCategory.Activity,
-  DataviewCategory.Detections,
-  DataviewCategory.Environment,
-]
-
 type LegendScale = {
   domain: number[]
   ranges: DeckLegendAtom['ranges']
   sublayerIndex: number
+  type: DeckLegendAtom['type']
 }
 
 const getLegendLabelTranslated = (legend?: DeckLegendAtom, tFn = t) => {
@@ -74,7 +67,6 @@ const MapLegendWrapper = ({
   brushClassName?: string
 }) => {
   const { t } = useTranslation()
-  const { legendBrush } = useSelector(selectFeatureFlags)
   const activityDataviewId = useActivityDataviewId(dataview)
   const dataviewId = layerId || activityDataviewId
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -108,9 +100,10 @@ const MapLegendWrapper = ({
             domain: deckLegend.domain as number[],
             ranges: deckLegend.ranges,
             sublayerIndex: legendSublayerIndex,
+            type: deckLegend.type,
           }
         : undefined,
-    [hasScale, deckLegend.domain, deckLegend.ranges, legendSublayerIndex]
+    [hasScale, deckLegend.domain, deckLegend.ranges, deckLegend.type, legendSublayerIndex]
   )
   useEffect(() => {
     if (currentScale) {
@@ -125,7 +118,7 @@ const MapLegendWrapper = ({
     return null
   }
 
-  const scale = currentScale || lastScale
+  const scale = currentScale || (lastScale?.type === deckLegend.type ? lastScale : undefined)
   if (!scale) {
     return showPlaceholder ? <MapLegendPlaceholder /> : null
   }
@@ -146,8 +139,7 @@ const MapLegendWrapper = ({
     unit: deckLegend.unit,
   }
 
-  const showBrush =
-    legendBrush && !isBivariate && !isSymbols && BRUSH_CATEGORIES.includes(dataview.category!)
+  const showBrush = !isBivariate && !isSymbols
   const { minVisibleValue, maxVisibleValue } = dataview.config || {}
   const hasRange = minVisibleValue !== undefined || maxVisibleValue !== undefined
 
