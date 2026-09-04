@@ -1,4 +1,5 @@
-import { Fragment, Suspense, useCallback, useState } from 'react'
+import { Suspense, useCallback, useState } from 'react'
+import { UNSAFE_PortalProvider } from 'react-aria/PortalProvider'
 import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import { getRouteApi, Outlet } from '@tanstack/react-router'
@@ -35,6 +36,8 @@ function PlatformLayout() {
   const readOnly = useSelector(selectReadOnly)
   const isHelpHubLocation = useSelector(selectIsHelpHubLocation)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [modalContainer, setModalContainer] = useState<HTMLElement | null>(null)
+  const getModalContainer = useCallback(() => modalContainer, [modalContainer])
 
   const isSmallPhone = useSmallScreen(SMALL_PHONE_BREAKPOINT, {
     initialScreenWidth: screenWidth ?? undefined,
@@ -45,10 +48,15 @@ function PlatformLayout() {
   }, [])
 
   return (
-    <Fragment>
+    /**
+     * Overlays portal into the platform container instead of `<body>`. needed
+     * so the modal doesnt overlay ContentPanel
+     */
+    <UNSAFE_PortalProvider getContainer={modalContainer ? getModalContainer : null}>
       <ConfirmLeave />
       <div
         id={PLATFORM_CONTAINER_DOM_ID}
+        ref={setModalContainer}
         className={cx(styles.platformContainer, {
           [styles.helpHubBackground]: isHelpHubLocation,
         })}
@@ -81,7 +89,7 @@ function PlatformLayout() {
       )}
       <AppModals />
       <ToastContainer position="top-center" className={styles.toastContainer} closeButton={false} />
-    </Fragment>
+    </UNSAFE_PortalProvider>
   )
 }
 
