@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { Button } from '@globalfishingwatch/ui-components/button'
@@ -93,7 +92,7 @@ function OnboardingModal() {
           <li key={card.id}>
             <button
               type="button"
-              className={cx('card', styles.card)}
+              className={styles.card}
               onClick={() => onCardClick(card.id)}
               data-testid={`onboarding-card-${card.id}`}
             >
@@ -147,15 +146,15 @@ function OnboardingModal() {
             })}
           </p>
           <div className={styles.loginActions}>
-            <Button asChild size="medium">
-              <LoginLink loginSource="assistant">{t((t) => t.common.login)}</LoginLink>
-            </Button>
             <a
               className={styles.link}
               href={GFWAPI.getRegisterUrl(getIsBrowser() ? window.location.toString() : '')}
             >
               {t((t) => t.onboarding.createAccount, { defaultValue: 'Create an account' })}
             </a>
+            <Button asChild size="medium">
+              <LoginLink loginSource="assistant">{t((t) => t.common.login)}</LoginLink>
+            </Button>
           </div>
         </div>
       )}

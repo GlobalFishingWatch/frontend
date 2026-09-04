@@ -35,6 +35,7 @@
   text-decoration: underline;
   cursor: pointer;
   font: var(--font-M);
+  color: var(--color-secondary-blue);
 }
 
 .link:hover {
@@ -58,7 +59,9 @@
   flex-direction: column;
   min-width: 0;
   cursor: pointer;
-  margin: 0;
+  background-color: var(--color-off-white-0);
+  border: var(--border);
+  border-radius: var(--border-radius-1);
   overflow: hidden;
   text-align: left;
 }
