@@ -37,6 +37,11 @@ describe('getPolygonsUnion', () => {
     expect(getPolygonsUnion([])).toEqual([])
   })
 
+  it('returns the single input untouched instead of throwing', () => {
+    expect(getPolygonsUnion([squareA])).toEqual([squareA])
+    expect(getPolygonsUnion([[squareA, disjoint]])).toEqual([squareA, disjoint])
+  })
+
   it('merges overlapping polygons into a single ring', () => {
     const result = getPolygonsUnion([squareA, squareB])
     // one merged polygon
