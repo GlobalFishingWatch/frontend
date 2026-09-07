@@ -10,6 +10,8 @@ import {
   BASEMAP_DATAVIEW_SLUG,
   BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
   BASEMAP_LABELS_DATAVIEW_SLUG,
+  BATHYMETRY_CONTOUR_DATAVIEW_INSTANCE_ID,
+  BATHYMETRY_CONTOUR_DATAVIEW_SLUG,
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
@@ -146,8 +148,8 @@ const workspace: Workspace<WorkspaceState> = {
     // },
     {
       category: DataviewCategory.Environment,
-      dataviewId: 'bathymetry-contour',
-      id: 'bathymetry-contour',
+      dataviewId: BATHYMETRY_CONTOUR_DATAVIEW_SLUG,
+      id: BATHYMETRY_CONTOUR_DATAVIEW_INSTANCE_ID,
     },
     {
       id: PORT_VISITS_EVENTS_SOURCE_ID,
