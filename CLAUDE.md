@@ -24,7 +24,8 @@
 
 ## This workspace
 
-pnpm only (`preinstall` runs `only-allow pnpm`), pinned `pnpm@11.15.1`. Never use npm/yarn here.
+pnpm only (`preinstall` runs `only-allow pnpm`), pinned `pnpm@12.3.1`. Never use npm/yarn here.
+pnpm 12 is a native binary — Corepack and Homebrew cannot install it, see [[pnpm-12-native-binary-bootstrap]].
 
 Apps in `apps/*`, shared libs in `libs/*`. pnpm workspace members: `linting`, `apps/*`, `apps/platform/config`, `libs/*`. Every app now carries a `package.json` and resolves `@globalfishingwatch/*` through real pnpm symlinks — the `tsconfig.base.json` paths that used to stand in for them are gone. App manifests list **only** `workspace:` deps — npm packages are declared once in the root `package.json`; see `.claude/memory/app-dependency-catalog.md`.
 
