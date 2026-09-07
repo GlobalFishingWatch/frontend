@@ -17,8 +17,15 @@ type PendingRequest<Result> = {
 }
 
 /**
- * Pass `new URL('./x.worker.js', import.meta.url)`. The `new URL(...)` literal has to stay at the
- * new Worker() call itself — that is what the bundler statically detects to emit the worker chunk.
+ * Pass a factory, with the `new URL(..., import.meta.url)` literal written inline inside the
+ * `new Worker(...)` call:
+ *
+ *     createWorkerClient(() => new Worker(new URL('./x.worker.js', import.meta.url), { type: 'module' }))
+ *
+ * That exact shape is what the bundler statically detects in order to emit a worker chunk. Hoisting
+ * the URL out — into a variable, or into this function's argument as it used to be — leaves the
+ * bundler seeing a bare `new URL`, which it treats as a plain asset: the worker entry is emitted
+ * verbatim and unbundled, so the worker fails to load and `onerror` fires with no message.
  */
 export function createWorkerClient<Payload, Result>(createWorker: () => Worker) {
   let worker: Worker | undefined
