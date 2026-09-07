@@ -1,9 +1,14 @@
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 
-import { selectOthersActiveReportDataviewsGrouped } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
+import {
+  selectAllOthersReportDataviewsAreReportArea,
+  selectOthersActiveReportDataviewsGrouped,
+} from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import ErrorPlaceholder from 'features/_map/workspace/ErrorPlaceholder'
 import { isPolygonsDataviewReportSupported } from 'features/_reports/report-area/area-reports.utils'
 import { isUserHeatmapDataviewReportSupported } from 'features/_reports/report-dataview-category.utils'
 import type { ReportGraphProps } from 'features/_reports/reports-timeseries.hooks'
@@ -20,14 +25,25 @@ import styles from './ReportOthers.module.css'
 import reportStyles from 'features/_reports/report-area/AreaReport.module.css'
 
 function ReportOthers() {
+  const { t } = useTranslation()
   useComputeReportTimeSeries()
   const { start, end } = useTimerangeConnect()
   const timeseriesLoading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const loading = timeseriesLoading || layersTimeseriesFiltered?.some((d) => d?.mode === 'loading')
   const otherDataviewsGrouped = useSelector(selectOthersActiveReportDataviewsGrouped)
+  const allDataviewsAreReportArea = useSelector(selectAllOthersReportDataviewsAreReportArea)
 
-  if (!Object.keys(otherDataviewsGrouped)?.length) return null
+  if (!Object.keys(otherDataviewsGrouped)?.length) {
+    return allDataviewsAreReportArea ? (
+      <ErrorPlaceholder
+        title={t((t) => t.analysis.othersLayersAreReportArea, {
+          defaultValue:
+            "The layers used to create this report area can't be analysed against themselves. Turn on another polygon or point layer to see results here.",
+        })}
+      />
+    ) : null
+  }
   return (
     <div className={reportStyles.section}>
       {Object.values(otherDataviewsGrouped).map((dataviews, index) => {
