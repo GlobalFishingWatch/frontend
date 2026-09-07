@@ -17,7 +17,11 @@ import {
   getFilterUnitInDataview,
 } from 'features/_map/dataviews/dataviews.filters'
 import { isHistogramDataviewSupported } from 'features/_map/workspace/shared/layer-properties.utils'
-import { getValueLabelByUnit } from 'features/_map/workspace/shared/LayerSchemaFilter.utils'
+import {
+  getFilterLabelById,
+  getFilterValueById,
+  getValueLabelByUnit,
+} from 'features/_map/workspace/shared/LayerSchemaFilter.utils'
 import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/_user/vessel-groups/vessel-groups.hooks'
 import { usePorts } from 'utils/ports'
@@ -76,15 +80,24 @@ function DatasetSchemaField({
     const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
     const { max, min } = getDatasetConfiguration(dataset)
     const unit = filterUnit || dataset?.unit
-    const minLabel = Array.isArray(valuesSelected[0])
+    const rawMinLabel = Array.isArray(valuesSelected[0])
       ? valuesSelected[0][0]?.label
       : valuesSelected[0]?.label
-    const maxLabel = Array.isArray(valuesSelected[valuesSelected.length - 1])
+    const rawMaxLabel = Array.isArray(valuesSelected[valuesSelected.length - 1])
       ? valuesSelected[valuesSelected.length - 1][0]?.label
       : valuesSelected[valuesSelected.length - 1]?.label
     let range: string
-    const minToCompare = dataviewWithHistogramFilter ? min : filterConfig?.options[0].label
-    const maxToCompare = dataviewWithHistogramFilter ? max : filterConfig?.options[1].label
+    const toDisplay = (v: any) => getFilterValueById(v, { id: field })
+    const [minLabel, maxLabel] = [rawMinLabel, rawMaxLabel]
+      .map(toDisplay)
+      .sort((a, b) => a - b) as [number, number]
+    const [minToCompare, maxToCompare] = (
+      dataviewWithHistogramFilter
+        ? [min, max]
+        : [filterConfig?.options[0].label, filterConfig?.options[1].label]
+    )
+      .map(toDisplay)
+      .sort((a, b) => a - b)
     if (minLabel.toString() === minToCompare?.toString()) {
       const maxValueLabel = getValueLabelByUnit(maxLabel, { unit })
       range = `≤ ${maxValueLabel}`
@@ -137,7 +150,7 @@ function DatasetSchemaField({
       {valuesSelected.length > 0 && (
         <div className={cx(styles.filter, className)}>
           <label className={styles.tagListLabel}>
-            {label}
+            {getFilterLabelById(field, label)}
             {filterOperation === EXCLUDE_FILTER_ID && ` (${t((t) => t.common.excluded)})`}
           </label>
           <TagList

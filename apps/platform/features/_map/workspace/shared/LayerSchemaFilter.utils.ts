@@ -42,6 +42,34 @@ const getValueByUnit = (
   return parseFloat(value)
 }
 
+export const VALUE_TRANSFORMATIONS_BY_FILTER_ID: Partial<
+  Record<DataviewFilterConfig['id'], Transformation>
+> = {
+  elevation: {
+    in: (v) => Math.abs(typeof v === 'number' ? v : parseFloat(v)),
+    out: (v) => 0 - Math.abs(typeof v === 'number' ? v : parseFloat(v)),
+    getLabel: () => t((t) => t.layer.depth),
+  },
+}
+
+export const getFilterValueTransform = (id?: DataviewFilterConfig['id']) =>
+  id ? VALUE_TRANSFORMATIONS_BY_FILTER_ID[id] : undefined
+
+export const getFilterValueById = (
+  value: string | number,
+  { id, transformDirection = 'in' } = {} as {
+    id?: DataviewFilterConfig['id']
+    transformDirection?: 'in' | 'out'
+  }
+): number => {
+  const transform = getFilterValueTransform(id)?.[transformDirection]
+  const parsed = typeof value === 'number' ? value : parseFloat(value)
+  return transform ? transform(parsed) : parsed
+}
+
+export const getFilterLabelById = (id: DataviewFilterConfig['id'], label: string) =>
+  getFilterValueTransform(id)?.getLabel() ?? label
+
 const getUnitLabel = (unit?: string): string => {
   if (!unit) return ''
   const label = VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]?.getLabel?.()
