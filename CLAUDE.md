@@ -45,29 +45,46 @@ Libs are consumed via built `dist/`, not src paths. Each `libs/*/package.json` e
 | Build app          | `pnpm nx build platform`                           |
 | e2e                | `pnpm nx test platform-e2e`                        |
 
-Vitest suites are currently broken in `platform` — don't run them to validate changes. Verify with typecheck + lint, e2e, or a real SSR build. See `.claude/memory/platform-testing.md`.
+Vitest suites are currently broken in `platform` — don't run them to validate changes. Verify with typecheck + lint, e2e, or a real SSR build. See `apps/platform/.claude/memory/platform-testing.md`.
 
 ## Team knowledge
 
-Durable facts about this repo live in `.claude/memory/`, one fact per file, imported below. They are committed and reviewed like code.
+Durable facts about this repo live in a `.claude/memory/` folder, one fact per file. The workspace-wide ones are imported below; project-scoped ones live in that project's own folder (see the table). They are committed and reviewed like code.
 
-**Claude: this folder is where repo knowledge goes.** When you learn something durable about this codebase — an architectural constraint, a non-obvious build behavior, a trap that cost time to find — write it as a new file in `.claude/memory/` and add an import line here. Do **not** put it in your per-user memory directory; that one is only for an individual's personal working preferences. Rules of thumb:
+**Claude: these folders are where repo knowledge goes.** When you learn something durable about this codebase — an architectural constraint, a non-obvious build behavior, a trap that cost time to find — write it as a new file in a `.claude/memory/` and add an import line to the `CLAUDE.md` beside it. Do **not** put it in your per-user memory directory; that one is only for an individual's personal working preferences. Rules of thumb:
 
+- **Pick the tier first.** A fact needed only while working inside one project goes in `apps/<app>/.claude/memory/` or `libs/<lib>/.claude/memory/`, imported from that project's `CLAUDE.md`. Nested memory lives at the **project root**, never in a feature folder — one predictable place per project. If you'd need the fact _before_ knowing which project you'll touch (build commands, dependency rules, tsconfig resolution, how to verify a change), it belongs here at root instead.
 - One fact per file, kebab-case filename, `name` + `description` frontmatter, an `# H1`, then `**Why:**` and `**How to apply:**`.
-- Cross-link with `[[other-file-name]]`.
+- Cross-link with `[[other-file-name]]`. Links work across tiers — the filename is the address, not the path.
 - Prefer updating an existing file over adding a near-duplicate.
 - Don't record what the code or git history already says. Record the reasoning that isn't in them.
 - Date any claim that will age ("as of 2026-08"), so a stale note is recognisable as stale.
 
 @.claude/memory/platform-dist-workspace-link.md
-@.claude/memory/deck-loaders-parsers-run-in-prebuilt-workers.md
 @.claude/memory/lib-build-target-name.md
 @.claude/memory/app-dependency-catalog.md
 @.claude/memory/platform-config-package.md
-@.claude/memory/platform-testing.md
 @.claude/memory/browser-testing-uses-platform-e2e.md
-@.claude/memory/skills-lib.md
-@.claude/memory/encode-url-skill-maintenance.md
 @.claude/memory/typescript7-migration.md
-@.claude/memory/locales-source-is-the-only-editable.md
-@.claude/memory/popup-component-naming.md
+
+### Project-scoped knowledge lives with the project
+
+The eight facts below are **not** imported here. Each project's own `CLAUDE.md` imports them, so
+they load only once a file in that project is opened. A cross-link above pointing at one of these
+names resolves to the paths listed here.
+
+| Project                                          | Facts                                                                               |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| [apps/platform](apps/platform/CLAUDE.md)         | `platform-testing`, `locales-source-is-the-only-editable`, `popup-component-naming` |
+| [libs/deck-layers](libs/deck-layers/CLAUDE.md)   | `deck-collision-priority-range`, `label-layer-sdf-outline-opacity`                  |
+| [libs/deck-loaders](libs/deck-loaders/CLAUDE.md) | `deck-loaders-parsers-run-in-prebuilt-workers`                                      |
+| [libs/skills](libs/skills/CLAUDE.md)             | `skills-lib`, `encode-url-skill-maintenance`                                        |
+
+**Why the split:** `@` imports are inlined into the session prompt at startup, in full, every
+session — so a flat root import list charges every session for facts about projects it never
+touches.
+
+Two facts stay at root despite platform-ish names: `platform-config-package` (`libs/skills`
+inlines `@platform/config` via an esbuild alias, so skills work needs it too) and
+`browser-testing-uses-platform-e2e` (it describes `apps/platform-e2e` but is consulted while
+working in `apps/platform`, so either project root would hide it from the other).

@@ -149,7 +149,7 @@ function VesselTracksTooltipRow({
             <p key="depth">
               {feature.depth !== undefined && (
                 <span>
-                  {upperFirst(t((t) => t.eventInfo.depth))}: {feature.depth}{' '}
+                  {upperFirst(t((t) => t.eventInfo.depth))}: {Math.abs(feature.depth)}{' '}
                   {t((t) => t.common.meters)}
                 </span>
               )}

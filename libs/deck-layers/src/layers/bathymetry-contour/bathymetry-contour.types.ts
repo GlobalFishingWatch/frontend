@@ -1,6 +1,7 @@
+import type { PickingInfo } from '@deck.gl/core'
 import type { Feature, LineString, MultiLineString, Point } from 'geojson'
 
-import type { DeckLayerProps } from '#types'
+import type { DeckLayerProps, DeckPickingObject } from '#types'
 
 export type BathymetryContourLayerProps = DeckLayerProps<{
   tilesUrl: string
@@ -17,3 +18,9 @@ export type BathymetryLabelFeature = Feature<
     length: number
   }
 >
+
+export type BathymetryContourPickingObject = DeckPickingObject<{
+  properties: { elevation: number }
+}>
+
+export type BathymetryContourPickingInfo = PickingInfo<BathymetryContourPickingObject>

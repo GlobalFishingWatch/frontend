@@ -4,15 +4,9 @@ import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import { findDatasetByType, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type { BathymetryContourLayerProps } from '@globalfishingwatch/deck-layers'
+import { BATHYMETRY_DEPTH_GROUPS } from '@globalfishingwatch/deck-layers/config'
 
 import type { DeckResolverFunction } from '../types/resolvers'
-
-const DEPTH_GROUPS: Record<string, number[]> = {
-  'pelagic zones': [200, 1000, 4000, 6000],
-  '10-100': [10, 20, 30, 40, 50, 60, 70, 80, 90],
-  '100-1000': [100, 200, 300, 400, 500, 600, 700, 800, 900],
-  '1000-10000': [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
-}
 
 export const resolveDeckBathymetryContourLayerProps: DeckResolverFunction<
   BathymetryContourLayerProps
@@ -28,7 +22,7 @@ export const resolveDeckBathymetryContourLayerProps: DeckResolverFunction<
   const depthFilter = filters?.depth
   const resolvedDepths = uniq(
     (Array.isArray(depthFilter) ? depthFilter : []).flatMap((d: string) => {
-      return DEPTH_GROUPS[d] || Number(d)
+      return BATHYMETRY_DEPTH_GROUPS[d] || Number(d)
     })
   )
   let depths = resolvedDepths
