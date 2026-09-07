@@ -27,12 +27,16 @@ export type OceanAreaLocaleKey = string
 export type OceanAreaType = 'eez' | 'mpa' | 'fao' | 'rfmo' | 'port'
 export type OceanAreaBBox = [number, number, number, number]
 
+// export type OceanAreaSource = 'ais' | 'vms'
+
 export interface OceanAreaProperties {
   type: OceanAreaType
   name: string
   area?: number | string
   mrgid?: string
   bounds?: OceanAreaBBox
+  /** Ports only: comma-separated `OceanAreaSource` list, e.g. `'ais'` or `'ais,vms'` */
+  // sources?: string
 }
 
 export type OceanArea = Feature<Geometry, OceanAreaProperties>
