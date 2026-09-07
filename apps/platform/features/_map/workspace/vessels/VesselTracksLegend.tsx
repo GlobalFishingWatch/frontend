@@ -35,7 +35,13 @@ function VesselTracksLegend(): React.ReactElement<any> | null {
     label:
       vesselsTimebarGraph === 'speed' ? t((t) => t.eventInfo.speed) : t((t) => t.eventInfo.depth),
     unit: vesselsTimebarGraph === 'speed' ? t((t) => t.common.knots) : t((t) => t.common.meters),
-    values: steps.map((step) => step.value),
+    // Depth steps are negative elevations. Flip the sign for display only — `steps` is
+    // shared with the timebar graph, which scales off the raw negative values.
+    // Positions are unchanged, so the reversed colour ramp below still lines up, and
+    // formatLegendValue switches the last bucket's prefix from ≤ to ≥ on its own.
+    values: steps.map((step) =>
+      vesselsTimebarGraph === 'speed' ? step.value : Math.abs(step.value)
+    ),
     colors:
       vesselsTimebarGraph === 'speed' ? VESSEL_GRAPH_COLORS : VESSEL_GRAPH_COLORS.slice().reverse(),
   }

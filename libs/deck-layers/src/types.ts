@@ -4,6 +4,7 @@ import type { DataviewCategory, DataviewType } from '@globalfishingwatch/api-typ
 
 import type { BaseMapLayer } from './layers/basemap/BasemapLayer'
 import type { TilesBoundariesLayer } from './layers/basemap/TilesBoundariesLayer'
+import type { BathymetryContourPickingObject } from './layers/bathymetry-contour'
 import type { ContextPickingInfo, ContextPickingObject } from './layers/context'
 import type { ContextLayer } from './layers/context/ContextLayer'
 import type { DrawLayer, DrawPickingInfo, DrawPickingObject } from './layers/draw'
@@ -74,6 +75,7 @@ export type DeckLayerPickingObject =
   | DrawPickingObject
   | PolygonPickingObject
   | PMTilePickingObject
+  | BathymetryContourPickingObject
 
 export type DeckLayerInteractionPickingInfo =
   | (FourwingsPickingInfo & { layer: FourwingsLayer })

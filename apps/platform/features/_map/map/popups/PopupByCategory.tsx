@@ -8,6 +8,7 @@ import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import type {
+  BathymetryContourPickingObject,
   ContextPickingObject,
   FourwingsHeatmapPickingObject,
   PolygonPickingObject,
@@ -42,6 +43,7 @@ import {
   selectRealTimePositionsInteractionError,
   selectRealTimePositionsInteractionStatus,
 } from '../map.slice'
+import { isBathymetryContour } from '../map-interaction.utils'
 
 import ActivityTooltipRow from './activity/ActivityTooltipRow'
 import ComparisonTooltipRow from './activity/ComparisonTooltipRow'
@@ -49,6 +51,7 @@ import DetectionsTooltipRow from './activity/DetectionsTooltipRow'
 import PositionsTooltipSection from './activity/PositionsTooltipSection'
 import ContextTooltipSection from './context/ContextTooltipSection'
 import PortsTooltipSection from './context/PortsTooltipSection'
+import BathymetryContourTooltipSection from './environment/BathymetryContourTooltipSection'
 import GriddedValueTooltipSection from './environment/GriddedValueTooltipSection'
 import VectorsTooltipRow from './environment/VectorsTooltipRow'
 import EventsClusterTooltipSection from './events/EventsClusterTooltipSection'
@@ -227,12 +230,16 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             const vectorsFeatures = (features as FourwingsHeatmapPickingObject[]).filter(
               (feature) => feature.subcategory === DataviewType.FourwingsVector
             )
+            const bathymetryContourFeatures = features
+              .filter((feature) => isBathymetryContour(feature))
+              .slice(0, 1) as unknown as BathymetryContourPickingObject[]
             const environmentalFeatures = (
               features as SliceExtendedFourwingsPickingObject[]
             ).filter(
               (feature) =>
                 feature.subcategory !== DataviewType.UserContext &&
-                feature.subcategory !== DataviewType.FourwingsVector
+                feature.subcategory !== DataviewType.FourwingsVector &&
+                !isBathymetryContour(feature)
             )
             return (
               <Fragment key={featureCategory}>
@@ -243,6 +250,10 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                     showFeaturesDetails={type === 'click'}
                   />
                 ))}
+                <BathymetryContourTooltipSection
+                  features={bathymetryContourFeatures}
+                  showFeaturesDetails={type === 'click'}
+                />
                 <UserContextTooltipSection
                   features={contextFeatures}
                   showFeaturesDetails={type === 'click'}
