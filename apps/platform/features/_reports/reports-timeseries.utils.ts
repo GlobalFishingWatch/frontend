@@ -85,7 +85,7 @@ export const getPolygonsTimeseriesStats = ({
     ? getCountsBySublayer(featureGroup.overlapping, sublayers)
     : []
 
-  if (!reportArea || (containedCount === 0 && overlappingCount === 0)) {
+  if (containedCount === 0 && overlappingCount === 0) {
     return {
       type: 'polygons',
       contained: containedCount,
@@ -94,6 +94,18 @@ export const getPolygonsTimeseriesStats = ({
       overlappingValues,
       areaCoverageRatio: 0,
       areaCoverageKm2: 0,
+    }
+  }
+
+  if (!reportArea) {
+    // Area still loading: report the counts but claim no coverage, and let the recompute on
+    // the arriving geometry fill it in
+    return {
+      type: 'polygons',
+      contained: containedCount,
+      overlapping: overlappingCount,
+      containedValues,
+      overlappingValues,
     }
   }
 
@@ -110,10 +122,17 @@ export const getPolygonsTimeseriesStats = ({
     const containedPolygons = featureGroup.contained as Feature<Polygon | MultiPolygon>[]
     const clippedOverlapping = (featureGroup.overlapping as Feature<Polygon | MultiPolygon>[])
       .map((p) => {
-        const clipped = getPolygonsIntersection(
-          p.geometry.coordinates as PolygonGeomCoords,
-          reportArea.coordinates as PolygonGeomCoords
-        )
+        // ponytail: a single unclippable geometry is skipped rather than voiding the whole
+        // coverage number. Tile-derived polygons make turf's clipper throw often enough.
+        let clipped: ReturnType<typeof getPolygonsIntersection> = []
+        try {
+          clipped = getPolygonsIntersection(
+            p.geometry.coordinates as PolygonGeomCoords,
+            reportArea.coordinates as PolygonGeomCoords
+          )
+        } catch (e) {
+          console.warn('Report polygon coverage: could not clip an overlapping polygon', e)
+        }
         if (!clipped.length) return null
         return {
           type: 'Feature' as const,
@@ -145,15 +164,14 @@ export const getPolygonsTimeseriesStats = ({
       areaCoverageRatio: reportAreaM2 > 0 ? intersectionM2 / reportAreaM2 : 0,
       areaCoverageKm2: intersectionM2 / 1_000_000,
     }
-  } catch {
+  } catch (e) {
+    console.warn('Report polygon coverage: area computation failed', e)
     return {
       type: 'polygons',
       contained: containedCount,
       overlapping: overlappingCount,
       containedValues,
       overlappingValues,
-      areaCoverageRatio: 0,
-      areaCoverageKm2: 0,
     }
   }
 }

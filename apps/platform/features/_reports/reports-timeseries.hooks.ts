@@ -111,8 +111,8 @@ export type PolygonsReportGraphStats = {
   overlapping: number
   containedValues: number[]
   overlappingValues: number[]
-  areaCoverageRatio: number
-  areaCoverageKm2: number
+  areaCoverageRatio?: number
+  areaCoverageKm2?: number
 }
 
 export type ReportGraphStats = Record<
@@ -439,9 +439,9 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
       })
       return { ...prev, stats }
     })
-    // Only stats needs to recalculate on featuresFiltered and start/end changes;
+    // Only stats needs to recalculate on featuresFiltered, start/end and area geometry changes;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reportState.featuresFiltered, start, end, setReportState])
+  }, [reportState.featuresFiltered, start, end, setReportState, area?.geometry])
 
   return reportState
 }
