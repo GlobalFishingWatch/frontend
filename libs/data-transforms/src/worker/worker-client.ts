@@ -18,9 +18,9 @@ type PendingRequest<Result> = {
 
 /**
  * Pass `new URL('./x.worker.js', import.meta.url)`. The `new URL(...)` literal has to stay at the
- * call site — that is what the bundler statically detects to emit the worker chunk.
+ * new Worker() call itself — that is what the bundler statically detects to emit the worker chunk.
  */
-export function createWorkerClient<Payload, Result>(workerUrl: URL) {
+export function createWorkerClient<Payload, Result>(createWorker: () => Worker) {
   let worker: Worker | undefined
   let idCounter = 0
   const requests = new Map<number, PendingRequest<Result>>()
@@ -33,7 +33,7 @@ export function createWorkerClient<Payload, Result>(workerUrl: URL) {
 
   const getWorker = () => {
     if (worker === undefined) {
-      worker = new Worker(workerUrl, { type: 'module' })
+      worker = createWorker()
       worker.onmessage = ({ data }: MessageEvent<WorkerResponseMessage<Result>>) => {
         const request = requests.get(data.id)
         if (!request) {
