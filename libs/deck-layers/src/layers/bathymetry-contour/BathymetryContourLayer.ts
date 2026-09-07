@@ -41,6 +41,7 @@ const INDEX_PRIORITY_BONUS = 500
 const LABEL_OPACITY = 0.9
 const PICK_TARGET_WIDTH = 5
 const HIGHLIGHT_WIDTH_SCALE = 1.5
+const TRANSITION_DURATION = 200
 
 const isIndexContour = (elevation: number) => INDEX_DEPTHS.has(0 - elevation)
 
@@ -88,6 +89,10 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
 
   _getLineColor = (d: BathymetryContourFeature) => {
     const elevation = d.properties?.elevation
+    const { highlightedElevation } = this.state
+    if (d.properties?.elevation === highlightedElevation) {
+      return hexToDeckColor(this.props.color, 1)
+    }
     const base = this._bathymetryColorScale(elevation)
     const opacity = isIndexContour(elevation)
       ? base
@@ -97,6 +102,10 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
 
   _getLineWidth = (d: BathymetryContourFeature) => {
     const thickness = this.props.thickness || 1
+    const { highlightedElevation } = this.state
+    if (d.properties?.elevation === highlightedElevation) {
+      return HIGHLIGHT_WIDTH_SCALE
+    }
     return isIndexContour(d.properties?.elevation)
       ? thickness * INDEX_WIDTH_SCALE
       : thickness * INTERMEDIATE_WIDTH_SCALE
@@ -167,6 +176,10 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
             positionFormat: 'XY',
             getColor: this._getLineColor,
             getWidth: this._getLineWidth,
+            transitions: {
+              getColor: TRANSITION_DURATION,
+              getWidth: TRANSITION_DURATION,
+            },
             widthUnits: 'pixels',
             widthMinPixels: LINE_WIDTH_MIN_PIXELS,
             jointRounded: true,
@@ -175,8 +188,8 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
             getPolygonOffset: (params: { layerIndex: number }) =>
               getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
             updateTriggers: {
-              getColor: [color, zoomBucket],
-              getWidth: [thickness],
+              getColor: [color, zoomBucket, highlightedElevation],
+              getWidth: [thickness, highlightedElevation],
             },
           } as any),
           new PathLayer(props, {
@@ -192,26 +205,6 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
             pickable: true,
             getPolygonOffset: (params: { layerIndex: number }) =>
               getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
-          } as any),
-          new PathLayer(props, {
-            id: `${props.id}-bathymetry-contour-highlight`,
-            visible: highlightedElevation !== null && highlightedElevation !== undefined,
-            data: paths.filter((d) => d.properties?.elevation === highlightedElevation),
-            getPath: (d: any) => d.path,
-            positionFormat: 'XY',
-            getColor: hexToDeckColor(color, 1),
-            getWidth: (thickness || 1) * HIGHLIGHT_WIDTH_SCALE,
-            widthUnits: 'pixels',
-            widthMinPixels: 1.5,
-            jointRounded: true,
-            capRounded: true,
-            pickable: false,
-            getPolygonOffset: (params: { layerIndex: number }) =>
-              getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
-            updateTriggers: {
-              getColor: [color],
-              getWidth: [thickness],
-            },
           } as any),
           new LabelLayer<BathymetryLabelFeature>({
             id: `${props.id}-labels`,
