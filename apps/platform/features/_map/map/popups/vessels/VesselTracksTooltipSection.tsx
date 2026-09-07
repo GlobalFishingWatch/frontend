@@ -149,11 +149,6 @@ function VesselTracksTooltipRow({
             <p key="depth">
               {feature.depth !== undefined && (
                 <span>
-                  {/* The value is a track elevation (negative below sea level) carried
-                      in a field named `depth`. Shown as a positive magnitude so it
-                      matches its own label, the depth filter and the bathymetry
-                      contour tooltip. Display only — the timebar graph still scales
-                      off the raw negative values. */}
                   {upperFirst(t((t) => t.eventInfo.depth))}: {Math.abs(feature.depth)}{' '}
                   {t((t) => t.common.meters)}
                 </span>

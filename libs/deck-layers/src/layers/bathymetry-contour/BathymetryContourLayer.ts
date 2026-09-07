@@ -13,6 +13,7 @@ import { LabelLayer } from '#layers/labels/LabelLayer'
 import { PMTilesLayer } from '#layers/pm-tiles/index'
 import { getLayerGroupOffset, hexToDeckColor } from '#utils'
 
+import { BATHYMETRY_DEPTH_GROUPS } from './bathymetry-contour.config'
 import type {
   BathymetryContourFeature,
   BathymetryContourLayerProps,
@@ -30,7 +31,7 @@ const defaultProps: DefaultProps<_ContextLayerProps> = {
 }
 
 const TILES_MAX_ZOOM = 12
-const INDEX_DEPTHS = new Set([200, 1000, 4000, 6000])
+const INDEX_DEPTHS = new Set(BATHYMETRY_DEPTH_GROUPS['pelagic zones'])
 const INDEX_WIDTH_SCALE = 1.5
 const INTERMEDIATE_WIDTH_SCALE = 0.75
 const LINE_WIDTH_MIN_PIXELS = 0.75
