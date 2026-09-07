@@ -7,7 +7,6 @@ import type {
   FourwingsFeature,
   FourwingsFeatureProperties,
   FourwingsInterval,
-  FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
 
 import type { LayerGroup } from '#config/sort.config'
@@ -15,6 +14,7 @@ import type {
   BaseFourwingsLayerProps,
   FourwingsColorObject,
   FourwingsDeckSublayer,
+  FourwingsDeckVectorSublayer,
   FourwingsPickingObject,
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
@@ -49,13 +49,6 @@ export enum FourwingsComparisonMode {
 export type ColorDomain = number[] | number[][]
 export type ColorRange = FourwingsColorObject[]
 export type SublayerColorRanges = ColorRange[]
-
-export type FourwingsHeatmapStaticPickingObject = DeckPickingObject<
-  FourwingsStaticFeature & {
-    sublayers: FourwingsDeckSublayer[]
-  }
->
-export type FourwingsHeatmapStaticPickingInfo = PickingInfo<FourwingsHeatmapStaticPickingObject>
 
 export type FourwingsHeatmapPickingObject = FourwingsFeature<FourwingsFeatureProperties> &
   DeckPickingObject<{
@@ -96,8 +89,6 @@ export type _FourwingsHeatmapTileLayerProps<DataT = FourwingsFeature> = BaseFour
   availableIntervals?: FourwingsInterval[]
   resolution?: FourwingsHeatmapResolution
   colorRampWhiteEnd?: boolean
-  minVisibleValue?: number
-  maxVisibleValue?: number
   comparisonMode?: FourwingsComparisonMode
   compareStart?: number
   compareEnd?: number
@@ -147,10 +138,11 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
   scales: FourwinsTileLayerScale[]
 }
 
-export type FourwingsVectorsLayerProps = FourwingsHeatmapTileLayerProps & {
+export type FourwingsVectorsLayerProps = Omit<FourwingsHeatmapTileLayerProps, 'sublayers'> & {
   id: string
   tile: Tile2DHeader
   data: FourwingsFeature[]
+  sublayers: FourwingsDeckVectorSublayer[]
   maxVelocity?: number
   tilesCache: FourwingsHeatmapTilesCache
   debugTiles?: boolean
@@ -158,10 +150,7 @@ export type FourwingsVectorsLayerProps = FourwingsHeatmapTileLayerProps & {
   highlightedFeatures?: FourwingsPickingObject[]
 }
 
-export type _FourwingsHeatmapStaticLayerProps = Omit<
-  _FourwingsHeatmapTileLayerProps,
-  'data' | 'availableIntervals' | 'comparisonMode'
->
+export type _FourwingsHeatmapStaticLayerProps = Omit<_FourwingsHeatmapTileLayerProps, 'data'>
 
 export type FourwingsHeatmapStaticLayerProps = _FourwingsHeatmapStaticLayerProps &
   Partial<TileLayerProps>

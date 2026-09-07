@@ -10,6 +10,9 @@ import type { TRACK_LAYER_TYPE } from './vessel.config'
 export interface VesselDeckLayersEvent {
   type: EventTypes
   url: string
+  /** Two datasets can share an event type (eg fishing and longline sets), so the sublayer id
+   * needs it to stay unique when one is swapped for the other */
+  datasetId?: string
 }
 
 export type VesselDataType = typeof TRACK_LAYER_TYPE | EventTypes

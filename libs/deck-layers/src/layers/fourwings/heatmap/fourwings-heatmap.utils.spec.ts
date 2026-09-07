@@ -24,6 +24,7 @@ import {
   getURLFromTemplate,
   getVisualizationModeByResolution,
   getZoomOffsetByResolution,
+  isSublayerValueVisible,
   sliceCellValues,
 } from './fourwings-heatmap.utils'
 
@@ -83,7 +84,9 @@ describe('aggregateCell', () => {
     ).toEqual([5, 30])
   })
 
-  it('returns 0 for sublayers fully outside the time range', () => {
+  // These returned 0 until 2026-09-03. "No data here" has to be distinguishable from a
+  // measured 0, or every no-data cell paints at the bottom of the ramp.
+  it('returns undefined for sublayers fully outside the time range', () => {
     expect(
       aggregateCell({
         cellValues: [[1, 2, 3]],
@@ -91,10 +94,10 @@ describe('aggregateCell', () => {
         endFrame: 12,
         cellStartOffsets: [0],
       })
-    ).toEqual([0])
+    ).toEqual([undefined])
   })
 
-  it('returns 0 when offsets are missing or sublayer has no values', () => {
+  it('returns undefined when offsets are missing or sublayer has no values', () => {
     expect(
       aggregateCell({
         cellValues: [undefined as any],
@@ -102,13 +105,24 @@ describe('aggregateCell', () => {
         endFrame: 1,
         cellStartOffsets: [0],
       })
-    ).toEqual([0])
+    ).toEqual([undefined])
     expect(
       aggregateCell({
         cellValues: [[1]],
         startFrame: 0,
         endFrame: 1,
         cellStartOffsets: undefined,
+      })
+    ).toEqual([undefined])
+  })
+
+  it('keeps a measured 0 as a value', () => {
+    expect(
+      aggregateCell({
+        cellValues: [[0]],
+        startFrame: 0,
+        endFrame: 1,
+        cellStartOffsets: [0],
       })
     ).toEqual([0])
   })
@@ -299,5 +313,26 @@ describe('resolution/visualization mode mappings', () => {
     expect(getZoomOffsetByResolution('low', 5)).toBe(-1)
     expect(getZoomOffsetByResolution('low', 0)).toBe(0)
     expect(getZoomOffsetByResolution('default', 5)).toBe(0)
+  })
+})
+
+describe('isSublayerValueVisible', () => {
+  // A cell the API measured as 0 must render; only a missing value hides it.
+  it('treats a measured 0 as visible', () => {
+    expect(isSublayerValueVisible(0)).toBe(true)
+    expect(isSublayerValueVisible(0, { minVisibleValue: 0 })).toBe(true)
+  })
+
+  it('hides missing values', () => {
+    expect(isSublayerValueVisible(undefined)).toBe(false)
+    expect(isSublayerValueVisible(null)).toBe(false)
+    expect(isSublayerValueVisible(NaN)).toBe(false)
+  })
+
+  it('still honours the visible value range', () => {
+    expect(isSublayerValueVisible(5, { minVisibleValue: 10 })).toBe(false)
+    expect(isSublayerValueVisible(0, { minVisibleValue: 1 })).toBe(false)
+    expect(isSublayerValueVisible(15, { maxVisibleValue: 10 })).toBe(false)
+    expect(isSublayerValueVisible(-3)).toBe(true)
   })
 })

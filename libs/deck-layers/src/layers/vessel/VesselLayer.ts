@@ -377,13 +377,13 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     }
     const chunks = this._getVesselChunks()
     // return one layer with all events if we are consuming the data object from app resources
-    return events?.flatMap(({ url, type }) => {
+    return events?.flatMap(({ url, type, datasetId }) => {
       const visible = visibleEvents?.includes(type)
       if (!visible) {
         return []
       }
       return chunks.flatMap(({ start, end }) => {
-        const chunkId = `${this.props.id}-${EVENT_LAYER_TYPE}-${type}-${start}-${end}`
+        const chunkId = `${this.props.id}-${EVENT_LAYER_TYPE}-${type}-${datasetId}-${start}-${end}`
         const eventUrl = new URL(url as string)
         eventUrl.searchParams.append('start-date', start as string)
         eventUrl.searchParams.append('end-date', end as string)
@@ -429,6 +429,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         new VesselTrackPositionLayer(
           this.getSubLayerProps({
             visible,
+            pickable: true,
             data: [hoveredFeature],
             getColor: color,
             name,
@@ -502,6 +503,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       new VesselTrackPositionLayer(
         this.getSubLayerProps({
           visible,
+          pickable: true,
           data,
           getColor: color,
           name,

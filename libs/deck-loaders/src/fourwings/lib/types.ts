@@ -1,6 +1,6 @@
 import type { _TileLoadProps as TileLoadProps } from '@deck.gl/geo-layers'
 import type { StrictLoaderOptions } from '@loaders.gl/loader-utils'
-import type { Feature, Point, Polygon } from 'geojson'
+import type { Feature, Point } from 'geojson'
 
 export type FourwingsRawData = number[]
 
@@ -29,6 +29,8 @@ export type ParseFourwingsOptions = {
     end: number
   }
   interval: FourwingsInterval
+  /** `temporal-aggregation=true` tiles hold one `(cellNum, value)` pair per cell, no frames */
+  temporalAggregation?: boolean
   aggregationOperation: FourwingsAggregationOperation
   scale?: number[]
   offset?: number[]
@@ -97,32 +99,16 @@ export type FourwingsPointFeatureProperties = {
   [key: string]: any
 }
 
-export type FourwingsMVTStaticFeatureProperties = {
-  cell: number
-  count: number
-  values: number[][]
-}
-
-// Used to re-map the MVT property from cell to cellId and match the rest of the fourwings properties layers
-export type FourwingsStaticFeatureProperties = Omit<FourwingsMVTStaticFeatureProperties, 'cell'> & {
-  cellId: number
-}
-
 export type FourwingsFeature<Properties = FourwingsFeatureProperties> = {
   coordinates: number[]
   properties: Properties
 } & {
-  aggregatedValues?: number[]
+  // undefined entries are sublayers the cell holds no data for; 0 is a measured value
+  aggregatedValues?: (number | undefined)[]
 }
 
 // values in first place, absolute start frame in second: the timestamp of
 // values[i] is getIntervalTimestamp(startFrame + i)
 export type FourwingsValuesAndStartFrameFeature = [number[], number][]
-export type FourwingsMVTStaticFeature = FourwingsFeature<FourwingsMVTStaticFeatureProperties> & {
-  geometry: Polygon
-}
-export type FourwingsStaticFeature = FourwingsFeature<FourwingsStaticFeatureProperties> & {
-  geometry: Polygon
-}
 export type FourwingsPositionFeature = Feature<Point, FourwingsPositionFeatureProperties>
 export type FourwingsPointFeature = Feature<Point, FourwingsPointFeatureProperties>

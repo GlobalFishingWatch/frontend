@@ -48,6 +48,7 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     const eventType = resource.dataset?.subcategory as EventTypes
     return {
       type: eventType,
+      datasetId: resource.dataset?.id,
       url: `${API_GATEWAY}${resource.url}`,
     }
   })

@@ -6,9 +6,10 @@ export const GEOTIFF_ERRORS = {
 export type GeotiffError = (typeof GEOTIFF_ERRORS)[keyof typeof GEOTIFF_ERRORS]
 
 /**
- * Band names for a GeoTIFF, in file order only the header bytes are loaded
+ * Number of bands in a GeoTIFF, only the header bytes are loaded.
+ * Bands are addressed by their GDAL index (1-based, file order).
  */
-export async function getGeotiffBands(file: Blob): Promise<string[]> {
+export async function getGeotiffBandsCount(file: Blob): Promise<number> {
   try {
     const { fromBlob } = await import('geotiff')
     const image = await (await fromBlob(file)).getImage()
@@ -16,7 +17,7 @@ export async function getGeotiffBands(file: Blob): Promise<string[]> {
     if (!count) {
       throw new Error(GEOTIFF_ERRORS.InvalidData)
     }
-    return Array.from({ length: count }, (_, index) => `band_${index + 1}`)
+    return count
   } catch (e) {
     throw new Error(GEOTIFF_ERRORS.InvalidData, { cause: e })
   }

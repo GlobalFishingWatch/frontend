@@ -4,7 +4,6 @@ import type { DeckLayerProps, DeckPickingObject } from '#types'
 import type {
   FourwingsHeatmapPickingInfo,
   FourwingsHeatmapPickingObject,
-  FourwingsHeatmapStaticPickingObject,
 } from './heatmap/fourwings-heatmap.types'
 import type {
   FourwingsPositionsPickingInfo,
@@ -40,6 +39,8 @@ export type FourwingsDeckSublayer = {
   value?: number
   unit?: string
   filter?: string
+  minVisibleValue?: number
+  maxVisibleValue?: number
   // Used only blue-planet workspace to be able to show only one detection by id
   filterIds?: string[]
   positionProperties?: string[]
@@ -54,8 +55,10 @@ export type FourwingsDeckVectorSublayer = {
   id: FourwingsSublayerId
   color: string
   datasets: FourwingsDatasetId[]
-  direction: FourwingsVectorDirection
+  vector: FourwingsVectorDirection
   unit?: string
+  minVisibleValue?: number
+  maxVisibleValue?: number
 }
 
 export type BaseFourwingsLayerProps = DeckLayerProps<{
@@ -69,7 +72,5 @@ export type BaseFourwingsLayerProps = DeckLayerProps<{
 
 export type FourwingsPickingInfo = FourwingsHeatmapPickingInfo | FourwingsPositionsPickingInfo
 export type FourwingsPickingObject = DeckPickingObject<
-  | FourwingsHeatmapPickingObject
-  | FourwingsHeatmapStaticPickingObject
-  | FourwingsPositionsPickingObject
+  FourwingsHeatmapPickingObject | FourwingsPositionsPickingObject
 >

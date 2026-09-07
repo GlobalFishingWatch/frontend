@@ -10396,13 +10396,11 @@ export const REDUX_STORE_DEFAULT_STATE = {
     active: false,
     featureFlags: {
       hotspotButton: false,
-      polygonsReport: false,
     },
     options: {
       addDatasetIdHash: true,
       areasOnScreen: false,
       debugTiles: false,
-      experimentalLayers: false,
       hideVesselNames: false,
       deckStats: false,
       thinning: true,

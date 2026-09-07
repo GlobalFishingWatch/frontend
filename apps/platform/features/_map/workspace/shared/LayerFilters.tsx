@@ -59,7 +59,6 @@ function LayerFilters({
   const {
     dataview,
     handleIsOpenChange,
-    newDataviewInstanceConfig,
     onConfirmFilters,
     onDataviewFilterChange,
     setNewDataviewInstanceConfig,
@@ -132,19 +131,11 @@ function LayerFilters({
       })}
       <div className={cx(styles.footer, { [styles.spaceBetween]: showApplyToAll })}>
         {showApplyToAll && (
-          <Button
-            type="secondary"
-            disabled={!newDataviewInstanceConfig}
-            onClick={() => onConfirmFilters({ applyToAll: true })}
-          >
+          <Button type="secondary" onClick={() => onConfirmFilters({ applyToAll: true })}>
             {t((t) => t.common.applyToAll)}
           </Button>
         )}
-        <Button
-          disabled={!newDataviewInstanceConfig}
-          onClick={() => onConfirmFilters()}
-          testId="confirm-filters-button"
-        >
+        <Button onClick={() => onConfirmFilters()} testId="confirm-filters-button">
           {t((t) => t.common.confirm)}
         </Button>
       </div>

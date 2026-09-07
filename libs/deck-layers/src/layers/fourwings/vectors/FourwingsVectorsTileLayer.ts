@@ -9,7 +9,6 @@ import { TileLayer } from '@deck.gl/geo-layers'
 import { parse } from '@loaders.gl/core'
 import { debounce } from 'es-toolkit'
 
-import { GFWAPI } from '@globalfishingwatch/api-client'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import type {
   FourwingsFeature,
@@ -35,12 +34,14 @@ import type {
   GetViewportDataParams,
 } from '#layers/fourwings/fourwings.types'
 import { EMPTY_FOURWINGS_TILE_DATA } from '#layers/fourwings/fourwings-tile.utils'
+import { fetchFourwingsTileBuffers } from '#layers/fourwings/heatmap/fourwings-heatmap.fetch'
 import type { FourwingsHeatmapTilesCache } from '#layers/fourwings/heatmap/fourwings-heatmap.types'
 import { FourwingsAggregationOperation } from '#layers/fourwings/heatmap/fourwings-heatmap.types'
 import {
   getDataUrl,
   getFourwingsChunk,
   getIntervalFrames,
+  getSublayersVisibleValuesHash,
   getTileDataCache,
   sliceCellValues,
 } from '#layers/fourwings/heatmap/fourwings-heatmap.utils'
@@ -67,8 +68,6 @@ export type _FourwingsVectorsTileLayerProps<DataT = FourwingsFeature> = Omit<
   debugTiles?: boolean
   availableIntervals?: FourwingsInterval[]
   sublayers: FourwingsDeckVectorSublayer[]
-  minVisibleValue?: number
-  maxVisibleValue?: number
   temporalAggregation?: boolean
 }
 
@@ -124,7 +123,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   get cacheHash(): string {
     const { id, startTime, endTime } = this.props
     const colors = Array.from(new Set(this.props.sublayers.map((s) => s.color))).join(',')
-    return `${id}-${startTime}-${endTime}-${colors}-${this.state?.rampDirty ?? false}-${this.viewportLoaded}`
+    return `${id}-${startTime}-${endTime}-${colors}-${this.state?.rampDirty ?? false}-${this.viewportLoaded}-${getSublayersVisibleValuesHash(this.props.sublayers)}`
   }
 
   get debounceTime(): number {
@@ -249,9 +248,8 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
       availableIntervals,
       temporalAggregation,
     } = this.props
-    const sublayerIndex = 0
-    // Ensure 'u' (eastward) direction always goes first
-    const vectorLayers = sublayers.sort((a) => (a.direction === 'u' ? -1 : 1))
+    // Ensure 'u' (eastward) vector always goes first
+    const vectorLayers = sublayers.sort((a) => (a.vector === 'u' ? -1 : 1))
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     const chunk = temporalAggregation
       ? {
@@ -281,54 +279,20 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
       temporalAggregation,
     }) as string
 
-    const response = await GFWAPI.fetch<Response>(url, {
+    // u and v ride in one request, so a single url covers both sublayers
+    const { buffers, headers } = await fetchFourwingsTileBuffers({
+      urls: [url],
       signal: tile.signal,
-      responseType: 'default',
     })
 
-    if (response.status >= 400 && response.status !== 404) {
-      throw new Error(response.statusText)
-    }
-
-    if (tile.signal?.aborted) {
+    if (tile.signal?.aborted || !buffers.length) {
       return EMPTY_FOURWINGS_TILE_DATA
     }
 
-    const cols: number[] = []
-    const rows: number[] = []
-    const scale: number[] = []
-    const offset: number[] = []
-    const noDataValue: number[] = []
-    if (response.headers.get('X-columns') && !cols[sublayerIndex]) {
-      cols[sublayerIndex] = parseInt(response.headers.get('X-columns') as string)
-    }
-    if (response.headers.get('X-rows') && !rows[sublayerIndex]) {
-      rows[sublayerIndex] = parseInt(response.headers.get('X-rows') as string)
-    }
-    if (response.headers.get('X-scale') && !scale[sublayerIndex]) {
-      scale[sublayerIndex] = parseFloat(response.headers.get('X-scale') as string)
-    }
-    if (response.headers.get('X-offset') && !offset[sublayerIndex]) {
-      offset[sublayerIndex] = parseInt(response.headers.get('X-offset') as string)
-    }
-    if (response.headers.get('X-empty-value') && !noDataValue[sublayerIndex]) {
-      noDataValue[sublayerIndex] = parseInt(response.headers.get('X-empty-value') as string)
-    }
-
-    const arrayBuffer = await response.arrayBuffer()
-
-    if (tile.signal?.aborted) {
-      return EMPTY_FOURWINGS_TILE_DATA
-    }
-
-    const data = await parse(arrayBuffer, FourwingsVectorsLoader, {
+    const data = await parse(buffers[0], FourwingsVectorsLoader, {
       worker: !IS_TEST_ENV,
       fourwingsVectors: {
-        cols,
-        rows,
-        scale,
-        offset,
-        noDataValue,
+        ...headers,
         bufferedStartDate: chunk.bufferedStart,
         initialTimeRange: {
           start: startTime,

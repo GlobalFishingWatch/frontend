@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -13,6 +13,10 @@ import { OCEAN_AREAS_DATAVIEWS } from 'data/map/dataviews'
 import { selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
 import { getDataviewInstanceFromDataview } from 'features/_map/dataviews/dataviews.utils'
 import { selectContextAreasDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
+import {
+  selectMapSearchOpenRequested,
+  setMapSearchOpenRequested,
+} from 'features/_map/map/controls/map-controls.slice'
 import { useMapSetViewState } from 'features/_map/map/map-viewport.hooks'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import { useNavigateToAreaReport } from 'features/_reports/shared/area-search/area-report.hooks'
@@ -38,6 +42,7 @@ const MapSearch = () => {
   const allDataviews = useSelector(selectAllDataviews)
   const { searchOceanAreas } = useOceanAreas()
   const navigateToAreaReport = useNavigateToAreaReport()
+  const openRequested = useSelector(selectMapSearchOpenRequested)
 
   const fitBounds = useMapFitBounds()
   const setMapViewState = useMapSetViewState()
@@ -119,6 +124,7 @@ const MapSearch = () => {
     highlightedIndex,
     inputValue,
     isOpen,
+    openMenu,
   } = useCombobox({
     inputValue: query,
     items: areasMatching,
@@ -126,6 +132,18 @@ const MapSearch = () => {
     onInputValueChange: onInputChange,
     onSelectedItemChange: onSelectResult,
   })
+
+  useEffect(() => {
+    if (!openRequested) {
+      return
+    }
+    dispatch(setMapSearchOpenRequested(false))
+    dispatch(setHintDismissed('areaSearch'))
+    openMenu()
+    const timeout = setTimeout(() => inputRef.current?.focus(), 1)
+    return () => clearTimeout(timeout)
+  }, [openRequested, dispatch, openMenu])
+
   return (
     <div className={styles.container}>
       <IconButton

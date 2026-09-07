@@ -6,7 +6,7 @@ import type { BBox } from '../helpers/cells'
 import { generateUniqueId, getCellCoordinates, getCellProperties } from '../helpers/cells'
 import { CONFIG_BY_INTERVAL } from '../helpers/time'
 
-import { NO_DATA_VALUE_32, NO_DATA_VALUE_64 } from './parse-fourwings'
+import { descaleFourwingsValue, isFourwingsNoDataValue, NO_DATA_VALUE } from './parse-fourwings'
 import type {
   FourwingsFeature,
   FourwingsVectorsLoaderOptions,
@@ -38,10 +38,10 @@ function processVectorValue(
   rawValue: number,
   context: VectorProcessingContext
 ): number | undefined {
-  if (rawValue === context.noDataValue || rawValue === NO_DATA_VALUE_64) {
+  if (isFourwingsNoDataValue(rawValue, context.noDataValue)) {
     return undefined
   }
-  return rawValue * context.scale - context.offset
+  return descaleFourwingsValue(rawValue, context.scale, context.offset)
 }
 
 // Calculate velocity from u and v components
@@ -92,7 +92,7 @@ function getVectorContext(options: ParseFourwingsVectorsOptions): VectorProcessi
   return {
     scale: options.scale?.[0] ?? SCALE_VALUE,
     offset: options.offset?.[0] ?? OFFSET_VALUE,
-    noDataValue: options.noDataValue?.[0] ?? NO_DATA_VALUE_32,
+    noDataValue: options.noDataValue?.[0] ?? NO_DATA_VALUE,
     unit: options.unit,
   }
 }

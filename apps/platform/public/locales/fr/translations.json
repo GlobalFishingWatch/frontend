@@ -451,7 +451,9 @@
         "noPolygonData": "Aucune donnée de polygone trouvée dans le KML"
       },
       "name": "Dataset name must be at least {{min}} characters long",
-      "reservedBandName": "\"{{band}}\" can't be used as a band name, the file already has a column with that name. Reserved names: {{reserved}}",
+      "netcdf": {
+        "invalidData": "NetCDF data could not be read"
+      },
       "shapefile": {
         "invalidData": "Aucun type de géométrie valide dans les données du fichier de formes",
         "invalidMultipleFiles": "Les fichiers de formes contenant plusieurs composants (noms de fichiers multiples) ne sont pas encore pris en charge",
@@ -465,9 +467,10 @@
     "fieldPlaceholder": "Sélectionnez un champ dans votre jeu de données",
     "gridded": {
       "aggregation": "Aggregation",
-      "bandName": "Band {{band}} name",
+      "band": "Band to import",
       "unit": "Unit",
-      "unitPlaceholder": "e.g., 'detections', '°C', 'm/s"
+      "unitPlaceholder": "e.g., 'detections', '°C', 'm/s",
+      "variable": "Variable to import"
     },
     "maxValuesExceededForFiltering": "Maximum values exceeded for filtering ({{max}})",
     "maxValuesExceededForFilteringTooltip": "This field has too many unique values ({{max}}+). Consider grouping or categorizing your data to enable filtering.",
@@ -665,6 +668,13 @@
     "loitering_other": "Événements de dérive",
     "loiteringAction": "La dérive a commencé à {{start}} pendant {{duration}}",
     "loiteringActionIn": "Dérive dans {{regionName}}",
+    "longlineCategoryEntirelyDay": "day",
+    "longlineCategoryEntirelyNight": "night",
+    "longlineCategoryMostlyDay": "mostly day",
+    "longlineCategoryMostlyNight": "mostly night",
+    "longlineSet": "Longline set ({{category}})",
+    "longlineSetAction": "Longline set ({{category}}) started at {{start}} for {{duration}}",
+    "longlineSetActionIn": "Longline set in {{regionName}}",
     "minuteAbbreviated": "{{count}}'",
     "minuteAbbreviated_one": "{{count}}'",
     "minuteAbbreviated_other": "{{count}}'",
@@ -886,6 +896,7 @@
     "highRes": "Voir les cartes thermiques haute résolution",
     "highResDisabled": "High resolution heatmaps are disabled when using a vessel group filter",
     "legend_help": "Zone approximatie des cellules de la grille par rapport à l'équateur",
+    "legendBrushHelp": "Click or drag to adjust the value",
     "loading": "Chargement",
     "lowRes": "Voir les cartes thermiques basse résolution",
     "mapLoadingWait": "Veuillez patienter jusqu'à ce que la carte soit chargée",
@@ -932,6 +943,39 @@
     "topics": "Topics",
     "useCases": "Use Cases",
     "vessels": "Vessels"
+  },
+  "onboarding": {
+    "areaReport": {
+      "description": "Pick an MPA, EEZ, or draw your own region. Get a report on vessels present, encounters, port visits, and downloadable activity data.",
+      "title": "Run a report on an area"
+    },
+    "copilotExamples": {
+      "carrierEncounters": "Encounters between carriers and fishing vessels in IOTC",
+      "galapagosEffort": "Fishing effort inside the Galápagos Marine Reserve last month",
+      "lasPalmasVisits": "Which vessels visited the Tenerife port in December?",
+      "loiteringWestAfrica": "Loitering events off the coast of West Africa",
+      "nightLightYellowSea": "Night light detections in the Yellow Sea last winter",
+      "northSeaTrawling": "Compare trawling hours in the North Sea between 2023 and 2024",
+      "peruEffort": "AIS and VMS apparent fishing effort in the Peruvian EEZ",
+      "senegalPortVisits": "Port visits by Spanish-flagged vessels in Senegal",
+      "squidPacific": "Chinese squid jiggers fishing in southeast Pacific in 2024",
+      "trackVessel": "Track the vessel with MMSI 412331107 over the past year"
+    },
+    "copilotLabel": "What do you want to see?",
+    "createAccount": "Create an account",
+    "getStarted": "Get started",
+    "header": "Welcome",
+    "intro": "We use satellite signals and machine learning to make activity at sea visible. Pick a way in or <1>learn more</1>.",
+    "login": "Log in to get the most out of the platform (free, 2 minutes)",
+    "searchVessel": {
+      "description": "Find one of 400,000+ vessels by name, MMSI, IMO, or callsign. See where it's been, when, and with whom.",
+      "title": "Search for a vessel"
+    },
+    "title": "What would you like to do today?",
+    "userGuide": {
+      "description": "We support the understanding, visualization and analysis needs of governments, researchers, NGOs, journalists and more.",
+      "title": "Learn how to use the tools"
+    }
   },
   "portsReport": {
     "seePortReport": "Voir tous les événements d'entrée dans ce port",
@@ -1331,15 +1375,22 @@
       "IUUBlackListsCount": "Le navire figure sur la liste des navires INN d'une ORGP",
       "IUUBlackListsEmpty": "Le navire ne figure pas sur la liste des navires INN d'une ORGP",
       "longline": "Longline settings at day and night",
+      "longlineDownload": "Download longline sets",
       "longlineEntirelyDaySets_one": "{{count}} day set",
       "longlineEntirelyDaySets_other": "{{count}} day sets",
+      "longlineEntirelyDaySetsLabel": "day sets",
       "longlineEntirelyNightSets_one": "{{count}} night set",
       "longlineEntirelyNightSets_other": "{{count}} night sets",
+      "longlineEntirelyNightSetsLabel": "night sets",
       "longlineEventsEmpty": "No longline sets detected",
+      "longlineHideFromMap": "Hide longline sets from the map",
       "longlineMostlyDaySets_one": "{{count}} mostly day set (<2 hrs overlap with night)",
       "longlineMostlyDaySets_other": "{{count}} mostly day sets (<2 hrs overlap with night)",
+      "longlineMostlyDaySetsLabel": "mostly day sets (<2 hrs overlap with night)",
       "longlineMostlyNightSets_one": "{{count}} mostly night set (<2 hrs overlap with daylight)",
       "longlineMostlyNightSets_other": "{{count}} mostly night sets (<2 hrs overlap with daylight)",
+      "longlineMostlyNightSetsLabel": "mostly night sets (<2 hrs overlap with daylight)",
+      "longlineShowOnMap": "Show longline sets on the map",
       "MOULists": "Listes des Mémorandums d'entente de Paris et de Tokyo",
       "MOUListsEmpty": "Battant un ou plusieurs pavillons ne figurant pas sur les listes noires ou grises du Mémorandum d'entente de Tokyo ou de Paris",
       "MOUParisBlackListsCount": "Pavillon figurant sur la liste noire du Mémorandum d'entente de Paris ({{flags}})",
@@ -1397,6 +1448,7 @@
     "resolution": "Resolution",
     "sectionActivity": "Activité",
     "sectionAreas": "Zones",
+    "sectionEventsTooltip": "No events available for this vessel.",
     "sectionInsights": "Indicateurs",
     "sectionInsightsTooltip": "Aucune analyse disponible pour les navires équipés de VMS.",
     "sectionRelatedVessel": "Navire associé",
@@ -1550,9 +1602,7 @@
       "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} événement de pêche par le navire {{vessels}} détecté en dehors d'une zone soumise à une autorisation connue d'une ORGP",
       "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} événements de pêche par les navires {{vessels}} détectés en dehors de zones soumises à une autorisation connue d'une ORGP",
       "gaps_one": "{{count}} événement de désactivation de l'AIS détecté pour le navire {{vessels}}",
-      "gaps_other": "{{count}} événements de désactivation de l'AIS détectés pour les navires {{vessels}}",
-      "longline_one": "{{count}} longline set from {{vessels}} vessels detected",
-      "longline_other": "{{count}} longline sets from {{vessels}} vessels detected"
+      "gaps_other": "{{count}} événements de désactivation de l'AIS détectés pour les navires {{vessels}}"
     }
   },
   "workspace": {

@@ -4,9 +4,11 @@ import { Link } from '@tanstack/react-router'
 import { getToolName, isToolUIPart, type UIMessage } from 'ai'
 import cx from 'classnames'
 import type { TFunction } from 'i18next'
+import { useAtom } from 'jotai'
 
 import { IconButton, Spinner, TextArea } from '@globalfishingwatch/ui-components'
 
+import { pendingPromptAtom } from 'features/_map/content-panel/chat/chat.atoms'
 import type { FeedbackRating } from 'features/_map/content-panel/chat/chat-session.hooks'
 import {
   getFeedbackState,
@@ -254,6 +256,8 @@ function ChatSessionMessages({
   const { ratings, questionIds, hiddenIds } = getFeedbackState(messages)
 
   const [input, setInput] = useState('')
+  const [pendingPrompt, setPendingPrompt] = useAtom(pendingPromptAtom)
+  const sentPromptRef = useRef<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const inputRowRef = useRef<HTMLDivElement>(null)
 
@@ -267,6 +271,14 @@ function ChatSessionMessages({
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight })
   }, [messages, loading])
+
+  useEffect(() => {
+    if (!pendingPrompt || sentPromptRef.current === pendingPrompt) return
+    sentPromptRef.current = pendingPrompt
+    setPendingPrompt(null)
+    sendMessage(pendingPrompt)
+    onSendMessage?.()
+  }, [setPendingPrompt, pendingPrompt, sendMessage, onSendMessage])
 
   const onSend = () => {
     setInput('')

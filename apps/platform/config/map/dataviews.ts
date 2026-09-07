@@ -21,6 +21,8 @@ export const VIIRS_SKYLIGHT_DATAVIEW_INSTANCE_ID = 'viirs-skylight' as const
 // Context layer dataview instance ids
 export const DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID = 'basemap' as const
 export const BASEMAP_LABELS_DATAVIEW_INSTANCE_ID = 'basemap-labels' as const
+export const BATHYMETRY_CONTOUR_DATAVIEW_INSTANCE_ID =
+  `${BATHYMETRY_DATAVIEW_PREFIX}-contour` as const
 export const EEZ_DATAVIEW_INSTANCE_ID = `${CONTEXT_LAYER_INSTANCE_PREFIX}eez` as const
 export const MPA_DATAVIEW_INSTANCE_ID = `${CONTEXT_LAYER_INSTANCE_PREFIX}mpa` as const
 export const RFMO_DATAVIEW_INSTANCE_ID = `${CONTEXT_LAYER_INSTANCE_PREFIX}rfmo` as const
@@ -116,8 +118,10 @@ export const VESSEL_VMS_BRAZIL_DATAVIEW_SLUG =
   `private-bra-fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const
 export const VESSEL_VMS_CHILE_DATAVIEW_SLUG =
   `private-chl-fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const
-export const VESSEL_VMS_PANAMA_DATAVIEW_SLUG =
-  `private-pan-fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const
+// Panama alone is published at 4.1, so this slug can't derive from PIPE_DATASET_VERSION.
+// A slug the API doesn't return is dropped silently: the vessel falls back to the global AIS
+// template and loses its private events datasets, while the track still resolves.
+export const VESSEL_VMS_PANAMA_DATAVIEW_SLUG = 'private-pan-fishing-map-vessel-track-v-4-1' as const
 export const VESSEL_VMS_PERU_DATAVIEW_SLUG =
   `private-per-fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const
 export const VESSEL_VMS_COSTARICA_DATAVIEW_SLUG =

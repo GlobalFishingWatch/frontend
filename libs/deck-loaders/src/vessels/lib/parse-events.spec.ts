@@ -88,6 +88,35 @@ describe('parseEvents', () => {
     expect(result[0].props?.color).toBe('#99EEFF')
   })
 
+  it('should color longline fishing events by their day/night category', () => {
+    const longlineSet = (fishing: Record<string, unknown>) => ({
+      position: { lon: 0, lat: 0 },
+      start: '2024-01-01T00:00:00.000Z',
+      end: '2024-01-01T01:00:00.000Z',
+      type: 'fishing',
+      fishing,
+    })
+    const events = [
+      longlineSet({ dayNightCategory: 'day', fractionAtNight: 0 }),
+      longlineSet({ dayNightCategory: 'night', fractionAtNight: 1 }),
+      longlineSet({ dayNightCategory: 'over_dawn', fractionAtNight: 0.2 }),
+      longlineSet({ dayNightCategory: 'over_dusk', fractionAtNight: 0.8 }),
+      // a regular fishing event has no dayNightCategory and keeps the generic color
+      longlineSet({ averageSpeedKnots: 7 }),
+    ]
+    const arrayBuffer = toArrayBuffer(JSON.stringify({ entries: events }))
+
+    const result = parseEvents(arrayBuffer)
+
+    expect(result.map((event) => event.props?.color)).toEqual([
+      '#ffbd52',
+      '#39394a',
+      '#da8902',
+      '#0673b3',
+      '#ffffff',
+    ])
+  })
+
   it('should preserve event attributes other than position, start, end, type', () => {
     const events = [
       {

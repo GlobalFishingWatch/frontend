@@ -21,8 +21,8 @@ platform:
       BASIC_AUTH_USER: gfw-fish
     secrets:
       BASIC_AUTH_PASS: projects/706952489382/secrets/FISHING_MAP_BASIC_AUTH_PASS/versions/latest
-      STRAPI_TOKEN: projects/706952489382/secrets/FISHING_MAP_STRAPI_TOKEN/versions/latest
-      STRAPI_URL: projects/706952489382/secrets/FISHING_MAP_STRAPI_URL/versions/latest
+      STRAPI_TOKEN: projects/674016975526/secrets/FISHING_MAP_STRAPI_TOKEN/versions/latest
+      STRAPI_URL: projects/674016975526/secrets/FISHING_MAP_STRAPI_URL/versions/latest
       STRAPI_PREVIEW_SECRET: projects/674016975526/secrets/strapi-preview-secret-production/versions/latest
       DOWNLOAD_SURVEY_SPREADSHEET_ID: projects/706952489382/secrets/FISHING_MAP_DOWNLOAD_SURVEY_SPREADSHEET_ID/versions/latest
       FEEDBACK_SPREADSHEET_ID: projects/706952489382/secrets/FISHING_MAP_FEEDBACK_SPREADSHEET_ID/versions/latest

@@ -50,6 +50,18 @@ describe('getFourwingsDataviewSublayers', () => {
     expect(sublayers).toHaveLength(1)
     expect(sublayers[0].datasets).toEqual([dataset])
   })
+
+  it('carries the value range onto the sublayer', () => {
+    // Every fourwings dataview needs it there, not just the merged activity ones: the heatmap
+    // layer filters per sublayer and no longer reads the layer level range
+    const dataview = createDataview(createDataset({ status: DatasetStatus.Done }))
+    const sublayers = getFourwingsDataviewSublayers({
+      ...dataview,
+      config: { ...dataview.config, minVisibleValue: 10, maxVisibleValue: 90 },
+    })
+    expect(sublayers[0].minVisibleValue).toBe(10)
+    expect(sublayers[0].maxVisibleValue).toBe(90)
+  })
 })
 
 describe('getFourwingsDataviewsResolved', () => {

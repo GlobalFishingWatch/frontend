@@ -1,5 +1,6 @@
 export * from './geotiff-bands'
 export * from './kml-to-geojson'
+export * from './netcdf-variables'
 export * from './shp-to-geojson'
 export * from './text-encoding'
 export * from './zip-to-files'

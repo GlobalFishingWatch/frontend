@@ -65,10 +65,9 @@ beforeAll(async () => {
 
   // Setup localstorage modal shown flag to prevent it from appearing in tests
   if (getIsBrowser()) {
-    localStorage.setItem('MarineManagerPopup', '{"visible":false,"showAgain":false}')
     localStorage.setItem('VesselProfilePopup', '{"visible":false,"showAgain":false}')
-    localStorage.setItem('WelcomePopup', '{"visible":false,"showAgain":false}')
     localStorage.setItem('DeepSeaMiningPopup', '{"visible":false,"showAgain":false}')
+    localStorage.setItem('OnboardingPanelDismissed', 'true')
     localStorage.setItem('HighlightPopup', `"${HIGHLIGHT_DATAVIEW_INSTANCE_ID}"`)
     localStorage.setItem('i18nextLng', '"en"')
     localStorage.setItem(

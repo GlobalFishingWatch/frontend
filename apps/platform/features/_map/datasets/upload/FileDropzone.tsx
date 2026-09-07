@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
+import { uniq } from 'es-toolkit'
 
 import type { DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -76,7 +77,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
   return (
     <div className={cx(styles.dropFiles, className)} {...(getRootProps() as any)}>
       <div className={styles.icons}>
-        {fileTypesConfigs.map((config) => IconsByType[config?.icon])}
+        {uniq(fileTypesConfigs.map((config) => config?.icon)).map((icon) => IconsByType[icon])}
       </div>
       <input {...getInputProps()} />
       {label ? (

@@ -1,51 +1,13 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
+
+import { createWorkerClient } from '@globalfishingwatch/data-transforms/worker'
 
 import type { FilterByPolygomParams, FilteredPolygons } from './reports-geo.utils'
 
-type Request = {
-  resolve: (result: FilteredPolygons[]) => void
-  reject: (error: any) => void
-}
-
-let worker: Worker | undefined
-let idCounter = 0
-const requests = new Map<number, Request>()
-
-function getWorker() {
-  if (worker === undefined) {
-    worker = new Worker(new URL('./reports-geo.utils.workers.ts', import.meta.url), {
-      type: 'module',
-    })
-    worker.onmessage = ({ data }: MessageEvent<{ id: number; result: FilteredPolygons[] }>) => {
-      const request = requests.get(data.id)
-      if (request) {
-        request.resolve(data.result)
-        requests.delete(data.id)
-      }
-    }
-    worker.onerror = (ev: ErrorEvent) => {
-      requests.forEach((request) => request.reject(ev.error))
-      requests.clear()
-    }
-  }
-  return worker
-}
+const filterCellsClient = createWorkerClient<FilterByPolygomParams, FilteredPolygons[]>(
+  new URL('./reports-geo.utils.workers.ts', import.meta.url)
+)
 
 export function useFilterCellsByPolygonWorker() {
-  useEffect(() => {
-    return () => {
-      requests.clear()
-    }
-  }, [])
-
-  const filterByPolygon = useCallback((params: FilterByPolygomParams) => {
-    const promise: Promise<FilteredPolygons[]> = new Promise((resolve, reject) => {
-      const id = idCounter++
-      requests.set(id, { resolve, reject })
-      getWorker().postMessage({ id, params })
-    })
-    return promise
-  }, [])
-
-  return filterByPolygon
+  return useCallback((params: FilterByPolygomParams) => filterCellsClient.request(params), [])
 }

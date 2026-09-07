@@ -56,6 +56,7 @@ import Filters from '../shared/LayerFilters'
 import LayerProperties from '../shared/LayerProperties'
 import { showSchemaFilter } from '../shared/LayerSchemaFilter.utils'
 import LayerSwitch from '../shared/LayerSwitch'
+import MapLegend from '../shared/MapLegend'
 import Remove from '../shared/Remove'
 import Title from '../shared/Title'
 
@@ -127,8 +128,7 @@ function UserPanel({
     property: 'bbox',
     type: 'userFourwingsV1',
   })
-  const polygonColor = getDatasetConfigurationProperty({ dataset, property: 'polygonColor' })
-  const hasLegend = polygonColor !== undefined
+  const hasLegend = datasetGeometryType === 'gridded'
   const changeColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
       id: dataview.id,
@@ -197,7 +197,10 @@ function UserPanel({
     : t((t: any) => t.dataview[dataview?.id].title, {
         defaultValue: dataview?.name || dataview?.id,
       })
-  const hasLayerProperties = hasSchemaFilterSelection || hasFeaturesColoredByField
+  const hasVisibleValuesSelection =
+    dataview.config?.minVisibleValue !== undefined || dataview.config?.maxVisibleValue !== undefined
+  const hasLayerProperties =
+    hasSchemaFilterSelection || hasFeaturesColoredByField || hasVisibleValuesSelection
 
   return (
     <div
@@ -371,25 +374,37 @@ function UserPanel({
             [styles.dragging]: isSorting && activeIndex > -1,
           })}
         >
-          {hasSchemaFilterSelection && (
+          {(hasSchemaFilterSelection || hasVisibleValuesSelection) && (
             <div className={styles.filters}>
               <div className={styles.filters}>
                 {filtersAllowed.map(({ id, label }) => (
                   <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
                 ))}
+                {hasVisibleValuesSelection && (
+                  <DatasetSchemaField
+                    key="visibleValues"
+                    dataview={dataview}
+                    field="visibleValues"
+                    label={t((t) => t.common.visibleValues)}
+                  />
+                )}
               </div>
             </div>
           )}
           {hasFeaturesColoredByField && <UserLayerTrackPanel dataview={dataview} />}
         </div>
       )}
-      {layerActive && hasLegend && (
+      {layerActive && hasLegend && !error && !datasetError && (
         <div
           className={cx(styles.properties, styles.drag, {
             [styles.dragging]: isSorting && activeIndex > -1,
           })}
         >
-          <div id={`legend_${dataview.id}`}></div>
+          <MapLegend
+            dataview={dataview}
+            layerId={mergedDataviewId || dataview.id}
+            brushClassName={styles.brushIdle}
+          />
         </div>
       )}
     </div>

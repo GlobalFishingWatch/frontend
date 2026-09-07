@@ -5,6 +5,7 @@ import cx from 'classnames'
 
 import { DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { HEATMAP_COLORS_BY_ID } from '@globalfishingwatch/deck-layers/config'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import {
   ColorBar,
@@ -14,6 +15,7 @@ import {
 } from '@globalfishingwatch/ui-components'
 
 import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
+import { isBathymetryDataview } from 'features/_map/dataviews/dataviews.utils'
 import { getSourcesSelectedInDataview } from 'features/_map/workspace/activity/activity.utils'
 import DatasetSchemaField from 'features/_map/workspace/shared/DatasetSchemaField'
 import DatasetFilterSource from 'features/_map/workspace/shared/DatasetSourceField'
@@ -98,43 +100,48 @@ export default function ReportSummaryTags({
   const showSchemaFilters = filtersAllowed.some(showSchemaFilter)
   const disabledFilters = isTimeComparisonGraph(selectedReportActivityGraph)
 
-  // if (
-  //   reportCategory === ReportCategory.Environment &&
-  //   !dataview.config?.minVisibleValue &&
-  //   !dataview.config?.maxVisibleValue
-  // ) {
-  //   return null
-  // }
+  if (
+    reportCategory === ReportCategory.Environment &&
+    !dataview.config?.minVisibleValue &&
+    !dataview.config?.maxVisibleValue
+  ) {
+    return null
+  }
 
   return (
     <div className={styles.row}>
       <div className={styles.actionsContainer}>
-        {showColor && (
-          <ExpandedContainer
-            visible={colorOpen}
-            onClickOutside={onToggleColorOpen}
-            className={styles.expandedContainer}
-            referenceClassName={styles.dotReference}
-            component={
-              <div>
-                {<label>{t((t) => t.layer.properties.color)}</label>}
-                <ColorBar
-                  colorBarOptions={colorType === 'line' ? LineColorBarOptions : FillColorBarOptions}
-                  selectedColor={dataview.config?.color}
-                  onColorClick={onColorClick}
-                  swatchesTooltip={t((t) => t.layer.colorSelectPredefined)}
-                  hueBarTooltip={t((t) => t.layer.colorSelectCustom)}
-                />
-              </div>
-            }
-          >
-            <button
-              onClick={onToggleColorOpen}
-              className={styles.dot}
-              style={{ cursor: 'pointer', color: dataview.config?.color }}
-            />
-          </ExpandedContainer>
-        )}
+        {showColor &&
+          (isBathymetryDataview(dataview) ? (
+            <span className={styles.dot} style={{ color: HEATMAP_COLORS_BY_ID.bathymetry }} />
+          ) : (
+            <ExpandedContainer
+              visible={colorOpen}
+              onClickOutside={onToggleColorOpen}
+              className={styles.expandedContainer}
+              referenceClassName={styles.dotReference}
+              component={
+                <div>
+                  {<label>{t((t) => t.layer.properties.color)}</label>}
+                  <ColorBar
+                    colorBarOptions={
+                      colorType === 'line' ? LineColorBarOptions : FillColorBarOptions
+                    }
+                    selectedColor={dataview.config?.color}
+                    onColorClick={onColorClick}
+                    swatchesTooltip={t((t) => t.layer.colorSelectPredefined)}
+                    hueBarTooltip={t((t) => t.layer.colorSelectCustom)}
+                  />
+                </div>
+              }
+            >
+              <button
+                onClick={onToggleColorOpen}
+                className={styles.dot}
+                style={{ cursor: 'pointer', color: dataview.config?.color }}
+              />
+            </ExpandedContainer>
+          ))}
         {showFilters && showSchemaFilters && !disabledFilters && (
           <ExpandedContainer
             onClickOutside={onToggleFiltersUIOpen}
@@ -193,16 +200,17 @@ export default function ReportSummaryTags({
               )}
             </Fragment>
           )}
-        {reportCategory === ReportCategory.Environment ? (
-          dataview.config?.minVisibleValue || dataview.config?.maxVisibleValue ? (
+        {showFilters &&
+          (dataview.config?.minVisibleValue !== undefined ||
+            dataview.config?.maxVisibleValue !== undefined) && (
             <DatasetSchemaField
-              key={'visibleValues'}
+              key="visibleValues"
               dataview={dataview}
-              field={'visibleValues'}
+              field="visibleValues"
               label={t((t) => t.common.visibleValues)}
+              className={styles.tag}
             />
-          ) : null
-        ) : null}
+          )}
       </Fragment>
     </div>
   )

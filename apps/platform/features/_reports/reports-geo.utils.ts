@@ -1,12 +1,12 @@
 import { bbox, booleanContains, booleanIntersects, booleanPointInPolygon } from '@turf/turf'
 import type { Feature, Geometry, MultiPolygon, Point, Polygon } from 'geojson'
 
-import type { FourwingsFeature, FourwingsStaticFeature } from '@globalfishingwatch/deck-loaders'
+import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 
 export type FilteredPolygons = {
   instanceId: string
-  contained: (FourwingsFeature | FourwingsStaticFeature | Feature<Point> | Feature<Geometry>)[]
-  overlapping: (FourwingsFeature | FourwingsStaticFeature | Feature<Point> | Feature<Geometry>)[]
+  contained: (FourwingsFeature | Feature<Point> | Feature<Geometry>)[]
+  overlapping: (FourwingsFeature | Feature<Point> | Feature<Geometry>)[]
   error?: string
 }
 

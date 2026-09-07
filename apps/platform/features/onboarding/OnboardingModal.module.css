@@ -1,0 +1,204 @@
+/* Wider than the default modal: three cards side by side. */
+.modal {
+  max-width: 96rem;
+}
+
+/* Overrides the modal's fixed 55rem content height — the modal sizes to its content and scrolls
+   only when it outgrows the viewport. */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-SM);
+  height: auto !important;
+  max-height: calc(100dvh - 12rem);
+  overflow-y: auto;
+  padding: var(--space-M) !important;
+}
+
+/* The modal has no header bar, so the logo carries the branding — same size as the sidebar's. */
+.logo {
+  align-self: flex-start;
+  width: 18rem;
+  height: auto;
+}
+
+.title {
+  font: var(--font-XL);
+}
+
+.intro {
+  color: var(--color-secondary-blue);
+  font: var(--font-M);
+}
+
+.link {
+  text-decoration: underline;
+  cursor: pointer;
+  font: var(--font-M);
+  color: var(--color-secondary-blue);
+}
+
+.link:hover {
+  color: var(--color-primary-blue);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-SM);
+  align-items: stretch;
+}
+
+.cards li,
+.card {
+  height: 100%;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  cursor: pointer;
+  background-color: var(--color-off-white-0);
+  border: var(--border);
+  border-radius: var(--border-radius-1);
+  overflow: hidden;
+  text-align: left;
+}
+
+.card:hover {
+  background-color: var(--color-off-white-1);
+}
+
+/* Fixed ratio, never stretched by a taller sibling card, so the three images line up. */
+.cardImage {
+  display: block;
+  flex: none;
+  width: 100%;
+  aspect-ratio: 7 / 3;
+  overflow: hidden;
+  background-color: var(--color-secondary-blue);
+}
+
+.cardImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Padding lives here, not on the card, so the image sits flush with the card edges. */
+.cardBody {
+  flex: 1;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-S);
+  padding: var(--space-SM);
+}
+
+.cardTitle {
+  color: var(--color-primary-blue);
+  font: var(--font-L);
+}
+
+.cardDescription {
+  color: var(--color-secondary-blue);
+  font: var(--font-M);
+}
+
+.copilot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+  padding-top: var(--space-S);
+}
+
+.copilotLabel {
+  color: var(--color-secondary-blue);
+  text-transform: uppercase;
+  font: var(--font-S);
+}
+
+.copilotInput {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.copilotInput input {
+  width: 100%;
+  padding-right: var(--space-L);
+  font-style: italic;
+}
+
+.copilotSubmit {
+  position: absolute;
+  top: 50%;
+  right: var(--space-S);
+  transform: translateY(-50%);
+}
+
+.loginBlock {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-M);
+  flex-wrap: wrap;
+  width: 100%;
+  padding: var(--space-SM) var(--space-M);
+  background-color: var(--color-terthiary-blue);
+  border-radius: var(--border-radius-1);
+}
+
+.loginActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-M);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-M);
+  flex-wrap: wrap;
+  border-top: var(--border);
+  padding-top: var(--space-SM);
+}
+
+.footerLinks {
+  display: flex;
+  align-items: center;
+  gap: var(--space-M);
+  color: var(--color-secondary-blue);
+  flex-wrap: wrap;
+}
+
+.footerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-M);
+}
+
+.dismissLabel {
+  text-transform: uppercase;
+  font: var(--font-XS);
+  white-space: nowrap;
+}
+
+@media only screen and (width <= 720px) {
+  .cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .loginActions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-M);
+  }
+
+  .footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

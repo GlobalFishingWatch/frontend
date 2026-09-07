@@ -1,9 +1,11 @@
 import type {
+  ApiEvents,
   RegistryExtraFieldValue,
   VesselRegistryAuthorization,
   VesselRegistryOperator,
   VesselRegistryOwner,
 } from '@globalfishingwatch/api-types'
+import { getLonglineCategory } from '@globalfishingwatch/deck-loaders'
 
 import type { VesselLastIdentity } from 'features/_vessels/search/search.slice'
 import type { ActivityEvent } from 'features/_vessels/vessel/activity/vessels-activity.selectors'
@@ -105,4 +107,25 @@ const EVENTS_CSV_CONFIG: CsvConfig[] = [
 
 export const parseEventsToCSV = (events: ActivityEvent[]) => {
   return objectArrayToCSV(events, EVENTS_CSV_CONFIG)
+}
+
+const LONGLINE_SETS_CSV_CONFIG: CsvConfig[] = [
+  { label: 'vesselId', accessor: 'vessel.id' },
+  { label: 'vesselName', accessor: 'vessel.name' },
+  { label: 'vesselFlag', accessor: 'vessel.flag' },
+  { label: 'category', accessor: 'category' },
+  { label: 'start', accessor: 'start', transform: parseCSVDate },
+  { label: 'end', accessor: 'end', transform: parseCSVDate },
+  { label: 'latitude', accessor: 'position.lat' },
+  { label: 'longitude', accessor: 'position.lon' },
+  { label: 'dayNightCategory', accessor: 'fishing.dayNightCategory' },
+  { label: 'fractionAtNight', accessor: 'fishing.fractionAtNight' },
+  { label: 'eez', accessor: 'regions.eez', transform: parseCSVList },
+  { label: 'rfmo', accessor: 'regions.rfmo', transform: parseCSVList },
+]
+
+export const parseLonglineSetsToCSV = (events: ApiEvents['entries']) => {
+  // the untranslated category key keeps the export stable across locales
+  const sets = events.map((event) => ({ ...event, category: getLonglineCategory(event) }))
+  return objectArrayToCSV(sets, LONGLINE_SETS_CSV_CONFIG)
 }
