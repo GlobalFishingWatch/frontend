@@ -443,6 +443,7 @@
         "invalidData": "CSV data does not have a valid structure"
       },
       "default": "There was an error uploading your dataset.",
+      "fileTooBig": "This file is too large to process in the browser. Try splitting it into smaller files.",
       "geoJSON": {
         "noValidFeatures": "No valid feature types found in the geoJSON file"
       },

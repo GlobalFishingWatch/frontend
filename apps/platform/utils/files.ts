@@ -182,11 +182,15 @@ export function readBlobAs(blob: Blob, format: 'text' | 'arrayBuffer'): any {
 }
 
 export function getFileFromGeojson(geojson: FeatureCollection) {
-  try {
-    return new File([JSON.stringify(geojson)], 'file.json', {
-      type: 'application/json',
-    })
-  } catch (error) {
-    console.warn(error)
+  const { features, ...rest } = geojson
+  const parts: string[] = []
+  for (const [key, value] of Object.entries(rest)) {
+    parts.push(`${parts.length ? ',' : '{'}${JSON.stringify(key)}:${JSON.stringify(value)}`)
   }
+  parts.push(`${parts.length ? ',' : '{'}"features":[`)
+  ;(features ?? []).forEach((feature, index) => {
+    parts.push(index ? `,${JSON.stringify(feature)}` : JSON.stringify(feature))
+  })
+  parts.push(']}')
+  return new File(parts, 'file.json', { type: 'application/json' })
 }
