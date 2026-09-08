@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
@@ -13,6 +14,7 @@ import { useActivityDataviewId } from 'features/_map/map/map-layers.hooks'
 import MapLegendPlaceholder from 'features/_map/workspace/shared/MapLegendPlaceholder'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectFeatureFlags } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { getEventLabel } from 'utils/analytics'
@@ -67,6 +69,7 @@ const MapLegendWrapper = ({
   brushClassName?: string
 }) => {
   const { t } = useTranslation()
+  const { legendBrush } = useSelector(selectFeatureFlags)
   const activityDataviewId = useActivityDataviewId(dataview)
   const dataviewId = layerId || activityDataviewId
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
