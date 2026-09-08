@@ -19,8 +19,10 @@ import {
 import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
 import type { FilteredPolygons } from 'features/_reports/reports-geo.utils'
+import { getAreaKm2 } from 'features/_reports/reports-geo.utils'
 import type {
   PolygonsReportGraphStats,
+  PolygonsReportTopArea,
   ReportGraphProps,
   ReportGraphStats,
 } from 'features/_reports/reports-timeseries.hooks'
@@ -53,9 +55,13 @@ export const isInstanceOfPolygonLayer = (instance: ReportDeckLayer) => {
   return instance instanceof UserContextTileLayer || instance instanceof ContextLayer
 }
 
+export const TOP_AREAS_COUNT = 10
+
 export type GetPolygonsStatsParams = {
   features: FilteredPolygons[]
   reportArea?: Polygon | MultiPolygon
+  /** Only set when they describe `reportArea` as-is — see getAreaKm2. */
+  reportAreaProperties?: Record<string, any> | null
   sublayers?: ContextSubLayerConfig[]
 }
 
@@ -73,6 +79,7 @@ function getCountsBySublayer(
 export const getPolygonsTimeseriesStats = ({
   features,
   reportArea,
+  reportAreaProperties,
   sublayers,
 }: GetPolygonsStatsParams): PolygonsReportGraphStats | undefined => {
   const featureGroup = features?.[0]
@@ -110,16 +117,37 @@ export const getPolygonsTimeseriesStats = ({
   }
 
   try {
-    const reportAreaFeature = {
-      type: 'Feature' as const,
-      geometry: reportArea,
-      properties: {},
-    } as Feature<Polygon | MultiPolygon>
-    const reportAreaM2 = area(reportAreaFeature)
+    const reportAreaM2 =
+      getAreaKm2({ geometry: reportArea, properties: reportAreaProperties }) * 1_000_000
+
+    const topAreas: PolygonsReportTopArea[] = []
+    const addTopArea = (
+      feature: any,
+      geometry: Polygon | MultiPolygon,
+      isWholePolygon: boolean
+    ) => {
+      // Properties only where the polygon is counted whole: an overlapping one is measured
+      // after clipping, so its own area_km2 would overstate what is inside the report area.
+      const km2 = getAreaKm2({ geometry, properties: isWholePolygon ? feature.properties : null })
+      const nameProperty = (feature.valueProperties as string[] | undefined)?.[0]
+      // Gleave geometryes out of atom
+      const { geometry: _geometry, ...featureRef } = feature
+      topAreas.push({
+        id: feature.id as string,
+        feature: featureRef,
+        label:
+          (nameProperty ? feature.properties?.[nameProperty] : undefined) ??
+          feature.value ??
+          feature.id,
+        km2,
+        ratio: reportAreaM2 > 0 ? (km2 * 1_000_000) / reportAreaM2 : 0,
+      })
+    }
 
     // Clip overlapping polygons to the report area first so all geometries stay small.
     // Contained polygons are already fully inside, no clipping needed.
     const containedPolygons = featureGroup.contained as Feature<Polygon | MultiPolygon>[]
+    containedPolygons.forEach((p) => addTopArea(p, p.geometry, true))
     const clippedOverlapping = (featureGroup.overlapping as Feature<Polygon | MultiPolygon>[])
       .map((p) => {
         // ponytail: a single unclippable geometry is skipped rather than voiding the whole
@@ -134,9 +162,11 @@ export const getPolygonsTimeseriesStats = ({
           console.warn('Report polygon coverage: could not clip an overlapping polygon', e)
         }
         if (!clipped.length) return null
+        const geometry = { type: 'MultiPolygon' as const, coordinates: clipped }
+        addTopArea(p, geometry, false)
         return {
           type: 'Feature' as const,
-          geometry: { type: 'MultiPolygon' as const, coordinates: clipped },
+          geometry,
           properties: {},
         } as Feature<MultiPolygon>
       })
@@ -163,6 +193,7 @@ export const getPolygonsTimeseriesStats = ({
       overlappingValues,
       areaCoverageRatio: reportAreaM2 > 0 ? intersectionM2 / reportAreaM2 : 0,
       areaCoverageKm2: intersectionM2 / 1_000_000,
+      topAreas: topAreas.sort((a, b) => b.km2 - a.km2).slice(0, TOP_AREAS_COUNT),
     }
   } catch (e) {
     console.warn('Report polygon coverage: area computation failed', e)
@@ -205,7 +236,10 @@ export const getTimeseries = <T extends ReportDeckLayer>({
 }
 
 export type GetTimeseriesStatsParams<T extends ReportDeckLayer> = GetTimeseriesParams<T> &
-  TimeRange & { reportArea?: Polygon | MultiPolygon }
+  TimeRange & {
+    reportArea?: Polygon | MultiPolygon
+    reportAreaProperties?: Record<string, any> | null
+  }
 
 export const getTimeseriesStats = <T extends ReportDeckLayer>({
   featuresFiltered,
@@ -213,13 +247,19 @@ export const getTimeseriesStats = <T extends ReportDeckLayer>({
   start,
   end,
   reportArea,
+  reportAreaProperties,
 }: GetTimeseriesStatsParams<T>) => {
   const timeseriesStats = {} as ReportGraphStats
   instances.forEach((instance, index) => {
     const features = featuresFiltered?.[index]
     if (isInstanceOfPolygonLayer(instance)) {
       const sublayers = instance.props.layers?.[0]?.sublayers as ContextSubLayerConfig[] | undefined
-      const stats = getPolygonsTimeseriesStats({ features, reportArea, sublayers })
+      const stats = getPolygonsTimeseriesStats({
+        features,
+        reportArea,
+        reportAreaProperties,
+        sublayers,
+      })
       if (stats) {
         timeseriesStats[instance.id] = stats
       }

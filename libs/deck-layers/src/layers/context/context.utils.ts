@@ -1,10 +1,12 @@
-import type { PickingInfo } from '@deck.gl/core'
+import type { PickingInfo, Viewport } from '@deck.gl/core'
+import type { _Tile2DHeader as Tile2DHeader, GeoBoundingBox } from '@deck.gl/geo-layers'
 import type { Feature, MultiPolygon, Polygon } from 'geojson'
 
 import type { PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
 import { getPolygonsUnion } from '@globalfishingwatch/data-transforms'
 
 import { DEFAULT_ID_PROPERTY } from '#config/layers.config'
+import { transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
 import type { FilterExtensionProps } from '#layers/user/user.types'
 import { getFilterExtensionSize } from '#layers/user/user.utils'
 
@@ -127,6 +129,29 @@ export const getContextLink = (feature: ContextPickingObject) => {
     default:
       return undefined
   }
+}
+
+/**
+ * Reads the features of every tile the TileLayer selected for the current viewport, in WGS84.
+ *
+ * Deliberately not `deck.pickObjects`: GPU picking only sees a feature that rasterizes over a
+ * pixel center, so any polygon smaller than a screen pixel is invisible to it. At zoom 4 a pixel
+ * is ~10km, which silently dropped 6 of 11 features of a small-polygons dataset.
+ */
+export function getSelectedTilesFeatures<T extends Feature>(
+  tileLayer: unknown,
+  viewport: Viewport
+): T[] {
+  const tiles = (tileLayer as { state?: { tileset?: { selectedTiles?: Tile2DHeader[] } } })?.state
+    ?.tileset?.selectedTiles
+  if (!tiles?.length) return []
+  return tiles.flatMap((tile) => {
+    const content = tile.content as T[] | undefined
+    if (!content?.length) return []
+    return content.flatMap((feature) =>
+      feature ? transformTileCoordsToWGS84(feature, tile.bbox as GeoBoundingBox, viewport) : []
+    )
+  })
 }
 
 export function mergePickedFeatures<T extends Feature>(

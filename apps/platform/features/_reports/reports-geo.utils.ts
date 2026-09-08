@@ -1,7 +1,30 @@
-import { bbox, booleanContains, booleanIntersects, booleanPointInPolygon } from '@turf/turf'
+import { area, bbox, booleanContains, booleanIntersects, booleanPointInPolygon } from '@turf/turf'
 import type { Feature, Geometry, MultiPolygon, Point, Polygon } from 'geojson'
 
+import { toFiniteNumber } from '@globalfishingwatch/data-transforms'
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
+
+/** Precomputed polygon area some context and user datasets ship as a feature property. */
+export const AREA_KM2_PROPERTY = 'area_km2'
+
+/**
+ * Area of a polygon in km².
+ * Prefers the dataset's own `area_km2` over measuring the geometry, which is only ever an
+ * approximation here: tile geometry is simplified per zoom level and stitched back together
+ * across tile borders.
+ */
+export function getAreaKm2({
+  geometry,
+  properties,
+}: {
+  geometry: Polygon | MultiPolygon | undefined
+  properties?: Record<string, any> | null
+}): number {
+  const precomputed = toFiniteNumber(properties?.[AREA_KM2_PROPERTY])
+  if (precomputed !== undefined) return precomputed
+  if (!geometry) return 0
+  return area({ type: 'Feature', geometry, properties: {} } as Feature) / 1_000_000
+}
 
 export type FilteredPolygons = {
   instanceId: string

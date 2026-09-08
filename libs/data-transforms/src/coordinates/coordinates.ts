@@ -1,12 +1,13 @@
 import { convert } from 'geo-coordinates-parser'
 
+import { toFiniteNumber } from '../numbers'
+
 /**
  * Checks a longitude or latitude value is safe to project on the map.
  * Guards against null, undefined, '' and non-numeric strings, but allows 0.
  */
 export const isValidCoordinate = (value: number | string | null | undefined): boolean => {
-  if (value == null || value === '') return false
-  return Number.isFinite(Number(value))
+  return toFiniteNumber(value) !== undefined
 }
 
 export const isValidLngLat = (lon: unknown, lat: unknown): boolean => {

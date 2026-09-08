@@ -14,6 +14,7 @@ import {
   groupContextDataviews,
   useGetDeckLayers,
 } from '@globalfishingwatch/deck-layer-composer'
+import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import {
   ContextLayer,
   FourwingsLayer,
@@ -31,7 +32,10 @@ import { selectReportComparisonDataviews } from 'features/_map/dataviews/selecto
 import { selectActiveReportDataviews } from 'features/_map/dataviews/selectors/dataviews.selectors'
 import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
-import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/_reports/report-area/area-reports.config'
+import {
+  ENTIRE_WORLD_REPORT_AREA_ID,
+  REPORT_BUFFER_FEATURE_ID,
+} from 'features/_reports/report-area/area-reports.config'
 import { useReportAreaInViewport } from 'features/_reports/report-area/area-reports.hooks'
 import {
   selectReportArea,
@@ -105,6 +109,14 @@ export type PointsReportGraphStats = {
   count: number
 }
 
+export type PolygonsReportTopArea = {
+  id: string
+  feature: ContextPickingObject | UserLayerPickingObject
+  label: string
+  km2: number
+  ratio: number
+}
+
 export type PolygonsReportGraphStats = {
   type: 'polygons'
   contained: number
@@ -113,6 +125,7 @@ export type PolygonsReportGraphStats = {
   overlappingValues: number[]
   areaCoverageRatio?: number
   areaCoverageKm2?: number
+  topAreas?: PolygonsReportTopArea[]
 }
 
 export type ReportGraphStats = Record<
@@ -436,6 +449,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
         start,
         end,
         reportArea: area?.geometry as Polygon | MultiPolygon | undefined,
+        reportAreaProperties: area?.id === REPORT_BUFFER_FEATURE_ID ? undefined : area?.properties,
       })
       return { ...prev, stats }
     })

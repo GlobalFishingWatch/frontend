@@ -93,6 +93,8 @@
     "polygonsOverlapping": "overlapping",
     "polygonsOverlapping_one": "overlapping polygon",
     "polygonsOverlapping_other": "overlapping polygons",
+    "polygonsTopAreas_one": "Largest polygon in the report area",
+    "polygonsTopAreas_other": "Top {{count}} largest polygons in the report area",
     "portsAfterEvents": "Ports visited after events",
     "portsSearchPlaceholder": "Search ports",
     "print": "print",

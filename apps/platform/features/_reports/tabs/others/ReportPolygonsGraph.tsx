@@ -1,12 +1,17 @@
-import { Fragment } from 'react'
+import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import type { ContextLayer, ContextPickingObject } from '@globalfishingwatch/deck-layers'
+import { Icon } from '@globalfishingwatch/ui-components'
 
 import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
 import { dataviewHasUserTimeRange } from 'features/_map/dataviews/dataviews.utils'
+import ContextLayerReportLink from 'features/_map/map/popups/context/ContextLayerReportLink'
+import { useContextInteractions } from 'features/_map/map/popups/context/ContextLayers.hooks'
 import { showSchemaFilter } from 'features/_map/workspace/shared/LayerSchemaFilter.utils'
 import type { ReportGraphProps } from 'features/_reports/reports-timeseries.hooks'
 import { useTimeseriesStats } from 'features/_reports/reports-timeseries.hooks'
@@ -20,6 +25,12 @@ import ReportPolygonsEvolution from './ReportPolygonsEvolution'
 import ReportSublayerValues from './ReportSublayerValues'
 
 import styles from './ReportPolygonsGraph.module.css'
+
+function formatArea(km2: number) {
+  return km2 < 1
+    ? `${formatI18nNumber(km2 * 1_000_000, { maximumFractionDigits: 0 })} m²`
+    : `${formatI18nNumber(km2, { maximumFractionDigits: 0 })} km²`
+}
 
 function ReportPolygonsGraph({
   dataview,
@@ -43,6 +54,18 @@ function ReportPolygonsGraph({
   const { t } = useTranslation()
   const timeseriesStats = useTimeseriesStats()
   const tags = dataviews ?? [dataview]
+  const contextLayer = useGetDeckLayer<ContextLayer>(statsId ?? dataview.id)
+  const { onReportClick } = useContextInteractions()
+
+  // getPickedFeatureToHighlight matches on id alone, so no need to keep the geometry around
+  const highlightArea = useCallback(
+    (id?: string) => {
+      contextLayer?.instance?.setHighlightedFeatures(
+        id ? [{ id } as ContextPickingObject] : ([] as ContextPickingObject[])
+      )
+    },
+    [contextLayer]
+  )
 
   const dataset = dataview.datasets?.find(
     (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
@@ -62,6 +85,7 @@ function ReportPolygonsGraph({
     : []
   const areaCoverageRatio = layerStats ? getStatsValue(layerStats, 'areaCoverageRatio') : undefined
   const areaCoverageKm2 = layerStats ? getStatsValue(layerStats, 'areaCoverageKm2') : undefined
+  const topAreas = layerStats ? getStatsValue(layerStats, 'topAreas') : undefined
 
   const { filtersAllowed } = getFiltersInDataview(dataview)
   const hasFilters = filtersAllowed.some(showSchemaFilter)
@@ -115,6 +139,34 @@ function ReportPolygonsGraph({
         </p>
       ) : (
         <p className={styles.summary}>{t((t) => t.analysis.noPolygonsContainedOrOverlapping)}</p>
+      )}
+
+      {topAreas && topAreas.length > 1 && (
+        // ponytail: native <details>, so collapsed-by-default and the toggle come for free
+        <details className={styles.topAreas}>
+          <summary className={styles.topAreasTitle}>
+            {t((t) => t.analysis.polygonsTopAreas, { count: topAreas.length })}
+            <Icon icon="arrow-down" className={styles.topAreasChevron} />
+          </summary>
+          <ol>
+            {topAreas.map((topArea, index) => (
+              <li
+                key={`${topArea.id}-${index}`}
+                className={styles.topArea}
+                onMouseEnter={() => highlightArea(topArea.id)}
+                onMouseLeave={() => highlightArea()}
+              >
+                <span className={styles.topAreaLabel} title={topArea.label}>
+                  {topArea.label}
+                  <span className={styles.topAreaActions}>
+                    <ContextLayerReportLink feature={topArea.feature} onClick={onReportClick} />
+                  </span>
+                </span>
+                <span className={styles.topAreaValue}>{formatArea(topArea.km2)}</span>
+              </li>
+            ))}
+          </ol>
+        </details>
       )}
 
       {hasFilters && (

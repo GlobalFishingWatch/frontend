@@ -36,6 +36,7 @@ import {
   getContextFiltersHash,
   getContextId,
   getContextLink,
+  getSelectedTilesFeatures,
   mergePickedFeatures,
 } from './context.utils'
 
@@ -157,21 +158,37 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
     return { ...info, object }
   }
 
-  _pickObjects(maxObjects: number | null): PickingInfo[] {
-    const { deck, viewport } = this.context
-    const width = viewport.width
-    const height = viewport.height
-    const x = viewport.x
-    const y = viewport.y
-    const layerIds = this.props.layers.map((l) => l.id)
-    const features = deck!.pickObjects({ x, y, width, height, layerIds, maxObjects })
-    return features.filter((f) => f.object)
-  }
-
   getRenderedFeatures(maxFeatures: number | null = null): ContextFeature[] {
-    const idProperty = this.props.layers[0].idProperty || DEFAULT_ID_PROPERTY
+    const { viewport } = this.context
+    const { idProperty = DEFAULT_ID_PROPERTY, valueProperties, datasetId } = this.props.layers[0]
+    if (!viewport) return []
+
+    const pickedFeatures: PickingInfo[] = []
+    this.getSubLayers().forEach((tileLayer, index) => {
+      const layer = this.props.layers[index] || this.props.layers[0]
+      const sublayer = layer?.sublayers?.[0]
+      if (!sublayer) return
+      const features = getSelectedTilesFeatures<ContextFeature>(tileLayer, viewport)
+      for (const feature of features) {
+        if (maxFeatures !== null && pickedFeatures.length >= maxFeatures) break
+        const object = {
+          ...feature,
+          color: sublayer.color,
+          layerId: sublayer.dataviewId,
+          datasetId,
+          dataviewId: sublayer.dataviewId,
+          category: this.props.category,
+          id: getContextId(feature, idProperty),
+          value: feature.properties?.value,
+          valueProperties,
+          link: getContextLink({ ...feature, layerId: layer.id } as ContextPickingObject),
+        } as ContextPickingObject
+        pickedFeatures.push({ object, layer: { id: layer.id } } as unknown as PickingInfo)
+      }
+    })
+
     return mergePickedFeatures<ContextFeature>({
-      pickedFeatures: this._pickObjects(maxFeatures),
+      pickedFeatures,
       idProperty,
       layers: this.props.layers,
     })
