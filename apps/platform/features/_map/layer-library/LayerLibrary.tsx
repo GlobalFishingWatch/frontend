@@ -10,7 +10,11 @@ import { InputText, Spinner } from '@globalfishingwatch/ui-components'
 
 import type { LibraryLayer } from 'data/map/layer-library'
 import { fetchAllDatasetsThunk } from 'features/_map/datasets/datasets.slice'
-import { getDatasetLabel, groupDatasetsByGeometryType } from 'features/_map/datasets/datasets.utils'
+import {
+  getDatasetLabel,
+  getDatasetMatchesSearch,
+  groupDatasetsByGeometryType,
+} from 'features/_map/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
 import { resolveLibraryLayers } from 'features/_map/layer-library/LayerLibrary.utils'
 import LayerLibraryItem from 'features/_map/layer-library/LayerLibraryItem'
@@ -194,14 +198,15 @@ const LayerLibrary: FC = () => {
     [allVesselGroups, activeSearchQuery]
   )
 
-  const userDatasetsMatchCount = useMemo(
-    () =>
-      activeSearchQuery
-        ? userDatasets.filter((d) =>
-            getDatasetLabel(d).toLowerCase().includes(activeSearchQuery.toLowerCase())
-          ).length
-        : userDatasets.length,
+  const searchedUserDatasets = useMemo(
+    () => userDatasets.filter((d) => getDatasetMatchesSearch(d, activeSearchQuery)),
     [userDatasets, activeSearchQuery]
+  )
+  const userDatasetsMatchCount = searchedUserDatasets.length
+
+  const userGeometriesMatchCount = useMemo(
+    () => groupDatasetsByGeometryType(searchedUserDatasets),
+    [searchedUserDatasets]
   )
 
   const onInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -301,24 +306,30 @@ const LayerLibrary: FC = () => {
                       defaultValue: category,
                     })}
                   </button>
-                  {currentCategory === category &&
-                    subcategories.length > 0 &&
+                  {subcategories.length > 0 &&
                     !guestUser &&
-                    subcategories.map((subcategory) => (
-                      <button
-                        key={subcategory}
-                        className={cx(styles.subcategory, {
-                          [styles.currentCategory]: currentSubcategory === subcategory,
-                        })}
-                        data-category={category}
-                        data-subcategory={subcategory}
-                        onClick={onCategoryClick}
-                      >
-                        {t((t: any) => t.dataset.type[upperFirst(subcategory)], {
-                          defaultValue: upperFirst(subcategory),
-                        })}
-                      </button>
-                    ))}
+                    subcategories
+                      .filter(
+                        (subcategory) =>
+                          !activeSearchQuery ||
+                          (userGeometriesMatchCount[subcategory]?.length ?? 0) > 0
+                      )
+                      .map((subcategory) => (
+                        <button
+                          key={subcategory}
+                          className={cx(styles.subcategory, {
+                            [styles.currentCategory]: currentSubcategory === subcategory,
+                          })}
+                          data-category={category}
+                          data-subcategory={subcategory}
+                          onClick={onCategoryClick}
+                        >
+                          {t((t: any) => t.dataset.type[upperFirst(subcategory)], {
+                            defaultValue: upperFirst(subcategory),
+                          })}{' '}
+                          ({userGeometriesMatchCount[subcategory]?.length ?? 0})
+                        </button>
+                      ))}
                 </div>
               ))}
         </div>

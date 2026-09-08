@@ -141,8 +141,19 @@ function ReportPolygonsGraph({
         <p className={styles.summary}>{t((t) => t.analysis.noPolygonsContainedOrOverlapping)}</p>
       )}
 
+      {hasFilters && (
+        <div className={styles.tagsContainer}>
+          {tags.length > 1 && tags.map((d) => <ReportSummaryTags dataview={d} />)}
+        </div>
+      )}
+      {showEvolution &&
+        (loading ? (
+          <ReportActivityPlaceholder showHeader={false} loading />
+        ) : (
+          <ReportPolygonsEvolution start={start} end={end} data={data} />
+        ))}
+
       {topAreas && topAreas.length > 1 && (
-        // ponytail: native <details>, so collapsed-by-default and the toggle come for free
         <details className={styles.topAreas}>
           <summary className={styles.topAreasTitle}>
             {t((t) => t.analysis.polygonsTopAreas, { count: topAreas.length })}
@@ -168,18 +179,6 @@ function ReportPolygonsGraph({
           </ol>
         </details>
       )}
-
-      {hasFilters && (
-        <div className={styles.tagsContainer}>
-          {tags.length > 1 && tags.map((d) => <ReportSummaryTags dataview={d} />)}
-        </div>
-      )}
-      {showEvolution &&
-        (loading ? (
-          <ReportActivityPlaceholder showHeader={false} loading />
-        ) : (
-          <ReportPolygonsEvolution start={start} end={end} data={data} />
-        ))}
     </div>
   )
 }

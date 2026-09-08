@@ -20,6 +20,7 @@ const DYNAMIC_SUBTREES = [
   'datasetUpload.errors.*', // API dynamic properties
   'map.screenshotArea.*', // MapControlScreenshot
   'search.searchTypes.*', // MapSearch, keyed by OceanAreaType
+  'time.*', // t.time[unit] — getTimeAgo, plural forms included
   'user.badges.*', // UserInfo
   'vessel.fleetCodes.*', // formatInfoField('fleetCode') — VMS Brazil
   'vessel.gearTypes.*', // getVesselGearTypeLabel
@@ -86,12 +87,6 @@ const DYNAMIC_KEYS = [
   'layer.vesselGroup',
   // plural base form for t(t.search.seeVesselsOnMap, { count })
   'search.seeVesselsOnMap',
-  // t.time[keyBase] — utils/dates.ts
-  'time.days',
-  'time.hours',
-  'time.minutes',
-  'time.months',
-  'time.weeks',
   // t.userGuide[slug] — UserGuideLink
   'userGuide.activity-fishing',
   'userGuide.activity-vessel-presence',

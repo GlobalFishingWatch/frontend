@@ -96,6 +96,15 @@ export const getDatasetLabel = (dataset = {} as GetDatasetLabelParams): string =
   return label
 }
 
+export const getDatasetMatchesSearch = (dataset: Dataset, searchQuery: string): boolean => {
+  if (!searchQuery) return true
+  const query = searchQuery.toLowerCase()
+  return (
+    getDatasetLabel(dataset).toLowerCase().includes(query) ||
+    (dataset.description?.toLowerCase().includes(query) ?? false)
+  )
+}
+
 export const getDataviewsSources = (dataviews: UrlDataviewInstance[]) => {
   return uniq(
     dataviews
