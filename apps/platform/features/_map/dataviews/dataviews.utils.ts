@@ -517,7 +517,7 @@ export const getUserFourwingsDataviewInstance = (
         (agregationMode?.toLowerCase() as FourwingsAggregationOperation) ||
         FourwingsAggregationOperation.Avg,
       datasets: [dataset.id],
-      group: LayerGroup.CustomLayer,
+      group: LayerGroup.HeatmapStatic,
     },
     dataviewId: timestampColumn
       ? TEMPLATE_ACTIVITY_DATAVIEW_SLUG

@@ -13,6 +13,7 @@ import {
 import { getAvailableIntervalsInDataviews } from '@globalfishingwatch/deck-layer-composer'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
+import { DATASETS_USER_SOURCE_ID } from 'features/_map/datasets/datasets.slice'
 import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
 import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
 import { showSchemaFilter } from 'features/_map/workspace/shared/LayerSchemaFilter.utils'
@@ -45,7 +46,7 @@ function ReportEnvironmentGraph({
   isLoading = false,
   removeEmptyValues = false,
 }: {
-  GraphComponent: React.ComponentType<any>
+  GraphComponent?: React.ComponentType<any>
   dataview: UrlDataviewInstance<DataviewType>
   data: ReportGraphProps | ReportGraphProps[]
   isLoading?: boolean
@@ -63,7 +64,9 @@ function ReportEnvironmentGraph({
   if (!dataview) return null
 
   const { min, mean, max } = (timeseriesStats?.[dataview.id] as FourwingsReportGraphStats) || {}
-  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
+  const dataset = dataview.datasets?.find(
+    (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.UserFourwings
+  )
   const title = dataset?.name
   const hasError =
     layersTimeseriesErrors?.[index] !== undefined && layersTimeseriesErrors?.[index] !== ''
@@ -73,7 +76,10 @@ function ReportEnvironmentGraph({
   const isEmptyData =
     data !== undefined && (!timeseries || (Array.isArray(timeseries) && timeseries.length === 0))
   const isHeatmapVector = isHeatmapVectorsDataview(dataview)
-  const { function: aggregationFunction } = getDatasetConfiguration(dataset, 'fourwingsV1')
+  const aggregationFunction =
+    dataset?.type === DatasetTypes.UserFourwings
+      ? getDatasetConfiguration(dataset, 'userFourwingsV1').agregationMode
+      : getDatasetConfiguration(dataset, 'fourwingsV1').function
 
   const { filtersAllowed } = getFiltersInDataview(dataview)
   const hasVisibleValues = Boolean(
@@ -113,7 +119,7 @@ function ReportEnvironmentGraph({
               {t((t) => t.analysis.noDataByArea)}
             </div>
           </ReportActivityPlaceholder>
-        ) : (
+        ) : GraphComponent ? (
           <GraphComponent
             start={start}
             end={end}
@@ -129,7 +135,7 @@ function ReportEnvironmentGraph({
               ) : undefined
             }
           />
-        ))}
+        ) : null)}
       {isLoading ? (
         <ReportStatsPlaceholder />
       ) : min !== undefined && mean !== undefined && max !== undefined ? (
@@ -152,7 +158,7 @@ function ReportEnvironmentGraph({
                 mean: formatI18nNumber(mean, { maximumFractionDigits: 2 }) as string,
                 unit: unit ?? '',
               })}{' '}
-          {dataset?.source && (
+          {dataset?.source && dataset.source !== DATASETS_USER_SOURCE_ID && (
             <span>
               {t((t) => t.analysis.dataSource)}: {htmlSafeParse(dataset.source)}
             </span>

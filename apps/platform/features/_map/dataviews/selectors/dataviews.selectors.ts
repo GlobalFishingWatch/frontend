@@ -8,13 +8,14 @@ import {
   DataviewType,
 } from '@globalfishingwatch/api-types'
 import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
+import { DATASET_COMPARISON_SUFFIX } from '@globalfishingwatch/datasets-client/constants'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   getIsSingleHeatmapDataview,
   getMergedDataviewId,
   getVesselDataviewInstanceId,
 } from '@globalfishingwatch/dataviews-client'
-import { DATASET_COMPARISON_SUFFIX } from '@globalfishingwatch/datasets-client/constants'
+
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_DATAVIEW_SLUGS } from 'data/map/dataviews'
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import {
@@ -48,8 +49,6 @@ import { selectWorkspaceDataviewInstances } from 'features/_map/workspace/worksp
 import { isSupportedReportDataview } from 'features/_reports/report-dataview-category.utils'
 import { selectReportCategory, selectReportDatasetId } from 'features/_reports/reports.selectors'
 import { ReportCategory } from 'features/_reports/reports.types'
-import type { FeatureFlag } from 'features/debug/debug.slice'
-import { selectFeatureFlags } from 'features/debug/debug.slice'
 import { selectIsVesselGroupReportLocation, selectVesselId } from 'router/routes.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
 
@@ -254,8 +253,8 @@ export const selectActiveTemporalgridDataviews: (
 )
 
 export const selectReportLayersVisible = createSelector(
-  [selectAllDataviewInstancesResolved, selectReportDatasetId, selectFeatureFlags],
-  (allDataviewInstancesResolved, reportDatasetId, featureFlags) => {
+  [selectAllDataviewInstancesResolved, selectReportDatasetId],
+  (allDataviewInstancesResolved, reportDatasetId) => {
     return allDataviewInstancesResolved?.filter((dataview) => {
       const isVisible = dataview.config?.visible === true
       if (!isVisible) {
@@ -270,7 +269,7 @@ export const selectReportLayersVisible = createSelector(
       if (dataviewIsSameAsReportArea) {
         return false
       }
-      return isSupportedReportDataview(dataview, featureFlags)
+      return isSupportedReportDataview(dataview)
     })
   }
 )
@@ -284,7 +283,6 @@ export const selectEnvironmentReportLayersVisible = createSelector(
 
 export const getIsDataviewReportSupported = (
   reportLayers: (DataviewInstance | UrlDataviewInstance)[],
-  featureFlags: Record<FeatureFlag, boolean>,
   currentDataviewId?: string
 ) => {
   if (!reportLayers) {
@@ -293,8 +291,7 @@ export const getIsDataviewReportSupported = (
   return reportLayers
     ?.filter(
       (dataview) =>
-        isSupportedReportDataview(dataview, featureFlags) &&
-        dataview.category !== DataviewCategory.VesselGroups
+        isSupportedReportDataview(dataview) && dataview.category !== DataviewCategory.VesselGroups
     )
     .some((dataview) => dataview.id !== currentDataviewId)
 }

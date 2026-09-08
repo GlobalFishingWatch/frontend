@@ -158,6 +158,7 @@ const Vessel = () => {
         content: <VesselAreas updateAreaLayersVisibility={updateAreaLayersVisibility} />,
         disabled: !hasEventsDataset,
         testId: 'vv-areas-tab',
+        tooltip: hasEventsDataset ? undefined : t((t) => t.vessel.sectionEventsTooltip),
       },
       {
         id: 'related_vessels',
@@ -165,6 +166,7 @@ const Vessel = () => {
         content: <RelatedVessels />,
         disabled: !hasEventsDataset,
         testId: 'vv-related-tab',
+        tooltip: hasEventsDataset ? undefined : t((t) => t.vessel.sectionEventsTooltip),
       },
       {
         id: 'insights' as VesselSection,

@@ -2,20 +2,21 @@ import { createSelector } from '@reduxjs/toolkit'
 
 import type { DataviewType } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DATASET_COMPARISON_SUFFIX } from '@globalfishingwatch/datasets-client/constants'
 import { type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 // Leaf subpath: this module is always loaded (MainNav -> app.timebar.selectors), and the composer root
 // barrel pulls the whole deck layer pipeline.
 import { groupContextDataviews } from '@globalfishingwatch/deck-layer-composer/dataview-resolvers'
-import { DATASET_COMPARISON_SUFFIX } from '@globalfishingwatch/datasets-client/constants'
+
 import { selectDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import {
   isPointsDataviewReportSupported,
   isPolygonsDataviewReportSupported,
+  isUserHeatmapDataviewReportSupported,
 } from 'features/_reports/report-dataview-category.utils'
 import { isVesselGroupActivityDataview } from 'features/_reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectReportComparisonDataviewIds } from 'features/_reports/reports.config.selectors'
 import { selectReportDatasetId } from 'features/_reports/reports.selectors'
-import { selectFeatureFlags } from 'features/debug/debug.slice'
 import { selectReportVesselGroupId } from 'router/routes.selectors'
 
 import { dataviewHasUserTimeRange, dataviewHasVesselGroupId } from '../dataviews.utils'
@@ -176,15 +177,24 @@ export const selectPolygonsActiveReportDataviewsGrouped = createSelector(
   (dataviews = []) => groupContextDataviews(dataviews)
 )
 
+export const selectUserHeatmapsActiveReportDataviews = createSelector(
+  [selectCustomUserDataviews],
+  (dataviews = []) => {
+    return dataviews.filter(
+      (dataview) => dataview.config?.visible && isUserHeatmapDataviewReportSupported(dataview)
+    )
+  }
+)
+
 export const selectOthersActiveReportDataviews = createSelector(
   [
     selectPointsActiveReportDataviews,
     selectPolygonsActiveReportDataviews,
+    selectUserHeatmapsActiveReportDataviews,
     selectReportDatasetId,
-    selectFeatureFlags,
   ],
-  (points = [], polygons = [], reportDatasetId, { polygonsReport }) => {
-    const filteredDataviews = polygonsReport ? [...points, ...polygons] : points
+  (points = [], polygons = [], userHeatmaps = [], reportDatasetId) => {
+    const filteredDataviews = [...points, ...polygons, ...userHeatmaps]
     return filteredDataviews.filter(
       (d) => !d.datasets?.some((ds) => reportDatasetId?.split(',').includes(ds.id))
     )

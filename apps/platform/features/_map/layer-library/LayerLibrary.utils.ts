@@ -11,13 +11,7 @@ import { t } from 'features/i18n/i18n'
 
 export const resolveLibraryLayers = (
   dataviews: Dataview<any, DataviewCategory>[],
-  {
-    experimentalLayers,
-    avoidColors = [],
-  }: {
-    experimentalLayers: boolean
-    avoidColors?: string[]
-  }
+  { avoidColors = [] }: { avoidColors?: string[] } = {}
 ): LibraryLayer[] => {
   const layers = LIBRARY_LAYERS.flatMap((layer) => {
     const dataview = dataviews.find((d) => d.slug === layer.dataviewId)
@@ -52,22 +46,20 @@ export const resolveLibraryLayers = (
     }
   })
 
-  if (experimentalLayers) {
-    layers.push({
-      id: BATHYMETRY_CONTOUR_DATAVIEW_PREFIX,
-      dataviewId: BATHYMETRY_CONTOUR_DATAVIEW_SLUG,
-      config: {},
-      category: DataviewCategory.Environment,
-      name: t((t) => t['bathymetry-contour'].name, {
-        ns: 'layer-library',
-      }),
-      description: t((t) => t['bathymetry-contour'].description, {
-        ns: 'layer-library',
-      }),
-      moreInfoLink: '',
-      previewImageUrl: `${PATH_BASENAME}/images/layer-library/bathymetry-contour.jpg`,
-      dataview: {} as any,
-    })
-  }
+  layers.push({
+    id: BATHYMETRY_CONTOUR_DATAVIEW_PREFIX,
+    dataviewId: BATHYMETRY_CONTOUR_DATAVIEW_SLUG,
+    config: {},
+    category: DataviewCategory.Environment,
+    name: t((t) => t['bathymetry-contour'].name, {
+      ns: 'layer-library',
+    }),
+    description: t((t) => t['bathymetry-contour'].description, {
+      ns: 'layer-library',
+    }),
+    moreInfoLink: '',
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/bathymetry-contour.jpg`,
+    dataview: {} as any,
+  })
   return layers
 }

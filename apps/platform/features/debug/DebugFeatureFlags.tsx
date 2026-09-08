@@ -7,7 +7,7 @@ import {
   selectIsTurningTidesWorkspace,
   selectLonglineSetsInsight,
 } from 'features/_map/workspace/workspace.selectors'
-import { selectIsGFWDeveloper, selectIsGFWTestGroup } from 'features/_user/selectors/user.selectors'
+import { selectIsGFWDeveloper } from 'features/_user/selectors/user.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 
@@ -27,7 +27,6 @@ const DebugFeatureFlags: React.FC = () => {
   const dispatch = useAppDispatch()
   const { replaceQueryParams } = useReplaceQueryParams()
   const isGFWDeveloper = useSelector(selectIsGFWDeveloper)
-  const isGFWTestGroup = useSelector(selectIsGFWTestGroup)
   const debugOptions = useSelector(selectDebugOptions)
   const featureFlags = useSelector(selectFeatureFlags)
   const longlineSetsInsight = useSelector(selectLonglineSetsInsight)
@@ -122,50 +121,6 @@ const DebugFeatureFlags: React.FC = () => {
         <Fragment>
           <div className={styles.header}>
             <Switch
-              id="option_polygons_report"
-              active={featureFlags.polygonsReport}
-              onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.PolygonsReport))}
-            />
-            <label htmlFor="option_polygons_report">
-              <strong>Feature flag:</strong> Polygons report
-            </label>
-          </div>
-          <p>See reports of polygon areas</p>
-          <div className={styles.header}>
-            <Switch
-              id="option_gridded_heatmap"
-              active={featureFlags.griddedHeatmap}
-              onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.GriddedHeatmap))}
-            />
-            <label htmlFor="option_gridded_heatmap">
-              <strong>Feature flag:</strong> Gridded heatmap
-            </label>
-          </div>
-          <p>Allow users to upload gridded heatmap datasets (.tiff files)</p>
-          <div className={styles.header}>
-            <Switch
-              id="option_legend_brush"
-              active={featureFlags.legendBrush}
-              onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.LegendBrush))}
-            />
-            <label htmlFor="option_legend_brush">
-              <strong>Feature flag:</strong> Legend brush
-            </label>
-          </div>
-          <p>Filter activity, detections and environment layers by dragging the legend</p>
-          <div className={styles.header}>
-            <Switch
-              id="option_report_preview"
-              active={featureFlags.reportPreview}
-              onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.ReportPreview))}
-            />
-            <label htmlFor="option_report_preview">
-              <strong>Feature flag:</strong> Report preview
-            </label>
-          </div>
-          <p>Show an area report sparkline preview in context layer popups</p>
-          <div className={styles.header}>
-            <Switch
               id="option_hotspot_button"
               active={featureFlags.hotspotButton}
               onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.HotspotButton))}
@@ -186,19 +141,6 @@ const DebugFeatureFlags: React.FC = () => {
             </label>
           </div>
           <p>Activates the "Areas on screen" selector in context layers</p>
-          {isGFWTestGroup && (
-            <Fragment>
-              <div className={styles.header}>
-                <Switch
-                  id="option_currents_layer"
-                  active={debugOptions.experimentalLayers}
-                  onClick={() => dispatch(toggleDebugOption(DebugOption.ExperimentalLayers))}
-                />
-                <label htmlFor="option_currents_layer">Experimental layers</label>
-              </div>
-              <p>Make experimental layers available in layer library</p>
-            </Fragment>
-          )}
         </Fragment>
       )}
     </section>

@@ -5,7 +5,7 @@ import { createWorkerClient } from '@globalfishingwatch/data-transforms/worker'
 import type { FilterByPolygomParams, FilteredPolygons } from './reports-geo.utils'
 
 const filterCellsClient = createWorkerClient<FilterByPolygomParams, FilteredPolygons[]>(
-  new URL('./reports-geo.utils.workers.ts', import.meta.url)
+  () => new Worker(new URL('./reports-geo.utils.workers.ts', import.meta.url), { type: 'module' })
 )
 
 export function useFilterCellsByPolygonWorker() {

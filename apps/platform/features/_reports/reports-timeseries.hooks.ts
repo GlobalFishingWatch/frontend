@@ -236,8 +236,11 @@ export async function getFeaturesFilteredByArea({
       let mode: FilterByPolygonMode = 'cell'
       if (isPolygonLayer) {
         mode = 'polygon'
-      } else if (instance.props.category === 'environment') {
-        mode = 'cellCenter'
+      } else if (instance instanceof FourwingsLayer) {
+        mode =
+          instance.props.category === 'environment' || instance.props.category === 'user'
+            ? 'cellCenter'
+            : 'cell'
       } else if (instance.props.category === 'user' || instance.props.category === 'context') {
         mode = 'point'
       }

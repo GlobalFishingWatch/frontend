@@ -7,7 +7,6 @@ import type {
   ReportDetectionsSubCategory,
 } from 'features/_reports/reports.types'
 import { ReportCategory } from 'features/_reports/reports.types'
-import type { FeatureFlag } from 'features/debug/debug.slice'
 
 /**
  * Pure dataview → report category predicates.
@@ -39,6 +38,14 @@ export const isContextDataviewReportSupported = (dataview: Dataview | UrlDatavie
   return isPointsDataviewReportSupported(dataview) || isPolygonsDataviewReportSupported(dataview)
 }
 
+export const isUserHeatmapDataviewReportSupported = (dataview: Dataview | UrlDataviewInstance) => {
+  return (
+    dataview.category === DataviewCategory.User &&
+    (dataview.config?.type === DataviewType.HeatmapStatic ||
+      dataview.config?.type === DataviewType.HeatmapAnimated)
+  )
+}
+
 export const getReportCategoryFromDataview = (
   dataview: Dataview | UrlDataviewInstance
 ): ReportCategory => {
@@ -46,6 +53,9 @@ export const getReportCategoryFromDataview = (
     isContextDataviewReportSupported(dataview) &&
     dataview.category !== DataviewCategory.Environment
   ) {
+    return ReportCategory.Others
+  }
+  if (isUserHeatmapDataviewReportSupported(dataview)) {
     return ReportCategory.Others
   }
   return dataview.category as unknown as ReportCategory
@@ -96,22 +106,14 @@ const SUPPORTED_COMPARISON_TYPES = [
   DataviewType.FourwingsTileCluster,
 ]
 
-export const isSupportedReportDataview = (
-  dataview: Dataview | UrlDataviewInstance,
-  featureFlags: Record<FeatureFlag, boolean>
-) => {
+export const isSupportedReportDataview = (dataview: Dataview | UrlDataviewInstance) => {
   const { category, config } = dataview
   if (!category || !config?.visible || !config?.type) {
     return false
   }
-  let reportTypes = SUPPORTED_REPORT_TYPES
-  if (!featureFlags.polygonsReport) {
-    reportTypes = reportTypes.filter(
-      (t) =>
-        t !== DataviewType.Polygons && t !== DataviewType.UserContext && t !== DataviewType.Context
-    )
-  }
-  return SUPPORTED_REPORT_CATEGORIES.includes(category) && reportTypes.includes(config?.type)
+  return (
+    SUPPORTED_REPORT_CATEGORIES.includes(category) && SUPPORTED_REPORT_TYPES.includes(config?.type)
+  )
 }
 
 export const isSupportedComparisonDataview = (dataview: Dataview | UrlDataviewInstance) => {

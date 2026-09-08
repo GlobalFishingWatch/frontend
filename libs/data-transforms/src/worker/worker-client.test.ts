@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 
 import type { WorkerRequestMessage, WorkerResponseMessage } from './worker-client'
 import { createWorkerClient } from './worker-client'
@@ -28,9 +28,8 @@ class FakeWorker {
   }
 }
 
-vi.stubGlobal('Worker', FakeWorker)
-
-const workerUrl = new URL('file:///fake.worker.js')
+/** Stands in for the `() => new Worker(new URL(...), ...)` factory the real call sites pass. */
+const createFakeWorker = () => new FakeWorker() as unknown as Worker
 
 afterEach(() => {
   FakeWorker.instances = []
@@ -38,7 +37,7 @@ afterEach(() => {
 
 describe('createWorkerClient', () => {
   it('settles each request by id, out of order, and ignores unknown ids', async () => {
-    const client = createWorkerClient<string, string>(workerUrl)
+    const client = createWorkerClient<string, string>(createFakeWorker)
     const first = client.request('a')
     const second = client.request('b')
     const [worker] = FakeWorker.instances
@@ -58,14 +57,14 @@ describe('createWorkerClient', () => {
   })
 
   it('rejects with the error the worker reports', async () => {
-    const client = createWorkerClient<string, string>(workerUrl)
+    const client = createWorkerClient<string, string>(createFakeWorker)
     const request = client.request('a')
     FakeWorker.instances[0].reply({ id: 0, error: 'invalid data' })
     await expect(request).rejects.toThrow('invalid data')
   })
 
   it('terminate rejects pending requests and the next request spawns a new worker', async () => {
-    const client = createWorkerClient<string, string>(workerUrl)
+    const client = createWorkerClient<string, string>(createFakeWorker)
     const request = client.request('a')
     client.terminate()
 

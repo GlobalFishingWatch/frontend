@@ -1448,6 +1448,7 @@
     "resolution": "Resolution",
     "sectionActivity": "Actividad",
     "sectionAreas": "Áreas",
+    "sectionEventsTooltip": "No events available for this vessel.",
     "sectionInsights": "Indicadores",
     "sectionInsightsTooltip": "No se dispone de información analítica para los buques con VMS.",
     "sectionRelatedVessel": "Related vessels",
