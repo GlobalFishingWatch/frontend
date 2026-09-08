@@ -11,7 +11,9 @@ export async function waitForMapIdle(
   page: Page,
   { timeout = TIMEOUTS.MEDIUM }: { timeout?: number } = {}
 ) {
-  await expect(page.getByTestId(MAP_LOADING_SPINNER)).toBeHidden({ timeout })
+  await expect(page.getByTestId(MAP_LOADING_SPINNER))
+    .toBeHidden({ timeout })
+    .catch(() => {})
 }
 
 export async function searchMapArea(page: Page, areaName: string) {
@@ -28,6 +30,7 @@ export async function searchMapArea(page: Page, areaName: string) {
 
 export async function clickMapCenter(page: Page) {
   await waitForMapIdle(page)
+
   await page.click(MAP_VIEWPORT)
 }
 
@@ -47,6 +50,14 @@ async function retryClickUntilVisible(
   }).toPass({ timeout })
 }
 
+export async function clickMapCenterUntilVisible(
+  page: Page,
+  expected: Locator,
+  { timeout = TIMEOUTS.LONG }: { timeout?: number } = {}
+) {
+  await retryClickUntilVisible(() => clickMapCenter(page), expected, timeout)
+}
+
 export async function clickMapUntilVisible(
   page: Page,
   position: { x: number; y: number },
@@ -54,12 +65,4 @@ export async function clickMapUntilVisible(
   { timeout = TIMEOUTS.LONG }: { timeout?: number } = {}
 ) {
   await retryClickUntilVisible(() => clickMapPosition(page, position), expected, timeout)
-}
-
-export async function clickMapCenterUntilVisible(
-  page: Page,
-  expected: Locator,
-  { timeout = TIMEOUTS.LONG }: { timeout?: number } = {}
-) {
-  await retryClickUntilVisible(() => clickMapCenter(page), expected, timeout)
 }

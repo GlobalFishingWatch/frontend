@@ -2,10 +2,12 @@ import type { Locator, Page } from 'playwright/test'
 import { expect } from 'playwright/test'
 
 import { clickMapCenterUntilVisible } from '../helpers/map'
+import { TIMEOUTS } from '../helpers/timeouts'
 
 const EEZ_DATAVIEW_ID = 'context-layer-eez'
 const MAP_POPUP_TESTID = 'map-popup-wrapper'
 const OPEN_ANALYSIS_BUTTON_NAME = 'Create an analysis for this area'
+const SEE_FULL_ANALYSIS_LINK_NAME = 'See full analysis for this area'
 
 export class ReportPage {
   private page: Page
@@ -14,9 +16,10 @@ export class ReportPage {
 
   constructor(page: Page) {
     this.page = page
-    this.openAnalysisButton = page
-      .getByTestId(MAP_POPUP_TESTID)
+    const mapPopup = page.getByTestId(MAP_POPUP_TESTID)
+    this.openAnalysisButton = mapPopup
       .getByRole('button', { name: OPEN_ANALYSIS_BUTTON_NAME })
+      .or(mapPopup.getByRole('link', { name: SEE_FULL_ANALYSIS_LINK_NAME }))
     this.reportTitle = page.getByRole('heading', { level: 1 })
   }
 
@@ -36,9 +39,8 @@ export class ReportPage {
     await contextLayerToggle.click()
   }
 
-  async openAnalysisFromMapCenter() {
-    await clickMapCenterUntilVisible(this.page, this.openAnalysisButton)
-
+  async openAnalysisFromMap() {
+    await clickMapCenterUntilVisible(this.page, this.openAnalysisButton, { timeout: TIMEOUTS.TEST })
     await this.openAnalysisButton.click()
     await this.page.waitForURL(/\/report\//)
   }

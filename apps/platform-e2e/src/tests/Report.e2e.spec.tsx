@@ -1,21 +1,21 @@
 import { expect, test } from '../fixtures'
+import { waitForHydration } from '../helpers/hydration'
 import { searchMapArea } from '../helpers/map'
 import { MAP_PATH } from '../paths'
 import { TAGS } from '../tags'
 
 test.beforeEach(async ({ page }) => {
-  await page.clock.setFixedTime(new Date('2026-01-08T12:00:00'))
   await page.goto(MAP_PATH)
-  await page.waitForLoadState('networkidle')
+  await waitForHydration(page)
 })
 
 test(
-  'Report - should create an area report from a map click (guest)',
+  'Report - A guest should create an area report from map',
   { tag: [TAGS.SMOKE] },
   async ({ page, reportPage }) => {
     await reportPage.toggleEezLayer()
     await searchMapArea(page, 'Canary Islands')
-    await reportPage.openAnalysisFromMapCenter()
+    await reportPage.openAnalysisFromMap()
 
     await reportPage.expectReportTitleVisible(/km²/)
     await reportPage.expectSourceTagVisible()
