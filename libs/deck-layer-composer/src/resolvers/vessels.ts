@@ -63,6 +63,7 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     ...(bufferedStart && { bufferedStartTime: getUTCDateTime(bufferedStart).toMillis() }),
     ...(bufferedEnd && { bufferedEndTime: getUTCDateTime(bufferedEnd).toMillis() }),
     showVesselIcon: dataview.config?.showVesselIcon ?? true,
+    showLastPositionIcon: timeMode === 'realTime',
     trackVisualizationMode: vesselTrackVisualizationMode || 'track',
     ...(dataview.config?.highlightEventStartTime && {
       highlightEventStartTime: getUTCDateTime(dataview.config.highlightEventStartTime).toMillis(),
