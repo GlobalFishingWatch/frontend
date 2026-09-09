@@ -9,7 +9,10 @@ import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { InputText, Spinner } from '@globalfishingwatch/ui-components'
 
 import type { LibraryLayer } from 'data/map/layer-library'
-import { fetchAllDatasetsThunk } from 'features/_map/datasets/datasets.slice'
+import {
+  fetchAllDatasetsThunk,
+  fetchDatasetsByIdsThunk,
+} from 'features/_map/datasets/datasets.slice'
 import {
   getDatasetLabel,
   getDatasetMatchesSearch,
@@ -30,6 +33,7 @@ import {
   selectLayerLibraryModal,
   selectLayerLibraryUniqueCategory,
 } from 'features/modals/modals.slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { upperFirst } from 'utils/info'
 
 import LayerLibraryVesselGroupPanel from './LayerLibraryVesselGroupPanel'
@@ -56,15 +60,34 @@ const LayerLibrary: FC = () => {
   const dispatch = useAppDispatch()
   const userDatasets = useSelector(selectUserDatasets)
   const allVesselGroups = useSelector(selectAllVisibleVesselGroups)
-  const [userDatasetsFetched, setUserDatasetsFetched] = useState(false)
-  const userDatasetsLoaded = Boolean(guestUser) || userDatasetsFetched
+  const [userDatasetsStatus, setUserDatasetsStatus] = useState<AsyncReducerStatus>(
+    AsyncReducerStatus.Loading
+  )
+  const userDatasetsLoaded = Boolean(guestUser) || userDatasetsStatus !== AsyncReducerStatus.Loading
+
+  const fetchUserDatasets = useCallback(() => {
+    dispatch(fetchAllDatasetsThunk()).then((action) => {
+      if (fetchAllDatasetsThunk.rejected.match(action) && action.meta.condition) {
+        return
+      }
+      const failed =
+        fetchAllDatasetsThunk.rejected.match(action) ||
+        fetchDatasetsByIdsThunk.rejected.match(action.payload)
+      setUserDatasetsStatus(failed ? AsyncReducerStatus.Error : AsyncReducerStatus.Finished)
+    })
+  }, [dispatch])
 
   useEffect(() => {
     if (guestUser) {
       return
     }
-    dispatch(fetchAllDatasetsThunk()).finally(() => setUserDatasetsFetched(true))
-  }, [dispatch, guestUser])
+    fetchUserDatasets()
+  }, [fetchUserDatasets, guestUser])
+
+  const onRetryFetch = useCallback(() => {
+    setUserDatasetsStatus(AsyncReducerStatus.Loading)
+    fetchUserDatasets()
+  }, [fetchUserDatasets])
 
   const userGeometries = useMemo(() => {
     return groupDatasetsByGeometryType(userDatasets)
@@ -377,6 +400,8 @@ const LayerLibrary: FC = () => {
                 <LayerLibraryUserPanel
                   searchQuery={activeSearchQuery}
                   datasetsLoaded={userDatasetsLoaded}
+                  datasetsError={userDatasetsStatus === AsyncReducerStatus.Error}
+                  onRetryFetch={onRetryFetch}
                 />
               </div>
             )}

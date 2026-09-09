@@ -148,6 +148,15 @@ export const getIsBQEditorDataset = (dataset: Dataset): boolean => {
   )
 }
 
+const warnedMissingGeometryType = new Set<string>()
+const warnMissingGeometryType = (dataset: Dataset) => {
+  if (warnedMissingGeometryType.has(dataset.id)) {
+    return
+  }
+  warnedMissingGeometryType.add(dataset.id)
+  console.warn('Dataset hidden from the layer library, it has no geometryType', dataset.id)
+}
+
 export const groupDatasetsByGeometryType = (datasets: Dataset[]): Record<string, Dataset[]> => {
   const orderedObject: Record<string, Dataset[]> = {
     tracks: [],
@@ -169,6 +178,7 @@ export const groupDatasetsByGeometryType = (datasets: Dataset[]): Record<string,
       property: 'geometryType',
     })
     if (!geometryType) {
+      warnMissingGeometryType(dataset)
       return acc
     }
     if (!acc[geometryType]) {
@@ -177,6 +187,23 @@ export const groupDatasetsByGeometryType = (datasets: Dataset[]): Record<string,
     acc[geometryType].push(dataset)
     return acc
   }, orderedObject)
+}
+
+export const getGeometryTypeLabel = (geometryType: string): string => {
+  switch (geometryType) {
+    case 'tracks':
+      return t((t) => t.dataset.typeTracks).trim()
+    case 'polygons':
+      return t((t) => t.dataset.typePolygons).trim()
+    case 'points':
+      return t((t) => t.dataset.typePoints).trim()
+    case 'gridded':
+      return t((t) => t.dataset.typeGridded).trim()
+    case 'bigQuery':
+      return t((t) => t.dataset.typeBigQuery).trim()
+    default:
+      return geometryType
+  }
 }
 
 export const getDatasetSourceIcon = (dataset: Dataset): IconType | null => {

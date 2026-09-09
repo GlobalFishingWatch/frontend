@@ -407,6 +407,8 @@
       "shapefile": "compressed shapefile"
     },
     "importing": "Dataset is being imported",
+    "loadError": "Some of your datasets could not be loaded.",
+    "loadRetry": "Try again",
     "login": "This is a private dataset, log in to see it",
     "new": "New dataset",
     "noDataForTimerange": "There is no data for the current timerange",
@@ -418,6 +420,7 @@
     "showMore_one": "Show {{count}} more",
     "showMore_other": "Show {{count}} more",
     "title": "Datasets",
+    "typeBigQuery": "BigQuery",
     "typeGridded": "Gridded / Raster",
     "typeGriddedDescription": "Display a heatmap from a GeoTIFF or NetCDF raster (EPSG:4326)",
     "typePoints": "Points",
