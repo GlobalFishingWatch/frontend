@@ -4,6 +4,7 @@ import { TAGS } from '../tags'
 
 test.beforeEach(async ({ page }) => {
   await page.goto(appPath('/vessel-search'))
+  await waitForHydration(page, '[data-testid="search-vessels-basic-input"]')
 })
 
 test(
