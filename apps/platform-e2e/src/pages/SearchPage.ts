@@ -3,8 +3,6 @@ import { expect } from 'playwright/test'
 
 import { TIMEOUTS } from '../helpers/timeouts'
 
-const BASIC_INPUT_PLACEHOLDER = 'Type to search for vessels (Name, IMO, MMSI or call sign)'
-
 export class SearchPage {
   private page: Page
   readonly basicInput: Locator
@@ -12,7 +10,7 @@ export class SearchPage {
 
   constructor(page: Page) {
     this.page = page
-    this.basicInput = page.getByPlaceholder(BASIC_INPUT_PLACEHOLDER)
+    this.basicInput = page.getByTestId('search-vessels-basic-input')
     this.resultRows = page.locator('[data-test^="search-vessels-option-"]')
   }
 
@@ -29,7 +27,7 @@ export class SearchPage {
     await expect(this.resultRows.first()).toBeVisible()
   }
 
-  expectQueryInUrl() {
-    expect(this.page.url()).toContain('qry=')
+  async expectQueryInUrl(term: string) {
+    await expect.poll(() => new URL(this.page.url()).searchParams.get('qry')).toBe(term)
   }
 }
