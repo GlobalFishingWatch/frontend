@@ -5,27 +5,29 @@ import { TIMEOUTS } from './timeouts'
 
 const MAP_VIEWPORT = '#view-mapViewport'
 const MAP_LOADING_SPINNER = 'map-loading-spinner'
-const MAP_SEARCH_LABEL = 'Search an area of interest e.g. ocean, sea, port, MPA, EEZ, RFMO'
 
 export async function waitForMapIdle(
   page: Page,
   { timeout = TIMEOUTS.MEDIUM }: { timeout?: number } = {}
 ) {
-  await expect(page.getByTestId(MAP_LOADING_SPINNER))
-    .toBeHidden({ timeout })
-    .catch(() => {})
+  await expect(page.getByTestId(MAP_LOADING_SPINNER)).toBeHidden({ timeout })
 }
 
 export async function searchMapArea(page: Page, areaName: string) {
-  await page.getByRole('button', { name: MAP_SEARCH_LABEL }).click()
+  await page.getByTestId('map-search-button').click()
 
-  const searchInput = page.getByPlaceholder(MAP_SEARCH_LABEL)
+  const searchInput = page.getByTestId('map-search-input')
   await expect(searchInput).toBeVisible()
   await searchInput.fill(areaName)
 
-  const firstResult = page.getByRole('option').first()
-  await expect(firstResult).toBeVisible({ timeout: TIMEOUTS.MEDIUM })
-  await firstResult.click()
+  const result = page.locator('[data-test^="map-search-result-"]').filter({ hasText: areaName })
+  await expect(result.first()).toBeVisible({ timeout: TIMEOUTS.MEDIUM })
+  // Click the zoom control so we don't hit the nested "open report" action on the same row.
+  await result
+    .first()
+    .getByTestId(/map-search-result-fit-bounds-/)
+    .click()
+  await waitForMapIdle(page)
 }
 
 export async function clickMapCenter(page: Page) {
