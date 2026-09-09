@@ -118,9 +118,9 @@ export const FILE_TYPES_CONFIG: Record<FileType, FileConfig> = {
   GeoTIFF: {
     id: 'GeoTIFF',
     files: ['.tif', '.tiff', '.TIF', '.TIFF', '.zip', '.ZIP'],
-    icon: 'csv',
+    icon: 'tiff',
   },
-  NetCDF: { id: 'NetCDF', files: ['.nc', '.nc4', '.NC', '.NC4'], icon: 'csv' },
+  NetCDF: { id: 'NetCDF', files: ['.nc', '.nc4', '.NC', '.NC4'], icon: 'netcdf' },
 }
 
 export type FileTypeResult = { fileType: FileType | undefined; zipContent: JSZipObject[] }
