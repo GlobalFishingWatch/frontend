@@ -246,7 +246,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
   }
 
   getIsPositionsAvailable() {
-    return getAreTilePositionsAvailable(this.getTilesData())
+    return getAreTilePositionsAvailable(this.getTilesData(), this.props.maxPositionsPerTile)
   }
 
   getViewportData(params = {} as GetViewportDataParams) {

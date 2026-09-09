@@ -429,6 +429,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       extentStart,
       extentEnd,
       intervalCacheMode = 'DATE',
+      maxPositionsPerTile = MAX_POSITIONS_PER_TILE_SUPPORTED,
     } = this.props
     const supportedPositionProperties = this._getPositionProperties()
 
@@ -450,7 +451,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       filters: sublayers.map((sublayer) => sublayer.filter),
       format: 'MVT',
       ...(vesselGroups?.length && { 'vessel-groups': vesselGroups }),
-      'max-points': MAX_POSITIONS_PER_TILE_SUPPORTED,
+      'max-points': maxPositionsPerTile,
       ...(supportedPositionProperties?.length && {
         properties: supportedPositionProperties.map((sublayerProperties) =>
           sublayerProperties?.join(',')
