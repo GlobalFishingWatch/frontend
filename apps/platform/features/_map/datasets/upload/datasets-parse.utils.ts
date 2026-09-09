@@ -132,14 +132,14 @@ export async function getDatasetParsed<T extends DatasetGeometryTypesSupported>(
   if (!fileType) {
     throw new Error('datasetUpload.errors.default')
   }
+  const sourceFile =
+    zipContent.length && fileType !== 'Shapefile'
+      ? await getFileFromZipContent(zipContent, fileType)
+      : file
+  if (!sourceFile) {
+    throw new Error('datasetUpload.errors.default')
+  }
   try {
-    const sourceFile =
-      zipContent.length && fileType !== 'Shapefile'
-        ? await getFileFromZipContent(zipContent, fileType)
-        : file
-    if (!sourceFile) {
-      throw new Error('datasetUpload.errors.default')
-    }
     let parsed: DataParsed
     if (fileType === 'Shapefile') {
       const fileData = await readBlobAs(file, 'arrayBuffer')

@@ -470,6 +470,9 @@
         "noLineData": "No lineString data found in the shapefile",
         "noPointData": "No point data found in the shapefile",
         "noPolygonData": "No polygon data found in the shapefile"
+      },
+      "zip": {
+        "multipleFiles": "The zip file contains more than one file of the same format. Please upload a zip with a single data file."
       }
     },
     "fieldMultiplePlaceholder": "Select one or more fields from your dataset",
