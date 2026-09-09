@@ -31,6 +31,8 @@ import { getTimeAgo, getUTCDateTime, sortByCreationDate } from 'utils/dates'
 import { getIsBrowser } from 'utils/dom'
 import { getHighlightedText } from 'utils/text'
 
+import { scrollToLayerLibrarySection } from './LayerLibrary.utils'
+
 import styles from './LayerLibraryUserPanel.module.css'
 
 const COLLAPSED_DATASETS_COUNT = 10
@@ -206,7 +208,12 @@ const LayerLibraryUserPanel = ({
                   <li>
                     <button
                       className={styles.showMore}
-                      onClick={() => toggleGeometryExpanded(geometryType)}
+                      onClick={() => {
+                        toggleGeometryExpanded(geometryType)
+                        if (expanded) {
+                          scrollToLayerLibrarySection(geometryType)
+                        }
+                      }}
                     >
                       <label>
                         {hiddenCount > 0

@@ -16,7 +16,10 @@ import {
   groupDatasetsByGeometryType,
 } from 'features/_map/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
-import { resolveLibraryLayers } from 'features/_map/layer-library/LayerLibrary.utils'
+import {
+  resolveLibraryLayers,
+  scrollToLayerLibrarySection,
+} from 'features/_map/layer-library/LayerLibrary.utils'
 import LayerLibraryItem from 'features/_map/layer-library/LayerLibraryItem'
 import LayerLibraryUserPanel from 'features/_map/layer-library/LayerLibraryUserPanel'
 import { selectUserDatasets } from 'features/_user/selectors/user.permissions.selectors'
@@ -127,14 +130,7 @@ const LayerLibrary: FC = () => {
       subcategory?: UserSubcategory | null
       smooth?: boolean
     }) => {
-      const targetId = subcategory || category
-      const targetElement = document.getElementById(targetId)
-
-      if (targetElement) {
-        targetElement.scrollIntoView({
-          behavior: smooth ? 'smooth' : 'instant',
-        })
-      }
+      scrollToLayerLibrarySection(subcategory || category, smooth)
     },
     []
   )
