@@ -79,7 +79,7 @@ function ContextTooltipSection({
                     linkHref={linkHref}
                     feature={feature}
                     showFeaturesDetails={showFeaturesDetails}
-                    showSparkline={isSingleArea}
+                    isSingleArea={isSingleArea}
                     handleDownloadClick={(e) => trackOnDownloadClick(e, feature)}
                     handleReportClick={onReportClick}
                   />

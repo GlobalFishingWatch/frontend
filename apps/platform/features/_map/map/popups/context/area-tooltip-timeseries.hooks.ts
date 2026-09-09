@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { MultiPolygon, Polygon } from 'geojson'
@@ -88,8 +88,8 @@ export function useAreaTooltipSparklineCategory() {
     option: options.find(({ id }) => id === preferredId) ?? options[0],
     options,
     setPreferredCategory: setPreferredId,
-    canSwitch: options.length > 1,
-    hasAny: options.length > 0,
+    canSwitchCategory: options.length > 1,
+    hasSparklineCategories: options.length > 0,
   }
 }
 
@@ -146,7 +146,10 @@ export function useAreaInViewport(
   return latContained && isLonRangeContained(bounds.west, bounds.east, b[0], b[2])
 }
 
-export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickingObject) {
+export function useFitAreaBounds(
+  feature: ContextPickingObject | UserLayerPickingObject,
+  { auto = false }: { auto?: boolean } = {}
+) {
   const fitBounds = useMapFitBounds()
   const dispatch = useAppDispatch()
   const { start, end } = useSelector(selectTimeRange)
@@ -161,7 +164,8 @@ export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickin
       }
       return
     }
-    let bounds = areaDetail?.bounds
+    let bounds: Bbox | undefined =
+      areaDetail?.bounds || ((feature.properties?.bbox as string)?.split(',').map(Number) as Bbox)
     if (!bounds) {
       const area = await dispatch(
         fetchAreaDetailThunk({ datasetId, areaId, areaName, simplify })
@@ -173,16 +177,27 @@ export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickin
     }
   }, [
     trackLayer,
+    areaDetail?.bounds,
+    feature.properties?.bbox,
     start,
     end,
-    areaDetail,
+    fitBounds,
     dispatch,
     datasetId,
     areaId,
     areaName,
     simplify,
-    fitBounds,
   ])
+
+  // ponytail: ref instead of state, the effect only needs to not fire twice for the same feature
+  const autoFittedId = useRef<string | number | undefined>(undefined)
+  useEffect(() => {
+    if (!auto || autoFittedId.current === feature.id) {
+      return
+    }
+    autoFittedId.current = feature.id
+    onClick()
+  }, [auto, feature.id, onClick])
 
   return { onClick, loading: areaStatus === AsyncReducerStatus.Loading }
 }

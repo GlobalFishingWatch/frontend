@@ -10,6 +10,8 @@ import { selectTrackCorrectionOpen } from 'features/_vessels/track-correction/tr
 import { selectIsAnyReportLocation } from 'router/routes.selectors'
 import { htmlSafeParse } from 'utils/html-parser'
 
+import { selectClickedEvent } from '../../map.slice'
+
 import {
   useAreaInViewport,
   useAreaTooltipSparklineCategory,
@@ -27,7 +29,7 @@ type ContextTooltipRowProps = {
   label: string
   feature: ContextPickingObject | UserLayerPickingObject
   showFeaturesDetails: boolean
-  showSparkline?: boolean
+  isSingleArea?: boolean
   showActions?: boolean
   linkHref?: string
   handleDownloadClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
@@ -42,7 +44,7 @@ const ContextTooltipRow = ({
   id,
   label,
   showFeaturesDetails,
-  showSparkline = false,
+  isSingleArea = false,
   linkHref,
   feature,
   handleDownloadClick,
@@ -51,11 +53,15 @@ const ContextTooltipRow = ({
   const { t } = useTranslation()
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
-  const { option, options, setPreferredCategory, canSwitch, hasAny } =
+  const { option, options, setPreferredCategory, canSwitchCategory, hasSparklineCategories } =
     useAreaTooltipSparklineCategory()
-  const { onClick: fitAreaBounds, loading: fitAreaLoading } = useFitAreaBounds(feature)
+  const clickedFeatures = useSelector(selectClickedEvent)?.features
+  const autoFitBounds = isSingleArea && showFeaturesDetails && clickedFeatures?.length === 1
+  const { onClick: fitAreaBounds, loading: fitAreaLoading } = useFitAreaBounds(feature, {
+    auto: autoFitBounds,
+  })
   const showSparklinePreview =
-    showFeaturesDetails && showSparkline && !isAnyReportLocation && hasAny
+    showFeaturesDetails && isSingleArea && !isAnyReportLocation && hasSparklineCategories
   const areaInViewport = useAreaInViewport(feature, showSparklinePreview)
   const renderSparkline = showSparklinePreview && areaInViewport === true
 
@@ -72,13 +78,15 @@ const ContextTooltipRow = ({
         <span className={styles.rowText}>{parsedLabel}</span>
         {showFeaturesDetails && (
           <div className={styles.rowActions}>
-            <IconButton
-              icon="target"
-              tooltip={t((t) => t.common.fitArea)}
-              size="small"
-              loading={fitAreaLoading}
-              onClick={fitAreaBounds}
-            />
+            {!autoFitBounds && (
+              <IconButton
+                icon="target"
+                tooltip={t((t) => t.common.fitArea)}
+                size="small"
+                loading={fitAreaLoading}
+                onClick={fitAreaBounds}
+              />
+            )}
             {!renderSparkline && showReport && (
               <ContextLayerReportLink feature={feature} onClick={handleReportClick} />
             )}
@@ -102,7 +110,7 @@ const ContextTooltipRow = ({
                   feature={feature}
                   option={option}
                   options={options}
-                  canSwitch={canSwitch}
+                  canSwitch={canSwitchCategory}
                   onSelectCategory={setPreferredCategory}
                 />
                 {showReport && (
