@@ -165,6 +165,7 @@ apps/platform/**/__screenshots__
 # Playwright test artifacts
 test-results/
 .playwright/
+.playwright-cli/
 .playwright-mcp/
 playwright-report/
 
