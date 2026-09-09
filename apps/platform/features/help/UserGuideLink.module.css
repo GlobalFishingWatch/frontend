@@ -37,6 +37,23 @@
   opacity: 1;
 }
 
+.textLink {
+  display: inline;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  vertical-align: baseline;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.textLink:hover {
+  color: var(--color-primary-blue);
+}
+
 @media print {
   .link {
     display: none;
