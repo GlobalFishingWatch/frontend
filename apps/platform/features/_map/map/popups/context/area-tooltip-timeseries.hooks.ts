@@ -130,20 +130,29 @@ export function useAreaInViewport(
   feature: ContextPickingObject | UserLayerPickingObject,
   enabled = true
 ): boolean | undefined {
-  const { areaDetail } = useAreaDetail(feature, { fetch: enabled })
+  const { datasetId, areaId, areaDetail } = useAreaDetail(feature, { fetch: enabled })
   const { bounds } = useMapBoundsLive()
+  const key = `${datasetId}|${areaId}`
+
+  const b = areaDetail?.bounds
+  const contained =
+    b && bounds
+      ? b[1] >= bounds.south &&
+        b[3] <= bounds.north &&
+        isLonRangeContained(bounds.west, bounds.east, b[0], b[2])
+      : undefined
+
+  const [latchedKey, setLatchedKey] = useState<string | undefined>(undefined)
+  useEffect(() => {
+    if (enabled && contained) {
+      setLatchedKey(key)
+    }
+  }, [enabled, contained, key])
 
   if (!enabled) {
     return undefined
   }
-
-  const b = areaDetail?.bounds
-  if (!b || !bounds) {
-    return undefined
-  }
-
-  const latContained = b[1] >= bounds.south && b[3] <= bounds.north
-  return latContained && isLonRangeContained(bounds.west, bounds.east, b[0], b[2])
+  return latchedKey === key ? true : contained
 }
 
 export function useFitAreaBounds(
@@ -250,10 +259,15 @@ export function useAreaTooltipTimeseries(
   )
   const layersStateHash = useAtomValue(layersStateHashAtom)
 
-  const computeHash = `${areaId}|${datasetId}|${layerIdsHash}|${isLoaded}|${layersStateHash}|${!!geometry}|${areaInViewport}`
+  const areaHash = `${areaId}|${datasetId}|${layerIdsHash}|${start}|${end}`
+  const computedAreaRef = useRef<string | undefined>(undefined)
+  const computeHash = `${areaHash}|${isLoaded}|${layersStateHash}|${!!geometry}|${areaInViewport}`
 
   useEffect(() => {
     if (!geometry || !instances.length || !isLoaded || !areaInViewport) {
+      return
+    }
+    if (computedAreaRef.current === areaHash) {
       return
     }
     let cancelled = false
@@ -271,6 +285,7 @@ export function useAreaTooltipTimeseries(
         }
         const timeseries = getTimeseries({ featuresFiltered, instances })
         if (!cancelled) {
+          computedAreaRef.current = areaHash
           setState({ loading: false, timeseries: timeseries?.[0] })
         }
       } catch (e) {
