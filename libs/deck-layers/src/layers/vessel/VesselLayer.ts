@@ -247,13 +247,13 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return trackUrlObject.toString()
   }
 
-  _getVesselChunks = ({ withBuffer = false }: { withBuffer?: boolean } = {}) => {
+  _getVesselChunks = () => {
     const { startTime, endTime, strictTimeRange, bufferedStartTime, bufferedEndTime } = this.props
     if (!startTime || !endTime) {
       return []
     }
-    const loadStart = withBuffer ? (bufferedStartTime ?? startTime) : startTime
-    const loadEnd = withBuffer ? (bufferedEndTime ?? endTime) : endTime
+    const loadStart = bufferedStartTime ?? startTime
+    const loadEnd = bufferedEndTime ?? endTime
 
     const chunks = strictTimeRange
       ? [{ start: getUTCDateTime(loadStart).toISO()!, end: getUTCDateTime(loadEnd).toISO()! }]
@@ -309,7 +309,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     }
     const { zoom } = this.context.viewport
     this._lastTrackThinningLevel = this._getTrackThinningLevel(zoom, trackThinningZoomConfig)
-    const chunks = this._getVesselChunks({ withBuffer: true })
+    const chunks = this._getVesselChunks()
     return chunks.flatMap(({ start, end }) => {
       if (!start || !end) {
         return []
@@ -375,6 +375,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     if (!visible) {
       return []
     }
+
     const chunks = this._getVesselChunks()
     // return one layer with all events if we are consuming the data object from app resources
     return events?.flatMap(({ url, type, datasetId }) => {
