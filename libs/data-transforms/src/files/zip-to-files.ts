@@ -8,6 +8,10 @@ export function isZipFile(file?: File) {
   )
 }
 
+// macOS zips carry a parallel __MACOSX/._name entry per file, which never holds the real data
+const isJunkEntry = ({ name, dir }: JSZipObject) =>
+  dir || name.startsWith('__MACOSX') || (name.split('/').pop() ?? '').startsWith('._')
+
 export async function zipToFiles(
   file: File,
   filesType: RegExp = /.*/
@@ -18,10 +22,22 @@ export async function zipToFiles(
       JSZip = await import('jszip').then((module) => module.default)
     }
     const zip = await JSZip.loadAsync(file)
-    return zip.file(filesType)
+    return zip.file(filesType).filter((entry) => !isJunkEntry(entry))
   }
 
   return [] as JSZipObject[]
+}
+
+export async function zipContentToFile(
+  zipContent: JSZipObject[],
+  filesType: RegExp
+): Promise<File | undefined> {
+  const entry = zipContent.find((f) => !isJunkEntry(f) && filesType.test(f.name))
+  if (!entry) {
+    return undefined
+  }
+  const data = await entry.async('arraybuffer')
+  return new File([data], entry.name.split('/').pop() as string)
 }
 
 export type { JSZipObject }

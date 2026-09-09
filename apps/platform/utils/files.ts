@@ -1,4 +1,4 @@
-import { capitalize, lowerCase } from 'es-toolkit'
+import { capitalize, lowerCase, uniq } from 'es-toolkit'
 import type { FeatureCollection } from 'geojson'
 
 import type {
@@ -6,7 +6,7 @@ import type {
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
 import type { JSZipObject } from '@globalfishingwatch/data-transforms/files'
-import { isZipFile, zipToFiles } from '@globalfishingwatch/data-transforms/files'
+import { isZipFile, zipContentToFile, zipToFiles } from '@globalfishingwatch/data-transforms/files'
 
 export function getFileName(file: File): string {
   if (!file?.name) {
@@ -110,7 +110,11 @@ export const FILE_TYPES_CONFIG: Record<FileType, FileConfig> = {
   Shapefile: { id: 'Shapefile', files: ['.zip', '.ZIP', '.shp', '.SHP'], icon: 'zip' },
   CSV: { id: 'CSV', files: ['.csv', '.tsv', '.CSV', '.TSV'], icon: 'csv' },
   KML: { id: 'KML', files: ['.kml', '.kmz', '.KML', '.KMZ'], icon: 'kml' },
-  GeoTIFF: { id: 'GeoTIFF', files: ['.tif', '.tiff', '.TIF', '.TIFF'], icon: 'csv' },
+  GeoTIFF: {
+    id: 'GeoTIFF',
+    files: ['.tif', '.tiff', '.TIF', '.TIFF', '.zip', '.ZIP'],
+    icon: 'csv',
+  },
   NetCDF: { id: 'NetCDF', files: ['.nc', '.nc4', '.NC', '.NC4'], icon: 'csv' },
 }
 
@@ -133,6 +137,15 @@ export async function getFileType(file?: File): Promise<FileTypeResult> {
     return files.some((ext) => file.name.endsWith(ext))
   })?.id
   return { fileType, zipContent: [] }
+}
+
+export function getFileFromZipContent(zipContent: JSZipObject[], fileType: FileType) {
+  const extensions = uniq(
+    FILE_TYPES_CONFIG[fileType].files
+      .map((extension) => extension.slice(1).toLowerCase())
+      .filter((extension) => extension !== 'zip')
+  )
+  return zipContentToFile(zipContent, new RegExp(`\\.(${extensions.join('|')})$`, 'i'))
 }
 
 export function getFilesAcceptedByMime(fileTypes: FileType[]) {
