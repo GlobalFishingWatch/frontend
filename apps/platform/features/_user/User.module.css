@@ -115,6 +115,26 @@
 .dataset > span {
   flex: 1 1 auto;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.datasetName,
+.datasetMeta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.datasetMeta {
+  font: var(--font-XS);
+  color: var(--color-secondary-blue);
+  padding-bottom: var(--space-XS);
+}
+
+.datasetMeta:empty {
+  display: none;
 }
 
 .dataset > div {
@@ -154,6 +174,16 @@ div.modal {
 .search {
   padding: var(--space-M);
   padding-bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-S);
+}
+
+.searchInput,
+.searchTypeFilter {
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .highlighted {
