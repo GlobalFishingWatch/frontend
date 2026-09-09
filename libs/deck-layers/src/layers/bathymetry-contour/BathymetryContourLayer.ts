@@ -7,7 +7,6 @@ import { scaleLinear } from 'd3-scale'
 
 import { DataviewType } from '@globalfishingwatch/api-types'
 
-import { COLOR_TRANSPARENT } from '#config/colors.config'
 import { LayerGroup } from '#config/sort.config'
 import { LabelLayer } from '#layers/labels/LabelLayer'
 import { PMTilesLayer } from '#layers/pm-tiles/index'
@@ -40,10 +39,31 @@ const MIN_INTERMEDIATE_OPACITY = 0.25
 const INDEX_PRIORITY_BONUS = 500
 const LABEL_OPACITY = 0.9
 const PICK_TARGET_WIDTH = 5
+const MIN_PICK_ZOOM = 3
 const HIGHLIGHT_WIDTH_SCALE = 1.5
 const TRANSITION_DURATION = 200
 
 const isIndexContour = (elevation: number) => INDEX_DEPTHS.has(0 - elevation)
+
+/**
+ */
+class BathymetryContourPathLayer<DataT = any> extends PathLayer<DataT> {
+  static layerName = 'BathymetryContourPathLayer'
+
+  getShaders() {
+    const shaders = super.getShaders()
+    shaders.inject = {
+      ...(shaders.inject || {}),
+      // same trick as VesselTrackPathLayer for the picking target width
+      'vs:DECKGL_FILTER_SIZE': /*glsl*/ `
+        if (picking.isActive > 0.5) {
+          size.xy = max(size.xy, project_pixel_size(vec2(${(PICK_TARGET_WIDTH / 2).toFixed(1)})));
+        }
+      `,
+    }
+    return shaders
+  }
+}
 
 const isBelowSeaLevel = (elevation: number) => elevation !== undefined && elevation <= 0
 
@@ -52,6 +72,7 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
 > {
   static layerName = 'BathymetryContourLayer'
   static defaultProps = defaultProps
+  declare state: { zoomBucket: number; highlightedElevation: number | null }
 
   _bathymetryColorScale = scaleLinear([-10, -100, -1000, -10000], [0.8, 0.6, 0.4, 0.2]).clamp(true)
   _priorityLengthScale = scaleLinear([5, 10000], [-350, 350]).clamp(true)
@@ -169,7 +190,7 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
       renderSubLayers: (props: any) => {
         const paths = getVisiblePaths(props.data?.features as BathymetryContourFeature[])
         return [
-          new PathLayer(props, {
+          new BathymetryContourPathLayer(props, {
             id: `${props.id}-bathymetry-contour`,
             data: paths,
             getPath: (d: any) => d.path,
@@ -184,27 +205,13 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
             widthMinPixels: LINE_WIDTH_MIN_PIXELS,
             jointRounded: true,
             capRounded: true,
-            pickable: false,
+            pickable: zoomBucket > MIN_PICK_ZOOM,
             getPolygonOffset: (params: { layerIndex: number }) =>
               getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
             updateTriggers: {
               getColor: [color, zoomBucket, highlightedElevation],
               getWidth: [thickness, highlightedElevation],
             },
-          } as any),
-          new PathLayer(props, {
-            id: `${props.id}-bathymetry-contour-pick-target`,
-            data: paths,
-            getPath: (d: any) => d.path,
-            positionFormat: 'XY',
-            getColor: COLOR_TRANSPARENT,
-            getWidth: PICK_TARGET_WIDTH,
-            widthUnits: 'pixels',
-            jointRounded: false,
-            capRounded: false,
-            pickable: true,
-            getPolygonOffset: (params: { layerIndex: number }) =>
-              getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
           } as any),
           new LabelLayer<BathymetryLabelFeature>({
             id: `${props.id}-labels`,
