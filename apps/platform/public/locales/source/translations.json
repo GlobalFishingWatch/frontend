@@ -407,6 +407,8 @@
       "shapefile": "compressed shapefile"
     },
     "importing": "Dataset is being imported",
+    "loadError": "Some of your datasets could not be loaded.",
+    "loadRetry": "Try again",
     "login": "This is a private dataset, log in to see it",
     "new": "New dataset",
     "noDataForTimerange": "There is no data for the current timerange",
@@ -418,6 +420,7 @@
     "showMore_one": "Show {{count}} more",
     "showMore_other": "Show {{count}} more",
     "title": "Datasets",
+    "typeBigQuery": "BigQuery",
     "typeGridded": "Gridded / Raster",
     "typeGriddedDescription": "Display a heatmap from a GeoTIFF or NetCDF raster (EPSG:4326)",
     "typePoints": "Points",
@@ -467,6 +470,9 @@
         "noLineData": "No lineString data found in the shapefile",
         "noPointData": "No point data found in the shapefile",
         "noPolygonData": "No polygon data found in the shapefile"
+      },
+      "zip": {
+        "multipleFiles": "The zip file contains more than one file of the same format. Please upload a zip with a single data file."
       }
     },
     "fieldMultiplePlaceholder": "Select one or more fields from your dataset",
@@ -1152,17 +1158,21 @@
     "activity-fishing": "Activity - Fishing",
     "activity-vessel-presence": "Activity - Presence",
     "analysis-and-dynamic-reports": "Analyze activity",
+    "analyzing-activity-over-time": "Analyze activity over time",
+    "central-section-showing-spatial-activity-maps": "Spatial activity maps",
     "downloading-data": "Download data",
     "filtering-activity-layers": "Filter activity layers",
     "night-light-detections-visible-infrared-imaging-radiometer-suite": "Detections - VIIRS",
     "radar-detections-synthetic-aperture-radar": "Detections - SAR",
+    "timebar": "Timebar",
     "title": "User Guide",
     "upload-points": "Upload point datasets",
     "upload-polygons": "Upload polygon datasets",
     "upload-tracks": "Upload track datasets",
     "uploading-data": "Upload datasets",
     "vessel-groups": "Vessel groups",
-    "vessel-search": "Vessel Search"
+    "vessel-search": "Vessel Search",
+    "viewing-vessel-activity-in-layers": "Vessel activity in layers"
   },
   "vessel": {
     "activityByType": "Activity by type",

@@ -28,14 +28,12 @@ export async function zipToFiles(
   return [] as JSZipObject[]
 }
 
-export async function zipContentToFile(
-  zipContent: JSZipObject[],
-  filesType: RegExp
-): Promise<File | undefined> {
-  const entry = zipContent.find((f) => !isJunkEntry(f) && filesType.test(f.name))
-  if (!entry) {
-    return undefined
-  }
+// Kept separate from zipEntryToFile so callers can react to the number of matches before reading
+export function findZipEntries(zipContent: JSZipObject[], filesType: RegExp) {
+  return zipContent.filter((entry) => !isJunkEntry(entry) && filesType.test(entry.name))
+}
+
+export async function zipEntryToFile(entry: JSZipObject): Promise<File> {
   const data = await entry.async('arraybuffer')
   return new File([data], entry.name.split('/').pop() as string)
 }

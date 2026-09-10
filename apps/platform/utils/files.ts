@@ -6,7 +6,12 @@ import type {
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
 import type { JSZipObject } from '@globalfishingwatch/data-transforms/files'
-import { isZipFile, zipContentToFile, zipToFiles } from '@globalfishingwatch/data-transforms/files'
+import {
+  findZipEntries,
+  isZipFile,
+  zipEntryToFile,
+  zipToFiles,
+} from '@globalfishingwatch/data-transforms/files'
 
 export function getFileName(file: File): string {
   if (!file?.name) {
@@ -113,9 +118,9 @@ export const FILE_TYPES_CONFIG: Record<FileType, FileConfig> = {
   GeoTIFF: {
     id: 'GeoTIFF',
     files: ['.tif', '.tiff', '.TIF', '.TIFF', '.zip', '.ZIP'],
-    icon: 'csv',
+    icon: 'tiff',
   },
-  NetCDF: { id: 'NetCDF', files: ['.nc', '.nc4', '.NC', '.NC4'], icon: 'csv' },
+  NetCDF: { id: 'NetCDF', files: ['.nc', '.nc4', '.NC', '.NC4'], icon: 'netcdf' },
 }
 
 export type FileTypeResult = { fileType: FileType | undefined; zipContent: JSZipObject[] }
@@ -139,13 +144,20 @@ export async function getFileType(file?: File): Promise<FileTypeResult> {
   return { fileType, zipContent: [] }
 }
 
-export function getFileFromZipContent(zipContent: JSZipObject[], fileType: FileType) {
+export async function getFileFromZipContent(
+  zipContent: JSZipObject[],
+  fileType: FileType
+): Promise<File | undefined> {
   const extensions = uniq(
     FILE_TYPES_CONFIG[fileType].files
       .map((extension) => extension.slice(1).toLowerCase())
       .filter((extension) => extension !== 'zip')
   )
-  return zipContentToFile(zipContent, new RegExp(`\\.(${extensions.join('|')})$`, 'i'))
+  const entries = findZipEntries(zipContent, new RegExp(`\\.(${extensions.join('|')})$`, 'i'))
+  if (entries.length > 1) {
+    throw new Error('datasetUpload.errors.zip.multipleFiles')
+  }
+  return entries.length ? zipEntryToFile(entries[0]) : undefined
 }
 
 export function getFilesAcceptedByMime(fileTypes: FileType[]) {

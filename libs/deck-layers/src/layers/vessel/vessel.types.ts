@@ -24,6 +24,8 @@ export type _VesselLayerProps = {
   singleTrack: boolean
   visible: boolean
   showVesselIcon: boolean
+  /** Renders the vessel icon on the last track point when nothing is highlighted (realtime tracks) */
+  showLastPositionIcon?: boolean
   trackVisualizationMode?: VesselTrackVisualizationMode
   bufferedStartTime?: number
   bufferedEndTime?: number

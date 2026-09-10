@@ -14,6 +14,7 @@ import {
 } from 'features/_map/workspace/selectors/app.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import UserGuideLink from 'features/help/UserGuideLink'
 
 import type { HintId } from './hints.content'
 import hintsConfig from './hints.content'
@@ -28,7 +29,7 @@ type HintProps = {
 
 function Hint({ id, className }: HintProps) {
   const { t, ready } = useTranslation(['translations', 'help-hints'])
-  const { placement, imageUrl, pulse, openedByDefault } = hintsConfig[id]
+  const { placement, imageUrl, pulse, openedByDefault, userGuideSlug } = hintsConfig[id]
   const isReadOnly = useSelector(selectReadOnly)
   const screenshotMode = useSelector(selectScreenshotMode)
   const dispatch = useAppDispatch()
@@ -102,6 +103,18 @@ function Hint({ id, className }: HintProps) {
               {t((t) => t[id], {
                 ns: 'help-hints',
               })}
+              {userGuideSlug && (
+                <UserGuideLink
+                  slug={userGuideSlug}
+                  mode="link"
+                  className={styles.userGuideLink}
+                  onClick={onDismiss}
+                >
+                  {t((t) => t.common.seeMore, {
+                    ns: 'translations',
+                  })}
+                </UserGuideLink>
+              )}
             </p>
           </div>
           <div className={styles.footer}>

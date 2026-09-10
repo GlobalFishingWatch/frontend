@@ -15,6 +15,7 @@ import {
   getDatasetLabel,
   getDatasetMatchesSearch,
   getDatasetTypeIcon,
+  getGeometryTypeLabel,
   groupDatasetsByGeometryType,
 } from 'features/_map/datasets/datasets.utils'
 import { useMapDrawConnect } from 'features/_map/map/map-draw.hooks'
@@ -40,9 +41,13 @@ const COLLAPSED_DATASETS_COUNT = 10
 const LayerLibraryUserPanel = ({
   searchQuery,
   datasetsLoaded,
+  datasetsError,
+  onRetryFetch,
 }: {
   searchQuery: string
   datasetsLoaded: boolean
+  datasetsError: boolean
+  onRetryFetch: () => void
 }) => {
   const { t } = useTranslation()
 
@@ -138,6 +143,14 @@ const LayerLibraryUserPanel = ({
 
     return (
       <div className={styles.userDatasetList}>
+        {datasetsError && (
+          <div className={styles.placeholder}>
+            {t((t) => t.dataset.loadError)}{' '}
+            <button className={styles.link} onClick={onRetryFetch}>
+              {t((t) => t.dataset.loadRetry)}
+            </button>
+          </div>
+        )}
         {datasetsByGeometryType.length > 0 ? (
           datasetsByGeometryType.map(([geometryType, layer]) => {
             const sortedDatasets = sortByCreationDate<Dataset>(layer)
@@ -150,8 +163,7 @@ const LayerLibraryUserPanel = ({
             return (
               <ul className={styles.userGeometryList} key={geometryType}>
                 <label id={geometryType} className={styles.geometryLabel}>
-                  {t((t: any) => t.dataset.type[geometryType], { defaultValue: geometryType })} (
-                  {layer.length})
+                  {getGeometryTypeLabel(geometryType)} ({layer.length})
                 </label>
                 {visibleDatasets.map((dataset, index) => {
                   const datasetError = dataset.status === DatasetStatus.Error
@@ -226,7 +238,7 @@ const LayerLibraryUserPanel = ({
               </ul>
             )
           })
-        ) : (
+        ) : datasetsError ? null : (
           <div className={styles.placeholder}>{t((t) => t.dataset.emptyState)}</div>
         )}
       </div>

@@ -33,8 +33,9 @@ export function isTilePositionsOverLimit(
   return false
 }
 
-export function getAreTilePositionsAvailable(tilesData: FourwingsFeature[][]) {
-  return !tilesData.some((tileData) =>
-    isTilePositionsOverLimit(tileData, MAX_POSITIONS_PER_TILE_SUPPORTED)
-  )
+export function getAreTilePositionsAvailable(
+  tilesData: FourwingsFeature[][],
+  maxPositions = MAX_POSITIONS_PER_TILE_SUPPORTED
+) {
+  return !tilesData.some((tileData) => isTilePositionsOverLimit(tileData, maxPositions))
 }

@@ -1,6 +1,6 @@
 ---
 name: locales-source-is-the-only-editable
-description: How to add a translation — key in code first, then the English value by hand in locales/source; never touch the other locales
+description: How to add a translation — key in code first, then the English value by hand in locales/source; no defaultValue in code; never touch the other locales
 ---
 
 # Adding a translation: code first, then `source` by hand
@@ -38,6 +38,29 @@ reference is deleted by the next `extract`. And a `defaultValue` in code does _n
 `source`; it is only the runtime fallback shown until the value exists. (The generated key stays
 empty because `primaryLanguage` is `'en'` while `locales` is `['source']`, so `extract`'s
 default-syncing never applies to the file it writes. Left as-is deliberately.)
+
+## The English string goes in `source/translations.json` only — never as `defaultValue`
+
+Write the `t()` call with the key alone:
+
+```tsx
+t((t) => t.vesselGroupReport.insights.blackList) // yes
+t((t) => t.vesselGroupReport.insights.blackList, { defaultValue: 'black' }) // no
+```
+
+**Why:** a `defaultValue` renders plausible English in every locale, so a key nobody ever filled in
+`source` looks finished in the UI and is never translated. Without it, a forgotten key shows as the
+raw key path — loud, immediate, and impossible to ship by accident. One place holds the English
+string, and it is the one Crowdin reads.
+
+**How to apply:**
+
+- New key → key only in code, English typed into `source/translations.json`.
+- Interpolation params (`{ source: … }`, counts, names) stay — the ban is on `defaultValue`
+  specifically, not on the options object.
+- Runtime-built keys (`t((t) => t.event[eventType])`) are the one place a fallback is defensible,
+  since `extract` cannot see them; prefer a `preservePatterns` entry plus real `source` values, and
+  reach for `defaultValue` only when the key set genuinely is not enumerable.
 
 **How to apply:**
 
