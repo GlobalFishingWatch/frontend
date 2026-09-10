@@ -1,10 +1,14 @@
 import { area } from '@turf/turf'
-import type { Feature, MultiPolygon, Polygon } from 'geojson'
+import type { Feature, GeoJsonProperties, MultiPolygon, Polygon } from 'geojson'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
 
 import type { PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
-import { getPolygonsIntersection, getPolygonsUnion } from '@globalfishingwatch/data-transforms'
+import {
+  getPolygonsIntersection,
+  getPolygonsUnion,
+  toFiniteNumber,
+} from '@globalfishingwatch/data-transforms'
 import type { TimeRange } from '@globalfishingwatch/deck-layer-composer'
 import type {
   ContextSubLayerConfig,
@@ -65,14 +69,29 @@ export type GetPolygonsStatsParams = {
   sublayers?: ContextSubLayerConfig[]
 }
 
+/**
+ * How many source areas a feature stands for. Precomputed tilesets union the areas that are
+ * too small to survive tippecanoe's simplification into one aggregated feature, and record
+ * how many went in as `count`. Everything else is worth one.
+ */
+function getFeatureCount(feature: { properties?: GeoJsonProperties }): number {
+  const count = toFiniteNumber(feature.properties?.count)
+  return count === undefined || count < 1 ? 1 : count
+}
+
+function getFeaturesCount(features: FilteredPolygons['contained' | 'overlapping']): number {
+  return features.reduce((acc, feature) => acc + getFeatureCount(feature), 0)
+}
+
 function getCountsBySublayer(
   features: FilteredPolygons['contained' | 'overlapping'],
   sublayers: ContextSubLayerConfig[]
 ): number[] {
-  return sublayers.map(
-    (sublayer) =>
-      features.filter((f) => isFeatureInFilters(f, sublayer.filters, sublayer.filterOperators))
-        .length
+  return sublayers.map((sublayer) =>
+    features.reduce((acc, feature) => {
+      const isInFilters = isFeatureInFilters(feature, sublayer.filters, sublayer.filterOperators)
+      return isInFilters ? acc + getFeatureCount(feature) : acc
+    }, 0)
   )
 }
 
@@ -85,8 +104,10 @@ export const getPolygonsTimeseriesStats = ({
   const featureGroup = features?.[0]
   if (!featureGroup) return undefined
 
-  const containedCount = featureGroup.contained.length
-  const overlappingCount = featureGroup.overlapping.length
+  // Counts are of source areas, not of tile features: an aggregated feature stands for many,
+  // and how many features a tileset splits them into changes with zoom.
+  const containedCount = getFeaturesCount(featureGroup.contained)
+  const overlappingCount = getFeaturesCount(featureGroup.overlapping)
   const containedValues = sublayers ? getCountsBySublayer(featureGroup.contained, sublayers) : []
   const overlappingValues = sublayers
     ? getCountsBySublayer(featureGroup.overlapping, sublayers)
@@ -120,67 +141,62 @@ export const getPolygonsTimeseriesStats = ({
     const reportAreaM2 =
       getAreaKm2({ geometry: reportArea, properties: reportAreaProperties }) * 1_000_000
 
-    const topAreas: PolygonsReportTopArea[] = []
+    // km2 is the sort key, so it is computed for every polygon; the rest of the payload
+    // (feature clone, label lookup) is only built for the TOP_AREAS_COUNT that survive the slice.
+    const topAreaCandidates: { feature: any; km2: number }[] = []
     const addTopArea = (
       feature: any,
       geometry: Polygon | MultiPolygon,
       isWholePolygon: boolean
     ) => {
+      // An aggregated feature is many areas at once, so it is not one of the top ones.
+      if (getFeatureCount(feature) > 1) {
+        return
+      }
       // Properties only where the polygon is counted whole: an overlapping one is measured
       // after clipping, so its own area_km2 would overstate what is inside the report area.
       const km2 = getAreaKm2({ geometry, properties: isWholePolygon ? feature.properties : null })
-      const nameProperty = (feature.valueProperties as string[] | undefined)?.[0]
-      // Gleave geometryes out of atom
-      const { geometry: _geometry, ...featureRef } = feature
-      topAreas.push({
-        id: feature.id as string,
-        feature: featureRef,
-        label:
-          (nameProperty ? feature.properties?.[nameProperty] : undefined) ??
-          feature.value ??
-          feature.id,
-        km2,
-        ratio: reportAreaM2 > 0 ? (km2 * 1_000_000) / reportAreaM2 : 0,
-      })
+      topAreaCandidates.push({ feature, km2 })
     }
 
-    // Clip overlapping polygons to the report area first so all geometries stay small.
-    // Contained polygons are already fully inside, no clipping needed.
-    const containedPolygons = featureGroup.contained as Feature<Polygon | MultiPolygon>[]
-    containedPolygons.forEach((p) => addTopArea(p, p.geometry, true))
-    const clippedOverlapping = (featureGroup.overlapping as Feature<Polygon | MultiPolygon>[])
-      .map((p) => {
-        // ponytail: a single unclippable geometry is skipped rather than voiding the whole
-        // coverage number. Tile-derived polygons make turf's clipper throw often enough.
-        let clipped: ReturnType<typeof getPolygonsIntersection> = []
-        try {
-          clipped = getPolygonsIntersection(
-            p.geometry.coordinates as PolygonGeomCoords,
-            reportArea.coordinates as PolygonGeomCoords
-          )
-        } catch (e) {
-          console.warn('Report polygon coverage: could not clip an overlapping polygon', e)
-        }
-        if (!clipped.length) return null
-        const geometry = { type: 'MultiPolygon' as const, coordinates: clipped }
-        addTopArea(p, geometry, false)
-        return {
-          type: 'Feature' as const,
-          geometry,
-          properties: {},
-        } as Feature<MultiPolygon>
-      })
-      .filter((p): p is Feature<MultiPolygon> => p !== null)
+    const polygonsToUnion: PolygonGeomCoords[] = []
+    let aggregatedM2 = 0
 
-    // Single-pass batch union of all polygons
-    const allPolygons = [...containedPolygons, ...clippedOverlapping]
-    let intersectionM2 = 0
-    if (allPolygons.length > 0) {
-      const coords = allPolygons.map((p) => p.geometry.coordinates as PolygonGeomCoords)
-      const unionCoords = getPolygonsUnion(coords)
-      intersectionM2 = area({
+    const containedFeatures = featureGroup.contained as Feature<Polygon | MultiPolygon>[]
+    containedFeatures.forEach((feature) => {
+      const geometry = feature.geometry
+      if (geometry?.type !== 'Polygon' && geometry?.type !== 'MultiPolygon') {
+        aggregatedM2 += getAreaKm2({ geometry: undefined, properties: feature.properties }) * 1e6
+        return
+      }
+      // Contained polygons are already fully inside, no clipping needed.
+      addTopArea(feature, geometry, true)
+      polygonsToUnion.push(geometry.coordinates as PolygonGeomCoords)
+    })
+
+    // Clip overlapping polygons to the report area first so all geometries stay small.
+    ;(featureGroup.overlapping as Feature<Polygon | MultiPolygon>[]).forEach((p) => {
+      let clipped: ReturnType<typeof getPolygonsIntersection> = []
+      try {
+        clipped = getPolygonsIntersection(
+          p.geometry.coordinates as PolygonGeomCoords,
+          reportArea.coordinates as PolygonGeomCoords
+        )
+      } catch (e) {
+        console.warn('Report polygon coverage: could not clip an overlapping polygon', e)
+      }
+      if (!clipped.length) {
+        return
+      }
+      addTopArea(p, { type: 'MultiPolygon', coordinates: clipped }, false)
+      polygonsToUnion.push(clipped)
+    })
+
+    let intersectionM2 = aggregatedM2
+    if (polygonsToUnion.length > 0) {
+      intersectionM2 += area({
         type: 'Feature',
-        geometry: { type: 'MultiPolygon', coordinates: unionCoords },
+        geometry: { type: 'MultiPolygon', coordinates: getPolygonsUnion(polygonsToUnion) },
         properties: {},
       })
     }
@@ -193,7 +209,24 @@ export const getPolygonsTimeseriesStats = ({
       overlappingValues,
       areaCoverageRatio: reportAreaM2 > 0 ? intersectionM2 / reportAreaM2 : 0,
       areaCoverageKm2: intersectionM2 / 1_000_000,
-      topAreas: topAreas.sort((a, b) => b.km2 - a.km2).slice(0, TOP_AREAS_COUNT),
+      topAreas: topAreaCandidates
+        .sort((a, b) => b.km2 - a.km2)
+        .slice(0, TOP_AREAS_COUNT)
+        .map(({ feature, km2 }): PolygonsReportTopArea => {
+          const nameProperty = (feature.valueProperties as string[] | undefined)?.[0]
+          // Leave geometries out of the atom
+          const { geometry: _geometry, ...featureRef } = feature
+          return {
+            id: feature.id as string,
+            feature: featureRef,
+            label:
+              (nameProperty ? feature.properties?.[nameProperty] : undefined) ??
+              feature.value ??
+              feature.id,
+            km2,
+            ratio: reportAreaM2 > 0 ? (km2 * 1_000_000) / reportAreaM2 : 0,
+          }
+        }),
     }
   } catch (e) {
     console.warn('Report polygon coverage: area computation failed', e)

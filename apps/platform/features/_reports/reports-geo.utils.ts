@@ -56,10 +56,11 @@ export function filterByPolygon({
   polygon,
   mode = 'cell',
 }: FilterByPolygomParams): FilteredPolygons[] {
-  const [px1, py1, px2, py2] = bbox(polygon)
-  if (!polygon.bbox) {
-    polygon.bbox = [px1, py1, px2, py2]
-  }
+  const [bx1, by1, bx2, by2] = bbox(polygon)
+  const isUnwrapped = bx2 > 180 || bx1 < -180
+  const [px1, py1, px2, py2] = isUnwrapped ? [-180, by1, 180, by2] : [bx1, by1, bx2, by2]
+  // Copied rather than mutated: the caller's geometry is shared app state.
+  polygon = { ...polygon, bbox: [px1, py1, px2, py2] }
   const filtered = layersCells.map((layerCells) => {
     return layerCells.reduce(
       (acc, cell) => {

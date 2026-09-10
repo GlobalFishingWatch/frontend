@@ -180,3 +180,41 @@ export function wrapGeometryBbox(geometry: Polygon | MultiPolygon): Bbox {
 export const wrapFeaturesLongitudes = (features: Feature<LineString | Polygon>[]) => {
   return features.map((feature) => wrapFeatureLongitudes(feature))
 }
+
+const WORLD_LONGITUDES = 360
+
+/** Shifts one run of positions back by whole worlds, so its mean longitude lands in [-180, 180]. */
+const unwrapPositions = (positions: Position[]): Position[] => {
+  const meanLon = positions.reduce((acc, position) => acc + position[0], 0) / positions.length
+  const offset = Math.round(meanLon / WORLD_LONGITUDES) * WORLD_LONGITUDES
+  return offset === 0 ? positions : positions.map(([lon, ...rest]) => [lon - offset, ...rest])
+}
+
+const unwrapCoordinates = (coordinates: any): any => {
+  if (typeof coordinates[0] === 'number') {
+    return unwrapPositions([coordinates])[0]
+  }
+  if (typeof coordinates[0]?.[0] === 'number') {
+    return unwrapPositions(coordinates)
+  }
+  return coordinates.map(unwrapCoordinates)
+}
+
+/**
+ * The inverse of {@link wrapFeatureLongitudes}: brings coordinates back into [-180, 180].
+ *
+ * A viewport can span more than one copy of the world, and a tiled source then hands back the
+ * same feature in each copy — a Fiji polygon arrives at -180.8 rather than 179.2. Anything that
+ * tests a feature against a geometry split at the antimeridian (a report area is a part ending
+ * at 180 plus a part starting at -180) matches neither and silently drops it.
+ */
+export const unwrapFeatureLongitudes = <T extends Feature>(featureData: T): T => {
+  const geometry = featureData.geometry as { type: string; coordinates?: any }
+  if (!geometry?.coordinates?.length) {
+    return featureData
+  }
+  return {
+    ...featureData,
+    geometry: { ...geometry, coordinates: unwrapCoordinates(geometry.coordinates) },
+  } as T
+}
