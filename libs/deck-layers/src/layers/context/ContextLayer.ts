@@ -20,7 +20,13 @@ import { DEFAULT_ID_PROPERTY } from '#config/layers.config'
 import { LayerGroup } from '#config/sort.config'
 import { getFetchLoadOptions, GFWMVTLoader } from '#layers/_shared/api'
 import { getPickedFeatureToHighlight } from '#layers/_shared/picking.utils'
-import { getMVTSublayerProps, transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
+import {
+  getMVTSublayerProps,
+  getPMTilesSublayerProps,
+  isPMTilesUrl,
+  transformTileCoordsToWGS84,
+} from '#layers/_shared/tiles.utils'
+import { PMTilesLayer } from '#layers/pm-tiles/index'
 import { getLayerGroupOffset, hexToDeckColor } from '#utils'
 
 import { EEZ_SETTLED_BOUNDARIES } from './context.config'
@@ -136,12 +142,16 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
         return (info as any).sourceTileSubLayer.props.id.includes(sublayer.dataviewId)
       })
     if (!sublayer) return { ...info, object: undefined }
+
+    const feature = isPMTilesUrl(this.props.layers[0].tilesUrl)
+      ? (info.object as ContextFeature)
+      : transformTileCoordsToWGS84(
+          info.object as ContextFeature,
+          info.tile!.bbox as GeoBoundingBox,
+          this.context.viewport
+        )
     const object = {
-      ...transformTileCoordsToWGS84(
-        info.object as ContextFeature,
-        info.tile!.bbox as GeoBoundingBox,
-        this.context.viewport
-      ),
+      ...feature,
       color: sublayer.color,
       layerId: sublayer.dataviewId,
       datasetId: this.props.layers[0].datasetId,
@@ -168,7 +178,9 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
       const layer = this.props.layers[index] || this.props.layers[0]
       const sublayer = layer?.sublayers?.[0]
       if (!sublayer) return
-      const features = getSelectedTilesFeatures<ContextFeature>(tileLayer, viewport)
+      const features = getSelectedTilesFeatures<ContextFeature>(tileLayer, viewport, {
+        wgs84: isPMTilesUrl(layer.tilesUrl),
+      })
       for (const feature of features) {
         if (maxFeatures !== null && pickedFeatures.length >= maxFeatures) break
         const object = {
@@ -201,14 +213,21 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
 
     const highlightedFeatures = this._getHighlightedFeatures()
     return layers.map((layer) => {
+      const isPMTiles = isPMTilesUrl(layer.tilesUrl)
+      const TilesLayer = (isPMTiles ? PMTilesLayer : TileLayer) as typeof TileLayer
+      const getSublayerProps = isPMTiles ? getPMTilesSublayerProps : getMVTSublayerProps
+      const loaderProps = isPMTiles
+        ? {}
+        : { loaders: [GFWMVTLoader], loadOptions: { ...getFetchLoadOptions() } }
+
       if (layer.id === ContextLayerId.EEZBoundaries) {
-        return new TileLayer<ContextFeature>({
+        return new TilesLayer<ContextFeature>({
           id: `${layer.id}-boundaries-layer`,
           data: layer.tilesUrl,
-          loaders: [GFWMVTLoader],
+          ...loaderProps,
           maxZoom: 8,
           renderSubLayers: (props: any) => {
-            const mvtSublayerProps = { ...props, ...getMVTSublayerProps(props) }
+            const mvtSublayerProps = { ...props, ...getSublayerProps(props) }
             return layer.sublayers.map((sublayer) => {
               const thickness = sublayer.thickness ?? 1
               return [
@@ -239,19 +258,16 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
         })
       }
 
-      return new TileLayer<ContextFeature>({
+      return new TilesLayer<ContextFeature>({
         id: `${layer.id}-base-layer`,
         data: layer.tilesUrl,
-        loaders: [GFWMVTLoader],
-        loadOptions: {
-          ...getFetchLoadOptions(),
-        },
+        ...loaderProps,
         maxZoom: 8,
         onViewportLoad: this.props.onViewportLoad,
         renderSubLayers: (props) => {
           const mvtSublayerProps = {
             ...props,
-            ...getMVTSublayerProps({ tile: props.tile, extensions: props.extensions }),
+            ...getSublayerProps({ tile: props.tile, extensions: props.extensions }),
           }
           return layer.sublayers.map((sublayer) => {
             const filterCategories = Object.values(sublayer.filters || {}).flatMap(
@@ -307,7 +323,8 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                       lineCapRounded: true,
                       getPolygonOffset: (params) =>
                         getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
-                      getLineWidth: sublayer.thickness || 1,
+                      getLineWidth: (d) =>
+                        (d as ContextFeature).properties.count > 1 ? 20 : sublayer.thickness || 1,
                       getLineColor: hexToDeckColor(sublayer.color),
                       updateTriggers: {
                         getLineWidth: [filtersHash, sublayer.thickness],
