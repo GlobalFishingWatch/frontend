@@ -694,7 +694,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   getIsPositionsAvailable() {
-    return getAreTilePositionsAvailable(this.getTilesData())
+    return getAreTilePositionsAvailable(this.getTilesData(), this.props.maxPositionsPerTile)
   }
 
   getViewportData(params = {} as GetViewportDataParams) {

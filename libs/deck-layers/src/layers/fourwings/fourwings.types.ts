@@ -68,6 +68,7 @@ export type BaseFourwingsLayerProps = DeckLayerProps<{
   tilesUrl?: string
   extentStart?: number
   extentEnd?: number
+  maxPositionsPerTile?: number
 }>
 
 export type FourwingsPickingInfo = FourwingsHeatmapPickingInfo | FourwingsPositionsPickingInfo
