@@ -109,7 +109,11 @@ function Hint({ id, className }: HintProps) {
                   mode="link"
                   className={styles.userGuideLink}
                   onClick={onDismiss}
-                />
+                >
+                  {t((t) => t.common.seeMore, {
+                    ns: 'translations',
+                  })}
+                </UserGuideLink>
               )}
             </p>
           </div>
