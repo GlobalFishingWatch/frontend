@@ -1,6 +1,7 @@
 .popup {
   font: var(--font-S);
   z-index: 2;
+  width: min-content;
 }
 
 .contentWrapper {

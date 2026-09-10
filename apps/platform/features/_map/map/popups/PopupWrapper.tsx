@@ -1,9 +1,10 @@
-import { useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import {
   arrow,
   autoUpdate,
   flip,
   FloatingArrow,
+  hide,
   offset,
   shift,
   size,
@@ -15,15 +16,15 @@ import { toLngLatCoordinates } from '@globalfishingwatch/data-transforms'
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
-import { useMapViewport } from 'features/_map/map/map-viewport.hooks'
+import { useDeckMap } from 'features/_map/map/map-context.hooks'
+import { getMapViewport, MAP_CONTAINER_ID } from 'features/_map/map/map-viewport.hooks'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { getSafeElementById } from 'utils/dom'
 
-import { MAP_WRAPPER_ID } from '../map.config'
-
 import styles from './Popup.module.css'
 
-const getBoundary = () => getSafeElementById(MAP_WRAPPER_ID) || undefined
+const getBoundary = () => getSafeElementById(MAP_CONTAINER_ID) || undefined
+const OFF_MAP_RECT = () => new DOMRect(-1e5, -1e5, 0, 0)
 
 type PopupWrapperProps = {
   latitude: InteractionEvent['latitude'] | null
@@ -46,12 +47,29 @@ function PopupWrapper({
   onClickOutside,
   children,
 }: PopupWrapperProps) {
-  // Assuming only timeComparison heatmap is visible, so timerange description apply to all
-  const mapViewport = useMapViewport()
+  const deckMap = useDeckMap()
+  const boundary = getBoundary()
 
   const arrowRef = useRef<SVGSVGElement>(null)
   const clickOutsideRef = useClickedOutside(onClickOutside)
-  const { refs, floatingStyles, context } = useFloating({
+
+  const reference = useMemo(() => {
+    const point = toLngLatCoordinates(longitude, latitude)
+    return {
+      contextElement: boundary || undefined,
+      getBoundingClientRect: () => {
+        const viewport = getMapViewport(deckMap)
+        const container = boundary?.getBoundingClientRect()
+        if (!point || !viewport || !container) {
+          return OFF_MAP_RECT()
+        }
+        const [x, y] = viewport.project(point)
+        return new DOMRect(container.left + x, container.top + y, 0, 0)
+      },
+    }
+  }, [boundary, deckMap, latitude, longitude])
+
+  const { refs, floatingStyles, context, middlewareData } = useFloating({
     whileElementsMounted: (reference, floating, update) =>
       autoUpdate(reference, floating, update, { animationFrame: true }),
     placement: 'top',
@@ -59,15 +77,15 @@ function PopupWrapper({
       offset(15),
       flip({
         fallbackPlacements: ['bottom', 'left', 'right'],
-        boundary: getBoundary(),
+        boundary,
         padding: 10,
       }),
       shift({
-        boundary: getBoundary(),
+        boundary,
         padding: 10,
       }),
       size({
-        boundary: getBoundary(),
+        boundary,
         padding: 10,
         apply({ availableHeight, elements }) {
           elements.floating.style.setProperty('--popup-available-height', `${availableHeight}px`)
@@ -78,29 +96,29 @@ function PopupWrapper({
         element: arrowRef,
         padding: -5,
       }),
+      hide({ boundary }),
     ],
   })
 
-  const coordinates = toLngLatCoordinates(longitude, latitude)
-  if (!mapViewport || !coordinates) {
+  useEffect(() => {
+    refs.setPositionReference(reference)
+  }, [refs, reference])
+
+  if (!toLngLatCoordinates(longitude, latitude)) {
     return null
   }
-  const [left, top] = mapViewport.project(coordinates)
   return (
     <div
-      // eslint-disable-next-line react-hooks/refs
-      ref={refs.setReference}
-      style={{ position: 'absolute', top, left, zIndex: 2 }}
+      ref={refs.setFloating}
       className={cx(styles.popup, className, 'notranslate')}
+      style={{
+        ...floatingStyles,
+        visibility: middlewareData.hide?.referenceHidden ? 'hidden' : 'visible',
+        zIndex: 2,
+      }}
       translate="no"
     >
-      <div
-        // eslint-disable-next-line react-hooks/refs
-        ref={refs.setFloating}
-        className={styles.contentWrapper}
-        style={floatingStyles}
-        data-testid="map-popup-wrapper"
-      >
+      <div className={styles.contentWrapper} data-testid="map-popup-wrapper">
         {showArrow && <FloatingArrow fill="white" ref={arrowRef} context={context} />}
         {showClose && onClose !== undefined && (
           <div className={styles.close}>
