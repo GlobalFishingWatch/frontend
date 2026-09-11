@@ -77,6 +77,7 @@
     "noVesselDataFiltered": "There are no vessels matching your filter",
     "onlyEvolutionSupported": "Select the evolution option above to see the vessels active in the area",
     "others": "Others",
+    "othersLayersAreReportArea": "The layers used to create this report area can't be analysed against themselves. Turn on another polygon or point layer to see results here.",
     "periodComparison": "Period comparison",
     "periodComparison1st": "Baseline start",
     "periodComparison2nd": "Comparison start",
@@ -92,6 +93,8 @@
     "polygonsOverlapping": "partially overlapping",
     "polygonsOverlapping_one": "partially overlapping polygon",
     "polygonsOverlapping_other": "partially overlapping polygons",
+    "polygonsTopAreas_one": "Largest polygon in the report area",
+    "polygonsTopAreas_other": "Top {{count}} largest polygons in the report area",
     "portsAfterEvents": "Ports visited after events",
     "portsSearchPlaceholder": "Search ports",
     "print": "print",
@@ -404,6 +407,8 @@
       "shapefile": "compressed shapefile"
     },
     "importing": "Dataset is being imported",
+    "loadError": "Some of your datasets could not be loaded.",
+    "loadRetry": "Try again",
     "login": "This is a private dataset, log in to see it",
     "new": "New dataset",
     "noDataForTimerange": "There is no data for the current timerange",
@@ -411,7 +416,11 @@
     "remove": "Remove dataset",
     "requiredFields": "Required fields {{fields}}",
     "SARDelayDisclaimer": "Paused while we move from Sentinel-1A to Sentinel-1C and 1D. <0>Learn more.</0>",
+    "showLess": "Show less",
+    "showMore_one": "Show {{count}} more",
+    "showMore_other": "Show {{count}} more",
     "title": "Dataset",
+    "typeBigQuery": "BigQuery",
     "typeGridded": "Gridded / Raster",
     "typeGriddedDescription": "Display a heatmap from a GeoTIFF or NetCDF raster (EPSG:4326)",
     "typePoints": "Points",
@@ -437,6 +446,7 @@
         "invalidData": "CSV data does not have a valid structure"
       },
       "default": "There was an error uploading your dataset.",
+      "fileTooBig": "This file is too large to process in the browser. Try splitting it into smaller files.",
       "geoJSON": {
         "noValidFeatures": "No valid feature types found in the geoJSON file"
       },
@@ -460,6 +470,9 @@
         "noLineData": "No lineString data found in the shapefile",
         "noPointData": "No point data found in the shapefile",
         "noPolygonData": "No polygon data found in the shapefile"
+      },
+      "zip": {
+        "multipleFiles": "The zip file contains more than one file of the same format. Please upload a zip with a single data file."
       }
     },
     "fieldMultiplePlaceholder": "Select one or more fields from your dataset",
@@ -1049,9 +1062,9 @@
     "months_one": "month",
     "months_other": "{{count}} months",
     "now": "now",
-    "weeks": "{{count}} week",
-    "weeks_one": "week",
-    "weeks_other": "{{count}} weeks"
+    "years": "{{count}} year",
+    "years_one": "{{count}} year",
+    "years_other": "{{count}} years"
   },
   "timebar": {
     "disablePlaybackVectors": "Playback of currents or winds layers is not supported",
@@ -1145,17 +1158,21 @@
     "activity-fishing": "Activity - Fishing",
     "activity-vessel-presence": "Activity - Presence",
     "analysis-and-dynamic-reports": "Analyze activity",
+    "analyzing-activity-over-time": "Analyze activity over time",
+    "central-section-showing-spatial-activity-maps": "Spatial activity maps",
     "downloading-data": "Download data",
     "filtering-activity-layers": "Filter activity layers",
     "night-light-detections-visible-infrared-imaging-radiometer-suite": "Detections - VIIRS",
     "radar-detections-synthetic-aperture-radar": "Detections - SAR",
+    "timebar": "Timebar",
     "title": "User Guide",
     "upload-points": "Upload point datasets",
     "upload-polygons": "Upload polygon datasets",
     "upload-tracks": "Upload track datasets",
     "uploading-data": "Upload datasets",
     "vessel-groups": "Vessel groups",
-    "vessel-search": "Vessel Search"
+    "vessel-search": "Vessel Search",
+    "viewing-vessel-activity-in-layers": "Vessel activity in layers"
   },
   "vessel": {
     "activityByType": "Activity by type",
