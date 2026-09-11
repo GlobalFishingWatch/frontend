@@ -77,6 +77,7 @@
     "noVesselDataFiltered": "No hay embarcaciones que coincidan con su filtro",
     "onlyEvolutionSupported": "Haga clic en el botón de evolución de arriba para ver los buques activos en el área",
     "others": "Otros",
+    "othersLayersAreReportArea": "The layers used to create this report area can't be analysed against themselves. Turn on another polygon or point layer to see results here.",
     "periodComparison": "Comparación entre periodos",
     "periodComparison1st": "inicio de línea base",
     "periodComparison2nd": "inicio de comparación",
@@ -92,6 +93,8 @@
     "polygonsOverlapping": "superposición parcial",
     "polygonsOverlapping_one": "polígono superpuesto parcialmente",
     "polygonsOverlapping_other": "polígonos superpuestos parcialmente",
+    "polygonsTopAreas_one": "Largest polygon in the report area",
+    "polygonsTopAreas_other": "Top {{count}} largest polygons in the report area",
     "portsAfterEvents": "Puertos visitados después de eventos",
     "portsSearchPlaceholder": "Buscar puertos",
     "print": "imprimir",
@@ -404,6 +407,8 @@
       "shapefile": "shapefile comprimido"
     },
     "importing": "Se están importando los datos",
+    "loadError": "Some of your datasets could not be loaded.",
+    "loadRetry": "Try again",
     "login": "Conjunto de datos privado, inicie sesión para verlo",
     "new": "Nuevos datos",
     "noDataForTimerange": "No hay datos para el rango de tiempo actual",
@@ -411,7 +416,11 @@
     "remove": "Eliminar los datos",
     "requiredFields": "Campos requeridos {{fields}}",
     "SARDelayDisclaimer": "En pausa mientras pasamos de Sentinel-1A a Sentinel-1C y 1D. <0>Más información.</0>",
+    "showLess": "Show less",
+    "showMore_one": "Show {{count}} more",
+    "showMore_other": "Show {{count}} more",
     "title": "Datos",
+    "typeBigQuery": "BigQuery",
     "typeGridded": "Gridded / Raster",
     "typeGriddedDescription": "Display a heatmap from a GeoTIFF raster (EPSG:4326)",
     "typePoints": " Puntos",
@@ -437,6 +446,7 @@
         "invalidData": "Los datos CSV no tienen una estructura válida"
       },
       "default": "Hubo un error al cargar los datos",
+      "fileTooBig": "This file is too large to process in the browser. Try splitting it into smaller files.",
       "geoJSON": {
         "noValidFeatures": "No se encontraron tipos de características válidos en el archivo geoJSON"
       },
@@ -460,6 +470,9 @@
         "noLineData": "No se encontraron datos de línea en el shapefile",
         "noPointData": "No se encontraron puntos de datos en el shapefile",
         "noPolygonData": "No se encontraron datos de polígono en el shapefile"
+      },
+      "zip": {
+        "multipleFiles": "The zip file contains more than one file of the same format. Please upload a zip with a single data file."
       }
     },
     "fieldMultiplePlaceholder": "Seleccione uno o más campos de su conjunto de datos",
@@ -1049,9 +1062,9 @@
     "months_one": "mes",
     "months_other": "{{count}} meses",
     "now": "ahora",
-    "weeks": "{{count}} semana",
-    "weeks_one": "week",
-    "weeks_other": "{{count}} semanas"
+    "years": "{{count}} year",
+    "years_one": "{{count}} year",
+    "years_other": "{{count}} years"
   },
   "timebar": {
     "disablePlaybackVectors": "La reproducción de las capas de corrientes o vientos no está soportada",
@@ -1145,17 +1158,21 @@
     "activity-fishing": "Activity - Fishing",
     "activity-vessel-presence": "Activity - Presence",
     "analysis-and-dynamic-reports": "Analyze activity",
+    "analyzing-activity-over-time": "Analyze activity over time",
+    "central-section-showing-spatial-activity-maps": "Spatial activity maps",
     "downloading-data": "Download data",
     "filtering-activity-layers": "Filter activity layers",
     "night-light-detections-visible-infrared-imaging-radiometer-suite": "Detections - VIIRS",
     "radar-detections-synthetic-aperture-radar": "Detections - SAR",
+    "timebar": "Timebar",
     "title": "Guía del usuario",
     "upload-points": "Upload point datasets",
     "upload-polygons": "Upload polygon datasets",
     "upload-tracks": "Cargar conjuntos de datos de pistas",
     "uploading-data": "Cargar conjuntos de datos",
     "vessel-groups": "Grupos de embarcaciones",
-    "vessel-search": "Búsqueda de Embarcaciones"
+    "vessel-search": "Búsqueda de Embarcaciones",
+    "viewing-vessel-activity-in-layers": "Vessel activity in layers"
   },
   "vessel": {
     "activityByType": "Por tipo",
