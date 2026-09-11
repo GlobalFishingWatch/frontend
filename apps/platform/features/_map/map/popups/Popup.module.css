@@ -8,6 +8,12 @@
   filter: var(--filter-drop-shadow-1);
 }
 
+/* every row/section rendered null (features picked but none had a value):
+   PopupByCategory's .content is empty, so hide the arrow + close chrome too */
+.popup:has(.content:empty) {
+  display: none;
+}
+
 .arrow {
   position: absolute;
   width: 14px;
