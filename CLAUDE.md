@@ -66,6 +66,8 @@ Durable facts about this repo live in a `.claude/memory/` folder, one fact per f
 @.claude/memory/platform-config-package.md
 @.claude/memory/browser-testing-uses-platform-e2e.md
 @.claude/memory/typescript7-migration.md
+@.claude/memory/locales-source-is-the-only-editable.md
+@.claude/memory/sheets-append-row-placement.md
 
 ### Project-scoped knowledge lives with the project
 
