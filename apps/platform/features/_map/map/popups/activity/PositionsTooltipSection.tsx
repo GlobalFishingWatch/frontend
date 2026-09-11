@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import type { FourwingsPositionsPickingObject } from '@globalfishingwatch/deck-layers'
+import { getPositionBearing } from '@globalfishingwatch/deck-layers'
+import type { IconType } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
@@ -42,6 +44,16 @@ function PositionsTooltipSection({
     return null
   }
 
+  // the vessel arrow points along the position's course, like the icon drawn on the map
+  const getIconProps = (feature: SliceExtendedFourwingsPickingObject) => {
+    const bearing = getPositionBearing(feature as any as FourwingsPositionsPickingObject)
+    return {
+      icon: (bearing !== undefined ? 'vessel' : 'circle') as IconType,
+      iconColor: feature.sublayers?.[0]?.color,
+      iconStyle: { transform: `rotate(${bearing !== undefined ? bearing - 45 : 0}deg)` },
+    }
+  }
+
   const currentFeature = features[currentFeatureIndex]
 
   if (!currentFeature) {
@@ -54,7 +66,7 @@ function PositionsTooltipSection({
       ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
       : currentFeature.title
     return (
-      <PopupSectionLayout title={title}>
+      <PopupSectionLayout title={title} {...getIconProps(currentFeature)}>
         <PositionsTooltipRow
           key={`${currentFeature.id}-${currentFeatureIndex}`}
           loading={loading}
@@ -87,7 +99,7 @@ function PositionsTooltipSection({
 
   return features.map((feature, i) => {
     return (
-      <PopupSectionLayout key={`${feature.id}-${i}`}>
+      <PopupSectionLayout key={`${feature.id}-${i}`} {...getIconProps(feature)}>
         <PositionsTooltipRow
           loading={loading}
           error={error}

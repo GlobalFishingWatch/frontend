@@ -16,9 +16,8 @@ import type { FourwingsPositionsPickingObject } from '@globalfishingwatch/deck-l
 import {
   getIsActivityPositionMatched,
   getIsDetectionsPositionMatched,
-  getPositionBearing,
 } from '@globalfishingwatch/deck-layers'
-import { Choice, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
+import { Choice, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
@@ -127,10 +126,6 @@ function PositionsTooltipRow({
     ? allDatasets.find((dataset) => dataset.id === thumbnailsDatasetId)
     : undefined
 
-  // TODO get the value based on the sublayer
-  const color = feature.sublayers?.[0]?.color
-  const bearing = getPositionBearing(feature)
-  const angle = bearing !== undefined ? bearing - 45 : 0
   const isPositionMatched =
     feature.category === 'activity'
       ? getIsActivityPositionMatched(feature)
@@ -249,13 +244,7 @@ function PositionsTooltipRow({
 
   return (
     <Fragment>
-      <Icon
-        icon={bearing !== undefined ? 'vessel' : 'circle'}
-        className={popupStyles.layerIcon}
-        style={{ color, transform: `rotate(${angle}deg)` }}
-      />
-      <div className={popupStyles.popupSectionContent}>
-        <div className={cx(popupStyles.rowCenter, { [popupStyles.rowColumn]: isRealTime })}>
+      <div className={cx(popupStyles.rowCenter, { [popupStyles.rowColumn]: isRealTime })}>
           <span className={cx(popupStyles.rowText, popupStyles.vesselTitle)}>
             {renderSearchLink()}
             {renderVesselPin()}
@@ -288,7 +277,6 @@ function PositionsTooltipRow({
               datasetId={datasetId}
             />
           )}
-      </div>
     </Fragment>
   )
 }

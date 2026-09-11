@@ -32,7 +32,7 @@ function PopupSectionLayout({
 }: PopupSectionLayoutProps) {
   return (
     <div
-      className={cx(styles.popupSection, { [styles.noIcon]: !icon }, className)}
+      className={cx(styles.popupSection, className)}
       translate={translate}
     >
       {(icon || title) && (

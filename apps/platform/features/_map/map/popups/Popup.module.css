@@ -109,12 +109,8 @@
 .popupSection {
   display: flex;
   position: relative;
+  gap: var(--space-XS);
   padding: var(--space-XS);
-  padding-left: 2.5rem;
-}
-
-.popupSection.noIcon {
-  padding-left: var(--space-XS);
 }
 
 .popupSection:not(:last-child) {
@@ -134,14 +130,13 @@
   cursor: default;
 }
 
-.click .popupSection.noIcon {
-  padding-left: 0;
-}
-
-.click .popupSectionHeader {
+.popupSectionHeader {
   display: flex;
   align-items: center;
   gap: var(--space-XS);
+}
+
+.click .popupSectionHeader {
   margin-bottom: var(--space-XS);
 }
 
@@ -171,13 +166,6 @@
 }
 
 .layerIcon {
-  position: absolute;
-  left: 2px;
-  top: 2px;
-}
-
-.click .popupSectionHeader .layerIcon {
-  position: static;
   flex-shrink: 0;
 }
 
