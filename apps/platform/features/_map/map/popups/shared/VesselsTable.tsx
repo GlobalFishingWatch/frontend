@@ -53,12 +53,14 @@ function VesselsTable({
   activityType = DatasetSubCategory.Fishing,
   testId = 'vessels-table',
   showValue = true,
+  showMore = true,
 }: {
   feature: SliceExtendedFourwingsDeckSublayer & { category: DataviewCategory }
   vesselProperty?: ActivityProperty
   activityType?: `${DatasetSubCategory}`
   testId?: string
   showValue?: boolean
+  showMore?: boolean
 }) {
   const { t } = useTranslation()
   const { start, end } = useSelector(selectTimeRange)
@@ -99,7 +101,11 @@ function VesselsTable({
         <table className={cx(styles.vesselsTable)} data-test={testId}>
           <thead>
             <tr>
-              <th colSpan={hasPinColumn ? 2 : 1}>{t((t) => t.common.vessels)}</th>
+              <th colSpan={hasPinColumn ? 2 : 1}>
+                {vesselsInfo?.overflow
+                  ? t((t) => t.common.topVessels, { count: MAX_TOOLTIP_LIST })
+                  : t((t) => t.common.vessels)}
+              </th>
               <th>{t((t) => t.vessel.flag)}</th>
               <th>
                 {isPresenceActivity ? t((t) => t.vessel.type) : t((t) => t.vessel.gearType_short)}
@@ -111,6 +117,7 @@ function VesselsTable({
                   {feature?.unit === 'hours' && t((t) => t.common.hours)}
                   {feature?.unit === 'days' && t((t) => t.common.days)}
                   {feature?.unit === 'detections' && t((t) => t.common.detections)}
+                  {feature?.unit === 'visits' && t((t) => t.common.visits)}
                 </th>
               )}
             </tr>
@@ -270,7 +277,7 @@ function VesselsTable({
           </tbody>
         </table>
       )}
-      {vesselsInfo && vesselsInfo.overflow && (
+      {showMore && vesselsInfo && vesselsInfo.overflow && (
         <p className={styles.vesselsMore}>
           + {vesselsInfo.overflowNumber} {t((t) => t.common.more)}
         </p>

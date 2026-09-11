@@ -114,17 +114,25 @@ function VesselTracksTooltipRow({
     vesselLayer?.instance,
   ])
 
+  const isPoint = interactionType === 'point'
+  const [longitude, latitude] = isPoint ? (feature.geometry as Point).coordinates : ([] as number[])
+
   return (
     <div className={styles.row} key={feature.id}>
       <div className={styles.rowText}>
+        {showFeaturesDetails && isPoint && (
+          <p className={styles.rowTitle}>
+            {latitude?.toFixed(4)}, {longitude?.toFixed(4)}
+          </p>
+        )}
         <p>
           {!showFeaturesDetails && !hideVesselNames && formatInfoField(feature.title, 'shipname')}{' '}
-          {interactionType === 'point' && feature.timestamp && (
+          {isPoint && feature.timestamp && (
             <span className={cx({ [styles.secondary]: !showFeaturesDetails })}>
               <I18nDate date={feature.timestamp} format={DateTime.DATETIME_MED} />
               <SolarStatus
-                lon={(feature.geometry as Point).coordinates[0]}
-                lat={(feature.geometry as Point).coordinates[1]}
+                lon={longitude}
+                lat={latitude}
                 timestamp={feature.timestamp}
                 locale={i18n.language as Locale}
               />
@@ -136,27 +144,28 @@ function VesselTracksTooltipRow({
             </span>
           )}
         </p>
-        {showFeaturesDetails && (
-          <Fragment>
-            <p key="speed">
-              {feature.speed !== undefined && (
+        {showFeaturesDetails && (feature.speed !== undefined || feature.depth !== undefined) && (
+          <div className={styles.flex}>
+            {feature.speed !== undefined && (
+              <div className={styles.rowColumn}>
+                <p className={styles.rowTitle}>{upperFirst(t((t) => t.eventInfo.speed))}</p>
                 <span>
-                  {upperFirst(t((t) => t.eventInfo.speed))}: {feature.speed.toFixed(2)}{' '}
+                  {feature.speed.toFixed(2)}{' '}
                   {t((t) => t.common.knots, {
                     defaultValue: 'knots',
                   })}
                 </span>
-              )}
-            </p>
-            <p key="depth">
-              {feature.depth !== undefined && (
+              </div>
+            )}
+            {feature.depth !== undefined && (
+              <div className={styles.rowColumn}>
+                <p className={styles.rowTitle}>{upperFirst(t((t) => t.eventInfo.depth))}</p>
                 <span>
-                  {upperFirst(t((t) => t.eventInfo.depth))}: {Math.abs(feature.depth)}{' '}
-                  {t((t) => t.common.meters)}
+                  {Math.abs(feature.depth)} {t((t) => t.common.meters)}
                 </span>
-              )}
-            </p>
-          </Fragment>
+              </div>
+            )}
+          </div>
         )}
         {showFeaturesDetails &&
           !guestUser &&

@@ -28,7 +28,6 @@ function DetectionsTooltipRow({
   loading,
   error,
 }: DetectionsTooltipRowProps) {
-  console.log('🚀 ~ DetectionsTooltipRow ~ feature:', feature)
   const { t } = useTranslation()
   // Avoid showing not matched detections
   const vesselsInfo = getVesselsInfoConfig(feature.vessels || [])

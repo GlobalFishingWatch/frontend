@@ -13,8 +13,10 @@ import PortsReportLink from 'features/_reports/report-port/PortsReportLink'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nNumber from 'features/i18n/i18nNumber'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { selectIsPortReportLocation } from 'router/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
+import { formatInfoField } from 'utils/info'
 
 import type {
   ExtendedFeatureByVesselEvent,
@@ -48,6 +50,9 @@ function EventsPortVisitTooltipRow({
     feature.title ||
     (dataview ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false }) : '')
 
+  const vessels = event?.vessels || []
+  const visitsCount = vessels.reduce((acc, vessel) => acc + (vessel.events || 0), 0)
+
   const seePortReportClick = useCallback((port?: ExtendedFeatureByVesselEventPort) => {
     trackEvent({
       category: TrackCategory.GlobalReports,
@@ -64,6 +69,18 @@ function EventsPortVisitTooltipRow({
       iconColor={color}
       title={showFeaturesDetails ? title : undefined}
     >
+      {showFeaturesDetails && event?.port?.name && visitsCount > 0 && (
+        <div className={styles.row}>
+          <span className={styles.rowText}>
+            {formatInfoField(event.port.name, 'port')} -{' '}
+            {t((t) => t.event.portVisitsSummary, {
+              count: visitsCount,
+              visits: formatI18nNumber(visitsCount),
+              vessels: formatI18nNumber(vessels.length),
+            })}
+          </span>
+        </div>
+      )}
       {!showFeaturesDetails && feature.count && (
         <div className={styles.row}>
           <span className={styles.rowText}>
@@ -91,18 +108,21 @@ function EventsPortVisitTooltipRow({
                 {
                   vessels: event?.vessels,
                   category: DataviewCategory.Events,
+                  unit: 'visits',
                 } as any
               }
               vesselProperty="events"
+              showMore={false}
             />
           )}
           {event?.port?.id && !isPortReportLocation && (
             <PortsReportLink port={event.port}>
               <Button
-                className={cx(styles.portCTA, styles.rowMarginTop)}
+                size="small"
+                className={cx(styles.btnLarge, styles.rowMarginTop)}
                 onClick={() => seePortReportClick(event.port)}
               >
-                {t((t) => t.portsReport.seePortReport)} {event.port.name && `(${event.port.name})`}
+                {t((t) => t.portsReport.seePortReport)}
               </Button>
             </PortsReportLink>
           )}

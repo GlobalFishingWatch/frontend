@@ -101,28 +101,6 @@
   text-align: center;
 }
 
-.reportButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-XS);
-  width: 100%;
-  margin-top: var(--space-S);
-  padding: var(--space-S);
-  border-radius: var(--border-radius-0);
-  background-color: var(--color-primary-blue);
-  color: var(--color-white);
-  font: var(--font-S);
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.reportButton:hover {
-  background-color: var(--color-secondary-blue);
-}
-
-.rowFooter .reportButton {
-  height: var(--size-SM);
-  margin-top: 0;
-  padding: 0 var(--space-S);
+.reportLink {
+  flex: 1;
 }

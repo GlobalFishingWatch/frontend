@@ -33,6 +33,7 @@ function ActivityTooltipRow({
   // TODO get the value based on the sublayer
   const value = feature?.value as number
   const unit = feature?.unit ?? ('hours' as FeatureUnit)
+  const vesselsCount = feature?.vessels?.length || 0
   if (!value) {
     return null
   }
@@ -49,7 +50,10 @@ function ActivityTooltipRow({
             {t((t) => t.common[unit], {
               defaultValue: 'hours',
               count: value, // neded to select the plural automatically
-            } as any)}
+            } as any)}{' '}
+            {showFeaturesDetails &&
+              vesselsCount > 0 &&
+              t((t) => t.common.fromVessels, { count: vesselsCount })}
           </span>
         </div>
         {loading && (
@@ -59,7 +63,7 @@ function ActivityTooltipRow({
         )}
         {!loading && error && <p className={popupStyles.error}>{error}</p>}
         {!loading && showFeaturesDetails && (
-          <VesselsTable feature={feature} activityType={activityType} />
+          <VesselsTable feature={feature} activityType={activityType} showMore={false} />
         )}
       </PopupSectionLayout>
     </Fragment>
