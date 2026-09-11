@@ -2,6 +2,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { parseUserTrack } from './parse-user-tracks'
 
+/** The full-resolution binary, i.e. the finest (zero-tolerance) LOD level. */
+const fullBinary = (result: { lods: { binary: any }[] }) =>
+  result.lods[result.lods.length - 1].binary
+
 describe('parseUserTrack', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -63,14 +67,14 @@ describe('parseUserTrack', () => {
     consoleSpy.mockRestore()
   })
 
-  it('should parse valid GeoJSON with LineString and return data and binary', () => {
+  it('should parse valid GeoJSON with LineString and return data and lods', () => {
     const userTrack = createUserTrack([createLineStringFeature()])
     const arrayBuffer = toArrayBuffer(JSON.stringify(userTrack))
 
     const result = parseUserTrack(arrayBuffer)
 
     expect(result).toHaveProperty('data')
-    expect(result).toHaveProperty('binary')
+    expect(result).toHaveProperty('lods')
     expect(result.data.type).toBe('FeatureCollection')
     expect(result.data.features).toHaveLength(1)
     expect(result.data.features[0].geometry.type).toBe('LineString')
@@ -82,7 +86,7 @@ describe('parseUserTrack', () => {
 
     const result = parseUserTrack(arrayBuffer)
 
-    expect(result.binary).toMatchObject({
+    expect(fullBinary(result)).toMatchObject({
       length: expect.any(Number),
       startIndices: expect.any(Array),
       attributes: {
@@ -105,7 +109,7 @@ describe('parseUserTrack', () => {
 
     const result = parseUserTrack(arrayBuffer)
 
-    const pathValues = Array.from(result.binary.attributes.getPath.value)
+    const pathValues = Array.from(fullBinary(result).attributes.getPath.value)
     expect(pathValues).toEqual([10, 20, 30, 40])
   })
 
@@ -123,7 +127,7 @@ describe('parseUserTrack', () => {
 
     const result = parseUserTrack(arrayBuffer)
 
-    const timestampValues = Array.from(result.binary.attributes.getTimestamp.value)
+    const timestampValues = Array.from(fullBinary(result).attributes.getTimestamp.value)
     expect(timestampValues).toEqual([100, 200])
   })
 
@@ -141,8 +145,8 @@ describe('parseUserTrack', () => {
 
     const result = parseUserTrack(arrayBuffer)
 
-    expect(result.binary).toBeDefined()
-    expect(result.binary.length).toBeGreaterThan(0)
+    expect(fullBinary(result)).toBeDefined()
+    expect(fullBinary(result).length).toBeGreaterThan(0)
   })
 
   it('should apply filters when provided', () => {
@@ -172,8 +176,8 @@ describe('parseUserTrack', () => {
     const result = parseUserTrack(arrayBuffer)
 
     expect(result.data.features).toHaveLength(0)
-    expect(result.binary.length).toBe(0)
-    expect(result.binary.startIndices).toEqual([0])
+    expect(fullBinary(result).length).toBe(0)
+    expect(fullBinary(result).startIndices).toEqual([0])
   })
 
   it('should use custom includeCoordinateProperties when provided', () => {

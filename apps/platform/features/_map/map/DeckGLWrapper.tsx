@@ -6,6 +6,7 @@ import DeckGL from '@deck.gl/react'
 import { _StatsWidget as StatsWidget } from '@deck.gl/widgets'
 
 import { useSetDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
+import { PICK_ONLY_LAYER_ID_SUFFIX } from '@globalfishingwatch/deck-layers/config'
 
 import { useDatasetDrag } from 'features/_map/map/drag-dataset.hooks'
 import { MAP_CANVAS_ID } from 'features/_map/map/map.config'
@@ -108,12 +109,16 @@ const DeckGLWrapper = () => {
     setDeckLayerLoadedState(layers)
   }, [layers, setDeckLayerLoadedState])
 
-  const layerFilterHandler = useCallback(({ renderPass }: FilterContext) => {
+  const layerFilterHandler = useCallback(({ layer, isPicking, renderPass }: FilterContext) => {
     // This avoids performing the default picking
     // since we are handling it through pickMultipleObjects
     // discussion for reference https://github.com/visgl/deck.gl/discussions/5793
     if (renderPass === 'picking:hover') {
       // if (!loadedLayers.includes(layer.id) || renderPass === 'picking:hover') {
+      return false
+    }
+
+    if (!isPicking && layer.id.endsWith(PICK_ONLY_LAYER_ID_SUFFIX)) {
       return false
     }
     return true

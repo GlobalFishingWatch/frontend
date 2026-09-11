@@ -227,7 +227,7 @@ export function useReportAreaBounds() {
         reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID
           ? true
           : reportAreaStatus === AsyncReducerStatus.Finished,
-      bbox: reportArea?.geometry?.bbox || reportArea?.bounds,
+      bbox: reportArea?.bounds,
     }
   }, [
     areaId,

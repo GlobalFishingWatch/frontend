@@ -2,12 +2,8 @@ import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { MultiSelectOption } from '@globalfishingwatch/api-client'
-import type {
-  DatasetConfiguration,
-  DatasetFilterType,
-  UserContextLayerV1Configuration,
-} from '@globalfishingwatch/api-types'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import type { DatasetConfiguration, DatasetFilterType } from '@globalfishingwatch/api-types'
+import { DATASET_TYPE_TO_CONFIG_TYPE } from '@globalfishingwatch/api-types'
 import {
   MAX_FILTERS_ENUM_VALUES,
   MAX_FILTERS_ENUM_VALUES_EXCEEDED,
@@ -35,11 +31,15 @@ export function useDatasetMetadata() {
   const setDatasetMetadataConfig = useCallback((newConfig: DatasetConfiguration['frontend']) => {
     setDatasetMetadataState((meta = {} as DatasetMetadata) => {
       const configurationByType =
-        meta.type === DatasetTypes.UserTracks ? 'userTracksV1' : 'userContextLayerV1'
-      const contextConfig = getDatasetConfiguration(meta, configurationByType)
+        DATASET_TYPE_TO_CONFIG_TYPE[meta.type as keyof typeof DATASET_TYPE_TO_CONFIG_TYPE] ??
+        'userContextLayerV1'
+      const contextConfig = getDatasetConfiguration(meta, configurationByType) as {
+        idProperty?: string
+        valuePropertyId?: string
+      }
       const frontendConfig = getDatasetConfiguration(meta)
       const idProperty = contextConfig?.idProperty
-      const valuePropertyId = (contextConfig as UserContextLayerV1Configuration)?.valuePropertyId
+      const valuePropertyId = contextConfig?.valuePropertyId
       return {
         ...meta,
         configuration: {

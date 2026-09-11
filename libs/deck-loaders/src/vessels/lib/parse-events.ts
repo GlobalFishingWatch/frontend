@@ -3,7 +3,12 @@ import { DateTime } from 'luxon'
 import type { ApiEvent } from '@globalfishingwatch/api-types'
 
 import type { VesselDeckLayersEventData } from './types'
-import { EVENTS_COLORS } from './types'
+import {
+  EVENTS_COLORS,
+  getLonglineCategory,
+  isLonglineSetEvent,
+  LONGLINE_CATEGORY_COLORS,
+} from './types'
 
 function decodeEventsBuffer(arrayBuffer: ArrayBuffer) {
   const data = JSON.parse(new TextDecoder().decode(arrayBuffer))
@@ -21,7 +26,9 @@ export function parseEvents(arrayBuffer: ArrayBuffer): VesselDeckLayersEventData
       start: DateTime.fromISO(start as string, { zone: 'utc' }).toMillis(),
       end: DateTime.fromISO(end as string, { zone: 'utc' }).toMillis(),
       props: {
-        color: EVENTS_COLORS[event.type],
+        color: isLonglineSetEvent(event)
+          ? LONGLINE_CATEGORY_COLORS[getLonglineCategory(event)]
+          : EVENTS_COLORS[event.type],
       },
     }
   })

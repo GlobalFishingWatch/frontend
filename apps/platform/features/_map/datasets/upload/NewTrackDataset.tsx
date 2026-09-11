@@ -56,7 +56,6 @@ function NewTrackDataset({
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
   const [timeFilterError, setTimeFilterError] = useState<string>('')
-  const [dataParseError, setDataParseError] = useState<string>('')
   const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [sourceData, setSourceData] = useState<DataList | undefined>()
@@ -149,7 +148,7 @@ function NewTrackDataset({
         setProcessingData(false)
       } catch (e: any) {
         setProcessingData(false)
-        onDatasetParseError(e, setDataParseError)
+        onDatasetParseError(e)
       }
     },
     [setDatasetMetadata, startTimeProperty, t, onDatasetParseError]
@@ -227,14 +226,21 @@ function NewTrackDataset({
         setError(error)
       } else if (onConfirm) {
         setLoading(true)
-        const file = geojson
-          ? getFileFromGeojson(parseGeoJsonProperties<LineString>(geojson, datasetMetadata))
-          : undefined
+        let file: File | undefined
+        try {
+          file = geojson
+            ? getFileFromGeojson(parseGeoJsonProperties<LineString>(geojson, datasetMetadata))
+            : undefined
+        } catch (e: any) {
+          setLoading(false)
+          onDatasetParseError(new Error('datasetUpload.errors.fileTooBig', { cause: e }))
+          return
+        }
         await onConfirm(datasetMetadata, { file, isEditing })
         setLoading(false)
       }
     }
-  }, [datasetMetadata, geojson, onConfirm, sourceData, t, isEditing])
+  }, [datasetMetadata, geojson, onConfirm, sourceData, t, isEditing, onDatasetParseError])
 
   // const filterOptions = isCSVFile ? numericFiltersFieldsOptions : filtersFieldsOptions
   const filterOptions = filtersFieldsOptions
@@ -244,14 +250,6 @@ function NewTrackDataset({
       <div className={styles.processingData}>
         <Spinner className={styles.processingDataSpinner} />
         <p>{t((t) => t.datasetUpload.processingData)}</p>
-      </div>
-    )
-  }
-
-  if (dataParseError) {
-    return (
-      <div className={styles.processingData}>
-        <p className={styles.errorMsg}>{dataParseError}</p>
       </div>
     )
   }
@@ -267,7 +265,7 @@ function NewTrackDataset({
       )}
       <div className={styles.content}>
         <InputText
-          value={datasetMetadata?.name}
+          value={datasetMetadata?.name ?? ''}
           label={t((t) => t.datasetUpload.datasetName)}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ name: e.target.value })}

@@ -31,7 +31,7 @@ const InfoButton = ({ dataview, className }: InfoButtonProps) => {
     tooltip = t((t) => t.dataset.importing)
   }
   if (datasetError) {
-    tooltip = `${t((t) => t.errors.uploadError)} - ${importLogs}`
+    tooltip = `${t((t) => t.errors.uploadError)} ${importLogs ? `- ${importLogs}` : ''}`
   }
 
   if (geometryType === 'draw') {

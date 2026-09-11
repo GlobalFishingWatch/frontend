@@ -76,6 +76,12 @@ export type UserTrackLayerProps = DeckLayerProps<
     highlightEndTime?: number
     getTimestamp?: Accessor<any, number>
     singleTrack?: boolean
+    /**
+     * Width of the hover target, in pixels. The track is drawn at `getWidth`;
+     * then the vertex shader widens it to this only during the picking pass
+     * @default 15
+     */
+    pickWidth?: number
   }
 >
 

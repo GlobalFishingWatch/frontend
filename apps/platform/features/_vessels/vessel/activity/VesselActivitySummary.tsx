@@ -162,7 +162,10 @@ export const VesselActivitySummary = () => {
         <ul>
           {EVENTS_ORDER.map((eventType) => {
             const events = eventsByType[eventType]
-            if (eventType === EventTypes.Gaps && !events?.length) {
+            if (
+              (eventType === EventTypes.Gaps || eventType === EventTypes.Gap) &&
+              !events?.length
+            ) {
               return null
             }
             const active = isVesselEventVisible(visibleEvents, eventType)
@@ -179,7 +182,12 @@ export const VesselActivitySummary = () => {
                 <div className={cx(styles.eventTypeRow, { [styles.active]: active })}>
                   <span className={styles.iconContainer}>
                     {eventType !== EventTypes.Fishing ? (
-                      <Icon icon={`event-legend-${eventType}` as IconType} type="original-colors" />
+                      <Icon
+                        icon={
+                          `event-legend-${eventType === EventTypes.Gap ? EventTypes.Gaps : eventType}` as IconType
+                        }
+                        type="original-colors"
+                      />
                     ) : (
                       <div
                         className={styles.fishingIcon}

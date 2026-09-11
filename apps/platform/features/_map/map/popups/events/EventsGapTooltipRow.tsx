@@ -1,0 +1,215 @@
+import { Fragment, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { DateTime } from 'luxon'
+
+import type { Dataset } from '@globalfishingwatch/api-types'
+import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
+import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { Button, Spinner } from '@globalfishingwatch/ui-components'
+import { TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
+
+import { getDatasetLabel, getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
+import { selectEventsDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
+import VesselLink from 'features/_vessels/vessel/VesselLink'
+import VesselPin from 'features/_vessels/vessel/VesselPin'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectDebugOptions } from 'features/debug/debug.slice'
+import I18nDate from 'features/i18n/i18nDate'
+import I18nNumber from 'features/i18n/i18nNumber'
+import { getDatasetSourceTranslated } from 'features/i18n/utils.datasets'
+import { getEventLabel } from 'utils/analytics'
+import { formatInfoField } from 'utils/info'
+
+import type { ExtendedFeatureSingleEvent, SliceExtendedClusterPickingObject } from '../../map.slice'
+import PopupSectionLayout from '../shared/PopupSectionLayout'
+
+import styles from '../Popup.module.css'
+
+type EventsGapTooltipRowProps = {
+  feature: SliceExtendedClusterPickingObject<ExtendedFeatureSingleEvent>
+  showFeaturesDetails: boolean
+  error?: string
+  loading?: boolean
+}
+
+function EventsGapTooltipRow({
+  feature,
+  showFeaturesDetails,
+  error,
+  loading,
+}: EventsGapTooltipRowProps) {
+  const { t } = useTranslation()
+  const dataviews = useSelector(selectEventsDataviews)
+  const { vesselGapsThresholdFilter } = useSelector(selectDebugOptions)
+  const encounterDataview = dataviews.find((d) => d.id === feature.layerId)
+  const gapSegmentThreshold = vesselGapsThresholdFilter
+    ? (encounterDataview?.config?.filters?.duration?.[0] as number)
+    : undefined
+  const encounterDataset = encounterDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
+  const encounterVesselDatasetId = getRelatedDatasetByType(
+    encounterDataset,
+    DatasetTypes.Vessels
+  )?.id
+  const seeGapEventClick = useCallback((dataset: Dataset) => {
+    trackEvent({
+      category: TrackCategory.VesselProfile,
+      action: `Clicked see gap event`,
+      label: getEventLabel(
+        [` dataset_name: ${dataset.name} `, ` source: ${dataset.source} `, dataset.id].filter(
+          Boolean
+        ) as string[]
+      ),
+    })
+  }, [])
+
+  const event = feature.event || ({} as ExtendedFeatureSingleEvent)
+  const vesselDatasetId = event?.vessel?.dataset || encounterVesselDatasetId
+  const interval = getFourwingsInterval(feature.startTime, feature.endTime)
+  const title =
+    feature.title ||
+    (encounterDataview
+      ? getDatasetTitleByDataview(encounterDataview, { showPrivateIcon: false })
+      : getDatasetLabel({ id: feature.datasetId! }))
+  const gapStart = feature.properties.stime
+    ? feature.properties.stime * 1000
+    : event?.start
+      ? getUTCDateTime(event?.start as string).toMillis()
+      : undefined
+  const gapEnd = event?.end ? getUTCDateTime(event?.end as string).toMillis() : undefined
+
+  return (
+    <PopupSectionLayout
+      icon="encounters"
+      iconColor={feature.color}
+      title={showFeaturesDetails ? title : undefined}
+    >
+      {!showFeaturesDetails && feature.count && (
+        <div className={styles.row}>
+          <span className={styles.rowText}>
+            <I18nNumber number={feature.count} />{' '}
+            {t((t) => t.event.gap, {
+              source: getDatasetSourceTranslated({ id: feature?.datasetId || '' }),
+              count: feature.count,
+            })}
+            {!feature.properties.cluster && gapStart && interval && (
+              <span className={styles.rowTextSecondary}>
+                {' '}
+                <I18nDate date={gapStart} />
+                {gapEnd && (
+                  <Fragment>
+                    - <I18nDate date={gapEnd} />
+                  </Fragment>
+                )}
+              </span>
+            )}
+          </span>
+        </div>
+      )}
+      {showFeaturesDetails && (
+        <div className={styles.row}>
+          <div className={styles.rowContainer}>
+            {gapStart && (
+              <span className={styles.rowText}>
+                <I18nDate date={gapStart} format={DateTime.DATETIME_MED} />
+                {gapEnd && (
+                  <Fragment>
+                    {' - '}
+                    <I18nDate date={gapEnd} format={DateTime.DATETIME_MED} />
+                  </Fragment>
+                )}
+              </span>
+            )}
+            {loading ? (
+              <Spinner className={styles.loading} size="small" />
+            ) : (
+              <Fragment>
+                {event ? (
+                  <Fragment>
+                    <div className={styles.flex}>
+                      {event.vessel && (
+                        <div className={styles.rowColumn}>
+                          {event.vessel.type && (
+                            <p className={styles.rowTitle}>
+                              {t((t) => t.vessel.vesselTypes[event.vessel.type], {
+                                defaultValue: event.vessel.type,
+                              })}
+                            </p>
+                          )}
+                          {event.vessel && (
+                            <div className={styles.centered}>
+                              <span className={styles.rowText}>
+                                <VesselLink
+                                  vesselId={event.vessel.id}
+                                  datasetId={event.vessel.dataset}
+                                  query={{
+                                    vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                                    vesselSelfReportedId: event.vessel.id,
+                                  }}
+                                  onClick={() => seeGapEventClick(event.dataset)}
+                                >
+                                  {formatInfoField(event.vessel?.name, 'shipname')}
+                                </VesselLink>
+                              </span>
+                              {vesselDatasetId && (
+                                <VesselPin
+                                  vesselToResolve={{
+                                    ...event.vessel,
+                                    datasetId: vesselDatasetId,
+                                  }}
+                                  dataviewTemplateId={TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG}
+                                  config={{
+                                    ...(!!gapSegmentThreshold && {
+                                      gapSegmentThreshold,
+                                    }),
+                                  }}
+                                />
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    {event.vessel && (
+                      <div className={styles.row}>
+                        <VesselLink
+                          vesselId={event.vessel.id}
+                          datasetId={vesselDatasetId}
+                          query={{
+                            vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                            vesselSelfReportedId: event.vessel.id,
+                          }}
+                          eventId={event.id ? event.id.split('.')[0] : undefined}
+                          eventType={'gaps'}
+                          showTooltip={false}
+                          className={styles.btnLarge}
+                        >
+                          <Button
+                            target="_blank"
+                            size="small"
+                            className={styles.btnLarge}
+                            onClick={() => seeGapEventClick(event.dataset)}
+                          >
+                            {t((t) => t.common.seeMore)}
+                          </Button>
+                        </VesselLink>
+                      </div>
+                    )}
+                  </Fragment>
+                ) : error ? (
+                  <p className={styles.error}>{error}</p>
+                ) : (
+                  t((t) => t.event.noData)
+                )}
+              </Fragment>
+            )}
+          </div>
+        </div>
+      )}
+    </PopupSectionLayout>
+  )
+}
+
+export default EventsGapTooltipRow

@@ -11,6 +11,7 @@ import type { GeoJsonProperties } from 'geojson'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
+import { unwrapFeatureLongitudes } from '@globalfishingwatch/data-transforms'
 import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
 import { DEFAULT_ID_PROPERTY } from '#config/layers.config'
@@ -18,6 +19,7 @@ import { transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
 import {
   getContextFilterOperatorsHash,
   getContextId,
+  getSelectedTilesFeatures,
   getValidSublayerFilters,
   hasSublayerFilters,
   mergePickedFeatures,
@@ -168,10 +170,13 @@ export abstract class UserBaseLayer<
 
     const object = {
       ...(info.tile && {
-        ...transformTileCoordsToWGS84(
-          info.object as UserLayerFeature,
-          info.tile.bbox as GeoBoundingBox,
-          this.context.viewport
+        // TODO-ANTIMERIDIAN: Review if this is needed and why
+        ...unwrapFeatureLongitudes(
+          transformTileCoordsToWGS84(
+            info.object as UserLayerFeature,
+            info.tile.bbox as GeoBoundingBox,
+            this.context.viewport
+          )
         ),
       }),
       id: getContextId(info.object as ContextFeature, idProperty),
@@ -196,21 +201,44 @@ export abstract class UserBaseLayer<
     return { ...info, object }
   }
 
-  _pickObjects(maxObjects: number | null): PickingInfo[] {
-    const { deck, viewport } = this.context
-    const width = viewport.width
-    const height = viewport.height
-    const x = viewport.x
-    const y = viewport.y
-    const layerIds = this.props.layers.map((l) => l.id)
-    const features = deck!.pickObjects({ x, y, width, height, layerIds, maxObjects })
-    return features
-  }
-
   getRenderedFeatures(maxFeatures: number | null = null): UserLayerFeature[] {
+    const { viewport } = this.context
     const idProperty = this.props.layers[0].idProperty || DEFAULT_ID_PROPERTY
+    if (!viewport) return []
+
+    const pickedFeatures: PickingInfo[] = []
+    this.getSubLayers().forEach((tileLayer) => {
+      const layerId = (tileLayer.props as { layerId?: string }).layerId
+      const layer = this.props.layers.find((l) => l.id === layerId) || this.props.layers[0]
+      if (!layer) return
+      const valueProperties = layer.valueProperties || []
+      const features = getSelectedTilesFeatures<UserLayerFeature>(tileLayer, viewport)
+      for (const feature of features) {
+        if (maxFeatures !== null && pickedFeatures.length >= maxFeatures) break
+        // Tile content is not filtered by the DataFilterExtension the way picked features are,
+        // so the sublayer filters have to be applied here. First match wins, mirroring picking.
+        const sublayer = layer.sublayers?.find(
+          (s) => !hasSublayerFilters(s) || isFeatureInFilters(feature, s.filters, s.filterOperators)
+        )
+        if (!sublayer) continue
+        const object = {
+          ...feature,
+          id: getContextId(feature as ContextFeature, idProperty),
+          value: feature.properties?.value,
+          valueProperties,
+          color: sublayer.color,
+          layerId: this.props.id,
+          datasetId: layer.datasetId,
+          dataviewId: sublayer.dataviewId,
+          category: this.props.category,
+          subcategory: this.props.subcategory,
+        } as UserLayerPickingObject
+        pickedFeatures.push({ object, layer: { id: layer.id } } as unknown as PickingInfo)
+      }
+    })
+
     return mergePickedFeatures<UserLayerFeature>({
-      pickedFeatures: this._pickObjects(maxFeatures),
+      pickedFeatures,
       idProperty,
       layers: this.props.layers,
     })

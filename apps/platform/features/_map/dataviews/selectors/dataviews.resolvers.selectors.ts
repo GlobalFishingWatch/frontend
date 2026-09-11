@@ -12,6 +12,7 @@ import {
   extendDataviewDatasetConfig,
   getIsVesselDataviewInstanceId,
   getResources,
+  getVesselDataviewInstanceId,
   resolveDataviewDatasetResource,
   resolveDataviews,
   selectResources,
@@ -25,6 +26,7 @@ import {
   isHistoricalDataview,
   isRealTimeDataview,
   resolveVesselDataviewInstance,
+  withLonglineSetsEvents,
 } from 'features/_map/dataviews/dataviews.utils'
 import { selectDataviewInstancesInjected } from 'features/_map/dataviews/selectors/dataviews.injected.selectors'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/_map/dataviews/selectors/dataviews.merged.selectors'
@@ -38,6 +40,7 @@ import {
 import { selectAllVesselGroups } from 'features/_user/vessel-groups/vessel-groups.slice'
 import { selectTrackCorrectionVesselDataviewId } from 'features/_vessels/track-correction/track-correction.slice'
 import { selectCurrentVesselEvent } from 'features/_vessels/vessel/selectors/vessel.selectors'
+import { selectLonglineSetsOnMap } from 'features/_vessels/vessel/vessel.config.selectors'
 import { getVesselProperty } from 'features/_vessels/vessel/vessel.utils'
 import { selectTrackThinningConfig } from 'features/data/resources/resources.selectors.thinning'
 import { infoDatasetConfigsCallback } from 'features/data/resources/resources.utils'
@@ -46,6 +49,7 @@ import {
   selectIsAnyVesselLocation,
   selectTrackCorrectionId,
   selectUrlDataviewInstancesOrder,
+  selectVesselId,
 } from 'router/routes.selectors'
 import { formatInfoField } from 'utils/info'
 import { createDeepEqualSelector } from 'utils/selectors'
@@ -102,6 +106,8 @@ export const selectAllDataviewInstancesResolved = createSelector(
     selectHighlightedTimeForTrackCorrection,
     selectDeprecatedDatasets,
     selectUserLanguage,
+    selectLonglineSetsOnMap,
+    selectVesselId,
   ],
   (
     timeMode,
@@ -116,7 +122,9 @@ export const selectAllDataviewInstancesResolved = createSelector(
     trackCorrectionId,
     highlightedTime,
     deprecatedDatasets,
-    language
+    language,
+    longlineSetsOnMap,
+    vesselId
   ): UrlDataviewInstance[] | undefined => {
     if (!dataviews?.length || !datasets?.length || !dataviewInstances?.length) {
       return EMPTY_ARRAY
@@ -138,8 +146,14 @@ export const selectAllDataviewInstancesResolved = createSelector(
       datasets,
       vesselGroups
     )
+    const longlineVesselDataviewInstanceId =
+      longlineSetsOnMap && vesselId ? getVesselDataviewInstanceId(vesselId) : undefined
+
     const dataviewInstancesResolvedWithConfigInjected = dataviewInstancesResolved.map(
       (dataview) => {
+        if (dataview.id === longlineVesselDataviewInstanceId) {
+          return withLonglineSetsEvents(dataview, datasets)
+        }
         if (dataview.id === trackCorrectionVesselDataviewId) {
           return {
             ...dataview,

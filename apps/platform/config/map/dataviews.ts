@@ -21,6 +21,8 @@ export const VIIRS_SKYLIGHT_DATAVIEW_INSTANCE_ID = 'viirs-skylight' as const
 // Context layer dataview instance ids
 export const DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID = 'basemap' as const
 export const BASEMAP_LABELS_DATAVIEW_INSTANCE_ID = 'basemap-labels' as const
+export const BATHYMETRY_CONTOUR_DATAVIEW_INSTANCE_ID =
+  `${BATHYMETRY_DATAVIEW_PREFIX}-contour` as const
 export const EEZ_DATAVIEW_INSTANCE_ID = `${CONTEXT_LAYER_INSTANCE_PREFIX}eez` as const
 export const MPA_DATAVIEW_INSTANCE_ID = `${CONTEXT_LAYER_INSTANCE_PREFIX}mpa` as const
 export const RFMO_DATAVIEW_INSTANCE_ID = `${CONTEXT_LAYER_INSTANCE_PREFIX}rfmo` as const

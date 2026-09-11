@@ -48,6 +48,11 @@
   right: 0;
 }
 
+.rightUp {
+  bottom: 4rem;
+  right: 0;
+}
+
 .languages > li {
   width: 100%;
 }

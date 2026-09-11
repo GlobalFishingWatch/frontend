@@ -17,9 +17,7 @@ export const POSITIONS_API_TILES_URL = BASE_API_TILES_URL.replace(
 export const HEATMAP_ID = 'heatmap'
 export const HEATMAP_HIGH_RES_ID = `${HEATMAP_ID}-high-res`
 export const HEATMAP_LOW_RES_ID = `${HEATMAP_ID}-low-res`
-export const HEATMAP_STATIC_ID = `${HEATMAP_ID}-static`
 export const POSITIONS_ID = 'positions'
-export const HEATMAP_STATIC_PROPERTY_ID = 'count'
 export const FOOTPRINT_ID = 'footprint'
 export const FOOTPRINT_HIGH_RES_ID = `${FOOTPRINT_ID}-high-res`
 export const FOURWINGS_VISUALIZATION_MODES = [
@@ -49,6 +47,7 @@ export const FOURWINGS_TILE_SIZE = 512
 export const FOURWINGS_MAX_CACHE_BYTE_SIZE = 256 * 1024 * 1024
 export const MAX_ZOOM_TO_CLUSTER_POINTS = 4.5
 export const MAX_POSITIONS_PER_TILE_SUPPORTED = 5000
+export const MAX_REALTIME_POSITIONS_PER_TILE_SUPPORTED = 20000
 export const POSITIONS_VISUALIZATION_MAX_ZOOM = 12
 
 export const MAX_RAMP_VALUES = 10000

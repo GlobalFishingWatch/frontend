@@ -1,7 +1,7 @@
 import { bbox, feature, geometry, polygon } from '@turf/turf'
 import type { Feature, LineString, MultiPolygon, Point, Polygon, Position } from 'geojson'
 
-export type Bbox = [number, number, number, number]
+import type { Bbox } from '../types'
 
 // Used to detect antimeridian issues in dissolve
 export const BUFFERED_ANTIMERIDIAN_LON = 179.5
@@ -158,6 +158,16 @@ export const wrapFeatureLongitudes = (
   }
 }
 
+/**
+ * The only bbox safe to store as a geometry's `bbox` member.
+ *
+ * turf trusts `bbox` to reject points before doing any real work, so it has to agree with the coordinates.
+ * {@link wrapGeometryBbox} deliberately does not — its span is unwrapped past ±180 so fitBounds gets a continuous range
+ */
+export function getTurfBbox(geometry: Polygon | MultiPolygon): Bbox {
+  return bbox(geometry, { recompute: true }) as Bbox
+}
+
 export function wrapGeometryBbox(geometry: Polygon | MultiPolygon): Bbox {
   const fullBbox = bbox(geometry)
   let minX = fullBbox[0]
@@ -179,4 +189,51 @@ export function wrapGeometryBbox(geometry: Polygon | MultiPolygon): Bbox {
 
 export const wrapFeaturesLongitudes = (features: Feature<LineString | Polygon>[]) => {
   return features.map((feature) => wrapFeatureLongitudes(feature))
+}
+
+const WORLD_LONGITUDES = 360
+
+/** Shifts one run of positions back by whole worlds, so its mean longitude lands in [-180, 180]. */
+const unwrapPositions = (positions: Position[]): Position[] => {
+  const meanLon = positions.reduce((acc, position) => acc + position[0], 0) / positions.length
+  const offset = Math.round(meanLon / WORLD_LONGITUDES) * WORLD_LONGITUDES
+  return offset === 0 ? positions : positions.map(([lon, ...rest]) => [lon - offset, ...rest])
+}
+
+const unwrapCoordinates = (coordinates: any): any => {
+  if (typeof coordinates[0] === 'number') {
+    const offset = Math.round(coordinates[0] / WORLD_LONGITUDES) * WORLD_LONGITUDES
+    return offset === 0 ? coordinates : [coordinates[0] - offset, ...coordinates.slice(1)]
+  }
+  if (typeof coordinates[0]?.[0] === 'number') {
+    return unwrapPositions(coordinates)
+  }
+  let changed = false
+  const unwrapped = coordinates.map((part: any) => {
+    const next = unwrapCoordinates(part)
+    changed ||= next !== part
+    return next
+  })
+  return changed ? unwrapped : coordinates
+}
+
+/**
+ * The inverse of {@link wrapFeatureLongitudes}: brings coordinates back into [-180, 180].
+ *
+ * A viewport can span more than one copy of the world, and a tiled source then hands back the
+ * same feature in each copy — a Fiji polygon arrives at -180.8 rather than 179.2. Anything that
+ * tests a feature against a geometry split at the antimeridian (a report area is a part ending
+ * at 180 plus a part starting at -180) matches neither and silently drops it.
+ */
+export const unwrapFeatureLongitudes = <T extends Feature>(featureData: T): T => {
+  const geometry = featureData.geometry as { type: string; coordinates?: any }
+  if (!geometry?.coordinates?.length) {
+    return featureData
+  }
+  const coordinates = unwrapCoordinates(geometry.coordinates)
+  if (coordinates === geometry.coordinates) {
+    // Nothing moved, so hand the caller its own feature back rather than a copy of it.
+    return featureData
+  }
+  return { ...featureData, geometry: { ...geometry, coordinates } } as T
 }

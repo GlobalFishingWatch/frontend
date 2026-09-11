@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
-import { DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
+import { DatasetCategory, DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
 import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
@@ -14,6 +14,7 @@ import {
   getBigQuery4WingsDataviewInstance,
   getBigQueryEventsDataviewInstance,
   getContextDataviewInstance,
+  getUserFourwingsDataviewInstance,
   getUserPointsDataviewInstance,
   getUserPolygonsDataviewInstance,
   getUserTrackDataviewInstance,
@@ -47,6 +48,9 @@ interface NewDatasetProps {
 const DATASET_REFRESH_TIMEOUT = 10000
 
 export const getDataviewInstanceByDataset = (dataset: Dataset) => {
+  if (dataset.type === DatasetTypes.UserFourwings) {
+    return getUserFourwingsDataviewInstance(dataset)
+  }
   const isBQEditorLayer = getIsBQEditorDataset(dataset)
   if (isBQEditorLayer) {
     const config = getDatasetConfiguration(dataset, 'fourwingsV1')
@@ -193,31 +197,47 @@ export const useDatasetsAPI = () => {
   )
 }
 
+const pollingDatasetIds = new Set<string>()
+
 export const useAutoRefreshImportingDataset = (
   dataset?: Dataset,
   refreshTimeout = DATASET_REFRESH_TIMEOUT
 ) => {
   const { dispatchFetchDataset } = useDatasetsAPI()
+  const datasetId = dataset?.id
+  const isImporting = dataset?.status === DatasetStatus.Importing
+
   useEffect(() => {
+    if (!datasetId || !isImporting || pollingDatasetIds.has(datasetId)) {
+      return
+    }
+    pollingDatasetIds.add(datasetId)
+
     let timeOut: NodeJS.Timeout | undefined
+    let cancelled = false
 
     const refreshDataset = async () => {
-      const result = await dispatchFetchDataset(dataset!.id)
+      const result = await dispatchFetchDataset(datasetId)
+      if (cancelled) {
+        return
+      }
       if (result.payload?.status === DatasetStatus.Importing) {
         timeOut = setTimeout(refreshDataset, refreshTimeout)
+      } else {
+        pollingDatasetIds.delete(datasetId)
       }
     }
 
-    if (dataset?.status === DatasetStatus.Importing) {
-      timeOut = setTimeout(refreshDataset, refreshTimeout)
-    }
+    timeOut = setTimeout(refreshDataset, refreshTimeout)
 
     return () => {
+      cancelled = true
+      pollingDatasetIds.delete(datasetId)
       if (timeOut) {
         clearTimeout(timeOut)
       }
     }
-  }, [dataset, dispatchFetchDataset, refreshTimeout])
+  }, [datasetId, isImporting, dispatchFetchDataset, refreshTimeout])
 }
 
 export const useAddDataset = ({ onSelect } = {} as NewDatasetProps) => {

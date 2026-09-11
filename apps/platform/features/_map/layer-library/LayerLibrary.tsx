@@ -9,19 +9,31 @@ import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { InputText, Spinner } from '@globalfishingwatch/ui-components'
 
 import type { LibraryLayer } from 'data/map/layer-library'
-import { getDatasetLabel, groupDatasetsByGeometryType } from 'features/_map/datasets/datasets.utils'
+import {
+  fetchAllDatasetsThunk,
+  fetchDatasetsByIdsThunk,
+} from 'features/_map/datasets/datasets.slice'
+import {
+  getDatasetLabel,
+  getDatasetMatchesSearch,
+  groupDatasetsByGeometryType,
+} from 'features/_map/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
-import { resolveLibraryLayers } from 'features/_map/layer-library/LayerLibrary.utils'
+import {
+  resolveLibraryLayers,
+  scrollToLayerLibrarySection,
+} from 'features/_map/layer-library/LayerLibrary.utils'
 import LayerLibraryItem from 'features/_map/layer-library/LayerLibraryItem'
 import LayerLibraryUserPanel from 'features/_map/layer-library/LayerLibraryUserPanel'
 import { selectUserDatasets } from 'features/_user/selectors/user.permissions.selectors'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { selectAllVisibleVesselGroups } from 'features/_user/vessel-groups/vessel-groups.selectors'
-import { selectDebugOptions } from 'features/debug/debug.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectLayerLibraryModal,
   selectLayerLibraryUniqueCategory,
 } from 'features/modals/modals.slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { upperFirst } from 'utils/info'
 
 import LayerLibraryVesselGroupPanel from './LayerLibraryVesselGroupPanel'
@@ -30,14 +42,14 @@ import styles from './LayerLibrary.module.css'
 
 const SEARCH_MIN_CHARS = 3
 
-type UserSubcategory = DataviewCategory | 'bigQuery'
+// gridded has no DataviewCategory of its own — it is a geometry type of the user datasets
+type UserSubcategory = DataviewCategory | 'bigQuery' | 'gridded'
 
 const LayerLibrary: FC = () => {
   const { t, ready: i18nReady } = useTranslation(['translations', 'layer-library'])
   const [searchQuery, setSearchQuery] = useState('')
   const initialCategory = useSelector(selectLayerLibraryModal)
   const layerLibraryUniqueCategory = useSelector(selectLayerLibraryUniqueCategory)
-  const debugOptions = useSelector(selectDebugOptions)
   const isGFWUser = useSelector(selectIsGFWUser)
   const guestUser = useSelector(selectIsGuestUser)
   const [currentCategory, setCurrentCategory] = useState<DataviewCategory>(
@@ -45,8 +57,38 @@ const LayerLibrary: FC = () => {
   )
   const [currentSubcategory, setCurrentSubcategory] = useState<UserSubcategory | null>(null)
   const categoryElementsRef = useRef<HTMLElement[]>([])
+  const dispatch = useAppDispatch()
   const userDatasets = useSelector(selectUserDatasets)
   const allVesselGroups = useSelector(selectAllVisibleVesselGroups)
+  const [userDatasetsStatus, setUserDatasetsStatus] = useState<AsyncReducerStatus>(
+    AsyncReducerStatus.Loading
+  )
+  const userDatasetsLoaded = Boolean(guestUser) || userDatasetsStatus !== AsyncReducerStatus.Loading
+
+  const fetchUserDatasets = useCallback(() => {
+    dispatch(fetchAllDatasetsThunk()).then((action) => {
+      if (fetchAllDatasetsThunk.rejected.match(action) && action.meta.condition) {
+        return
+      }
+      const failed =
+        fetchAllDatasetsThunk.rejected.match(action) ||
+        fetchDatasetsByIdsThunk.rejected.match(action.payload)
+      setUserDatasetsStatus(failed ? AsyncReducerStatus.Error : AsyncReducerStatus.Finished)
+    })
+  }, [dispatch])
+
+  useEffect(() => {
+    if (guestUser) {
+      return
+    }
+    fetchUserDatasets()
+  }, [fetchUserDatasets, guestUser])
+
+  const onRetryFetch = useCallback(() => {
+    setUserDatasetsStatus(AsyncReducerStatus.Loading)
+    fetchUserDatasets()
+  }, [fetchUserDatasets])
+
   const userGeometries = useMemo(() => {
     return groupDatasetsByGeometryType(userDatasets)
   }, [userDatasets])
@@ -57,10 +99,8 @@ const LayerLibrary: FC = () => {
     if (!i18nReady) {
       return []
     }
-    return resolveLibraryLayers(dataviews, {
-      experimentalLayers: debugOptions.experimentalLayers,
-    })
-  }, [dataviews, debugOptions.experimentalLayers, i18nReady])
+    return resolveLibraryLayers(dataviews)
+  }, [dataviews, i18nReady])
 
   const uniqCategories = useMemo(() => {
     if (layerLibraryUniqueCategory) {
@@ -80,10 +120,15 @@ const LayerLibrary: FC = () => {
       return [...uniqCategories.map((category) => ({ category, subcategories: [] }))]
     }
     const userSubcategories = [] as UserSubcategory[]
-    if (userGeometries.tracks?.length) userSubcategories.push(DataviewCategory.UserTracks)
-    if (userGeometries.polygons?.length) userSubcategories.push(DataviewCategory.UserPolygons)
-    if (userGeometries.points?.length) userSubcategories.push(DataviewCategory.UserPoints)
-    if (userGeometries.bigQuery?.length) userSubcategories.push('bigQuery')
+    // Until the fetch resolves the store only holds the datasets the workspace happened to load, so
+    // showing subcategories now means a partial list that grows as the request lands
+    if (userDatasetsLoaded) {
+      if (userGeometries.tracks?.length) userSubcategories.push(DataviewCategory.UserTracks)
+      if (userGeometries.polygons?.length) userSubcategories.push(DataviewCategory.UserPolygons)
+      if (userGeometries.points?.length) userSubcategories.push(DataviewCategory.UserPoints)
+      if (userGeometries.gridded?.length) userSubcategories.push('gridded')
+      if (userGeometries.bigQuery?.length) userSubcategories.push('bigQuery')
+    }
 
     return [
       ...uniqCategories.map((category) => ({ category, subcategories: [] })),
@@ -92,7 +137,7 @@ const LayerLibrary: FC = () => {
         subcategories: userSubcategories,
       },
     ]
-  }, [uniqCategories, userGeometries, layerLibraryUniqueCategory])
+  }, [uniqCategories, userGeometries, layerLibraryUniqueCategory, userDatasetsLoaded])
 
   const allCategories = useMemo(() => {
     return extendedCategories.map(({ category }) => category)
@@ -108,14 +153,7 @@ const LayerLibrary: FC = () => {
       subcategory?: UserSubcategory | null
       smooth?: boolean
     }) => {
-      const targetId = subcategory || category
-      const targetElement = document.getElementById(targetId)
-
-      if (targetElement) {
-        targetElement.scrollIntoView({
-          behavior: smooth ? 'smooth' : 'instant',
-        })
-      }
+      scrollToLayerLibrarySection(subcategory || category, smooth)
     },
     []
   )
@@ -179,14 +217,15 @@ const LayerLibrary: FC = () => {
     [allVesselGroups, activeSearchQuery]
   )
 
-  const userDatasetsMatchCount = useMemo(
-    () =>
-      activeSearchQuery
-        ? userDatasets.filter((d) =>
-            getDatasetLabel(d).toLowerCase().includes(activeSearchQuery.toLowerCase())
-          ).length
-        : userDatasets.length,
+  const searchedUserDatasets = useMemo(
+    () => userDatasets.filter((d) => getDatasetMatchesSearch(d, activeSearchQuery)),
     [userDatasets, activeSearchQuery]
+  )
+  const userDatasetsMatchCount = searchedUserDatasets.length
+
+  const userGeometriesMatchCount = useMemo(
+    () => groupDatasetsByGeometryType(searchedUserDatasets),
+    [searchedUserDatasets]
   )
 
   const onInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -286,24 +325,30 @@ const LayerLibrary: FC = () => {
                       defaultValue: category,
                     })}
                   </button>
-                  {currentCategory === category &&
-                    subcategories.length > 0 &&
+                  {subcategories.length > 0 &&
                     !guestUser &&
-                    subcategories.map((subcategory) => (
-                      <button
-                        key={subcategory}
-                        className={cx(styles.subcategory, {
-                          [styles.currentCategory]: currentSubcategory === subcategory,
-                        })}
-                        data-category={category}
-                        data-subcategory={subcategory}
-                        onClick={onCategoryClick}
-                      >
-                        {t((t: any) => t.dataset.type[upperFirst(subcategory)], {
-                          defaultValue: upperFirst(subcategory),
-                        })}
-                      </button>
-                    ))}
+                    subcategories
+                      .filter(
+                        (subcategory) =>
+                          !activeSearchQuery ||
+                          (userGeometriesMatchCount[subcategory]?.length ?? 0) > 0
+                      )
+                      .map((subcategory) => (
+                        <button
+                          key={subcategory}
+                          className={cx(styles.subcategory, {
+                            [styles.currentCategory]: currentSubcategory === subcategory,
+                          })}
+                          data-category={category}
+                          data-subcategory={subcategory}
+                          onClick={onCategoryClick}
+                        >
+                          {t((t: any) => t.dataset.type[upperFirst(subcategory)], {
+                            defaultValue: upperFirst(subcategory),
+                          })}{' '}
+                          ({userGeometriesMatchCount[subcategory]?.length ?? 0})
+                        </button>
+                      ))}
                 </div>
               ))}
         </div>
@@ -352,7 +397,12 @@ const LayerLibrary: FC = () => {
           {allCategories.includes(DataviewCategory.User) &&
             (searchQuery.length < SEARCH_MIN_CHARS || userDatasetsMatchCount > 0) && (
               <div className={styles.categoryContainer}>
-                <LayerLibraryUserPanel searchQuery={activeSearchQuery} />
+                <LayerLibraryUserPanel
+                  searchQuery={activeSearchQuery}
+                  datasetsLoaded={userDatasetsLoaded}
+                  datasetsError={userDatasetsStatus === AsyncReducerStatus.Error}
+                  onRetryFetch={onRetryFetch}
+                />
               </div>
             )}
         </ul>

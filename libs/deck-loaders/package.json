@@ -34,6 +34,7 @@
     "luxon": "3.x",
     "pbf": "5.x",
     "protobufjs": "8.x",
+    "simplify-js": "1.x",
     "tslib": "2.x"
   }
 }

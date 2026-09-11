@@ -22,6 +22,9 @@ export const isTilesClusterLayerCluster = (pickingObject: FourwingsClusterPickin
 export const isRulerLayerPoint = (pickingObject: DeckLayerPickingObject) =>
   pickingObject.category === 'rulers'
 
+export const isBathymetryContour = (pickingObject: DeckLayerPickingObject) =>
+  pickingObject.subcategory === DataviewType.Bathymetry
+
 export const isTrackSegment = (pickingObject: DeckLayerPickingObject) =>
   pickingObject.subcategory === DataviewType.Track &&
   (pickingObject as VesselTrackPickingObject).interactionType === 'segment'

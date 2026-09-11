@@ -1,11 +1,19 @@
 import type { WithSlice } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { uniqBy } from 'es-toolkit'
 import { castDraft } from 'immer'
 import { stringify } from 'qs'
 
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type { APIPagination, Dataview } from '@globalfishingwatch/api-types'
-import { BASEMAP_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
+import {
+  BASEMAP_DATAVIEW_SLUG,
+  CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_GAPS_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
+} from '@platform/config/map/dataviews'
 
 import { APP_NAME, DEFAULT_PAGINATION_PARAMS } from 'data/map/config'
 import { TEMPLATE_DATAVIEW_SLUGS } from 'data/map/dataviews'
@@ -27,6 +35,25 @@ const initialState: EditorState = {
   },
 }
 
+const EVENTS_DATAVIEW_SLUGS = [
+  CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_GAPS_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG,
+]
+
+const fetchDataviewsBy = (params: Record<string, unknown>) => {
+  const dataviewsParams = {
+    cache: false,
+    ...DEFAULT_PAGINATION_PARAMS,
+    ...params,
+  }
+  return GFWAPI.fetch<APIPagination<Dataview>>(
+    `/dataviews?${stringify(dataviewsParams, { arrayFormat: 'comma' })}`
+  )
+}
+
 export const fetchEditorDataviewsThunk = createAsyncThunk<
   Dataview[],
   undefined,
@@ -35,14 +62,18 @@ export const fetchEditorDataviewsThunk = createAsyncThunk<
   }
 >('editor/fetchAllDataviews', async (_, { rejectWithValue }) => {
   try {
-    const dataviewsParams = {
-      app: APP_NAME,
-      ...DEFAULT_PAGINATION_PARAMS,
-    }
-    const dataviews = await GFWAPI.fetch<APIPagination<Dataview>>(
-      `/dataviews?${stringify(dataviewsParams, { arrayFormat: 'comma' })}`
+    const [appDataviews, eventsDataviews] = await Promise.all([
+      fetchDataviewsBy({ app: APP_NAME }),
+      fetchDataviewsBy({ ids: EVENTS_DATAVIEW_SLUGS }).catch((e) => {
+        console.warn('Could not fetch events dataviews by slug', e)
+        return { entries: [] as Dataview[] }
+      }),
+    ])
+    const dataviews = uniqBy(
+      [...appDataviews.entries, ...eventsDataviews.entries],
+      (dataview) => dataview.slug || dataview.id
     )
-    const filteredDataviews = dataviews.entries.filter(
+    const filteredDataviews = dataviews.filter(
       ({ slug, category }) =>
         !TEMPLATE_DATAVIEW_SLUGS.includes(slug as any) &&
         slug !== BASEMAP_DATAVIEW_SLUG &&

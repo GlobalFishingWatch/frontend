@@ -1,9 +1,10 @@
 import type { ReactElement } from 'react'
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
+import Gridded from 'assets/icons/dataset-type-gridded.svg?react'
 import Points from 'assets/icons/dataset-type-points.svg?react'
 import Polygons from 'assets/icons/dataset-type-polygons-lines.svg?react'
 import Tracks from 'assets/icons/dataset-type-tracks.svg?react'
@@ -33,9 +34,6 @@ const DatasetType = ({
 }) => {
   const { t } = useTranslation()
   const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
-  // Needed because browsers don't recognise all MIME types
-  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
-  const [fileTypeEmpty, setFileTypeEmpty] = useState(false)
 
   const onDropAccepted = useCallback(
     (files: File[]) => {
@@ -51,21 +49,13 @@ const DatasetType = ({
   const fileTypes = getFileTypes(type)
   const fileAcceptedByMime = getFilesAcceptedByMime(fileTypes)
 
-  const isFileTypeEmpty = (file: File) => {
-    if (file.type === '') {
-      setFileTypeEmpty(true)
-    }
-    return null
-  }
-
-  const { getRootProps, getInputProps, isDragActive, isDragAccept, fileRejections } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, isDragReject, fileRejections } = useDropzone({
     accept: fileAcceptedByMime,
-    validator: isFileTypeEmpty,
     onDropAccepted,
     onDropRejected,
   })
 
-  const dragError = isDragActive && !isDragAccept && !fileTypeEmpty
+  const dragError = isDragActive && isDragReject
 
   return (
     <div
@@ -142,6 +132,15 @@ const DatasetTypeSelect = ({
         style={style}
         description={t((t) => t.dataset.typePointsDescription)}
         icon={<Points />}
+        onFileLoaded={onFileLoaded}
+      />
+      <DatasetType
+        testId="gridded-file-input"
+        type="gridded"
+        title={t((t) => t.dataset.typeGridded)}
+        style={style}
+        description={t((t) => t.dataset.typeGriddedDescription)}
+        icon={<Gridded />}
         onFileLoaded={onFileLoaded}
       />
     </div>

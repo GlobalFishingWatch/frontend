@@ -3,7 +3,12 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import type { ApiAppName, Dataview, DataviewConfig } from '@globalfishingwatch/api-types'
-import { DataviewCategory, DataviewType, EndpointId } from '@globalfishingwatch/api-types'
+import {
+  DatasetCategory,
+  DataviewCategory,
+  DataviewType,
+  EndpointId,
+} from '@globalfishingwatch/api-types'
 import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '@globalfishingwatch/deck-layers/config'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
@@ -19,7 +24,10 @@ import {
 } from '@globalfishingwatch/ui-components'
 
 import { APP_NAME } from 'data/map/config'
-import { selectFourwingsDatasets } from 'features/_map/datasets/datasets.selectors'
+import {
+  selectEventsDatasets,
+  selectFourwingsDatasets,
+} from 'features/_map/datasets/datasets.selectors'
 import { fetchAllDatasetsThunk, selectDatasetsStatus } from 'features/_map/datasets/datasets.slice'
 import { createDataviewThunk, updateDataviewThunk } from 'features/_map/dataviews/dataviews.slice'
 import { getDataviewInstanceFromDataview } from 'features/_map/dataviews/dataviews.utils'
@@ -38,8 +46,16 @@ const categoryOptions = [
   { id: DataviewCategory.Environment, label: 'Environment' },
   { id: DataviewCategory.Activity, label: 'Activity' },
   { id: DataviewCategory.Detections, label: 'Detections' },
+  { id: DataviewCategory.Events, label: 'Events' },
   { id: UNKNOWN_CATEGORY, label: 'Unknown' },
 ]
+
+const DATASET_CATEGORY_BY_DATAVIEW_CATEGORY: Partial<Record<DataviewCategory, DatasetCategory>> = {
+  [DataviewCategory.Events]: DatasetCategory.Event,
+}
+
+const getDatasetCategory = (category: DataviewCategory) =>
+  DATASET_CATEGORY_BY_DATAVIEW_CATEGORY[category] ?? (category as unknown as DatasetCategory)
 
 const dynamicHeatmapOption: ChoiceOption = { id: 'dynamic', label: 'Dynamic' }
 const staticHeatmapOption: ChoiceOption = { id: 'static', label: 'Static' }
@@ -67,22 +83,26 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
     { id: string; label: string | JSX.Element }[]
   >([])
   const datasets = useSelector(selectFourwingsDatasets)
+  const eventsDatasets = useSelector(selectEventsDatasets)
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
 
   const isEditingDataview = editDataview !== undefined
+  const isEventsDataview = dataview.category === DataviewCategory.Events
 
   const datasetsOptions = useMemo(() => {
-    const filteredDatasets = (datasets || []).filter((dataset) => {
+    const categoryDatasets = isEventsDataview ? eventsDatasets : datasets
+    const filteredDatasets = (categoryDatasets || []).filter((dataset) => {
       if (!dataset.configuration || !Object.keys(dataset.configuration).length) return false
       if (dataview.category === UNKNOWN_CATEGORY) {
         return !dataset.category || !Object.keys(dataset.category).length
       }
-      return dataview.category === (dataset.category as any)
+      if (!dataview.category) return false
+      return getDatasetCategory(dataview.category) === dataset.category
     })
     return filteredDatasets.map((dataset) => ({ id: dataset.id, label: dataset.id }))
-  }, [dataview.category, datasets])
+  }, [dataview.category, datasets, eventsDatasets, isEventsDataview])
 
   useEffect(() => {
     if (!isEditingDataview) {
@@ -110,7 +130,11 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
       app: APP_NAME as ApiAppName,
       config: {
         ...dataview.config,
-        type: dataview.config?.static ? DataviewType.Heatmap : DataviewType.HeatmapAnimated,
+        type: isEventsDataview
+          ? DataviewType.FourwingsTileCluster
+          : dataview.config?.static
+            ? DataviewType.Heatmap
+            : DataviewType.HeatmapAnimated,
         ...(dataview.category !== DataviewCategory.Environment && {
           datasets: dataviewDatasetsIds,
         }),
@@ -119,6 +143,13 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
       datasetsConfig: isEditingDataview
         ? dataview.datasetsConfig
         : dataviewDatasetsIds.map((datasetId) => {
+            if (isEventsDataview) {
+              return {
+                params: [],
+                endpoint: EndpointId.ClusterTiles,
+                datasetId,
+              }
+            }
             return {
               params: [
                 {

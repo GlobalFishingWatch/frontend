@@ -45,7 +45,7 @@ export function getDefaultState(override?: DeepPartial<DefaultState>): DefaultSt
       ...state.workspace,
       data: workspaceData,
     },
-  }
+  } as DefaultState
 }
 
 export function getDefaultStateWithDatasets(

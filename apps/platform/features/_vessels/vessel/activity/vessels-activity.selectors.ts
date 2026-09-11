@@ -68,6 +68,7 @@ export const EVENTS_ORDER = [
   EventTypes.Encounter,
   EventTypes.Loitering,
   EventTypes.Gaps,
+  EventTypes.Gap,
 ]
 
 export const selectVirtuosoVesselProfileEventsByType = createSelector(

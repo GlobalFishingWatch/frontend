@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import type { EventType, GapPosition, Regions } from '@globalfishingwatch/api-types'
 import { EventTypes, RegionType } from '@globalfishingwatch/api-types'
 import { type DatasetEventSource, VMS_DATASET_ID } from '@globalfishingwatch/datasets-client'
+import { isLonglineSetEvent } from '@globalfishingwatch/deck-loaders'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import PortsReportLink from 'features/_reports/report-port/PortsReportLink'
@@ -160,9 +161,13 @@ export function useActivityEventTranslations() {
             mainRegionDescription && (
               <Tooltip content={allRegionsDescription}>
                 <span className={styles.region}>
-                  {t((t) => t.event.fishingActionIn, {
-                    regionName: mainRegionDescription,
-                  })}
+                  {isLonglineSetEvent(event)
+                    ? t((t) => t.event.longlineSetActionIn, {
+                        regionName: mainRegionDescription,
+                      })
+                    : t((t) => t.event.fishingActionIn, {
+                        regionName: mainRegionDescription,
+                      })}
                   {allRegionsDescription ? <span className="print-hidden">...</span> : ''}
                 </span>
               </Tooltip>

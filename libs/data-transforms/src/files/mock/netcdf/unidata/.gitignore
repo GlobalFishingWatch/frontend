@@ -1,0 +1,4 @@
+# ~780MB of Unidata example data — fetched on demand, never committed.
+# node fetch-unidata-examples.mjs
+*.nc
+*.cdl

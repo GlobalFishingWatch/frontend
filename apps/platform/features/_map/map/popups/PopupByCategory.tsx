@@ -8,6 +8,7 @@ import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import type {
+  BathymetryContourPickingObject,
   ContextPickingObject,
   FourwingsHeatmapPickingObject,
   PolygonPickingObject,
@@ -26,21 +27,6 @@ import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils
 import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import { PORTS_LAYER_ID, REPORT_HOTSPOT_ID } from 'features/_map/map/map.config'
 import { useMapViewport } from 'features/_map/map/map-viewport.hooks'
-import ActivityTooltipRow from 'features/_map/map/popups/categories/ActivityLayers'
-import ComparisonRow from 'features/_map/map/popups/categories/ComparisonRow'
-import ContextTooltipSection from 'features/_map/map/popups/categories/ContextLayers'
-import DetectionsTooltipRow from 'features/_map/map/popups/categories/DetectionsLayers'
-import EnvironmentTooltipSection from 'features/_map/map/popups/categories/EnvironmentLayers'
-import EventsClusterTooltip from 'features/_map/map/popups/categories/EventsClusterTooltip'
-import PortsTooltipSection from 'features/_map/map/popups/categories/PortsLayers'
-import PositionsTooltipSection from 'features/_map/map/popups/categories/PositionsTooltipSection'
-import RulerTooltip from 'features/_map/map/popups/categories/RulerTooltip'
-import UserPointsTooltipSection from 'features/_map/map/popups/categories/UserPointsLayers'
-import UserTracksTooltipSection from 'features/_map/map/popups/categories/UserTracksLayers'
-import VesselEventsLayers from 'features/_map/map/popups/categories/VesselEventsLayers'
-import VesselGroupTooltipRow from 'features/_map/map/popups/categories/VesselGroupLayers'
-import VesselTracksLayers from 'features/_map/map/popups/categories/VesselTracksLayers'
-import WorkspacePointsTooltipSection from 'features/_map/map/popups/categories/WorkspacePointsLayers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import type {
@@ -57,11 +43,28 @@ import {
   selectRealTimePositionsInteractionError,
   selectRealTimePositionsInteractionStatus,
 } from '../map.slice'
+import { isBathymetryContour } from '../map-interaction.utils'
 
-import HotspotTooltipSection from './categories/HotspotTooltip'
-import ReportBufferTooltip from './categories/ReportBufferLayers'
-import UserContextTooltipSection from './categories/UserContextLayers'
-import VectorsTooltipRow from './categories/VectorsLayers'
+import ActivityTooltipRow from './activity/ActivityTooltipRow'
+import ComparisonTooltipRow from './activity/ComparisonTooltipRow'
+import DetectionsTooltipRow from './activity/DetectionsTooltipRow'
+import PositionsTooltipSection from './activity/PositionsTooltipSection'
+import ContextTooltipSection from './context/ContextTooltipSection'
+import PortsTooltipSection from './context/PortsTooltipSection'
+import BathymetryContourTooltipSection from './environment/BathymetryContourTooltipSection'
+import GriddedValueTooltipSection from './environment/GriddedValueTooltipSection'
+import VectorsTooltipRow from './environment/VectorsTooltipRow'
+import EventsClusterTooltipSection from './events/EventsClusterTooltipSection'
+import HotspotTooltipSection from './tools/HotspotTooltipSection'
+import ReportBufferTooltipSection from './tools/ReportBufferTooltipSection'
+import RulerTooltipSection from './tools/RulerTooltipSection'
+import WorkspacePointsTooltipSection from './tools/WorkspacePointsTooltipSection'
+import UserContextTooltipSection from './user/UserContextTooltipSection'
+import UserPointsTooltipSection from './user/UserPointsTooltipSection'
+import UserTracksTooltipSection from './user/UserTracksTooltipSection'
+import VesselEventsTooltipSection from './vessels/VesselEventsTooltipSection'
+import VesselGroupTooltipRow from './vessels/VesselGroupTooltipRow'
+import VesselTracksTooltipSection from './vessels/VesselTracksTooltipSection'
 
 import styles from './Popup.module.css'
 
@@ -70,7 +73,7 @@ type PopupByCategoryProps = {
   type?: 'hover' | 'click'
 }
 
-const OMITED_CATEGORIES = ['draw']
+const OMITTED_CATEGORIES = ['draw']
 
 function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) {
   const { t } = useTranslation()
@@ -92,7 +95,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
 
   const visibleFeatures = interaction?.features.filter(
     (feature) =>
-      !OMITED_CATEGORIES.includes(feature.category) && (feature as any).id !== REPORT_HOTSPOT_ID
+      !OMITTED_CATEGORIES.includes(feature.category) && (feature as any).id !== REPORT_HOTSPOT_ID
   )
 
   if (!visibleFeatures.length && !hotspotFeature) return null
@@ -146,7 +149,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                 {heatmapFeatures.map((feature, i) => {
                   if (feature.comparisonMode === FourwingsComparisonMode.TimeCompare) {
                     return (
-                      <ComparisonRow
+                      <ComparisonTooltipRow
                         key={featureCategory}
                         feature={features[0] as FourwingsHeatmapPickingObject}
                         showFeaturesDetails={type === 'click'}
@@ -207,7 +210,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
           }
           case DataviewCategory.Events: {
             return (
-              <EventsClusterTooltip
+              <EventsClusterTooltipSection
                 key={featureCategory}
                 features={features as SliceExtendedClusterPickingObject[]}
                 showFeaturesDetails={type === 'click'}
@@ -227,12 +230,16 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             const vectorsFeatures = (features as FourwingsHeatmapPickingObject[]).filter(
               (feature) => feature.subcategory === DataviewType.FourwingsVector
             )
+            const bathymetryContourFeatures = features
+              .filter((feature) => isBathymetryContour(feature))
+              .slice(0, 1) as unknown as BathymetryContourPickingObject[]
             const environmentalFeatures = (
               features as SliceExtendedFourwingsPickingObject[]
             ).filter(
               (feature) =>
                 feature.subcategory !== DataviewType.UserContext &&
-                feature.subcategory !== DataviewType.FourwingsVector
+                feature.subcategory !== DataviewType.FourwingsVector &&
+                !isBathymetryContour(feature)
             )
             return (
               <Fragment key={featureCategory}>
@@ -243,11 +250,15 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                     showFeaturesDetails={type === 'click'}
                   />
                 ))}
+                <BathymetryContourTooltipSection
+                  features={bathymetryContourFeatures}
+                  showFeaturesDetails={type === 'click'}
+                />
                 <UserContextTooltipSection
                   features={contextFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
-                <EnvironmentTooltipSection
+                <GriddedValueTooltipSection
                   features={environmentalFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
@@ -297,7 +308,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
           }
           case DataviewCategory.Buffer: {
             return (
-              <ReportBufferTooltip
+              <ReportBufferTooltipSection
                 key={featureCategory}
                 features={features as PolygonPickingObject[]}
               />
@@ -322,6 +333,9 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                 feature.subcategory === DataviewType.UserContext ||
                 feature.subcategory === DataviewType.HeatmapAnimated
             )
+            const userStaticHeatmapFeatures = (
+              features as SliceExtendedFourwingsPickingObject[]
+            ).filter((feature) => feature.subcategory === DataviewType.HeatmapStatic)
             return (
               <Fragment key={featureCategory}>
                 <UserPointsTooltipSection
@@ -334,6 +348,10 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                 />
                 <UserContextTooltipSection
                   features={userContextFeatures}
+                  showFeaturesDetails={type === 'click'}
+                />
+                <GriddedValueTooltipSection
+                  features={userStaticHeatmapFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
                 {userBQHeatmapFeatures &&
@@ -367,13 +385,17 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             const eventFeatures = (features as VesselEventPickingObject[]).filter(
               (feature) => feature.subcategory === DataviewType.VesselEvents
             )
+            const eventLayerIds = new Set(eventFeatures.map((feature) => feature.layerId))
+            const visibleTrackFeatures = trackFeatures.filter(
+              (feature) => !eventLayerIds.has(feature.layerId)
+            )
             return (
               <Fragment key={featureCategory}>
-                <VesselTracksLayers
-                  features={trackFeatures}
+                <VesselTracksTooltipSection
+                  features={visibleTrackFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
-                <VesselEventsLayers
+                <VesselEventsTooltipSection
                   features={eventFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
@@ -394,7 +416,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               (f) => f.properties.order === 'start' || f.properties.order === 'end'
             )
             return (
-              <RulerTooltip
+              <RulerTooltipSection
                 key={featureCategory}
                 features={rulersFeatures}
                 showFeaturesDetails={type === 'click'}

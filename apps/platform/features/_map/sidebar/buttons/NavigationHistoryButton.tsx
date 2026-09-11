@@ -13,6 +13,7 @@ import { selectLastWorkspaceNavigationProps } from 'features/_map/workspace/work
 import { cleanCurrentWorkspaceReportState } from 'features/_map/workspace/workspace.slice'
 import { selectReportAreaIds } from 'features/_reports/report-area/area-reports.selectors'
 import { resetVesselGroupReportData } from 'features/_reports/report-vessel-group/vessel-group-report.slice'
+import { DEFAULT_BUFFER_OPERATION, DEFAULT_BUFFER_UNIT } from 'features/_reports/reports.config'
 import { resetReportData } from 'features/_reports/tabs/activity/reports-activity.slice'
 import { EMPTY_SEARCH_FILTERS } from 'features/_vessels/search/search.config'
 import { cleanVesselSearchResults } from 'features/_vessels/search/search.slice'
@@ -134,6 +135,9 @@ function NavigationHistoryButton() {
         ...search,
         ...EMPTY_SEARCH_FILTERS,
         userTab: undefined,
+        reportBufferValue: undefined,
+        reportBufferUnit: DEFAULT_BUFFER_UNIT,
+        reportBufferOperation: DEFAULT_BUFFER_OPERATION,
         dataviewInstances: cleanVesselProfileDataviewInstances(search.dataviewInstances),
       }}
       onClick={onCloseClick}

@@ -15,6 +15,8 @@ export type FourwingsSublayerConfig = {
   filter?: DataviewConfig['filter']
   filters?: DataviewConfig['filters']
   filterIds?: DataviewConfig['filterIds']
+  minVisibleValue?: DataviewConfig['minVisibleValue']
+  maxVisibleValue?: DataviewConfig['maxVisibleValue']
   vesselGroups?: DataviewConfig['vessel-groups']
   /** Needed to update the layer when the vessel group is edited */
   vesselGroupsLength?: number

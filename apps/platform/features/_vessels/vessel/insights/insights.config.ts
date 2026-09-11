@@ -4,6 +4,7 @@ export const MIN_INSIGHTS_YEAR = 2020
 
 // LONGLINE is not an insights API type, it queries the events API directly
 type NonAPIInsights = 'LONGLINE'
+
 export type VesselInsight = InsightType | NonAPIInsights
 
 export const INSIGHTS_NON_FISHING: VesselInsight[] = [

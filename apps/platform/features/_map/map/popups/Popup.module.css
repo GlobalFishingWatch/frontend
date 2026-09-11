@@ -1,10 +1,17 @@
 .popup {
   font: var(--font-S);
   z-index: 2;
+  width: min-content;
 }
 
 .contentWrapper {
   filter: var(--filter-drop-shadow-1);
+}
+
+/* every row/section rendered null (features picked but none had a value):
+   PopupByCategory's .content is empty, so hide the arrow + close chrome too */
+.popup:has(.content:empty) {
+  display: none;
 }
 
 .arrow {
@@ -48,25 +55,32 @@
   background: var(--color-primary-blue);
   color: var(--color-white);
   min-width: max-content;
-}
 
-.click .content,
-.click .loading {
-  background: var(--color-white);
-  color: var(--color-primary-blue);
+  /* no border of its own: .contentWrapper's drop-shadow filter is four zero-blur 1px shadows,
+     i.e. an outline, and it follows this rounded silhouette */
+  border-radius: var(--border-radius-0);
+  overflow: hidden;
 }
 
 .click .content {
+  background: var(--color-off-white-1);
+  color: var(--color-primary-blue);
   min-width: var(--sidebar-width);
   border-radius: var(--border-radius-1);
   box-shadow: var(--box-shadow-1);
   max-height: var(--popup-available-height, 90vh);
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
 }
 
-.click .loading {
-  width: 50px;
-  height: 50px;
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 4rem;
 }
 
 .click .thumbnailLoading {
@@ -101,12 +115,8 @@
 .popupSection {
   display: flex;
   position: relative;
+  gap: var(--space-XS);
   padding: var(--space-XS);
-  padding-left: 2.5rem;
-}
-
-.popupSection.noIcon {
-  padding-left: var(--space-XS);
 }
 
 .popupSection:not(:last-child) {
@@ -114,42 +124,55 @@
 }
 
 .hover .popupSection {
-  border: var(--border-white);
   max-width: var(--sidebar-width);
 }
 
 .click .popupSection {
-  padding: var(--space-S);
+  display: block;
+  padding: 0;
+
+  /* spacing between sections; .click .content has no padding of its own */
+  margin: var(--space-S);
   cursor: default;
-  padding-left: 3rem;
 }
 
-.click .popupSection.noIcon {
+.popupSectionHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+}
+
+.click .popupSectionHeader {
+  margin-bottom: var(--space-XS);
+}
+
+.click .popupSectionCard {
+  padding: var(--space-S);
+  background-color: var(--color-white);
+  border: var(--border);
+  border-radius: var(--border-radius-1);
+}
+
+/* consecutive rows inside a section card are ruled off from each other. The inline pull-out
+   makes the divider span the card's full width, so it tracks .popupSectionCard's padding above. */
+.click .popupSectionRow + .popupSectionRow {
+  margin-top: var(--space-S);
+  padding-top: var(--space-S);
+  border-top: var(--border);
+  margin-inline: calc(var(--space-S) * -1);
+  padding-inline: var(--space-S);
+}
+
+.withoutIcon {
   padding-left: var(--space-S);
 }
 
-.click .popupSection:not(:last-child) {
-  border-bottom: var(--border);
-}
-
-.withoutIcon,
 .click .withoutIcon {
-  padding-left: var(--space-S);
-}
-
-.hover .popupSection:not(:last-child) {
-  border-bottom: none;
+  padding-left: 0;
 }
 
 .layerIcon {
-  position: absolute;
-  left: 2px;
-  top: 2px;
-}
-
-.click .layerIcon {
-  left: 6px;
-  top: 8px;
+  flex-shrink: 0;
 }
 
 .popupSectionContent {
@@ -160,6 +183,14 @@
   opacity: var(--opacity-secondary);
   line-height: 1.2;
   margin-bottom: var(--space-XS);
+}
+
+.click .popupSectionHeader .popupSectionTitle {
+  margin-bottom: 0;
+}
+
+.hover .popupSection + .popupSection {
+  border-top: var(--border-white);
 }
 
 .vesselRow {
@@ -301,10 +332,14 @@
 }
 
 .flex {
-  margin-top: var(--space-S);
+  margin-block: var(--space-S);
   display: flex;
   column-gap: var(--space-M);
   flex-wrap: wrap;
+}
+
+.flex:last-child {
+  margin-bottom: 0;
 }
 
 .vesselTitle {
@@ -332,15 +367,6 @@
 
 .rowMarginTop {
   margin-top: var(--space-S);
-}
-
-.portCTA {
-  display: block;
-  width: 100%;
-}
-
-.eventSpinner {
-  margin-top: 1rem;
 }
 
 .navigationFooter {

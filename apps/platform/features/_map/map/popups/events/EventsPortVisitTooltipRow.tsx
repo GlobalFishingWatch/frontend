@@ -1,0 +1,135 @@
+import { Fragment, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
+
+import { DataviewCategory } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { Button, Spinner } from '@globalfishingwatch/ui-components'
+
+import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
+import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
+import PortsReportLink from 'features/_reports/report-port/PortsReportLink'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import I18nDate from 'features/i18n/i18nDate'
+import I18nNumber from 'features/i18n/i18nNumber'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
+import { selectIsPortReportLocation } from 'router/routes.selectors'
+import { getEventLabel } from 'utils/analytics'
+import { formatInfoField } from 'utils/info'
+
+import type {
+  ExtendedFeatureByVesselEvent,
+  ExtendedFeatureByVesselEventPort,
+  SliceExtendedClusterPickingObject,
+} from '../../map.slice'
+import PopupSectionLayout from '../shared/PopupSectionLayout'
+import VesselsTable from '../shared/VesselsTable'
+
+import styles from '../Popup.module.css'
+
+type EventsPortVisitTooltipRowProps = {
+  feature: SliceExtendedClusterPickingObject<ExtendedFeatureByVesselEvent>
+  showFeaturesDetails: boolean
+  error?: string
+  loading?: boolean
+}
+
+function EventsPortVisitTooltipRow({
+  feature,
+  showFeaturesDetails,
+  error,
+  loading,
+}: EventsPortVisitTooltipRowProps) {
+  const { t } = useTranslation()
+  const isPortReportLocation = useSelector(selectIsPortReportLocation)
+  const { event, color } = feature
+  const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
+  const dataview = dataviews?.find((d) => d.id === feature.layerId)
+  const title =
+    feature.title ||
+    (dataview ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false }) : '')
+
+  const vessels = event?.vessels || []
+  const visitsCount = vessels.reduce((acc, vessel) => acc + (vessel.events || 0), 0)
+
+  const seePortReportClick = useCallback((port?: ExtendedFeatureByVesselEventPort) => {
+    trackEvent({
+      category: TrackCategory.GlobalReports,
+      action: `Clicked see port report`,
+      label: getEventLabel(
+        [` dataset: ${port?.datasetId} `, ` port_id: ${port?.id} `].filter(Boolean) as string[]
+      ),
+    })
+  }, [])
+
+  return (
+    <PopupSectionLayout
+      icon="clusters"
+      iconColor={color}
+      title={showFeaturesDetails ? title : undefined}
+    >
+      {showFeaturesDetails && event?.port?.name && visitsCount > 0 && (
+        <div className={styles.row}>
+          <span className={styles.rowText}>
+            {formatInfoField(event.port.name, 'port')} -{' '}
+            {t((t) => t.event.portVisitsSummary, {
+              count: visitsCount,
+              visits: formatI18nNumber(visitsCount),
+              vessels: formatI18nNumber(vessels.length),
+            })}
+          </span>
+        </div>
+      )}
+      {!showFeaturesDetails && feature.count && (
+        <div className={styles.row}>
+          <span className={styles.rowText}>
+            <I18nNumber number={feature.count} />{' '}
+            {t((t) => t.event.port_visit, {
+              count: feature.count,
+            })}
+            {!feature.properties.cluster && feature.properties.stime && (
+              <span className={styles.rowTextSecondary}>
+                {' '}
+                <I18nDate date={feature.properties.stime * 1000} />
+              </span>
+            )}
+          </span>
+        </div>
+      )}
+      {error && <p className={styles.error}>{error}</p>}
+      {loading ? (
+        <Spinner className={styles.loading} size="small" />
+      ) : (
+        <Fragment>
+          {showFeaturesDetails && (
+            <VesselsTable
+              feature={
+                {
+                  vessels: event?.vessels,
+                  category: DataviewCategory.Events,
+                  unit: 'visits',
+                } as any
+              }
+              vesselProperty="events"
+              showMore={false}
+            />
+          )}
+          {event?.port?.id && !isPortReportLocation && (
+            <PortsReportLink port={event.port}>
+              <Button
+                size="small"
+                className={cx(styles.btnLarge, styles.rowMarginTop)}
+                onClick={() => seePortReportClick(event.port)}
+              >
+                {t((t) => t.portsReport.seePortReport)}
+              </Button>
+            </PortsReportLink>
+          )}
+        </Fragment>
+      )}
+    </PopupSectionLayout>
+  )
+}
+
+export default EventsPortVisitTooltipRow

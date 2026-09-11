@@ -1,6 +1,7 @@
 import type { UserTrack } from '@globalfishingwatch/api-types'
 
 import type { FilterOperators } from './features.utils'
+import { buildUserTrackLods } from './simplify-user-tracks'
 import type { UserTrackBinaryData, UserTrackData } from './types'
 import { filterTrackByCoordinateProperties } from './utils'
 
@@ -97,5 +98,5 @@ export const parseUserTrack = (
     },
   } as UserTrackBinaryData
 
-  return { data, binary }
+  return { data, lods: buildUserTrackLods(binary) }
 }

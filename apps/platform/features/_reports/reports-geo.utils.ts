@@ -1,12 +1,36 @@
-import { bbox, booleanContains, booleanIntersects, booleanPointInPolygon } from '@turf/turf'
+import { area, bbox, booleanContains, booleanIntersects, booleanPointInPolygon } from '@turf/turf'
 import type { Feature, Geometry, MultiPolygon, Point, Polygon } from 'geojson'
 
-import type { FourwingsFeature, FourwingsStaticFeature } from '@globalfishingwatch/deck-loaders'
+import type { Bbox } from '@globalfishingwatch/data-transforms'
+import { toFiniteNumber } from '@globalfishingwatch/data-transforms'
+import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
+
+/** Precomputed polygon area some context and user datasets ship as a feature property. */
+export const AREA_KM2_PROPERTY = 'area_km2'
+
+/**
+ * Area of a polygon in km².
+ * Prefers the dataset's own `area_km2` over measuring the geometry, which is only ever an
+ * approximation here: tile geometry is simplified per zoom level and stitched back together
+ * across tile borders.
+ */
+export function getAreaKm2({
+  geometry,
+  properties,
+}: {
+  geometry: Polygon | MultiPolygon | undefined
+  properties?: Record<string, any> | null
+}): number {
+  const precomputed = toFiniteNumber(properties?.[AREA_KM2_PROPERTY])
+  if (precomputed !== undefined) return precomputed
+  if (!geometry) return 0
+  return area({ type: 'Feature', geometry, properties: {} } as Feature) / 1_000_000
+}
 
 export type FilteredPolygons = {
   instanceId: string
-  contained: (FourwingsFeature | FourwingsStaticFeature | Feature<Point> | Feature<Geometry>)[]
-  overlapping: (FourwingsFeature | FourwingsStaticFeature | Feature<Point> | Feature<Geometry>)[]
+  contained: (FourwingsFeature | Feature<Point> | Feature<Geometry>)[]
+  overlapping: (FourwingsFeature | Feature<Point> | Feature<Geometry>)[]
   error?: string
 }
 
@@ -33,10 +57,19 @@ export function filterByPolygon({
   polygon,
   mode = 'cell',
 }: FilterByPolygomParams): FilteredPolygons[] {
-  const [px1, py1, px2, py2] = bbox(polygon)
-  if (!polygon.bbox) {
-    polygon.bbox = [px1, py1, px2, py2]
+  // turf reads the member and every predicate below then skips its own walk.
+  // Areas do attach one (see areas.slice / selectReportBufferArea).
+  const [bx1, by1, bx2, by2] = bbox(polygon)
+  // A bbox unwrapped past ±180 belongs to fitBounds, not to turf: it rejects everything on the far side of the antimeridian.
+  const isUnwrapped = bx2 > 180 || bx1 < -180
+  if (isUnwrapped || !polygon.bbox) {
+    const widened: Bbox = isUnwrapped
+      ? [Math.min(bx1, -180), by1, Math.max(bx2, 180), by2]
+      : [bx1, by1, bx2, by2]
+    // Copied rather than mutated: the caller's geometry is shared app state.
+    polygon = { ...polygon, bbox: widened }
   }
+  const [px1, py1, px2, py2] = polygon.bbox as Bbox
   const filtered = layersCells.map((layerCells) => {
     return layerCells.reduce(
       (acc, cell) => {

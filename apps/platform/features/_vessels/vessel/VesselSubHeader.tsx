@@ -47,11 +47,20 @@ const VesselSubHeader = () => {
   const getSwitchVersionHref = useCallback(
     (otherVesselDatasetId: string) => {
       const location = router.buildLocation({
-        search: (prev: QueryParams) => ({ ...prev, vesselDatasetId: otherVesselDatasetId }),
+        search: (prev: QueryParams) => {
+          const dataviewInstances = (prev.dataviewInstances || []).filter(
+            ({ id }) => !id?.includes(vesselId)
+          )
+          return {
+            ...prev,
+            vesselDatasetId: otherVesselDatasetId,
+            dataviewInstances: dataviewInstances.length ? dataviewInstances : undefined,
+          }
+        },
       } as any)
       return location.href
     },
-    [router]
+    [router, vesselId]
   )
 
   if (!isGFWUser) {

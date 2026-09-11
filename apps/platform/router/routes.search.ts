@@ -151,6 +151,7 @@ export const vesselProfileSchema = z
     vesselIdentitySource: optionalEnum(VesselIdentitySourceEnum),
     vesselActivityMode: optionalLiteralUnion(VESSEL_PROFILE_ACTIVITY_MODES),
     includeRelatedIdentities: optionalBoolean(),
+    longlineSetsOnMap: optionalBoolean(),
   })
   .partial()
   .passthrough()

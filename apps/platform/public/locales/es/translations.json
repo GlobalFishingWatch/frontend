@@ -77,6 +77,7 @@
     "noVesselDataFiltered": "No hay embarcaciones que coincidan con su filtro",
     "onlyEvolutionSupported": "Haga clic en el botón de evolución de arriba para ver los buques activos en el área",
     "others": "Otros",
+    "othersLayersAreReportArea": "The layers used to create this report area can't be analysed against themselves. Turn on another polygon or point layer to see results here.",
     "periodComparison": "Comparación entre periodos",
     "periodComparison1st": "inicio de línea base",
     "periodComparison2nd": "inicio de comparación",
@@ -92,6 +93,8 @@
     "polygonsOverlapping": "superposición parcial",
     "polygonsOverlapping_one": "polígono superpuesto parcialmente",
     "polygonsOverlapping_other": "polígonos superpuestos parcialmente",
+    "polygonsTopAreas_one": "Largest polygon in the report area",
+    "polygonsTopAreas_other": "Top {{count}} largest polygons in the report area",
     "portsAfterEvents": "Puertos visitados después de eventos",
     "portsSearchPlaceholder": "Buscar puertos",
     "print": "imprimir",
@@ -119,7 +122,8 @@
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Informe",
     "unknown": "Desconocido",
-    "unknownProperty": "Desconocido"
+    "unknownProperty": "Desconocido",
+    "zoomToAreaForActivity": "Center view to see activity"
   },
   "bigQuery": {
     "aggregateAvg": "Promedio",
@@ -245,6 +249,8 @@
     "fitArea": "Centrar vista en el área",
     "flag": "Bandera",
     "from": "desde",
+    "fromVessels_one": "from {{count}} vessel",
+    "fromVessels_other": "from {{count}} vessels",
     "globalReport": "Informe global",
     "help": "Ayuda",
     "hideAllHelpHints": "Ocultar todos",
@@ -350,6 +356,8 @@
     "timerangeStatic": "Estático ({{start}} - {{end}})",
     "to": "hasta",
     "toggleVisibility": "Activar/Desactivar visibilidad",
+    "topVessels_one": "Top vessel",
+    "topVessels_other": "Top {{count}} vessels",
     "tutorials": "Tutoriales",
     "unionOf": "Unión de",
     "unit": "unidad",
@@ -404,6 +412,8 @@
       "shapefile": "shapefile comprimido"
     },
     "importing": "Se están importando los datos",
+    "loadError": "Some of your datasets could not be loaded.",
+    "loadRetry": "Try again",
     "login": "Conjunto de datos privado, inicie sesión para verlo",
     "new": "Nuevos datos",
     "noDataForTimerange": "No hay datos para el rango de tiempo actual",
@@ -411,7 +421,13 @@
     "remove": "Eliminar los datos",
     "requiredFields": "Campos requeridos {{fields}}",
     "SARDelayDisclaimer": "En pausa mientras pasamos de Sentinel-1A a Sentinel-1C y 1D. <0>Más información.</0>",
+    "showLess": "Show less",
+    "showMore_one": "Show {{count}} more",
+    "showMore_other": "Show {{count}} more",
     "title": "Datos",
+    "typeBigQuery": "BigQuery",
+    "typeGridded": "Gridded / Raster",
+    "typeGriddedDescription": "Display a heatmap from a GeoTIFF raster (EPSG:4326)",
     "typePoints": " Puntos",
     "typePointsDescription": "Mostrar una o varias posiciones con etiquetas en los datos",
     "typePolygons": " Polígonos",
@@ -435,8 +451,12 @@
         "invalidData": "Los datos CSV no tienen una estructura válida"
       },
       "default": "Hubo un error al cargar los datos",
+      "fileTooBig": "This file is too large to process in the browser. Try splitting it into smaller files.",
       "geoJSON": {
         "noValidFeatures": "No se encontraron tipos de características válidos en el archivo geoJSON"
+      },
+      "geotiff": {
+        "invalidData": "GeoTIFF data could not be read"
       },
       "invalidDatesFeatures": "Algunas de sus {{featureType}} no contienen una fecha válida. No aparecerán en el mapa independientemente del filtro de tiempo utilizado.",
       "kml": {
@@ -446,17 +466,30 @@
         "noPolygonData": "No se encontraron datos de polígono en el KML"
       },
       "name": "El nombre del conjunto de datos debe tener al menos {{min}} caracteres",
+      "netcdf": {
+        "invalidData": "NetCDF data could not be read"
+      },
       "shapefile": {
         "invalidData": "Los datos del shapefile no tienen un tipo de geometría válido",
         "invalidMultipleFiles": "Aún no se admiten shapefiles que contengan varios componentes (varios nombres de archivo)",
         "noLineData": "No se encontraron datos de línea en el shapefile",
         "noPointData": "No se encontraron puntos de datos en el shapefile",
         "noPolygonData": "No se encontraron datos de polígono en el shapefile"
+      },
+      "zip": {
+        "multipleFiles": "The zip file contains more than one file of the same format. Please upload a zip with a single data file."
       }
     },
     "fieldMultiplePlaceholder": "Seleccione uno o más campos de su conjunto de datos",
     "fieldNumericPlaceholder": "Seleccione un campo numérico de su conjunto de datos",
     "fieldPlaceholder": "Seleccione un campo de su conjunto de datos",
+    "gridded": {
+      "aggregation": "Aggregation",
+      "band": "Band to import",
+      "unit": "Unit",
+      "unitPlaceholder": "e.g., 'detections', '°C', 'm/s",
+      "variable": "Variable to import"
+    },
     "maxValuesExceededForFiltering": "Valores máximos excedidos para el filtrado ({{max}})",
     "maxValuesExceededForFilteringTooltip": "Este campo tiene demasiados valores únicos ({{max}}+). Considere agrupar o categorizar sus datos para habilitar el filtrado.",
     "noFilters": "Para agregar filtros a su conjunto de datos, su archivo debe tener al menos una propiedad con más de 2 valores distintos.",
@@ -526,7 +559,7 @@
     "nir": "Near-infrared",
     "rgb": "Red, green and blue (visible light)"
   },
-  "detections": "Detections",
+  "detections": "",
   "download": {
     "apiPortal": "Ver nuestras APIs aquí",
     "area": "Área",
@@ -653,6 +686,13 @@
     "loitering_other": "Eventos de deriva",
     "loiteringAction": "Deriva comenzó a partir de {{start}} por {{duration}}",
     "loiteringActionIn": "Merodeando en {{regionName}}",
+    "longlineCategoryEntirelyDay": "day",
+    "longlineCategoryEntirelyNight": "night",
+    "longlineCategoryMostlyDay": "mostly day",
+    "longlineCategoryMostlyNight": "mostly night",
+    "longlineSet": "Longline set ({{category}})",
+    "longlineSetAction": "Longline set ({{category}}) started at {{start}} for {{duration}}",
+    "longlineSetActionIn": "Longline set in {{regionName}}",
     "minuteAbbreviated": "{{count}}'",
     "minuteAbbreviated_one": "{{count}}'",
     "minuteAbbreviated_other": "{{count}}'",
@@ -677,6 +717,8 @@
     "portAction": "Visita a puerto comenzó a partir de {{start}} por {{duration}}",
     "portAt": "Visita a puerto {{port}} comenzó a partir de {{start}} por {{duration}}",
     "ports": "Puertos",
+    "portVisitsSummary_one": "{{visits}} visit from {{vessels}} vessel",
+    "portVisitsSummary_other": "{{visits}} visits from {{vessels}} vessels",
     "unknown": "Evento desconocido",
     "yearAbbreviated": "{{count}}a",
     "yearAbbreviated_one": "{{count}}a",
@@ -846,6 +888,7 @@
     "toggleVisibility": "Cambiar la visibilidad de la capa",
     "type": "Tipo",
     "user_context_fit_bounds": "Centrar mapa en polígonos",
+    "user_gridded_fit_bounds": "Center map on gridded heatmap",
     "user_points_fit_bounds": "Centrar mapa en puntos",
     "user_points_fit_bounds_out_of_timerange": "El conjunto de datos no tiene puntos en el rango de tiempo seleccionado. ¿Cambiar el rango de tiempo para ajustarse a los puntos?",
     "user_polygons_fit_bounds_out_of_timerange": "El conjunto de datos no tiene polígonos en el rango de tiempo seleccionado. ¿Cambiar el rango de tiempo para adaptarse a los polígonos?",
@@ -873,6 +916,7 @@
     "highRes": "Ver mapas de calor de alta resolución",
     "highResDisabled": "Los mapas de calor de alta resolución están desactivados cuando se utiliza un filtro de grupo de embarcaciones",
     "legend_help": "Área de celda de cuadrícula aproximada en el ecuador",
+    "legendBrushHelp": "Click or drag to adjust the value",
     "loading": "Cargando",
     "lowRes": "Ver mapas de calor de baja resolución",
     "mapLoadingWait": "Por favor espere a que cargue el mapa",
@@ -919,6 +963,39 @@
     "topics": "Topics",
     "useCases": "Use Cases",
     "vessels": "Vessels"
+  },
+  "onboarding": {
+    "areaReport": {
+      "description": "Pick an MPA, EEZ, or draw your own region. Get a report on vessels present, encounters, port visits, and downloadable activity data.",
+      "title": "Run a report on an area"
+    },
+    "copilotExamples": {
+      "carrierEncounters": "Encounters between carriers and fishing vessels in IOTC",
+      "galapagosEffort": "Fishing effort inside the Galápagos Marine Reserve last month",
+      "lasPalmasVisits": "Which vessels visited the Tenerife port in December?",
+      "loiteringWestAfrica": "Loitering events off the coast of West Africa",
+      "nightLightYellowSea": "Night light detections in the Yellow Sea last winter",
+      "northSeaTrawling": "Compare trawling hours in the North Sea between 2023 and 2024",
+      "peruEffort": "AIS and VMS apparent fishing effort in the Peruvian EEZ",
+      "senegalPortVisits": "Port visits by Spanish-flagged vessels in Senegal",
+      "squidPacific": "Chinese squid jiggers fishing in southeast Pacific in 2024",
+      "trackVessel": "Track the vessel with MMSI 412331107 over the past year"
+    },
+    "copilotLabel": "What do you want to see?",
+    "createAccount": "Create an account",
+    "getStarted": "Get started",
+    "header": "Welcome",
+    "intro": "We use satellite signals and machine learning to make activity at sea visible. Pick a way in or <1>learn more</1>.",
+    "login": "Log in to get the most out of the platform (free, 2 minutes)",
+    "searchVessel": {
+      "description": "Find one of 400,000+ vessels by name, MMSI, IMO, or callsign. See where it's been, when, and with whom.",
+      "title": "Search for a vessel"
+    },
+    "title": "What would you like to do today?",
+    "userGuide": {
+      "description": "We support the understanding, visualization and analysis needs of governments, researchers, NGOs, journalists and more.",
+      "title": "Learn how to use the tools"
+    }
   },
   "portsReport": {
     "seePortReport": "Ver todos los eventos de entrada a este puerto",
@@ -992,9 +1069,9 @@
     "months_one": "mes",
     "months_other": "{{count}} meses",
     "now": "ahora",
-    "weeks": "{{count}} semana",
-    "weeks_one": "week",
-    "weeks_other": "{{count}} semanas"
+    "years": "{{count}} year",
+    "years_one": "{{count}} year",
+    "years_other": "{{count}} years"
   },
   "timebar": {
     "disablePlaybackVectors": "La reproducción de las capas de corrientes o vientos no está soportada",
@@ -1088,17 +1165,21 @@
     "activity-fishing": "Activity - Fishing",
     "activity-vessel-presence": "Activity - Presence",
     "analysis-and-dynamic-reports": "Analyze activity",
+    "analyzing-activity-over-time": "Analyze activity over time",
+    "central-section-showing-spatial-activity-maps": "Spatial activity maps",
     "downloading-data": "Download data",
     "filtering-activity-layers": "Filter activity layers",
     "night-light-detections-visible-infrared-imaging-radiometer-suite": "Detections - VIIRS",
     "radar-detections-synthetic-aperture-radar": "Detections - SAR",
+    "timebar": "Timebar",
     "title": "Guía del usuario",
     "upload-points": "Upload point datasets",
     "upload-polygons": "Upload polygon datasets",
     "upload-tracks": "Cargar conjuntos de datos de pistas",
     "uploading-data": "Cargar conjuntos de datos",
     "vessel-groups": "Grupos de embarcaciones",
-    "vessel-search": "Búsqueda de Embarcaciones"
+    "vessel-search": "Búsqueda de Embarcaciones",
+    "viewing-vessel-activity-in-layers": "Vessel activity in layers"
   },
   "vessel": {
     "activityByType": "Por tipo",
@@ -1318,15 +1399,22 @@
       "IUUBlackListsCount": "La embarcación está presente en una lista de embarcaciones INDNR de OROP",
       "IUUBlackListsEmpty": "La embarcación no está presente en una lista de embarcaciones INDNR de OROP",
       "longline": "Longline settings at day and night",
+      "longlineDownload": "Download longline sets",
       "longlineEntirelyDaySets_one": "{{count}} day set",
       "longlineEntirelyDaySets_other": "{{count}} day sets",
+      "longlineEntirelyDaySetsLabel": "day sets",
       "longlineEntirelyNightSets_one": "{{count}} night set",
       "longlineEntirelyNightSets_other": "{{count}} night sets",
+      "longlineEntirelyNightSetsLabel": "night sets",
       "longlineEventsEmpty": "No longline sets detected",
+      "longlineHideFromMap": "Hide longline sets from the map",
       "longlineMostlyDaySets_one": "{{count}} mostly day set (<2 hrs overlap with night)",
       "longlineMostlyDaySets_other": "{{count}} mostly day sets (<2 hrs overlap with night)",
+      "longlineMostlyDaySetsLabel": "mostly day sets (<2 hrs overlap with night)",
       "longlineMostlyNightSets_one": "{{count}} mostly night set (<2 hrs overlap with daylight)",
       "longlineMostlyNightSets_other": "{{count}} mostly night sets (<2 hrs overlap with daylight)",
+      "longlineMostlyNightSetsLabel": "mostly night sets (<2 hrs overlap with daylight)",
+      "longlineShowOnMap": "Show longline sets on the map",
       "MOULists": "Listas MOU de Tokio y París",
       "MOUListsEmpty": "Embarcación con una bandera/banderas no presentes en las listas negras o grises del MOU de Tokio o París",
       "MOUParisBlackListsCount": "Pabellón registrado en la lista negra o gris del memorando de París ({{flags}})",
@@ -1384,6 +1472,7 @@
     "resolution": "Resolution",
     "sectionActivity": "Actividad",
     "sectionAreas": "Áreas",
+    "sectionEventsTooltip": "No events available for this vessel.",
     "sectionInsights": "Indicadores",
     "sectionInsightsTooltip": "No se dispone de información analítica para los buques con VMS.",
     "sectionRelatedVessel": "Related vessels",
@@ -1537,9 +1626,7 @@
       "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} evento de pesca de {{vessels}} embarcación detectado fuera de las OROP con autorización conocida",
       "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} eventos de pesca de {{vessels}} embarcaciones detectados fuera de las OROP con autorización conocida",
       "gaps_one": "{{count}} evento de desactivación probable de AIS de {{vessels}} embarcación detectado",
-      "gaps_other": "{{count}} eventos de desactivación probable de AIS de {{vessels}} embarcaciones detectados",
-      "longline_one": "{{count}} longline set from {{vessels}} vessels detected",
-      "longline_other": "{{count}} longline sets from {{vessels}} vessels detected"
+      "gaps_other": "{{count}} eventos de desactivación probable de AIS de {{vessels}} embarcaciones detectados"
     }
   },
   "workspace": {

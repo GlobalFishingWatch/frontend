@@ -12,6 +12,24 @@ export const EVENTS_COLORS: Record<`${EventTypes}` | 'partially' | 'unmatched' |
   gaps: '#f95e5e',
 }
 
+export type LonglineCategory = 'entirelyDay' | 'mostlyDay' | 'mostlyNight' | 'entirelyNight'
+
+export const LONGLINE_CATEGORY_COLORS: Record<LonglineCategory, string> = {
+  entirelyDay: '#ffbd52',
+  mostlyDay: '#da8902',
+  mostlyNight: '#0673b3',
+  entirelyNight: '#39394a',
+}
+
+export const isLonglineSetEvent = (event?: Partial<ApiEvent>) => !!event?.fishing?.dayNightCategory
+
+export const getLonglineCategory = (event: Partial<ApiEvent>): LonglineCategory => {
+  const category = event.fishing?.dayNightCategory
+  if (category === 'day') return 'entirelyDay'
+  if (category === 'night') return 'entirelyNight'
+  return (event.fishing?.fractionAtNight ?? 0) < 0.5 ? 'mostlyDay' : 'mostlyNight'
+}
+
 export type VesselTrackGraphExtent = [number, number]
 
 export type VesselTrackData = {

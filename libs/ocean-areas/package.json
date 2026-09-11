@@ -18,6 +18,7 @@
     "rfmos": "node --loader ts-node/esm src/scripts/rfmos.ts",
     "locales": "node --loader ts-node/esm src/scripts/locales.ts",
     "ports": "node --loader ts-node/esm src/scripts/ports.ts",
+    "ports-to-list": "node --loader ts-node/esm src/scripts/ports-to-list.ts",
     "update-data": "pnpm mpas && pnpm eezs && pnpm rfmos && pnpm fao && pnpm locales"
   },
   "files": [

@@ -32,18 +32,19 @@
   background-color: var(--color-terthiary-blue);
 }
 
+/* Set on LONGLINE_CATEGORY_COLORS (libs/deck-loaders/src/vessels/lib/types.ts) */
 .entirelyNight {
-  background-color: #39394a;
+  background-color: var(--longline-entirely-night);
 }
 
 .mostlyNight {
-  background-color: #0673b3;
+  background-color: var(--longline-mostly-night);
 }
 
 .mostlyDay {
-  background-color: #da8902;
+  background-color: var(--longline-mostly-day);
 }
 
 .entirelyDay {
-  background-color: #ffbd52;
+  background-color: var(--longline-entirely-day);
 }
