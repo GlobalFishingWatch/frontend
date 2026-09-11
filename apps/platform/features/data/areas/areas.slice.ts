@@ -138,13 +138,14 @@ async function fetchAreaDetail({
     console.warn('No geometry found for area', area)
   }
   // Same reason as the @turf/turf import above: wrap-longitudes reaches turf
-  const { wrapBBoxLongitudes, wrapGeometryBbox } =
+  const { wrapBBoxLongitudes, wrapGeometryBbox, getTurfBbox } =
     await import('@globalfishingwatch/data-transforms/wrap-longitudes')
+  // Two different bboxes, on purpose.
+  // `bounds` is unwrapped (maxX can be 185) so fitBounds gets a continuous span.
+  // `geometry.bbox` must instead agree with the coordinates, because turf trusts it to reject points
   const bounds = area.bbox ? wrapBBoxLongitudes(area.bbox) : wrapGeometryBbox(geometry)
-  // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
-  // https://github.com/Turfjs/turf/blob/master/packages/turf-boolean-point-in-polygon/index.ts#L63
-  if (area.geometry) {
-    area.geometry.bbox = bounds
+  if (geometry) {
+    geometry.bbox = getTurfBbox(geometry)
   }
   return {
     id: area.id,

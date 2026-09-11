@@ -1,12 +1,12 @@
 import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
-import type { MultiPolygon, Polygon } from 'geojson'
+import type { Feature, MultiPolygon, Point, Polygon } from 'geojson'
 import { atom, useAtom, useAtomValue } from 'jotai'
 import type { DateTimeUnit } from 'luxon'
 import memoizeOne from 'memoize-one'
 
-import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import { getUTCDateTime, unwrapFeatureLongitudes } from '@globalfishingwatch/data-transforms'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import type { DeckLayerAtom } from '@globalfishingwatch/deck-layer-composer'
 import {
@@ -233,14 +233,14 @@ export async function getFeaturesFilteredByArea({
 
     const features = isPolygonLayer
       ? instance.getRenderedFeatures()
-      : (instance?.getData?.(
-          isUserPointsTileLayer
-            ? {
-                includeNonTemporalFeatures: true,
-                skipTemporalFilter: !hasTimeFilter,
-              }
-            : {}
-        ) as FourwingsFeature[])
+      : isUserPointsTileLayer
+        ? ((
+            instance.getData({
+              includeNonTemporalFeatures: true,
+              skipTemporalFilter: !hasTimeFilter,
+            }) as Feature<Point>[]
+          ).map(unwrapFeatureLongitudes) as unknown as FourwingsFeature[])
+        : (instance?.getData?.() as FourwingsFeature[])
 
     const error = instance?.getError?.()
     if (error || !features?.length) {

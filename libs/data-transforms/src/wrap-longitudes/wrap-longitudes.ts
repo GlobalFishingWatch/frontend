@@ -158,6 +158,16 @@ export const wrapFeatureLongitudes = (
   }
 }
 
+/**
+ * The only bbox safe to store as a geometry's `bbox` member.
+ *
+ * turf trusts `bbox` to reject points before doing any real work, so it has to agree with the coordinates.
+ * {@link wrapGeometryBbox} deliberately does not — its span is unwrapped past ±180 so fitBounds gets a continuous range
+ */
+export function getTurfBbox(geometry: Polygon | MultiPolygon): Bbox {
+  return bbox(geometry, { recompute: true }) as Bbox
+}
+
 export function wrapGeometryBbox(geometry: Polygon | MultiPolygon): Bbox {
   const fullBbox = bbox(geometry)
   let minX = fullBbox[0]
@@ -192,12 +202,19 @@ const unwrapPositions = (positions: Position[]): Position[] => {
 
 const unwrapCoordinates = (coordinates: any): any => {
   if (typeof coordinates[0] === 'number') {
-    return unwrapPositions([coordinates])[0]
+    const offset = Math.round(coordinates[0] / WORLD_LONGITUDES) * WORLD_LONGITUDES
+    return offset === 0 ? coordinates : [coordinates[0] - offset, ...coordinates.slice(1)]
   }
   if (typeof coordinates[0]?.[0] === 'number') {
     return unwrapPositions(coordinates)
   }
-  return coordinates.map(unwrapCoordinates)
+  let changed = false
+  const unwrapped = coordinates.map((part: any) => {
+    const next = unwrapCoordinates(part)
+    changed ||= next !== part
+    return next
+  })
+  return changed ? unwrapped : coordinates
 }
 
 /**
@@ -213,8 +230,10 @@ export const unwrapFeatureLongitudes = <T extends Feature>(featureData: T): T =>
   if (!geometry?.coordinates?.length) {
     return featureData
   }
-  return {
-    ...featureData,
-    geometry: { ...geometry, coordinates: unwrapCoordinates(geometry.coordinates) },
-  } as T
+  const coordinates = unwrapCoordinates(geometry.coordinates)
+  if (coordinates === geometry.coordinates) {
+    // Nothing moved, so hand the caller its own feature back rather than a copy of it.
+    return featureData
+  }
+  return { ...featureData, geometry: { ...geometry, coordinates } } as T
 }

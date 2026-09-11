@@ -10,6 +10,8 @@ import { TileLayer } from '@deck.gl/geo-layers'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import type { GeoJsonProperties } from 'geojson'
 
+import { unwrapFeatureLongitudes } from '@globalfishingwatch/data-transforms'
+
 import {
   COLOR_HIGHLIGHT_FILL,
   COLOR_HIGHLIGHT_LINE,
@@ -143,13 +145,15 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
       })
     if (!sublayer) return { ...info, object: undefined }
 
-    const feature = isPMTilesUrl(this.props.layers[0].tilesUrl)
-      ? (info.object as ContextFeature)
-      : transformTileCoordsToWGS84(
-          info.object as ContextFeature,
-          info.tile!.bbox as GeoBoundingBox,
-          this.context.viewport
-        )
+    const feature = unwrapFeatureLongitudes(
+      isPMTilesUrl(this.props.layers[0].tilesUrl)
+        ? (info.object as ContextFeature)
+        : transformTileCoordsToWGS84(
+            info.object as ContextFeature,
+            info.tile!.bbox as GeoBoundingBox,
+            this.context.viewport
+          )
+    )
     const object = {
       ...feature,
       color: sublayer.color,
