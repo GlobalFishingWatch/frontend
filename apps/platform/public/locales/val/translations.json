@@ -77,6 +77,7 @@
     "noVesselDataFiltered": "crwdns131847:0crwdne131847:0",
     "onlyEvolutionSupported": "crwdns131849:0crwdne131849:0",
     "others": "crwdns131851:0crwdne131851:0",
+    "othersLayersAreReportArea": "crwdns138515:0crwdne138515:0",
     "periodComparison": "crwdns131853:0crwdne131853:0",
     "periodComparison1st": "crwdns131855:0crwdne131855:0",
     "periodComparison2nd": "crwdns131857:0crwdne131857:0",
@@ -92,6 +93,8 @@
     "polygonsOverlapping": "crwdns131879:0crwdne131879:0",
     "polygonsOverlapping_one": "crwdns131881:0crwdne131881:0",
     "polygonsOverlapping_other": "crwdns131885:0crwdne131885:0",
+    "polygonsTopAreas_one": "crwdns138517:0crwdne138517:0",
+    "polygonsTopAreas_other": "crwdns138519:0{{count}}crwdne138519:0",
     "portsAfterEvents": "crwdns131887:0crwdne131887:0",
     "portsSearchPlaceholder": "crwdns131889:0crwdne131889:0",
     "print": "crwdns131891:0crwdne131891:0",
@@ -404,6 +407,8 @@
       "shapefile": "crwdns132495:0crwdne132495:0"
     },
     "importing": "crwdns132497:0crwdne132497:0",
+    "loadError": "crwdns138521:0crwdne138521:0",
+    "loadRetry": "crwdns138523:0crwdne138523:0",
     "login": "crwdns132499:0crwdne132499:0",
     "new": "crwdns132501:0crwdne132501:0",
     "noDataForTimerange": "crwdns132503:0crwdne132503:0",
@@ -411,7 +416,11 @@
     "remove": "crwdns132507:0crwdne132507:0",
     "requiredFields": "crwdns132509:0{{fields}}crwdne132509:0",
     "SARDelayDisclaimer": "crwdns138373:0crwdne138373:0",
+    "showLess": "crwdns138525:0crwdne138525:0",
+    "showMore_one": "crwdns138527:0{{count}}crwdne138527:0",
+    "showMore_other": "crwdns138529:0{{count}}crwdne138529:0",
     "title": "crwdns132511:0crwdne132511:0",
+    "typeBigQuery": "crwdns138531:0crwdne138531:0",
     "typeGridded": "crwdns138413:0crwdne138413:0",
     "typeGriddedDescription": "crwdns138415:0crwdne138415:0",
     "typePoints": "crwdns132513:0crwdne132513:0",
@@ -437,6 +446,7 @@
         "invalidData": "crwdns132545:0crwdne132545:0"
       },
       "default": "crwdns132547:0crwdne132547:0",
+      "fileTooBig": "crwdns138533:0crwdne138533:0",
       "geoJSON": {
         "noValidFeatures": "crwdns132549:0crwdne132549:0"
       },
@@ -460,6 +470,9 @@
         "noLineData": "crwdns132567:0crwdne132567:0",
         "noPointData": "crwdns132569:0crwdne132569:0",
         "noPolygonData": "crwdns132571:0crwdne132571:0"
+      },
+      "zip": {
+        "multipleFiles": "crwdns138535:0crwdne138535:0"
       }
     },
     "fieldMultiplePlaceholder": "crwdns132573:0crwdne132573:0",
@@ -1037,21 +1050,21 @@
   "time": {
     "ago": "crwdns133481:0{{time}}crwdne133481:0",
     "days": "crwdns133483:0{{count}}crwdne133483:0",
-    "days_one": "crwdns133485:0crwdne133485:0",
+    "days_one": "crwdns133485:0{{count}}crwdne133485:0",
     "days_other": "crwdns133489:0{{count}}crwdne133489:0",
     "hours": "crwdns133491:0{{count}}crwdne133491:0",
-    "hours_one": "crwdns133493:0crwdne133493:0",
+    "hours_one": "crwdns133493:0{{count}}crwdne133493:0",
     "hours_other": "crwdns133497:0{{count}}crwdne133497:0",
     "minutes": "crwdns133499:0{{count}}crwdne133499:0",
-    "minutes_one": "crwdns133501:0crwdne133501:0",
+    "minutes_one": "crwdns133501:0{{count}}crwdne133501:0",
     "minutes_other": "crwdns133505:0{{count}}crwdne133505:0",
     "months": "crwdns133507:0{{count}}crwdne133507:0",
-    "months_one": "crwdns133509:0crwdne133509:0",
+    "months_one": "crwdns133509:0{{count}}crwdne133509:0",
     "months_other": "crwdns133513:0{{count}}crwdne133513:0",
     "now": "crwdns133515:0crwdne133515:0",
-    "weeks": "crwdns133517:0{{count}}crwdne133517:0",
-    "weeks_one": "crwdns133519:0crwdne133519:0",
-    "weeks_other": "crwdns133523:0{{count}}crwdne133523:0"
+    "years": "crwdns138537:0{{count}}crwdne138537:0",
+    "years_one": "crwdns138539:0{{count}}crwdne138539:0",
+    "years_other": "crwdns138541:0{{count}}crwdne138541:0"
   },
   "timebar": {
     "disablePlaybackVectors": "crwdns133525:0crwdne133525:0",
@@ -1145,17 +1158,21 @@
     "activity-fishing": "crwdns133657:0crwdne133657:0",
     "activity-vessel-presence": "crwdns133659:0crwdne133659:0",
     "analysis-and-dynamic-reports": "crwdns133661:0crwdne133661:0",
+    "analyzing-activity-over-time": "crwdns138543:0crwdne138543:0",
+    "central-section-showing-spatial-activity-maps": "crwdns138545:0crwdne138545:0",
     "downloading-data": "crwdns133663:0crwdne133663:0",
     "filtering-activity-layers": "crwdns133665:0crwdne133665:0",
     "night-light-detections-visible-infrared-imaging-radiometer-suite": "crwdns133667:0crwdne133667:0",
     "radar-detections-synthetic-aperture-radar": "crwdns133669:0crwdne133669:0",
+    "timebar": "crwdns138547:0crwdne138547:0",
     "title": "crwdns133671:0crwdne133671:0",
     "upload-points": "crwdns133673:0crwdne133673:0",
     "upload-polygons": "crwdns133675:0crwdne133675:0",
     "upload-tracks": "crwdns133677:0crwdne133677:0",
     "uploading-data": "crwdns133679:0crwdne133679:0",
     "vessel-groups": "crwdns133681:0crwdne133681:0",
-    "vessel-search": "crwdns133683:0crwdne133683:0"
+    "vessel-search": "crwdns133683:0crwdne133683:0",
+    "viewing-vessel-activity-in-layers": "crwdns138549:0crwdne138549:0"
   },
   "vessel": {
     "activityByType": "crwdns133685:0crwdne133685:0",
