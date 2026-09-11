@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { bbox } from '@turf/turf'
 import cx from 'classnames'
 import type { Feature, Polygon } from 'geojson'
+import { useSetAtom } from 'jotai'
 
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
 import { Button, IconButton, InputText, SwitchRow } from '@globalfishingwatch/ui-components'
@@ -31,6 +32,7 @@ import { useMapDrawConnect } from '../../map-draw.hooks'
 
 import { useDrawLayerInstance } from './draw.hooks'
 import { getDrawDatasetDefinition, getFileWithFeatures } from './draw.utils'
+import { pendingDrawGeometryAtom } from './draw-pending.hooks'
 
 import styles from './DrawDialog.module.css'
 
@@ -47,6 +49,7 @@ function MapDraw() {
   const [layerName, setLayerName] = useState<string>('')
   const [createAsPublic, setCreateAsPublic] = useState<boolean>(true)
   const { isMapDrawing, dispatchResetMapDraw } = useMapDrawConnect()
+  const setPendingDrawGeometry = useSetAtom(pendingDrawGeometryAtom)
   const { dispatchUpsertDataset } = useDatasetsAPI()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
   const mapDrawingMode = useSelector(selectMapDrawingMode)
@@ -144,6 +147,12 @@ function MapDraw() {
           if (!mapDrawEditDatasetId) {
             addDataviewFromDatasetToWorkspace(payload)
           }
+          // Keeps the geometry visible while the API ingests it, as the draw layer is
+          // removed on closeDraw and the user context layer waits for status === 'done'
+          setPendingDrawGeometry({
+            datasetId: payload.id,
+            data: { type: 'FeatureCollection', features },
+          })
           closeDraw()
         }
         setLoading(false)
@@ -156,6 +165,7 @@ function MapDraw() {
       dispatchUpsertDataset,
       mapDrawEditDatasetId,
       mapDrawingMode,
+      setPendingDrawGeometry,
     ]
   )
 
