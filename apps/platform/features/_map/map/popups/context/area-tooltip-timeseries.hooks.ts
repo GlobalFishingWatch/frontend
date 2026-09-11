@@ -94,11 +94,6 @@ export function useAreaTooltipSparklineCategory() {
   }
 }
 
-/**
- * Which area row of a context popup is expanded. `PopupByCategory` keys the context sections by
- * category, so they are not remounted between two clicks — the expanded row is derived from the
- * current feature ids instead of being seeded once, and defaults to open on a single-area click.
- */
 export function useAreaRowExpansion(ids: string[], showFeaturesDetails: boolean) {
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const { hasSparklineCategories } = useAreaTooltipSparklineCategory()
@@ -168,9 +163,7 @@ export function useAreaInViewport(
         isLonRangeContained(bounds.west, bounds.east, b[0], b[2])
       : undefined
 
-  // the latch keeps a computed sparkline visible while panning away, but it only holds for as long
-  // as the row stays open — on re-open the area has to be contained again or the cells it needs
-  // are no longer loaded and the chart would render empty
+  // the latch keeps a computed sparkline visible while panning away, but it only holds for as long as the row stays open
   const [latchedKey, setLatchedKey] = useState<string | undefined>(undefined)
   useEffect(() => {
     if (!enabled) {
@@ -253,8 +246,6 @@ export function useAreaTooltipTimeseries(
   const reportLayers = useGetDeckLayers<FourwingsLayer>(ids)
   const filterCellsByPolygon = useFilterCellsByPolygonWorker()
 
-  // callers only mount this once useAreaInViewport says the area is contained, so no second check
-  // here — a duplicate latch would disagree with the row's and render an empty chart
   const { datasetId, areaId, areaDetail, areaStatus } = useAreaDetail(feature)
   const geometry = (areaDetail?.geometry ?? feature.geometry) as Polygon | MultiPolygon | undefined
 

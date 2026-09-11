@@ -126,7 +126,7 @@ function EventsEncounterTooltipRow({
               </span>
             )}
             {loading ? (
-              <Spinner className={styles.eventSpinner} inline size="small" />
+              <Spinner className={styles.loading} size="small" />
             ) : (
               <Fragment>
                 {event ? (

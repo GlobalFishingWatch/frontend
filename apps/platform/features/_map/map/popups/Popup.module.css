@@ -69,9 +69,12 @@
   padding: 0;
 }
 
-.click .loading {
-  width: 50px;
-  height: 50px;
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 4rem;
 }
 
 .click .thumbnailLoading {
@@ -370,10 +373,6 @@
 
 .rowMarginTop {
   margin-top: var(--space-S);
-}
-
-.eventSpinner {
-  margin-top: 1rem;
 }
 
 .navigationFooter {

@@ -83,7 +83,7 @@ function DetectionThumbnails({
   })
   return (
     <div className={popupStyles.thumbnailContainer}>
-      <Suspense fallback={<Spinner size="small" />}>
+      <Suspense fallback={<Spinner className={popupStyles.loading} size="small" />}>
         <DetectionThumbnailImage
           key={thumbnail.name}
           id={thumbnail.name}

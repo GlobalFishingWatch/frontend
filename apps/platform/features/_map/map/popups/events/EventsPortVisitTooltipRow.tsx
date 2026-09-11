@@ -99,7 +99,7 @@ function EventsPortVisitTooltipRow({
       )}
       {error && <p className={styles.error}>{error}</p>}
       {loading ? (
-        <Spinner inline size="small" />
+        <Spinner className={styles.loading} size="small" />
       ) : (
         <Fragment>
           {showFeaturesDetails && (

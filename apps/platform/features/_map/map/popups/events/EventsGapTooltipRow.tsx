@@ -11,7 +11,7 @@ import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Button, Spinner } from '@globalfishingwatch/ui-components'
 import { TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
 
-import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
+import { getDatasetLabel, getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
 import { selectEventsDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import VesselLink from 'features/_vessels/vessel/VesselLink'
 import VesselPin from 'features/_vessels/vessel/VesselPin'
@@ -72,7 +72,7 @@ function EventsGapTooltipRow({
     feature.title ||
     (encounterDataview
       ? getDatasetTitleByDataview(encounterDataview, { showPrivateIcon: false })
-      : '')
+      : getDatasetLabel({ id: feature.datasetId! }))
   const gapStart = feature.properties.stime
     ? feature.properties.stime * 1000
     : event?.start
@@ -123,7 +123,7 @@ function EventsGapTooltipRow({
               </span>
             )}
             {loading ? (
-              <Spinner className={styles.eventSpinner} inline size="small" />
+              <Spinner className={styles.loading} size="small" />
             ) : (
               <Fragment>
                 {event ? (

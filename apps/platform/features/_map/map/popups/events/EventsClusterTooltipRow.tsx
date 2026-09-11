@@ -88,7 +88,7 @@ function EventsClusterTooltipRow({
       )}
 
       {loading ? (
-        <Spinner className={styles.eventSpinner} inline size="small" />
+        <Spinner className={styles.loading} size="small" />
       ) : (
         showFeaturesDetails && (
           <div className={styles.row}>
