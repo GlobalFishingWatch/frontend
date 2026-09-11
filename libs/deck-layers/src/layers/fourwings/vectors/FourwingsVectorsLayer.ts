@@ -287,8 +287,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
                     : (feature as Feature<any>).geometry.coordinates[0].flat(),
                 getColor: [255, 255, 255, 50],
                 getOffset: 0.5,
-                getPolygonOffset: (params: any) =>
-                  getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+                getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Default, params),
                 extensions: [new PathStyleExtension({ offset: true })],
               })
             ),
