@@ -2,12 +2,14 @@ import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { DataviewCategory, SelfReportedInfo } from '@globalfishingwatch/api-types'
-import { Icon, Spinner } from '@globalfishingwatch/ui-components'
+import { isSublayerValueVisible } from '@globalfishingwatch/deck-layers'
+import { Spinner } from '@globalfishingwatch/ui-components'
 
 import { getIsSkylightDataset } from 'features/_map/datasets/datasets.utils'
 import I18nNumber from 'features/i18n/i18nNumber'
 
 import type { ExtendedFeatureVessel, SliceExtendedFourwingsDeckSublayer } from '../../map.slice'
+import PopupSectionLayout from '../shared/PopupSectionLayout'
 import VesselDetectionTimestamps from '../shared/VesselDetectionTimestamps'
 import { getVesselsInfoConfig } from '../shared/vessels-table.utils'
 import VesselsTable from '../shared/VesselsTable'
@@ -48,7 +50,8 @@ function DetectionsTooltipRow({
   const notMatchedDetectionsCount = feature.value! - matchedDetections
   const notMatchedDetection = feature?.vessels?.find((v: any) => v.id === null)
 
-  if (feature.value === undefined) return null
+  // same gate the map uses to paint and pick the cell, so a measured 0 isn't an empty popup
+  if (!isSublayerValueVisible(feature.value, feature)) return null
   if (isSkylight) {
     featureVesselsFilter.vessels = matchedVessels.map((vessel: ExtendedFeatureVessel) => ({
       ...vessel,
@@ -63,46 +66,40 @@ function DetectionsTooltipRow({
   }
 
   return (
-    <div className={styles.popupSection}>
-      <Icon icon="heatmap" className={styles.layerIcon} style={{ color: feature.color }} />
-      <div className={styles.popupSectionContent}>
-        {showFeaturesDetails && feature.title && (
-          <h3 className={styles.popupSectionTitle}>{feature.title}</h3>
-        )}
-        <div className={styles.row}>
-          <span className={styles.rowText}>
-            {feature.value && (
-              <Fragment>
-                <I18nNumber number={feature.value} />{' '}
-              </Fragment>
-            )}
-            {t((t) => (t.common as any)[feature?.unit ?? 'detections'], {
-              defaultValue: 'detections',
-              count: feature.value, // neded to select the plural automatically
-            } as any)}{' '}
-            {feature?.vessels && showFeaturesDetails && notMatchedDetectionsCount > 0 && (
-              <Fragment>
-                {' - '}
-                <I18nNumber number={notMatchedDetectionsCount} /> {t((t) => t.vessel.unmatched)}{' '}
-                {notMatchedDetection && <VesselDetectionTimestamps vessel={notMatchedDetection} />}
-              </Fragment>
-            )}
-          </span>
-        </div>
-        {loading && (
-          <div className={styles.loading}>
-            <Spinner size="small" />
-          </div>
-        )}
-        {!loading && error && <p className={styles.error}>{error}</p>}
-        {!loading && showFeaturesDetails && (
-          <VesselsTable
-            feature={{ ...featureVesselsFilter, category: feature.category }}
-            vesselProperty="detections"
-          />
-        )}
+    <PopupSectionLayout
+      icon="heatmap"
+      iconColor={feature.color}
+      title={showFeaturesDetails && feature.title ? feature.title : undefined}
+    >
+      <div className={styles.row}>
+        <span className={styles.rowText}>
+          <I18nNumber number={feature.value} />{' '}
+          {t((t) => (t.common as any)[feature?.unit ?? 'detections'], {
+            defaultValue: 'detections',
+            count: feature.value, // neded to select the plural automatically
+          } as any)}{' '}
+          {feature?.vessels && showFeaturesDetails && notMatchedDetectionsCount > 0 && (
+            <Fragment>
+              {' - '}
+              <I18nNumber number={notMatchedDetectionsCount} /> {t((t) => t.vessel.unmatched)}{' '}
+              {notMatchedDetection && <VesselDetectionTimestamps vessel={notMatchedDetection} />}
+            </Fragment>
+          )}
+        </span>
       </div>
-    </div>
+      {loading && (
+        <div className={styles.loading}>
+          <Spinner size="small" />
+        </div>
+      )}
+      {!loading && error && <p className={styles.error}>{error}</p>}
+      {!loading && showFeaturesDetails && (
+        <VesselsTable
+          feature={{ ...featureVesselsFilter, category: feature.category }}
+          vesselProperty="detections"
+        />
+      )}
+    </PopupSectionLayout>
   )
 }
 

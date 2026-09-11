@@ -16,11 +16,13 @@ import { selectIsGuestUser, selectUserData } from 'features/_user/selectors/user
 type ContextLayerDownloadPopupButtonProps = {
   feature: ContextPickingObject | UserLayerPickingObject
   onClick: (e: React.MouseEvent<Element, MouseEvent>) => void
+  size?: React.ComponentProps<typeof IconButton>['size']
 }
 
 const ContextLayerDownloadPopupButton: React.FC<ContextLayerDownloadPopupButtonProps> = ({
   feature,
   onClick,
+  size = 'medium',
 }: ContextLayerDownloadPopupButtonProps) => {
   const { t } = useTranslation()
   const guestUser = useSelector(selectIsGuestUser)
@@ -49,7 +51,7 @@ const ContextLayerDownloadPopupButton: React.FC<ContextLayerDownloadPopupButtonP
             : t((t) => t.download.noHeatmapLayers)
         }
         onClick={onClick}
-        size="small"
+        size={size}
       />
     </LoginButtonWrapper>
   )

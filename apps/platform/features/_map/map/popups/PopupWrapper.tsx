@@ -119,7 +119,9 @@ function PopupWrapper({
       translate="no"
     >
       <div className={styles.contentWrapper} data-testid="map-popup-wrapper">
-        {showArrow && <FloatingArrow fill="white" ref={arrowRef} context={context} />}
+        {showArrow && (
+          <FloatingArrow fill="var(--color-off-white-0)" ref={arrowRef} context={context} />
+        )}
         {showClose && onClose !== undefined && (
           <div className={styles.close}>
             <IconButton

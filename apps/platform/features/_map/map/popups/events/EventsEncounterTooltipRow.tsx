@@ -8,9 +8,9 @@ import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
+import { Button, Spinner } from '@globalfishingwatch/ui-components'
 
-import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
+import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
 import { selectEventsDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import VesselLink from 'features/_vessels/vessel/VesselLink'
 import VesselPin from 'features/_vessels/vessel/VesselPin'
@@ -21,6 +21,7 @@ import { getEventLabel } from 'utils/analytics'
 import { formatInfoField } from 'utils/info'
 
 import type { ExtendedFeatureSingleEvent, SliceExtendedClusterPickingObject } from '../../map.slice'
+import PopupSectionLayout from '../shared/PopupSectionLayout'
 
 import styles from '../Popup.module.css'
 
@@ -76,7 +77,11 @@ function EventsEncounterTooltipRow({
   const mainVesselDatasetId = event?.vessel?.dataset || vesselDatasetId
   const encounterVesselDatasetId = event?.encounter?.vessel?.dataset
   const interval = getFourwingsInterval(feature.startTime, feature.endTime)
-  const title = feature.title || getDatasetLabel({ id: feature.datasetId! })
+  const title =
+    feature.title ||
+    (encountersDataview
+      ? getDatasetTitleByDataview(encountersDataview, { showPrivateIcon: false })
+      : '')
   const timestampStart = feature.properties.stime
     ? feature.properties.stime * 1000
     : event?.start
@@ -85,165 +90,160 @@ function EventsEncounterTooltipRow({
   const timestampEnd = event?.end ? getUTCDateTime(event?.end as string).toMillis() : undefined
 
   return (
-    <div className={styles.popupSection}>
-      <Icon icon="encounters" className={styles.layerIcon} style={{ color: feature.color }} />
-      <div className={styles.popupSectionContent}>
-        {showFeaturesDetails ? (
-          <h3 className={styles.popupSectionTitle}>{title}</h3>
-        ) : (
-          feature.count && (
-            <div className={styles.row}>
+    <PopupSectionLayout
+      icon="encounters"
+      iconColor={feature.color}
+      title={showFeaturesDetails ? title : undefined}
+    >
+      {!showFeaturesDetails && feature.count && (
+        <div className={styles.row}>
+          <span className={styles.rowText}>
+            <I18nNumber number={feature.count} />{' '}
+            {t((t) => t.event.encounter, {
+              count: feature.count,
+            })}
+            {!feature.properties.cluster && timestampStart && interval && (
+              <span className={styles.rowTextSecondary}>
+                {' '}
+                <I18nDate date={timestampStart} />
+              </span>
+            )}
+          </span>
+        </div>
+      )}
+      {showFeaturesDetails && (
+        <div className={styles.row}>
+          <div className={styles.rowContainer}>
+            {timestampStart && (
               <span className={styles.rowText}>
-                <I18nNumber number={feature.count} />{' '}
-                {t((t) => t.event.encounter, {
-                  count: feature.count,
-                })}
-                {!feature.properties.cluster && timestampStart && interval && (
-                  <span className={styles.rowTextSecondary}>
-                    {' '}
-                    <I18nDate date={timestampStart} />
-                  </span>
+                <I18nDate date={timestampStart} format={DateTime.DATETIME_SHORT} />{' '}
+                {timestampEnd && (
+                  <>
+                    {t((t) => t.common.to)}{' '}
+                    <I18nDate date={timestampEnd} format={DateTime.DATETIME_SHORT} />
+                  </>
                 )}
               </span>
-            </div>
-          )
-        )}
-        {showFeaturesDetails && (
-          <div className={styles.row}>
-            <div className={styles.rowContainer}>
-              {timestampStart && (
-                <span className={styles.rowText}>
-                  <I18nDate date={timestampStart} format={DateTime.DATETIME_SHORT} />{' '}
-                  {timestampEnd && (
-                    <>
-                      {t((t) => t.common.to)}{' '}
-                      <I18nDate date={timestampEnd} format={DateTime.DATETIME_SHORT} />
-                    </>
-                  )}
-                </span>
-              )}
-              {loading ? (
-                <Spinner className={styles.eventSpinner} inline size="small" />
-              ) : (
-                <Fragment>
-                  {event ? (
-                    <Fragment>
-                      <div className={styles.flex}>
-                        {event.vessel && (
-                          <div className={styles.rowColum}>
-                            {event.vessel.type && (
-                              <p className={styles.rowTitle}>
-                                {t((t) => t.vessel.vesselTypes[event.vessel.type], {
-                                  defaultValue: event.vessel.type,
-                                })}
-                              </p>
-                            )}
-                            {event.vessel && (
-                              <div className={styles.centered}>
-                                <span className={styles.rowText}>
-                                  <VesselLink
-                                    vesselId={event.vessel.id}
-                                    datasetId={mainVesselDatasetId}
-                                    query={{
-                                      vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
-                                      vesselSelfReportedId: event.vessel.id,
-                                    }}
-                                  >
-                                    {formatInfoField(event.vessel?.name, 'shipname')}
-                                  </VesselLink>
-                                </span>
-                                {mainVesselDatasetId && (
-                                  <VesselPin
-                                    vesselToResolve={{
-                                      ...event.vessel,
-                                      datasetId: mainVesselDatasetId,
-                                    }}
-                                  />
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        )}
-                        {event.encounter?.vessel && (
-                          <div className={styles.row}>
-                            <div className={styles.rowColum}>
-                              <span className={styles.rowTitle}>
-                                {event.encounter?.vessel.type &&
-                                  t(
-                                    (t) =>
-                                      t.vessel.vesselTypes[
-                                        event.encounter?.vessel.type as EventVesselTypeEnum
-                                      ],
-                                    {
-                                      defaultValue: event.encounter.vessel.type,
-                                    }
-                                  )}
+            )}
+            {loading ? (
+              <Spinner className={styles.loading} size="small" />
+            ) : (
+              <Fragment>
+                {event ? (
+                  <Fragment>
+                    <div className={styles.flex}>
+                      {event.vessel && (
+                        <div className={styles.rowColumn}>
+                          {event.vessel.type && (
+                            <p className={styles.rowTitle}>
+                              {t((t) => t.vessel.vesselTypes[event.vessel.type], {
+                                defaultValue: event.vessel.type,
+                              })}
+                            </p>
+                          )}
+                          {event.vessel && (
+                            <div className={styles.centered}>
+                              <span className={styles.rowText}>
+                                <VesselLink
+                                  vesselId={event.vessel.id}
+                                  datasetId={mainVesselDatasetId}
+                                  query={{
+                                    vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                                    vesselSelfReportedId: event.vessel.id,
+                                  }}
+                                >
+                                  {formatInfoField(event.vessel?.name, 'shipname')}
+                                </VesselLink>
                               </span>
-                              <div className={styles.centered}>
-                                <span className={styles.rowText}>
-                                  <VesselLink
-                                    vesselId={event.encounter.vessel?.id}
-                                    datasetId={encounterVesselDatasetId}
-                                    query={{
-                                      vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
-                                      vesselSelfReportedId: event.encounter.vessel?.id,
-                                    }}
-                                    onClick={() => seeEncounterClick(event.dataset)}
-                                  >
-                                    {formatInfoField(event.encounter.vessel?.name, 'shipname')}
-                                  </VesselLink>
-                                </span>
-                                {encounterVesselDatasetId && (
-                                  <VesselPin
-                                    vesselToResolve={{
-                                      ...event.encounter.vessel,
-                                      datasetId: encounterVesselDatasetId,
-                                    }}
-                                  />
-                                )}
-                              </div>
+                              {mainVesselDatasetId && (
+                                <VesselPin
+                                  vesselToResolve={{
+                                    ...event.vessel,
+                                    datasetId: mainVesselDatasetId,
+                                  }}
+                                />
+                              )}
                             </div>
-                          </div>
-                        )}
-                      </div>
-                      {event.vessel?.id && (
-                        <div className={styles.row}>
-                          <VesselLink
-                            vesselId={event.vessel.id}
-                            datasetId={event.vessel.dataset}
-                            query={{
-                              vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
-                              vesselSelfReportedId: event.vessel.id,
-                            }}
-                            eventId={event.id ? event.id.split('.')[0] : undefined}
-                            eventType={'encounter'}
-                            showTooltip={false}
-                            className={styles.btnLarge}
-                          >
-                            <Button
-                              target="_blank"
-                              size="small"
-                              className={styles.btnLarge}
-                              onClick={() => seeEncounterClick(event.dataset)}
-                            >
-                              {t((t) => t.common.seeMore)}
-                            </Button>
-                          </VesselLink>
+                          )}
                         </div>
                       )}
-                    </Fragment>
-                  ) : error ? (
-                    <p className={styles.error}>{error}</p>
-                  ) : (
-                    t((t) => t.event.noData)
-                  )}
-                </Fragment>
-              )}
-            </div>
+                      {event.encounter?.vessel && (
+                        <div className={styles.rowColumn}>
+                          <p className={styles.rowTitle}>
+                            {event.encounter?.vessel.type &&
+                              t(
+                                (t) =>
+                                  t.vessel.vesselTypes[
+                                    event.encounter?.vessel.type as EventVesselTypeEnum
+                                  ],
+                                {
+                                  defaultValue: event.encounter.vessel.type,
+                                }
+                              )}
+                          </p>
+                          <div className={styles.centered}>
+                            <span className={styles.rowText}>
+                              <VesselLink
+                                vesselId={event.encounter.vessel?.id}
+                                datasetId={encounterVesselDatasetId}
+                                query={{
+                                  vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                                  vesselSelfReportedId: event.encounter.vessel?.id,
+                                }}
+                                onClick={() => seeEncounterClick(event.dataset)}
+                              >
+                                {formatInfoField(event.encounter.vessel?.name, 'shipname')}
+                              </VesselLink>
+                            </span>
+                            {encounterVesselDatasetId && (
+                              <VesselPin
+                                vesselToResolve={{
+                                  ...event.encounter.vessel,
+                                  datasetId: encounterVesselDatasetId,
+                                }}
+                              />
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    {event.vessel?.id && (
+                      <div className={styles.row}>
+                        <VesselLink
+                          vesselId={event.vessel.id}
+                          datasetId={event.vessel.dataset}
+                          query={{
+                            vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                            vesselSelfReportedId: event.vessel.id,
+                          }}
+                          eventId={event.id ? event.id.split('.')[0] : undefined}
+                          eventType={'encounter'}
+                          showTooltip={false}
+                          className={styles.btnLarge}
+                        >
+                          <Button
+                            target="_blank"
+                            size="small"
+                            className={styles.btnLarge}
+                            onClick={() => seeEncounterClick(event.dataset)}
+                          >
+                            {t((t) => t.common.seeMore)}
+                          </Button>
+                        </VesselLink>
+                      </div>
+                    )}
+                  </Fragment>
+                ) : error ? (
+                  <p className={styles.error}>{error}</p>
+                ) : (
+                  t((t) => t.event.noData)
+                )}
+              </Fragment>
+            )}
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </PopupSectionLayout>
   )
 }
 

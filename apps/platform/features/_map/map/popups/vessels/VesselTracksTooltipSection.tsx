@@ -11,7 +11,7 @@ import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { VesselTrackPickingObject } from '@globalfishingwatch/deck-layers'
-import { Button, Icon, SolarStatus } from '@globalfishingwatch/ui-components'
+import { Button, SolarStatus } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
 import {
@@ -36,6 +36,8 @@ import I18nDate from 'features/i18n/i18nDate'
 import { selectIsAnyVesselLocation } from 'router/routes.selectors'
 import { TimebarVisualisations } from 'types'
 import { formatInfoField } from 'utils/info'
+
+import PopupSectionLayout from '../shared/PopupSectionLayout'
 
 import styles from '../Popup.module.css'
 
@@ -112,17 +114,25 @@ function VesselTracksTooltipRow({
     vesselLayer?.instance,
   ])
 
+  const isPoint = interactionType === 'point'
+  const [longitude, latitude] = isPoint ? (feature.geometry as Point).coordinates : ([] as number[])
+
   return (
     <div className={styles.row} key={feature.id}>
       <div className={styles.rowText}>
+        {showFeaturesDetails && isPoint && (
+          <p className={styles.rowTitle}>
+            {latitude?.toFixed(4)}, {longitude?.toFixed(4)}
+          </p>
+        )}
         <p>
           {!showFeaturesDetails && !hideVesselNames && formatInfoField(feature.title, 'shipname')}{' '}
-          {interactionType === 'point' && feature.timestamp && (
+          {isPoint && feature.timestamp && (
             <span className={cx({ [styles.secondary]: !showFeaturesDetails })}>
               <I18nDate date={feature.timestamp} format={DateTime.DATETIME_MED} />
               <SolarStatus
-                lon={(feature.geometry as Point).coordinates[0]}
-                lat={(feature.geometry as Point).coordinates[1]}
+                lon={longitude}
+                lat={latitude}
                 timestamp={feature.timestamp}
                 locale={i18n.language as Locale}
               />
@@ -134,27 +144,28 @@ function VesselTracksTooltipRow({
             </span>
           )}
         </p>
-        {showFeaturesDetails && (
-          <Fragment>
-            <p key="speed">
-              {feature.speed !== undefined && (
+        {showFeaturesDetails && (feature.speed !== undefined || feature.depth !== undefined) && (
+          <div className={styles.flex}>
+            {feature.speed !== undefined && (
+              <div className={styles.rowColumn}>
+                <p className={styles.rowTitle}>{upperFirst(t((t) => t.eventInfo.speed))}</p>
                 <span>
-                  {upperFirst(t((t) => t.eventInfo.speed))}: {feature.speed.toFixed(2)}{' '}
+                  {feature.speed.toFixed(2)}{' '}
                   {t((t) => t.common.knots, {
                     defaultValue: 'knots',
                   })}
                 </span>
-              )}
-            </p>
-            <p key="depth">
-              {feature.depth !== undefined && (
+              </div>
+            )}
+            {feature.depth !== undefined && (
+              <div className={styles.rowColumn}>
+                <p className={styles.rowTitle}>{upperFirst(t((t) => t.eventInfo.depth))}</p>
                 <span>
-                  {upperFirst(t((t) => t.eventInfo.depth))}: {Math.abs(feature.depth)}{' '}
-                  {t((t) => t.common.meters)}
+                  {Math.abs(feature.depth)} {t((t) => t.common.meters)}
                 </span>
-              )}
-            </p>
-          </Fragment>
+              </div>
+            )}
+          </div>
         )}
         {showFeaturesDetails &&
           !guestUser &&
@@ -196,28 +207,24 @@ function VesselTracksTooltipSection({
           return null
         }
         return (
-          <div key={`${featureByType[0].title}-${index}`} className={styles.popupSection}>
-            <Icon
-              icon="vessel"
-              className={styles.layerIcon}
-              style={{ color, transform: `rotate(${-45 + featureByType[0].course!}deg)` }}
-            />
-            <div className={styles.popupSectionContent}>
-              {showFeaturesDetails && !hideVesselNames && (
-                <h3 className={styles.popupSectionTitle}>{rowTitle}</h3>
-              )}
-              {featureByType.map((feature) => {
-                return (
-                  <VesselTracksTooltipRow
-                    key={feature.id}
-                    feature={feature}
-                    showFeaturesDetails={showFeaturesDetails}
-                    interactionType={featureByType[0].interactionType}
-                  />
-                )
-              })}
-            </div>
-          </div>
+          <PopupSectionLayout
+            key={`${featureByType[0].title}-${index}`}
+            icon="vessel"
+            iconColor={color}
+            iconStyle={{ transform: `rotate(${-45 + featureByType[0].course!}deg)` }}
+            title={showFeaturesDetails && !hideVesselNames ? rowTitle : undefined}
+          >
+            {featureByType.map((feature) => {
+              return (
+                <VesselTracksTooltipRow
+                  key={feature.id}
+                  feature={feature}
+                  showFeaturesDetails={showFeaturesDetails}
+                  interactionType={featureByType[0].interactionType}
+                />
+              )
+            })}
+          </PopupSectionLayout>
         )
       })}
     </Fragment>

@@ -385,10 +385,14 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             const eventFeatures = (features as VesselEventPickingObject[]).filter(
               (feature) => feature.subcategory === DataviewType.VesselEvents
             )
+            const eventLayerIds = new Set(eventFeatures.map((feature) => feature.layerId))
+            const visibleTrackFeatures = trackFeatures.filter(
+              (feature) => !eventLayerIds.has(feature.layerId)
+            )
             return (
               <Fragment key={featureCategory}>
                 <VesselTracksTooltipSection
-                  features={trackFeatures}
+                  features={visibleTrackFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
                 <VesselEventsTooltipSection

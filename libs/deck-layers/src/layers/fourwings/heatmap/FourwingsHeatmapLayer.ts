@@ -297,8 +297,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
           getPath: (d: FourwingsFeature) => d.coordinates,
           getColor: COLOR_HIGHLIGHT_LINE,
           getOffset: 0.5,
-          getPolygonOffset: (params: any) =>
-            getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Default, params),
           extensions: [new PathStyleExtension({ offset: true })],
         })
       ),

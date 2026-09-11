@@ -2,14 +2,16 @@ import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
-import { DatasetTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextLayer, ContextPickingObject } from '@globalfishingwatch/deck-layers'
 import { Icon } from '@globalfishingwatch/ui-components'
 
 import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
-import { dataviewHasUserTimeRange } from 'features/_map/dataviews/dataviews.utils'
+import {
+  dataviewHasUserTimeRange,
+  getContextDataviewDataset,
+} from 'features/_map/dataviews/dataviews.utils'
 import ContextLayerReportLink from 'features/_map/map/popups/context/ContextLayerReportLink'
 import { useContextInteractions } from 'features/_map/map/popups/context/ContextLayers.hooks'
 import { showSchemaFilter } from 'features/_map/workspace/shared/LayerSchemaFilter.utils'
@@ -67,9 +69,7 @@ function ReportPolygonsGraph({
     [contextLayer]
   )
 
-  const dataset = dataview.datasets?.find(
-    (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
-  )
+  const dataset = getContextDataviewDataset(dataview)
   const title = dataset?.name
   const unit =
     dataset?.unit && dataset.unit !== 'TBD' && dataset.unit !== 'NA' ? dataset.unit : undefined
