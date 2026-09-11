@@ -11,6 +11,7 @@ import type {
 } from '@globalfishingwatch/api-types'
 import {
   DatasetTypes,
+  EndpointId,
   ResourceStatus,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
@@ -161,7 +162,7 @@ function VesselLayerPanel({
       )
 
     const isPrivateVessel = dataview?.datasetsConfig
-      ?.filter((d) => d.datasetId)
+      ?.filter((d) => d.datasetId && d.endpoint !== EndpointId.TracksRealTime)
       .some((d) => isPrivateDataset({ id: d.datasetId }))
     return (
       <Fragment>
