@@ -38,10 +38,15 @@ import type {
 } from './fourwings-heatmap.types'
 import { FourwingsAggregationOperation } from './fourwings-heatmap.types'
 
+/** `undefined` when the slice holds no data. A 0 total is a real total: absent frames travel
+ * as the no-data sentinel, which the parser drops, so every number here was measured. */
 export function aggregateSublayerValues(
   values: number[],
   aggregationOperation = FourwingsAggregationOperation.Sum
-) {
+): number | undefined {
+  if (!values.some(Number.isFinite)) {
+    return undefined
+  }
   if (aggregationOperation === FourwingsAggregationOperation.Avg) {
     let nonEmptyValuesLength = 0
     return (

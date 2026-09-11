@@ -32,7 +32,7 @@ import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 
 import type { DatasetMetadata } from 'features/_map/datasets/upload/NewDataset'
 import type { DatasetGeometryTypesSupported, FileTypeResult } from 'utils/files'
-import { getFileType, readBlobAs } from 'utils/files'
+import { getFileFromZipContent, getFileType, readBlobAs } from 'utils/files'
 
 // interface FeatureCollectionWithMetadata extends FeatureCollectionWithFilename {
 //   extensions?: string[]
@@ -132,6 +132,13 @@ export async function getDatasetParsed<T extends DatasetGeometryTypesSupported>(
   if (!fileType) {
     throw new Error('datasetUpload.errors.default')
   }
+  const sourceFile =
+    zipContent.length && fileType !== 'Shapefile'
+      ? await getFileFromZipContent(zipContent, fileType)
+      : file
+  if (!sourceFile) {
+    throw new Error('datasetUpload.errors.default')
+  }
   try {
     let parsed: DataParsed
     if (fileType === 'Shapefile') {
@@ -140,15 +147,7 @@ export async function getDatasetParsed<T extends DatasetGeometryTypesSupported>(
     } else if (fileType === 'CSV') {
       let fileText: string | undefined
       try {
-        if (zipContent.length) {
-          const csvFile = zipContent?.find((f) => f.name.endsWith('.csv'))
-          if (!csvFile) {
-            throw new Error('No .csv found in .zip file')
-          }
-          fileText = await csvFile.async('string')
-        } else {
-          fileText = await readBlobAs(file, 'text')
-        }
+        fileText = await readBlobAs(sourceFile, 'text')
       } catch {
         throw new Error('datasetUpload.errors.csv.invalidData')
       }
@@ -165,14 +164,14 @@ export async function getDatasetParsed<T extends DatasetGeometryTypesSupported>(
       })
       parsed = data as DataList
     } else if (fileType === 'KML') {
-      const geoJson = await kmlToGeoJSON(file, type)
+      const geoJson = await kmlToGeoJSON(sourceFile, type)
       parsed = validateFeatures(geoJson, type)
     } else if (fileType === 'GeoTIFF') {
-      parsed = { bands: await getGeotiffBandsCount(file) }
+      parsed = { bands: await getGeotiffBandsCount(sourceFile) }
     } else if (fileType === 'NetCDF') {
-      parsed = { variables: await getNetcdfVariables(file) }
+      parsed = { variables: await getNetcdfVariables(sourceFile) }
     } else {
-      const fileText = await readBlobAs(file, 'text')
+      const fileText = await readBlobAs(sourceFile, 'text')
       parsed = validatedGeoJSON(fileText, type)
     }
     return parsed as DatasetParsedByType[T]

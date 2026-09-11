@@ -1,3 +1,4 @@
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getDatasetConfiguration, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type {
   ContextLayerConfig,
@@ -8,6 +9,8 @@ import type {
 import type { ResolvedContextDataviewInstance } from '../types/dataviews'
 import type { DeckResolverFunction } from '../types/resolvers'
 
+import { resolvePMTilesUrl } from './basemap'
+
 export const resolveDeckContextLayerProps: DeckResolverFunction<
   ContextLayerProps<ContextLayerId>,
   ResolvedContextDataviewInstance
@@ -15,8 +18,10 @@ export const resolveDeckContextLayerProps: DeckResolverFunction<
   const layers = (dataview.config?.layers || [])?.flatMap(
     (layer): ContextLayerConfig<ContextLayerId> | [] => {
       const dataset = dataview.datasets?.find((dataset) => dataset.id === layer.dataset)
+      const isPMTiles = dataset?.type === DatasetTypes.PMTiles
       const { valueProperties } = getDatasetConfiguration(dataset) || {}
-      const { idProperty } = getDatasetConfiguration(dataset, 'contextLayerV1') || {}
+      const { idProperty } =
+        getDatasetConfiguration(dataset, isPMTiles ? 'pmTilesV1' : 'contextLayerV1') || {}
       const datasetConfig = dataview.datasetsConfig?.find(
         (datasetConfig) => datasetConfig.datasetId === layer.dataset
       )
@@ -24,7 +29,9 @@ export const resolveDeckContextLayerProps: DeckResolverFunction<
         return []
       }
 
-      const tilesUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
+      const tilesUrl = isPMTiles
+        ? resolvePMTilesUrl(dataset)
+        : (resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string)
       if (!tilesUrl) {
         console.warn('No tilesUrl found for context dataview', dataview)
       }

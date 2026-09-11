@@ -44,43 +44,20 @@ export const sortByCreationDate = <T>(entities: UserCreatedEntities[]): T[] => {
   ) as T[]
 }
 
+const TIME_AGO_UNITS = ['years', 'months', 'days', 'hours', 'minutes'] as const
+
 export const getTimeAgo = (date: number | DateTime, t: TFunction) => {
   const now = DateTime.local()
   const past = typeof date === 'number' ? DateTime.fromMillis(date) : date
-  const diff = now.diff(past, ['days', 'hours', 'minutes'])
+  const diff = now.diff(past, [...TIME_AGO_UNITS])
 
-  const days = Math.floor(diff.days)
-  const hours = Math.floor(diff.hours)
-  const minutes = Math.floor(diff.minutes)
-
-  const translateWithPlural = (
-    keyBase: 'days' | 'hours' | 'minutes' | 'months' | 'weeks',
-    count: number
-  ) => t((t) => t.time[keyBase], { count })
-
-  if (days >= 30) {
-    const months = Math.floor(days / 30)
-    return t((t) => t.time.ago, { time: translateWithPlural('months', months) })
+  for (const unit of TIME_AGO_UNITS) {
+    const count = Math.floor(diff[unit])
+    if (count >= 1) {
+      return t((t) => t.time.ago, { time: t((t) => t.time[unit], { count }) })
+    }
   }
-  if (days >= 7) {
-    const weeks = Math.floor(days / 7)
-    return t((t) => t.time.ago, { time: translateWithPlural('weeks', weeks) })
-  }
-  if (days > 0) {
-    return t((t) => t.time.ago, { time: translateWithPlural('days', days) })
-  }
-  if (days === 0 && hours === 0 && minutes < 2) {
-    return t((t) => t.time.now)
-  }
-  if (hours === 0) {
-    return t((t) => t.time.ago, { time: translateWithPlural('minutes', minutes) })
-  }
-  if (minutes === 0) {
-    return t((t) => t.time.ago, { time: translateWithPlural('hours', hours) })
-  }
-
-  const timeStr = `${translateWithPlural('hours', hours)} ${translateWithPlural('minutes', minutes)}`
-  return t((t) => t.time.ago, { time: timeStr })
+  return t((t) => t.time.now)
 }
 
 export const getDateLabel = (date: number, t: TFunction) => {

@@ -91,8 +91,9 @@ export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLa
       })
     feature.aggregatedValues = aggregatedCellValues
 
-    if ((aggregatedCellValues[0] ?? 0) > 0) {
-      target = hexToDeckColor(color!, Math.min(0.5 + aggregatedCellValues[0] * 0.01, 1))
+    const value = aggregatedCellValues[0] ?? 0
+    if (value > 0) {
+      target = hexToDeckColor(color!, Math.min(0.5 + value * 0.01, 1))
     } else {
       target = EMPTY_CELL_COLOR
     }

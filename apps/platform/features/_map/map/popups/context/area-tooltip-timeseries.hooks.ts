@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { MultiPolygon, Polygon } from 'geojson'
@@ -88,8 +88,8 @@ export function useAreaTooltipSparklineCategory() {
     option: options.find(({ id }) => id === preferredId) ?? options[0],
     options,
     setPreferredCategory: setPreferredId,
-    canSwitch: options.length > 1,
-    hasAny: options.length > 0,
+    canSwitchCategory: options.length > 1,
+    hasSparklineCategories: options.length > 0,
   }
 }
 
@@ -130,23 +130,35 @@ export function useAreaInViewport(
   feature: ContextPickingObject | UserLayerPickingObject,
   enabled = true
 ): boolean | undefined {
-  const { areaDetail } = useAreaDetail(feature, { fetch: enabled })
+  const { datasetId, areaId, areaDetail } = useAreaDetail(feature, { fetch: enabled })
   const { bounds } = useMapBoundsLive()
+  const key = `${datasetId}|${areaId}`
+
+  const b = areaDetail?.bounds
+  const contained =
+    b && bounds
+      ? b[1] >= bounds.south &&
+        b[3] <= bounds.north &&
+        isLonRangeContained(bounds.west, bounds.east, b[0], b[2])
+      : undefined
+
+  const [latchedKey, setLatchedKey] = useState<string | undefined>(undefined)
+  useEffect(() => {
+    if (enabled && contained) {
+      setLatchedKey(key)
+    }
+  }, [enabled, contained, key])
 
   if (!enabled) {
     return undefined
   }
-
-  const b = areaDetail?.bounds
-  if (!b || !bounds) {
-    return undefined
-  }
-
-  const latContained = b[1] >= bounds.south && b[3] <= bounds.north
-  return latContained && isLonRangeContained(bounds.west, bounds.east, b[0], b[2])
+  return latchedKey === key ? true : contained
 }
 
-export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickingObject) {
+export function useFitAreaBounds(
+  feature: ContextPickingObject | UserLayerPickingObject,
+  { auto = false }: { auto?: boolean } = {}
+) {
   const fitBounds = useMapFitBounds()
   const dispatch = useAppDispatch()
   const { start, end } = useSelector(selectTimeRange)
@@ -161,7 +173,8 @@ export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickin
       }
       return
     }
-    let bounds = areaDetail?.bounds
+    let bounds: Bbox | undefined =
+      areaDetail?.bounds || ((feature.properties?.bbox as string)?.split(',').map(Number) as Bbox)
     if (!bounds) {
       const area = await dispatch(
         fetchAreaDetailThunk({ datasetId, areaId, areaName, simplify })
@@ -173,16 +186,27 @@ export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickin
     }
   }, [
     trackLayer,
+    areaDetail?.bounds,
+    feature.properties?.bbox,
     start,
     end,
-    areaDetail,
+    fitBounds,
     dispatch,
     datasetId,
     areaId,
     areaName,
     simplify,
-    fitBounds,
   ])
+
+  // ponytail: ref instead of state, the effect only needs to not fire twice for the same feature
+  const autoFittedId = useRef<string | number | undefined>(undefined)
+  useEffect(() => {
+    if (!auto || autoFittedId.current === feature.id) {
+      return
+    }
+    autoFittedId.current = feature.id
+    onClick()
+  }, [auto, feature.id, onClick])
 
   return { onClick, loading: areaStatus === AsyncReducerStatus.Loading }
 }
@@ -235,10 +259,15 @@ export function useAreaTooltipTimeseries(
   )
   const layersStateHash = useAtomValue(layersStateHashAtom)
 
-  const computeHash = `${areaId}|${datasetId}|${layerIdsHash}|${isLoaded}|${layersStateHash}|${!!geometry}|${areaInViewport}`
+  const areaHash = `${areaId}|${datasetId}|${layerIdsHash}|${start}|${end}`
+  const computedAreaRef = useRef<string | undefined>(undefined)
+  const computeHash = `${areaHash}|${isLoaded}|${layersStateHash}|${!!geometry}|${areaInViewport}`
 
   useEffect(() => {
     if (!geometry || !instances.length || !isLoaded || !areaInViewport) {
+      return
+    }
+    if (computedAreaRef.current === areaHash) {
       return
     }
     let cancelled = false
@@ -256,6 +285,7 @@ export function useAreaTooltipTimeseries(
         }
         const timeseries = getTimeseries({ featuresFiltered, instances })
         if (!cancelled) {
+          computedAreaRef.current = areaHash
           setState({ loading: false, timeseries: timeseries?.[0] })
         }
       } catch (e) {

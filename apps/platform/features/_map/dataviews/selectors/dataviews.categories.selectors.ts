@@ -186,19 +186,28 @@ export const selectUserHeatmapsActiveReportDataviews = createSelector(
   }
 )
 
-export const selectOthersActiveReportDataviews = createSelector(
+const selectOthersReportDataviewsCandidates = createSelector(
   [
     selectPointsActiveReportDataviews,
     selectPolygonsActiveReportDataviews,
     selectUserHeatmapsActiveReportDataviews,
-    selectReportDatasetId,
   ],
-  (points = [], polygons = [], userHeatmaps = [], reportDatasetId) => {
-    const filteredDataviews = [...points, ...polygons, ...userHeatmaps]
-    return filteredDataviews.filter(
+  (points = [], polygons = [], userHeatmaps = []) => [...points, ...polygons, ...userHeatmaps]
+)
+
+export const selectOthersActiveReportDataviews = createSelector(
+  [selectOthersReportDataviewsCandidates, selectReportDatasetId],
+  (candidates, reportDatasetId) => {
+    return candidates.filter(
       (d) => !d.datasets?.some((ds) => reportDatasetId?.split(',').includes(ds.id))
     )
   }
+)
+
+// Every analysable layer is a source of the report area itself, so there is nothing left to report
+export const selectAllOthersReportDataviewsAreReportArea = createSelector(
+  [selectOthersReportDataviewsCandidates, selectOthersActiveReportDataviews],
+  (candidates, others) => candidates.length > 0 && others.length === 0
 )
 
 export const selectOthersActiveReportDataviewsGrouped = createSelector(

@@ -41,6 +41,11 @@ describe('aggregateSublayerValues', () => {
     expect(aggregateSublayerValues([0, 0], FourwingsAggregationOperation.Avg)).toBe(0)
   })
 
+  it('returns undefined when the slice holds no data, so the cell is not painted as a 0', () => {
+    expect(aggregateSublayerValues(new Array(2))).toBeUndefined()
+    expect(aggregateSublayerValues(new Array(2), FourwingsAggregationOperation.Avg)).toBeUndefined()
+  })
+
   it('averages degrees across the 0/360 wraparound', () => {
     const avg = aggregateSublayerValues([350, 10], FourwingsAggregationOperation.AvgDegrees)
     expect(avg).toBeCloseTo(0)

@@ -1,4 +1,4 @@
-import { capitalize, lowerCase } from 'es-toolkit'
+import { capitalize, lowerCase, uniq } from 'es-toolkit'
 import type { FeatureCollection } from 'geojson'
 
 import type {
@@ -6,7 +6,12 @@ import type {
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
 import type { JSZipObject } from '@globalfishingwatch/data-transforms/files'
-import { isZipFile, zipToFiles } from '@globalfishingwatch/data-transforms/files'
+import {
+  findZipEntries,
+  isZipFile,
+  zipEntryToFile,
+  zipToFiles,
+} from '@globalfishingwatch/data-transforms/files'
 
 export function getFileName(file: File): string {
   if (!file?.name) {
@@ -110,8 +115,12 @@ export const FILE_TYPES_CONFIG: Record<FileType, FileConfig> = {
   Shapefile: { id: 'Shapefile', files: ['.zip', '.ZIP', '.shp', '.SHP'], icon: 'zip' },
   CSV: { id: 'CSV', files: ['.csv', '.tsv', '.CSV', '.TSV'], icon: 'csv' },
   KML: { id: 'KML', files: ['.kml', '.kmz', '.KML', '.KMZ'], icon: 'kml' },
-  GeoTIFF: { id: 'GeoTIFF', files: ['.tif', '.tiff', '.TIF', '.TIFF'], icon: 'csv' },
-  NetCDF: { id: 'NetCDF', files: ['.nc', '.nc4', '.NC', '.NC4'], icon: 'csv' },
+  GeoTIFF: {
+    id: 'GeoTIFF',
+    files: ['.tif', '.tiff', '.TIF', '.TIFF', '.zip', '.ZIP'],
+    icon: 'tiff',
+  },
+  NetCDF: { id: 'NetCDF', files: ['.nc', '.nc4', '.NC', '.NC4'], icon: 'netcdf' },
 }
 
 export type FileTypeResult = { fileType: FileType | undefined; zipContent: JSZipObject[] }
@@ -133,6 +142,22 @@ export async function getFileType(file?: File): Promise<FileTypeResult> {
     return files.some((ext) => file.name.endsWith(ext))
   })?.id
   return { fileType, zipContent: [] }
+}
+
+export async function getFileFromZipContent(
+  zipContent: JSZipObject[],
+  fileType: FileType
+): Promise<File | undefined> {
+  const extensions = uniq(
+    FILE_TYPES_CONFIG[fileType].files
+      .map((extension) => extension.slice(1).toLowerCase())
+      .filter((extension) => extension !== 'zip')
+  )
+  const entries = findZipEntries(zipContent, new RegExp(`\\.(${extensions.join('|')})$`, 'i'))
+  if (entries.length > 1) {
+    throw new Error('datasetUpload.errors.zip.multipleFiles')
+  }
+  return entries.length ? zipEntryToFile(entries[0]) : undefined
 }
 
 export function getFilesAcceptedByMime(fileTypes: FileType[]) {
@@ -182,11 +207,15 @@ export function readBlobAs(blob: Blob, format: 'text' | 'arrayBuffer'): any {
 }
 
 export function getFileFromGeojson(geojson: FeatureCollection) {
-  try {
-    return new File([JSON.stringify(geojson)], 'file.json', {
-      type: 'application/json',
-    })
-  } catch (error) {
-    console.warn(error)
+  const { features, ...rest } = geojson
+  const parts: string[] = []
+  for (const [key, value] of Object.entries(rest)) {
+    parts.push(`${parts.length ? ',' : '{'}${JSON.stringify(key)}:${JSON.stringify(value)}`)
   }
+  parts.push(`${parts.length ? ',' : '{'}"features":[`)
+  ;(features ?? []).forEach((feature, index) => {
+    parts.push(index ? `,${JSON.stringify(feature)}` : JSON.stringify(feature))
+  })
+  parts.push(']}')
+  return new File(parts, 'file.json', { type: 'application/json' })
 }

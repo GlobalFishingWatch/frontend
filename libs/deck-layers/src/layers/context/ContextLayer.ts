@@ -20,7 +20,13 @@ import { DEFAULT_ID_PROPERTY } from '#config/layers.config'
 import { LayerGroup } from '#config/sort.config'
 import { getFetchLoadOptions, GFWMVTLoader } from '#layers/_shared/api'
 import { getPickedFeatureToHighlight } from '#layers/_shared/picking.utils'
-import { getMVTSublayerProps, transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
+import {
+  getMVTSublayerProps,
+  getPMTilesSublayerProps,
+  isPMTilesUrl,
+  transformTileCoordsToWGS84,
+} from '#layers/_shared/tiles.utils'
+import { PMTilesLayer } from '#layers/pm-tiles/index'
 import { getLayerGroupOffset, hexToDeckColor } from '#utils'
 
 import { EEZ_SETTLED_BOUNDARIES } from './context.config'
@@ -36,6 +42,7 @@ import {
   getContextFiltersHash,
   getContextId,
   getContextLink,
+  getSelectedTilesFeatures,
   mergePickedFeatures,
 } from './context.utils'
 
@@ -135,12 +142,16 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
         return (info as any).sourceTileSubLayer.props.id.includes(sublayer.dataviewId)
       })
     if (!sublayer) return { ...info, object: undefined }
+
+    const feature = isPMTilesUrl(this.props.layers[0].tilesUrl)
+      ? (info.object as ContextFeature)
+      : transformTileCoordsToWGS84(
+          info.object as ContextFeature,
+          info.tile!.bbox as GeoBoundingBox,
+          this.context.viewport
+        )
     const object = {
-      ...transformTileCoordsToWGS84(
-        info.object as ContextFeature,
-        info.tile!.bbox as GeoBoundingBox,
-        this.context.viewport
-      ),
+      ...feature,
       color: sublayer.color,
       layerId: sublayer.dataviewId,
       datasetId: this.props.layers[0].datasetId,
@@ -157,21 +168,39 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
     return { ...info, object }
   }
 
-  _pickObjects(maxObjects: number | null): PickingInfo[] {
-    const { deck, viewport } = this.context
-    const width = viewport.width
-    const height = viewport.height
-    const x = viewport.x
-    const y = viewport.y
-    const layerIds = this.props.layers.map((l) => l.id)
-    const features = deck!.pickObjects({ x, y, width, height, layerIds, maxObjects })
-    return features.filter((f) => f.object)
-  }
-
   getRenderedFeatures(maxFeatures: number | null = null): ContextFeature[] {
-    const idProperty = this.props.layers[0].idProperty || DEFAULT_ID_PROPERTY
+    const { viewport } = this.context
+    const { idProperty = DEFAULT_ID_PROPERTY, valueProperties, datasetId } = this.props.layers[0]
+    if (!viewport) return []
+
+    const pickedFeatures: PickingInfo[] = []
+    this.getSubLayers().forEach((tileLayer, index) => {
+      const layer = this.props.layers[index] || this.props.layers[0]
+      const sublayer = layer?.sublayers?.[0]
+      if (!sublayer) return
+      const features = getSelectedTilesFeatures<ContextFeature>(tileLayer, viewport, {
+        wgs84: isPMTilesUrl(layer.tilesUrl),
+      })
+      for (const feature of features) {
+        if (maxFeatures !== null && pickedFeatures.length >= maxFeatures) break
+        const object = {
+          ...feature,
+          color: sublayer.color,
+          layerId: sublayer.dataviewId,
+          datasetId,
+          dataviewId: sublayer.dataviewId,
+          category: this.props.category,
+          id: getContextId(feature, idProperty),
+          value: feature.properties?.value,
+          valueProperties,
+          link: getContextLink({ ...feature, layerId: layer.id } as ContextPickingObject),
+        } as ContextPickingObject
+        pickedFeatures.push({ object, layer: { id: layer.id } } as unknown as PickingInfo)
+      }
+    })
+
     return mergePickedFeatures<ContextFeature>({
-      pickedFeatures: this._pickObjects(maxFeatures),
+      pickedFeatures,
       idProperty,
       layers: this.props.layers,
     })
@@ -183,15 +212,23 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
     if (!visible) return []
 
     const highlightedFeatures = this._getHighlightedFeatures()
+    const highlightedFeaturesHash = highlightedFeatures.map((f) => f.id).join(',')
     return layers.map((layer) => {
+      const isPMTiles = isPMTilesUrl(layer.tilesUrl)
+      const TilesLayer = (isPMTiles ? PMTilesLayer : TileLayer) as typeof TileLayer
+      const getSublayerProps = isPMTiles ? getPMTilesSublayerProps : getMVTSublayerProps
+      const loaderProps = isPMTiles
+        ? {}
+        : { loaders: [GFWMVTLoader], loadOptions: { ...getFetchLoadOptions() } }
+
       if (layer.id === ContextLayerId.EEZBoundaries) {
-        return new TileLayer<ContextFeature>({
+        return new TilesLayer<ContextFeature>({
           id: `${layer.id}-boundaries-layer`,
           data: layer.tilesUrl,
-          loaders: [GFWMVTLoader],
+          ...loaderProps,
           maxZoom: 8,
           renderSubLayers: (props: any) => {
-            const mvtSublayerProps = { ...props, ...getMVTSublayerProps(props) }
+            const mvtSublayerProps = { ...props, ...getSublayerProps(props) }
             return layer.sublayers.map((sublayer) => {
               const thickness = sublayer.thickness ?? 1
               return [
@@ -212,6 +249,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                     new PathStyleExtension({ dash: true, highPrecisionDash: true }),
                   ],
                   getDashArray: (d: ContextFeature) => this.getDashArray(d),
+                  pointType: '',
                   updateTriggers: {
                     getLineWidth: thickness,
                   },
@@ -222,19 +260,19 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
         })
       }
 
-      return new TileLayer<ContextFeature>({
+      return new TilesLayer<ContextFeature>({
         id: `${layer.id}-base-layer`,
         data: layer.tilesUrl,
-        loaders: [GFWMVTLoader],
-        loadOptions: {
-          ...getFetchLoadOptions(),
-        },
+        ...loaderProps,
         maxZoom: 8,
         onViewportLoad: this.props.onViewportLoad,
+        updateTriggers: {
+          renderSubLayers: [highlightedFeaturesHash],
+        },
         renderSubLayers: (props) => {
           const mvtSublayerProps = {
             ...props,
-            ...getMVTSublayerProps({ tile: props.tile, extensions: props.extensions }),
+            ...getSublayerProps({ tile: props.tile, extensions: props.extensions }),
           }
           return layer.sublayers.map((sublayer) => {
             const filterCategories = Object.values(sublayer.filters || {}).flatMap(
@@ -269,6 +307,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                 getPolygonOffset: (params) =>
                   getLayerGroupOffset(LayerGroup.OutlinePolygonsBackground, params),
                 getFillColor: (d) => this.getFillColor(d as ContextFeature, { layer, sublayer }),
+                pointType: '',
                 updateTriggers: {
                   getFillColor: [highlightedFeatures],
                   ...(hasValidFilters && {
@@ -291,6 +330,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                       getPolygonOffset: (params) =>
                         getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
                       getLineWidth: sublayer.thickness || 1,
+                      pointType: '',
                       getLineColor: hexToDeckColor(sublayer.color),
                       updateTriggers: {
                         getLineWidth: [filtersHash, sublayer.thickness],
@@ -318,6 +358,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                     sublayer,
                     lineWidth: 4,
                   }),
+                pointType: '',
                 getLineColor: DEFAULT_BACKGROUND_COLOR,
                 updateTriggers: {
                   getLineWidth: [highlightedFeatures],
@@ -339,6 +380,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                     sublayer,
                     lineWidth: 2,
                   }),
+                pointType: '',
                 getLineColor: COLOR_HIGHLIGHT_LINE,
                 updateTriggers: {
                   getLineWidth: [highlightedFeatures],

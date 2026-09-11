@@ -118,6 +118,10 @@ div.HintPanel {
   font: var(--font-S);
 }
 
+.userGuideLink {
+  margin-left: var(--space-XS);
+}
+
 .footer {
   display: flex;
   justify-content: space-between;

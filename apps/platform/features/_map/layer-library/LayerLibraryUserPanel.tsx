@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -13,7 +13,9 @@ import { Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { getDataviewInstanceByDataset, useAddDataset } from 'features/_map/datasets/datasets.hook'
 import {
   getDatasetLabel,
+  getDatasetMatchesSearch,
   getDatasetTypeIcon,
+  getGeometryTypeLabel,
   groupDatasetsByGeometryType,
 } from 'features/_map/datasets/datasets.utils'
 import { useMapDrawConnect } from 'features/_map/map/map-draw.hooks'
@@ -26,18 +28,26 @@ import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
-import { sortByCreationDate } from 'utils/dates'
+import { getTimeAgo, getUTCDateTime, sortByCreationDate } from 'utils/dates'
 import { getIsBrowser } from 'utils/dom'
 import { getHighlightedText } from 'utils/text'
 
+import { scrollToLayerLibrarySection } from './LayerLibrary.utils'
+
 import styles from './LayerLibraryUserPanel.module.css'
+
+const COLLAPSED_DATASETS_COUNT = 10
 
 const LayerLibraryUserPanel = ({
   searchQuery,
   datasetsLoaded,
+  datasetsError,
+  onRetryFetch,
 }: {
   searchQuery: string
   datasetsLoaded: boolean
+  datasetsError: boolean
+  onRetryFetch: () => void
 }) => {
   const { t } = useTranslation()
 
@@ -47,12 +57,18 @@ const LayerLibraryUserPanel = ({
   const datasets = useSelector(selectUserDatasets)
   const guestUser = useSelector(selectIsGuestUser)
   const onAddNewClick = useAddDataset()
+  const [expandedGeometries, setExpandedGeometries] = useState<string[]>([])
+
+  const toggleGeometryExpanded = useCallback((geometryType: string) => {
+    setExpandedGeometries((expanded) =>
+      expanded.includes(geometryType)
+        ? expanded.filter((type) => type !== geometryType)
+        : [...expanded, geometryType]
+    )
+  }, [])
 
   const filteredDatasets = useMemo(
-    () =>
-      datasets.filter((dataset) => {
-        return getDatasetLabel(dataset).toLowerCase().includes(searchQuery.toLowerCase())
-      }),
+    () => datasets.filter((dataset) => getDatasetMatchesSearch(dataset, searchQuery)),
     [datasets, searchQuery]
   )
 
@@ -127,60 +143,102 @@ const LayerLibraryUserPanel = ({
 
     return (
       <div className={styles.userDatasetList}>
+        {datasetsError && (
+          <div className={styles.placeholder}>
+            {t((t) => t.dataset.loadError)}{' '}
+            <button className={styles.link} onClick={onRetryFetch}>
+              {t((t) => t.dataset.loadRetry)}
+            </button>
+          </div>
+        )}
         {datasetsByGeometryType.length > 0 ? (
-          datasetsByGeometryType.map(([geometryType, layer]) => (
-            <ul className={styles.userGeometryList} key={geometryType}>
-              <label id={geometryType} className={styles.categoryLabel}>
-                {t((t: any) => t.dataset.type[geometryType], { defaultValue: geometryType })}
-              </label>
-              {sortByCreationDate<Dataset>(layer).map((dataset, index) => {
-                const datasetError = dataset.status === DatasetStatus.Error
-                const datasetImporting = dataset.status === DatasetStatus.Importing
-                let infoTooltip = t((t) => t.layer.seeDescription, {
-                  defaultValue: 'Click to see layer description',
-                }) as string
-                if (datasetImporting) {
-                  infoTooltip = t((t) => t.dataset.importing)
-                }
-                if (datasetError) {
-                  const importLogs =
-                    getDatasetConfiguration(dataset, 'userContextLayerV1').importLogs || ''
-                  infoTooltip = `${t((t) => t.errors.uploadError)} ${importLogs ? `- ${importLogs}` : ''}`
-                }
-                const datasetIcon = getDatasetTypeIcon(dataset)
+          datasetsByGeometryType.map(([geometryType, layer]) => {
+            const sortedDatasets = sortByCreationDate<Dataset>(layer)
+            const expanded = Boolean(searchQuery) || expandedGeometries.includes(geometryType)
+            const visibleDatasets = expanded
+              ? sortedDatasets
+              : sortedDatasets.slice(0, COLLAPSED_DATASETS_COUNT)
+            const hiddenCount = sortedDatasets.length - visibleDatasets.length
 
-                return (
-                  <li className={styles.dataset} key={dataset.id}>
-                    <span>
-                      {datasetIcon && (
-                        <Icon icon={datasetIcon} style={{ transform: 'translateY(25%)' }} />
-                      )}
-                      {getHighlightedText(getDatasetLabel(dataset), searchQuery, styles)}
-                    </span>
-                    <div>
-                      {datasetError ? (
-                        <InfoError
-                          error={datasetError}
-                          loading={datasetImporting}
-                          tooltip={infoTooltip}
-                          size="default"
-                          // onClick={() => !datasetError && onInfoClick(dataset)}
-                        />
-                      ) : (
-                        <IconButton
-                          testId={`${dataset.type}-add-to-map-${index}`}
-                          icon="view-on-map"
-                          onClick={() => onAddToWorkspaceClick(dataset)}
-                          tooltip={t((t) => t.user.seeDataset)}
-                        />
-                      )}
-                    </div>
+            return (
+              <ul className={styles.userGeometryList} key={geometryType}>
+                <label id={geometryType} className={styles.geometryLabel}>
+                  {getGeometryTypeLabel(geometryType)} ({layer.length})
+                </label>
+                {visibleDatasets.map((dataset, index) => {
+                  const datasetError = dataset.status === DatasetStatus.Error
+                  const datasetImporting = dataset.status === DatasetStatus.Importing
+                  let infoTooltip = t((t) => t.layer.seeDescription, {
+                    defaultValue: 'Click to see layer description',
+                  }) as string
+                  if (datasetImporting) {
+                    infoTooltip = t((t) => t.dataset.importing)
+                  }
+                  if (datasetError) {
+                    const importLogs =
+                      getDatasetConfiguration(dataset, 'userContextLayerV1').importLogs || ''
+                    infoTooltip = `${t((t) => t.errors.uploadError)} ${importLogs ? `- ${importLogs}` : ''}`
+                  }
+                  const datasetIcon = getDatasetTypeIcon(dataset)
+                  const createdAgo = dataset.createdAt
+                    ? getTimeAgo(getUTCDateTime(dataset.createdAt), t)
+                    : ''
+
+                  return (
+                    <li className={styles.dataset} key={dataset.id}>
+                      <span>
+                        <span className={styles.datasetName}>
+                          {datasetIcon && (
+                            <Icon icon={datasetIcon} style={{ transform: 'translateY(25%)' }} />
+                          )}
+                          {getHighlightedText(getDatasetLabel(dataset), searchQuery, styles)}
+                        </span>
+                        <span className={styles.datasetMeta}>{createdAgo}</span>
+                      </span>
+                      <div>
+                        {datasetError ? (
+                          <InfoError
+                            error={datasetError}
+                            loading={datasetImporting}
+                            tooltip={infoTooltip}
+                            size="default"
+                            // onClick={() => !datasetError && onInfoClick(dataset)}
+                          />
+                        ) : (
+                          <IconButton
+                            testId={`${dataset.type}-add-to-map-${index}`}
+                            icon="view-on-map"
+                            onClick={() => onAddToWorkspaceClick(dataset)}
+                            tooltip={t((t) => t.user.seeDataset)}
+                          />
+                        )}
+                      </div>
+                    </li>
+                  )
+                })}
+                {(hiddenCount > 0 || (expanded && !searchQuery)) && (
+                  <li>
+                    <button
+                      className={styles.showMore}
+                      onClick={() => {
+                        toggleGeometryExpanded(geometryType)
+                        if (expanded) {
+                          scrollToLayerLibrarySection(geometryType)
+                        }
+                      }}
+                    >
+                      <label>
+                        {hiddenCount > 0
+                          ? (t((t) => t.dataset.showMore, { count: hiddenCount }) as string)
+                          : t((t) => t.dataset.showLess)}
+                      </label>
+                    </button>
                   </li>
-                )
-              })}
-            </ul>
-          ))
-        ) : (
+                )}
+              </ul>
+            )
+          })
+        ) : datasetsError ? null : (
           <div className={styles.placeholder}>{t((t) => t.dataset.emptyState)}</div>
         )}
       </div>

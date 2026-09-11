@@ -226,14 +226,21 @@ function NewTrackDataset({
         setError(error)
       } else if (onConfirm) {
         setLoading(true)
-        const file = geojson
-          ? getFileFromGeojson(parseGeoJsonProperties<LineString>(geojson, datasetMetadata))
-          : undefined
+        let file: File | undefined
+        try {
+          file = geojson
+            ? getFileFromGeojson(parseGeoJsonProperties<LineString>(geojson, datasetMetadata))
+            : undefined
+        } catch (e: any) {
+          setLoading(false)
+          onDatasetParseError(new Error('datasetUpload.errors.fileTooBig', { cause: e }))
+          return
+        }
         await onConfirm(datasetMetadata, { file, isEditing })
         setLoading(false)
       }
     }
-  }, [datasetMetadata, geojson, onConfirm, sourceData, t, isEditing])
+  }, [datasetMetadata, geojson, onConfirm, sourceData, t, isEditing, onDatasetParseError])
 
   // const filterOptions = isCSVFile ? numericFiltersFieldsOptions : filtersFieldsOptions
   const filterOptions = filtersFieldsOptions

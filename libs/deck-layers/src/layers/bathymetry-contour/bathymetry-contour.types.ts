@@ -19,6 +19,8 @@ export type BathymetryLabelFeature = Feature<
   }
 >
 
+export type BathymetryTileFeature = BathymetryContourFeature | BathymetryLabelFeature
+
 export type BathymetryContourPickingObject = DeckPickingObject<{
   properties: { elevation: number }
 }>

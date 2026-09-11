@@ -2,6 +2,7 @@ import { parse } from '@loaders.gl/core'
 import { MVTLoader } from '@loaders.gl/mvt'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { toFiniteNumber } from '@globalfishingwatch/data-transforms'
 import type { VesselTrackData } from '@globalfishingwatch/deck-loaders'
 import { VESSEL_TRACKS_LOADER_ID } from '@globalfishingwatch/deck-loaders'
 
@@ -88,8 +89,7 @@ function getResponseHeader({
     return null
   }
   if (type === 'number') {
-    const parsedValue = Number(value)
-    return Number.isFinite(parsedValue) ? parsedValue : null
+    return toFiniteNumber(value) ?? null
   }
   return value
 }

@@ -50,7 +50,7 @@ function UserContextTooltipSection({
                     label={label}
                     feature={feature}
                     showFeaturesDetails={showFeaturesDetails}
-                    showSparkline={isSingleArea}
+                    isSingleArea={isSingleArea}
                     handleDownloadClick={(e) => onDownloadClick(e, feature)}
                     handleReportClick={(e) => onReportClick(e, feature)}
                   />

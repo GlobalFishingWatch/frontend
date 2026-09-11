@@ -15,11 +15,7 @@ import { BasemapType } from '@globalfishingwatch/deck-layers'
 import type { ResolvedDataviewInstance } from '../types/dataviews'
 import type { DeckResolverFunction } from '../types/resolvers'
 
-export function resolvePMTilesDatasetTilesUrl(dataview: ResolvedDataviewInstance) {
-  const dataset = findDatasetByType(dataview.datasets, DatasetTypes.PMTiles) as Dataset
-  if (!dataset) {
-    throw new Error('Dataset not found for basemap image layer')
-  }
+export function resolvePMTilesUrl(dataset: Dataset) {
   const { filePath } = getDatasetConfiguration(dataset, 'pmTilesV1')
   const datasetConfig = {
     endpoint: EndpointId.PMTiles,
@@ -33,6 +29,14 @@ export function resolvePMTilesDatasetTilesUrl(dataview: ResolvedDataviewInstance
     ],
   }
   return resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
+}
+
+export function resolvePMTilesDatasetTilesUrl(dataview: ResolvedDataviewInstance) {
+  const dataset = findDatasetByType(dataview.datasets, DatasetTypes.PMTiles) as Dataset
+  if (!dataset) {
+    throw new Error('Dataset not found for basemap image layer')
+  }
+  return resolvePMTilesUrl(dataset)
 }
 
 export const resolveDeckBasemapLabelsLayerProps: DeckResolverFunction<BaseMapLabelsLayerProps> = (

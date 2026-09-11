@@ -217,14 +217,30 @@ function NewPointDataset({
         setError(error)
       } else if (onConfirm) {
         setLoading(true)
-        const file = geojson
-          ? getFileFromGeojson(parseGeoJsonProperties<Point>(geojson, datasetMetadata))
-          : undefined
+        let file: File | undefined
+        try {
+          file = geojson
+            ? getFileFromGeojson(parseGeoJsonProperties<Point>(geojson, datasetMetadata))
+            : undefined
+        } catch (e: any) {
+          setLoading(false)
+          onDatasetParseError(new Error('datasetUpload.errors.fileTooBig', { cause: e }))
+          return
+        }
         await onConfirm(datasetMetadata, { file, isEditing })
         setLoading(false)
       }
     }
-  }, [datasetMetadata, sourceData, onConfirm, fileTypeResult, geojson, t, isEditing])
+  }, [
+    datasetMetadata,
+    sourceData,
+    onConfirm,
+    fileTypeResult,
+    geojson,
+    t,
+    isEditing,
+    onDatasetParseError,
+  ])
 
   if (processingData) {
     return (

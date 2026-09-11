@@ -1,7 +1,6 @@
 import type { Color } from '@deck.gl/core'
 
 export const MAP_CANVAS_ID = 'map'
-export const MAP_WRAPPER_ID = `${MAP_CANVAS_ID}-wrapper`
 
 export const WORKSPACES_POINTS_TYPE = 'workspace'
 export const WORKSPACE_GENERATOR_ID = 'workspace_points'

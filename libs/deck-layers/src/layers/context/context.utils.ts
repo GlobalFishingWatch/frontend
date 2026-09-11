@@ -1,10 +1,12 @@
-import type { PickingInfo } from '@deck.gl/core'
+import type { PickingInfo, Viewport } from '@deck.gl/core'
+import type { _Tile2DHeader as Tile2DHeader, GeoBoundingBox } from '@deck.gl/geo-layers'
 import type { Feature, MultiPolygon, Polygon } from 'geojson'
 
 import type { PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
-import { getPolygonsUnion } from '@globalfishingwatch/data-transforms'
+import { getPolygonsUnion, unwrapFeatureLongitudes } from '@globalfishingwatch/data-transforms'
 
 import { DEFAULT_ID_PROPERTY } from '#config/layers.config'
+import { transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
 import type { FilterExtensionProps } from '#layers/user/user.types'
 import { getFilterExtensionSize } from '#layers/user/user.utils'
 
@@ -18,7 +20,15 @@ import { ContextLayerId } from './context.types'
 
 export const getContextId = (feature: ContextFeature, idProperty = DEFAULT_ID_PROPERTY): string => {
   if (!feature) return ''
-  return feature.properties?.[idProperty] || feature.properties?.gfw_id || feature.properties.id
+  return (
+    feature.properties?.[idProperty] ||
+    feature.properties?.gfw_id ||
+    feature.properties?.id ||
+    // Precomputed tilesets aggregate the polygons too small to survive simplification into one
+    // feature, which by construction has no source id. Without this they all share a falsy key
+    // and mergePickedFeatures collapses every one of them into a single feature.
+    feature.properties?.featureId
+  )
 }
 
 export const getContextFiltersHash = (filters: ContextSubLayerConfig['filters']) => {
@@ -127,6 +137,42 @@ export const getContextLink = (feature: ContextPickingObject) => {
     default:
       return undefined
   }
+}
+
+/**
+ * Reads the features of every tile the TileLayer selected for the current viewport, in WGS84.
+ *
+ * Deliberately not `deck.pickObjects`: GPU picking only sees a feature that rasterizes over a
+ * pixel center, so any polygon smaller than a screen pixel is invisible to it. At zoom 4 a pixel
+ * is ~10km, which silently dropped 6 of 11 features of a small-polygons dataset.
+ */
+export function getSelectedTilesFeatures<T extends Feature>(
+  tileLayer: unknown,
+  viewport: Viewport,
+  { wgs84 = false } = {} as { wgs84?: boolean }
+): T[] {
+  const tiles = (tileLayer as { state?: { tileset?: { selectedTiles?: Tile2DHeader[] } } })?.state
+    ?.tileset?.selectedTiles
+  if (!tiles?.length) return []
+  return tiles.flatMap((tile) => {
+    // GFWMVTLoader emits a feature array in local tile coords, PMTilesSource a
+    // geojson-table (`{features}`) already in wgs84
+    const content = tile.content as T[] | { features?: T[] } | undefined
+    const features = Array.isArray(content) ? content : (content?.features ?? [])
+    if (!features.length) {
+      return []
+    }
+    if (wgs84) {
+      return features.filter(Boolean).map(unwrapFeatureLongitudes)
+    }
+    return features.flatMap((feature) =>
+      feature
+        ? unwrapFeatureLongitudes(
+            transformTileCoordsToWGS84(feature, tile.bbox as GeoBoundingBox, viewport)
+          )
+        : []
+    )
+  })
 }
 
 export function mergePickedFeatures<T extends Feature>(

@@ -111,7 +111,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
         feature.properties.velocities.length > 0 &&
         this.startFrame !== undefined &&
         this.endFrame !== undefined
-          ? aggregateSublayerValues(
+          ? (aggregateSublayerValues(
               sliceCellValues({
                 values: feature.properties.velocities,
                 startFrame: this.startFrame,
@@ -119,7 +119,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
                 startOffset: feature.properties.startOffsets[0] ?? 0,
               }),
               FourwingsAggregationOperation.Avg
-            )
+            ) ?? 0)
           : 0
     }
     if (Array.isArray(feature.aggregatedValues)) {
@@ -152,7 +152,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
         feature.properties.directions.length > 0 &&
         this.startFrame !== undefined &&
         this.endFrame !== undefined
-          ? aggregateSublayerValues(
+          ? (aggregateSublayerValues(
               sliceCellValues({
                 values: feature.properties.directions,
                 startFrame: this.startFrame,
@@ -160,7 +160,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
                 startOffset: feature.properties.startOffsets[1] ?? 0,
               }),
               FourwingsAggregationOperation.AvgDegrees
-            )
+            ) ?? 0)
           : 0
     }
 
