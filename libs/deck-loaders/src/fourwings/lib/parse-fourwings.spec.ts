@@ -136,6 +136,31 @@ describe('parse-fourwings', () => {
       expect(result[0].properties.values[0][1]).toBe(20)
       expect(result[0].properties.initialValues[getTimeRangeKey(0, 2)][0]).toBe(20)
     })
+
+    // initialValues is the aggregate the layers paint from, so "no data in this range" has to
+    // stay distinguishable from "the values in this range add up to 0"
+    it('leaves initialValues undefined when the cell has no value inside the time range', () => {
+      // data at frames 4 and 5, range covers frames 0-1
+      const buffer = createHeatmapPbfBuffer([
+        { cellNum: 0, startAbs: 4, endAbs: 5, values: [10, 20] },
+      ])
+
+      const result = parseFourwings(buffer, {
+        fourwings: {
+          cols: [113],
+          rows: [53],
+          bufferedStartDate: 0,
+          interval: 'HOUR',
+          sublayers: 1,
+          buffersLength: [1024],
+          tile: createMockTileBBox(),
+          initialTimeRange: { start: 0, end: 2 * 3_600_000 },
+        } as any,
+      })
+
+      expect(result[0].properties.values[0]).toEqual([10, 20])
+      expect(result[0].properties.initialValues[getTimeRangeKey(0, 2)][0]).toBeUndefined()
+    })
   })
 
   // The static heatmap requests temporal-aggregation=true, where the API collapses time and
