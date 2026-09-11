@@ -5,6 +5,7 @@ import type { MultiPolygon, Polygon } from 'geojson'
 import { useAtomValue } from 'jotai'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms/wrap-longitudes'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import {
   getLayersStateHashAtom,
@@ -179,6 +180,18 @@ export function useAreaInViewport(
   return latchedKey === key ? true : contained
 }
 
+// bbox arrives either as a JSON string ("[minX,minY,maxX,maxY]")
+function parseFeatureBbox(bbox: unknown): Bbox | undefined {
+  const values = Array.isArray(bbox)
+    ? bbox.map(Number)
+    : typeof bbox === 'string'
+      ? bbox.replace(/[[\]]/g, '').split(',').map(Number)
+      : []
+  return values.length === 4 && values.every((v) => Number.isFinite(v))
+    ? (values as Bbox)
+    : undefined
+}
+
 export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickingObject) {
   const fitBounds = useMapFitBounds()
   const dispatch = useAppDispatch()
@@ -186,7 +199,7 @@ export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickin
   const trackLayer = useGetDeckLayer<UserTracksLayer>(feature.layerId)?.instance
   const { datasetId, areaId, areaName, simplify, areaDetail, areaStatus } = useAreaDetail(feature)
 
-  const onClick = useCallback(async () => {
+  const fitAreaBounds = useCallback(async () => {
     if (trackLayer instanceof UserTracksLayer) {
       const bbox = trackLayer.getBbox({ startDate: start, endDate: end }) || trackLayer.getBbox()
       if (bbox) {
@@ -194,8 +207,11 @@ export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickin
       }
       return
     }
-    let bounds: Bbox | undefined =
-      areaDetail?.bounds || ((feature.properties?.bbox as string)?.split(',').map(Number) as Bbox)
+    const featureBbox = parseFeatureBbox(feature.properties?.bbox)
+    let bounds: Bbox | undefined = areaDetail?.bounds
+    if (!bounds && featureBbox) {
+      bounds = wrapBBoxLongitudes(featureBbox)
+    }
     if (!bounds) {
       const area = await dispatch(
         fetchAreaDetailThunk({ datasetId, areaId, areaName, simplify })
@@ -219,7 +235,7 @@ export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickin
     simplify,
   ])
 
-  return { onClick, loading: areaStatus === AsyncReducerStatus.Loading }
+  return { fitAreaBounds, loading: areaStatus === AsyncReducerStatus.Loading }
 }
 
 export type AreaTooltipTimeseries = {

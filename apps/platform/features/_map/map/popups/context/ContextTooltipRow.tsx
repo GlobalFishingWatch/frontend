@@ -57,7 +57,7 @@ const ContextTooltipRow = ({
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
   const { option, options, setPreferredCategory, canSwitchCategory } =
     useAreaTooltipSparklineCategory()
-  const { onClick: fitAreaBounds, loading: fitAreaLoading } = useFitAreaBounds(feature)
+  const { fitAreaBounds, loading: fitAreaLoading } = useFitAreaBounds(feature)
   const [panelMounted, setPanelMounted] = useState(expanded)
   if (expanded && !panelMounted) {
     setPanelMounted(true)
