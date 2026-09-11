@@ -23,11 +23,11 @@ export const getContextId = (feature: ContextFeature, idProperty = DEFAULT_ID_PR
   return (
     feature.properties?.[idProperty] ||
     feature.properties?.gfw_id ||
-    feature.properties.id ||
+    feature.properties?.id ||
     // Precomputed tilesets aggregate the polygons too small to survive simplification into one
     // feature, which by construction has no source id. Without this they all share a falsy key
     // and mergePickedFeatures collapses every one of them into a single feature.
-    feature.properties.featureId
+    feature.properties?.featureId
   )
 }
 

@@ -212,6 +212,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
     if (!visible) return []
 
     const highlightedFeatures = this._getHighlightedFeatures()
+    const highlightedFeaturesHash = highlightedFeatures.map((f) => f.id).join(',')
     return layers.map((layer) => {
       const isPMTiles = isPMTilesUrl(layer.tilesUrl)
       const TilesLayer = (isPMTiles ? PMTilesLayer : TileLayer) as typeof TileLayer
@@ -248,6 +249,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                     new PathStyleExtension({ dash: true, highPrecisionDash: true }),
                   ],
                   getDashArray: (d: ContextFeature) => this.getDashArray(d),
+                  pointType: '',
                   updateTriggers: {
                     getLineWidth: thickness,
                   },
@@ -264,6 +266,9 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
         ...loaderProps,
         maxZoom: 8,
         onViewportLoad: this.props.onViewportLoad,
+        updateTriggers: {
+          renderSubLayers: [highlightedFeaturesHash],
+        },
         renderSubLayers: (props) => {
           const mvtSublayerProps = {
             ...props,
@@ -302,6 +307,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                 getPolygonOffset: (params) =>
                   getLayerGroupOffset(LayerGroup.OutlinePolygonsBackground, params),
                 getFillColor: (d) => this.getFillColor(d as ContextFeature, { layer, sublayer }),
+                pointType: '',
                 updateTriggers: {
                   getFillColor: [highlightedFeatures],
                   ...(hasValidFilters && {
@@ -323,8 +329,8 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                       lineCapRounded: true,
                       getPolygonOffset: (params) =>
                         getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
-                      getLineWidth: (d) =>
-                        (d as ContextFeature).properties.count > 1 ? 20 : sublayer.thickness || 1,
+                      getLineWidth: sublayer.thickness || 1,
+                      pointType: '',
                       getLineColor: hexToDeckColor(sublayer.color),
                       updateTriggers: {
                         getLineWidth: [filtersHash, sublayer.thickness],
@@ -352,6 +358,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                     sublayer,
                     lineWidth: 4,
                   }),
+                pointType: '',
                 getLineColor: DEFAULT_BACKGROUND_COLOR,
                 updateTriggers: {
                   getLineWidth: [highlightedFeatures],
@@ -373,6 +380,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                     sublayer,
                     lineWidth: 2,
                   }),
+                pointType: '',
                 getLineColor: COLOR_HIGHLIGHT_LINE,
                 updateTriggers: {
                   getLineWidth: [highlightedFeatures],
