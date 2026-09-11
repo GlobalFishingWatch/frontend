@@ -11,6 +11,7 @@ import type { GeoJsonProperties } from 'geojson'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
+import { unwrapFeatureLongitudes } from '@globalfishingwatch/data-transforms'
 import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
 import { DEFAULT_ID_PROPERTY } from '#config/layers.config'
@@ -169,10 +170,13 @@ export abstract class UserBaseLayer<
 
     const object = {
       ...(info.tile && {
-        ...transformTileCoordsToWGS84(
-          info.object as UserLayerFeature,
-          info.tile.bbox as GeoBoundingBox,
-          this.context.viewport
+        // TODO-ANTIMERIDIAN: Review if this is needed and why
+        ...unwrapFeatureLongitudes(
+          transformTileCoordsToWGS84(
+            info.object as UserLayerFeature,
+            info.tile.bbox as GeoBoundingBox,
+            this.context.viewport
+          )
         ),
       }),
       id: getContextId(info.object as ContextFeature, idProperty),

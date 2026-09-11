@@ -3,7 +3,11 @@ import type { Feature, FeatureCollection, MultiPolygon } from 'geojson'
 
 import type { Dataset, ReportVessel } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
+import {
+  getGeometryDissolved,
+  getTurfBbox,
+  wrapGeometryBbox,
+} from '@globalfishingwatch/data-transforms'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getUserContextTimeFilterProps } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextFeature, IsFeatureInRangeParams } from '@globalfishingwatch/deck-layers'
@@ -324,10 +328,8 @@ const selectReportBufferArea = createSelector(
     if (!area || !unit || !value) return null
     const bufferedArea = getBufferedArea({ area, value, unit, operation }) as Area
     if (bufferedArea?.geometry) {
-      const bounds = wrapGeometryBbox(bufferedArea.geometry as MultiPolygon)
-      // bbox is needed inside Area geometry to computeTimeseries
-      // platform/features/_reports/report-area/reports-timeseries.hooks.ts
-      bufferedArea.geometry.bbox = bounds
+      bufferedArea.bounds = wrapGeometryBbox(bufferedArea.geometry as MultiPolygon)
+      bufferedArea.geometry.bbox = getTurfBbox(bufferedArea.geometry as MultiPolygon)
     }
     return bufferedArea
   }

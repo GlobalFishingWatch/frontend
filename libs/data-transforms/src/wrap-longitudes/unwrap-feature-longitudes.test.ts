@@ -37,6 +37,26 @@ describe('unwrapFeatureLongitudes', () => {
     expect((result.geometry as Polygon).coordinates).toEqual(coordinates)
   })
 
+  it('returns the very same object when nothing has to move', () => {
+    // The report path maps this over every feature in the viewport, so the no-op case has to be
+    // free: same feature, same geometry, same coordinates, no copies.
+    const inRangePoint = feature({ type: 'Point', coordinates: [179.2, -17.1] } as Point)
+    expect(unwrapFeatureLongitudes(inRangePoint)).toBe(inRangePoint)
+
+    const inRangePolygon = feature({
+      type: 'Polygon',
+      coordinates: [
+        [
+          [170, 0],
+          [175, 0],
+          [175, 5],
+          [170, 0],
+        ],
+      ],
+    } as Polygon)
+    expect(unwrapFeatureLongitudes(inRangePolygon)).toBe(inRangePolygon)
+  })
+
   it('shifts each ring of a multipolygon independently', () => {
     const result = unwrapFeatureLongitudes(
       feature({
