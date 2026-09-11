@@ -6,6 +6,7 @@ import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
   getGeometryDissolved,
   getTurfBbox,
+  splitGeometryAtAntimeridian,
   wrapGeometryBbox,
 } from '@globalfishingwatch/data-transforms'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -328,7 +329,15 @@ const selectReportBufferArea = createSelector(
     if (!area || !unit || !value) return null
     const bufferedArea = getBufferedArea({ area, value, unit, operation }) as Area
     if (bufferedArea?.geometry) {
+      // Bounds first, while the geometry is still continuous across the seam — that is the span
+      // fitBounds needs.
       bufferedArea.bounds = wrapGeometryBbox(bufferedArea.geometry as MultiPolygon)
+      // This area is analysed, not drawn (the map reads selectReportBufferFeature), and it is
+      // dissolved and buffered in the 0-360 space wrapFeatureLongitudes puts an antimeridian area
+      // in. Cells are in [-180, 180], so every one east of the seam misses it until it is cut.
+      bufferedArea.geometry = splitGeometryAtAntimeridian(
+        bufferedArea.geometry as MultiPolygon
+      ) as AreaGeometry
       bufferedArea.geometry.bbox = getTurfBbox(bufferedArea.geometry as MultiPolygon)
     }
     return bufferedArea

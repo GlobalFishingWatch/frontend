@@ -2,6 +2,7 @@ import { bbox, feature, geometry, polygon } from '@turf/turf'
 import type { Feature, LineString, MultiPolygon, Point, Polygon, Position } from 'geojson'
 
 import type { Bbox } from '../types'
+import { getPolygonsIntersection } from '../union'
 
 // Used to detect antimeridian issues in dissolve
 export const BUFFERED_ANTIMERIDIAN_LON = 179.5
@@ -236,4 +237,66 @@ export const unwrapFeatureLongitudes = <T extends Feature>(featureData: T): T =>
     return featureData
   }
   return { ...featureData, geometry: { ...geometry, coordinates } } as T
+}
+
+/** A whole world as a rectangle, from `west` eastwards, used to clip one world copy out. */
+const worldClipRing = (west: number): Position[][] => [
+  [
+    [west, -90],
+    [west + WORLD_LONGITUDES, -90],
+    [west + WORLD_LONGITUDES, 90],
+    [west, 90],
+    [west, -90],
+  ],
+]
+
+/**
+ * Cuts a geometry that runs past ±180 back into GeoJSON's [-180, 180], one part per world copy
+ * it spans — the shape a report area is served in, a part ending at 180 plus a part starting
+ * at -180.
+ *
+ * This is what {@link unwrapFeatureLongitudes} cannot do. Unwrapping shifts a whole ring by
+ * whole worlds, which is right for a ring that sits entirely in the wrong copy but wrong for one
+ * that genuinely straddles the seam: `wrapFeatureLongitudes` maps negative longitudes to
+ * `lon + 360`, so a buffered area over Fiji becomes a single ring spanning 178–182 and no shift
+ * can put that in range. It has to be cut in two.
+ *
+ * Returns the geometry untouched when it is already in range
+ */
+export function splitGeometryAtAntimeridian<T extends Polygon | MultiPolygon>(
+  geometry: T
+): T | MultiPolygon {
+  const [minX, , maxX] = getTurfBbox(geometry)
+  if (minX >= -180 && maxX <= 180) {
+    return geometry
+  }
+  const coordinates =
+    geometry.type === 'Polygon'
+      ? [geometry.coordinates as Position[][]]
+      : (geometry.coordinates as Position[][][])
+  const parts: Position[][][] = []
+  const firstWorld = Math.floor((minX + 180) / WORLD_LONGITUDES)
+  const lastWorld = Math.floor((maxX + 180) / WORLD_LONGITUDES)
+  try {
+    for (let world = firstWorld; world <= lastWorld; world++) {
+      const offset = world * WORLD_LONGITUDES
+      const clipped = getPolygonsIntersection(coordinates, worldClipRing(offset - 180))
+      if (!clipped.length) {
+        continue
+      }
+      parts.push(
+        ...(offset === 0
+          ? clipped
+          : clipped.map((polygonCoords: Position[][]) =>
+              polygonCoords.map((ring: Position[]) =>
+                ring.map(([lon, ...rest]: Position) => [lon - offset, ...rest])
+              )
+            ))
+      )
+    }
+  } catch (e) {
+    console.warn('Could not split geometry at the antimeridian, using it as is', e)
+    return geometry
+  }
+  return parts.length ? { type: 'MultiPolygon', coordinates: parts } : geometry
 }
