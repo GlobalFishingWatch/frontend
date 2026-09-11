@@ -4,18 +4,17 @@ import { groupBy } from 'es-toolkit'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
-import { Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
 import { selectContextAreasDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 
 import { getContextValue } from '../map-popups.utils'
+import PopupSectionLayout from '../shared/PopupSectionLayout'
 
+import { useAreaRowExpansion } from './area-tooltip-timeseries.hooks'
 import { useContextInteractions } from './ContextLayers.hooks'
 import ContextTooltipRow from './ContextTooltipRow'
-
-import styles from '../Popup.module.css'
 
 type ContextTooltipSectionProps = {
   features: (ContextPickingObject | UserLayerPickingObject)[]
@@ -28,8 +27,11 @@ function ContextTooltipSection({
 }: ContextTooltipSectionProps) {
   const { onReportClick, onDownloadClick } = useContextInteractions()
   const featuresByType = groupBy(features, (f) => f.layerId)
-  const isSingleArea = features.length === 1
   const dataviews = useSelector(selectContextAreasDataviews) as UrlDataviewInstance[]
+  const { canExpand, expandedId, toggleExpanded } = useAreaRowExpansion(
+    features.map((f) => String(f.id)),
+    showFeaturesDetails
+  )
 
   const trackOnDownloadClick = useCallback(
     (event: any, feature: ContextPickingObject | UserLayerPickingObject) => {
@@ -48,45 +50,45 @@ function ContextTooltipSection({
         const { dataviewId, datasetId } = featureByType[0]
         const dataview = dataviews.find((d) => d.id === featureByType[0].dataviewId)
         return (
-          <div key={`${dataviewId}-${index}`} className={styles.popupSection}>
-            <Icon
-              icon="polygons"
-              className={styles.layerIcon}
-              style={{ color: featureByType[0].color }}
-            />
-            <div
-              className={styles.popupSectionContent}
-              data-test={`context-tooltip-section-${featureByType[0].datasetId}`}
-            >
-              {showFeaturesDetails && (
-                // TODO translate this
-                <h3 className={styles.popupSectionTitle}>
-                  {dataview ? getDatasetTitleByDataview(dataview) : datasetId}
-                </h3>
-              )}
-              {featureByType.map((feature, index) => {
-                const label =
-                  getContextValue(feature) ||
-                  getDatasetTitleByDataview(dataview as UrlDataviewInstance) ||
-                  feature.layerId
-                if (!label) return null
-                const linkHref = (feature as ContextPickingObject).link
-                return (
-                  <ContextTooltipRow
-                    id={feature.id as string}
-                    key={`${feature.id}-${index}`}
-                    label={label}
-                    linkHref={linkHref}
-                    feature={feature}
-                    showFeaturesDetails={showFeaturesDetails}
-                    isSingleArea={isSingleArea}
-                    handleDownloadClick={(e) => trackOnDownloadClick(e, feature)}
-                    handleReportClick={onReportClick}
-                  />
-                )
-              })}
-            </div>
-          </div>
+          <PopupSectionLayout
+            key={`${dataviewId}-${index}`}
+            icon="polygons"
+            iconColor={featureByType[0].color}
+            // TODO translate this
+            title={
+              showFeaturesDetails
+                ? dataview
+                  ? getDatasetTitleByDataview(dataview)
+                  : datasetId
+                : undefined
+            }
+            dataTest={`context-tooltip-section-${featureByType[0].datasetId}`}
+          >
+            {featureByType.map((feature, index) => {
+              const label =
+                getContextValue(feature) ||
+                getDatasetTitleByDataview(dataview as UrlDataviewInstance) ||
+                feature.layerId
+              if (!label) return null
+              const linkHref = (feature as ContextPickingObject).link
+              const rowId = String(feature.id)
+              return (
+                <ContextTooltipRow
+                  id={feature.id as string}
+                  key={`${feature.id}-${index}`}
+                  label={label}
+                  linkHref={linkHref}
+                  feature={feature}
+                  showFeaturesDetails={showFeaturesDetails}
+                  canExpand={canExpand}
+                  expanded={expandedId === rowId}
+                  onToggleExpand={() => toggleExpanded(rowId)}
+                  handleDownloadClick={(e) => trackOnDownloadClick(e, feature)}
+                  handleReportClick={onReportClick}
+                />
+              )
+            })}
+          </PopupSectionLayout>
         )
       })}
     </Fragment>

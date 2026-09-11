@@ -107,7 +107,7 @@ function VesselsTable({
               {/* Disabled for detections to allocate some space for timestamps interaction */}
               {isHoursProperty && <th>{t((t) => t.vessel.source_short)}</th>}
               {showValue && (
-                <th className={isHoursProperty ? styles.vesselsTableHeaderRight : ''}>
+                <th className={styles.vesselsTableValue}>
                   {feature?.unit === 'hours' && t((t) => t.common.hours)}
                   {feature?.unit === 'days' && t((t) => t.common.days)}
                   {feature?.unit === 'detections' && t((t) => t.common.detections)}
@@ -254,8 +254,7 @@ function VesselsTable({
                   )}
                   {showValue && vessel[vesselProperty] && (
                     <td
-                      className={cx(styles.columnSpace, {
-                        [styles.vesselsTableHour]: isHoursProperty,
+                      className={cx(styles.columnSpace, styles.vesselsTableValue, {
                         [styles.largeColumn]: detectionsTimestamps?.length > 1,
                       })}
                     >

@@ -8,6 +8,7 @@ import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils
 import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 
 import type { SliceExtendedFourwingsPickingObject } from '../../map.slice'
+import PopupSectionLayout from '../shared/PopupSectionLayout'
 
 import PositionsTooltipRow from './PositionsTooltipRow'
 
@@ -53,50 +54,47 @@ function PositionsTooltipSection({
       ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
       : currentFeature.title
     return (
-      <div className={styles.popupSection}>
-        <div>
-          {title && <h3 className={styles.popupSectionTitle}>{title}</h3>}
-          <PositionsTooltipRow
-            key={`${currentFeature.id}-${currentFeatureIndex}`}
-            loading={loading}
-            error={error}
-            feature={currentFeature as any as FourwingsPositionsPickingObject}
-            showFeaturesDetails={true}
-          />
-          {features.length > 1 && (
-            <div className={styles.navigationFooter}>
-              <IconButton
-                icon="arrow-left"
-                size="small"
-                onClick={handlePreviousFeature}
-                aria-label="Previous feature"
-              />
-              <span className={styles.navigationCounter}>
-                {currentFeatureIndex + 1} / {features.length}
-              </span>
-              <IconButton
-                icon="arrow-right"
-                size="small"
-                onClick={handleNextFeature}
-                aria-label="Next feature"
-              />
-            </div>
-          )}
-        </div>
-      </div>
+      <PopupSectionLayout title={title}>
+        <PositionsTooltipRow
+          key={`${currentFeature.id}-${currentFeatureIndex}`}
+          loading={loading}
+          error={error}
+          feature={currentFeature as any as FourwingsPositionsPickingObject}
+          showFeaturesDetails={true}
+        />
+        {features.length > 1 && (
+          <div className={styles.navigationFooter}>
+            <IconButton
+              icon="arrow-left"
+              size="small"
+              onClick={handlePreviousFeature}
+              aria-label="Previous feature"
+            />
+            <span className={styles.navigationCounter}>
+              {currentFeatureIndex + 1} / {features.length}
+            </span>
+            <IconButton
+              icon="arrow-right"
+              size="small"
+              onClick={handleNextFeature}
+              aria-label="Next feature"
+            />
+          </div>
+        )}
+      </PopupSectionLayout>
     )
   }
 
   return features.map((feature, i) => {
     return (
-      <div key={`${feature.id}-${i}`} className={styles.popupSection}>
+      <PopupSectionLayout key={`${feature.id}-${i}`}>
         <PositionsTooltipRow
           loading={loading}
           error={error}
           feature={feature as any as FourwingsPositionsPickingObject}
           showFeaturesDetails={false}
         />
-      </div>
+      </PopupSectionLayout>
     )
   })
 }

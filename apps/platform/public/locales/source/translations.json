@@ -111,7 +111,7 @@
     "selectAggregationProperty": "Select a property to analyze",
     "selectDatasetPlaceholder": "Select a dataset to compare",
     "share": "Share report",
-    "showFullReport": "See full analysis for this area",
+    "showFullReport": "See full analysis",
     "statsDisclaimerDynamic": "During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.",
     "statsDisclaimerStatic": "The average value for your area is {{mean}} {{unit}}. The minimum and maximum are {{min}} {{unit}} and {{max}} {{unit}}.",
     "summary": "<strong>{{vessels}} vessels{{sources}} </strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
@@ -122,7 +122,8 @@
     "timeRangeTooLong": "Reports are only supported for time ranges up to one year.",
     "title": "Report",
     "unknown": "Other",
-    "unknownProperty": "Unknown"
+    "unknownProperty": "Unknown",
+    "zoomToAreaForActivity": "Center view to see activity"
   },
   "bigQuery": {
     "aggregateAvg": "Average",
@@ -554,7 +555,7 @@
     "nir": "Near-infrared",
     "rgb": "Red, green and blue (visible light)"
   },
-  "detections": "Detections",
+  "detections": "",
   "download": {
     "apiPortal": "See our APIs here",
     "area": "Area",

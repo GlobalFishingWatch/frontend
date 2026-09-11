@@ -11,7 +11,7 @@ import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { VesselTrackPickingObject } from '@globalfishingwatch/deck-layers'
-import { Button, Icon, SolarStatus } from '@globalfishingwatch/ui-components'
+import { Button, SolarStatus } from '@globalfishingwatch/ui-components'
 
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
 import {
@@ -36,6 +36,8 @@ import I18nDate from 'features/i18n/i18nDate'
 import { selectIsAnyVesselLocation } from 'router/routes.selectors'
 import { TimebarVisualisations } from 'types'
 import { formatInfoField } from 'utils/info'
+
+import PopupSectionLayout from '../shared/PopupSectionLayout'
 
 import styles from '../Popup.module.css'
 
@@ -196,28 +198,24 @@ function VesselTracksTooltipSection({
           return null
         }
         return (
-          <div key={`${featureByType[0].title}-${index}`} className={styles.popupSection}>
-            <Icon
-              icon="vessel"
-              className={styles.layerIcon}
-              style={{ color, transform: `rotate(${-45 + featureByType[0].course!}deg)` }}
-            />
-            <div className={styles.popupSectionContent}>
-              {showFeaturesDetails && !hideVesselNames && (
-                <h3 className={styles.popupSectionTitle}>{rowTitle}</h3>
-              )}
-              {featureByType.map((feature) => {
-                return (
-                  <VesselTracksTooltipRow
-                    key={feature.id}
-                    feature={feature}
-                    showFeaturesDetails={showFeaturesDetails}
-                    interactionType={featureByType[0].interactionType}
-                  />
-                )
-              })}
-            </div>
-          </div>
+          <PopupSectionLayout
+            key={`${featureByType[0].title}-${index}`}
+            icon="vessel"
+            iconColor={color}
+            iconStyle={{ transform: `rotate(${-45 + featureByType[0].course!}deg)` }}
+            title={showFeaturesDetails && !hideVesselNames ? rowTitle : undefined}
+          >
+            {featureByType.map((feature) => {
+              return (
+                <VesselTracksTooltipRow
+                  key={feature.id}
+                  feature={feature}
+                  showFeaturesDetails={showFeaturesDetails}
+                  interactionType={featureByType[0].interactionType}
+                />
+              )
+            })}
+          </PopupSectionLayout>
         )
       })}
     </Fragment>

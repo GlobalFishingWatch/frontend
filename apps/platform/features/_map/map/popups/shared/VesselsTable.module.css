@@ -1,5 +1,6 @@
 .vesselsTable {
-  margin-right: var(--space-S);
+  /* full width so the value column lands on the card's right edge */
+  width: 100%;
   margin-bottom: var(--space-XS);
   border-collapse: collapse;
 }
@@ -45,16 +46,10 @@
   overflow: visible;
 }
 
-.vesselsTable th.vesselsTableHeaderRight {
+/* the value column (hours / detections) is the last one and reads right-aligned */
+.vesselsTable th.vesselsTableValue,
+.vesselsTable td.vesselsTableValue {
   text-align: right;
-}
-
-.vesselsTableHour {
-  text-align: right;
-}
-
-.vesselsTable.fullWidth {
-  width: 100%;
 }
 
 .modalContainer {

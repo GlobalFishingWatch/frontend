@@ -10,6 +10,51 @@
   width: 100%;
 }
 
+.labelToggle {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* one gap between the reveal's blocks instead of a margin on each of them */
+.subCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+  padding-top: var(--space-S);
+}
+
+.rowFooter a {
+  display: flex;
+  align-items: center;
+}
+
+.zoomPrompt {
+  width: 100%;
+  padding: var(--space-S);
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  text-align: center;
+  cursor: pointer;
+}
+
+.zoomPrompt:hover {
+  color: var(--color-primary-blue);
+  text-decoration: underline;
+}
+
+.zoomPrompt:disabled {
+  cursor: default;
+  text-decoration: none;
+}
+
+.rowFooter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+}
+
 .sparklineReveal {
   display: grid;
   grid-template-rows: 0fr;
@@ -30,6 +75,10 @@
   margin-top: var(--space-S);
 }
 
+.subCard > .sparklineContainer {
+  margin-top: 0;
+}
+
 .sparklineLabel {
   font: var(--font-S);
   text-transform: uppercase;
@@ -39,6 +88,7 @@
 }
 
 .sparkline {
+  margin-block: var(--space-XS);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -69,4 +119,10 @@
 
 .reportButton:hover {
   background-color: var(--color-secondary-blue);
+}
+
+.rowFooter .reportButton {
+  height: var(--size-SM);
+  margin-top: 0;
+  padding: 0 var(--space-S);
 }

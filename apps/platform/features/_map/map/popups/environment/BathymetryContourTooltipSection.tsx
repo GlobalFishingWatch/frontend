@@ -4,11 +4,12 @@ import { useSelector } from 'react-redux'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { BathymetryContourPickingObject } from '@globalfishingwatch/deck-layers'
-import { Icon } from '@globalfishingwatch/ui-components'
 
 import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
+
+import PopupSectionLayout from '../shared/PopupSectionLayout'
 
 import styles from '../Popup.module.css'
 
@@ -32,23 +33,24 @@ function BathymetryContourTooltipSection({
         const dataview = dataviews.find((d) => d.id === feature.layerId)
         const depth = Math.abs(feature.properties.elevation)
         return (
-          <div key={feature.id} className={styles.popupSection}>
-            <Icon icon="polygons" className={styles.layerIcon} style={{ color: feature.color }} />
-            <div className={styles.popupSectionContent}>
-              {showFeaturesDetails && (
-                <h3 className={styles.popupSectionTitle}>
-                  {dataview
-                    ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
-                    : feature.title}
-                </h3>
-              )}
-              <div className={styles.row}>
-                <span className={styles.rowText}>
-                  <I18nNumber number={depth} /> {t((t) => t.common.meters)}
-                </span>
-              </div>
+          <PopupSectionLayout
+            key={feature.id}
+            icon="polygons"
+            iconColor={feature.color}
+            title={
+              showFeaturesDetails
+                ? dataview
+                  ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
+                  : feature.title
+                : undefined
+            }
+          >
+            <div className={styles.row}>
+              <span className={styles.rowText}>
+                <I18nNumber number={depth} /> {t((t) => t.common.meters)}
+              </span>
             </div>
-          </div>
+          </PopupSectionLayout>
         )
       })}
     </Fragment>
