@@ -111,7 +111,7 @@
     "selectAggregationProperty": "Select a property to analyze",
     "selectDatasetPlaceholder": "Select a dataset to compare",
     "share": "Compartilhar relatório",
-    "showFullReport": "See full analysis for this area",
+    "showFullReport": "See full analysis",
     "statsDisclaimerDynamic": "Durante esse período, os valores mínimo e máximo em qualquer {{interval}} e local dentro de sua área foram {{min}} {{unit}} e {{max}} {{unit}}.",
     "statsDisclaimerStatic": "O valor médio para a sua área é de {{mean}} {{unit}}. O mínimo e o máximo são {{min}} {{unit}} e {{max}} {{unit}}.",
     "summary": "<strong>{{vessels}} embarcações{{sources}} </strong> tiveram <strong>{{activityQuantity}} {{activityUnit}}</strong> de <strong>{{activityType}}</strong> {{area}}  entre <strong>{{start}}</strong> e <strong>{{end}}</strong>",
@@ -122,7 +122,8 @@
     "timeRangeTooLong": "Relatórios só estão disponíveis para intervalos de tempo de até um ano",
     "title": "Report",
     "unknown": "Desconhecido",
-    "unknownProperty": "Unknown"
+    "unknownProperty": "Unknown",
+    "zoomToAreaForActivity": "Center view to see activity"
   },
   "bigQuery": {
     "aggregateAvg": "Média",
@@ -248,6 +249,8 @@
     "fitArea": "Center view on area",
     "flag": "Bandeira",
     "from": "de",
+    "fromVessels_one": "from {{count}} vessel",
+    "fromVessels_other": "from {{count}} vessels",
     "globalReport": "Global report",
     "help": "Ajuda",
     "hideAllHelpHints": "Ignorar Todos",
@@ -353,6 +356,8 @@
     "timerangeStatic": "Estático ({{start}} - {{end}})",
     "to": "para",
     "toggleVisibility": "Alternar visibilidade",
+    "topVessels_one": "Top vessel",
+    "topVessels_other": "Top {{count}} vessels",
     "tutorials": "Tutoriais",
     "unionOf": "União de",
     "unit": "unidade",
@@ -554,7 +559,7 @@
     "nir": "Near-infrared",
     "rgb": "Red, green and blue (visible light)"
   },
-  "detections": "Detections",
+  "detections": "",
   "download": {
     "apiPortal": "Veja nossas APIs aqui",
     "area": "Área",
@@ -712,6 +717,8 @@
     "portAction": "Fundeio começou às {{start}} por {{duration}}",
     "portAt": "Ancorado em {{port}} iniciado às {{start}} por {{duration}}",
     "ports": "Ports",
+    "portVisitsSummary_one": "{{visits}} visit from {{vessels}} vessel",
+    "portVisitsSummary_other": "{{visits}} visits from {{vessels}} vessels",
     "unknown": "Evento desconhecido",
     "yearAbbreviated": "{{count}}y",
     "yearAbbreviated_one": "{{count}}y",

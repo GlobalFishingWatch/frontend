@@ -111,7 +111,7 @@
     "selectAggregationProperty": "Select a property to analyze",
     "selectDatasetPlaceholder": "Select a dataset to compare",
     "share": "Share report",
-    "showFullReport": "See full analysis for this area",
+    "showFullReport": "See full analysis",
     "statsDisclaimerDynamic": "During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.",
     "statsDisclaimerStatic": "The average value for your area is {{mean}} {{unit}}. The minimum and maximum are {{min}} {{unit}} and {{max}} {{unit}}.",
     "summary": "<strong>{{vessels}} vessels{{sources}} </strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
@@ -122,7 +122,8 @@
     "timeRangeTooLong": "Reports are only supported for time ranges up to one year.",
     "title": "Report",
     "unknown": "Other",
-    "unknownProperty": "Unknown"
+    "unknownProperty": "Unknown",
+    "zoomToAreaForActivity": "Center view to see activity"
   },
   "bigQuery": {
     "aggregateAvg": "Average",
@@ -248,6 +249,8 @@
     "fitArea": "Center view on area",
     "flag": "Flag",
     "from": "from",
+    "fromVessels_one": "from {{count}} vessel",
+    "fromVessels_other": "from {{count}} vessels",
     "globalReport": "Global report",
     "help": "Help",
     "hideAllHelpHints": "Dismiss all",
@@ -353,6 +356,8 @@
     "timerangeStatic": "Static ({{start}} - {{end}})",
     "to": "to",
     "toggleVisibility": "Toggle visibility",
+    "topVessels_one": "Top vessel",
+    "topVessels_other": "Top {{count}} vessels",
     "tutorials": "Tutorials",
     "unionOf": "Union of",
     "unit": "unit",
@@ -554,7 +559,7 @@
     "nir": "Near-infrared",
     "rgb": "Red, green and blue (visible light)"
   },
-  "detections": "Detections",
+  "detections": "",
   "download": {
     "apiPortal": "See our APIs here",
     "area": "Area",
@@ -712,6 +717,8 @@
     "portAction": "Docked started at {{start}} for {{duration}}",
     "portAt": "Docked at {{port}} started at {{start}} for {{duration}}",
     "ports": "Ports",
+    "portVisitsSummary_one": "{{visits}} visit from {{vessels}} vessel",
+    "portVisitsSummary_other": "{{visits}} visits from {{vessels}} vessels",
     "unknown": "Unknown event",
     "yearAbbreviated": "{{count}}y",
     "yearAbbreviated_one": "{{count}}y",

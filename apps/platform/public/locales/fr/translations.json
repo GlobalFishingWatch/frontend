@@ -111,7 +111,7 @@
     "selectAggregationProperty": "Select a property to analyze",
     "selectDatasetPlaceholder": "Select a dataset to compare",
     "share": "Partager le rapport",
-    "showFullReport": "See full analysis for this area",
+    "showFullReport": "See full analysis",
     "statsDisclaimerDynamic": "Au cours de cette plage de temps, les valeurs minimales et maximales par {{interval}} et lieu à l'intérieur de votre zone étaient {{min}} {{unit}} et {{max}} {{unit}}.",
     "statsDisclaimerStatic": "La valeur moyenne pour votre zone est {{mean}} {{unit}}. Le minimum et le maximum sont {{min}} {{unit}} et {{max}} {{unit}}.",
     "summary": "<strong>{{vessels}} navires{{sources}} </strong> ont eu <strong>{{activityQuantity}} {{activityUnit}}</strong> d'<strong>{{activityType}}</strong> {{area}} entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
@@ -122,7 +122,8 @@
     "timeRangeTooLong": "Les rapports ne sont autorisés que pour les intervalles de temps maximal  d'un an. ",
     "title": "Report",
     "unknown": "Inconnu",
-    "unknownProperty": "Unknown"
+    "unknownProperty": "Unknown",
+    "zoomToAreaForActivity": "Center view to see activity"
   },
   "bigQuery": {
     "aggregateAvg": "Moyenne",
@@ -248,6 +249,8 @@
     "fitArea": "Center view on area",
     "flag": "Pavillon",
     "from": "de",
+    "fromVessels_one": "from {{count}} vessel",
+    "fromVessels_other": "from {{count}} vessels",
     "globalReport": "Global report",
     "help": "Aide",
     "hideAllHelpHints": "Tout ignorer",
@@ -353,6 +356,8 @@
     "timerangeStatic": "Statique ({{start}} - {{end}})",
     "to": "à",
     "toggleVisibility": "Afficher/masquer le calque",
+    "topVessels_one": "Top vessel",
+    "topVessels_other": "Top {{count}} vessels",
     "tutorials": "Tutoriels",
     "unionOf": "Union de",
     "unit": "unité",
@@ -554,7 +559,7 @@
     "nir": "Near-infrared",
     "rgb": "Red, green and blue (visible light)"
   },
-  "detections": "Detections",
+  "detections": "",
   "download": {
     "apiPortal": "Voir nos APIs ici",
     "area": "Zone",
@@ -712,6 +717,8 @@
     "portAction": "À quai depuis {{start}} pendant {{duration}}",
     "portAt": "À quai à {{port}} depuis {{start}} pendant {{duration}}",
     "ports": "Ports",
+    "portVisitsSummary_one": "{{visits}} visit from {{vessels}} vessel",
+    "portVisitsSummary_other": "{{visits}} visits from {{vessels}} vessels",
     "unknown": "Événement inconnu",
     "yearAbbreviated": "{{count}}y",
     "yearAbbreviated_one": "{{count}}y",
