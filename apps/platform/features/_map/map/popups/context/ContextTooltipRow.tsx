@@ -27,6 +27,7 @@ type ContextTooltipRowProps = {
   feature: ContextPickingObject | UserLayerPickingObject
   showFeaturesDetails: boolean
   canExpand?: boolean
+  showFitArea?: boolean
   expanded?: boolean
   onToggleExpand?: () => void
   showActions?: boolean
@@ -44,6 +45,7 @@ const ContextTooltipRow = ({
   label,
   showFeaturesDetails,
   canExpand = false,
+  showFitArea = true,
   expanded = false,
   onToggleExpand,
   linkHref,
@@ -83,7 +85,7 @@ const ContextTooltipRow = ({
           <div className={styles.rowActions}>
             {/* the report shortcut stays in the header so the feature is discoverable without
                 opening the row; target / download / info move into the footer */}
-            {!canExpand && (
+            {!canExpand && showFitArea && (
               <IconButton
                 icon="target"
                 tooltip={t((t) => t.common.fitArea)}

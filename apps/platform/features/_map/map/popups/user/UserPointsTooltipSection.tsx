@@ -48,6 +48,7 @@ function UserPointsTooltipSection({
                   key={`${id}-${index}`}
                   label={label as string}
                   feature={feature}
+                  showFitArea={false}
                   showFeaturesDetails={showFeaturesDetails}
                   handleReportClick={(e) => onReportClick(e, feature)}
                 />
