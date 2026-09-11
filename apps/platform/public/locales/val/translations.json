@@ -122,7 +122,8 @@
     "timeRangeTooLong": "crwdns131935:0crwdne131935:0",
     "title": "crwdns131937:0crwdne131937:0",
     "unknown": "crwdns131939:0crwdne131939:0",
-    "unknownProperty": "crwdns131941:0crwdne131941:0"
+    "unknownProperty": "crwdns131941:0crwdne131941:0",
+    "zoomToAreaForActivity": "crwdns138551:0crwdne138551:0"
   },
   "bigQuery": {
     "aggregateAvg": "crwdns131943:0crwdne131943:0",
@@ -248,6 +249,8 @@
     "fitArea": "crwdns132183:0crwdne132183:0",
     "flag": "crwdns132185:0crwdne132185:0",
     "from": "crwdns132187:0crwdne132187:0",
+    "fromVessels_one": "crwdns138553:0{{count}}crwdne138553:0",
+    "fromVessels_other": "crwdns138555:0{{count}}crwdne138555:0",
     "globalReport": "crwdns132189:0crwdne132189:0",
     "help": "crwdns132191:0crwdne132191:0",
     "hideAllHelpHints": "crwdns132193:0crwdne132193:0",
@@ -353,6 +356,8 @@
     "timerangeStatic": "crwdns132391:0{{start}}crwdnd132391:0{{end}}crwdne132391:0",
     "to": "crwdns132393:0crwdne132393:0",
     "toggleVisibility": "crwdns132395:0crwdne132395:0",
+    "topVessels_one": "crwdns138557:0crwdne138557:0",
+    "topVessels_other": "crwdns138559:0{{count}}crwdne138559:0",
     "tutorials": "crwdns132397:0crwdne132397:0",
     "unionOf": "crwdns132399:0crwdne132399:0",
     "unit": "crwdns132401:0crwdne132401:0",
@@ -712,6 +717,8 @@
     "portAction": "crwdns132973:0{{start}}crwdnd132973:0{{duration}}crwdne132973:0",
     "portAt": "crwdns132975:0{{port}}crwdnd132975:0{{start}}crwdnd132975:0{{duration}}crwdne132975:0",
     "ports": "crwdns132977:0crwdne132977:0",
+    "portVisitsSummary_one": "crwdns138561:0{{visits}}crwdnd138561:0{{vessels}}crwdne138561:0",
+    "portVisitsSummary_other": "crwdns138563:0{{visits}}crwdnd138563:0{{vessels}}crwdne138563:0",
     "unknown": "crwdns132979:0crwdne132979:0",
     "yearAbbreviated": "crwdns132981:0{{count}}crwdne132981:0",
     "yearAbbreviated_one": "crwdns132983:0{{count}}crwdne132983:0",
