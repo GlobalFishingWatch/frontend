@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { DataviewCategory, SelfReportedInfo } from '@globalfishingwatch/api-types'
+import { isSublayerValueVisible } from '@globalfishingwatch/deck-layers'
 import { Spinner } from '@globalfishingwatch/ui-components'
 
 import { getIsSkylightDataset } from 'features/_map/datasets/datasets.utils'
@@ -49,7 +50,8 @@ function DetectionsTooltipRow({
   const notMatchedDetectionsCount = feature.value! - matchedDetections
   const notMatchedDetection = feature?.vessels?.find((v: any) => v.id === null)
 
-  if (!feature.value) return null
+  // same gate the map uses to paint and pick the cell, so a measured 0 isn't an empty popup
+  if (!isSublayerValueVisible(feature.value, feature)) return null
   if (isSkylight) {
     featureVesselsFilter.vessels = matchedVessels.map((vessel: ExtendedFeatureVessel) => ({
       ...vessel,

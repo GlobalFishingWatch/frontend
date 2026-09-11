@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { DatasetSubCategory, DataviewCategory } from '@globalfishingwatch/api-types'
+import { isSublayerValueVisible } from '@globalfishingwatch/deck-layers'
 import { Spinner } from '@globalfishingwatch/ui-components'
 
 import I18nNumber from 'features/i18n/i18nNumber'
@@ -34,7 +35,8 @@ function ActivityTooltipRow({
   const value = feature?.value as number
   const unit = feature?.unit ?? ('hours' as FeatureUnit)
   const vesselsCount = feature?.vessels?.length || 0
-  if (!value) {
+  // same gate the map uses to paint and pick the cell, so a measured 0 isn't an empty popup
+  if (!isSublayerValueVisible(value, feature)) {
     return null
   }
   return (
