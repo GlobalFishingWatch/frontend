@@ -122,7 +122,8 @@
     "timeRangeTooLong": "Los informes sólo están permitidos para rangos de tiempo de hasta un año",
     "title": "Informe",
     "unknown": "Desconocido",
-    "unknownProperty": "Desconocido"
+    "unknownProperty": "Desconocido",
+    "zoomToAreaForActivity": "Center view to see activity"
   },
   "bigQuery": {
     "aggregateAvg": "Promedio",
@@ -248,6 +249,8 @@
     "fitArea": "Centrar vista en el área",
     "flag": "Bandera",
     "from": "desde",
+    "fromVessels_one": "from {{count}} vessel",
+    "fromVessels_other": "from {{count}} vessels",
     "globalReport": "Informe global",
     "help": "Ayuda",
     "hideAllHelpHints": "Ocultar todos",
@@ -353,6 +356,8 @@
     "timerangeStatic": "Estático ({{start}} - {{end}})",
     "to": "hasta",
     "toggleVisibility": "Activar/Desactivar visibilidad",
+    "topVessels_one": "Top vessel",
+    "topVessels_other": "Top {{count}} vessels",
     "tutorials": "Tutoriales",
     "unionOf": "Unión de",
     "unit": "unidad",
@@ -554,7 +559,7 @@
     "nir": "Near-infrared",
     "rgb": "Red, green and blue (visible light)"
   },
-  "detections": "Detections",
+  "detections": "",
   "download": {
     "apiPortal": "Ver nuestras APIs aquí",
     "area": "Área",
@@ -712,6 +717,8 @@
     "portAction": "Visita a puerto comenzó a partir de {{start}} por {{duration}}",
     "portAt": "Visita a puerto {{port}} comenzó a partir de {{start}} por {{duration}}",
     "ports": "Puertos",
+    "portVisitsSummary_one": "{{visits}} visit from {{vessels}} vessel",
+    "portVisitsSummary_other": "{{visits}} visits from {{vessels}} vessels",
     "unknown": "Evento desconocido",
     "yearAbbreviated": "{{count}}a",
     "yearAbbreviated_one": "{{count}}a",
