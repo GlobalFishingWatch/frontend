@@ -57,6 +57,7 @@ import {
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { useDrawLayerInstance } from './overlays/draw/draw.hooks'
+import { usePendingDrawOverlayLayer } from './overlays/draw/draw-pending.hooks'
 import { useMapRulerInstance } from './overlays/rulers/rulers.hooks'
 import { HOTSPOT_COLOR, HOTSPOT_FILL, REPORT_HOTSPOT_ID } from './map.config'
 import {
@@ -246,9 +247,12 @@ const useMapOverlayLayers = () => {
   const drawLayerInstance = useDrawLayerInstance()
   const rulerLayerInstance = useMapRulerInstance()
   const hotspotLayer = useHotspotOverlayLayer()
+  const pendingDrawLayer = usePendingDrawOverlayLayer()
   return useMemo(() => {
-    return [drawLayerInstance!, rulerLayerInstance!, hotspotLayer!].filter(Boolean)
-  }, [drawLayerInstance, rulerLayerInstance, hotspotLayer])
+    return [drawLayerInstance!, rulerLayerInstance!, hotspotLayer!, pendingDrawLayer!].filter(
+      Boolean
+    )
+  }, [drawLayerInstance, rulerLayerInstance, hotspotLayer, pendingDrawLayer])
 }
 
 export const useMapLayers = () => {
