@@ -170,6 +170,7 @@ export abstract class UserBaseLayer<
 
     const object = {
       ...(info.tile && {
+        // TODO-ANTIMERIDIAN: Review if this is needed and why
         ...unwrapFeatureLongitudes(
           transformTileCoordsToWGS84(
             info.object as UserLayerFeature,

@@ -145,7 +145,7 @@ async function fetchAreaDetail({
   // `geometry.bbox` must instead agree with the coordinates, because turf trusts it to reject points
   const bounds = area.bbox ? wrapBBoxLongitudes(area.bbox) : wrapGeometryBbox(geometry)
   if (geometry) {
-    geometry.bbox = getTurfBbox(geometry)
+    geometry.bbox = area.bbox || getTurfBbox(geometry)
   }
   return {
     id: area.id,

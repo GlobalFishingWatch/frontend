@@ -145,6 +145,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
       })
     if (!sublayer) return { ...info, object: undefined }
 
+    // TODO-ANTIMERIDIAN: Review if this is needed and why
     const feature = unwrapFeatureLongitudes(
       isPMTilesUrl(this.props.layers[0].tilesUrl)
         ? (info.object as ContextFeature)
