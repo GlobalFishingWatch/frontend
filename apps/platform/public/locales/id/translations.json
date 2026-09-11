@@ -111,7 +111,7 @@
     "selectAggregationProperty": "Select a property to analyze",
     "selectDatasetPlaceholder": "Select a dataset to compare",
     "share": "Bagikan laporan",
-    "showFullReport": "See full analysis for this area",
+    "showFullReport": "See full analysis",
     "statsDisclaimerDynamic": "During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.",
     "statsDisclaimerStatic": "The average value for your area is {{mean}} {{unit}}. The minimum and maximum are {{min}} {{unit}} and {{max}} {{unit}}.",
     "summary": "<strong>{{vessels}} kapal{{sources}} </strong> selama <strong>{{activityQuantity}} {{activityUnit}}</strong> melakukan <strong>{{activityType}}</strong> di area ini antara <strong>{{start}}</strong> dan <strong>{{end}}</strong>",
@@ -122,7 +122,8 @@
     "timeRangeTooLong": "Laporan hanya diizinkan untuk rentang waktu hingga satu tahun",
     "title": "Report",
     "unknown": "Tidak diketahui",
-    "unknownProperty": "Unknown"
+    "unknownProperty": "Unknown",
+    "zoomToAreaForActivity": "Center view to see activity"
   },
   "bigQuery": {
     "aggregateAvg": "Rata-rata",
@@ -248,6 +249,8 @@
     "fitArea": "Center view on area",
     "flag": "Flag",
     "from": "dari",
+    "fromVessels_one": "from {{count}} vessel",
+    "fromVessels_other": "from {{count}} vessels",
     "globalReport": "Global report",
     "help": "Tolong",
     "hideAllHelpHints": "Abaikan Semua",
@@ -353,6 +356,8 @@
     "timerangeStatic": "Static ({{start}} - {{end}})",
     "to": "ke",
     "toggleVisibility": "Alihkan Visibilitas",
+    "topVessels_one": "Top vessel",
+    "topVessels_other": "Top {{count}} vessels",
     "tutorials": "Tutorial",
     "unionOf": "Union of",
     "unit": "unit",
@@ -554,7 +559,7 @@
     "nir": "Near-infrared",
     "rgb": "Red, green and blue (visible light)"
   },
-  "detections": "Detections",
+  "detections": "",
   "download": {
     "apiPortal": "Lihat API kami di sini",
     "area": "Area",
@@ -712,6 +717,8 @@
     "portAction": "Berlabuh dimulai pada {{start}} selama {{duration}}",
     "portAt": "Berlabuh di {{port}} dimulai pada {{start}} selama {{duration}}",
     "ports": "Ports",
+    "portVisitsSummary_one": "{{visits}} visit from {{vessels}} vessel",
+    "portVisitsSummary_other": "{{visits}} visits from {{vessels}} vessels",
     "unknown": "Peristiwa yang tidak diketahui",
     "yearAbbreviated": "{{count}}y",
     "yearAbbreviated_one": "{{count}}y",
