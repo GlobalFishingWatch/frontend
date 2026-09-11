@@ -259,13 +259,15 @@ function VesselsTable({
                       </Tooltip>
                     </td>
                   )}
-                  {showValue && vessel[vesselProperty] && (
+                  {showValue && (
                     <td
                       className={cx(styles.columnSpace, styles.vesselsTableValue, {
                         [styles.largeColumn]: detectionsTimestamps?.length > 1,
                       })}
                     >
-                      <I18nNumber number={vessel[vesselProperty]} />{' '}
+                      {vessel[vesselProperty] !== undefined && (
+                        <I18nNumber number={vessel[vesselProperty]} />
+                      )}{' '}
                       {detectionsTimestamps?.length > 0 && (
                         <VesselDetectionTimestamps vessel={vessel} />
                       )}
