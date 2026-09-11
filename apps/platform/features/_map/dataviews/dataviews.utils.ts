@@ -89,10 +89,18 @@ export function dataviewHasVesselGroupId(dataview: UrlDataviewInstance, vesselGr
   return dataview.config?.filters?.['vessel-groups']?.includes(vesselGroupId)
 }
 
-export function dataviewHasUserTimeRange(dataview: UrlDataviewInstance) {
-  const dataset = dataview.datasets?.find(
-    (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
+/** The polygon/point dataset backing a context dataview, whatever tile format it ships in. */
+export function getContextDataviewDataset(dataview?: UrlDataviewInstance | Dataview) {
+  return dataview?.datasets?.find(
+    (d) =>
+      d.type === DatasetTypes.UserContext ||
+      d.type === DatasetTypes.Context ||
+      d.type === DatasetTypes.PMTiles
   )
+}
+
+export function dataviewHasUserTimeRange(dataview: UrlDataviewInstance) {
+  const dataset = getContextDataviewDataset(dataview)
   const timeFilterType = getDatasetConfigurationProperty({
     dataset,
     property: 'timeFilterType',
