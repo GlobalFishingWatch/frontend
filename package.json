@@ -109,7 +109,7 @@
     "i18next-http-backend": "4.0.1",
     "immer": "11.1.18",
     "jimp": "1.6.1",
-    "jotai": "2.20.3",
+    "jotai": "3.0.0",
     "jszip": "3.10.1",
     "jwt-decode": "4.0.0",
     "kdbush": "4.1.0",
