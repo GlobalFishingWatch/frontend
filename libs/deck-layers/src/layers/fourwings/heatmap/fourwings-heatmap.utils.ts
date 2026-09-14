@@ -132,18 +132,17 @@ export const compareCell = ({
 }: CompareCellParams): number[] => {
   const [initialValue, comparedValue] = cellValues.map((sublayerValues) => {
     if (!sublayerValues || !sublayerValues?.length) {
-      return 0
+      return undefined
     }
-    const value = aggregateSublayerValues(sublayerValues, aggregationOperation)
-    return value ?? 0
+    return aggregateSublayerValues(sublayerValues, aggregationOperation)
   })
-  if (!initialValue && !comparedValue) {
+  if (initialValue === undefined && comparedValue === undefined) {
     return []
   }
-  if (!comparedValue) {
-    return [-initialValue]
+  if (comparedValue === undefined) {
+    return [-(initialValue as number)]
   }
-  if (!initialValue) {
+  if (initialValue === undefined) {
     return [comparedValue]
   }
   return [comparedValue - initialValue]
