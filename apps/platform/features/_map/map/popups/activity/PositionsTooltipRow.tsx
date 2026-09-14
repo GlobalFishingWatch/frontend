@@ -1,9 +1,10 @@
-import { Fragment, lazy, Suspense, useState } from 'react'
+import { Fragment, lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
 import { uniq } from 'es-toolkit'
+import { useSetAtom } from 'jotai'
 import { DateTime } from 'luxon'
 
 import type { DetectionThumbnail } from '@globalfishingwatch/api-types'
@@ -24,10 +25,13 @@ import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { isRealTimeDataview } from 'features/_map/dataviews/dataviews.utils'
 import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import type { PositionRealTimeVessel } from 'features/_map/map/map.slice'
+import { fetchDetectionThumbnailsThunk } from 'features/_map/map/map.slice'
+import { interactionPromisesAtom } from 'features/_map/map/map-interactions.atoms'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import VesselLink from 'features/_vessels/vessel/VesselLink'
 import VesselPin from 'features/_vessels/vessel/VesselPin'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import { ROUTE_PATHS } from 'router/routes.utils'
@@ -115,6 +119,8 @@ function PositionsTooltipRow({
   onToggleExpand,
 }: PositionsTooltipRowProps) {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const setInteractionPromises = useSetAtom(interactionPromisesAtom)
   const allDatasets = useSelector(selectAllDatasets)
   const workspace = useSelector(selectWorkspace)
   const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
@@ -129,6 +135,22 @@ function PositionsTooltipRow({
   const thumbnailsDataset = thumbnailsDatasetId
     ? allDatasets.find((dataset) => dataset.id === thumbnailsDatasetId)
     : undefined
+
+  const needsThumbnails =
+    showFeaturesDetails &&
+    isPositionThumbnail &&
+    expanded === true &&
+    feature.properties.thumbnails === undefined
+  const requestedThumbnailsRef = useRef<string>(undefined)
+  useEffect(() => {
+    if (!needsThumbnails || requestedThumbnailsRef.current === feature.id) {
+      return
+    }
+    requestedThumbnailsRef.current = feature.id
+    const promise = dispatch(fetchDetectionThumbnailsThunk({ detectionFeatures: [feature] }))
+    setInteractionPromises((prev) => ({ ...prev, detectionPositions: promise }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [needsThumbnails, feature.id])
 
   const isPositionMatched =
     feature.category === 'activity'

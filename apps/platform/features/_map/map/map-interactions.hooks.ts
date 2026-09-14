@@ -57,7 +57,6 @@ import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
 import type { SliceExtendedClusterPickingObject, SliceInteractionEvent } from './map.slice'
 import {
   fetchClusterEventThunk,
-  fetchDetectionThumbnailsThunk,
   fetchHeatmapInteractionThunk,
   fetchRealTimePositionsThunk,
   selectActivityInteractionStatus,
@@ -184,18 +183,7 @@ export const useClickedEventConnect = () => {
         const dataview = activityDataviews.find((d) => d.id === feature.layerId)
         return dataview ? isRealTimeDataview(dataview) : false
       })
-      const detectionFeatures = positionFeatures.filter(
-        (feature) => !realTimeFeatures.includes(feature)
-      )
-      if (detectionFeatures?.length) {
-        const detectionsPositionPromise = dispatch(
-          fetchDetectionThumbnailsThunk({ detectionFeatures })
-        )
-        setInteractionPromises((prev) => ({
-          ...prev,
-          detectionPositions: detectionsPositionPromise,
-        }))
-      }
+      // detection thumbnails are heavy, PositionsTooltipRow requests only the visible one
       if (realTimeFeatures?.length) {
         const realTimePositionsPromise = dispatch(fetchRealTimePositionsThunk({ realTimeFeatures }))
         setInteractionPromises((prev) => ({

@@ -760,7 +760,7 @@ export const fetchClusterEventThunk = createAsyncThunk(
 )
 
 export const fetchDetectionThumbnailsThunk = createAsyncThunk<
-  { thumbnails: (DetectionThumbnails | undefined)[] } | undefined,
+  { thumbnailsById: Record<string, DetectionThumbnails> } | undefined,
   {
     detectionFeatures: FourwingsPositionsPickingObject[]
   },
@@ -775,7 +775,7 @@ export const fetchDetectionThumbnailsThunk = createAsyncThunk<
       const state = getState() as any
       const detectionsDataviews = selectActiveDetectionsDataviews(state) || []
       const thumbnails = await Promise.all(
-        detectionFeatures.map(async (detectionFeature) => {
+        detectionFeatures.map(async (detectionFeature): Promise<[string, DetectionThumbnails]> => {
           const dataview = detectionsDataviews.find(
             (d) => d.id === detectionFeature.sublayers?.[0].id
           )
@@ -802,15 +802,19 @@ export const fetchDetectionThumbnailsThunk = createAsyncThunk<
               }
               const url = resolveEndpoint(thumbnailDataset, datasetConfig)
               if (url) {
-                return await GFWAPI.fetch<DetectionThumbnails>(url, { signal })
+                return [
+                  detectionFeature.id,
+                  await GFWAPI.fetch<DetectionThumbnails>(url, { signal }),
+                ]
               }
             }
           }
-          return undefined
+          // empty marks the feature as resolved so the popup doesn't request it again
+          return [detectionFeature.id, []]
         })
       )
 
-      return { thumbnails }
+      return { thumbnailsById: Object.fromEntries(thumbnails) }
     } catch (e: any) {
       return rejectWithValue(parseAPIError(e))
     }
@@ -1008,16 +1012,14 @@ const slice = createSlice({
     builder.addCase(fetchDetectionThumbnailsThunk.fulfilled, (state, action) => {
       state.apiDetectionPositionsStatus = AsyncReducerStatus.Finished
       state.currentDetectionRequestId = ''
-      if (state?.clicked?.features?.length && action.payload?.thumbnails?.length) {
-        state.clicked.features = state.clicked.features.flatMap((feature, i) => {
-          if (feature.category === 'detections') {
-            const properties = {
-              ...(feature.properties || ({} as any)),
-              thumbnails: action.payload?.thumbnails?.[i],
-            }
-            return { ...feature, properties }
+      const thumbnailsById = action.payload?.thumbnailsById
+      if (state?.clicked?.features?.length && thumbnailsById) {
+        state.clicked.features = state.clicked.features.map((feature) => {
+          const thumbnails = thumbnailsById[feature.id]
+          if (!thumbnails) {
+            return feature
           }
-          return [feature]
+          return { ...feature, properties: { ...(feature.properties || ({} as any)), thumbnails } }
         })
       }
     })
