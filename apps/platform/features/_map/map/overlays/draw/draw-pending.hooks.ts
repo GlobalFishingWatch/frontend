@@ -2,8 +2,9 @@ import { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { PathStyleExtension } from '@deck.gl/extensions'
 import { GeoJsonLayer } from '@deck.gl/layers'
+import { bbox } from '@turf/turf'
 import type { FeatureCollection } from 'geojson'
-import { atom, useAtom } from 'jotai'
+import { atom, useAtom, useAtomValue } from 'jotai'
 
 import { DatasetStatus } from '@globalfishingwatch/api-types'
 import { LayerGroup } from '@globalfishingwatch/deck-layers/config'
@@ -28,13 +29,9 @@ export const pendingDrawGeometryAtom = atom<PendingDrawGeometry | null>(null)
  * withheld until dataset.status === 'done', so without this the geometry disappears in between.
  * Rendered non-interactive: it is a preview, not yet a pickable layer.
  */
-export const usePendingDrawOverlayLayer = () => {
-  const [pending, setPendingDrawGeometry] = useAtom(pendingDrawGeometryAtom)
-  const datasetId = pending?.datasetId
-  const dataset = useSelector(selectDatasetById(datasetId || ''))
+const usePendingDrawDataview = (datasetId?: string) => {
   const dataviews = useSelector(selectDataviewInstancesResolvedVisible)
-
-  const dataview = useMemo(() => {
+  return useMemo(() => {
     if (!datasetId) {
       return undefined
     }
@@ -42,6 +39,27 @@ export const usePendingDrawOverlayLayer = () => {
       dataview.datasetsConfig?.some((datasetConfig) => datasetConfig.datasetId === datasetId)
     )
   }, [dataviews, datasetId])
+}
+
+export const usePendingDrawImportCenter = () => {
+  const pending = useAtomValue(pendingDrawGeometryAtom)
+  const dataset = useSelector(selectDatasetById(pending?.datasetId || ''))
+  const dataview = usePendingDrawDataview(pending?.datasetId)
+  const isImporting = dataset?.status === DatasetStatus.Importing
+  return useMemo(() => {
+    if (!pending || !isImporting || !dataview) {
+      return null
+    }
+    const [west, south, east, north] = bbox(pending.data)
+    return { longitude: (west + east) / 2, latitude: (south + north) / 2 }
+  }, [pending, isImporting, dataview])
+}
+
+export const usePendingDrawOverlayLayer = () => {
+  const [pending, setPendingDrawGeometry] = useAtom(pendingDrawGeometryAtom)
+  const datasetId = pending?.datasetId
+  const dataset = useSelector(selectDatasetById(datasetId || ''))
+  const dataview = usePendingDrawDataview(datasetId)
 
   const isImporting = dataset?.status === DatasetStatus.Importing
   // Polls without depending on UserLayerPanel being mounted or the layer being visible
@@ -73,7 +91,7 @@ export const usePendingDrawOverlayLayer = () => {
       lineJointRounded: true,
       lineCapRounded: true,
       extensions: [new PathStyleExtension({ dash: true, highPrecisionDash: true })],
-      getDashArray: [6, 4],
+      getDashArray: [6, 6],
       pointType: 'circle',
       getPointRadius: 8,
       pointRadiusUnits: 'pixels',
