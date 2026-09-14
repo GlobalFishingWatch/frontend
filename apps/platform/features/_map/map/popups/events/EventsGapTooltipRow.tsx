@@ -24,6 +24,7 @@ import { getEventLabel } from 'utils/analytics'
 import { formatInfoField } from 'utils/info'
 
 import type { ExtendedFeatureSingleEvent, SliceExtendedClusterPickingObject } from '../../map.slice'
+import { getIntervalDateFormat } from '../map-popups.utils'
 import PopupSectionLayout from '../shared/PopupSectionLayout'
 
 import styles from '../Popup.module.css'
@@ -73,10 +74,10 @@ function EventsGapTooltipRow({
     (encounterDataview
       ? getDatasetTitleByDataview(encounterDataview, { showPrivateIcon: false })
       : getDatasetLabel({ id: feature.datasetId! }))
-  const gapStart = feature.properties.stime
-    ? feature.properties.stime * 1000
-    : event?.start
-      ? getUTCDateTime(event?.start as string).toMillis()
+  const gapStart = event?.start
+    ? getUTCDateTime(event?.start as string).toMillis()
+    : feature.properties.stime
+      ? feature.properties.stime * 1000
       : undefined
   const gapEnd = event?.end ? getUTCDateTime(event?.end as string).toMillis() : undefined
 
@@ -97,10 +98,10 @@ function EventsGapTooltipRow({
             {!feature.properties.cluster && gapStart && interval && (
               <span className={styles.rowTextSecondary}>
                 {' '}
-                <I18nDate date={gapStart} />
+                <I18nDate date={gapStart} format={getIntervalDateFormat(interval)} />
                 {gapEnd && (
                   <Fragment>
-                    - <I18nDate date={gapEnd} />
+                    - <I18nDate date={gapEnd} format={getIntervalDateFormat(interval)} />
                   </Fragment>
                 )}
               </span>

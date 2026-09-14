@@ -7,6 +7,7 @@ import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getDatasetSource } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Spinner } from '@globalfishingwatch/ui-components'
 
 import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
@@ -21,6 +22,7 @@ import { getEventDescription } from 'utils/events'
 import { formatInfoField } from 'utils/info'
 
 import type { ExtendedFeatureSingleEvent, SliceExtendedClusterPickingObject } from '../../map.slice'
+import { getIntervalDateFormat } from '../map-popups.utils'
 import PopupSectionLayout from '../shared/PopupSectionLayout'
 
 import styles from '../Popup.module.css'
@@ -44,12 +46,13 @@ function EventsClusterTooltipRow({
   const title =
     feature.title ||
     (dataview ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false }) : '')
+  const interval = getFourwingsInterval(feature.startTime, feature.endTime)
   const infoDataset = event?.dataset.relatedDatasets?.find((d) => d.type === DatasetTypes.Vessels)
   const source = getDatasetSource(infoDataset?.id)
-  const timestamp = feature.properties.stime
-    ? feature.properties.stime * 1000
-    : event?.start
-      ? getUTCDateTime(event?.start as string).toMillis()
+  const timestamp = event?.start
+    ? getUTCDateTime(event?.start as string).toMillis()
+    : feature.properties.stime
+      ? feature.properties.stime * 1000
       : undefined
 
   const seeEventClick = useCallback((dataset: Dataset) => {
@@ -80,7 +83,7 @@ function EventsClusterTooltipRow({
             {timestamp && (
               <span className={styles.rowTextSecondary}>
                 {' '}
-                <I18nDate date={timestamp} />
+                <I18nDate date={timestamp} format={getIntervalDateFormat(interval)} />
               </span>
             )}
           </span>

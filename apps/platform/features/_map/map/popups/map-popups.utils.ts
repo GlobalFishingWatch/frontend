@@ -1,9 +1,11 @@
+import type { DateTimeFormatOptions } from 'luxon'
 import { DateTime } from 'luxon'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 import type { SupportedDatasetFilter } from '@globalfishingwatch/datasets-client'
 import { getDatasetFilterItem } from '@globalfishingwatch/datasets-client'
 import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
 import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID } from 'features/_map/map/map.config'
@@ -95,4 +97,10 @@ export function getUserContextLayerLabel(
   }
 
   return dataset ? getDatasetLabel(dataset) : feature.layerId
+}
+
+export const getIntervalDateFormat = (interval: FourwingsInterval): DateTimeFormatOptions => {
+  if (interval === 'YEAR') return { year: 'numeric' }
+  if (interval === 'MONTH') return { year: 'numeric', month: 'long' }
+  return DateTime.DATE_MED
 }
