@@ -6,7 +6,12 @@ import { matchSorter } from 'match-sorter'
 import { parse } from 'qs'
 
 import { API_VERSION } from '@globalfishingwatch/api-client'
-import { getFeatureBuffer, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
+import {
+  getFeatureBuffer,
+  getTurfBbox,
+  splitGeometryAtAntimeridian,
+  wrapGeometryBbox,
+} from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import type { FilterProperty } from 'features/_reports/shared/vessels/report-vessels.config'
@@ -143,10 +148,23 @@ export const getBufferedArea = ({
   value,
   unit,
   operation,
-}: BufferedAreaParams): Area | null => {
+  splitAtAntimeridian = false,
+}: BufferedAreaParams & { splitAtAntimeridian?: boolean }): Area | null => {
   if (!area) return null
   const bufferedFeature = getBufferedFeature({ area, value, unit, operation })
-  return { ...area, id: REPORT_BUFFER_FEATURE_ID, geometry: bufferedFeature?.geometry } as Area
+  const bufferedArea = {
+    ...area,
+    id: REPORT_BUFFER_FEATURE_ID,
+    geometry: bufferedFeature?.geometry,
+  } as Area
+  if (splitAtAntimeridian && bufferedArea.geometry) {
+    bufferedArea.bounds = wrapGeometryBbox(bufferedArea.geometry as MultiPolygon)
+    bufferedArea.geometry = splitGeometryAtAntimeridian(
+      bufferedArea.geometry as MultiPolygon
+    ) as AreaGeometry
+    bufferedArea.geometry.bbox = getTurfBbox(bufferedArea.geometry as MultiPolygon)
+  }
+  return bufferedArea
 }
 
 export const getBufferedAreaBbox = ({

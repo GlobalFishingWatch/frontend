@@ -2,6 +2,7 @@ import { bbox, feature, geometry, polygon } from '@turf/turf'
 import type { Feature, LineString, MultiPolygon, Point, Polygon, Position } from 'geojson'
 
 import type { Bbox } from '../types'
+import { getPolygonsIntersection } from '../union'
 
 // Used to detect antimeridian issues in dissolve
 export const BUFFERED_ANTIMERIDIAN_LON = 179.5
@@ -236,4 +237,56 @@ export const unwrapFeatureLongitudes = <T extends Feature>(featureData: T): T =>
     return featureData
   }
   return { ...featureData, geometry: { ...geometry, coordinates } } as T
+}
+
+/** A whole world as a rectangle, from `west` eastwards, used to clip one world copy out. */
+const worldClipRing = (west: number): Position[][] => [
+  [
+    [west, -90],
+    [west + WORLD_LONGITUDES, -90],
+    [west + WORLD_LONGITUDES, 90],
+    [west, 90],
+    [west, -90],
+  ],
+]
+
+/**
+ * Keeps the part of `coordinates` lying in the world copy `offset` degrees from [-180, 180], and
+ * shifts it back into range. `offset` 0 is the in-range copy itself, so nothing to shift.
+ */
+const clipWorldCopy = (coordinates: Position[][][], offset: number): Position[][][] => {
+  const clipped = getPolygonsIntersection(coordinates, worldClipRing(offset - 180))
+  if (offset === 0) {
+    return clipped
+  }
+  return clipped.map((polygon) =>
+    polygon.map((ring) => ring.map(([lon, ...rest]) => [lon - offset, ...rest]))
+  )
+}
+
+/**
+ * Cuts a geometry that runs past ±180 back into GeoJSON's [-180, 180], one part per world copy *
+ * Returns the geometry untouched when it is already in range
+ */
+export function splitGeometryAtAntimeridian<T extends Polygon | MultiPolygon>(
+  geometry: T
+): T | MultiPolygon {
+  const [minX, , maxX] = getTurfBbox(geometry)
+  if (minX >= -180 && maxX <= 180) {
+    return geometry
+  }
+  const coordinates =
+    geometry.type === 'Polygon'
+      ? [geometry.coordinates as Position[][]]
+      : (geometry.coordinates as Position[][][])
+
+  const spilloverOffset = maxX > 180 ? WORLD_LONGITUDES : -WORLD_LONGITUDES
+  let parts: Position[][][]
+  try {
+    parts = [...clipWorldCopy(coordinates, 0), ...clipWorldCopy(coordinates, spilloverOffset)]
+  } catch (e) {
+    console.warn('Could not split geometry at the antimeridian, using it as is', e)
+    return geometry
+  }
+  return parts.length ? { type: 'MultiPolygon', coordinates: parts } : geometry
 }
