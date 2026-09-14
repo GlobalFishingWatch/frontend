@@ -103,16 +103,16 @@ export function useAreaRowExpansion(ids: string[], showFeaturesDetails: boolean)
     key: '',
     id: null,
   })
-  const expandedId = expanded.key === key ? expanded.id : ids.length === 1 ? ids[0] : null
+  const canExpand = showFeaturesDetails && !isAnyReportLocation && hasSparklineCategories
+  const autoExpandedId = ids.length === 1 ? ids[0] : null
+  const currentId = expanded.key === key ? expanded.id : autoExpandedId
+  const expandedId = canExpand ? currentId : null
+
   const toggleExpanded = useCallback(
     (id: string) => setExpanded({ key, id: expandedId === id ? null : id }),
     [key, expandedId]
   )
-  return {
-    canExpand: showFeaturesDetails && !isAnyReportLocation && hasSparklineCategories,
-    expandedId,
-    toggleExpanded,
-  }
+  return { canExpand, expandedId, toggleExpanded }
 }
 
 function isLonRangeContained(westV: number, eastV: number, westA: number, eastA: number): boolean {
