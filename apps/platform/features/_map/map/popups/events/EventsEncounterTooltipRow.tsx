@@ -21,6 +21,7 @@ import { getEventLabel } from 'utils/analytics'
 import { formatInfoField } from 'utils/info'
 
 import type { ExtendedFeatureSingleEvent, SliceExtendedClusterPickingObject } from '../../map.slice'
+import { getIntervalDateFormat } from '../map-popups.utils'
 import PopupSectionLayout from '../shared/PopupSectionLayout'
 
 import styles from '../Popup.module.css'
@@ -82,10 +83,10 @@ function EventsEncounterTooltipRow({
     (encountersDataview
       ? getDatasetTitleByDataview(encountersDataview, { showPrivateIcon: false })
       : '')
-  const timestampStart = feature.properties.stime
-    ? feature.properties.stime * 1000
-    : event?.start
-      ? getUTCDateTime(event?.start as string).toMillis()
+  const timestampStart = event?.start
+    ? getUTCDateTime(event?.start as string).toMillis()
+    : feature.properties.stime
+      ? feature.properties.stime * 1000
       : undefined
   const timestampEnd = event?.end ? getUTCDateTime(event?.end as string).toMillis() : undefined
 
@@ -105,7 +106,7 @@ function EventsEncounterTooltipRow({
             {!feature.properties.cluster && timestampStart && interval && (
               <span className={styles.rowTextSecondary}>
                 {' '}
-                <I18nDate date={timestampStart} />
+                <I18nDate date={timestampStart} format={getIntervalDateFormat(interval)} />
               </span>
             )}
           </span>

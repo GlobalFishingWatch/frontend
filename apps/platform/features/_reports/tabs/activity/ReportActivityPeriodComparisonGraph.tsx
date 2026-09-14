@@ -103,8 +103,10 @@ const ReportActivityPeriodComparisonGraph = (props: {
   const difference = useMemo(() => {
     return comparisonTimeseries?.map(({ date, min, max }, index) => {
       const baselineDate = baselineTimeseries[index]?.date
-      const avgBaseline = baselineTimeseries[index]?.min + baselineTimeseries[index]?.max / 2
-      const avgCompare = min + max / 2
+      const avgBaseline =
+        ((baselineTimeseries[index]?.min as number) + (baselineTimeseries[index]?.max as number)) /
+        2
+      const avgCompare = (min + max) / 2
       const difference = avgCompare - avgBaseline
       return {
         date: baselineDate,

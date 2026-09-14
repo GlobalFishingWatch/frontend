@@ -1,9 +1,10 @@
-import { Fragment, lazy, Suspense, useState } from 'react'
+import { Fragment, lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
 import { uniq } from 'es-toolkit'
+import { useSetAtom } from 'jotai'
 import { DateTime } from 'luxon'
 
 import type { DetectionThumbnail } from '@globalfishingwatch/api-types'
@@ -24,10 +25,13 @@ import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { isRealTimeDataview } from 'features/_map/dataviews/dataviews.utils'
 import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import type { PositionRealTimeVessel } from 'features/_map/map/map.slice'
+import { fetchDetectionThumbnailsThunk } from 'features/_map/map/map.slice'
+import { interactionPromisesAtom } from 'features/_map/map/map-interactions.atoms'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import VesselLink from 'features/_vessels/vessel/VesselLink'
 import VesselPin from 'features/_vessels/vessel/VesselPin'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import { ROUTE_PATHS } from 'router/routes.utils'
@@ -42,6 +46,8 @@ type PositionsTooltipRowProps = {
   error: string
   feature: FourwingsPositionsPickingObject
   showFeaturesDetails: boolean
+  expanded?: boolean
+  onToggleExpand?: () => void
 }
 
 // e.g. 20250603_planet_..._RGB.png -> RGB
@@ -109,8 +115,12 @@ function PositionsTooltipRow({
   error,
   feature,
   showFeaturesDetails,
+  expanded,
+  onToggleExpand,
 }: PositionsTooltipRowProps) {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const setInteractionPromises = useSetAtom(interactionPromisesAtom)
   const allDatasets = useSelector(selectAllDatasets)
   const workspace = useSelector(selectWorkspace)
   const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
@@ -125,6 +135,22 @@ function PositionsTooltipRow({
   const thumbnailsDataset = thumbnailsDatasetId
     ? allDatasets.find((dataset) => dataset.id === thumbnailsDatasetId)
     : undefined
+
+  const needsThumbnails =
+    showFeaturesDetails &&
+    isPositionThumbnail &&
+    expanded === true &&
+    feature.properties.thumbnails === undefined
+  const requestedThumbnailsRef = useRef<string>(undefined)
+  useEffect(() => {
+    if (!needsThumbnails || requestedThumbnailsRef.current === feature.id) {
+      return
+    }
+    requestedThumbnailsRef.current = feature.id
+    const promise = dispatch(fetchDetectionThumbnailsThunk({ detectionFeatures: [feature] }))
+    setInteractionPromises((prev) => ({ ...prev, detectionPositions: promise }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [needsThumbnails, feature.id])
 
   const isPositionMatched =
     feature.category === 'activity'
@@ -245,38 +271,49 @@ function PositionsTooltipRow({
   return (
     <Fragment>
       <div className={cx(popupStyles.rowCenter, { [popupStyles.rowColumn]: isRealTime })}>
-          <span className={cx(popupStyles.rowText, popupStyles.vesselTitle)}>
-            {renderSearchLink()}
-            {renderVesselPin()}
-            {renderShipname()}
+        <span className={cx(popupStyles.rowText, popupStyles.vesselTitle)}>
+          {renderSearchLink()}
+          {renderVesselPin()}
+          {renderShipname()}
+        </span>
+        {feature.properties.stime && (
+          <span className={popupStyles.secondary}>
+            <I18nDate
+              date={feature.properties.stime * 1000}
+              {...(isRealTime && {
+                format: DateTime.DATETIME_MED_WITH_SECONDS,
+                showUTCLabel: true,
+              })}
+            />
           </span>
-          {feature.properties.stime && (
-            <span className={popupStyles.secondary}>
-              <I18nDate
-                date={feature.properties.stime * 1000}
-                {...(isRealTime && {
-                  format: DateTime.DATETIME_MED_WITH_SECONDS,
-                  showUTCLabel: true,
-                })}
-              />
-            </span>
-          )}
-        </div>
-        {loading && isPositionThumbnail && (
-          <div className={cx(popupStyles.loading, popupStyles.thumbnailLoading)}>
-            <Spinner size="small" />
+        )}
+        {onToggleExpand && (
+          <div className={cx(popupStyles.rowActions, popupStyles.rowActionsEnd)}>
+            <IconButton
+              icon={expanded ? 'section-collapse' : 'section-expand'}
+              size="small"
+              tooltip={t((t) => (expanded ? t.common.collapseSection : t.common.expandSection))}
+              onClick={onToggleExpand}
+            />
           </div>
         )}
-        {!loading && error && <p className={popupStyles.error}>{error}</p>}
-        {!loading &&
-          feature.category === 'detections' &&
-          feature.properties.thumbnails?.length > 0 && (
-            <DetectionThumbnails
-              thumbnails={feature.properties.thumbnails}
-              scale={getDatasetConfiguration(thumbnailsDataset, 'thumbnailsV1')?.scale}
-              datasetId={datasetId}
-            />
-          )}
+      </div>
+      {expanded !== false && loading && isPositionThumbnail && (
+        <div className={cx(popupStyles.loading, popupStyles.thumbnailLoading)}>
+          <Spinner size="small" />
+        </div>
+      )}
+      {expanded === true && !loading && error && <p className={popupStyles.error}>{error}</p>}
+      {expanded !== false &&
+        !loading &&
+        feature.category === 'detections' &&
+        feature.properties.thumbnails?.length > 0 && (
+          <DetectionThumbnails
+            thumbnails={feature.properties.thumbnails}
+            scale={getDatasetConfiguration(thumbnailsDataset, 'thumbnailsV1')?.scale}
+            datasetId={datasetId}
+          />
+        )}
     </Fragment>
   )
 }

@@ -80,10 +80,13 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  flex-basis: 100%;
+  margin-inline: auto;
   min-height: 4rem;
 }
 
 .click .thumbnailLoading {
+  margin-top: var(--space-S);
   width: 30rem;
   height: 30rem;
   display: flex;
@@ -93,6 +96,7 @@
 
 .thumbnailContainer {
   position: relative;
+  margin-top: var(--space-S);
   width: 30rem;
   border-radius: var(--border-radius-0);
   overflow: hidden;
@@ -318,6 +322,10 @@
   margin-left: var(--space-S);
 }
 
+.rowActionsEnd {
+  margin-left: auto;
+}
+
 .inlineBtn {
   transform: translateY(0.4rem);
   height: 2rem;
@@ -367,15 +375,6 @@
 
 .rowMarginTop {
   margin-top: var(--space-S);
-}
-
-.navigationFooter {
-  font: var(--font-S);
-  color: var(--color-secondary-blue);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--space-XS);
 }
 
 .bathymetryDisclaimer {

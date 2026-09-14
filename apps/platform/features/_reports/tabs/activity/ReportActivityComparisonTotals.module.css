@@ -1,0 +1,21 @@
+.totals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-S) var(--space-M);
+  margin-block: var(--space-S);
+}
+
+.total {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  color: var(--color-secondary-blue);
+  font: var(--font-S);
+  text-transform: uppercase;
+}
+
+.percentage {
+  margin-left: var(--space-XS);
+}

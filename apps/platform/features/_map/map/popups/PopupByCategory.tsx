@@ -136,7 +136,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               <Fragment key={featureCategory}>
                 {isPositionInteraction && (
                   <PositionsTooltipSection
-                    key={featureCategory}
+                    key={`${featureCategory}-${uniqPositionFeatures.map((f) => f.id).join()}`}
                     features={uniqPositionFeatures}
                     showFeaturesDetails={type === 'click'}
                     loading={

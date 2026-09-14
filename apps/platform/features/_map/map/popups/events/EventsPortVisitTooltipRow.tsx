@@ -5,6 +5,7 @@ import cx from 'classnames'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Button, Spinner } from '@globalfishingwatch/ui-components'
 
 import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
@@ -23,6 +24,7 @@ import type {
   ExtendedFeatureByVesselEventPort,
   SliceExtendedClusterPickingObject,
 } from '../../map.slice'
+import { getIntervalDateFormat } from '../map-popups.utils'
 import PopupSectionLayout from '../shared/PopupSectionLayout'
 import VesselsTable from '../shared/VesselsTable'
 
@@ -91,7 +93,12 @@ function EventsPortVisitTooltipRow({
             {!feature.properties.cluster && feature.properties.stime && (
               <span className={styles.rowTextSecondary}>
                 {' '}
-                <I18nDate date={feature.properties.stime * 1000} />
+                <I18nDate
+                  date={feature.properties.stime * 1000}
+                  format={getIntervalDateFormat(
+                    getFourwingsInterval(feature.startTime, feature.endTime)
+                  )}
+                />
               </span>
             )}
           </span>
