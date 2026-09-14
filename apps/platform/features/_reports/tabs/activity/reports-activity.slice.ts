@@ -167,12 +167,7 @@ export const fetchReportVesselsThunk = createAsyncThunk(
       const vessels = await GFWAPI.fetch<APIPagination<ReportVesselsByDataset>>(
         `/4wings/report?${query}`
       )
-
-      return vessels.entries.sort((a, b) => {
-        const aLength = Object.values(a).reduce((sum, arr) => sum + arr?.length || 0, 0)
-        const bLength = Object.values(b).reduce((sum, arr) => sum + arr?.length || 0, 0)
-        return bLength - aLength
-      })
+      return vessels.entries
     } catch (e) {
       console.warn(e)
       return rejectWithValue(e)
