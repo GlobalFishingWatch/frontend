@@ -37,7 +37,7 @@
     "@globalfishingwatch/react-hooks": "workspace:^",
     "es-toolkit": "1.x",
     "geojson": "0.x",
-    "jotai": "2.x",
+    "jotai": "3.x",
     "luxon": "3.x",
     "react": "19.x",
     "tslib": "2.x"

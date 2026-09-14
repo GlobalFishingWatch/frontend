@@ -44,7 +44,7 @@
     "d3-scale": "4.x",
     "d3-shape": "3.x",
     "es-toolkit": "1.x",
-    "jotai": "2.x",
+    "jotai": "3.x",
     "luxon": "3.x",
     "mjolnir.js": "3.x",
     "react": "19.x",
