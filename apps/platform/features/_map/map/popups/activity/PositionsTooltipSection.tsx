@@ -64,15 +64,16 @@ function PositionsTooltipSection({
       >
         {layerFeatures.map((feature, i) => {
           const expandable = feature.category === 'detections' && layerFeatures.length > 1
+          const isExpanded = expandedId === feature.id
           return (
             <div key={`${feature.id}-${i}`} className={styles.popupSectionRow}>
               <PositionsTooltipRow
                 loading={loading}
-                error={error}
+                error={(expandable ? isExpanded : i === 0) ? error : ''}
                 feature={feature as any as FourwingsPositionsPickingObject}
                 showFeaturesDetails={true}
                 {...(expandable && {
-                  expanded: expandedId === feature.id,
+                  expanded: isExpanded,
                   onToggleExpand: () =>
                     setExpandedId((prev) => (prev === feature.id ? undefined : feature.id)),
                 })}

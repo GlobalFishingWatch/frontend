@@ -281,7 +281,7 @@ function PositionsTooltipRow({
           <Spinner size="small" />
         </div>
       )}
-      {!loading && error && <p className={popupStyles.error}>{error}</p>}
+      {expanded === true && !loading && error && <p className={popupStyles.error}>{error}</p>}
       {expanded !== false &&
         !loading &&
         feature.category === 'detections' &&
