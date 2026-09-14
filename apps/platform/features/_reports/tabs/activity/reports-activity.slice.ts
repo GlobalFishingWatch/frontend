@@ -167,6 +167,8 @@ export const fetchReportVesselsThunk = createAsyncThunk(
       const vessels = await GFWAPI.fetch<APIPagination<ReportVesselsByDataset>>(
         `/4wings/report?${query}`
       )
+      // There used to be a sort by the total value of the vessels, that we didn't remember why
+      // but it broke the color by layer, original code at commit: 855ecee178
       return vessels.entries
     } catch (e) {
       console.warn(e)
