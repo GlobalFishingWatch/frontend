@@ -42,6 +42,8 @@ type PositionsTooltipRowProps = {
   error: string
   feature: FourwingsPositionsPickingObject
   showFeaturesDetails: boolean
+  expanded?: boolean
+  onToggleExpand?: () => void
 }
 
 // e.g. 20250603_planet_..._RGB.png -> RGB
@@ -109,6 +111,8 @@ function PositionsTooltipRow({
   error,
   feature,
   showFeaturesDetails,
+  expanded,
+  onToggleExpand,
 }: PositionsTooltipRowProps) {
   const { t } = useTranslation()
   const allDatasets = useSelector(selectAllDatasets)
@@ -245,38 +249,49 @@ function PositionsTooltipRow({
   return (
     <Fragment>
       <div className={cx(popupStyles.rowCenter, { [popupStyles.rowColumn]: isRealTime })}>
-          <span className={cx(popupStyles.rowText, popupStyles.vesselTitle)}>
-            {renderSearchLink()}
-            {renderVesselPin()}
-            {renderShipname()}
+        <span className={cx(popupStyles.rowText, popupStyles.vesselTitle)}>
+          {renderSearchLink()}
+          {renderVesselPin()}
+          {renderShipname()}
+        </span>
+        {feature.properties.stime && (
+          <span className={popupStyles.secondary}>
+            <I18nDate
+              date={feature.properties.stime * 1000}
+              {...(isRealTime && {
+                format: DateTime.DATETIME_MED_WITH_SECONDS,
+                showUTCLabel: true,
+              })}
+            />
           </span>
-          {feature.properties.stime && (
-            <span className={popupStyles.secondary}>
-              <I18nDate
-                date={feature.properties.stime * 1000}
-                {...(isRealTime && {
-                  format: DateTime.DATETIME_MED_WITH_SECONDS,
-                  showUTCLabel: true,
-                })}
-              />
-            </span>
-          )}
-        </div>
-        {loading && isPositionThumbnail && (
-          <div className={cx(popupStyles.loading, popupStyles.thumbnailLoading)}>
-            <Spinner size="small" />
+        )}
+        {onToggleExpand && (
+          <div className={cx(popupStyles.rowActions, popupStyles.rowActionsEnd)}>
+            <IconButton
+              icon={expanded ? 'section-collapse' : 'section-expand'}
+              size="small"
+              tooltip={t((t) => (expanded ? t.common.collapseSection : t.common.expandSection))}
+              onClick={onToggleExpand}
+            />
           </div>
         )}
-        {!loading && error && <p className={popupStyles.error}>{error}</p>}
-        {!loading &&
-          feature.category === 'detections' &&
-          feature.properties.thumbnails?.length > 0 && (
-            <DetectionThumbnails
-              thumbnails={feature.properties.thumbnails}
-              scale={getDatasetConfiguration(thumbnailsDataset, 'thumbnailsV1')?.scale}
-              datasetId={datasetId}
-            />
-          )}
+      </div>
+      {expanded !== false && loading && isPositionThumbnail && (
+        <div className={cx(popupStyles.loading, popupStyles.thumbnailLoading)}>
+          <Spinner size="small" />
+        </div>
+      )}
+      {!loading && error && <p className={popupStyles.error}>{error}</p>}
+      {expanded !== false &&
+        !loading &&
+        feature.category === 'detections' &&
+        feature.properties.thumbnails?.length > 0 && (
+          <DetectionThumbnails
+            thumbnails={feature.properties.thumbnails}
+            scale={getDatasetConfiguration(thumbnailsDataset, 'thumbnailsV1')?.scale}
+            datasetId={datasetId}
+          />
+        )}
     </Fragment>
   )
 }
