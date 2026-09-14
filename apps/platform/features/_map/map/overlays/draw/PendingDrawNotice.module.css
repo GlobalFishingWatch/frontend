@@ -1,0 +1,7 @@
+.content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+  padding: var(--space-XS);
+  white-space: nowrap;
+}

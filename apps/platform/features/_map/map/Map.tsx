@@ -22,6 +22,7 @@ import {
 import MapInfo from './controls/MapInfo'
 import MapAnnotationsDialog from './overlays/annotations/AnnotationsDialog'
 import { CoordinateEditOverlay } from './overlays/draw/CoordinateEditOverlay'
+import PendingDrawNotice from './overlays/draw/PendingDrawNotice'
 import LayersComposer from './LayersComposer'
 import { useMapDrawConnect } from './map-draw.hooks'
 import { MAP_CONTAINER_ID, useUpdateViewStateUrlParams } from './map-viewport.hooks'
@@ -80,6 +81,7 @@ const MapWrapper = () => {
         </Fragment>
       )}
       <MapPopups />
+      <PendingDrawNotice />
       <ErrorNotificationDialog />
       <MapAnnotationsDialog />
       <MapControls />
