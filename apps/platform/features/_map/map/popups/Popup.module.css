@@ -80,6 +80,8 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  flex-basis: 100%;
+  margin-inline: auto;
   min-height: 4rem;
 }
 
