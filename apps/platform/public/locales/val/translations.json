@@ -425,7 +425,6 @@
     "onlyFileFormatAllowed": "crwdns132505:0{{formats}}crwdne132505:0",
     "remove": "crwdns132507:0crwdne132507:0",
     "requiredFields": "crwdns132509:0{{fields}}crwdne132509:0",
-    "SARDelayDisclaimer": "crwdns138373:0crwdne138373:0",
     "showLess": "crwdns138525:0crwdne138525:0",
     "showMore_one": "crwdns138527:0{{count}}crwdne138527:0",
     "showMore_other": "crwdns138529:0{{count}}crwdne138529:0",
