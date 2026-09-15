@@ -6,7 +6,7 @@ import type {
   UserPermission,
 } from '@globalfishingwatch/api-types'
 
-import { getIsBrowser, logDebugUrl } from './utils/browser'
+import { getIsBrowser, logDebugUrl, safeLocalStorage } from './utils/browser'
 import { getEnv } from './utils/env'
 import {
   getIsTimeoutError,
@@ -216,10 +216,7 @@ export class GFW_API_CLASS {
   }
 
   private getStoredLocale(): string {
-    if (getIsBrowser()) {
-      return localStorage.getItem('i18nextLng') || 'en'
-    }
-    return 'en'
+    return safeLocalStorage.get('i18nextLng') || 'en'
   }
 
   getRegisterUrl(callbackUrl: string, { client = 'gfw', locale = '' } = {}) {

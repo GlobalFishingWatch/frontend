@@ -6,26 +6,33 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { boundsAtom, viewStateAtom } from 'features/_map/map/map.atoms'
 import { useDeckMap } from 'features/_map/map/map-context.hooks'
 
-/**
- * Writing the map view state, without pulling deck.gl at runtime.
- *
- * Split out of map-viewport.hooks.ts, which constructs `new MapView(...)` and therefore imports
- * @deck.gl/core as a *value*. MainNav is rendered on every route and only needs to move the camera, so
- * it imports from here; map-viewport.hooks re-exports both for its existing consumers.
- *
- * Every deck.gl reference in this module must stay type-only — `check-store-graph.mjs` enforces it for
- * the reducer map, but not for this file directly.
- */
+export const getSafeViewState = (coordinates: Partial<ViewStateMap<MapView>>) => {
+  // Web Mercator is only defined up to ±85.051129°; at ±90 the projection goes to infinity.
+  const MAX_MERCATOR_LATITUDE = 85.051129
+  const entries: [string, unknown][] = []
+  for (const [key, value] of Object.entries(coordinates)) {
+    if (value === undefined) continue
+    if (typeof value !== 'number') {
+      entries.push([key, value])
+      continue
+    }
+    if (!Number.isFinite(value)) continue
+    entries.push([
+      key,
+      key === 'latitude'
+        ? Math.min(Math.max(value, -MAX_MERCATOR_LATITUDE), MAX_MERCATOR_LATITUDE)
+        : value,
+    ])
+  }
+  return Object.fromEntries(entries)
+}
 
 export const useMapSetViewState = () => {
   const setViewState = useSetAtom(viewStateAtom)
   return useMemo(
     () =>
       throttle((coordinates: Partial<ViewStateMap<MapView>>) => {
-        const cleanCoordinates = Object.fromEntries(
-          Object.entries(coordinates).filter(([_key, value]) => value !== undefined)
-        )
-        setViewState((prev) => ({ ...prev, ...cleanCoordinates }))
+        setViewState((prev) => ({ ...prev, ...getSafeViewState(coordinates) }))
       }, 1),
     [setViewState]
   )
@@ -42,9 +49,7 @@ export function useSetMapCoordinates() {
       if (!isTransitioning) {
         setMapViewState(coordinates)
         if (deckMap) {
-          const viewState = Object.fromEntries(
-            Object.entries(coordinates).filter(([_key, value]) => value !== undefined)
-          ) as ViewStateMap<MapView>
+          const viewState = getSafeViewState(coordinates) as ViewStateMap<MapView>
           // Can't find why this is needed to properly update the view state
           deckMap.setProps({ viewState })
         }

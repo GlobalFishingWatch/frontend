@@ -126,6 +126,21 @@ describe('url-workspace', () => {
       })
     })
 
+    test('should not throw when dataviewInstances is not an array', () => {
+      // qs yields a string for `dvIn=…` and an index-keyed object for sparse/huge indexes
+      expect(parseWorkspace('dvIn=broken').dataviewInstances).toEqual([])
+      expect(parseWorkspace('dvIn[2000][dataviewId]=test').dataviewInstances).toMatchObject([
+        { dataviewId: 'test' },
+      ])
+    })
+
+    test('should not throw on a malformed percent escape', () => {
+      // A truncated URL leaves a stray `%`, which decodeURIComponent rejects
+      expect(() => parseWorkspace('start=2026-01-01%')).not.toThrow()
+      expect(parseWorkspace('start=2026-01-01%').start).toBe('2026-01-01%')
+      expect(() => parseWorkspace('dvIn[0][dvId]=test&dvIn[0][cfg][clr]=%23FF00%')).not.toThrow()
+    })
+
     test('should handle mapRulers transformation', () => {
       const queryString = 'mR[0][id]=1&mR[0][name]=ruler1&mR[1][id]=2&mR[1][name]=ruler2'
       const result = parseWorkspace(queryString)
