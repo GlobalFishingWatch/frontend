@@ -19,12 +19,14 @@ import {
   DAYS_FROM_LATEST_MAX,
   DAYS_FROM_LATEST_MIN,
   getViewAccessOptions,
+  isValidDaysFromLatest,
 } from 'features/_map/workspace/save/workspace-save.utils'
 import { selectWorkspaceWithCurrentState } from 'features/_map/workspace/selectors/app.workspace.selectors'
 import { getWorkspaceReport } from 'features/_map/workspace/workspace.utils'
 import { selectReportAreaIds } from 'features/_reports/report-area/area-reports.selectors'
+import { getReportAreaStringByLocale } from 'features/_reports/report-area/title/report-title.utils'
 import { createReportThunk, updateReportThunk } from 'features/_reports/reports.slice'
-import { selectUserData } from 'features/_user/selectors/user.selectors'
+import { selectIsGFWUser, selectUserData } from 'features/_user/selectors/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDatasetAreaDetail } from 'features/data/areas/areas.slice'
@@ -40,7 +42,7 @@ type NewReportModalProps = {
 }
 
 function NewReportModal({ isOpen, onClose, onFinish, report }: NewReportModalProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const reportAreaIds = useSelector(selectReportAreaIds)
   const reportArea = useSelector(selectDatasetAreaDetail(reportAreaIds))
@@ -48,9 +50,16 @@ function NewReportModal({ isOpen, onClose, onFinish, report }: NewReportModalPro
   const privateDatasets = useSelector(selectPrivateDatasetsInWorkspace)
   const containsPrivateDatasets = privateDatasets.length > 0
   const userData = useSelector(selectUserData)
+  const isGFWUser = useSelector(selectIsGFWUser)
 
-  const [name, setName] = useState(report?.name || reportArea?.name || '')
-  const [description, setDescription] = useState(report?.description || '')
+  // name and description come back as a locale-keyed JSON string ({"en": "…"}) on curated
+  // reports, so decode them for the inputs and save back the plain value
+  const [name, setName] = useState(
+    getReportAreaStringByLocale(report?.name, i18n.language) || reportArea?.name || ''
+  )
+  const [description, setDescription] = useState(
+    getReportAreaStringByLocale(report?.description, i18n.language) || ''
+  )
   const [error, setError] = useState('')
 
   const viewOptions = getViewAccessOptions().filter((o) => o.id !== WORKSPACE_PASSWORD_ACCESS)
@@ -65,8 +74,10 @@ function NewReportModal({ isOpen, onClose, onFinish, report }: NewReportModalPro
     handleTimeRangeChange,
   } = useSaveWorkspaceTimerange(workspace)
   const [loading, setLoading] = useState(false)
+  const validDaysFromLatestValue =
+    timeRangeOption === 'dynamic' ? isValidDaysFromLatest(daysFromLatest) : true
 
-  const isEditing = report?.id !== undefined
+  const isEditing = report?.id !== undefined && (report.ownerId === userData?.id || isGFWUser)
 
   const updateReport = async (event: any) => {
     event.preventDefault()
@@ -223,7 +234,7 @@ function NewReportModal({ isOpen, onClose, onFinish, report }: NewReportModalPro
         )}
         <div className={styles.footer}>
           {error && <p className={styles.error}>{error}</p>}
-          <Button loading={loading} disabled={!name} htmlType="submit">
+          <Button loading={loading} disabled={!name || !validDaysFromLatestValue} htmlType="submit">
             {isEditing ? t((t) => t.common.update) : t((t) => t.common.save)}
           </Button>
         </div>
