@@ -63,6 +63,21 @@ describe('createWorkerClient', () => {
     await expect(request).rejects.toThrow('invalid data')
   })
 
+  it('onerror rejects pending requests and the next request spawns a new worker', async () => {
+    const client = createWorkerClient<string, string>(createFakeWorker)
+    const request = client.request('a')
+    const [worker] = FakeWorker.instances
+    worker.onerror?.({ error: new Error('failed to load'), message: '' } as ErrorEvent)
+
+    await expect(request).rejects.toThrow('failed to load')
+    expect(worker.terminated).toBe(true)
+
+    const next = client.request('b')
+    expect(FakeWorker.instances).toHaveLength(2)
+    FakeWorker.instances[1].reply({ id: 1, result: 'B' })
+    await expect(next).resolves.toBe('B')
+  })
+
   it('terminate rejects pending requests and the next request spawns a new worker', async () => {
     const client = createWorkerClient<string, string>(createFakeWorker)
     const request = client.request('a')

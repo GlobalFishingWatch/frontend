@@ -149,6 +149,10 @@ describe('compareCell', () => {
   it('returns the difference when both have values', () => {
     expect(compareCell({ cellValues: [[2], [7]] })).toEqual([5])
   })
+
+  it('keeps a measured 0 instead of treating it as empty', () => {
+    expect(compareCell({ cellValues: [[0], [0]] })).toEqual([0])
+  })
 })
 
 describe('getURLFromTemplate', () => {

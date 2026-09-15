@@ -151,6 +151,12 @@ describe('FourwingsHeatmapLayer', () => {
         )
       ).toEqual(EMPTY_CELL_COLOR)
     })
+
+    it('returns empty color when both periods have no data', () => {
+      expect(
+        makeLayer(compareProps).getTimeCompareFillColor(feature([[], []]), target)
+      ).toEqual(EMPTY_CELL_COLOR)
+    })
   })
 
   describe('getBivariateFillColor', () => {

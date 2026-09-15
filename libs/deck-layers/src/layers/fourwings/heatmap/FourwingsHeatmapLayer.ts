@@ -108,6 +108,10 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       aggregationOperation,
     })
     feature.aggregatedValues = aggregatedCellValues
+    if (!aggregatedCellValues.length) {
+      target = EMPTY_CELL_COLOR
+      return target
+    }
     const chosenValue = aggregatedCellValues[0]
 
     if (scales[0]) {

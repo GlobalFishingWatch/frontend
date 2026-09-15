@@ -139,7 +139,7 @@ function PositionsTooltipRow({
   const needsThumbnails =
     showFeaturesDetails &&
     isPositionThumbnail &&
-    expanded === true &&
+    expanded !== false &&
     feature.properties.thumbnails === undefined
   const requestedThumbnailsRef = useRef<string>(undefined)
   useEffect(() => {
@@ -303,7 +303,7 @@ function PositionsTooltipRow({
           <Spinner size="small" />
         </div>
       )}
-      {expanded === true && !loading && error && <p className={popupStyles.error}>{error}</p>}
+      {expanded !== false && !loading && error && <p className={popupStyles.error}>{error}</p>}
       {expanded !== false &&
         !loading &&
         feature.category === 'detections' &&

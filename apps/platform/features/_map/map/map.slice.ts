@@ -124,7 +124,7 @@ export type SliceExtendedClusterPickingObject<Event = ExtendedFeatureEvent> =
     event: Event
   }
 
-type SliceExtendedFeature =
+export type SliceExtendedFeature =
   | SliceExtendedFourwingsPickingObject
   | SliceExtendedClusterPickingObject
   | FourwingsPositionsPickingObject
@@ -969,6 +969,29 @@ const slice = createSlice({
       }
       state.clicked = castDraft({ ...action.payload })
     },
+    removeClickedEventDataview: (state, action: PayloadAction<string>) => {
+      if (!state.clicked?.features?.length) {
+        return
+      }
+      const dataviewId = action.payload
+      state.clicked.features = castDraft(
+        state.clicked.features.flatMap((feature) => {
+          const sublayers = (feature as SliceExtendedFourwingsPickingObject).sublayers
+          if (sublayers?.length) {
+            const visibleSublayers = sublayers.filter((sublayer) => sublayer.id !== dataviewId)
+            return visibleSublayers.length ? [{ ...feature, sublayers: visibleSublayers }] : []
+          }
+          const featureDataviewId = (feature as ContextPickingObject).dataviewId || feature.layerId
+          return featureDataviewId === dataviewId ? [] : [feature]
+        }) as SliceExtendedFeature[]
+      )
+    },
+    setClickedEventFeatures: (state, action: PayloadAction<SliceExtendedFeature[]>) => {
+      if (!state.clicked) {
+        return
+      }
+      state.clicked.features = castDraft(action.payload)
+    },
   },
 
   extraReducers: (builder) => {
@@ -983,8 +1006,11 @@ const slice = createSlice({
       if (state?.clicked?.features?.length && action.payload?.vessels?.length) {
         state.clicked.features = state.clicked.features.map((feature: any) => {
           const sublayers = (feature as FourwingsPickingObject).sublayers?.map((sublayer) => {
+            // sublayers out of the request keep the vessels already fetched for them
             const vessels =
-              action.payload?.vessels.find((v) => v.sublayerId === sublayer.id)?.vessels || []
+              action.payload?.vessels.find((v) => v.sublayerId === sublayer.id)?.vessels ||
+              (sublayer as SliceExtendedFourwingsDeckSublayer).vessels ||
+              []
             return { ...sublayer, vessels }
           })
           return { ...feature, sublayers }
@@ -1135,5 +1161,10 @@ export const selectRealTimePositionsInteractionError = (state: { map: MapState }
 export const selectApiEventStatus = (state: { map: MapState }) => state.map.apiEventStatus
 export const selectApiEventError = (state: { map: MapState }) => state.map.apiEventError
 
-export const { setMapLoaded, setClickedEvent } = slice.actions
+export const {
+  setMapLoaded,
+  setClickedEvent,
+  removeClickedEventDataview,
+  setClickedEventFeatures,
+} = slice.actions
 export default slice.reducer

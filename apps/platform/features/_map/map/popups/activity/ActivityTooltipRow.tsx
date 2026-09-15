@@ -1,9 +1,10 @@
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
 
 import type { DatasetSubCategory, DataviewCategory } from '@globalfishingwatch/api-types'
 import { isSublayerValueVisible } from '@globalfishingwatch/deck-layers'
-import { Spinner } from '@globalfishingwatch/ui-components'
+import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
 import I18nNumber from 'features/i18n/i18nNumber'
 
@@ -31,10 +32,12 @@ function ActivityTooltipRow({
   activityType,
 }: ActivityTooltipRowProps) {
   const { t } = useTranslation()
+  const [expanded, setExpanded] = useState(true)
   // TODO get the value based on the sublayer
   const value = feature?.value as number
   const unit = feature?.unit ?? ('hours' as FeatureUnit)
   const vesselsCount = feature?.vessels?.length || 0
+  const collapsible = showFeaturesDetails && !loading && vesselsCount > 0
   // same gate the map uses to paint and pick the cell, so a measured 0 isn't an empty popup
   if (!isSublayerValueVisible(value, feature)) {
     return null
@@ -46,7 +49,7 @@ function ActivityTooltipRow({
         iconColor={feature.color}
         title={showFeaturesDetails && feature.title ? feature.title : undefined}
       >
-        <div className={popupStyles.row}>
+        <div className={cx(popupStyles.row, popupStyles.rowCenter)}>
           <span className={popupStyles.rowText} data-testid="activity-tooltip-row-value">
             <I18nNumber number={value} />{' '}
             {t((t) => t.common[unit], {
@@ -57,6 +60,16 @@ function ActivityTooltipRow({
               vesselsCount > 0 &&
               t((t) => t.common.fromVessels, { count: vesselsCount })}
           </span>
+          {collapsible && (
+            <div className={cx(popupStyles.rowActions, popupStyles.rowActionsEnd)}>
+              <IconButton
+                icon={expanded ? 'section-collapse' : 'section-expand'}
+                size="small"
+                tooltip={t((t) => (expanded ? t.common.collapseSection : t.common.expandSection))}
+                onClick={() => setExpanded((prev) => !prev)}
+              />
+            </div>
+          )}
         </div>
         {loading && (
           <div className={popupStyles.loading}>
@@ -64,7 +77,7 @@ function ActivityTooltipRow({
           </div>
         )}
         {!loading && error && <p className={popupStyles.error}>{error}</p>}
-        {!loading && showFeaturesDetails && (
+        {!loading && showFeaturesDetails && expanded && (
           <VesselsTable feature={feature} activityType={activityType} showMore={false} />
         )}
       </PopupSectionLayout>
