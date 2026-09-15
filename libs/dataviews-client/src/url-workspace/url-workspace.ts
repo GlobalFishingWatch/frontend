@@ -30,6 +30,7 @@ export type BaseUrlWorkspace = {
 const PARAMS_TO_ABBREVIATED = {
   activityVisualizationMode: 'aVM',
   bivariateDataviews: 'bDV',
+  clickedCoordinates: 'cCo',
   color: 'clr',
   config: 'cfg',
   collapsedSections: 'cS',
@@ -232,6 +233,8 @@ const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
   },
   reportAreaBounds: (reportAreaBounds: string[]) =>
     reportAreaBounds?.map((bound: string) => parseFloat(bound)),
+  clickedCoordinates: (clickedCoordinates: string[]) =>
+    clickedCoordinates?.map((coordinate: string) => parseFloat(coordinate)),
   mapDrawing: (drawing: boolean | string) => {
     if (drawing === true || drawing === 'true') {
       return 'polygons'

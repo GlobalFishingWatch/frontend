@@ -85,6 +85,10 @@ export const rootSearchSchema = z
       z.union([z.tuple([z.string(), z.string()]), z.null()]).optional(),
       undefined
     ),
+    clickedCoordinates: fallback(
+      z.tuple([z.coerce.number(), z.coerce.number()]).optional(),
+      undefined
+    ),
     collapsedSections: fallback(
       z.array(z.enum(Object.values(DataviewCategory) as [string, ...string[]])).optional(),
       undefined

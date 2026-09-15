@@ -11,6 +11,7 @@ import {
   selectAreMapAnnotationsVisible,
   selectAreMapRulersVisible,
   selectBivariateDataviews,
+  selectClickedCoordinates,
   selectDetectionsVisualizationMode,
   selectEnvironmentVisualizationMode,
   selectMapAnnotations,
@@ -176,6 +177,7 @@ const selectWorkspaceAppState = createSelector(
   [
     selectActivityCategory,
     selectBivariateDataviews,
+    selectClickedCoordinates,
     selectMapAnnotations,
     selectAreMapAnnotationsVisible,
     selectMapRulers,
@@ -199,6 +201,7 @@ const selectWorkspaceAppState = createSelector(
   (
     activityCategory,
     bivariateDataviews,
+    clickedCoordinates,
     mapAnnotations,
     mapAnnotationsVisible,
     mapRulers,
@@ -222,6 +225,7 @@ const selectWorkspaceAppState = createSelector(
     return {
       activityCategory,
       bivariateDataviews,
+      clickedCoordinates,
       collapsedSections,
       mapAnnotations,
       mapAnnotationsVisible,
