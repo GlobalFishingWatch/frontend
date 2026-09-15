@@ -80,9 +80,10 @@ export function usePointerInteraction({
         return
       }
       const x = clientX - outerX
+      const target = event.target instanceof Node ? event.target : null
       const isMovingInside =
-        nodeRef.current?.contains(event.target as Node) && x > innerStartPx && x < innerEndPx
-      const isNodeInside = (event.target as any).contains(nodeRef.current) // TODO: fix this
+        target !== null && nodeRef.current?.contains(target) && x > innerStartPx && x < innerEndPx
+      const isNodeInside = target?.contains(nodeRef.current) ?? false
 
       const isDraggingInner = dragging === DRAG_INNER
       const isDraggingZoomIn =
