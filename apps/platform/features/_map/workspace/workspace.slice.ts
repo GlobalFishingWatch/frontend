@@ -33,6 +33,7 @@ import {
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
   VMS_VESSEL_DATAVIEW_SLUGS,
 } from 'data/map/dataviews'
+import { MARINE_MANAGER_WORKSPACES } from 'data/map/highlighted-workspaces/marine-manager'
 import { getWorkspaceEnv } from 'data/workspace-env'
 import { fetchDatasetsByIdsThunk } from 'features/_map/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/_map/dataviews/dataviews.slice'
@@ -159,6 +160,17 @@ export const getDefaultWorkspace = async (): Promise<AppWorkspace> => {
   return mod.default
 }
 
+const fetchWorkspaceByIdSafe = async (workspaceId: string, signal?: AbortSignal) => {
+  try {
+    return await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces/${workspaceId}`, { signal })
+  } catch (e: any) {
+    if (!signal?.aborted) {
+      console.warn(`Workspace "${workspaceId}" not available, using the report snapshot instead`, e)
+    }
+    return null
+  }
+}
+
 export type FetchWorkspacesThunkParams = {
   workspaceId: string
   password?: string
@@ -185,7 +197,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const currentWorkspace = selectWorkspace(state)
     const privateUserGroups = selectPrivateUserGroups(state)
     const reportId = reportIdParam || selectReportId(state)
-    let workspaceReportId = null
+    let workspaceReportId: string | null | undefined = null
     let dataviewInstancesToUpsert: UrlDataviewInstance[] | undefined
 
     try {
@@ -207,6 +219,28 @@ export const fetchWorkspaceThunk = createAsyncThunk(
               return rejectWithValue({
                 error: { status: 404, message: 'Report workspace not found' },
               })
+            }
+            const isCuratedReport = MARINE_MANAGER_WORKSPACES.some(({ reports }) =>
+              reports?.some(({ id }) => id === workspaceReportId)
+            )
+            if (isCuratedReport) {
+              const liveWorkspace = await fetchWorkspaceByIdSafe(
+                workspaceReportId as string,
+                signal
+              )
+              if (liveWorkspace) {
+                const {
+                  viewAccess: _viewAccess,
+                  editAccess: _editAccess,
+                  ...liveWorkspaceLayers
+                } = liveWorkspace
+                workspace = {
+                  ...liveWorkspaceLayers,
+                  startAt: workspace.startAt,
+                  endAt: workspace.endAt,
+                  state: workspace.state,
+                } as Workspace<any>
+              }
             }
             if (workspace.id.includes(PRIVATE_SUFIX) && guestUser) {
               return rejectWithValue({ error: { status: 401, message: 'Private workspace' } })
