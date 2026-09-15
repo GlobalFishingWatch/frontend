@@ -24,6 +24,7 @@ import {
 import { selectWorkspaceWithCurrentState } from 'features/_map/workspace/selectors/app.workspace.selectors'
 import { getWorkspaceReport } from 'features/_map/workspace/workspace.utils'
 import { selectReportAreaIds } from 'features/_reports/report-area/area-reports.selectors'
+import { getReportAreaStringByLocale } from 'features/_reports/report-area/title/report-title.utils'
 import { createReportThunk, updateReportThunk } from 'features/_reports/reports.slice'
 import { selectIsGFWUser, selectUserData } from 'features/_user/selectors/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -41,7 +42,7 @@ type NewReportModalProps = {
 }
 
 function NewReportModal({ isOpen, onClose, onFinish, report }: NewReportModalProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const reportAreaIds = useSelector(selectReportAreaIds)
   const reportArea = useSelector(selectDatasetAreaDetail(reportAreaIds))
@@ -51,8 +52,14 @@ function NewReportModal({ isOpen, onClose, onFinish, report }: NewReportModalPro
   const userData = useSelector(selectUserData)
   const isGFWUser = useSelector(selectIsGFWUser)
 
-  const [name, setName] = useState(report?.name || reportArea?.name || '')
-  const [description, setDescription] = useState(report?.description || '')
+  // name and description come back as a locale-keyed JSON string ({"en": "…"}) on curated
+  // reports, so decode them for the inputs and save back the plain value
+  const [name, setName] = useState(
+    getReportAreaStringByLocale(report?.name, i18n.language) || reportArea?.name || ''
+  )
+  const [description, setDescription] = useState(
+    getReportAreaStringByLocale(report?.description, i18n.language) || ''
+  )
   const [error, setError] = useState('')
 
   const viewOptions = getViewAccessOptions().filter((o) => o.id !== WORKSPACE_PASSWORD_ACCESS)
