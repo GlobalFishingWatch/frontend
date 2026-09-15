@@ -22,6 +22,16 @@ export const useDeckLayerLoadedState = () => {
   return useAtomValue(deckLayersStateAtom)
 }
 
+// deck's `isLoaded` getters reach into layer state
+// we read this one frame late (rAF), by which time a layer can have been finalized or replaced
+function getIsLayerLoaded(layer: AnyDeckLayer, fallback: boolean) {
+  try {
+    return layer.isLoaded
+  } catch {
+    return fallback
+  }
+}
+
 function isDeckLayerReady(lifecycle: string | undefined) {
   return (
     lifecycle !== undefined &&
@@ -68,7 +78,7 @@ export const useSetDeckLayerLoadedState = () => {
               return
             }
             newLoadedState[layer.id] = {
-              loaded: layer.isLoaded,
+              loaded: getIsLayerLoaded(layer, loadedState[layer.id]?.loaded ?? false),
               ready: isDeckLayerReady(layer.lifecycle),
               cacheHash,
             }
