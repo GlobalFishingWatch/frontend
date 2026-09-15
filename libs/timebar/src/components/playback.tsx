@@ -14,6 +14,8 @@ import uiStyles from '../timebar.module.css'
 import styles from './playback.module.css'
 
 const SPEED_STEPS = [1, 2, 3, 5, 10]
+// ~3 frames at 60fps: enough to absorb a stutter, small enough that a resumed tab doesn't jump
+const MAX_FRAME_PROGRESS_RATIO = 3
 
 type PlaybackProps = {
   disabled?: boolean
@@ -103,6 +105,11 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Pla
         deltaMultiplicator,
       })
 
+      if (newStart === start && newEnd === end) {
+        // nothing moved: the range is unparseable, so don't spin rAF forever on it
+        return false
+      }
+
       if (newStart && newEnd) {
         onPlaybackTick(newStart, newEnd)
       }
@@ -131,8 +138,13 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Pla
       if (lastUpdateMsRef.current === null) {
         lastUpdateMsRef.current = elapsedMs
       }
-      // "compare" elapsed with theoretical 60 fps frame
-      const progressRatio = (elapsedMs - lastUpdateMsRef.current) / (1000 / 60)
+      // "compare" elapsed with theoretical 60 fps frame, capped: rAF is paused while the tab is
+      // hidden, so the first frame back carries the whole gap and would teleport the range
+      // (hours of gap x a 15y span can even overflow the Date range and throw on toISOString).
+      const progressRatio = Math.min(
+        (elapsedMs - lastUpdateMsRef.current) / (1000 / 60),
+        MAX_FRAME_PROGRESS_RATIO
+      )
       const requireNextTick = update(progressRatio)
       lastUpdateMsRef.current = elapsedMs
       if (requireNextTick === true) {

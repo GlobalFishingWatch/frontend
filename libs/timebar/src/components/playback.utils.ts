@@ -6,6 +6,7 @@ import { getUTCDate, getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
+import type { TimebarClamped } from '../utils'
 import { clampToAbsoluteBoundaries } from '../utils'
 
 const BASE_STEP = 0.001
@@ -47,11 +48,11 @@ export const getTimebarStepByDelta = ({
   deltaMultiplicator,
   byIntervals = true,
   speedStep = 0,
-}: GetStepProps) => {
-  if (!start || !end) {
+}: GetStepProps): { start: string; end: string; clamped: TimebarClamped } => {
+  if (!start || !end || isNaN(getUTCDate(start).getTime()) || isNaN(getUTCDate(end).getTime())) {
     return {
-      newStart: start,
-      newEnd: end,
+      start,
+      end,
       clamped: 'none',
     }
   }

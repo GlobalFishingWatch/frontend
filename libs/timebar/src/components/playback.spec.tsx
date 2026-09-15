@@ -88,6 +88,15 @@ describe('Playback', () => {
     expect(new Date(second).getTime()).toBeGreaterThan(new Date(first).getTime())
   })
 
+  it('does not step an unparseable range', () => {
+    // `start`/`end` are only validated as strings upstream, so garbage can reach the timebar.
+    // Stepping must be a no-op: the loop bails instead of re-scheduling on a range it can't move.
+    const { onChange } = renderPlayback({ start: 'not-a-date' })
+    onChange.mockClear()
+    fireEvent.click(screen.getByTitle('Move forward'))
+    expect(onChange).not.toHaveBeenCalled()
+  })
+
   it('disables play when already stopped at the data end', () => {
     const onTogglePlay = vi.fn()
     renderPlayback(

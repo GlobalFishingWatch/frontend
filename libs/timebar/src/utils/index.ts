@@ -65,20 +65,23 @@ export const stickToClosestUnit = (date: string, unit: DateTimeUnit) => {
   return mClosest.toISO()
 }
 
+/** Which absolute boundary a range was pushed against, `none` when it fitted as requested. */
+export type TimebarClamped = 'none' | 'start' | 'end'
+
 export const clampToAbsoluteBoundaries = (
   start: string,
   end: string,
   desiredDeltaMs: number,
   absoluteStart: string,
   absoluteEnd: string
-) => {
+): { newStartClamped: string; newEndClamped: string; clamped: TimebarClamped } => {
   const startMs = getTime(start)
   const endMs = getTime(end)
   const absoluteStartMs = getTime(absoluteStart)
   const absoluteEndMs = getTime(absoluteEnd) + 1
   let newStartClamped = start
   let newEndClamped = end
-  let clamped
+  let clamped: TimebarClamped = 'none'
 
   // newStart is before absolute start: use abs start as new start and keep the existing duration to get to new end
   if (startMs < absoluteStartMs) {
