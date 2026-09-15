@@ -37,7 +37,11 @@ export function ConfirmLeave() {
       const shouldLeave = window.confirm(message)
 
       if (!shouldLeave) {
-        sessionStorage.setItem(SAVE_WORKSPACE_BEFORE_LEAVE_KEY, 'true')
+        try {
+          sessionStorage.setItem(SAVE_WORKSPACE_BEFORE_LEAVE_KEY, 'true')
+        } catch {
+          // Blocked storage (sandboxed embed, disabled DOM storage) throws on access
+        }
         window.dispatchEvent(
           new StorageEvent('session-storage', { key: SAVE_WORKSPACE_BEFORE_LEAVE_KEY })
         )
