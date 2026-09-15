@@ -56,9 +56,16 @@ sentryInit({
 })
 
 if (import.meta.env.PROD) {
-  void lazyLoadSentryIntegration('replayIntegration')
-    .then((replayIntegration) => {
-      getSentryClient()?.addIntegration(
+  void Promise.all([
+    // The canvas integration must be registered before replayIntegration, otherwise replay starts
+    // recording without canvas support and the deck.gl map shows up as an empty box.
+    lazyLoadSentryIntegration('replayCanvasIntegration'),
+    lazyLoadSentryIntegration('replayIntegration'),
+  ])
+    .then(([replayCanvasIntegration, replayIntegration]) => {
+      const client = getSentryClient()
+      client?.addIntegration(replayCanvasIntegration({ quality: 'low' }))
+      client?.addIntegration(
         replayIntegration({
           maskAllText: false,
           blockAllMedia: false,
