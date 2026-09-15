@@ -74,6 +74,8 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
         workspaceLink: getCurrentAppUrl(),
         dateSubmitted: now,
         timeRange: formatTransmissionDate(vesselIdentity),
+        transmissionDateFrom: vesselIdentity.transmissionDateFrom || '',
+        transmissionDateTo: vesselIdentity.transmissionDateTo || '',
         vesselId:
           VesselIdentitySourceEnum.Registry && vesselIdentity.recordId
             ? vesselIdentity.recordId

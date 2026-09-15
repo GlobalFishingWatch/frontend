@@ -16,6 +16,8 @@ export type InfoCorrectionSendFormat = {
   workspaceLink: string
   dateSubmitted: string
   timeRange: string
+  transmissionDateFrom: string
+  transmissionDateTo: string
   vesselId: string
 
   originalValues: RelevantDataFields

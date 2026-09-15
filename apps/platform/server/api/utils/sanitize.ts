@@ -4,7 +4,7 @@
  * A cell whose text starts with `=`, `+`, `-`, `@` (or a tab/CR) is interpreted as a
  * formula. User-supplied strings written to a sheet must therefore be neutralized so a
  * value like `=IMPORTXML(...)` cannot exfiltrate data or run when an analyst opens the
- * sheet. See https://owasp.org/www-community/attacks/CSV_Injection.
+ * sheet. See https://bishopfox.com/blog/server-side-spreadsheet-injections.
  */
 
 const FORMULA_TRIGGER = /^[=+\-@\t\r]/
