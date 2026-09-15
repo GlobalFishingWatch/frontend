@@ -53,13 +53,13 @@ function NewReportModal({ isOpen, onClose, onFinish, report }: NewReportModalPro
   const isGFWUser = useSelector(selectIsGFWUser)
 
   // name and description come back as a locale-keyed JSON string ({"en": "…"}) on curated
-  // reports, so decode them for the inputs and save back the plain value
-  const [name, setName] = useState(
-    getReportAreaStringByLocale(report?.name, i18n.language) || reportArea?.name || ''
-  )
-  const [description, setDescription] = useState(
-    getReportAreaStringByLocale(report?.description, i18n.language) || ''
-  )
+  // reports. Regular users edit the decoded value for their locale; GFW users keep editing the
+  // raw string so saving a curated report doesn't collapse every locale into a single plain value
+  const localizeReportString = (string?: Report['name'] | Report['description']) =>
+    isGFWUser ? string || '' : getReportAreaStringByLocale(string || '', i18n.language)
+
+  const [name, setName] = useState(localizeReportString(report?.name) || reportArea?.name || '')
+  const [description, setDescription] = useState(localizeReportString(report?.description))
   const [error, setError] = useState('')
 
   const viewOptions = getViewAccessOptions().filter((o) => o.id !== WORKSPACE_PASSWORD_ACCESS)
