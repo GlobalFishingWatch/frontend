@@ -116,7 +116,7 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
     img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-revillagigedo.jpg`,
     reports: [
       {
-        id: 'revillagigedo_mexico-public',
+        id: 'revillagigedo-public',
       },
     ],
   },

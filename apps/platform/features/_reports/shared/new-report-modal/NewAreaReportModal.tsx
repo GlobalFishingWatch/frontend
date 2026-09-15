@@ -66,7 +66,7 @@ function NewReportModal({ isOpen, onClose, onFinish, report }: NewReportModalPro
   } = useSaveWorkspaceTimerange(workspace)
   const [loading, setLoading] = useState(false)
 
-  const isEditing = report?.id !== undefined && report.ownerId === userData?.id
+  const isEditing = report?.id !== undefined
 
   const updateReport = async (event: any) => {
     event.preventDefault()
@@ -153,7 +153,7 @@ function NewReportModal({ isOpen, onClose, onFinish, report }: NewReportModalPro
 
   return (
     <Modal
-      title={report?.id ? t((t) => t.analysis.editTitle) : t((t) => t.analysis.save)}
+      title={isEditing ? t((t) => t.analysis.editTitle) : t((t) => t.analysis.save)}
       isOpen={isOpen}
       shouldCloseOnEsc
       contentClassName={styles.modal}
