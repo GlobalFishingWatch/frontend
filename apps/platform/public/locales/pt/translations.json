@@ -425,7 +425,6 @@
     "onlyFileFormatAllowed": "(Apenas {{formats}} são permitidos)",
     "remove": "Remover dataset",
     "requiredFields": "Campos obrigatórios {{fields}}",
-    "SARDelayDisclaimer": "Em pausa enquanto migramos do Sentinel-1A para o Sentinel-1C e 1D. <0>Saiba mais.</0>",
     "showLess": "Show less",
     "showMore_one": "Show {{count}} more",
     "showMore_other": "Show {{count}} more",
