@@ -97,6 +97,11 @@ const defaultProps: DefaultProps<FourwingsPositionsTileLayerProps> = {
 
 const MAX_LABEL_LENGTH = 20
 
+/** Same tiles, in the same order, still holding the same parsed content objects */
+function hasSameTileContents(tiles: Tile2DHeader[], contents: unknown[]): boolean {
+  return tiles.length === contents.length && tiles.every((tile, i) => tile.content === contents[i])
+}
+
 export class FourwingsPositionsTileLayer extends CompositeLayer<
   FourwingsPositionsTileLayerProps & MVTLayerProps
 > {
@@ -104,6 +109,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   static defaultProps = defaultProps
   declare state: FourwingsPositionsTileLayerState
   viewportDirtyTimeout!: NodeJS.Timeout
+  /**
+   * Avoid unnecessary state updates when the tileset frame did not change.
+   */
+  lastTileContents: unknown[] = []
 
   get cacheHash(): string {
     if (!this.state) {
@@ -422,6 +431,15 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
+    if (hasSameTileContents(tiles, this.lastTileContents)) {
+      if (!this.state.viewportLoaded) {
+        this.setState({ viewportLoaded: true })
+      }
+      return this.props.onViewportLoad?.(tiles)
+    }
+
+    this.lastTileContents = tiles.map((tile) => tile.content)
+
     const data = tiles.flatMap((tile) => {
       return tile.content
         ? tile.content.map((feature: any) =>
@@ -718,6 +736,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
               getText: this._getVesselLabel,
               getPosition: (d) => d.geometry.coordinates as [number, number, number],
               getColor: this._getLabelColor,
+              // LabelLayer defaults to a 50ms getPosition transition, which TextLayer forwards down
+              // to the per-character instances. `lastPositions` has no stable index -> vessel
+              // mapping between loads, so character n animates from one vessel's glyph to another's
+              // while the text swaps instantly: labels smear across the map on every tile load.
+              transitions: {},
               pickable: true,
               getPickingInfo: this.getPickingInfo,
               updateTriggers: {
