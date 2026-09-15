@@ -50,7 +50,7 @@ sentryInit({
   ],
   dataCollection: { userInfo: true, httpBodies: [] },
   tracesSampleRate: 0.1,
-  denyUrls: [/googletagmanager\.com/, /google-analytics\.com/],
+  denyUrls: [/googletagmanager\.com/, /google-analytics\.com/, /\/gtm-extras\//],
   replaysSessionSampleRate: 0,
   replaysOnErrorSampleRate: 1.0,
 })
