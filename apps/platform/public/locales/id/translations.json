@@ -425,7 +425,6 @@
     "onlyFileFormatAllowed": "(Hanya {{formats}} file yang diizinkan)",
     "remove": "Hapus dataset",
     "requiredFields": "Bidang yang harus diisi {{fields}}",
-    "SARDelayDisclaimer": "Paused while we move from Sentinel-1A to Sentinel-1C and 1D. <0>Learn more.</0>",
     "showLess": "Show less",
     "showMore_one": "Show {{count}} more",
     "showMore_other": "Show {{count}} more",
