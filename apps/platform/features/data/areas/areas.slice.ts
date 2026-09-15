@@ -16,6 +16,18 @@ import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { listAsSentence } from 'utils/shared'
 
+// bbox arrives either as a JSON string ("[minX,minY,maxX,maxY]") or already parsed
+function parseFeatureBbox(bbox: unknown): Bbox | undefined {
+  const values = Array.isArray(bbox)
+    ? bbox.map(Number)
+    : typeof bbox === 'string'
+      ? bbox.replace(/[[\]]/g, '').split(',').map(Number)
+      : []
+  return values.length === 4 && values.every((v) => Number.isFinite(v))
+    ? (values as Bbox)
+    : undefined
+}
+
 export type DrawnDatasetGeometry = FeatureCollection<Polygon, { draw_id: number }>
 
 export interface DatasetArea {
@@ -143,9 +155,11 @@ async function fetchAreaDetail({
   // Two different bboxes, on purpose.
   // `bounds` is unwrapped (maxX can be 185) so fitBounds gets a continuous span.
   // `geometry.bbox` must instead agree with the coordinates, because turf trusts it to reject points
-  const bounds = area.bbox ? wrapBBoxLongitudes(area.bbox) : wrapGeometryBbox(geometry)
+  // wrapGeometryBbox can only be used with the real geotry (or antimeridian issues arise)
+  const apiBbox = parseFeatureBbox(area.properties?.bbox) || area.bbox
+  const bounds = geometry ? wrapGeometryBbox(geometry) : apiBbox && wrapBBoxLongitudes(apiBbox)
   if (geometry) {
-    geometry.bbox = area.bbox || getTurfBbox(geometry)
+    geometry.bbox = getTurfBbox(geometry)
   }
   return {
     id: area.id,
