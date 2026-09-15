@@ -425,7 +425,6 @@
     "onlyFileFormatAllowed": "(Seuls les fichiers au format {{formats}} sont autorisés)",
     "remove": "Supprimer les jeux de données",
     "requiredFields": "Champs requis {{fields}}",
-    "SARDelayDisclaimer": "En pause pendant le passage de Sentinel-1A à Sentinel-1C et 1D. <0>En savoir plus.</0>",
     "showLess": "Show less",
     "showMore_one": "Show {{count}} more",
     "showMore_other": "Show {{count}} more",
