@@ -63,6 +63,8 @@ export const POSITIONS_HIGHLIGHT_OPACITY = 0.8
 // comes forward for the highlighted vessel
 export const POSITIONS_TRACK_OPACITY = 0.2
 export const POSITIONS_TRACK_HIGHLIGHT_OPACITY = 0.5
+/** Applied to everything not belonging to the hovered vessel, so its positions and track stand out */
+export const POSITIONS_DIMMED_OPACITY = 0.1
 
 export const MAX_RAMP_VALUES = 10000
 

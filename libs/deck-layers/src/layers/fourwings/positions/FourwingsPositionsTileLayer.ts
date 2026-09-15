@@ -16,7 +16,6 @@ import type {
 import { MVTLayer } from '@deck.gl/geo-layers'
 import { IconLayer, PathLayer } from '@deck.gl/layers'
 import { parse } from '@loaders.gl/core'
-import { orderBy } from 'es-toolkit'
 import { DateTime } from 'luxon'
 import { stringify } from 'qs'
 import { mean, sample, standardDeviation } from 'simple-statistics'
@@ -36,6 +35,7 @@ import {
   MAX_POSITIONS_PER_TILE_SUPPORTED,
   POSITIONS_API_TILES_URL,
   POSITIONS_CIRCLE_SIZE,
+  POSITIONS_DIMMED_OPACITY,
   POSITIONS_HIGHLIGHT_CIRCLE_OFFSET,
   POSITIONS_HIGHLIGHT_ICON_OFFSET,
   POSITIONS_HIGHLIGHT_OPACITY,
@@ -82,6 +82,7 @@ type FourwingsPositionsTileLayerState = {
   lastViewport: string
   positions: FourwingsPositionFeature[]
   lastPositions: FourwingsPositionFeature[]
+  lastPositionsData: FourwingsPositionFeature[]
   vesselTracks: FourwingsPositionsVesselTrack[]
   lastPositionFeatures: Set<FourwingsPositionFeature>
   colorScale?: FourwingsTileLayerColorScale
@@ -146,6 +147,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       lastViewport: '',
       positions: [],
       lastPositions: [],
+      lastPositionsData: [],
       vesselTracks: [],
       lastPositionFeatures: new Set<FourwingsPositionFeature>(),
       highlightedFeatureIds: new Set<string>(),
@@ -177,7 +179,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       (context.viewport as any)?.latitude?.toFixed(1),
       context.viewport?.zoom?.toFixed(1),
     ].join(',')
-    const positions = this.positions
     if (viewportHash !== this.state.lastViewport) {
       this.updateViewportDirty()
       this.setState({ lastViewport: viewportHash })
@@ -193,7 +194,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         )
         this.setState({ colorScale: { ...this.state.colorScale, colorRange } })
       } else {
-        this.setState({ colorScale: this._getColorRamp(positions) })
+        // this.positions rescans every position, so only pay for it on the branch that needs it
+        this.setState({ colorScale: this._getColorRamp(this.positions) })
       }
     }
     const highlightedFeatureIds = new Set<string>()
@@ -234,7 +236,13 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   _getColorRamp(positions: FourwingsPositionFeature[]) {
     if (positions?.length > 0) {
-      const hours = positions.map((d) => d?.properties?.value).filter(Number)
+      const hours: number[] = []
+      for (const position of positions) {
+        const value = position?.properties?.value
+        if (value) {
+          hours.push(value)
+        }
+      }
       const dataSampled = hours.length > 1000 ? sample(hours, 1000, Math.random) : hours
       // filter data to 2 standard deviations from mean to remove outliers
       const meanValue = mean(dataSampled)
@@ -274,11 +282,23 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           })
 
     const color = sublayerColorRange[colorIndex]
-    return color ? ([color.r, color.g, color.b, color.a * 255] as Color) : COLOR_TRANSPARENT
+    return color
+      ? ([
+          color.r,
+          color.g,
+          color.b,
+          color.a * 255 * this._getDimOpacity(this._getIsHighlightedVessel(d)),
+        ] as Color)
+      : COLOR_TRANSPARENT
   }
 
   _hasHighlightedVessels() {
     return this.state.highlightedVesselIds.size > 0 || this.state.highlightedFeatureIds.size > 0
+  }
+
+  /** Fades everything that is not the hovered vessel, so its positions and track read as the subject */
+  _getDimOpacity(isHighlighted: boolean | string | undefined): number {
+    return this._hasHighlightedVessels() && !isHighlighted ? POSITIONS_DIMMED_OPACITY : 1
   }
 
   _getIsHighlightedTime(d: FourwingsPositionFeature) {
@@ -321,7 +341,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       return 0
     }
     const canShowVesselIcon = this._canShowVesselIcon(d)
-    if (this.showVesselTracks && !this.state.lastPositionFeatures.has(d)) {
+    // only de-emphasize a position that has a track drawn behind it, which is any non last position
+    // of an identified vessel. Testing `!lastPositionFeatures.has(d)` alone also shrank positions
+    // with no `properties.id`, which are never grouped into a track and so are never a last one
+    if (this.showVesselTracks && d.properties.id && !this.state.lastPositionFeatures.has(d)) {
       return canShowVesselIcon ? POSITIONS_TRAIL_ICON_SIZE : POSITIONS_TRAIL_CIRCLE_SIZE
     }
     return canShowVesselIcon ? POSITIONS_ICON_SIZE : POSITIONS_CIRCLE_SIZE
@@ -356,6 +379,9 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
       return ''
     }
+    if (this._hasHighlightedVessels() && !this._getIsHighlightedVessel(d)) {
+      return ''
+    }
 
     const { shipname, id } = d.properties || {}
     const label =
@@ -374,7 +400,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   _getLastPositionsInViewport = (
     lastPositionFeatures = this.state.lastPositionFeatures
   ): FourwingsPositionFeature[] => {
-    return filteredPositionsByViewport([...lastPositionFeatures], this.context.viewport)
+    return filteredPositionsByViewport(lastPositionFeatures, this.context.viewport)
   }
 
   _getIsHighlightedTrack = (d: FourwingsPositionsVesselTrack) => {
@@ -386,10 +412,9 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     if (!getIsIdInFilterIds(d.id, sublayer?.filterIds)) {
       return COLOR_TRANSPARENT
     }
-    return hexToDeckColor(
-      sublayer?.color as string,
-      this._getIsHighlightedTrack(d) ? POSITIONS_TRACK_HIGHLIGHT_OPACITY : POSITIONS_TRACK_OPACITY
-    )
+    const isHighlighted = this._getIsHighlightedTrack(d)
+    const opacity = isHighlighted ? POSITIONS_TRACK_HIGHLIGHT_OPACITY : POSITIONS_TRACK_OPACITY
+    return hexToDeckColor(sublayer?.color as string, opacity * this._getDimOpacity(isHighlighted))
   }
 
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
@@ -400,9 +425,14 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           )
         : []
     })
-    const positions = orderBy(data, [(d) => d?.properties?.stime], ['asc']).filter(Boolean)
+    // sorted in place with a numeric comparator: getVesselTracks relies on this order instead of
+    // re-sorting every vessel group, and the icons draw newest last
+    const positions: FourwingsPositionFeature[] = data.filter(Boolean)
+    positions.sort((a, b) => a.properties.stime - b.properties.stime)
 
-    const { tracks, lastPositions: lastPositionFeatures } = getVesselTracks(positions)
+    const { tracks, lastPositions: lastPositionFeatures } = getVesselTracks(positions, {
+      includeTracks: this.showVesselTracks,
+    })
     const lastPositions = this._getLastPositionsInViewport(lastPositionFeatures)
     const colorScale = this._getColorRamp(positions)
 
@@ -412,7 +442,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         positions,
         lastPositions,
         lastPositionFeatures,
-        vesselTracks: this.showVesselTracks ? tracks : [],
+        // materialized once: spreading the set inside renderLayers gave the icon layers a new data
+        // identity on every render, re-tesselating all three of them on each hover
+        lastPositionsData: this.showVesselTracks ? [...lastPositionFeatures] : [],
+        vesselTracks: tracks,
         colorScale,
       } as FourwingsPositionsTileLayerState)
     })
@@ -512,6 +545,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     const {
       positions,
       lastPositions,
+      lastPositionsData,
       lastPositionFeatures,
       vesselTracks,
       highlightedFeatureIds,
@@ -522,9 +556,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       const bearing = getPositionBearing(d)
       return bearing ? 360 - bearing : 0
     }
-    const lastPositionsData =
-      this.showVesselTracks && lastPositionFeatures.size ? [...lastPositionFeatures] : []
-
     return [
       new MVTLayer(this.props, {
         id: `${this.props.id}-tiles`,
@@ -539,20 +570,29 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       }),
       ...(vesselTracks.length
         ? [
-            new PathLayer<FourwingsPositionsVesselTrack>({
-              id: `${this.props.id}-tracks`,
-              data: vesselTracks,
-              getPath: (d) => d.path,
-              getColor: this._getTrackColor,
-              getWidth: 1,
-              widthUnits: 'pixels',
-              capRounded: true,
-              jointRounded: true,
-              getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
-              updateTriggers: {
-                getColor: [sublayers, highlightedFeatureIds, highlightedVesselIds],
-              },
-            }),
+            new PathLayer<FourwingsPositionsVesselTrack>(
+              this.props,
+              this.getSubLayerProps({
+                id: 'tracks',
+                data: vesselTracks,
+                getPath: (d: FourwingsPositionsVesselTrack) => d.path,
+                // paths are flat [lon, lat, …] arrays, which also skips deck's re-flattening pass
+                positionFormat: 'XY',
+                getColor: this._getTrackColor,
+                getWidth: 1,
+                widthUnits: 'pixels',
+                widthMinPixels: 1,
+                capRounded: true,
+                jointRounded: true,
+                wrapLongitude: true,
+                pickable: false,
+                _pathType: 'open',
+                getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
+                updateTriggers: {
+                  getColor: [sublayers, highlightedFeatureIds, highlightedVesselIds],
+                },
+              })
+            ),
           ]
         : []),
       new IconLayerClass(this.props, {
@@ -569,7 +609,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         pickable: true,
         getPickingInfo: this.getPickingInfo,
         updateTriggers: {
-          getColor: [sublayers],
+          getColor: [sublayers, highlightedFeatureIds, highlightedVesselIds],
           getSize: [sublayers, lastPositionFeatures],
         },
       }),
@@ -584,13 +624,16 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
               getPosition: (d: any) => d.geometry.coordinates,
               getColor: (d: any) =>
                 getIsFeatureInFilterIds(d, sublayers[d.properties.layer]?.filterIds)
-                  ? hexToDeckColor(BLEND_BACKGROUND)
+                  ? hexToDeckColor(
+                      BLEND_BACKGROUND,
+                      this._getDimOpacity(this._getIsHighlightedVessel(d))
+                    )
                   : COLOR_TRANSPARENT,
               getSize: this._getIconSize,
               getAngle: getIconAngle,
               getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
               updateTriggers: {
-                getColor: [sublayers],
+                getColor: [sublayers, highlightedFeatureIds, highlightedVesselIds],
                 getSize: [sublayers, lastPositionFeatures],
               },
             }),
@@ -606,7 +649,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
               getAngle: getIconAngle,
               getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
               updateTriggers: {
-                getColor: [sublayers],
+                getColor: [sublayers, highlightedFeatureIds, highlightedVesselIds],
                 getSize: [sublayers, lastPositionFeatures],
               },
             }),
@@ -619,13 +662,13 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
               getPosition: (d: any) => d.geometry.coordinates,
               getColor: (d: any) =>
                 getIsFeatureInFilterIds(d, sublayers[d.properties.layer]?.filterIds)
-                  ? [255, 255, 255, 255]
+                  ? [255, 255, 255, 255 * this._getDimOpacity(this._getIsHighlightedVessel(d))]
                   : COLOR_TRANSPARENT,
               getSize: this._getIconSize,
               getAngle: getIconAngle,
               getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
               updateTriggers: {
-                getColor: [sublayers],
+                getColor: [sublayers, highlightedFeatureIds, highlightedVesselIds],
                 getSize: [sublayers, lastPositionFeatures],
               },
             }),
@@ -664,6 +707,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
               getPickingInfo: this.getPickingInfo,
               updateTriggers: {
                 getColor: [highlightedFeatureIds, highlightedVesselIds],
+                getText: [sublayers, highlightedFeatureIds, highlightedVesselIds],
               },
             }),
           ]
