@@ -68,6 +68,7 @@ Durable facts about this repo live in a `.claude/memory/` folder, one fact per f
 @.claude/memory/typescript7-migration.md
 @.claude/memory/locales-source-is-the-only-editable.md
 @.claude/memory/sheets-append-row-placement.md
+@.claude/memory/es-toolkit-orderby-no-string-paths.md
 
 ### Project-scoped knowledge lives with the project
 

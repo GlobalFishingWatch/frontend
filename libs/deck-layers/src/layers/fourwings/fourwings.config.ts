@@ -49,6 +49,20 @@ export const MAX_ZOOM_TO_CLUSTER_POINTS = 4.5
 export const MAX_POSITIONS_PER_TILE_SUPPORTED = 5000
 export const MAX_REALTIME_POSITIONS_PER_TILE_SUPPORTED = 20000
 export const POSITIONS_VISUALIZATION_MAX_ZOOM = 12
+// Latest position of each vessel keeps the full size icon, the rest of the track is drawn smaller
+export const POSITIONS_ICON_SIZE = 15
+export const POSITIONS_TRAIL_ICON_SIZE = 9
+export const POSITIONS_CIRCLE_SIZE = 10
+export const POSITIONS_TRAIL_CIRCLE_SIZE = 5
+// Added on top of whatever size the position already has, so a highlighted trail position
+// stays smaller than a highlighted last position
+export const POSITIONS_HIGHLIGHT_ICON_OFFSET = 3
+export const POSITIONS_HIGHLIGHT_CIRCLE_OFFSET = 1
+export const POSITIONS_HIGHLIGHT_OPACITY = 0.8
+// The track line is a support for the position icons, it shouldn't compete with them, and only
+// comes forward for the highlighted vessel
+export const POSITIONS_TRACK_OPACITY = 0.2
+export const POSITIONS_TRACK_HIGHLIGHT_OPACITY = 0.5
 
 export const MAX_RAMP_VALUES = 10000
 
