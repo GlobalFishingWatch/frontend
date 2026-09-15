@@ -10,6 +10,7 @@ import { selectIsAnyAreaReportLocation } from 'router/routes.selectors'
 
 export const selectActivityCategory = selectWorkspaceStateProperty('activityCategory')
 export const selectBivariateDataviews = selectWorkspaceStateProperty('bivariateDataviews')
+export const selectClickedCoordinates = selectWorkspaceStateProperty('clickedCoordinates')
 export const selectReadOnly = selectWorkspaceStateProperty('readOnly')
 export const selectScreenshotMode = selectWorkspaceStateProperty('screenshotMode')
 export const selectSidebarOpen = selectWorkspaceStateProperty('sidebarOpen')

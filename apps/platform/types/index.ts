@@ -58,6 +58,10 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   activityVisualizationMode?: FourwingsVisualizationMode
   /** Pair of dataview ids compared with a bivariate (two-color) heatmap legend, null when off */
   bivariateDataviews?: BivariateDataviews
+  /** `[longitude, latitude]` of the open map popup, so a clicked cell can be shared or reloaded.
+   * Only source of truth for the popup: its features are re-picked from deck, never serialized.
+   */
+  clickedCoordinates?: [number, number]
   /** Dataview categories collapsed in the sidebar layer panel to leave more space for others */
   collapsedSections?: DataviewCategory[]
   /** Dataview instances added on top of the default workspace ones (layers added by the user or via URL)
