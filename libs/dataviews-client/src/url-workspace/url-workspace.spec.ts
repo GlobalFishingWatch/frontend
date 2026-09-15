@@ -126,6 +126,14 @@ describe('url-workspace', () => {
       })
     })
 
+    test('should not throw when dataviewInstances is not an array', () => {
+      // qs yields a string for `dvIn=…` and an index-keyed object for sparse/huge indexes
+      expect(parseWorkspace('dvIn=broken').dataviewInstances).toEqual([])
+      expect(parseWorkspace('dvIn[2000][dataviewId]=test').dataviewInstances).toMatchObject([
+        { dataviewId: 'test' },
+      ])
+    })
+
     test('should handle mapRulers transformation', () => {
       const queryString = 'mR[0][id]=1&mR[0][name]=ruler1&mR[1][id]=2&mR[1][name]=ruler2'
       const result = parseWorkspace(queryString)
