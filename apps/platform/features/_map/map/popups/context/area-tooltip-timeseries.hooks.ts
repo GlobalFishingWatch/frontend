@@ -5,7 +5,6 @@ import type { MultiPolygon, Polygon } from 'geojson'
 import { useAtomValue } from 'jotai'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { wrapBBoxLongitudes } from '@globalfishingwatch/data-transforms/wrap-longitudes'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import {
   getLayersStateHashAtom,
@@ -103,16 +102,16 @@ export function useAreaRowExpansion(ids: string[], showFeaturesDetails: boolean)
     key: '',
     id: null,
   })
-  const expandedId = expanded.key === key ? expanded.id : ids.length === 1 ? ids[0] : null
+  const canExpand = showFeaturesDetails && !isAnyReportLocation && hasSparklineCategories
+  const autoExpandedId = ids.length === 1 ? ids[0] : null
+  const currentId = expanded.key === key ? expanded.id : autoExpandedId
+  const expandedId = canExpand ? currentId : null
+
   const toggleExpanded = useCallback(
     (id: string) => setExpanded({ key, id: expandedId === id ? null : id }),
     [key, expandedId]
   )
-  return {
-    canExpand: showFeaturesDetails && !isAnyReportLocation && hasSparklineCategories,
-    expandedId,
-    toggleExpanded,
-  }
+  return { canExpand, expandedId, toggleExpanded }
 }
 
 function isLonRangeContained(westV: number, eastV: number, westA: number, eastA: number): boolean {
@@ -180,18 +179,6 @@ export function useAreaInViewport(
   return latchedKey === key ? true : contained
 }
 
-// bbox arrives either as a JSON string ("[minX,minY,maxX,maxY]")
-function parseFeatureBbox(bbox: unknown): Bbox | undefined {
-  const values = Array.isArray(bbox)
-    ? bbox.map(Number)
-    : typeof bbox === 'string'
-      ? bbox.replace(/[[\]]/g, '').split(',').map(Number)
-      : []
-  return values.length === 4 && values.every((v) => Number.isFinite(v))
-    ? (values as Bbox)
-    : undefined
-}
-
 export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickingObject) {
   const fitBounds = useMapFitBounds()
   const dispatch = useAppDispatch()
@@ -207,11 +194,7 @@ export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickin
       }
       return
     }
-    const featureBbox = parseFeatureBbox(feature.properties?.bbox)
     let bounds: Bbox | undefined = areaDetail?.bounds
-    if (!bounds && featureBbox) {
-      bounds = wrapBBoxLongitudes(featureBbox)
-    }
     if (!bounds) {
       const area = await dispatch(
         fetchAreaDetailThunk({ datasetId, areaId, areaName, simplify })
@@ -224,7 +207,6 @@ export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickin
   }, [
     trackLayer,
     areaDetail?.bounds,
-    feature.properties?.bbox,
     start,
     end,
     fitBounds,

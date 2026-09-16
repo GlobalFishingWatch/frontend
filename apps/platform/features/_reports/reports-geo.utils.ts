@@ -61,7 +61,7 @@ export function filterByPolygon({
   // Areas do attach one (see areas.slice / selectReportBufferArea).
   const [bx1, by1, bx2, by2] = bbox(polygon)
   // A bbox unwrapped past ±180 belongs to fitBounds, not to turf: it rejects everything on the far side of the antimeridian.
-  const isUnwrapped = bx2 > 180 || bx1 < -180
+  const isUnwrapped = bx2 > 180 || bx1 < -180 || bx2 < bx1
   if (isUnwrapped || !polygon.bbox) {
     const widened: Bbox = isUnwrapped
       ? [Math.min(bx1, -180), by1, Math.max(bx2, 180), by2]

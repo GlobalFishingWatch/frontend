@@ -53,8 +53,11 @@ export function createWorkerClient<Payload, Result>(createWorker: () => Worker) 
         }
         request.resolve(data.result)
       }
-      worker.onerror = (event: ErrorEvent) =>
+      worker.onerror = (event: ErrorEvent) => {
         rejectAll(event.error ?? new Error(String(event.message)))
+        worker?.terminate()
+        worker = undefined
+      }
     }
     return worker
   }
@@ -65,7 +68,12 @@ export function createWorkerClient<Payload, Result>(createWorker: () => Worker) 
         const id = idCounter++
         requests.set(id, { resolve, reject })
         const message: WorkerRequestMessage<Payload> = { id, payload }
-        getWorker().postMessage(message)
+        try {
+          getWorker().postMessage(message)
+        } catch (error) {
+          requests.delete(id)
+          reject(error)
+        }
       }),
     /** Kills the worker and rejects everything in flight. The next request spawns a fresh one. */
     terminate: () => {
@@ -94,6 +102,6 @@ export function handleWorkerRequests<Payload, Result>(
         response = { id, error: error instanceof Error ? error.message : String(error) }
       }
       postMessage(response)
-    })
+    }).catch(() => undefined)
   })
 }

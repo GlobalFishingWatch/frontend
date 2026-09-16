@@ -37,6 +37,14 @@ const getStep = (start: string, end: string, speedStep = 0) => {
   return step
 }
 
+const isUnparseableRange = (start: string, end: string) =>
+  !start || !end || isNaN(getUTCDate(start).getTime()) || isNaN(getUTCDate(end).getTime())
+
+const toISOStringIfValid = (ms: number) => {
+  const date = getUTCDate(ms)
+  return isNaN(date.getTime()) ? undefined : date.toISOString()
+}
+
 export const getTimebarStepByDelta = ({
   start,
   end,
@@ -48,11 +56,13 @@ export const getTimebarStepByDelta = ({
   byIntervals = true,
   speedStep = 0,
 }: GetStepProps) => {
-  if (!start || !end) {
+  // Same `{ start, end }` shape as the success path (README / Timebar.Playback / track-labeler).
+  // The previous empty-range branch returned `{ newStart, newEnd }`, which no caller read.
+  if (isUnparseableRange(start, end)) {
     return {
-      newStart: start,
-      newEnd: end,
-      clamped: 'none',
+      start,
+      end,
+      clamped: 'none' as const,
     }
   }
 
@@ -75,6 +85,16 @@ export const getTimebarStepByDelta = ({
     newStartMs = getUTCDate(start).getTime() + deltaMs
     newEndMs = getUTCDate(end).getTime() + deltaMs
   }
+  const newStartISO = toISOStringIfValid(newStartMs)
+  const newEndISO = toISOStringIfValid(newEndMs)
+  // Overflow (e.g. a background-tab rAF gap × a 15y span) makes Date invalid; toISOString throws.
+  if (!newStartISO || !newEndISO) {
+    return {
+      start,
+      end,
+      clamped: 'none' as const,
+    }
+  }
   const currentStartEndDeltaMs = newEndMs - newStartMs
   const playbackAbsoluteEnd =
     absoluteEnd ??
@@ -82,8 +102,8 @@ export const getTimebarStepByDelta = ({
       .endOf(interval.toLowerCase() as DateTimeUnit)
       .toISO()
   const { newStartClamped, newEndClamped, clamped } = clampToAbsoluteBoundaries(
-    getUTCDate(newStartMs).toISOString(),
-    getUTCDate(newEndMs).toISOString(),
+    newStartISO,
+    newEndISO,
     currentStartEndDeltaMs,
     absoluteStart,
     playbackAbsoluteEnd!
