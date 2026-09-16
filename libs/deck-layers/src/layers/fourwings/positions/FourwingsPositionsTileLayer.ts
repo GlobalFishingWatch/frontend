@@ -457,7 +457,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     positions.sort((a, b) => a.properties.stime - b.properties.stime)
 
     const { tracks, lastPositions: lastPositionFeatures } = getVesselTracks(positions, {
-      includeTracks: this.showVesselTracks,
+      includeTracks: false,
+      // includeTracks: this.showVesselTracks,
     })
     const lastPositions = this._getLastPositionsInViewport(lastPositionFeatures)
     const colorScale = this._getColorRamp(positions)
