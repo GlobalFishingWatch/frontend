@@ -274,17 +274,17 @@ function PositionsTooltipRow({
 
   return (
     <Fragment>
-      <div className={cx(popupStyles.rowCenter, { [popupStyles.rowColumn]: isRealTime })}>
+      <div className={popupStyles.rowCenter}>
         <span className={cx(popupStyles.rowText, popupStyles.vesselTitle)}>
           {renderSearchLink()}
           {renderVesselPin()}
-          {renderShipname()}
+          {renderShipname()}{' '}
+          {feature.properties.stime && (
+            <span className={popupStyles.secondary}>
+              <I18nDate date={feature.properties.stime * 1000} format={stimeFormat} />
+            </span>
+          )}
         </span>
-        {feature.properties.stime && (
-          <span className={popupStyles.secondary}>
-            <I18nDate date={feature.properties.stime * 1000} format={stimeFormat} />
-          </span>
-        )}
         {onToggleExpand && (
           <div className={cx(popupStyles.rowActions, popupStyles.rowActionsEnd)}>
             <IconButton

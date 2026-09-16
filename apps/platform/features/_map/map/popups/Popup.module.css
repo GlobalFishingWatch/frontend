@@ -351,9 +351,11 @@
 }
 
 .vesselTitle {
-  display: flex;
-  align-items: center;
   overflow: visible;
+}
+
+.vesselTitle button {
+  vertical-align: middle;
 }
 
 .marginRight {
