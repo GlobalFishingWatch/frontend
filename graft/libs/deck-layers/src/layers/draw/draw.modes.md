@@ -1,0 +1,21 @@
+# libs/deck-layers/src/layers/draw/draw.modes.ts · [[deck-gl-editable-layers-integration]] [[drawing-and-editing-layer]]
+
+- DrawLayerMode · type · L13-L18 — Union type representing all supported custom drawing modes for geometry editing.
+- CustomDrawPolygonMode · class · L20-L50 — Custom polygon drawing mode that prevents default clicks and enforces minimum 3-vertex requirement.
+- handleClick · method · L21-L27 — Intercepts polygon drawing click events to prevent default browser behavior.
+- finishDrawing · method · L29-L34 — Validates that a polygon has at least 3 vertices before allowing drawing completion.
+- getGuides · method · L36-L49 — Filters guide features to exclude degenerate LineStrings with fewer than 2 coordinates.
+- CustomDrawPointMode · class · L51-L59 — Custom point drawing mode that prevents default browser click behavior.
+- handleClick · method · L52-L58 — Intercepts point drawing click events to prevent default browser behavior.
+- getPickedEditHandles · function · L60-L69 — Extracts edit handle features from a collection of picks by filtering for guide-type edit handles.
+- getPickedExistingEditHandle · function · L71-L78 — Finds the first existing edit handle (with valid feature index) from picked objects.
+- CustomViewMode · class · L80-L96 — Custom view mode that emits custom click events when features are selected.
+- handleClick · method · L81-L95 — Intercepts view mode clicks to emit custom edit events for selected features.
+- hasValidSelection · function · L98-L103 — Validates that selected feature indexes exist and have defined geometries.
+- CustomTranslateMode · class · L105-L141 — Custom translate mode that validates selection before allowing feature dragging.
+- handleStartDragging · method · L106-L116 — Guards drag start by validating selection and silently ignoring errors during initiation.
+- handleDragging · method · L118-L128 — Guards active dragging by validating selection and silently ignoring errors during motion.
+- handleStopDragging · method · L130-L140 — Guards drag end by validating selection and silently ignoring errors during completion.
+- CustomModifyMode · class · L143-L208 — Custom modify mode that sanitizes guide picks and emits contextual edit events for feature/position changes.
+- getGuides · method · L144-L161 — Filters guide picks to remove invalid ones and catches errors to return empty feature collection.
+- handleClick · method · L163-L207 — Routes clicks to appropriate edit events based on selection changes or position index updates.

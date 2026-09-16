@@ -1,0 +1,21 @@
+# libs/ui-components/src/map-legend/ColorRampBrush.tsx · [[d3-scale-geojson-integration]] [[map-legend-system]]
+
+- ColorRampBrushRange · type · L12-L12 — Type alias representing a two-element tuple of optional numbers defining the lower and upper bounds of a color ramp selection range.
+- ColorRampBrushConfig · type · L14-L20 — Configuration object type specifying the range, change handler, and optional styling/labeling properties for a color ramp brush.
+- ColorRampBrushProps · type · L22-L27 — Complete props type combining configuration and conversion functions needed to render an interactive color ramp brush with value formatting.
+- Bound · type · L29-L29 — Type alias representing the index (0 or 1) of the lower or upper handle in the dual-handle range picker.
+- Drag · type · L31-L38 — State type tracking active pointer drag operations including which bound is being moved, current percentages, and original range.
+- clamp · function · L42-L42 — Constrains a percentage value to the valid range [0, 100].
+- sorted · function · L44-L45 — Ensures min and max values are in correct order, swapping them if the minimum exceeds the maximum.
+- ColorRampBrush · function · L47-L290 — Main component that renders an interactive dual-handle color ramp with drag, keyboard, and popover text input controls for range selection.
+- percentAt · function · L72-L75 — Converts a client X coordinate to a percentage position within the track element.
+- commit · function · L77-L99 — Finalizes a drag operation by converting percentages to rounded values, handling edge cases where handles exceed bounds, and calling onChange.
+- boundValue · function · L81-L89 — Converts a percentage bound to its final value, returning undefined if the bound is at the edge (0 or 100) or preserving the unchanged bound.
+- onTrackPointerDown · function · L101-L116 — Initiates a new range selection by starting a drag from the clicked position on the bare track.
+- onHandlePointerDown · function · L118-L125 — Starts a handle drag operation, marking it as originating from a handle to enable opening the edit popover on click.
+- onPointerMove · function · L127-L134 — Updates the dragged handle position during pointer motion, ignoring movements below the click slop threshold.
+- onPointerUp · function · L136-L151 — Completes a drag operation by committing changes or opens the edit popover on handle click without drag movement.
+- onHandleKeyDown · function · L153-L162 — Adjusts a handle position via arrow keys (single step or shift+10 step) and commits the change.
+- commitBound · function · L164-L175 — Parses raw text input into a number and updates one bound of the range, calling onChange if the value changed.
+- closeAndCommit · function · L177-L181 — Closes the edit popover and commits the bound value from the input field.
+- isLowerHandle · function · L184-L187 — Determines whether a handle is the lower (left) or upper (right) of the two handles, handling equal percentages.

@@ -1,0 +1,23 @@
+# libs/deck-loaders/src/fourwings/lib/types.ts · [[fourwings-data-types]]
+
+- FourwingsRawData · type · L5-L5 — Represents raw tile data as a flat array of numbers.
+- FourwingsTileData · type · L7-L11 — Parsed tile structure holding grid dimensions and cell data.
+- Cell · type · L13-L13 — Matrix of numeric values representing a grid cell.
+- TileCell · type · L15-L17 — Grid cell augmented with geographic coordinates for spatial queries.
+- FourwingsInterval · type · L19-L19 — Enumeration of supported time aggregation intervals for data analysis.
+- FourwingsAggregationOperation · type · L20-L20 — Enumeration of supported mathematical operations for temporal aggregation.
+- ParseFourwingsOptions · type · L22-L41 — Configuration for parsing fourwings tiles, including grid dimensions, time range, aggregation settings, and data transformation parameters.
+- ParseFourwingsClustersOptions · type · L43-L48 — Configuration for parsing fourwings cluster tiles with subset of main options.
+- FourwingsVectorsUnit · type · L49-L49 — Enumeration of supported speed units for vector data representation.
+- ParseFourwingsVectorsOptions · type · L50-L53 — Configuration for parsing fourwings vector tiles with optional unit conversion.
+- FourwingsLoaderOptions · type · L55-L57 — Top-level loader options combining strict loaders.gl options with fourwings-specific configuration.
+- FourwingsClustersLoaderOptions · type · L59-L61 — Loader options for cluster tile variants.
+- FourwingsVectorsLoaderOptions · type · L63-L65 — Loader options for vector tile variants.
+- FourwingsFeatureValues · type · L67-L67 — Two-dimensional array storing time-series values for a feature.
+- FourwingsFeatureProperties · type · L68-L86 — Complete property object for a fourwings feature including identifier, temporal values, position, and velocity data.
+- FourwingsPositionFeatureProperties · type · L88-L93 — Position-based feature properties with timestamp for tracking temporal position data.
+- FourwingsPointFeatureProperties · type · L95-L101 — Point feature properties including cell identifier and bounding box for spatial queries.
+- FourwingsFeature · type · L103-L109 — Generic feature structure with coordinates, properties, and optional aggregated values across sublayers.
+- FourwingsValuesAndStartFrameFeature · type · L113-L113 — Temporal feature encoding values and absolute frame timestamp for timestamp derivation.
+- FourwingsPositionFeature · type · L114-L114 — GeoJSON feature specialization for position data with position-specific properties.
+- FourwingsPointFeature · type · L115-L115 — GeoJSON feature specialization for point data with point-specific properties.
