@@ -694,7 +694,20 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   getIsPositionsAvailable() {
-    return getAreTilePositionsAvailable(this.getTilesData(), this.props.maxPositionsPerTile)
+    const { startTime, endTime, availableIntervals } = this.props
+    const { startFrame, endFrame } = getIntervalFrames({
+      startTime,
+      endTime,
+      availableIntervals,
+      bufferedStart: this.state.tilesCache?.bufferedStart ?? 0,
+    })
+    return getAreTilePositionsAvailable({
+      tilesData: this.getTilesData(),
+      viewport: this.context.viewport,
+      startFrame,
+      endFrame,
+      maxPositions: this.props.maxPositionsPerTile,
+    })
   }
 
   getViewportData(params = {} as GetViewportDataParams) {

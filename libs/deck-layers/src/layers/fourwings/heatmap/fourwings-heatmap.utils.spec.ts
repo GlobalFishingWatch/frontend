@@ -17,6 +17,7 @@ import {
   compareCell,
   filterCells,
   filterCellsByBounds,
+  getCellValuesFrameRange,
   getDataUrl,
   getFourwingsChunk,
   getIntervalFrames,
@@ -71,6 +72,28 @@ describe('sliceCellValues', () => {
 
   it('clamps start below the offset and keeps the tail when endFrame exceeds length', () => {
     expect(sliceCellValues({ values, startFrame: 0, endFrame: 10, startOffset: 2 })).toEqual(values)
+  })
+
+  // isTilePositionsOverLimit reads the window in place instead of slicing, so the arithmetic is
+  // shared rather than duplicated — this pins the two to the same answer
+  it('reads the same window getCellValuesFrameRange reports', () => {
+    const cases = [
+      { startFrame: 1, endFrame: 1, startOffset: 0 },
+      { startFrame: 1, endFrame: 3, startOffset: 0 },
+      { startFrame: 0, endFrame: 10, startOffset: 2 },
+      { startFrame: 4, endFrame: 6, startOffset: 4 },
+    ]
+    for (const { startFrame, endFrame, startOffset } of cases) {
+      const [from, to] = getCellValuesFrameRange({
+        valuesLength: values.length,
+        startFrame,
+        endFrame,
+        startOffset,
+      })
+      expect(values.slice(from, to)).toEqual(
+        sliceCellValues({ values, startFrame, endFrame, startOffset })
+      )
+    }
   })
 })
 

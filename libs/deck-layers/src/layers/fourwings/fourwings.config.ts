@@ -46,8 +46,8 @@ export const FOURWINGS_TILE_SIZE = 512
 // byteLength estimate the fourwings loader stamps on each parsed tile
 export const FOURWINGS_MAX_CACHE_BYTE_SIZE = 256 * 1024 * 1024
 export const MAX_ZOOM_TO_CLUSTER_POINTS = 4.5
-export const MAX_POSITIONS_PER_TILE_SUPPORTED = 5000
-export const MAX_REALTIME_POSITIONS_PER_TILE_SUPPORTED = 20000
+export const MAX_POSITIONS_PER_TILE_SUPPORTED = 10000
+export const MAX_POSITIONS_PER_TILE_VISUALIZED = 4000
 export const POSITIONS_VISUALIZATION_MAX_ZOOM = 12
 // Latest position of each vessel keeps the full size icon, the rest of the track is drawn smaller
 export const POSITIONS_ICON_SIZE = 15
