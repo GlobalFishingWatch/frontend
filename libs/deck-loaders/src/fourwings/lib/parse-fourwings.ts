@@ -139,13 +139,12 @@ export const getCellTimeseries = (
               // create properties for this sublayer if the feature dind't have it already
               feature.properties.values[subLayerIndex] = new Array(numCellValues)
               feature.properties.startOffsets[subLayerIndex] = startFrame
-              feature.properties.initialValues[timeRangeKey][subLayerIndex] = 0
             }
             // add current value to the array of values for this sublayer
             // no dates array stored: the timestamp of each value is derived as
             // getIntervalTimestamp(tileStartFrame + startOffsets[subLayerIndex] + index)
-            feature.properties.values[subLayerIndex][Math.floor(j / sublayers)] =
-              descaleFourwingsValue(cellValue, sublayerScale, sublayerOffset)
+            const descaledValue = descaleFourwingsValue(cellValue, sublayerScale, sublayerOffset)
+            feature.properties.values[subLayerIndex][Math.floor(j / sublayers)] = descaledValue
 
             // sum current value to the initialValue for this sublayer
             const inRange =
@@ -153,15 +152,15 @@ export const getCellTimeseries = (
                 ? j + startFrame === timeRangeStartFrame
                 : j + startFrame >= timeRangeStartFrame && j + startFrame < timeRangeEndFrame
             if (inRange) {
-              feature.properties.initialValues[timeRangeKey][subLayerIndex] +=
-                descaleFourwingsValue(cellValue, sublayerScale, sublayerOffset)
+              feature.properties.initialValues[timeRangeKey][subLayerIndex] =
+                (feature.properties.initialValues[timeRangeKey][subLayerIndex] ?? 0) + descaledValue
               numValuesBySubLayer[subLayerIndex] = numValuesBySubLayer[subLayerIndex] + 1
             }
           }
         }
         if (aggregationOperation === 'avg' && numValuesBySubLayer[subLayerIndex] > 1) {
           feature.properties.initialValues[timeRangeKey][subLayerIndex] =
-            feature.properties.initialValues[timeRangeKey][subLayerIndex] /
+            feature.properties.initialValues[timeRangeKey][subLayerIndex]! /
             numValuesBySubLayer[subLayerIndex]
         }
 

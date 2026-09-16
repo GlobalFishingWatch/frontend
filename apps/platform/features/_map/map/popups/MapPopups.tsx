@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 
 import { useMapHoverInteraction } from '@globalfishingwatch/deck-layer-composer'
+import { HOVER_DEBOUNCE_DELAY } from '@globalfishingwatch/deck-layers/config'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 
 import { getSafeElementById } from 'utils/dom'
@@ -15,12 +16,10 @@ import PopupWrapper from './PopupWrapper'
 
 import styles from './Popup.module.css'
 
-const DEBOUNCED_TOOLTIP_DELAY = 300
-
 function MapPopups() {
   const hoverInteraction = useMapHoverInteraction()
-  const debouncedHoverLatitude = useDebounce(hoverInteraction.latitude, DEBOUNCED_TOOLTIP_DELAY)
-  const debouncedHoverLongitude = useDebounce(hoverInteraction.longitude, DEBOUNCED_TOOLTIP_DELAY)
+  const debouncedHoverLatitude = useDebounce(hoverInteraction.latitude, HOVER_DEBOUNCE_DELAY)
+  const debouncedHoverLongitude = useDebounce(hoverInteraction.longitude, HOVER_DEBOUNCE_DELAY)
   const clickInteraction = useSelector(selectClickedEvent)
   const { dispatchClickedEvent, cancelPendingInteractionRequests } = useClickedEventConnect()
 
@@ -32,7 +31,11 @@ function MapPopups() {
   const onClickOutside = useCallback(
     (e?: MouseEvent) => {
       const mapContainer = getSafeElementById(MAP_CONTAINER_ID)
-      if (e && !mapContainer?.contains(e.target as Node)) {
+      // toggling a layer refreshes the popup content instead of closing it
+      const isLayerToggle = (e?.target as HTMLElement)?.closest?.(
+        '[role="switch"], [data-layer-toggle]'
+      )
+      if (e && !isLayerToggle && !mapContainer?.contains(e.target as Node)) {
         dispatchClickedEvent(null)
         cancelPendingInteractionRequests()
       }
@@ -56,7 +59,7 @@ function MapPopups() {
             <PopupByCategory interaction={hoverInteraction} type="hover" />
           </PopupWrapper>
         )}
-      {clickInteraction && clickInteraction?.features?.length && (
+      {clickInteraction && !!clickInteraction?.features?.length && (
         <PopupWrapper
           latitude={clickInteraction.latitude}
           longitude={clickInteraction.longitude}

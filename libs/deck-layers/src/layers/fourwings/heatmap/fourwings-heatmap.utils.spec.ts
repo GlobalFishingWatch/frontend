@@ -17,6 +17,7 @@ import {
   compareCell,
   filterCells,
   filterCellsByBounds,
+  getCellValuesFrameRange,
   getDataUrl,
   getFourwingsChunk,
   getIntervalFrames,
@@ -39,6 +40,11 @@ describe('aggregateSublayerValues', () => {
 
   it('avg of all-empty values does not divide by zero', () => {
     expect(aggregateSublayerValues([0, 0], FourwingsAggregationOperation.Avg)).toBe(0)
+  })
+
+  it('returns undefined when the slice holds no data, so the cell is not painted as a 0', () => {
+    expect(aggregateSublayerValues(new Array(2))).toBeUndefined()
+    expect(aggregateSublayerValues(new Array(2), FourwingsAggregationOperation.Avg)).toBeUndefined()
   })
 
   it('averages degrees across the 0/360 wraparound', () => {
@@ -66,6 +72,28 @@ describe('sliceCellValues', () => {
 
   it('clamps start below the offset and keeps the tail when endFrame exceeds length', () => {
     expect(sliceCellValues({ values, startFrame: 0, endFrame: 10, startOffset: 2 })).toEqual(values)
+  })
+
+  // isTilePositionsOverLimit reads the window in place instead of slicing, so the arithmetic is
+  // shared rather than duplicated — this pins the two to the same answer
+  it('reads the same window getCellValuesFrameRange reports', () => {
+    const cases = [
+      { startFrame: 1, endFrame: 1, startOffset: 0 },
+      { startFrame: 1, endFrame: 3, startOffset: 0 },
+      { startFrame: 0, endFrame: 10, startOffset: 2 },
+      { startFrame: 4, endFrame: 6, startOffset: 4 },
+    ]
+    for (const { startFrame, endFrame, startOffset } of cases) {
+      const [from, to] = getCellValuesFrameRange({
+        valuesLength: values.length,
+        startFrame,
+        endFrame,
+        startOffset,
+      })
+      expect(values.slice(from, to)).toEqual(
+        sliceCellValues({ values, startFrame, endFrame, startOffset })
+      )
+    }
   })
 })
 
@@ -143,6 +171,10 @@ describe('compareCell', () => {
 
   it('returns the difference when both have values', () => {
     expect(compareCell({ cellValues: [[2], [7]] })).toEqual([5])
+  })
+
+  it('keeps a measured 0 instead of treating it as empty', () => {
+    expect(compareCell({ cellValues: [[0], [0]] })).toEqual([0])
   })
 })
 

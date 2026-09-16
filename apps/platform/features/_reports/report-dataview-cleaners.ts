@@ -1,6 +1,6 @@
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { DATASET_COMPARISON_SUFFIX } from '@globalfishingwatch/datasets-client/constants'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 /**
  * Strips report-only dataview config before a workspace is persisted or parsed.
  *

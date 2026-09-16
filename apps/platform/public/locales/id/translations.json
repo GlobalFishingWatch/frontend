@@ -12,6 +12,11 @@
     "clickToFilterBy": "Klik untuk memfilter berdasarkan:",
     "clickToSeeAreaReport": "Click to see the {{area}} report",
     "comparisonNotAvailable": "Comparing datasets is not available for this layer",
+    "comparisonTotalAfter": "Total after",
+    "comparisonTotalBaseline": "Baseline total",
+    "comparisonTotalBefore": "Total before",
+    "comparisonTotalChange": "Total change",
+    "comparisonTotalCompared": "Comparison total",
     "confirmRemove": "Are you sure you want to permanently delete this report?",
     "createReportHelp": "Untuk menyelidiki tentang perubahan data lingkungan dan aktivitas seiring waktu, Anda dapat membuat laporan dinamis yang berisi analisis untuk wilayah mana pun. Laporan dinamis menawarkan cara yang cepat untuk mengakses dan memahami informasi lebih lanjut tentang kawasan lautan, zona ekonomi eksklusif, kawasan laut lindung, atau area khusus. Laporan dinamis membantu Anda memahami tingkat aktivitas di setiap wilayah, termasuk kapal dan Negara bendera yang aktif.",
     "createReportHelpLink": "Pelajari lebih lanjut.",
@@ -77,6 +82,7 @@
     "noVesselDataFiltered": "Tidak ada kapal yang cocok dengan filter Anda",
     "onlyEvolutionSupported": "Click the evolution button above to see the vessels active in the area",
     "others": "Lain-lain",
+    "othersLayersAreReportArea": "The layers used to create this report area can't be analysed against themselves. Turn on another polygon or point layer to see results here.",
     "periodComparison": "perbandingan periode",
     "periodComparison1st": "acuan dasar awal",
     "periodComparison2nd": "awal perbandingan",
@@ -92,6 +98,8 @@
     "polygonsOverlapping": "partially overlapping",
     "polygonsOverlapping_one": "partially overlapping polygon",
     "polygonsOverlapping_other": "partially overlapping polygons",
+    "polygonsTopAreas_one": "Largest polygon in the report area",
+    "polygonsTopAreas_other": "Top {{count}} largest polygons in the report area",
     "portsAfterEvents": "Ports visited after events",
     "portsSearchPlaceholder": "Search ports",
     "print": "print",
@@ -119,7 +127,8 @@
     "timeRangeTooLong": "Laporan hanya diizinkan untuk rentang waktu hingga satu tahun",
     "title": "Report",
     "unknown": "Tidak diketahui",
-    "unknownProperty": "Unknown"
+    "unknownProperty": "Unknown",
+    "zoomToAreaForActivity": "Center view to see activity"
   },
   "bigQuery": {
     "aggregateAvg": "Rata-rata",
@@ -245,6 +254,8 @@
     "fitArea": "Center view on area",
     "flag": "Flag",
     "from": "dari",
+    "fromVessels_one": "from {{count}} vessel",
+    "fromVessels_other": "from {{count}} vessels",
     "globalReport": "Global report",
     "help": "Tolong",
     "hideAllHelpHints": "Abaikan Semua",
@@ -350,6 +361,8 @@
     "timerangeStatic": "Static ({{start}} - {{end}})",
     "to": "ke",
     "toggleVisibility": "Alihkan Visibilitas",
+    "topVessels_one": "Top vessel",
+    "topVessels_other": "Top {{count}} vessels",
     "tutorials": "Tutorial",
     "unionOf": "Union of",
     "unit": "unit",
@@ -404,14 +417,19 @@
       "shapefile": "shapefile terkompresi"
     },
     "importing": "Dataset sedang diimpor",
+    "loadError": "Some of your datasets could not be loaded.",
+    "loadRetry": "Try again",
     "login": "Ini adalah dataset pribadi, masuk untuk melihatnya",
     "new": "Dataset baru",
     "noDataForTimerange": "Tidak ada data untuk rentang waktu saat ini",
     "onlyFileFormatAllowed": "(Hanya {{formats}} file yang diizinkan)",
     "remove": "Hapus dataset",
     "requiredFields": "Bidang yang harus diisi {{fields}}",
-    "SARDelayDisclaimer": "Paused while we move from Sentinel-1A to Sentinel-1C and 1D. <0>Learn more.</0>",
+    "showLess": "Show less",
+    "showMore_one": "Show {{count}} more",
+    "showMore_other": "Show {{count}} more",
     "title": "Dataset",
+    "typeBigQuery": "BigQuery",
     "typeGridded": "Gridded / Raster",
     "typeGriddedDescription": "Display a heatmap from a GeoTIFF raster (EPSG:4326)",
     "typePoints": " Poin",
@@ -437,6 +455,7 @@
         "invalidData": "CSV data does not have a valid structure"
       },
       "default": "Terjadi kesalahan saat mengunggah dataset Anda",
+      "fileTooBig": "This file is too large to process in the browser. Try splitting it into smaller files.",
       "geoJSON": {
         "noValidFeatures": "Tidak ditemukan jenis fitur valid dalam file geoJSON ini"
       },
@@ -460,6 +479,9 @@
         "noLineData": "Tidak ada data garis yang ditemukan di shapefile",
         "noPointData": "Tidak ada data titik yang ditemukan di shapefile",
         "noPolygonData": "Tidak ada data poligon yang ditemukan di shapefile"
+      },
+      "zip": {
+        "multipleFiles": "The zip file contains more than one file of the same format. Please upload a zip with a single data file."
       }
     },
     "fieldMultiplePlaceholder": "Pilih satu atau beberapa bidang dari dataset Anda",
@@ -541,7 +563,7 @@
     "nir": "Near-infrared",
     "rgb": "Red, green and blue (visible light)"
   },
-  "detections": "Detections",
+  "detections": "",
   "download": {
     "apiPortal": "Lihat API kami di sini",
     "area": "Area",
@@ -699,6 +721,8 @@
     "portAction": "Berlabuh dimulai pada {{start}} selama {{duration}}",
     "portAt": "Berlabuh di {{port}} dimulai pada {{start}} selama {{duration}}",
     "ports": "Ports",
+    "portVisitsSummary_one": "{{visits}} visit from {{vessels}} vessel",
+    "portVisitsSummary_other": "{{visits}} visits from {{vessels}} vessels",
     "unknown": "Peristiwa yang tidak diketahui",
     "yearAbbreviated": "{{count}}y",
     "yearAbbreviated_one": "{{count}}y",
@@ -1049,9 +1073,9 @@
     "months_one": "month",
     "months_other": "{{count}} months",
     "now": "now",
-    "weeks": "{{count}} week",
-    "weeks_one": "week",
-    "weeks_other": "{{count}} weeks"
+    "years": "{{count}} year",
+    "years_one": "{{count}} year",
+    "years_other": "{{count}} years"
   },
   "timebar": {
     "disablePlaybackVectors": "Playback of currents or winds layers is not supported",
@@ -1145,17 +1169,21 @@
     "activity-fishing": "Activity - Fishing",
     "activity-vessel-presence": "Activity - Presence",
     "analysis-and-dynamic-reports": "Analyze activity",
+    "analyzing-activity-over-time": "Analyze activity over time",
+    "central-section-showing-spatial-activity-maps": "Spatial activity maps",
     "downloading-data": "Download data",
     "filtering-activity-layers": "Filter activity layers",
     "night-light-detections-visible-infrared-imaging-radiometer-suite": "Detections - VIIRS",
     "radar-detections-synthetic-aperture-radar": "Detections - SAR",
+    "timebar": "Timebar",
     "title": "Panduan Pengguna",
     "upload-points": "Upload point datasets",
     "upload-polygons": "Upload polygon datasets",
     "upload-tracks": "Upload track datasets",
     "uploading-data": "Upload datasets",
     "vessel-groups": "Vessel groups",
-    "vessel-search": "Vessel Search"
+    "vessel-search": "Vessel Search",
+    "viewing-vessel-activity-in-layers": "Vessel activity in layers"
   },
   "vessel": {
     "activityByType": "Berdasarkan jenis",

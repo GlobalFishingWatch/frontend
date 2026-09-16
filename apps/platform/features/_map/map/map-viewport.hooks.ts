@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import type { MapViewProps, WebMercatorViewport } from '@deck.gl/core'
+import type { Deck, MapViewProps, WebMercatorViewport } from '@deck.gl/core'
 import { MapView } from '@deck.gl/core'
 import { debounce } from 'es-toolkit'
 import { useAtomValue, useSetAtom } from 'jotai'
@@ -75,8 +75,7 @@ export const MAP_VIEW = new MapView({
   pitch: 0,
 } as MapViewProps)
 
-export function useMapViewport() {
-  const deckMap = useDeckMap()
+export function getMapViewport(deckMap: Deck | undefined) {
   try {
     return (deckMap as any)
       ?.getViewports?.()
@@ -84,4 +83,9 @@ export function useMapViewport() {
   } catch {
     return undefined
   }
+}
+
+export function useMapViewport() {
+  const deckMap = useDeckMap()
+  return getMapViewport(deckMap)
 }

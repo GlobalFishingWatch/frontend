@@ -9,10 +9,20 @@ import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { InputText, Spinner } from '@globalfishingwatch/ui-components'
 
 import type { LibraryLayer } from 'data/map/layer-library'
-import { fetchAllDatasetsThunk } from 'features/_map/datasets/datasets.slice'
-import { getDatasetLabel, groupDatasetsByGeometryType } from 'features/_map/datasets/datasets.utils'
+import {
+  fetchAllDatasetsThunk,
+  fetchDatasetsByIdsThunk,
+} from 'features/_map/datasets/datasets.slice'
+import {
+  getDatasetLabel,
+  getDatasetMatchesSearch,
+  groupDatasetsByGeometryType,
+} from 'features/_map/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
-import { resolveLibraryLayers } from 'features/_map/layer-library/LayerLibrary.utils'
+import {
+  resolveLibraryLayers,
+  scrollToLayerLibrarySection,
+} from 'features/_map/layer-library/LayerLibrary.utils'
 import LayerLibraryItem from 'features/_map/layer-library/LayerLibraryItem'
 import LayerLibraryUserPanel from 'features/_map/layer-library/LayerLibraryUserPanel'
 import { selectUserDatasets } from 'features/_user/selectors/user.permissions.selectors'
@@ -23,6 +33,7 @@ import {
   selectLayerLibraryModal,
   selectLayerLibraryUniqueCategory,
 } from 'features/modals/modals.slice'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { upperFirst } from 'utils/info'
 
 import LayerLibraryVesselGroupPanel from './LayerLibraryVesselGroupPanel'
@@ -49,15 +60,34 @@ const LayerLibrary: FC = () => {
   const dispatch = useAppDispatch()
   const userDatasets = useSelector(selectUserDatasets)
   const allVesselGroups = useSelector(selectAllVisibleVesselGroups)
-  const [userDatasetsFetched, setUserDatasetsFetched] = useState(false)
-  const userDatasetsLoaded = Boolean(guestUser) || userDatasetsFetched
+  const [userDatasetsStatus, setUserDatasetsStatus] = useState<AsyncReducerStatus>(
+    AsyncReducerStatus.Loading
+  )
+  const userDatasetsLoaded = Boolean(guestUser) || userDatasetsStatus !== AsyncReducerStatus.Loading
+
+  const fetchUserDatasets = useCallback(() => {
+    dispatch(fetchAllDatasetsThunk()).then((action) => {
+      if (fetchAllDatasetsThunk.rejected.match(action) && action.meta.condition) {
+        return
+      }
+      const failed =
+        fetchAllDatasetsThunk.rejected.match(action) ||
+        fetchDatasetsByIdsThunk.rejected.match(action.payload)
+      setUserDatasetsStatus(failed ? AsyncReducerStatus.Error : AsyncReducerStatus.Finished)
+    })
+  }, [dispatch])
 
   useEffect(() => {
     if (guestUser) {
       return
     }
-    dispatch(fetchAllDatasetsThunk()).finally(() => setUserDatasetsFetched(true))
-  }, [dispatch, guestUser])
+    fetchUserDatasets()
+  }, [fetchUserDatasets, guestUser])
+
+  const onRetryFetch = useCallback(() => {
+    setUserDatasetsStatus(AsyncReducerStatus.Loading)
+    fetchUserDatasets()
+  }, [fetchUserDatasets])
 
   const userGeometries = useMemo(() => {
     return groupDatasetsByGeometryType(userDatasets)
@@ -123,14 +153,7 @@ const LayerLibrary: FC = () => {
       subcategory?: UserSubcategory | null
       smooth?: boolean
     }) => {
-      const targetId = subcategory || category
-      const targetElement = document.getElementById(targetId)
-
-      if (targetElement) {
-        targetElement.scrollIntoView({
-          behavior: smooth ? 'smooth' : 'instant',
-        })
-      }
+      scrollToLayerLibrarySection(subcategory || category, smooth)
     },
     []
   )
@@ -194,14 +217,15 @@ const LayerLibrary: FC = () => {
     [allVesselGroups, activeSearchQuery]
   )
 
-  const userDatasetsMatchCount = useMemo(
-    () =>
-      activeSearchQuery
-        ? userDatasets.filter((d) =>
-            getDatasetLabel(d).toLowerCase().includes(activeSearchQuery.toLowerCase())
-          ).length
-        : userDatasets.length,
+  const searchedUserDatasets = useMemo(
+    () => userDatasets.filter((d) => getDatasetMatchesSearch(d, activeSearchQuery)),
     [userDatasets, activeSearchQuery]
+  )
+  const userDatasetsMatchCount = searchedUserDatasets.length
+
+  const userGeometriesMatchCount = useMemo(
+    () => groupDatasetsByGeometryType(searchedUserDatasets),
+    [searchedUserDatasets]
   )
 
   const onInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -301,24 +325,30 @@ const LayerLibrary: FC = () => {
                       defaultValue: category,
                     })}
                   </button>
-                  {currentCategory === category &&
-                    subcategories.length > 0 &&
+                  {subcategories.length > 0 &&
                     !guestUser &&
-                    subcategories.map((subcategory) => (
-                      <button
-                        key={subcategory}
-                        className={cx(styles.subcategory, {
-                          [styles.currentCategory]: currentSubcategory === subcategory,
-                        })}
-                        data-category={category}
-                        data-subcategory={subcategory}
-                        onClick={onCategoryClick}
-                      >
-                        {t((t: any) => t.dataset.type[upperFirst(subcategory)], {
-                          defaultValue: upperFirst(subcategory),
-                        })}
-                      </button>
-                    ))}
+                    subcategories
+                      .filter(
+                        (subcategory) =>
+                          !activeSearchQuery ||
+                          (userGeometriesMatchCount[subcategory]?.length ?? 0) > 0
+                      )
+                      .map((subcategory) => (
+                        <button
+                          key={subcategory}
+                          className={cx(styles.subcategory, {
+                            [styles.currentCategory]: currentSubcategory === subcategory,
+                          })}
+                          data-category={category}
+                          data-subcategory={subcategory}
+                          onClick={onCategoryClick}
+                        >
+                          {t((t: any) => t.dataset.type[upperFirst(subcategory)], {
+                            defaultValue: upperFirst(subcategory),
+                          })}{' '}
+                          ({userGeometriesMatchCount[subcategory]?.length ?? 0})
+                        </button>
+                      ))}
                 </div>
               ))}
         </div>
@@ -370,6 +400,8 @@ const LayerLibrary: FC = () => {
                 <LayerLibraryUserPanel
                   searchQuery={activeSearchQuery}
                   datasetsLoaded={userDatasetsLoaded}
+                  datasetsError={userDatasetsStatus === AsyncReducerStatus.Error}
+                  onRetryFetch={onRetryFetch}
                 />
               </div>
             )}

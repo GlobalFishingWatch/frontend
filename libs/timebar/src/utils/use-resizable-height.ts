@@ -8,10 +8,24 @@ import {
 
 const DEFAULT_HEIGHT = 70
 
+// Accessing window.localStorage throws SecurityError when storage is blocked (sandboxed
+// iframe, third-party cookies disabled), so a typeof guard alone is not enough.
 function getStoredHeight(defaultHeight?: number) {
-  const stored =
-    typeof localStorage !== 'undefined' ? localStorage.getItem(TIMEBAR_HEIGHT_STORAGE_KEY) : null
+  let stored: string | null = null
+  try {
+    stored = localStorage.getItem(TIMEBAR_HEIGHT_STORAGE_KEY)
+  } catch {
+    // storage unavailable — fall back to the default height
+  }
   return stored ? parseInt(stored) : defaultHeight || DEFAULT_HEIGHT
+}
+
+function setStoredHeight(height: number) {
+  try {
+    localStorage.setItem(TIMEBAR_HEIGHT_STORAGE_KEY, height.toString())
+  } catch {
+    // storage unavailable — the height still applies for this session
+  }
 }
 
 /**
@@ -38,7 +52,7 @@ export function useResizableHeight({
       Math.min(startHeight.current + cursorYDelta, MAXIMUM_TIMEBAR_HEIGHT)
     )
     setHeight(newHeight)
-    localStorage.setItem(TIMEBAR_HEIGHT_STORAGE_KEY, newHeight.toString())
+    setStoredHeight(newHeight)
   }, [])
 
   const onMouseUp = useCallback(() => {

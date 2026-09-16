@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { MultiPolygon, Polygon } from 'geojson'
@@ -38,6 +38,7 @@ import {
   selectDatasetAreaDetail,
   selectDatasetAreaStatus,
 } from 'features/data/areas/areas.slice'
+import { selectIsAnyReportLocation } from 'router/routes.selectors'
 import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -88,9 +89,29 @@ export function useAreaTooltipSparklineCategory() {
     option: options.find(({ id }) => id === preferredId) ?? options[0],
     options,
     setPreferredCategory: setPreferredId,
-    canSwitch: options.length > 1,
-    hasAny: options.length > 0,
+    canSwitchCategory: options.length > 1,
+    hasSparklineCategories: options.length > 0,
   }
+}
+
+export function useAreaRowExpansion(ids: string[], showFeaturesDetails: boolean) {
+  const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
+  const { hasSparklineCategories } = useAreaTooltipSparklineCategory()
+  const key = ids.join(',')
+  const [expanded, setExpanded] = useState<{ key: string; id: string | null }>({
+    key: '',
+    id: null,
+  })
+  const canExpand = showFeaturesDetails && !isAnyReportLocation && hasSparklineCategories
+  const autoExpandedId = ids.length === 1 ? ids[0] : null
+  const currentId = expanded.key === key ? expanded.id : autoExpandedId
+  const expandedId = canExpand ? currentId : null
+
+  const toggleExpanded = useCallback(
+    (id: string) => setExpanded({ key, id: expandedId === id ? null : id }),
+    [key, expandedId]
+  )
+  return { canExpand, expandedId, toggleExpanded }
 }
 
 function isLonRangeContained(westV: number, eastV: number, westA: number, eastA: number): boolean {
@@ -130,20 +151,32 @@ export function useAreaInViewport(
   feature: ContextPickingObject | UserLayerPickingObject,
   enabled = true
 ): boolean | undefined {
-  const { areaDetail } = useAreaDetail(feature, { fetch: enabled })
+  const { datasetId, areaId, areaDetail } = useAreaDetail(feature, { fetch: enabled })
   const { bounds } = useMapBoundsLive()
+  const key = `${datasetId}|${areaId}`
+
+  const b = areaDetail?.bounds
+  const contained =
+    b && bounds
+      ? b[1] >= bounds.south &&
+        b[3] <= bounds.north &&
+        isLonRangeContained(bounds.west, bounds.east, b[0], b[2])
+      : undefined
+
+  // the latch keeps a computed sparkline visible while panning away, but it only holds for as long as the row stays open
+  const [latchedKey, setLatchedKey] = useState<string | undefined>(undefined)
+  useEffect(() => {
+    if (!enabled) {
+      setLatchedKey(undefined)
+    } else if (contained) {
+      setLatchedKey(key)
+    }
+  }, [enabled, contained, key])
 
   if (!enabled) {
     return undefined
   }
-
-  const b = areaDetail?.bounds
-  if (!b || !bounds) {
-    return undefined
-  }
-
-  const latContained = b[1] >= bounds.south && b[3] <= bounds.north
-  return latContained && isLonRangeContained(bounds.west, bounds.east, b[0], b[2])
+  return latchedKey === key ? true : contained
 }
 
 export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickingObject) {
@@ -153,7 +186,7 @@ export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickin
   const trackLayer = useGetDeckLayer<UserTracksLayer>(feature.layerId)?.instance
   const { datasetId, areaId, areaName, simplify, areaDetail, areaStatus } = useAreaDetail(feature)
 
-  const onClick = useCallback(async () => {
+  const fitAreaBounds = useCallback(async () => {
     if (trackLayer instanceof UserTracksLayer) {
       const bbox = trackLayer.getBbox({ startDate: start, endDate: end }) || trackLayer.getBbox()
       if (bbox) {
@@ -161,7 +194,7 @@ export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickin
       }
       return
     }
-    let bounds = areaDetail?.bounds
+    let bounds: Bbox | undefined = areaDetail?.bounds
     if (!bounds) {
       const area = await dispatch(
         fetchAreaDetailThunk({ datasetId, areaId, areaName, simplify })
@@ -173,18 +206,18 @@ export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickin
     }
   }, [
     trackLayer,
+    areaDetail?.bounds,
     start,
     end,
-    areaDetail,
+    fitBounds,
     dispatch,
     datasetId,
     areaId,
     areaName,
     simplify,
-    fitBounds,
   ])
 
-  return { onClick, loading: areaStatus === AsyncReducerStatus.Loading }
+  return { fitAreaBounds, loading: areaStatus === AsyncReducerStatus.Loading }
 }
 
 export type AreaTooltipTimeseries = {
@@ -192,7 +225,6 @@ export type AreaTooltipTimeseries = {
   timeseries: ReportGraphProps | undefined
   start: string
   end: string
-  areaInViewport: boolean | undefined
 }
 
 export function useAreaTooltipTimeseries(
@@ -214,7 +246,6 @@ export function useAreaTooltipTimeseries(
 
   const { datasetId, areaId, areaDetail, areaStatus } = useAreaDetail(feature)
   const geometry = (areaDetail?.geometry ?? feature.geometry) as Polygon | MultiPolygon | undefined
-  const areaInViewport = useAreaInViewport(feature)
 
   const [state, setState] = useState<{
     loading: boolean
@@ -235,10 +266,15 @@ export function useAreaTooltipTimeseries(
   )
   const layersStateHash = useAtomValue(layersStateHashAtom)
 
-  const computeHash = `${areaId}|${datasetId}|${layerIdsHash}|${isLoaded}|${layersStateHash}|${!!geometry}|${areaInViewport}`
+  const areaHash = `${areaId}|${datasetId}|${layerIdsHash}|${start}|${end}`
+  const computedAreaRef = useRef<string | undefined>(undefined)
+  const computeHash = `${areaHash}|${isLoaded}|${layersStateHash}|${!!geometry}`
 
   useEffect(() => {
-    if (!geometry || !instances.length || !isLoaded || !areaInViewport) {
+    if (!geometry || !instances.length || !isLoaded) {
+      return
+    }
+    if (computedAreaRef.current === areaHash) {
       return
     }
     let cancelled = false
@@ -256,6 +292,7 @@ export function useAreaTooltipTimeseries(
         }
         const timeseries = getTimeseries({ featuresFiltered, instances })
         if (!cancelled) {
+          computedAreaRef.current = areaHash
           setState({ loading: false, timeseries: timeseries?.[0] })
         }
       } catch (e) {
@@ -270,15 +307,11 @@ export function useAreaTooltipTimeseries(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [computeHash])
 
-  const computable = instances.length > 0 && areaInViewport === true
-  const loading = computable
-    ? state.loading || areaStatus === AsyncReducerStatus.Loading
-    : instances.length > 0 && areaInViewport === undefined
+  const computable = instances.length > 0
   return {
     start,
     end,
-    areaInViewport,
-    loading,
+    loading: computable && (state.loading || areaStatus === AsyncReducerStatus.Loading),
     timeseries: computable ? state.timeseries : undefined,
   }
 }

@@ -13,6 +13,7 @@ import {
   DatasetTypes,
   DataviewCategory,
   DataviewType,
+  EndpointId,
 } from '@globalfishingwatch/api-types'
 import type { AnyDeckLayer, FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
 
@@ -55,13 +56,9 @@ const createMockDataview = (overrides: Partial<DataviewInstance> = {}): Dataview
     id: 'test-dataview',
     category: DataviewCategory.Activity,
 
-    config: {
-      type: DataviewType.HeatmapAnimated,
-      visible: true,
-      ...overrides.config,
-    },
-
-    datasetsConfig: [],
+    datasetsConfig: [
+      { datasetId: 'test-id', endpoint: EndpointId.FourwingsTiles, params: [], query: [] },
+    ],
     datasets: [
       {
         type: DatasetTypes.PMTiles,
@@ -80,6 +77,14 @@ const createMockDataview = (overrides: Partial<DataviewInstance> = {}): Dataview
       // Only the fields the composer reads; category/documentation are irrelevant here.
     ] as unknown as Dataset[],
     ...overrides,
+    // after the spread so an override of another field keeps the resolvable config
+    config: {
+      type: DataviewType.HeatmapAnimated,
+      visible: true,
+      // getFourwingsDataviewSublayers only keeps datasets listed here
+      datasets: ['test-id'],
+      ...overrides.config,
+    },
   }) as DataviewInstance
 
 const createMockGlobalConfig = (

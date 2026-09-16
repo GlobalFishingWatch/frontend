@@ -4,6 +4,11 @@ import type { IdField } from 'features/_user/vessel-groups/vessel-groups.slice'
 
 export const VMS_PROPERTY_PREFIX = 'selfReportedInfo.'
 
+// Identity datasets advertise a bare `id` filter alongside `selfReportedInfo.id`, but the vessels
+// search `where` grammar only accepts the prefixed one — a bare `id = "..."` is rejected with a 422
+// syntax error. getAdvancedSearchQuery() in @globalfishingwatch/api-client applies the same rewrite.
+export const SELF_REPORTED_ONLY_SEARCH_PROPERTIES = new Set(['id'])
+
 // Look for these ID columns by order of preference
 export const ID_COLUMN_LOOKUP: IdField[] = ['mmsi', 'imo', 'vesselId']
 export const CSV_COLUMN_LOOKUP: string[] = [...ID_COLUMN_LOOKUP, 'flag']

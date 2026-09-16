@@ -44,6 +44,14 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
   const vesselData = useSelector(selectVesselInfoData)
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
+  const userData = useSelector(selectUserData)
+
+  const [loading, setLoading] = useState(false)
+  const [proposedValues, setProposedValues] = useState<Partial<RelevantDataFields>>()
+
+  if (!vesselData) {
+    return null
+  }
 
   const fields =
     identitySource === VesselIdentitySourceEnum.Registry ? VALID_REGISTRY_FIELDS : VALID_AIS_FIELDS
@@ -52,11 +60,6 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
     identityId,
     identitySource,
   })
-
-  const [loading, setLoading] = useState(false)
-  const userData = useSelector(selectUserData)
-
-  const [proposedValues, setProposedValues] = useState<Partial<RelevantDataFields>>()
 
   const sendCorrection = async (e: any) => {
     e.preventDefault()
@@ -71,6 +74,8 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
         workspaceLink: getCurrentAppUrl(),
         dateSubmitted: now,
         timeRange: formatTransmissionDate(vesselIdentity),
+        transmissionDateFrom: vesselIdentity.transmissionDateFrom || '',
+        transmissionDateTo: vesselIdentity.transmissionDateTo || '',
         vesselId:
           VesselIdentitySourceEnum.Registry && vesselIdentity.recordId
             ? vesselIdentity.recordId
@@ -240,7 +245,6 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
                     {key === 'geartypes' || key === 'shiptypes' || key === 'flag' ? (
                       <Select
                         placeholder={t((t) => t.selects.placeholder)}
-                        type="secondary"
                         options={
                           key === 'geartypes'
                             ? sortOptionsAlphabetically(gearSelectOptions)
@@ -271,7 +275,6 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
                       />
                     ) : (
                       <InputText
-                        inputSize="small"
                         className={styles.input}
                         onChange={(e) =>
                           setProposedValues({

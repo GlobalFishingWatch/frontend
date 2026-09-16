@@ -12,21 +12,6 @@ import type { DeckLayerProps } from '#types'
 import { getLayerGroupOffset, VESSEL_SPRITE_ICON_MAPPING } from '#utils'
 import { hexToDeckColor } from '#utils/colors'
 
-/** Render paths that represent vessel trips. */
-export class VesselPositionIconLayer extends IconLayer {
-  static layerName = 'VesselPositionIconLayer'
-
-  getShaders() {
-    const shaders = super.getShaders()
-    shaders.inject = {
-      'vs:#main-end': /*glsl*/ `
-        gl_Position.z = 1.0;
-      `,
-    }
-    return shaders
-  }
-}
-
 export type VesselTrackPositionFeature = Feature<
   Point,
   {
@@ -88,7 +73,7 @@ export class VesselTrackPositionLayer extends CompositeLayer<
             radiusUnits: 'pixels',
             stroked: false,
             pickable: this.props.pickable,
-            getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
+            getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
           })
         ),
         new LabelLayer({
@@ -100,7 +85,7 @@ export class VesselTrackPositionLayer extends CompositeLayer<
     }
 
     return [
-      new VesselPositionIconLayer(
+      new IconLayer(
         this.getSubLayerProps({
           id: 'vessel-position-bg',
           data: positions,
@@ -112,10 +97,10 @@ export class VesselTrackPositionLayer extends CompositeLayer<
           getColor: hexToDeckColor(BLEND_BACKGROUND),
           getSize: iconSize + 3,
           pickable: this.props.pickable,
-          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
+          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
         })
       ),
-      new VesselPositionIconLayer(
+      new IconLayer(
         this.getSubLayerProps({
           id: 'vessel-position',
           data: positions,
@@ -126,12 +111,12 @@ export class VesselTrackPositionLayer extends CompositeLayer<
           getAngle: (d: any) => 360 - bearingToAzimuth(d.properties.course),
           getColor,
           getSize: iconSize,
-          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
+          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
         })
       ),
       ...(iconBorder
         ? [
-            new VesselPositionIconLayer(
+            new IconLayer(
               this.getSubLayerProps({
                 id: 'vessel-position-hg',
                 data: positions,
@@ -143,7 +128,7 @@ export class VesselTrackPositionLayer extends CompositeLayer<
                   360 - bearingToAzimuth(d.properties.course),
                 getColor: [255, 255, 255, 255],
                 getSize: iconSize,
-                getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
+                getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
               })
             ),
           ]

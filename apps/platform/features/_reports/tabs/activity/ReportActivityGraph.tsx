@@ -24,6 +24,7 @@ import {
 } from 'features/_reports/reports-timeseries.hooks'
 import ReportActivityPlaceholder from 'features/_reports/shared/placeholders/ReportActivityPlaceholder'
 import { isTimeComparisonGraph } from 'features/_reports/shared/utils/reports.utils'
+import ReportActivityComparisonTotals from 'features/_reports/tabs/activity/ReportActivityComparisonTotals'
 import ReportActivityGraphSelector from 'features/_reports/tabs/activity/ReportActivityGraphSelector'
 import ReportActivityPeriodComparison from 'features/_reports/tabs/activity/ReportActivityPeriodComparison'
 import ReportActivityPeriodComparisonGraph from 'features/_reports/tabs/activity/ReportActivityPeriodComparisonGraph'
@@ -158,6 +159,15 @@ export default function ReportActivity() {
       ) : (
         GraphElement
       )}
+      {!isInitialLoad &&
+        !isEmptyData &&
+        !hasError &&
+        isTimeComparisonGraph(reportActivityGraph) && (
+          <ReportActivityComparisonTotals
+            data={layersTimeseriesFiltered[0]}
+            graph={reportActivityGraph as 'beforeAfter' | 'periodComparison'}
+          />
+        )}
       {showSelectors && SelectorsComponent && !isDatasetComparison && <SelectorsComponent />}
       {!isInitialLoad && (
         <Fragment>

@@ -1,9 +1,10 @@
-import { Fragment, lazy, Suspense, useState } from 'react'
+import { Fragment, lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
 import { uniq } from 'es-toolkit'
+import { useSetAtom } from 'jotai'
 import { DateTime } from 'luxon'
 
 import type { DetectionThumbnail } from '@globalfishingwatch/api-types'
@@ -16,22 +17,25 @@ import type { FourwingsPositionsPickingObject } from '@globalfishingwatch/deck-l
 import {
   getIsActivityPositionMatched,
   getIsDetectionsPositionMatched,
-  getPositionBearing,
 } from '@globalfishingwatch/deck-layers'
-import { Choice, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
+import { Choice, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { isRealTimeDataview } from 'features/_map/dataviews/dataviews.utils'
 import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import type { PositionRealTimeVessel } from 'features/_map/map/map.slice'
+import { fetchDetectionThumbnailsThunk } from 'features/_map/map/map.slice'
+import { interactionPromisesAtom } from 'features/_map/map/map-interactions.atoms'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import VesselLink from 'features/_vessels/vessel/VesselLink'
 import VesselPin from 'features/_vessels/vessel/VesselPin'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import { ROUTE_PATHS } from 'router/routes.utils'
+import { pickDateFormatByPrecision } from 'utils/dates'
 import { formatInfoField, upperFirst } from 'utils/info'
 
 import popupStyles from '../Popup.module.css'
@@ -43,6 +47,8 @@ type PositionsTooltipRowProps = {
   error: string
   feature: FourwingsPositionsPickingObject
   showFeaturesDetails: boolean
+  expanded?: boolean
+  onToggleExpand?: () => void
 }
 
 // e.g. 20250603_planet_..._RGB.png -> RGB
@@ -83,7 +89,7 @@ function DetectionThumbnails({
   })
   return (
     <div className={popupStyles.thumbnailContainer}>
-      <Suspense fallback={<Spinner size="small" />}>
+      <Suspense fallback={<Spinner className={popupStyles.loading} size="small" />}>
         <DetectionThumbnailImage
           key={thumbnail.name}
           id={thumbnail.name}
@@ -110,8 +116,12 @@ function PositionsTooltipRow({
   error,
   feature,
   showFeaturesDetails,
+  expanded,
+  onToggleExpand,
 }: PositionsTooltipRowProps) {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+  const setInteractionPromises = useSetAtom(interactionPromisesAtom)
   const allDatasets = useSelector(selectAllDatasets)
   const workspace = useSelector(selectWorkspace)
   const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
@@ -127,10 +137,22 @@ function PositionsTooltipRow({
     ? allDatasets.find((dataset) => dataset.id === thumbnailsDatasetId)
     : undefined
 
-  // TODO get the value based on the sublayer
-  const color = feature.sublayers?.[0]?.color
-  const bearing = getPositionBearing(feature)
-  const angle = bearing !== undefined ? bearing - 45 : 0
+  const needsThumbnails =
+    showFeaturesDetails &&
+    isPositionThumbnail &&
+    expanded !== false &&
+    feature.properties.thumbnails === undefined
+  const requestedThumbnailsRef = useRef<string>(undefined)
+  useEffect(() => {
+    if (!needsThumbnails || requestedThumbnailsRef.current === feature.id) {
+      return
+    }
+    requestedThumbnailsRef.current = feature.id
+    const promise = dispatch(fetchDetectionThumbnailsThunk({ detectionFeatures: [feature] }))
+    setInteractionPromises((prev) => ({ ...prev, detectionPositions: promise }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [needsThumbnails, feature.id])
+
   const isPositionMatched =
     feature.category === 'activity'
       ? getIsActivityPositionMatched(feature)
@@ -151,6 +173,9 @@ function PositionsTooltipRow({
     return []
   })
 
+  const stimeFormat = isRealTime
+    ? DateTime.DATETIME_MED_WITH_SECONDS
+    : pickDateFormatByPrecision(feature.properties.stime * 1000)
   const vesselId = feature.properties.vessel_id || feature.properties.id
   const datasetId = feature.sublayers?.[0]?.datasets?.[0]
   // No realtime identity means there was no match or several vessels sharing the MMSI, so we can't pick one for the user
@@ -249,46 +274,44 @@ function PositionsTooltipRow({
 
   return (
     <Fragment>
-      <Icon
-        icon={bearing !== undefined ? 'vessel' : 'circle'}
-        className={popupStyles.layerIcon}
-        style={{ color, transform: `rotate(${angle}deg)` }}
-      />
-      <div className={popupStyles.popupSectionContent}>
-        <div className={cx(popupStyles.rowCenter, { [popupStyles.rowColumn]: isRealTime })}>
-          <span className={cx(popupStyles.rowText, popupStyles.vesselTitle)}>
-            {renderSearchLink()}
-            {renderVesselPin()}
-            {renderShipname()}
-          </span>
+      <div className={popupStyles.rowCenter}>
+        <span className={cx(popupStyles.rowText, popupStyles.vesselTitle)}>
+          {renderSearchLink()}
+          {renderVesselPin()}
+          {renderShipname()}{' '}
           {feature.properties.stime && (
             <span className={popupStyles.secondary}>
-              <I18nDate
-                date={feature.properties.stime * 1000}
-                {...(isRealTime && {
-                  format: DateTime.DATETIME_MED_WITH_SECONDS,
-                  showUTCLabel: true,
-                })}
-              />
+              <I18nDate date={feature.properties.stime * 1000} format={stimeFormat} />
             </span>
           )}
-        </div>
-        {loading && isPositionThumbnail && (
-          <div className={cx(popupStyles.loading, popupStyles.thumbnailLoading)}>
-            <Spinner size="small" />
+        </span>
+        {onToggleExpand && (
+          <div className={cx(popupStyles.rowActions, popupStyles.rowActionsEnd)}>
+            <IconButton
+              icon={expanded ? 'section-collapse' : 'section-expand'}
+              size="small"
+              tooltip={t((t) => (expanded ? t.common.collapseSection : t.common.expandSection))}
+              onClick={onToggleExpand}
+            />
           </div>
         )}
-        {!loading && error && <p className={popupStyles.error}>{error}</p>}
-        {!loading &&
-          feature.category === 'detections' &&
-          feature.properties.thumbnails?.length > 0 && (
-            <DetectionThumbnails
-              thumbnails={feature.properties.thumbnails}
-              scale={getDatasetConfiguration(thumbnailsDataset, 'thumbnailsV1')?.scale}
-              datasetId={datasetId}
-            />
-          )}
       </div>
+      {expanded !== false && loading && isPositionThumbnail && (
+        <div className={cx(popupStyles.loading, popupStyles.thumbnailLoading)}>
+          <Spinner size="small" />
+        </div>
+      )}
+      {expanded !== false && !loading && error && <p className={popupStyles.error}>{error}</p>}
+      {expanded !== false &&
+        !loading &&
+        feature.category === 'detections' &&
+        feature.properties.thumbnails?.length > 0 && (
+          <DetectionThumbnails
+            thumbnails={feature.properties.thumbnails}
+            scale={getDatasetConfiguration(thumbnailsDataset, 'thumbnailsV1')?.scale}
+            datasetId={datasetId}
+          />
+        )}
     </Fragment>
   )
 }

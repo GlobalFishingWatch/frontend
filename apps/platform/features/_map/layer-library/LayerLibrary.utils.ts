@@ -63,3 +63,7 @@ export const resolveLibraryLayers = (
   })
   return layers
 }
+
+export const scrollToLayerLibrarySection = (id: string, smooth = true) => {
+  document.getElementById(id)?.scrollIntoView({ behavior: smooth ? 'smooth' : 'instant' })
+}

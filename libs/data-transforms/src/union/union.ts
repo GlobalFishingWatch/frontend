@@ -20,6 +20,8 @@ const toMultiPolygonCoords = (
 
 export function getPolygonsUnion(geoms: PolygonGeomCoords[]): MultiPolygonCoords {
   if (!geoms.length) return []
+  // turf's union throws "Must have at least 2 geometries" on a single-member collection
+  if (geoms.length === 1) return toMultiPolygonCoords(toPolygonFeature(geoms[0]).geometry)
   const merged = union(featureCollection(geoms.map(toPolygonFeature)))
   return toMultiPolygonCoords(merged?.geometry)
 }

@@ -1,12 +1,15 @@
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import cx from 'classnames'
 
 import type { DatasetSubCategory, DataviewCategory } from '@globalfishingwatch/api-types'
-import { Icon, Spinner } from '@globalfishingwatch/ui-components'
+import { isSublayerValueVisible } from '@globalfishingwatch/deck-layers'
+import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
 import I18nNumber from 'features/i18n/i18nNumber'
 
 import type { SliceExtendedFourwingsDeckSublayer } from '../../map.slice'
+import PopupSectionLayout from '../shared/PopupSectionLayout'
 import VesselsTable from '../shared/VesselsTable'
 
 import popupStyles from '../Popup.module.css'
@@ -29,40 +32,55 @@ function ActivityTooltipRow({
   activityType,
 }: ActivityTooltipRowProps) {
   const { t } = useTranslation()
+  const [expanded, setExpanded] = useState(true)
   // TODO get the value based on the sublayer
   const value = feature?.value as number
   const unit = feature?.unit ?? ('hours' as FeatureUnit)
-  if (!value) {
+  const vesselsCount = feature?.vessels?.length || 0
+  const collapsible = showFeaturesDetails && !loading && vesselsCount > 0
+  // same gate the map uses to paint and pick the cell, so a measured 0 isn't an empty popup
+  if (!isSublayerValueVisible(value, feature)) {
     return null
   }
   return (
     <Fragment>
-      <div className={popupStyles.popupSection}>
-        <Icon icon="heatmap" className={popupStyles.layerIcon} style={{ color: feature.color }} />
-        <div className={popupStyles.popupSectionContent}>
-          {showFeaturesDetails && feature.title && (
-            <h3 className={popupStyles.popupSectionTitle}>{feature.title}</h3>
-          )}
-          <div className={popupStyles.row}>
-            <span className={popupStyles.rowText} data-testid="activity-tooltip-row-value">
-              <I18nNumber number={value} />{' '}
-              {t((t) => t.common[unit], {
-                defaultValue: 'hours',
-                count: value, // neded to select the plural automatically
-              } as any)}
-            </span>
-          </div>
-          {loading && (
-            <div className={popupStyles.loading}>
-              <Spinner size="small" />
+      <PopupSectionLayout
+        icon="heatmap"
+        iconColor={feature.color}
+        title={showFeaturesDetails && feature.title ? feature.title : undefined}
+      >
+        <div className={cx(popupStyles.row, popupStyles.rowCenter)}>
+          <span className={popupStyles.rowText} data-testid="activity-tooltip-row-value">
+            <I18nNumber number={value} />{' '}
+            {t((t) => t.common[unit], {
+              defaultValue: 'hours',
+              count: value, // neded to select the plural automatically
+            } as any)}{' '}
+            {showFeaturesDetails &&
+              vesselsCount > 0 &&
+              t((t) => t.common.fromVessels, { count: vesselsCount })}
+          </span>
+          {collapsible && (
+            <div className={cx(popupStyles.rowActions, popupStyles.rowActionsEnd)}>
+              <IconButton
+                icon={expanded ? 'section-collapse' : 'section-expand'}
+                size="small"
+                tooltip={t((t) => (expanded ? t.common.collapseSection : t.common.expandSection))}
+                onClick={() => setExpanded((prev) => !prev)}
+              />
             </div>
           )}
-          {!loading && error && <p className={popupStyles.error}>{error}</p>}
-          {!loading && showFeaturesDetails && (
-            <VesselsTable feature={feature} activityType={activityType} />
-          )}
         </div>
-      </div>
+        {loading && (
+          <div className={popupStyles.loading}>
+            <Spinner size="small" />
+          </div>
+        )}
+        {!loading && error && <p className={popupStyles.error}>{error}</p>}
+        {!loading && showFeaturesDetails && expanded && (
+          <VesselsTable feature={feature} activityType={activityType} showMore={false} />
+        )}
+      </PopupSectionLayout>
     </Fragment>
   )
 }

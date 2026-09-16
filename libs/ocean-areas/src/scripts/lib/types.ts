@@ -6,6 +6,7 @@ export type AreaGeometryMode = 'bbox' | 'simplify' | 'point'
 export type AreaConfig = {
   type: AreaType
   path: string
+  fileName?: string
   bucketFolder: string
   skipDownload?: boolean
   propertiesMapping: {

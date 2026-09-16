@@ -77,6 +77,27 @@ export function getMVTSublayerProps({
   }
 }
 
+export function isPMTilesUrl(url?: string): boolean {
+  return url?.includes('.pmtile') ?? false
+}
+
+export function getPMTilesSublayerProps({
+  tile,
+  extensions,
+}: {
+  tile: Tile2DHeader
+  extensions?: TileLayerProps['extensions']
+}): {
+  clipBounds: [number, number, number, number]
+  extensions: any[]
+} {
+  const { west, south, east, north } = tile.bbox as GeoBoundingBox
+  return {
+    clipBounds: [west, south, east, north],
+    extensions: [...(extensions || []), new ClipExtension()],
+  }
+}
+
 // copied from deck.gl geo-layers/src/mvt-layer/coordinate-transform as it not exported
 export function transformCoordinates(geometry: any, bbox: GeoBoundingBox, viewport: Viewport) {
   const nw = viewport.projectFlat([bbox.west, bbox.north])

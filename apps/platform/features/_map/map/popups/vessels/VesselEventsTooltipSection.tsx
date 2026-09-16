@@ -12,7 +12,7 @@ import type {
 import { DatasetTypes, EventTypes } from '@globalfishingwatch/api-types'
 import type { VesselEventPickingObject } from '@globalfishingwatch/deck-layers'
 import { isLonglineSetEvent } from '@globalfishingwatch/deck-loaders'
-import { Icon, IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { selectVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/_vessels/vessel/vessel.config'
@@ -27,6 +27,7 @@ import { getEventDescription, getTimeLabels } from 'utils/events'
 import { formatInfoField } from 'utils/info'
 
 import { MAX_TOOLTIP_LIST } from '../../map.slice'
+import PopupSectionLayout from '../shared/PopupSectionLayout'
 
 import styles from '../Popup.module.css'
 
@@ -151,39 +152,36 @@ function VesselEventsTooltipSection({
   return (
     <Fragment>
       {Object.values(featuresByType).map((featureByType, index) => (
-        <div key={`${featureByType[0].title}-${index}`} className={styles.popupSection}>
-          <Icon
-            icon="vessel"
-            className={styles.layerIcon}
-            style={{ color: featureByType[0].color }}
-          />
-          <div className={styles.popupSectionContent}>
-            {vesselNamesByType[index] && showFeaturesDetails && (
-              <h3 className={styles.popupSectionTitle}>
-                {formatInfoField(vesselNamesByType[index], 'shipname')}
-              </h3>
-            )}
-            {featureByType.map((feature, index) => {
-              return (
-                <div key={index} className={styles.row}>
-                  {showFeaturesDetails ? (
-                    <EventDescription
-                      event={feature}
-                      vesselOrigin={isAnyVesselLocation ? 'vesselProfile' : undefined}
-                    />
-                  ) : (
-                    getEventDescription(feature, { source })?.description
-                  )}
-                </div>
-              )
-            })}
-            {overflows && (
-              <div className={styles.vesselsMore}>
-                + {features.length - MAX_TOOLTIP_LIST} {t((t) => t.common.more)}
+        <PopupSectionLayout
+          key={`${featureByType[0].title}-${index}`}
+          icon="vessel"
+          iconColor={featureByType[0].color}
+          title={
+            vesselNamesByType[index] && showFeaturesDetails
+              ? formatInfoField(vesselNamesByType[index], 'shipname')
+              : undefined
+          }
+        >
+          {featureByType.map((feature, index) => {
+            return (
+              <div key={index} className={styles.row}>
+                {showFeaturesDetails ? (
+                  <EventDescription
+                    event={feature}
+                    vesselOrigin={isAnyVesselLocation ? 'vesselProfile' : undefined}
+                  />
+                ) : (
+                  getEventDescription(feature, { source })?.description
+                )}
               </div>
-            )}
-          </div>
-        </div>
+            )
+          })}
+          {overflows && (
+            <div className={styles.vesselsMore}>
+              + {features.length - MAX_TOOLTIP_LIST} {t((t) => t.common.more)}
+            </div>
+          )}
+        </PopupSectionLayout>
       ))}
     </Fragment>
   )

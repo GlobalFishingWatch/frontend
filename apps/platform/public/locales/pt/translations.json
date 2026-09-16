@@ -12,6 +12,11 @@
     "clickToFilterBy": "Clique para filtrar por:",
     "clickToSeeAreaReport": "Click to see the {{area}} report",
     "comparisonNotAvailable": "Comparing datasets is not available for this layer",
+    "comparisonTotalAfter": "Total after",
+    "comparisonTotalBaseline": "Baseline total",
+    "comparisonTotalBefore": "Total before",
+    "comparisonTotalChange": "Total change",
+    "comparisonTotalCompared": "Comparison total",
     "confirmRemove": "Tem certeza de que deseja excluir este relatório permanentemente?",
     "createReportHelp": "Para explorar como os dados ambientais e de atividades mudam ao longo do tempo, você pode criar um relatório dinâmico contendo análises para qualquer área. Os relatórios dinâmicos oferecem uma maneira rápida de acessar e compreender mais informações sobre qualquer área oceânica, zona econômica exclusiva, área marinha protegida ou área de interesse. Os relatórios dinâmicos ajudam a compreender quanta atividade está acontecendo em cada área, inclusive quais embarcações e estados de bandeira estão ativos.",
     "createReportHelpLink": "Saber mais.",
@@ -77,6 +82,7 @@
     "noVesselDataFiltered": "Não há nenhuma embarcação correspondente ao seu filtro",
     "onlyEvolutionSupported": "Click the evolution button above to see the vessels active in the area",
     "others": "Outros",
+    "othersLayersAreReportArea": "The layers used to create this report area can't be analysed against themselves. Turn on another polygon or point layer to see results here.",
     "periodComparison": "comparação por período",
     "periodComparison1st": "início da base de referência",
     "periodComparison2nd": "iniciar comparação",
@@ -92,6 +98,8 @@
     "polygonsOverlapping": "partially overlapping",
     "polygonsOverlapping_one": "partially overlapping polygon",
     "polygonsOverlapping_other": "partially overlapping polygons",
+    "polygonsTopAreas_one": "Largest polygon in the report area",
+    "polygonsTopAreas_other": "Top {{count}} largest polygons in the report area",
     "portsAfterEvents": "Ports visited after events",
     "portsSearchPlaceholder": "Search ports",
     "print": "print",
@@ -108,7 +116,7 @@
     "selectAggregationProperty": "Select a property to analyze",
     "selectDatasetPlaceholder": "Select a dataset to compare",
     "share": "Compartilhar relatório",
-    "showFullReport": "See full analysis for this area",
+    "showFullReport": "Ver análise completa",
     "statsDisclaimerDynamic": "Durante esse período, os valores mínimo e máximo em qualquer {{interval}} e local dentro de sua área foram {{min}} {{unit}} e {{max}} {{unit}}.",
     "statsDisclaimerStatic": "O valor médio para a sua área é de {{mean}} {{unit}}. O mínimo e o máximo são {{min}} {{unit}} e {{max}} {{unit}}.",
     "summary": "<strong>{{vessels}} embarcações{{sources}} </strong> tiveram <strong>{{activityQuantity}} {{activityUnit}}</strong> de <strong>{{activityType}}</strong> {{area}}  entre <strong>{{start}}</strong> e <strong>{{end}}</strong>",
@@ -119,7 +127,8 @@
     "timeRangeTooLong": "Relatórios só estão disponíveis para intervalos de tempo de até um ano",
     "title": "Report",
     "unknown": "Desconhecido",
-    "unknownProperty": "Unknown"
+    "unknownProperty": "Unknown",
+    "zoomToAreaForActivity": "Center view to see activity"
   },
   "bigQuery": {
     "aggregateAvg": "Média",
@@ -245,6 +254,8 @@
     "fitArea": "Center view on area",
     "flag": "Bandeira",
     "from": "de",
+    "fromVessels_one": "from {{count}} vessel",
+    "fromVessels_other": "from {{count}} vessels",
     "globalReport": "Global report",
     "help": "Ajuda",
     "hideAllHelpHints": "Ignorar Todos",
@@ -350,6 +361,8 @@
     "timerangeStatic": "Estático ({{start}} - {{end}})",
     "to": "para",
     "toggleVisibility": "Alternar visibilidade",
+    "topVessels_one": "Top vessel",
+    "topVessels_other": "Top {{count}} vessels",
     "tutorials": "Tutoriais",
     "unionOf": "União de",
     "unit": "unidade",
@@ -404,14 +417,19 @@
       "shapefile": "shapefile comprimido"
     },
     "importing": "Dataset está sendo importado",
+    "loadError": "Some of your datasets could not be loaded.",
+    "loadRetry": "Try again",
     "login": "Este é um conjunto de dados privado, faça o login para vê-lo",
     "new": "Novo dataset",
     "noDataForTimerange": "Não há dados para o intervalo de tempo atual",
     "onlyFileFormatAllowed": "(Apenas {{formats}} são permitidos)",
     "remove": "Remover dataset",
     "requiredFields": "Campos obrigatórios {{fields}}",
-    "SARDelayDisclaimer": "Em pausa enquanto migramos do Sentinel-1A para o Sentinel-1C e 1D. <0>Saiba mais.</0>",
+    "showLess": "Show less",
+    "showMore_one": "Show {{count}} more",
+    "showMore_other": "Show {{count}} more",
     "title": "Dataset",
+    "typeBigQuery": "BigQuery",
     "typeGridded": "Gridded / Raster",
     "typeGriddedDescription": "Display a heatmap from a GeoTIFF raster (EPSG:4326)",
     "typePoints": " Pontos",
@@ -437,6 +455,7 @@
         "invalidData": "CSV data does not have a valid structure"
       },
       "default": "Houve um erro ao carregar seus dados",
+      "fileTooBig": "This file is too large to process in the browser. Try splitting it into smaller files.",
       "geoJSON": {
         "noValidFeatures": "Nenhum tipo de recurso válido encontrado no arquivo geoJSON"
       },
@@ -460,6 +479,9 @@
         "noLineData": "Nenhum dado de linha encontrado no shapefile",
         "noPointData": "Nenhum dado de ponto encontrado no shapefile",
         "noPolygonData": "Nenhum dado de polígono encontrado no shapefile"
+      },
+      "zip": {
+        "multipleFiles": "The zip file contains more than one file of the same format. Please upload a zip with a single data file."
       }
     },
     "fieldMultiplePlaceholder": "Selecione um ou mais campos do seu conjunto de dados",
@@ -541,7 +563,7 @@
     "nir": "Near-infrared",
     "rgb": "Red, green and blue (visible light)"
   },
-  "detections": "Detections",
+  "detections": "",
   "download": {
     "apiPortal": "Veja nossas APIs aqui",
     "area": "Área",
@@ -699,6 +721,8 @@
     "portAction": "Fundeio começou às {{start}} por {{duration}}",
     "portAt": "Ancorado em {{port}} iniciado às {{start}} por {{duration}}",
     "ports": "Ports",
+    "portVisitsSummary_one": "{{visits}} visit from {{vessels}} vessel",
+    "portVisitsSummary_other": "{{visits}} visits from {{vessels}} vessels",
     "unknown": "Evento desconhecido",
     "yearAbbreviated": "{{count}}y",
     "yearAbbreviated_one": "{{count}}y",
@@ -1049,9 +1073,9 @@
     "months_one": "month",
     "months_other": "{{count}} months",
     "now": "now",
-    "weeks": "{{count}} week",
-    "weeks_one": "week",
-    "weeks_other": "{{count}} weeks"
+    "years": "{{count}} year",
+    "years_one": "{{count}} year",
+    "years_other": "{{count}} years"
   },
   "timebar": {
     "disablePlaybackVectors": "Playback of currents or winds layers is not supported",
@@ -1145,17 +1169,21 @@
     "activity-fishing": "Activity - Fishing",
     "activity-vessel-presence": "Activity - Presence",
     "analysis-and-dynamic-reports": "Analyze activity",
+    "analyzing-activity-over-time": "Analyze activity over time",
+    "central-section-showing-spatial-activity-maps": "Spatial activity maps",
     "downloading-data": "Download data",
     "filtering-activity-layers": "Filter activity layers",
     "night-light-detections-visible-infrared-imaging-radiometer-suite": "Detections - VIIRS",
     "radar-detections-synthetic-aperture-radar": "Detections - SAR",
+    "timebar": "Timebar",
     "title": "Guia do Usuário",
     "upload-points": "Upload point datasets",
     "upload-polygons": "Upload polygon datasets",
     "upload-tracks": "Upload track datasets",
     "uploading-data": "Upload datasets",
     "vessel-groups": "Vessel groups",
-    "vessel-search": "Vessel Search"
+    "vessel-search": "Vessel Search",
+    "viewing-vessel-activity-in-layers": "Vessel activity in layers"
   },
   "vessel": {
     "activityByType": "Por tipo",

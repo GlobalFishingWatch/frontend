@@ -12,6 +12,11 @@
     "clickToFilterBy": "Click to filter by:",
     "clickToSeeAreaReport": "Click to see the {{area}} report",
     "comparisonNotAvailable": "Comparing datasets is not available for this layer",
+    "comparisonTotalAfter": "Total after",
+    "comparisonTotalBaseline": "Baseline total",
+    "comparisonTotalBefore": "Total before",
+    "comparisonTotalChange": "Total change",
+    "comparisonTotalCompared": "Comparison total",
     "confirmRemove": "Are you sure you want to permanently delete this report?",
     "createReportHelp": "To explore how activity and environmental data changes over time, you can create a dynamic report containing analysis for any area. Dynamic reports offer a rapid way to access and understand more information about any ocean area, exclusive economic zone, marine protected area or area of interest. Dynamic reports help you understand how much activity is happening in each area, including which vessels and flag States are active.",
     "createReportHelpLink": "Learn more.",
@@ -77,6 +82,7 @@
     "noVesselDataFiltered": "There are no vessels matching your filter",
     "onlyEvolutionSupported": "Select the evolution option above to see the vessels active in the area",
     "others": "Others",
+    "othersLayersAreReportArea": "The layers used to create this report area can't be analysed against themselves. Turn on another polygon or point layer to see results here.",
     "periodComparison": "Period comparison",
     "periodComparison1st": "Baseline start",
     "periodComparison2nd": "Comparison start",
@@ -92,6 +98,8 @@
     "polygonsOverlapping": "partially overlapping",
     "polygonsOverlapping_one": "partially overlapping polygon",
     "polygonsOverlapping_other": "partially overlapping polygons",
+    "polygonsTopAreas_one": "Largest polygon in the report area",
+    "polygonsTopAreas_other": "Top {{count}} largest polygons in the report area",
     "portsAfterEvents": "Ports visited after events",
     "portsSearchPlaceholder": "Search ports",
     "print": "print",
@@ -119,7 +127,8 @@
     "timeRangeTooLong": "Reports are only supported for time ranges up to one year.",
     "title": "Report",
     "unknown": "Other",
-    "unknownProperty": "Unknown"
+    "unknownProperty": "Unknown",
+    "zoomToAreaForActivity": "Center view to see activity"
   },
   "bigQuery": {
     "aggregateAvg": "Average",
@@ -245,6 +254,8 @@
     "fitArea": "Center view on area",
     "flag": "Flag",
     "from": "from",
+    "fromVessels_one": "from {{count}} vessel",
+    "fromVessels_other": "from {{count}} vessels",
     "globalReport": "Global report",
     "help": "Help",
     "hideAllHelpHints": "Dismiss all",
@@ -350,6 +361,8 @@
     "timerangeStatic": "Static ({{start}} - {{end}})",
     "to": "to",
     "toggleVisibility": "Toggle visibility",
+    "topVessels_one": "Top vessel",
+    "topVessels_other": "Top {{count}} vessels",
     "tutorials": "Tutorials",
     "unionOf": "Union of",
     "unit": "unit",
@@ -404,16 +417,21 @@
       "shapefile": "compressed shapefile"
     },
     "importing": "Dataset is being imported",
+    "loadError": "Some of your datasets could not be loaded.",
+    "loadRetry": "Try again",
     "login": "This is a private dataset, log in to see it",
     "new": "New dataset",
     "noDataForTimerange": "There is no data for the current timerange",
     "onlyFileFormatAllowed": "(Only {{formats}} files are allowed)",
     "remove": "Remove dataset",
     "requiredFields": "Required fields {{fields}}",
-    "SARDelayDisclaimer": "Paused while we move from Sentinel-1A to Sentinel-1C and 1D. <0>Learn more.</0>",
+    "showLess": "Show less",
+    "showMore_one": "Show {{count}} more",
+    "showMore_other": "Show {{count}} more",
     "title": "Dataset",
+    "typeBigQuery": "BigQuery",
     "typeGridded": "Gridded / Raster",
-    "typeGriddedDescription": "Display a heatmap from a GeoTIFF raster (EPSG:4326)",
+    "typeGriddedDescription": "Display a heatmap from a GeoTIFF or NetCDF raster (EPSG:4326)",
     "typePoints": "Points",
     "typePointsDescription": "Display one or multiple positions with labels in your dataset",
     "typePolygons": " Polygons",
@@ -437,6 +455,7 @@
         "invalidData": "CSV data does not have a valid structure"
       },
       "default": "There was an error uploading your dataset.",
+      "fileTooBig": "This file is too large to process in the browser. Try splitting it into smaller files.",
       "geoJSON": {
         "noValidFeatures": "No valid feature types found in the geoJSON file"
       },
@@ -460,6 +479,9 @@
         "noLineData": "No lineString data found in the shapefile",
         "noPointData": "No point data found in the shapefile",
         "noPolygonData": "No polygon data found in the shapefile"
+      },
+      "zip": {
+        "multipleFiles": "The zip file contains more than one file of the same format. Please upload a zip with a single data file."
       }
     },
     "fieldMultiplePlaceholder": "Select one or more fields from your dataset",
@@ -541,7 +563,7 @@
     "nir": "Near-infrared",
     "rgb": "Red, green and blue (visible light)"
   },
-  "detections": "Detections",
+  "detections": "",
   "download": {
     "apiPortal": "See our APIs here",
     "area": "Area",
@@ -699,6 +721,8 @@
     "portAction": "Docked started at {{start}} for {{duration}}",
     "portAt": "Docked at {{port}} started at {{start}} for {{duration}}",
     "ports": "Ports",
+    "portVisitsSummary_one": "{{visits}} visit from {{vessels}} vessel",
+    "portVisitsSummary_other": "{{visits}} visits from {{vessels}} vessels",
     "unknown": "Unknown event",
     "yearAbbreviated": "{{count}}y",
     "yearAbbreviated_one": "{{count}}y",
@@ -1049,9 +1073,9 @@
     "months_one": "month",
     "months_other": "{{count}} months",
     "now": "now",
-    "weeks": "{{count}} week",
-    "weeks_one": "week",
-    "weeks_other": "{{count}} weeks"
+    "years": "{{count}} year",
+    "years_one": "{{count}} year",
+    "years_other": "{{count}} years"
   },
   "timebar": {
     "disablePlaybackVectors": "Playback of currents or winds layers is not supported",
@@ -1145,17 +1169,21 @@
     "activity-fishing": "Activity - Fishing",
     "activity-vessel-presence": "Activity - Presence",
     "analysis-and-dynamic-reports": "Analyze activity",
+    "analyzing-activity-over-time": "Analyze activity over time",
+    "central-section-showing-spatial-activity-maps": "Spatial activity maps",
     "downloading-data": "Download data",
     "filtering-activity-layers": "Filter activity layers",
     "night-light-detections-visible-infrared-imaging-radiometer-suite": "Detections - VIIRS",
     "radar-detections-synthetic-aperture-radar": "Detections - SAR",
+    "timebar": "Timebar",
     "title": "User Guide",
     "upload-points": "Upload point datasets",
     "upload-polygons": "Upload polygon datasets",
     "upload-tracks": "Upload track datasets",
     "uploading-data": "Upload datasets",
     "vessel-groups": "Vessel groups",
-    "vessel-search": "Vessel Search"
+    "vessel-search": "Vessel Search",
+    "viewing-vessel-activity-in-layers": "Vessel activity in layers"
   },
   "vessel": {
     "activityByType": "Activity by type",
@@ -1524,7 +1552,7 @@
     "confirmAbort": "You will lose any changes made in this vessel group. Are you sure?",
     "confirmRemove": "Are you sure you want to permanently delete this vessel group?",
     "copyOf": "Copy of",
-    "createNewGroup": "Upload new group",
+    "createNewGroup": "Create a new group",
     "csvFile": "Upload a file",
     "csvLink": "Click to see an example CSV file",
     "csvPlaceholder": "Upload a CSV file with a {{field}} column",

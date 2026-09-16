@@ -38,10 +38,15 @@ import type {
 } from './fourwings-heatmap.types'
 import { FourwingsAggregationOperation } from './fourwings-heatmap.types'
 
+/** `undefined` when the slice holds no data. A 0 total is a real total: absent frames travel
+ * as the no-data sentinel, which the parser drops, so every number here was measured. */
 export function aggregateSublayerValues(
   values: number[],
   aggregationOperation = FourwingsAggregationOperation.Sum
-) {
+): number | undefined {
+  if (!values.some(Number.isFinite)) {
+    return undefined
+  }
   if (aggregationOperation === FourwingsAggregationOperation.Avg) {
     let nonEmptyValuesLength = 0
     return (
@@ -65,6 +70,25 @@ export function aggregateSublayerValues(
   }, 0)
 }
 
+export const getCellValuesFrameRange = ({
+  valuesLength,
+  startFrame,
+  endFrame,
+  startOffset,
+}: {
+  valuesLength: number
+  startFrame: number
+  endFrame: number
+  startOffset: number
+}): [number, number] => {
+  const from = Math.max(startFrame - startOffset, 0)
+  if (startFrame === endFrame) {
+    return [from, from + 1]
+  }
+  const to = endFrame - startOffset
+  return [from, to < valuesLength ? to : valuesLength]
+}
+
 export const sliceCellValues = ({
   values,
   startFrame,
@@ -79,11 +103,13 @@ export const sliceCellValues = ({
   if (!values || !values.length) {
     return []
   }
-  if (startFrame === endFrame) return [values[Math.max(startFrame - startOffset, 0)]]
-  return values.slice(
-    Math.max(startFrame - startOffset, 0),
-    endFrame - startOffset < values.length ? endFrame - startOffset : undefined
-  )
+  const [from, to] = getCellValuesFrameRange({
+    valuesLength: values.length,
+    startFrame,
+    endFrame,
+    startOffset,
+  })
+  return values.slice(from, to)
 }
 
 /**
@@ -127,18 +153,17 @@ export const compareCell = ({
 }: CompareCellParams): number[] => {
   const [initialValue, comparedValue] = cellValues.map((sublayerValues) => {
     if (!sublayerValues || !sublayerValues?.length) {
-      return 0
+      return undefined
     }
-    const value = aggregateSublayerValues(sublayerValues, aggregationOperation)
-    return value ?? 0
+    return aggregateSublayerValues(sublayerValues, aggregationOperation)
   })
-  if (!initialValue && !comparedValue) {
+  if (initialValue === undefined && comparedValue === undefined) {
     return []
   }
-  if (!comparedValue) {
-    return [-initialValue]
+  if (comparedValue === undefined) {
+    return [-(initialValue as number)]
   }
-  if (!initialValue) {
+  if (initialValue === undefined) {
     return [comparedValue]
   }
   return [comparedValue - initialValue]

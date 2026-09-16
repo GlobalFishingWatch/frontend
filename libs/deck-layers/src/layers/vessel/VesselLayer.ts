@@ -247,13 +247,13 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     return trackUrlObject.toString()
   }
 
-  _getVesselChunks = ({ withBuffer = false }: { withBuffer?: boolean } = {}) => {
+  _getVesselChunks = () => {
     const { startTime, endTime, strictTimeRange, bufferedStartTime, bufferedEndTime } = this.props
     if (!startTime || !endTime) {
       return []
     }
-    const loadStart = withBuffer ? (bufferedStartTime ?? startTime) : startTime
-    const loadEnd = withBuffer ? (bufferedEndTime ?? endTime) : endTime
+    const loadStart = bufferedStartTime ?? startTime
+    const loadEnd = bufferedEndTime ?? endTime
 
     const chunks = strictTimeRange
       ? [{ start: getUTCDateTime(loadStart).toISO()!, end: getUTCDateTime(loadEnd).toISO()! }]
@@ -309,7 +309,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     }
     const { zoom } = this.context.viewport
     this._lastTrackThinningLevel = this._getTrackThinningLevel(zoom, trackThinningZoomConfig)
-    const chunks = this._getVesselChunks({ withBuffer: true })
+    const chunks = this._getVesselChunks()
     return chunks.flatMap(({ start, end }) => {
       if (!start || !end) {
         return []
@@ -375,6 +375,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     if (!visible) {
       return []
     }
+
     const chunks = this._getVesselChunks()
     // return one layer with all events if we are consuming the data object from app resources
     return events?.flatMap(({ url, type, datasetId }) => {
@@ -410,8 +411,34 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     this.setState({ highlightedFeatures })
   }
 
+  /** Last point of the track, course inferred from the point before it */
+  _getLastPositionFeature(): VesselTrackPositionFeature | undefined {
+    const trackData = this.getVesselTrackData()
+    for (let i = trackData.length - 1; i >= 0; i--) {
+      const chunk = trackData[i]
+      const timestamps = chunk?.attributes?.getTimestamp?.value
+      if (!timestamps?.length) {
+        continue
+      }
+      const index = timestamps.length - 1
+      const coordIndex = index * 2
+      const path = chunk.attributes.getPath.value
+      const coords = [path[coordIndex], path[coordIndex + 1]]
+      const prevCoords = index > 0 ? [path[coordIndex - 2], path[coordIndex - 1]] : undefined
+      return point(coords, {
+        layerId: this.root.id,
+        // ponytail: no course attribute in the track data, bearing from the previous point is enough
+        course: prevCoords ? rhumbBearing(prevCoords, coords) : 0,
+        timestamp: toAbsoluteTimestamp(timestamps[index], chunk.timestampBase ?? 0),
+        speed: chunk.attributes.getSpeed.value[index],
+        depth: chunk.attributes.getElevation.value[index],
+      })
+    }
+    return undefined
+  }
+
   _getVesselPositionLayer() {
-    const { visible, color, name, showVesselIcon } = this.props
+    const { visible, color, name, showVesselIcon, showLastPositionIcon } = this.props
     const { highlightStartTime, highlightEndTime } = this.state || {}
     const trackData = this.getVesselTrackData()
 
@@ -496,6 +523,13 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         if (centerPoint) {
           data = [centerPoint]
         }
+      }
+    }
+
+    if (!data.length && showLastPositionIcon) {
+      const lastPosition = this._getLastPositionFeature()
+      if (lastPosition) {
+        data = [lastPosition]
       }
     }
 

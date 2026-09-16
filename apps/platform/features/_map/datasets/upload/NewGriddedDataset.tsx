@@ -26,7 +26,7 @@ import {
 } from 'features/_map/datasets/upload/datasets-upload.utils'
 import type { NewDatasetProps } from 'features/_map/datasets/upload/NewDataset'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { getFileName, getFileType, getFileTypes } from 'utils/files'
+import { getFileFromZipContent, getFileName, getFileType, getFileTypes } from 'utils/files'
 
 import FileDropzone from './FileDropzone'
 
@@ -75,6 +75,26 @@ function NewGriddedDataset({
     const parseFile = async () => {
       try {
         const fileTypeResult = await getFileType(file)
+        if (
+          !fileTypeResult.fileType ||
+          !getFileTypes('gridded').includes(fileTypeResult.fileType)
+        ) {
+          throw new Error('datasetUpload.errors.default')
+        }
+        if (fileTypeResult.zipContent.length) {
+          const unzippedFile = await getFileFromZipContent(
+            fileTypeResult.zipContent,
+            fileTypeResult.fileType
+          )
+          if (cancelled) {
+            return
+          }
+          if (!unzippedFile) {
+            throw new Error('datasetUpload.errors.default')
+          }
+          onFileUpdate(unzippedFile)
+          return
+        }
         const parsed = await getDatasetParsed(file, 'gridded', fileTypeResult)
         if (cancelled) {
           return
@@ -102,7 +122,7 @@ function NewGriddedDataset({
     return () => {
       cancelled = true
     }
-  }, [file, onDatasetParseError, setDatasetMetadata])
+  }, [file, onDatasetParseError, onFileUpdate, setDatasetMetadata])
 
   const sourceFormat = getDatasetConfigurationProperty({
     dataset: datasetMetadata,

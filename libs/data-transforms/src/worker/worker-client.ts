@@ -17,10 +17,17 @@ type PendingRequest<Result> = {
 }
 
 /**
- * Pass `new URL('./x.worker.js', import.meta.url)`. The `new URL(...)` literal has to stay at the
- * call site — that is what the bundler statically detects to emit the worker chunk.
+ * Pass a factory, with the `new URL(..., import.meta.url)` literal written inline inside the
+ * `new Worker(...)` call:
+ *
+ *     createWorkerClient(() => new Worker(new URL('./x.worker.js', import.meta.url), { type: 'module' }))
+ *
+ * That exact shape is what the bundler statically detects in order to emit a worker chunk. Hoisting
+ * the URL out — into a variable, or into this function's argument as it used to be — leaves the
+ * bundler seeing a bare `new URL`, which it treats as a plain asset: the worker entry is emitted
+ * verbatim and unbundled, so the worker fails to load and `onerror` fires with no message.
  */
-export function createWorkerClient<Payload, Result>(workerUrl: URL) {
+export function createWorkerClient<Payload, Result>(createWorker: () => Worker) {
   let worker: Worker | undefined
   let idCounter = 0
   const requests = new Map<number, PendingRequest<Result>>()
@@ -33,7 +40,7 @@ export function createWorkerClient<Payload, Result>(workerUrl: URL) {
 
   const getWorker = () => {
     if (worker === undefined) {
-      worker = new Worker(workerUrl, { type: 'module' })
+      worker = createWorker()
       worker.onmessage = ({ data }: MessageEvent<WorkerResponseMessage<Result>>) => {
         const request = requests.get(data.id)
         if (!request) {
@@ -46,8 +53,11 @@ export function createWorkerClient<Payload, Result>(workerUrl: URL) {
         }
         request.resolve(data.result)
       }
-      worker.onerror = (event: ErrorEvent) =>
+      worker.onerror = (event: ErrorEvent) => {
         rejectAll(event.error ?? new Error(String(event.message)))
+        worker?.terminate()
+        worker = undefined
+      }
     }
     return worker
   }
@@ -58,7 +68,12 @@ export function createWorkerClient<Payload, Result>(workerUrl: URL) {
         const id = idCounter++
         requests.set(id, { resolve, reject })
         const message: WorkerRequestMessage<Payload> = { id, payload }
-        getWorker().postMessage(message)
+        try {
+          getWorker().postMessage(message)
+        } catch (error) {
+          requests.delete(id)
+          reject(error)
+        }
       }),
     /** Kills the worker and rejects everything in flight. The next request spawns a fresh one. */
     terminate: () => {
@@ -87,6 +102,6 @@ export function handleWorkerRequests<Payload, Result>(
         response = { id, error: error instanceof Error ? error.message : String(error) }
       }
       postMessage(response)
-    })
+    }).catch(() => undefined)
   })
 }

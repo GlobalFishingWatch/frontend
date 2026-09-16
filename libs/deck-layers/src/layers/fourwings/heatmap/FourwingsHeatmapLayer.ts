@@ -108,6 +108,10 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       aggregationOperation,
     })
     feature.aggregatedValues = aggregatedCellValues
+    if (!aggregatedCellValues.length) {
+      target = EMPTY_CELL_COLOR
+      return target
+    }
     const chosenValue = aggregatedCellValues[0]
 
     if (scales[0]) {
@@ -297,8 +301,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
           getPath: (d: FourwingsFeature) => d.coordinates,
           getColor: COLOR_HIGHLIGHT_LINE,
           getOffset: 0.5,
-          getPolygonOffset: (params: any) =>
-            getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Default, params),
           extensions: [new PathStyleExtension({ offset: true })],
         })
       ),

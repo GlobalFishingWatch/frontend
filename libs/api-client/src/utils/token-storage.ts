@@ -1,4 +1,4 @@
-import { getIsBrowser } from './browser'
+import { safeLocalStorage } from './browser'
 import { readDocumentCookie, removeDocumentCookie, writeDocumentCookie } from './cookies'
 
 export interface TokenStorage {
@@ -7,14 +7,12 @@ export interface TokenStorage {
 }
 
 export const createLocalStorageTokenStorage = (key: string): TokenStorage => ({
-  get: () => (getIsBrowser() ? localStorage.getItem(key) || '' : ''),
+  get: () => safeLocalStorage.get(key) || '',
   set: (value: string) => {
-    if (getIsBrowser()) {
-      if (value) {
-        localStorage.setItem(key, value)
-      } else {
-        localStorage.removeItem(key)
-      }
+    if (value) {
+      safeLocalStorage.set(key, value)
+    } else {
+      safeLocalStorage.remove(key)
     }
   },
 })

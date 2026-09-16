@@ -150,6 +150,9 @@ const workspace: Workspace<WorkspaceState> = {
       category: DataviewCategory.Environment,
       dataviewId: BATHYMETRY_CONTOUR_DATAVIEW_SLUG,
       id: BATHYMETRY_CONTOUR_DATAVIEW_INSTANCE_ID,
+      config: {
+        visible: false,
+      },
     },
     {
       id: PORT_VISITS_EVENTS_SOURCE_ID,

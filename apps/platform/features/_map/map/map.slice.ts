@@ -124,7 +124,7 @@ export type SliceExtendedClusterPickingObject<Event = ExtendedFeatureEvent> =
     event: Event
   }
 
-type SliceExtendedFeature =
+export type SliceExtendedFeature =
   | SliceExtendedFourwingsPickingObject
   | SliceExtendedClusterPickingObject
   | FourwingsPositionsPickingObject
@@ -233,7 +233,7 @@ const getInteractionEndpointDatasetConfig = (
     datasetConfig.query?.push({ id: 'filters', value: filters })
   }
 
-  const vesselGroups = featuresDataviews.flatMap((dv) => dv.config?.['vessel-groups'] || '')
+  const vesselGroups = featuresDataviews.flatMap((dv) => dv.config?.['vessel-groups'] || [])
 
   if (vesselGroups.length) {
     datasetConfig.query?.push({ id: 'vessel-groups', value: vesselGroups })
@@ -760,7 +760,7 @@ export const fetchClusterEventThunk = createAsyncThunk(
 )
 
 export const fetchDetectionThumbnailsThunk = createAsyncThunk<
-  { thumbnails: (DetectionThumbnails | undefined)[] } | undefined,
+  { thumbnailsById: Record<string, DetectionThumbnails> } | undefined,
   {
     detectionFeatures: FourwingsPositionsPickingObject[]
   },
@@ -775,7 +775,7 @@ export const fetchDetectionThumbnailsThunk = createAsyncThunk<
       const state = getState() as any
       const detectionsDataviews = selectActiveDetectionsDataviews(state) || []
       const thumbnails = await Promise.all(
-        detectionFeatures.map(async (detectionFeature) => {
+        detectionFeatures.map(async (detectionFeature): Promise<[string, DetectionThumbnails]> => {
           const dataview = detectionsDataviews.find(
             (d) => d.id === detectionFeature.sublayers?.[0].id
           )
@@ -802,15 +802,19 @@ export const fetchDetectionThumbnailsThunk = createAsyncThunk<
               }
               const url = resolveEndpoint(thumbnailDataset, datasetConfig)
               if (url) {
-                return await GFWAPI.fetch<DetectionThumbnails>(url, { signal })
+                return [
+                  detectionFeature.id,
+                  await GFWAPI.fetch<DetectionThumbnails>(url, { signal }),
+                ]
               }
             }
           }
-          return undefined
+          // empty marks the feature as resolved so the popup doesn't request it again
+          return [detectionFeature.id, []]
         })
       )
 
-      return { thumbnails }
+      return { thumbnailsById: Object.fromEntries(thumbnails) }
     } catch (e: any) {
       return rejectWithValue(parseAPIError(e))
     }
@@ -965,6 +969,29 @@ const slice = createSlice({
       }
       state.clicked = castDraft({ ...action.payload })
     },
+    removeClickedEventDataview: (state, action: PayloadAction<string>) => {
+      if (!state.clicked?.features?.length) {
+        return
+      }
+      const dataviewId = action.payload
+      state.clicked.features = castDraft(
+        state.clicked.features.flatMap((feature) => {
+          const sublayers = (feature as SliceExtendedFourwingsPickingObject).sublayers
+          if (sublayers?.length) {
+            const visibleSublayers = sublayers.filter((sublayer) => sublayer.id !== dataviewId)
+            return visibleSublayers.length ? [{ ...feature, sublayers: visibleSublayers }] : []
+          }
+          const featureDataviewId = (feature as ContextPickingObject).dataviewId || feature.layerId
+          return featureDataviewId === dataviewId ? [] : [feature]
+        }) as SliceExtendedFeature[]
+      )
+    },
+    setClickedEventFeatures: (state, action: PayloadAction<SliceExtendedFeature[]>) => {
+      if (!state.clicked) {
+        return
+      }
+      state.clicked.features = castDraft(action.payload)
+    },
   },
 
   extraReducers: (builder) => {
@@ -979,8 +1006,11 @@ const slice = createSlice({
       if (state?.clicked?.features?.length && action.payload?.vessels?.length) {
         state.clicked.features = state.clicked.features.map((feature: any) => {
           const sublayers = (feature as FourwingsPickingObject).sublayers?.map((sublayer) => {
+            // sublayers out of the request keep the vessels already fetched for them
             const vessels =
-              action.payload?.vessels.find((v) => v.sublayerId === sublayer.id)?.vessels || []
+              action.payload?.vessels.find((v) => v.sublayerId === sublayer.id)?.vessels ||
+              (sublayer as SliceExtendedFourwingsDeckSublayer).vessels ||
+              []
             return { ...sublayer, vessels }
           })
           return { ...feature, sublayers }
@@ -1008,16 +1038,14 @@ const slice = createSlice({
     builder.addCase(fetchDetectionThumbnailsThunk.fulfilled, (state, action) => {
       state.apiDetectionPositionsStatus = AsyncReducerStatus.Finished
       state.currentDetectionRequestId = ''
-      if (state?.clicked?.features?.length && action.payload?.thumbnails?.length) {
-        state.clicked.features = state.clicked.features.flatMap((feature, i) => {
-          if (feature.category === 'detections') {
-            const properties = {
-              ...(feature.properties || ({} as any)),
-              thumbnails: action.payload?.thumbnails?.[i],
-            }
-            return { ...feature, properties }
+      const thumbnailsById = action.payload?.thumbnailsById
+      if (state?.clicked?.features?.length && thumbnailsById) {
+        state.clicked.features = state.clicked.features.map((feature) => {
+          const thumbnails = thumbnailsById[feature.id]
+          if (!thumbnails) {
+            return feature
           }
-          return [feature]
+          return { ...feature, properties: { ...(feature.properties || ({} as any)), thumbnails } }
         })
       }
     })
@@ -1133,5 +1161,10 @@ export const selectRealTimePositionsInteractionError = (state: { map: MapState }
 export const selectApiEventStatus = (state: { map: MapState }) => state.map.apiEventStatus
 export const selectApiEventError = (state: { map: MapState }) => state.map.apiEventError
 
-export const { setMapLoaded, setClickedEvent } = slice.actions
+export const {
+  setMapLoaded,
+  setClickedEvent,
+  removeClickedEventDataview,
+  setClickedEventFeatures,
+} = slice.actions
 export default slice.reducer

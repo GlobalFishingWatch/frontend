@@ -20,7 +20,10 @@ import { runDatasetMigrations } from '@globalfishingwatch/dataviews-client'
 
 import { selectVesselGroupCompatibleDatasets } from 'features/_map/datasets/datasets.selectors'
 import { getDatasetByIdsThunk } from 'features/_map/datasets/datasets.slice'
-import { VMS_PROPERTY_PREFIX } from 'features/_user/vessel-groups/vessel-groups.config'
+import {
+  SELF_REPORTED_ONLY_SEARCH_PROPERTIES,
+  VMS_PROPERTY_PREFIX,
+} from 'features/_user/vessel-groups/vessel-groups.config'
 import type { IdField } from 'features/_user/vessel-groups/vessel-groups.slice'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/_vessels/vessel/vessel.config'
 import { getVesselIdentities } from 'features/_vessels/vessel/vessel.utils'
@@ -168,8 +171,11 @@ const searchVesselsInVesselGroup = async ({
   }
   const vesselFilterIds = new Set((dataset.filters?.vessels || []).map((filter) => filter.id))
   const resolveSearchProperty = (property: string) => {
-    if (vesselFilterIds.has(property)) return property
     const prefixed = `${VMS_PROPERTY_PREFIX}${property}`
+    if (SELF_REPORTED_ONLY_SEARCH_PROPERTIES.has(property) && vesselFilterIds.has(prefixed)) {
+      return prefixed
+    }
+    if (vesselFilterIds.has(property)) return property
     return vesselFilterIds.has(prefixed) ? prefixed : property
   }
   let whereClauses: string[] = []

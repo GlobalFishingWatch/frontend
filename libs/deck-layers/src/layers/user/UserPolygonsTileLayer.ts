@@ -228,6 +228,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
 
     const highlightedFeatures = this._getHighlightedFeatures()
     const hasColorSteps = steps !== undefined && steps.length > 0 && stepsPickValue !== undefined
+    const highlightedFeaturesHash = highlightedFeatures.map((f) => f.id).join(',')
     return layers.map((layer) => {
       return new TileLayer<TileLayerProps<UserLayerFeature>, { layerId: string }>({
         id: `${layer.id}-base-layer`,
@@ -240,6 +241,9 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
         },
         onTileError: this._onLayerError,
         onViewportLoad: this.props.onViewportLoad,
+        updateTriggers: {
+          renderSubLayers: [highlightedFeaturesHash],
+        },
         renderSubLayers: (props) => {
           const mvtSublayerProps = {
             ...props,

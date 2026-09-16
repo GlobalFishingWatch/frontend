@@ -67,7 +67,8 @@ export type FourwingsVectorsLoaderOptions = StrictLoaderOptions & {
 export type FourwingsFeatureValues = number[][]
 export type FourwingsFeatureProperties = {
   id?: string
-  initialValues: Record<string, number[]>
+  /** Per sublayer aggregate over the fetched time range. `undefined` where the cell holds no data in that range — a `0` here is a real total. */
+  initialValues: Record<string, (number | undefined)[]>
   startOffsets: number[]
   // Deprecated: dates are no longer stored. Use getFourwingsSublayerStartFrame and
   // getFourwingsValueTimestamp from ../helpers/timestamps instead.

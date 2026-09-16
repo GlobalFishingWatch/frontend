@@ -1,8 +1,8 @@
 import { Fragment, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import geojsonArea from '@mapbox/geojson-area'
 import cx from 'classnames'
+import type { MultiPolygon, Polygon } from 'geojson'
 
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Button, Icon, IconButton, Popover } from '@globalfishingwatch/ui-components'
@@ -14,6 +14,7 @@ import {
   DEFAULT_BUFFER_VALUE,
   ENTIRE_WORLD_REPORT_AREA_ID,
   NAUTICAL_MILES,
+  REPORT_BUFFER_FEATURE_ID,
 } from 'features/_reports/report-area/area-reports.config'
 import {
   selectIsGlobalReport,
@@ -25,6 +26,7 @@ import {
 import { getReportAreaStringByLocale } from 'features/_reports/report-area/title/report-title.utils'
 import { DEFAULT_BUFFER_OPERATION } from 'features/_reports/reports.config'
 import { selectCurrentReport } from 'features/_reports/reports.selectors'
+import { getAreaKm2 } from 'features/_reports/reports-geo.utils'
 import { useReportFeaturesLoading } from 'features/_reports/reports-timeseries.hooks'
 import AreaReportSearch from 'features/_reports/shared/area-search/AreaReportSearch'
 import ReportTitlePlaceholder from 'features/_reports/shared/placeholders/ReportTitlePlaceholder'
@@ -193,7 +195,12 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
 
   const reportAreaSpace =
     reportArea?.id !== ENTIRE_WORLD_REPORT_AREA_ID && reportArea?.geometry
-      ? Math.round(geojsonArea.geometry(reportArea?.geometry) / 1000000)
+      ? Math.round(
+          getAreaKm2({
+            geometry: reportArea.geometry as Polygon | MultiPolygon,
+            properties: reportArea.id === REPORT_BUFFER_FEATURE_ID ? null : reportArea.properties,
+          })
+        )
       : null
 
   useLayoutEffect(() => {

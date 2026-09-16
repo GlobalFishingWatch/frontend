@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 
 import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
-import { Icon, IconButton } from '@globalfishingwatch/ui-components'
+import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import {
@@ -120,28 +120,30 @@ const ContextLayerReportLink = ({
 
   return (
     <Fragment>
-      <Link
-        className={label ? layerStyles.reportButton : styles.workspaceLink}
-        to={ROUTE_PATHS.WORKSPACE_REPORT}
-        params={reportLinkParams}
-        search={(prev: QueryParams) => ({ ...prev, ...reportLinkSearch })}
-        data-testid="open-analysis-link"
-        onClick={onReportClick}
-      >
-        {label ? (
-          <Fragment>
-            <Icon icon="analysis" />
-            {label}
-          </Fragment>
-        ) : (
-          <IconButton
-            icon="analysis"
-            tooltip={t((t) => t.common.analysis)}
-            testId="open-analysis"
-            size="small"
-          />
-        )}
-      </Link>
+      {!isSameArea && (
+        <Link
+          className={label ? layerStyles.reportLink : styles.workspaceLink}
+          to={ROUTE_PATHS.WORKSPACE_REPORT}
+          params={reportLinkParams}
+          search={(prev: QueryParams) => ({ ...prev, ...reportLinkSearch })}
+          data-testid="open-analysis-link"
+          onClick={onReportClick}
+        >
+          {label ? (
+            <Button size="small" className={styles.btnLarge}>
+              <Icon icon="analysis" />
+              {label}
+            </Button>
+          ) : (
+            <IconButton
+              icon="analysis"
+              tooltip={t((t) => t.common.analysis)}
+              testId="open-analysis"
+              size="small"
+            />
+          )}
+        </Link>
+      )}
       {addAreaToReport && (
         <Link
           className={styles.workspaceLink}

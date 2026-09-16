@@ -21,6 +21,7 @@ export async function prepare(
   {
     type,
     path,
+    fileName,
     bucketFolder,
     propertiesMapping,
     limitBy,
@@ -31,7 +32,7 @@ export async function prepare(
 ) {
   const sourcePath = `${sourcePathPrefix}/${path}`
   const areasListPath = `${sourcePath}/list.json`
-  const outputPath = `${dataPathPrefix}/${path}.json`
+  const outputPath = `${dataPathPrefix}/${fileName ?? path}.json`
 
   try {
     if (skipDownload && (await existsFilePath(areasListPath))) {
@@ -88,9 +89,18 @@ export async function prepare(
           continue
         }
         const flag = areaData.properties?.[propertiesMapping.flag!]
+        // Parked with the AIS/VMS ports work: tag each port with which pipelines observed it
+        // const extraProperties: Record<string, unknown> = {}
+        // if (type === 'port') {
+        //   const sources = getPortSources(areaData)
+        //   if (sources.length) {
+        //     extraProperties.sources = sources.join(',')
+        //   }
+        // }
         const finalArea = {
           ...simplifiedArea,
           properties: { type, area, name, ...(flag && { flag }) },
+          // properties: { type, area, name, ...(flag && { flag }), ...extraProperties },
         }
         const jsonLine = JSON.stringify(finalArea)
         if (fileIndex === 1) {

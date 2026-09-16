@@ -10,6 +10,8 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import FilesCsvIcon from 'assets/icons/file-csv.svg?react'
 import FilesJsonIcon from 'assets/icons/file-json.svg?react'
 import FileKMLIcon from 'assets/icons/file-kml.svg?react'
+import FileNetcdfIcon from 'assets/icons/file-netcdf.svg?react'
+import FileTiffIcon from 'assets/icons/file-tiff.svg?react'
 import FileZipIcon from 'assets/icons/file-zip.svg?react'
 import { joinTranslatedList } from 'features/i18n/utils'
 import type { FileType, MimeExtention } from 'utils/files'
@@ -27,6 +29,8 @@ const IconsByType: Record<string, any> = {
   csv: <FilesCsvIcon key="csv" />,
   zip: <FileZipIcon key="zip" />,
   kml: <FileKMLIcon key="kml" />,
+  tiff: <FileTiffIcon key="tiff" />,
+  netcdf: <FileNetcdfIcon key="netcdf" />,
 }
 
 interface FileDropzoneProps {

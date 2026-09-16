@@ -304,16 +304,35 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
   }
 )
 
+type FetchAllDatasetsParams =
+  { fetchUserDatasetsMode?: FetchUserDatasetsMode; locale?: Locale } | undefined
+
+const inFlightAllDatasets = new Set<string>()
+const getAllDatasetsRequestKey = ({
+  fetchUserDatasetsMode,
+  locale = i18n.language as Locale,
+}: NonNullable<FetchAllDatasetsParams> = {}) => `${fetchUserDatasetsMode}-${locale}`
+
 export const fetchAllDatasetsThunk = createAsyncThunk<
   any,
-  { fetchUserDatasetsMode?: FetchUserDatasetsMode; locale?: Locale } | undefined,
+  FetchAllDatasetsParams,
   {
     rejectValue: AsyncError
   }
 >(
   'datasets/all',
-  ({ fetchUserDatasetsMode, locale = i18n.language as Locale } = {}, { dispatch }) => {
-    return dispatch(fetchDatasetsByIdsThunk({ ids: [], fetchUserDatasetsMode, locale }))
+  async (params = {}, { dispatch }) => {
+    const { fetchUserDatasetsMode, locale = i18n.language as Locale } = params
+    const requestKey = getAllDatasetsRequestKey(params)
+    inFlightAllDatasets.add(requestKey)
+    try {
+      return await dispatch(fetchDatasetsByIdsThunk({ ids: [], fetchUserDatasetsMode, locale }))
+    } finally {
+      inFlightAllDatasets.delete(requestKey)
+    }
+  },
+  {
+    condition: (params) => !inFlightAllDatasets.has(getAllDatasetsRequestKey(params)),
   }
 )
 

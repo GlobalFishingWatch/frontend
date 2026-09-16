@@ -19,7 +19,10 @@ import { useClickedEventConnect } from 'features/_map/map/map-interactions.hooks
 import ErrorPlaceholder from 'features/_map/workspace/ErrorPlaceholder'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
-import { selectLonglineSetsInsight } from 'features/_map/workspace/workspace.selectors'
+import {
+  selectIsRealTimeMode,
+  selectLonglineSetsInsight,
+} from 'features/_map/workspace/workspace.selectors'
 import { useMigrateWorkspaceToast } from 'features/_map/workspace/workspace-migration.hooks'
 import WorkspaceLoginError from 'features/_map/workspace/WorkspaceLoginError'
 import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
@@ -88,6 +91,7 @@ const Vessel = () => {
   const vesselData = useSelector(selectVesselInfoData)
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
+  const isRealTimeMode = useSelector(selectIsRealTimeMode)
   const hasSelfReportedData =
     getVesselIdentities(vesselData, {
       identitySource: VesselIdentitySourceEnum.SelfReported,
@@ -245,7 +249,7 @@ const Vessel = () => {
     <Fragment>
       <VesselSubHeader />
       {infoStatus === AsyncReducerStatus.Finished && <VesselIdentity />}
-      {guestUser ? (
+      {isRealTimeMode ? null : guestUser ? (
         <WorkspaceLoginError
           title={t((t) => t.errors.vesselActivityLogin)}
           loginSource="vessel-events"

@@ -34,6 +34,7 @@ import {
 import { fetchFourwingsTileData } from '#layers/fourwings/heatmap/fourwings-heatmap.fetch'
 import {
   getFourwingsChunk,
+  getIntervalFrames,
   getZoomOffsetByResolution,
 } from '#layers/fourwings/heatmap/fourwings-heatmap.utils'
 
@@ -246,7 +247,20 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
   }
 
   getIsPositionsAvailable() {
-    return getAreTilePositionsAvailable(this.getTilesData())
+    const { startTime, endTime, availableIntervals } = this.props
+    const { startFrame, endFrame } = getIntervalFrames({
+      startTime,
+      endTime,
+      availableIntervals,
+      bufferedStart: this.state.tilesCache?.bufferedStart ?? 0,
+    })
+    return getAreTilePositionsAvailable({
+      tilesData: this.getTilesData(),
+      viewport: this.context.viewport,
+      startFrame,
+      endFrame,
+      maxPositions: this.props.maxPositionsPerTile,
+    })
   }
 
   getViewportData(params = {} as GetViewportDataParams) {

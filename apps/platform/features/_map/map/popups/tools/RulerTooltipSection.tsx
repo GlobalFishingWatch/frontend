@@ -1,11 +1,12 @@
 import { useTranslation } from 'react-i18next'
-import cx from 'classnames'
 
 import type { RulerPickingObject } from '@globalfishingwatch/deck-layers'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { useClickedEventConnect } from 'features/_map/map/map-interactions.hooks'
 import useRulers from 'features/_map/map/overlays/rulers/rulers.hooks'
+
+import PopupSectionLayout from '../shared/PopupSectionLayout'
 
 import styles from '../Popup.module.css'
 
@@ -33,18 +34,16 @@ function RulerTooltipSection({ features, showFeaturesDetails }: RulerTooltipSect
   }
 
   return (
-    <div className={cx(styles.popupSection, styles.withoutIcon)}>
-      <div className={styles.popupSectionContent}>
-        {showFeaturesDetails ? (
-          <div className={styles.rulerContainer}>
-            <span>{lengthLabel}</span>
-            {id && <IconButton size="small" icon="delete" type="warning" onClick={onDeleteClick} />}
-          </div>
-        ) : (
-          <span className={styles.rowText}>{t((t) => t.map.rulersHover)}</span>
-        )}
-      </div>
-    </div>
+    <PopupSectionLayout className={styles.withoutIcon}>
+      {showFeaturesDetails ? (
+        <div className={styles.rulerContainer}>
+          <span>{lengthLabel}</span>
+          {id && <IconButton size="small" icon="delete" type="warning" onClick={onDeleteClick} />}
+        </div>
+      ) : (
+        <span className={styles.rowText}>{t((t) => t.map.rulersHover)}</span>
+      )}
+    </PopupSectionLayout>
   )
 }
 

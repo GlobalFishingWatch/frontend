@@ -149,16 +149,23 @@ function NewPolygonDataset({
   const onConfirmClick = useCallback(async () => {
     if (datasetMetadata && onConfirm) {
       setLoading(true)
-      const file = geojson
-        ? getFileFromGeojson(parseGeoJsonProperties<Polygon>(geojson, datasetMetadata))
-        : undefined
+      let file: File | undefined
+      try {
+        file = geojson
+          ? getFileFromGeojson(parseGeoJsonProperties<Polygon>(geojson, datasetMetadata))
+          : undefined
+      } catch (e: any) {
+        setLoading(false)
+        onDatasetParseError(new Error('datasetUpload.errors.fileTooBig', { cause: e }))
+        return
+      }
       if (devMode) {
         console.log('Dataset metadata:', datasetMetadata)
         console.log('Context layers on map:', file)
       } else await onConfirm(datasetMetadata, { file, isEditing })
       setLoading(false)
     }
-  }, [devMode, datasetMetadata, onConfirm, geojson, isEditing])
+  }, [devMode, datasetMetadata, onConfirm, geojson, isEditing, onDatasetParseError])
 
   if (processingData) {
     return (

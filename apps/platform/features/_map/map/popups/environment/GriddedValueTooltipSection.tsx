@@ -6,11 +6,13 @@ import { format } from 'd3-format'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { FourwingsHeatmapPickingObject } from '@globalfishingwatch/deck-layers'
-import { Icon, IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
 import { isBathymetryDataview } from 'features/_map/dataviews/dataviews.utils'
 import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
+
+import PopupSectionLayout from '../shared/PopupSectionLayout'
 
 import styles from '../Popup.module.css'
 
@@ -49,38 +51,35 @@ function GriddedValueTooltipSection({
 
         const unit = feature.sublayers?.[0]?.unit ?? dataview?.datasets?.[0]?.unit
         return (
-          <div key={`${feature.title}-${index}`} className={styles.popupSection}>
-            <Icon
-              icon={isHeatmapFeature ? 'heatmap' : 'polygons'}
-              className={styles.layerIcon}
-              style={{ color: feature.sublayers?.[0]?.color }}
-            />
-            <div className={styles.popupSectionContent}>
-              {showFeaturesDetails && (
-                <h3 className={styles.popupSectionTitle}>
-                  {dataview
-                    ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
-                    : feature.title}
-                </h3>
-              )}
-              <div className={styles.row}>
-                <span className={styles.rowText}>
-                  <span>
-                    {parseEnvironmentalValue(value)}{' '}
-                    {unit && <span>{t((t: any) => t.common[unit], { defaultValue: unit })}</span>}
-                  </span>
+          <PopupSectionLayout
+            key={`${feature.title}-${index}`}
+            icon={isHeatmapFeature ? 'heatmap' : 'polygons'}
+            iconColor={feature.sublayers?.[0]?.color}
+            title={
+              showFeaturesDetails
+                ? dataview
+                  ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
+                  : feature.title
+                : undefined
+            }
+          >
+            <div className={styles.row}>
+              <span className={styles.rowText}>
+                <span>
+                  {parseEnvironmentalValue(value)}{' '}
+                  {unit && <span>{t((t: any) => t.common[unit], { defaultValue: unit })}</span>}
                 </span>
-                {dataview && isBathymetryDataview(dataview) && showFeaturesDetails && (
-                  <IconButton
-                    className={styles.bathymetryDisclaimer}
-                    icon={'warning'}
-                    size="small"
-                    tooltip={t((t) => t.common.bathymetry_disclaimer)}
-                  />
-                )}
-              </div>
+              </span>
+              {dataview && isBathymetryDataview(dataview) && showFeaturesDetails && (
+                <IconButton
+                  className={styles.bathymetryDisclaimer}
+                  icon={'warning'}
+                  size="small"
+                  tooltip={t((t) => t.common.bathymetry_disclaimer)}
+                />
+              )}
             </div>
-          </div>
+          </PopupSectionLayout>
         )
       })}
     </Fragment>
