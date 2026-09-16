@@ -1,0 +1,109 @@
+name: Graft Refresh
+
+# Keeps the committed graft/ graph in sync with develop.
+#
+# Rebuilds are incremental: --deep re-summarizes only files whose hash changed
+# in graft/manifest.json, and replays the rest from graft/.cache (a fully cached
+# run reports "0 read, N cached" and costs nothing).
+
+on:
+  schedule:
+    - cron: '0 3 * * 1' # Mondays 03:00 UTC
+  workflow_dispatch:
+    inputs:
+      no-reuse:
+        description: 'Re-summarize every file, ignoring cached failures (full re-spend)'
+        type: boolean
+        default: false
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false # never kill a paid build mid-flight
+
+jobs:
+  refresh:
+    name: Rebuild graft graph
+    runs-on: ubuntu-latest
+    timeout-minutes: 120 # cold --deep took ~63 min locally
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      # Pinned: a graft upgrade can change the graph format, which would land as
+      # a 2600-file diff. Bump deliberately, not by surprise.
+      - name: Install graft
+        run: npm install -g @nanonets/graft@0.18.0
+
+      # This step is what makes the incremental behaviour work in CI at all:
+      # graft/.cache is gitignored, so without a restore every run starts cold
+      # and re-summarizes all ~1700 files. With it, only changed files hit the
+      # API — the "0 read, N cached" path.
+      - name: Restore graft LLM cache
+        uses: actions/cache@v4
+        with:
+          path: graft/.cache
+          key: graft-cache-${{ github.sha }}
+          restore-keys: graft-cache-
+
+      - name: Build graph
+        env:
+          GRAFT_API_KEY: ${{ secrets.GRAFT_API_KEY }}
+          # graft rewrites .gitignore/.ignore on every build unless told not to;
+          # the committed .gitignore already has the split we want.
+          GRAFT_NO_GITIGNORE: '1'
+          GRAFT_NO_IGNORE: '1'
+        run: |
+          graft build --deep \
+            --provider anthropic \
+            --model claude-haiku-4-5-20251001 \
+            -j 8 \
+            --allow-partial \
+            ${{ inputs.no-reuse && '--no-reuse' || '' }}
+
+      - name: Report coverage
+        id: coverage
+        run: |
+          # never fail the job on a degraded tier — the report is the point
+          {
+            echo 'report<<GRAFT_EOF'
+            graft check 2>&1 || true
+            echo 'GRAFT_EOF'
+          } >> "$GITHUB_OUTPUT"
+          graft check || true
+
+      - name: Open refresh PR
+        uses: peter-evans/create-pull-request@v7
+        with:
+          add-paths: graft/
+          branch: chore/graft-refresh
+          # Reuses one branch, so an unreviewed refresh is replaced rather than
+          # piling up a new PR every Monday. No-op when the graph is unchanged.
+          delete-branch: true
+          commit-message: |
+            chore: refresh graft graph
+
+            Automated rebuild of the graft meaning tier.
+          title: 'chore: refresh graft graph'
+          body: |
+            Automated weekly rebuild of the committed `graft/` graph.
+
+            Diff is mechanical — regenerated cards only, no source changes.
+            Review the coverage figure, not the file diff.
+
+            ```
+            ${{ steps.coverage.outputs.report }}
+            ```
+
+            Built with `@nanonets/graft@0.18.0`, model `claude-haiku-4-5-20251001`.
+          labels: |
+            automated
+            graft
