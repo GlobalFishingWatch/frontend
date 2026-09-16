@@ -44,8 +44,8 @@ import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/_reports/report-area/area-reports.selectors'
+import { selectReportHotspotArea } from 'features/_reports/reports.config.selectors'
 import { hotspotGeometryAtom } from 'features/_reports/reports-hotspot.hooks'
-import { selectReportHotspotSettings } from 'features/_reports/tabs/activity/reports-activity.slice'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import {
@@ -224,10 +224,10 @@ export const useMapDataviewsLayers = () => {
 }
 
 const useHotspotOverlayLayer = () => {
-  const settings = useSelector(selectReportHotspotSettings)
+  const hotspotArea = useSelector(selectReportHotspotArea)
   const geometry = useAtomValue(hotspotGeometryAtom)
   return useMemo(() => {
-    if (!settings.enabled || !geometry) return null
+    if (hotspotArea === undefined || !geometry) return null
     return new PolygonLayer({
       id: REPORT_HOTSPOT_ID,
       data: [geometry],
@@ -240,7 +240,7 @@ const useHotspotOverlayLayer = () => {
       lineWidthUnits: 'pixels',
       pickable: true,
     })
-  }, [settings.enabled, geometry])
+  }, [hotspotArea, geometry])
 }
 
 const useMapOverlayLayers = () => {

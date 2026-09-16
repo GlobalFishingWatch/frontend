@@ -78,6 +78,10 @@ export type AreaReportState = {
   reportBufferUnit: BufferUnit
   /** How the buffer is applied to the area geometry (dissolve into it, or subtract/difference) */
   reportBufferOperation: BufferOperation
+  /** Area of the activity hotspot ellipse fitted inside the report area, undefined hides it (paired with reportHotspotUnit) */
+  reportHotspotArea: number | undefined
+  /** Unit for reportHotspotArea (paired with reportHotspotArea) */
+  reportHotspotUnit: BufferUnit
 }
 
 // PORT REPORT

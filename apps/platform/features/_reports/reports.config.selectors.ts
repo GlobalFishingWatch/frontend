@@ -43,6 +43,8 @@ export const selectReportBufferValueSelector = selectReportStateProperty('report
 export const selectReportBufferUnitSelector = selectReportStateProperty('reportBufferUnit')
 export const selectReportBufferOperationSelector =
   selectReportStateProperty('reportBufferOperation')
+export const selectReportHotspotArea = selectReportStateProperty('reportHotspotArea')
+export const selectReportHotspotUnit = selectReportStateProperty('reportHotspotUnit')
 
 // Ports
 export const selectPortReportName = selectReportStateProperty('portsReportName')

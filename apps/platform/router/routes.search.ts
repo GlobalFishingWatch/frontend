@@ -219,6 +219,8 @@ export const reportSearchSchema = z
     reportBufferValue: optionalNumber(),
     reportBufferUnit: optionalLiteralUnion(BUFFER_UNITS),
     reportBufferOperation: optionalLiteralUnion(BUFFER_OPERATIONS),
+    reportHotspotArea: optionalNumber(),
+    reportHotspotUnit: optionalLiteralUnion(BUFFER_UNITS),
 
     // PortsReportState
     portsReportName: optionalString(),
