@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { groupBy, upperFirst } from 'es-toolkit'
 import type { Point } from 'geojson'
-import { DateTime } from 'luxon'
 
 import type { Locale } from '@globalfishingwatch/api-types'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
@@ -35,6 +34,7 @@ import { selectDebugOptions } from 'features/debug/debug.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import { selectIsAnyVesselLocation } from 'router/routes.selectors'
 import { TimebarVisualisations } from 'types'
+import { pickDateFormatByPrecision } from 'utils/dates'
 import { formatInfoField } from 'utils/info'
 
 import PopupSectionLayout from '../shared/PopupSectionLayout'
@@ -129,7 +129,10 @@ function VesselTracksTooltipRow({
           {!showFeaturesDetails && !hideVesselNames && formatInfoField(feature.title, 'shipname')}{' '}
           {isPoint && feature.timestamp && (
             <span className={cx({ [styles.secondary]: !showFeaturesDetails })}>
-              <I18nDate date={feature.timestamp} format={DateTime.DATETIME_MED} />
+              <I18nDate
+                date={feature.timestamp}
+                format={pickDateFormatByPrecision(feature.timestamp)}
+              />
               <SolarStatus
                 lon={longitude}
                 lat={latitude}

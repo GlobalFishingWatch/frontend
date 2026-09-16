@@ -1,7 +1,6 @@
 import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { DateTime } from 'luxon'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -21,6 +20,7 @@ import I18nDate from 'features/i18n/i18nDate'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { getDatasetSourceTranslated } from 'features/i18n/utils.datasets'
 import { getEventLabel } from 'utils/analytics'
+import { pickDateFormatByPrecision } from 'utils/dates'
 import { formatInfoField } from 'utils/info'
 
 import type { ExtendedFeatureSingleEvent, SliceExtendedClusterPickingObject } from '../../map.slice'
@@ -114,11 +114,11 @@ function EventsGapTooltipRow({
           <div className={styles.rowContainer}>
             {gapStart && (
               <span className={styles.rowText}>
-                <I18nDate date={gapStart} format={DateTime.DATETIME_MED} />
+                <I18nDate date={gapStart} format={pickDateFormatByPrecision(gapStart)} />
                 {gapEnd && (
                   <Fragment>
                     {' - '}
-                    <I18nDate date={gapEnd} format={DateTime.DATETIME_MED} />
+                    <I18nDate date={gapEnd} format={pickDateFormatByPrecision(gapEnd)} />
                   </Fragment>
                 )}
               </span>

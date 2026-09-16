@@ -397,8 +397,15 @@ export function getDataviewsSorted(
   return [...(dataviews || [])].reverse().sort((a, b) => {
     const aType = a.config?.type as DataviewType
     const bType = b.config?.type as DataviewType
-    const aPos = order.indexOf(aType)
-    const bPos = order.indexOf(bType)
+    let aPos = order.indexOf(aType)
+    let bPos = order.indexOf(bType)
+    // bump the position of HeatmapAnimated layers when in positions mode
+    if (aType === DataviewType.HeatmapAnimated && a.config?.visualizationMode === 'positions') {
+      aPos = order.indexOf(DataviewType.VesselEvents)
+    }
+    if (bType === DataviewType.HeatmapAnimated && b.config?.visualizationMode === 'positions') {
+      bPos = order.indexOf(DataviewType.VesselEvents)
+    }
     if (aType === DataviewType.HeatmapAnimated && bType === DataviewType.HeatmapAnimated) {
       return (
         HEATMAP_ANIMATED_CATEGORIES_ORDER.indexOf(a.category as DataviewCategory) -

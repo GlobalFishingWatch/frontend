@@ -70,6 +70,25 @@ export function aggregateSublayerValues(
   }, 0)
 }
 
+export const getCellValuesFrameRange = ({
+  valuesLength,
+  startFrame,
+  endFrame,
+  startOffset,
+}: {
+  valuesLength: number
+  startFrame: number
+  endFrame: number
+  startOffset: number
+}): [number, number] => {
+  const from = Math.max(startFrame - startOffset, 0)
+  if (startFrame === endFrame) {
+    return [from, from + 1]
+  }
+  const to = endFrame - startOffset
+  return [from, to < valuesLength ? to : valuesLength]
+}
+
 export const sliceCellValues = ({
   values,
   startFrame,
@@ -84,11 +103,13 @@ export const sliceCellValues = ({
   if (!values || !values.length) {
     return []
   }
-  if (startFrame === endFrame) return [values[Math.max(startFrame - startOffset, 0)]]
-  return values.slice(
-    Math.max(startFrame - startOffset, 0),
-    endFrame - startOffset < values.length ? endFrame - startOffset : undefined
-  )
+  const [from, to] = getCellValuesFrameRange({
+    valuesLength: values.length,
+    startFrame,
+    endFrame,
+    startOffset,
+  })
+  return values.slice(from, to)
 }
 
 /**

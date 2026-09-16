@@ -22,7 +22,6 @@ import {
   FourwingsComparisonMode,
 } from '@globalfishingwatch/deck-layers'
 import type { ColorRampId, LayerGroup } from '@globalfishingwatch/deck-layers/config'
-import { MAX_REALTIME_POSITIONS_PER_TILE_SUPPORTED } from '@globalfishingwatch/deck-layers/config'
 import { getUTCDateTime } from '@globalfishingwatch/deck-layers/utils'
 import {
   FOURWINGS_REAL_TIME_INTERVALS,
@@ -189,9 +188,6 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
     aggregationOperation,
     availableIntervals,
     intervalCacheMode: timeMode === 'realTime' ? 'NONE' : 'DATE',
-    ...(timeMode === 'realTime' && {
-      maxPositionsPerTile: MAX_REALTIME_POSITIONS_PER_TILE_SUPPORTED,
-    }),
     skipColorDomainSampling,
     visible: dataview.config?.visible ?? true,
     color: dataview.config?.color,
