@@ -27,6 +27,7 @@ import type { NavItem } from 'features/nav/nav.config'
 import { isRouted } from 'features/nav/nav.config'
 import type { NavLinkContext } from 'features/nav/nav.links'
 import { useIsClientHydrated } from 'hooks/ssr.hooks'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnySearchLocation,
   selectIsWorkspaceLocation,
@@ -50,6 +51,7 @@ export function useOpenFeedbackModal() {
 export function useNavLinkContext(): NavLinkContext {
   const dispatch = useAppDispatch()
   const cancelPendingInteractionRequests = useCancelInteractionPromises()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const setMapCoordinates = useSetMapCoordinates()
   const workspace = useSelector(selectWorkspace)
   const isClientHydrated = useIsClientHydrated()
@@ -65,12 +67,13 @@ export function useNavLinkContext(): NavLinkContext {
       // pulls deck-layer-composer and every overlay hook into this always-rendered component.
       cancelPendingInteractionRequests()
       dispatch(setClickedEvent(null))
+      replaceQueryParams({ clickedCoordinates: undefined })
       trackEvent({
         category: TrackCategory.General,
         action: `clicked on ${category}`,
       })
     },
-    [setMapCoordinates, cancelPendingInteractionRequests, dispatch]
+    [setMapCoordinates, cancelPendingInteractionRequests, dispatch, replaceQueryParams]
   )
 
   const onSearchClick = useCallback(() => {

@@ -17,8 +17,8 @@ import {
   selectActiveVesselsDataviews,
   selectCustomUserDataviews,
 } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
-import { setClickedEvent } from 'features/_map/map/map.slice'
 import { useMapFitBounds } from 'features/_map/map/map-bounds.hooks'
+import { useClickedEventConnect } from 'features/_map/map/map-interactions.hooks'
 import {
   useTimebarVisualisationConnect,
   useTimerangeConnect,
@@ -56,6 +56,7 @@ function VesselTracksTooltipRow({
   interactionType?: 'point' | 'segment'
 }) {
   const dispatch = useAppDispatch()
+  const { dispatchClickedEvent } = useClickedEventConnect()
   const { t, i18n } = useTranslation()
   const dataviewId = feature.layerId
   const { vesselLayer } = useGetVesselInfoByDataviewId(dataviewId)
@@ -100,11 +101,13 @@ function VesselTracksTooltipRow({
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
     dispatch(setTrackCorrectionDataviewId(dataviewId))
     setTrackCorrectionId('new')
-    dispatch(setClickedEvent(null))
+    // goes through the connect hook so the clicked coordinates are cleared from the URL too
+    dispatchClickedEvent(null)
   }, [
     dataviewId,
     diffDays,
     dispatch,
+    dispatchClickedEvent,
     dispatchTimebarVisualisation,
     feature.timestamp,
     fitBounds,

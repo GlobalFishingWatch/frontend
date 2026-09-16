@@ -85,6 +85,10 @@ export const rootSearchSchema = z
       z.union([z.tuple([z.string(), z.string()]), z.null()]).optional(),
       undefined
     ),
+    clickedCoordinates: fallback(
+      z.tuple([z.coerce.number(), z.coerce.number()]).optional(),
+      undefined
+    ),
     collapsedSections: fallback(
       z.array(z.enum(Object.values(DataviewCategory) as [string, ...string[]])).optional(),
       undefined
@@ -215,6 +219,8 @@ export const reportSearchSchema = z
     reportBufferValue: optionalNumber(),
     reportBufferUnit: optionalLiteralUnion(BUFFER_UNITS),
     reportBufferOperation: optionalLiteralUnion(BUFFER_OPERATIONS),
+    reportHotspotArea: optionalNumber(),
+    reportHotspotUnit: optionalLiteralUnion(BUFFER_UNITS),
 
     // PortsReportState
     portsReportName: optionalString(),

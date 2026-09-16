@@ -16,6 +16,8 @@ export const EMPTY_API_VALUES = ['NULL', undefined, '']
 export const MAX_CATEGORIES = 5
 export const DEFAULT_BUFFER_UNIT = 'nauticalmiles' as BufferUnit
 export const DEFAULT_BUFFER_OPERATION = 'dissolve' as BufferOperation
+export const DEFAULT_HOTSPOT_UNIT = 'kilometers' as BufferUnit
+export const DEFAULT_HOTSPOT_AREA = 50000
 export const OTHERS_CATEGORY_LABEL = 'OTHERS'
 
 // VESSELS GRAPH
@@ -90,6 +92,8 @@ export const DEFAULT_REPORT_STATE: Required<ReportState> = {
   reportBufferValue: undefined,
   reportBufferUnit: DEFAULT_BUFFER_UNIT,
   reportBufferOperation: DEFAULT_BUFFER_OPERATION,
+  reportHotspotArea: undefined,
+  reportHotspotUnit: DEFAULT_HOTSPOT_UNIT,
   // Ports
   portsReportName: undefined,
   portsReportCountry: undefined,
