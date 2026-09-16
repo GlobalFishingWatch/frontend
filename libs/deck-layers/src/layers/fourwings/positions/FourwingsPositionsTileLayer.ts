@@ -346,21 +346,25 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return [255, 255, 255, POSITIONS_HIGHLIGHT_OPACITY * 255]
   }
 
+  _isTrailPosition = (d: FourwingsPositionFeature) => {
+    return this.showVesselTracks && !!d.properties.id && !this.state.lastPositionFeatures.has(d)
+  }
+
   _getIconSize = (d: FourwingsPositionFeature): number => {
     if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
       return 0
     }
     const canShowVesselIcon = this._canShowVesselIcon(d)
-    // only de-emphasize a position that has a track drawn behind it, which is any non last position
-    // of an identified vessel. Testing `!lastPositionFeatures.has(d)` alone also shrank positions
-    // with no `properties.id`, which are never grouped into a track and so are never a last one
-    if (this.showVesselTracks && d.properties.id && !this.state.lastPositionFeatures.has(d)) {
+    if (this._isTrailPosition(d)) {
       return canShowVesselIcon ? POSITIONS_TRAIL_ICON_SIZE : POSITIONS_TRAIL_CIRCLE_SIZE
     }
     return canShowVesselIcon ? POSITIONS_ICON_SIZE : POSITIONS_CIRCLE_SIZE
   }
 
   _getHighlightedIconSize = (d: FourwingsPositionFeature): number => {
+    if (this._isTrailPosition(d)) {
+      return 0
+    }
     const size = this._getIconSize(d)
     if (!size) {
       return 0
