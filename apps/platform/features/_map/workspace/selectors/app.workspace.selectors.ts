@@ -11,7 +11,6 @@ import {
   selectAreMapAnnotationsVisible,
   selectAreMapRulersVisible,
   selectBivariateDataviews,
-  selectClickedCoordinates,
   selectDetectionsVisualizationMode,
   selectEnvironmentVisualizationMode,
   selectMapAnnotations,
@@ -55,6 +54,8 @@ import {
   selectReportEventsPortsPage,
   selectReportEventsPortsResultsPerPage,
   selectReportEventsSubCategorySelector,
+  selectReportHotspotArea,
+  selectReportHotspotUnit,
   selectReportTimeComparison,
   selectReportVesselFilter,
   selectReportVesselPage,
@@ -75,6 +76,7 @@ type Complete<T> = { [K in keyof T]-?: T[K] | undefined }
 
 /** WorkspaceState that does not persist in workspace.state */
 type NonPersistedWorkspaceStateKey =
+  | 'clickedCoordinates'
   | 'dataviewInstances'
   | 'dataviewInstancesOrder'
   | 'latitude'
@@ -103,6 +105,8 @@ const selectWorkspaceReportState = createSelector(
     selectReportBufferValue,
     selectReportBufferUnit,
     selectReportBufferOperation,
+    selectReportHotspotArea,
+    selectReportHotspotUnit,
     selectReportActivitySubCategorySelector,
     selectReportDetectionsSubCategorySelector,
     selectReportEventsSubCategorySelector,
@@ -130,6 +134,8 @@ const selectWorkspaceReportState = createSelector(
     reportBufferValue,
     reportBufferUnit,
     reportBufferOperation,
+    reportHotspotArea,
+    reportHotspotUnit,
     reportActivitySubCategory,
     reportDetectionsSubCategory,
     reportEventsSubCategory,
@@ -156,6 +162,8 @@ const selectWorkspaceReportState = createSelector(
     reportBufferValue,
     reportBufferUnit,
     reportBufferOperation,
+    reportHotspotArea,
+    reportHotspotUnit,
     reportActivitySubCategory,
     reportDetectionsSubCategory,
     reportEventsSubCategory,
@@ -177,7 +185,6 @@ const selectWorkspaceAppState = createSelector(
   [
     selectActivityCategory,
     selectBivariateDataviews,
-    selectClickedCoordinates,
     selectMapAnnotations,
     selectAreMapAnnotationsVisible,
     selectMapRulers,
@@ -201,7 +208,6 @@ const selectWorkspaceAppState = createSelector(
   (
     activityCategory,
     bivariateDataviews,
-    clickedCoordinates,
     mapAnnotations,
     mapAnnotationsVisible,
     mapRulers,
@@ -225,7 +231,6 @@ const selectWorkspaceAppState = createSelector(
     return {
       activityCategory,
       bivariateDataviews,
-      clickedCoordinates,
       collapsedSections,
       mapAnnotations,
       mapAnnotationsVisible,

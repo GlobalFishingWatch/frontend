@@ -60,6 +60,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   bivariateDataviews?: BivariateDataviews
   /** `[longitude, latitude]` of the open map popup, so a clicked cell can be shared or reloaded.
    * Only source of truth for the popup: its features are re-picked from deck, never serialized.
+   * Url-only — deliberately not persisted into a saved workspace, an open popup is not part of it.
    */
   clickedCoordinates?: [number, number]
   /** Dataview categories collapsed in the sidebar layer panel to leave more space for others */
