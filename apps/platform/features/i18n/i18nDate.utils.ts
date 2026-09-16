@@ -27,7 +27,9 @@ export const formatI18nDate = (
 ) => {
   const dateTimeDate = getUTCDateTime(date)
   let utcSuffix = ''
-  if ((format === DateTime.DATETIME_MED && showUTCLabel === undefined) || showUTCLabel) {
+  const isDateTimeFormat =
+    format === DateTime.DATETIME_MED || format === DateTime.DATETIME_MED_WITH_SECONDS
+  if ((isDateTimeFormat && showUTCLabel === undefined) || showUTCLabel) {
     utcSuffix = ` ${UTC_SUFFIX}`
   }
   return `${dateTimeDate?.setLocale(locale).toLocaleString(format)}${utcSuffix}`

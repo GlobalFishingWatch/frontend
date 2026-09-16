@@ -35,6 +35,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import { ROUTE_PATHS } from 'router/routes.utils'
+import { pickDateFormatByPrecision } from 'utils/dates'
 import { formatInfoField, upperFirst } from 'utils/info'
 
 import popupStyles from '../Popup.module.css'
@@ -172,6 +173,9 @@ function PositionsTooltipRow({
     return []
   })
 
+  const stimeFormat = isRealTime
+    ? DateTime.DATETIME_MED_WITH_SECONDS
+    : pickDateFormatByPrecision(feature.properties.stime * 1000)
   const vesselId = feature.properties.vessel_id || feature.properties.id
   const datasetId = feature.sublayers?.[0]?.datasets?.[0]
   // No realtime identity means there was no match or several vessels sharing the MMSI, so we can't pick one for the user
@@ -278,13 +282,7 @@ function PositionsTooltipRow({
         </span>
         {feature.properties.stime && (
           <span className={popupStyles.secondary}>
-            <I18nDate
-              date={feature.properties.stime * 1000}
-              {...(isRealTime && {
-                format: DateTime.DATETIME_MED_WITH_SECONDS,
-                showUTCLabel: true,
-              })}
-            />
+            <I18nDate date={feature.properties.stime * 1000} format={stimeFormat} />
           </span>
         )}
         {onToggleExpand && (

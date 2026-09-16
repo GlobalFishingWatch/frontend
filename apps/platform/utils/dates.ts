@@ -71,8 +71,14 @@ export const isTimestampNumber = (value: number) => {
   return value > 946684800000 && value < 32503680000000
 }
 
+const A_DAY_IN_MS = 1000 * 60 * 60 * 24
+
+export const pickDateFormatByPrecision = (date: number): DateTimeFormatOptions => {
+  return date % A_DAY_IN_MS === 0 ? DateTime.DATE_MED : DateTime.DATETIME_MED
+}
+
 export const pickDateFormatByRange = (start: string, end: string): DateTimeFormatOptions => {
-  const A_DAY = 1000 * 60 * 60 * 24 * (LIMITS_BY_INTERVAL['HOUR']?.value || 3)
+  const hourIntervalSpan = A_DAY_IN_MS * (LIMITS_BY_INTERVAL['HOUR']?.value || 3)
   const timeΔ = start && end ? new Date(end).getTime() - new Date(start).getTime() : 0
-  return timeΔ <= A_DAY ? DateTime.DATETIME_MED : DateTime.DATE_MED
+  return timeΔ <= hourIntervalSpan ? DateTime.DATETIME_MED : DateTime.DATE_MED
 }
