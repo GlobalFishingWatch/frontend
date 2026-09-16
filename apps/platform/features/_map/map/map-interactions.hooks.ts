@@ -58,7 +58,6 @@ import type { RootState } from 'reducers'
 import { useAppSearch, useReplaceQueryParams } from 'router/routes.hook'
 
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
-import { REPORT_HOTSPOT_ID } from './map.config'
 import type { SliceExtendedClusterPickingObject } from './map.slice'
 import {
   fetchClusterEventThunk,
@@ -353,13 +352,8 @@ export const useClickedEventConnect = () => {
       }
 
       dispatch(setClickedEvent(event))
-      // The hotspot geometry lives in a client-only atom, so a hotspot-only popup can never be
-      // rebuilt from coordinates - sharing it would produce a link that silently shows nothing.
-      const isShareable = event.features.some((feature) => feature.id !== REPORT_HOTSPOT_ID)
       replaceQueryParams({
-        clickedCoordinates: isShareable
-          ? getClickedCoordinatesParam(event.longitude, event.latitude)
-          : undefined,
+        clickedCoordinates: getClickedCoordinatesParam(event.longitude, event.latitude),
       })
 
       handleHeatmapInteraction(event)
