@@ -481,13 +481,15 @@ const waitForLayersUpdate = ({
   new Promise<boolean>((resolve) => {
     let settled = false
     let unsubscribe: () => void = () => {}
-    // the timeout is left to fire on its own rather than cleared: `settled` makes it a no-op, and
-    // clearing it would need the handle declared before the function that reads it
+    let timeoutId: ReturnType<typeof setTimeout> | undefined
     const finish = (updated: boolean) => {
       if (settled) {
         return
       }
       settled = true
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+      }
       unsubscribe()
       resolve(updated)
     }
@@ -499,7 +501,7 @@ const waitForLayersUpdate = ({
       }
     }
     if (timeout) {
-      setTimeout(() => finish(false), timeout)
+      timeoutId = setTimeout(() => finish(false), timeout)
     }
     unsubscribe = store.sub(deckLayersStateAtom, check)
     // the layers may already be settled, in which case the atom never emits again
