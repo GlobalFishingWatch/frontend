@@ -167,7 +167,7 @@ const TimebarWrapper = () => {
   const { t, ready, i18n } = useTranslation()
   const trackGraphSteps = useTimebarTracksGraphSteps()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
-  const { start, end } = useTimerangeConnect()
+  const { start, end, setTimerange } = useTimerangeConnect()
   const { timebarVisualisation } = useTimebarVisualisationConnect()
   const availableStart = useSelector(selectAvailableStart)
   const availableEnd = useSelector(selectAvailableEnd)
@@ -341,7 +341,7 @@ const TimebarWrapper = () => {
         bookmarkStart={bookmark?.start}
         bookmarkEnd={bookmark?.end}
         minimumRange={1}
-        minimumRangeUnit={timeMode === 'realTime' ? 'hour' : 'day'}
+        minimumRangeUnit="hour"
         intervals={FOURWINGS_INTERVALS_ORDER}
         getCurrentInterval={getFourwingsInterval}
       >
@@ -381,7 +381,7 @@ const TimebarWrapper = () => {
           bookmarkPlacement="bottom"
           trackGraphOrientation={trackGraphOrientation}
           showLast30DaysBtn={timeMode === 'historical'}
-          shortestTimeRange={timeMode === 'realTime' ? 'hour' : 'day'}
+          shortestTimeRange="hour"
           locale={i18n.language as Locale}
           onMouseMove={onMouseMove}
           onGraphClick={onGraphClick}
