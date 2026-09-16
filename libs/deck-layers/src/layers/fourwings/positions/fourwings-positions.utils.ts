@@ -3,6 +3,8 @@ import type { Feature, Point } from 'geojson'
 
 import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 
+import { POSITIONS_TRACK_MAX_GAP_SECONDS } from '#layers/fourwings/fourwings.config'
+
 export const upperFirst = (text: string) => {
   return text ? text.charAt(0).toUpperCase() + text.slice(1).toLowerCase() : ''
 }
@@ -55,6 +57,26 @@ export type FourwingsPositionsVesselTrack = {
   path: Float64Array
 }
 
+function getTrackPath(positions: FourwingsPositionFeature[], from: number, to: number) {
+  const path = new Float64Array((to - from) * 2)
+  let lonOffset = 0
+  let previousLon: number | undefined
+  for (let i = from; i < to; i++) {
+    const [lon, lat] = positions[i].geometry.coordinates
+    if (previousLon !== undefined) {
+      if (lon - previousLon < -180) {
+        lonOffset += 360
+      } else if (lon - previousLon > 180) {
+        lonOffset -= 360
+      }
+    }
+    previousLon = lon
+    path[(i - from) * 2] = lon + lonOffset
+    path[(i - from) * 2 + 1] = lat
+  }
+  return path
+}
+
 export function getVesselTracks(
   positions: FourwingsPositionFeature[],
   { includeTracks = true }: { includeTracks?: boolean } = {}
@@ -85,28 +107,20 @@ export function getVesselTracks(
     if (vesselPositions.length < 2) {
       return
     }
-    // wrapLongitudes() inlined so the unwrapped lon lands straight in the flat path
-    const path = new Float64Array(vesselPositions.length * 2)
-    let lonOffset = 0
-    let previousLon: number | undefined
-    for (let i = 0; i < vesselPositions.length; i++) {
-      const [lon, lat] = vesselPositions[i].geometry.coordinates
-      if (previousLon !== undefined) {
-        if (lon - previousLon < -180) {
-          lonOffset += 360
-        } else if (lon - previousLon > 180) {
-          lonOffset -= 360
+    const layer = (lastPositionByVessel.get(id) as FourwingsPositionFeature).properties.layer
+    let segmentStart = 0
+    for (let i = 1; i <= vesselPositions.length; i++) {
+      const isGap =
+        i < vesselPositions.length &&
+        vesselPositions[i].properties.stime - vesselPositions[i - 1].properties.stime >
+          POSITIONS_TRACK_MAX_GAP_SECONDS
+      if (i === vesselPositions.length || isGap) {
+        if (i - segmentStart > 1) {
+          tracks.push({ id, layer, path: getTrackPath(vesselPositions, segmentStart, i) })
         }
+        segmentStart = i
       }
-      previousLon = lon
-      path[i * 2] = lon + lonOffset
-      path[i * 2 + 1] = lat
     }
-    tracks.push({
-      id,
-      layer: (lastPositionByVessel.get(id) as FourwingsPositionFeature).properties.layer,
-      path,
-    })
   })
 
   return { tracks, lastPositions: new Set(lastPositionByVessel.values()) }

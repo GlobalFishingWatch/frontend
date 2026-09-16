@@ -59,6 +59,8 @@ export const POSITIONS_TRAIL_CIRCLE_SIZE = 5
 export const POSITIONS_HIGHLIGHT_ICON_OFFSET = 3
 export const POSITIONS_HIGHLIGHT_CIRCLE_OFFSET = 1
 export const POSITIONS_HIGHLIGHT_OPACITY = 0.8
+// Two positions farther apart than this is cut instead of drawing a straight line across the gap
+export const POSITIONS_TRACK_MAX_GAP_SECONDS = 60 * 60
 // The track line is a support for the position icons, it shouldn't compete with them, and only
 // comes forward for the highlighted vessel
 export const POSITIONS_TRACK_OPACITY = 0.2
