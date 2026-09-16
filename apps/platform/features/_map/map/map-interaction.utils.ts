@@ -30,8 +30,24 @@ export const getSliceInteractionEvent = (deckEvent: InteractionEvent): SliceInte
     latitude: deckEvent.latitude,
     longitude: deckEvent.longitude,
     zoom: deckEvent.viewport?.zoom,
-    point: { x: deckEvent.point.x, y: deckEvent.point.y },
+    point: { x: deckEvent.point?.x, y: deckEvent.point?.y },
   }) as SliceInteractionEvent
+
+// ~0.1m. Both the URL write and the restore's dedup guard go through this, so they can never
+// disagree about what "the same clicked point" means.
+const CLICKED_COORDINATES_PRECISION = 1e6
+
+export const getClickedCoordinatesParam = (
+  longitude?: number,
+  latitude?: number
+): [number, number] | undefined => {
+  if (longitude === undefined || latitude === undefined) {
+    return undefined
+  }
+  const round = (value: number) =>
+    Math.round(value * CLICKED_COORDINATES_PRECISION) / CLICKED_COORDINATES_PRECISION
+  return [round(longitude), round(latitude)]
+}
 
 const getClickedFeatureKey = (feature: SliceExtendedFeature) =>
   `${feature.layerId}-${feature.id}-${

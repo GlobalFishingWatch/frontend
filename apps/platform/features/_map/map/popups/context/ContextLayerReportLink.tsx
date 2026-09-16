@@ -103,6 +103,8 @@ const ContextLayerReportLink = ({
     reportBufferUnit: isPointFeature ? DEFAULT_BUFFER_UNIT : undefined,
     reportBufferValue: isPointFeature ? DEFAULT_POINT_BUFFER_VALUE : undefined,
     reportBufferOperation: isPointFeature ? DEFAULT_BUFFER_OPERATION : undefined,
+    reportHotspotArea: undefined,
+    reportHotspotUnit: undefined,
     ...(!isSidebarOpen && { sidebarOpen: true }),
   }
 

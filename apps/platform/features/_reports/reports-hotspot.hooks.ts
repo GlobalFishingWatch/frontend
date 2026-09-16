@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useRef } from 'react'
+import { useSelector } from 'react-redux'
 import type { Feature, Polygon } from 'geojson'
 import { atom, useAtom } from 'jotai'
 
+import { DEFAULT_HOTSPOT_AREA, DEFAULT_HOTSPOT_UNIT } from 'features/_reports/reports.config'
 import {
-  selectReportHotspotSettings,
-  setReportHotspotSettings,
-} from 'features/_reports/tabs/activity/reports-activity.slice'
-import { useAppDispatch, useAppSelector } from 'features/app/app.hooks'
+  selectReportHotspotArea,
+  selectReportHotspotUnit,
+} from 'features/_reports/reports.config.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import type { BufferUnit } from 'types'
 
 import { computeHotspotGeometry } from './reports-hotspot.utils'
@@ -20,7 +22,7 @@ export const hotspotGeometryAtom = atom<Feature<Polygon> | null>(null)
 
 // Called once in ReportActivityGraph to drive the computation side-effect
 export function useComputeReportHotspot() {
-  const { enabled, area, unit } = useAppSelector(selectReportHotspotSettings)
+  const { enabled, area, unit } = useHotspotSettings()
   const [, setGeometry] = useAtom(hotspotGeometryAtom)
   const filteredFeatures = useReportFilteredFeatures()
   const instanceLayers = useReportInstances()
@@ -49,30 +51,38 @@ export function useComputeReportHotspot() {
   }, [filteredFeatures, enabled, area, unit, isLoading, setGeometry])
 }
 
-// Used in UI components to read/write hotspot settings
+/**
+ * Hotspot settings live in the url, like the report buffer, so the ellipse is redrawn on load and
+ * a clicked hotspot popup can be re-picked from the shared coordinates.
+ */
 export function useHotspotSettings() {
-  const settings = useAppSelector(selectReportHotspotSettings)
-  const dispatch = useAppDispatch()
+  const urlArea = useSelector(selectReportHotspotArea) as number | undefined
+  const unit = (useSelector(selectReportHotspotUnit) as BufferUnit) || DEFAULT_HOTSPOT_UNIT
+  const { replaceQueryParams } = useReplaceQueryParams()
 
   const toggle = useCallback(
-    (enabled: boolean) => dispatch(setReportHotspotSettings({ enabled })),
-    [dispatch]
+    (enabled: boolean) =>
+      replaceQueryParams({
+        reportHotspotArea: enabled ? urlArea || DEFAULT_HOTSPOT_AREA : undefined,
+        reportHotspotUnit: enabled ? unit : undefined,
+      }),
+    [replaceQueryParams, urlArea, unit]
   )
 
   const setArea = useCallback(
-    (area: number) => dispatch(setReportHotspotSettings({ area })),
-    [dispatch]
+    (area: number) => replaceQueryParams({ reportHotspotArea: area, reportHotspotUnit: unit }),
+    [replaceQueryParams, unit]
   )
 
   const setUnit = useCallback(
-    (unit: BufferUnit) => dispatch(setReportHotspotSettings({ unit })),
-    [dispatch]
+    (unit: BufferUnit) => replaceQueryParams({ reportHotspotUnit: unit }),
+    [replaceQueryParams]
   )
 
   return {
-    enabled: settings.enabled,
-    area: settings.area,
-    unit: settings.unit,
+    enabled: urlArea !== undefined,
+    area: urlArea ?? DEFAULT_HOTSPOT_AREA,
+    unit,
     toggle,
     setArea,
     setUnit,

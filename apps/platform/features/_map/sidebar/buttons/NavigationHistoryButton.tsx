@@ -138,6 +138,8 @@ function NavigationHistoryButton() {
         reportBufferValue: undefined,
         reportBufferUnit: DEFAULT_BUFFER_UNIT,
         reportBufferOperation: DEFAULT_BUFFER_OPERATION,
+        reportHotspotArea: undefined,
+        reportHotspotUnit: undefined,
         dataviewInstances: cleanVesselProfileDataviewInstances(search.dataviewInstances),
       }}
       onClick={onCloseClick}

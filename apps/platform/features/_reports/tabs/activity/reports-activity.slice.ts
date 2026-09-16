@@ -13,10 +13,7 @@ import {
   TemporalResolution,
 } from 'features/_map/download/downloadActivity.config'
 import type { DateRange } from 'features/_map/download/downloadActivity.slice'
-import {
-  ENTIRE_WORLD_REPORT_AREA_ID,
-  KILOMETERS,
-} from 'features/_reports/report-area/area-reports.config'
+import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/_reports/report-area/area-reports.config'
 import { workspaceTabClicked } from 'features/nav/nav.actions'
 import { rootReducer } from 'reducers'
 import type { BufferOperation, BufferUnit } from 'types'
@@ -25,18 +22,6 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
 
 import type { ReportTimeComparisonValues } from './reports-activity.types'
-
-export type HotspotSettings = {
-  enabled: boolean
-  area: number
-  unit: BufferUnit
-}
-
-const initialHotspotSettings: HotspotSettings = {
-  enabled: false,
-  area: 50000,
-  unit: KILOMETERS,
-}
 
 type PreviewBuffer = {
   value: number | null
@@ -58,7 +43,6 @@ interface ReportState {
   isPinningVessels: boolean
   reportRequestHash: string
   previewBuffer: PreviewBuffer
-  hotspotSettings: HotspotSettings
 }
 
 type ReportSliceState = { report: ReportState }
@@ -70,7 +54,6 @@ const initialState: ReportState = {
   isPinningVessels: false,
   reportRequestHash: '',
   previewBuffer: { ...previewBufferInitialState },
-  hotspotSettings: { ...initialHotspotSettings },
 }
 type ReportRegion = {
   dataset: string
@@ -211,7 +194,6 @@ const reportSlice = createSlice({
       state.error = null
       state.reportRequestHash = ''
       state.previewBuffer = { ...previewBufferInitialState }
-      state.hotspotSettings = { ...initialHotspotSettings }
     },
     setReportRequestHash: (state, action: PayloadAction<string>) => {
       state.reportRequestHash = action.payload
@@ -222,9 +204,6 @@ const reportSlice = createSlice({
     setPinningVessels: (state, action: PayloadAction<boolean>) => {
       state.isPinningVessels = action.payload
     },
-    setReportHotspotSettings: (state, action: PayloadAction<Partial<HotspotSettings>>) => {
-      state.hotspotSettings = { ...state.hotspotSettings, ...action.payload }
-    },
   },
   extraReducers: (builder) => {
     // Nav inversion: MainNav dispatches one leaf action instead of importing this slice.
@@ -234,7 +213,6 @@ const reportSlice = createSlice({
       state.error = null
       state.reportRequestHash = ''
       state.previewBuffer = { ...previewBufferInitialState }
-      state.hotspotSettings = { ...initialHotspotSettings }
     })
     builder.addCase(fetchReportVesselsThunk.pending, (state) => {
       state.status = AsyncReducerStatus.Loading
@@ -262,7 +240,6 @@ export const {
   setReportRequestHash,
   setPreviewBuffer,
   setPinningVessels,
-  setReportHotspotSettings,
 } = reportSlice.actions
 
 const injectedReportSlice = rootReducer.inject(reportSlice)
@@ -286,9 +263,6 @@ export const selectReportIsPinningVessels = injectedReportSlice.selector(
 )
 export const selectReportRequestHash = injectedReportSlice.selector(
   (state) => state.report.reportRequestHash
-)
-export const selectReportHotspotSettings = injectedReportSlice.selector(
-  (state) => state.report.hotspotSettings
 )
 
 export default reportSlice.reducer
