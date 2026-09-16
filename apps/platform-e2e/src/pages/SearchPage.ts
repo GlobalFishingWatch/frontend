@@ -29,7 +29,7 @@ export class SearchPage {
     await expect(this.resultRows.first()).toBeVisible()
   }
 
-  expectQueryInUrl() {
-    expect(this.page.url()).toContain('qry=')
+  async expectQueryInUrl(term: string) {
+    await expect.poll(() => new URL(this.page.url()).searchParams.get('qry')).toBe(term)
   }
 }
