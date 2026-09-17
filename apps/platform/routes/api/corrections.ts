@@ -37,6 +37,8 @@ function mapDataToHeader(header: string, data: any): string {
   const selfReportedMap: Record<string, any> = {
     'SSVID/MMSI': data.originalValues?.ssvid,
     'Vessel ID': data.vesselId,
+    'Timestamp from': data.transmissionDateFrom,
+    'Timestamp to': data.transmissionDateTo,
     'GFW Vessel Type': data.originalValues?.shiptypes,
     'GFW Gear Type': data.originalValues?.gfw_geartypes,
     'GFW Vessel Type Corrected': data.proposedCorrections?.shiptypes,

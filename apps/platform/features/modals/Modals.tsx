@@ -26,6 +26,7 @@ import {
   selectFeedbackModalOpen,
   selectLayerLibraryModalOpen,
   selectTurningTidesModalOpen,
+  selectVesselCorrectionModalOpen,
   setModalOpen,
   toggleBigQueryModal,
   toggleEditorMenu,
@@ -52,6 +53,9 @@ const EditorMenu = lazy(() => import('features/_map/editor/EditorMenu'))
 const Welcome = lazy(() => import('features/welcome/Welcome'))
 const VesselGroupModal = lazy(() => import('features/_user/vessel-groups/VesselGroupModal'))
 const FeedbackModal = lazy(() => import('features/feedback/FeedbackModal'))
+const VesselCorrectionModal = lazy(
+  () => import('features/_vessels/vessel/vesselCorrection/VesselCorrectionModal')
+)
 
 const DebugMenuConfig = {
   key: 'd',
@@ -108,6 +112,7 @@ const AppModals = () => {
   const anyAppModalOpen = useSelector(selectAnyAppModalOpen)
   const feedbackModalOpen = useSelector(selectFeedbackModalOpen)
   const welcomePopupContentKey = useSelector(selectWelcomeModalKey)
+  const vesselCorrectionModalOpen = useSelector(selectVesselCorrectionModalOpen)
 
   const [saveWorkspaceBeforeLeave, setSaveWorkspaceBeforeLeave] = useSessionStorage<
     boolean | undefined
@@ -239,6 +244,14 @@ const AppModals = () => {
           <FeedbackModal
             isOpen
             onClose={() => dispatch(setModalOpen({ id: 'feedback', open: false }))}
+          />
+        </Suspense>
+      )}
+      {vesselCorrectionModalOpen && (
+        <Suspense fallback={null}>
+          <VesselCorrectionModal
+            isOpen
+            onClose={() => dispatch(setModalOpen({ id: 'vesselCorrection', open: false }))}
           />
         </Suspense>
       )}
