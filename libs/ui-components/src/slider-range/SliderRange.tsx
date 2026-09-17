@@ -15,6 +15,23 @@ type SliderRangeConfig = {
   min: number
   max: number
 }
+
+const STEPS_SEGMENT_PRECISION = 100
+
+const getStepPosition = (steps: number[], value: number) => {
+  if (value <= steps[0]) return 0
+  const lastIndex = steps.length - 1
+  if (value >= steps[lastIndex]) return lastIndex
+  const index = steps.findIndex((step, i) => i < lastIndex && value < steps[i + 1])
+  const segment = steps[index + 1] - steps[index]
+  return segment > 0 ? index + (value - steps[index]) / segment : index
+}
+
+const getStepValue = (steps: number[], position: number) => {
+  const index = Math.min(Math.floor(position), steps.length - 2)
+  const segment = steps[index + 1] - steps[index]
+  return steps[index] + (position - index) * segment
+}
 interface SliderRangeProps {
   label: string
   thumbsSize?: SliderThumbsSize
@@ -77,11 +94,25 @@ export function SliderRange(props: SliderRangeProps) {
     showInputs = false,
     labelClassName,
   } = props
-  const { min = MIN, max = MAX } = config as SliderRangeConfig
+  const { min = MIN, max = MAX, steps } = config as SliderRangeConfig
+  const hasStepsScale = (steps?.length ?? 0) > 2
   const precisionConfig =
     CONFIG_BY_PRECISION[max - min >= 100 ? 'low' : max - min >= 10 ? 'mid' : 'high']
   const initialValues = initialRange || [min, max]
   const [internalValues, setInternalValues] = useState(initialValues)
+
+  // with a steps scale the track works in segment coordinates, every value the user sees is real
+  const toPosition = useCallback(
+    (value: number) => (hasStepsScale ? getStepPosition(steps, value) : value),
+    [hasStepsScale, steps]
+  )
+  const fromPosition = useCallback(
+    (position: number) =>
+      hasStepsScale ? precisionConfig.round(getStepValue(steps, position)) : position,
+    [hasStepsScale, precisionConfig, steps]
+  )
+  const sliderMin = hasStepsScale ? 0 : min
+  const sliderMax = hasStepsScale ? steps.length - 1 : max
 
   useEffect(() => {
     if (range?.length) {
@@ -90,12 +121,16 @@ export function SliderRange(props: SliderRangeProps) {
   }, [range])
 
   const handleChange = useCallback(
-    (values: SliderRangeValues) => {
-      if (values[1] > values[0]) {
-        setInternalValues(values.map((v) => precisionConfig.round(v)))
+    (positions: SliderRangeValues) => {
+      if (positions[1] > positions[0]) {
+        setInternalValues(
+          positions.map((position) =>
+            hasStepsScale ? fromPosition(position) : precisionConfig.round(position)
+          )
+        )
       }
     },
-    [precisionConfig]
+    [fromPosition, hasStepsScale, precisionConfig]
   )
 
   const onInitialRangeInputChange = useCallback(
@@ -120,21 +155,21 @@ export function SliderRange(props: SliderRangeProps) {
   )
 
   const handleFinalChange = useCallback(
-    (values: SliderRangeValues) => {
-      onChange(values)
+    (positions: SliderRangeValues) => {
+      onChange(hasStepsScale ? positions.map(fromPosition) : positions)
     },
-    [onChange]
+    [fromPosition, hasStepsScale, onChange]
   )
 
   const background = useMemo(
     () =>
       getSliderTrackBackground({
-        min: min,
-        max: max,
-        values: internalValues,
+        min: sliderMin,
+        max: sliderMax,
+        values: internalValues.map(toPosition),
         colors: [borderColor, activeColor, borderColor],
       }),
-    [internalValues, max, min]
+    [internalValues, sliderMax, sliderMin, toPosition]
   )
 
   const areDefaultValues = internalValues[0] === min && internalValues[1] === max
@@ -165,17 +200,17 @@ export function SliderRange(props: SliderRangeProps) {
         <AriaSlider
           className={styles.slider}
           aria-label={label}
-          value={internalValues}
-          minValue={min}
-          maxValue={max}
-          step={inputStep}
+          value={internalValues.map(toPosition)}
+          minValue={sliderMin}
+          maxValue={sliderMax}
+          step={hasStepsScale ? 1 / STEPS_SEGMENT_PRECISION : inputStep}
           onChange={handleChange}
           onChangeEnd={handleFinalChange}
         >
           <SliderTrack className={styles.sliderTrack} style={{ background }}>
             {({ state }) =>
               state.values.map((_, index) => {
-                const value = state.getThumbValue(index)
+                const value = fromPosition(state.getThumbValue(index))
                 const isDefaultSelection = index === 0 ? value === min : value === max
                 return (
                   <SliderThumb
