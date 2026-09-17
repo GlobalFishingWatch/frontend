@@ -261,7 +261,7 @@
     "protobufjs-cli": "2.6.2",
     "rollup-plugin-visualizer": "7.0.1",
     "sass": "1.102.0",
-    "sharp": "0.35.3",
+    "sharp": "0.35.4",
     "shx": "0.4.0",
     "source-map-explorer": "2.5.3",
     "stylelint": "17.14.1",
@@ -271,7 +271,7 @@
     "typescript-eslint": "8.68.0",
     "vite": "8.2.1",
     "vite-plugin-static-copy": "4.1.1",
-    "vitest": "4.1.10",
+    "vitest": "4.1.11",
     "vitest-browser-react": "2.2.0"
   },
   "lint-staged": {
