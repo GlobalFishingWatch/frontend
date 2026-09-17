@@ -15,6 +15,7 @@ test(
   { tag: [TAGS.SMOKE] },
   async ({ searchPage }) => {
     await searchPage.searchBasic(SEARCH_TERM)
+    await searchPage.awaitSearchFinishes()
     await searchPage.expectResultsVisible()
     await searchPage.expectQueryInUrl(SEARCH_TERM)
   }

@@ -9,20 +9,18 @@ export class SearchPage {
   private page: Page
   readonly basicInput: Locator
   readonly resultRows: Locator
-
+  readonly loadingSearchText: Locator
   constructor(page: Page) {
     this.page = page
     this.basicInput = page.getByPlaceholder(BASIC_INPUT_PLACEHOLDER)
     this.resultRows = page.locator('[data-test^="search-vessels-option-"]')
+    this.loadingSearchText = page.getByText(/Searching more than .* vessels/)
   }
 
   async searchBasic(term: string) {
     await expect(this.basicInput).toBeVisible()
     await expect(this.basicInput).toBeEnabled()
-
     await this.basicInput.fill(term)
-
-    await expect(this.resultRows.first()).toBeVisible({ timeout: TIMEOUTS.MEDIUM })
   }
 
   async expectResultsVisible() {
@@ -31,5 +29,10 @@ export class SearchPage {
 
   async expectQueryInUrl(term: string) {
     await expect.poll(() => new URL(this.page.url()).searchParams.get('qry')).toBe(term)
+  }
+
+  async awaitSearchFinishes() {
+    await expect(this.loadingSearchText).toHaveCSS('opacity', '1')
+    await expect(this.loadingSearchText).toBeHidden({ timeout: TIMEOUTS.MEDIUM })
   }
 }
