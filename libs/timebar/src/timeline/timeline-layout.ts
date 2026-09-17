@@ -2,13 +2,38 @@ import { DateTime } from 'luxon'
 
 import type { TimebarLabels } from '../timebar-labels'
 import { DEFAULT_LABELS } from '../timebar-labels'
-import { getTime } from '../utils'
+import { getDeltaDays, getTime } from '../utils'
 
 import type { TimelineScale } from './timeline-context'
 
+export const getBaseUnit = (
+  start: string,
+  end: string,
+  shortestTimeRange: 'day' | 'hour' | 'minute' = 'day'
+): { baseUnit: TimelineBaseUnit; minuteStep: number } => {
+  const innerDays = getDeltaDays(start, end)
+  const innerHours = innerDays * 24
+  let baseUnit: TimelineBaseUnit = 'day'
+  let minuteStep = 10
+  if (innerDays > 366) baseUnit = 'year'
+  else if (innerDays > 31) baseUnit = 'month'
+  else if (innerHours <= 1) baseUnit = 'minute'
+  else if (innerHours <= 3) {
+    baseUnit = 'minute'
+    minuteStep = 30
+  } else if (innerDays <= 1) baseUnit = 'hour'
+
+  if (baseUnit === 'minute' && shortestTimeRange === 'hour') {
+    baseUnit = 'hour'
+  }
+  return { baseUnit, minuteStep }
+}
+
+export type TimelineBaseUnit = 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute'
+
 const getUnitLabel = (
   mUnit: DateTime,
-  baseUnit: 'year' | 'month' | 'week' | 'day' | 'hour' | 'minute',
+  baseUnit: TimelineBaseUnit,
   availableWidth: number,
   locale: string,
   hourSuffix = false

@@ -1,12 +1,11 @@
 import { useCallback } from 'react'
-import type { DateTimeUnit } from 'luxon'
 
 import type { TimebarChangeSource } from '../timebar'
 import type { TimebarLabels } from '../timebar-labels'
 import type { TimelineScale } from '../timeline/timeline-context'
 import { clampToAbsoluteBoundaries, getDeltaDays, getDeltaMs } from '../utils'
 
-import { getUnitsPositions } from './timeline-layout'
+import { getBaseUnit, getUnitsPositions } from './timeline-layout'
 
 import styles from './timeline-units.module.css'
 
@@ -21,7 +20,8 @@ type TimelineUnitsProps = {
   outerEnd: string
   outerScale: TimelineScale
   locale: string
-  shortestTimeRange?: 'day' | 'hour'
+  /** Finest unit the data supports: ticks are never drawn below it. */
+  shortestTimeRange?: 'day' | 'hour' | 'minute'
 }
 
 const TimelineUnits = ({
@@ -56,17 +56,7 @@ const TimelineUnits = ({
 
   const innerDays = getDeltaDays(start, end)
   const hourSuffix = innerDays * 24 <= 12
-
-  const innerHours = innerDays * 24
-  let baseUnit: DateTimeUnit = 'day'
-  let minuteStep = 10
-  if (innerDays > 366) baseUnit = 'year'
-  else if (innerDays > 31) baseUnit = 'month'
-  else if (innerHours <= 1) baseUnit = 'minute'
-  else if (innerHours <= 3) {
-    baseUnit = 'minute'
-    minuteStep = 30
-  } else if (innerDays <= 1) baseUnit = 'hour'
+  const { baseUnit, minuteStep } = getBaseUnit(start, end, shortestTimeRange)
 
   const units = getUnitsPositions(
     outerScale,
@@ -97,7 +87,7 @@ const TimelineUnits = ({
             }}
             className={styles.unit}
           >
-            {baseUnit === 'minute' || (baseUnit === 'hour' && shortestTimeRange !== 'hour') ? (
+            {baseUnit === 'minute' || (baseUnit === 'hour' && shortestTimeRange === 'day') ? (
               <div>{d.label}</div>
             ) : (
               <button

@@ -44,7 +44,7 @@ type TimebarTimelineProps = {
   onMouseMove?: TimebarMouseMoveHandler
   onGraphClick?: (toggle: boolean) => void
   showDeckStats?: boolean
-  shortestTimeRange?: 'day' | 'hour'
+  shortestTimeRange?: 'day' | 'hour' | 'minute'
 }
 
 export const TimebarTimeline = ({
