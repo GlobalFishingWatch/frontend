@@ -250,6 +250,7 @@ function PositionsTooltipRow({
     }
     return (
       <Link
+        className="print-hidden"
         to={ROUTE_PATHS.WORKSPACE_SEARCH}
         params={{
           category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
@@ -286,7 +287,7 @@ function PositionsTooltipRow({
           )}
         </span>
         {onToggleExpand && (
-          <div className={cx(popupStyles.rowActions, popupStyles.rowActionsEnd)}>
+          <div className={cx(popupStyles.rowActions, popupStyles.rowActionsEnd, 'print-hidden')}>
             <IconButton
               icon={expanded ? 'section-collapse' : 'section-expand'}
               size="small"

@@ -43,6 +43,7 @@ const ContextLayerDownloadPopupButton: React.FC<ContextLayerDownloadPopupButtonP
     <LoginButtonWrapper tooltip={t((t) => t.download.heatmapLogin)} loginSource="layer-download">
       <IconButton
         icon="download"
+        className="print-hidden"
         disabled={!guestUser && (!isDataviewReportAnalysable || !datasetsReportSupported)}
         testId="download-activity-layers"
         tooltip={

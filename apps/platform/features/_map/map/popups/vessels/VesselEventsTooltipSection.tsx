@@ -61,7 +61,7 @@ function EventDescription({
         eventId={event.id ? event.id.split('.')[0] : undefined}
         eventType={type}
       >
-        <IconButton icon="arrow-right" size="tiny" />
+        <IconButton icon="arrow-right" size="tiny" className="print-hidden" />
       </VesselLink>
     ) : null
 

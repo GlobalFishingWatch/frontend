@@ -46,7 +46,7 @@ function PortsTooltipSection({ features, showFeaturesDetails = false }: PortsToo
                     {`${formatInfoField(name, 'port')} (${formatInfoField(flag, 'flag')})`}
                   </span>
                   {showFeaturesDetails && (
-                    <div className={styles.rowActions}>
+                    <div className={cx(styles.rowActions, 'print-hidden')}>
                       <PortsReportLink port={port}>
                         <IconButton
                           icon="analysis"

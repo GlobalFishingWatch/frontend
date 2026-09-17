@@ -170,7 +170,7 @@ function VesselsTable({
                         {!vessel.id ? (
                           <span className={styles.skylightLink}>
                             <Link
-                              className={styles.link}
+                              className={cx(styles.link, 'print-hidden')}
                               to={ROUTE_PATHS.WORKSPACE_SEARCH}
                               params={{
                                 category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
@@ -211,7 +211,7 @@ function VesselsTable({
                                     action: 'click_skylight_link_from_popup',
                                   })
                                 }}
-                                className={styles.link}
+                                className={cx(styles.link, 'print-hidden')}
                               >
                                 <IconButton
                                   icon="external-link"

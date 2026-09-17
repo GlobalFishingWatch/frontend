@@ -132,6 +132,31 @@
   }
 }
 
+:global(.printing) .list {
+  border: none;
+  background-color: transparent;
+}
+
+:global(.printing) .option {
+  background: none;
+}
+
+:global(.printing) .option button {
+  padding: 0;
+  justify-content: flex-start;
+}
+
+:global(.printing) .option:not([aria-checked='true']) {
+  display: none;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+:global(.printing) .Choice .optionActive,
+:global(.printing) .list:not(:has(.activePill)) .optionActive {
+  background-color: transparent;
+  filter: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .activePill.animated {
     transition: none;
