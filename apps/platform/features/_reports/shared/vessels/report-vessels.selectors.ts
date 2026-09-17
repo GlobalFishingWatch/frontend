@@ -365,10 +365,15 @@ export const selectReportVesselsGraphIndividualData = createSelector(
   }
 )
 
-export function getVesselDatasetsWithoutEventsRelated(
-  vessels: VesselGroupVesselIdentity[] | null,
+export function getVesselDatasetsWithoutRelated({
+  vessels,
+  vesselDatasets,
+  relatedType,
+}: {
+  vessels: VesselGroupVesselIdentity[] | null
   vesselDatasets: Dataset[]
-) {
+  relatedType: DatasetTypes
+}) {
   if (!vessels?.length) {
     return []
   }
@@ -376,8 +381,8 @@ export function getVesselDatasetsWithoutEventsRelated(
   vessels?.forEach((vessel) => {
     const infoDataset = vesselDatasets?.find((dataset) => dataset.id === vessel.dataset)
     if (!infoDataset || datasets.has(infoDataset)) return
-    const eventsDataset = getRelatedDatasetByType(infoDataset, DatasetTypes.Events)
-    if (!eventsDataset) {
+    const relatedDataset = getRelatedDatasetByType(infoDataset, relatedType)
+    if (!relatedDataset) {
       datasets.add(infoDataset)
     }
   })
@@ -387,6 +392,21 @@ export function getVesselDatasetsWithoutEventsRelated(
 export const selectVGRVesselDatasetsWithoutEventsRelated = createSelector(
   [selectVGRVessels, selectVesselsDatasets],
   (vessels = [], vesselDatasets) => {
-    return getVesselDatasetsWithoutEventsRelated(vessels, vesselDatasets)
+    return getVesselDatasetsWithoutRelated({
+      vessels,
+      vesselDatasets,
+      relatedType: DatasetTypes.Events,
+    })
+  }
+)
+
+export const selectVGRVesselDatasetsWithoutInsightsRelated = createSelector(
+  [selectVGRVessels, selectVesselsDatasets],
+  (vessels = [], vesselDatasets) => {
+    return getVesselDatasetsWithoutRelated({
+      vessels,
+      vesselDatasets,
+      relatedType: DatasetTypes.Insights,
+    })
   }
 )
