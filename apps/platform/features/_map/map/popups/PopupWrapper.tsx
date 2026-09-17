@@ -123,7 +123,7 @@ function PopupWrapper({
           <FloatingArrow fill="var(--color-off-white-0)" ref={arrowRef} context={context} />
         )}
         {showClose && onClose !== undefined && (
-          <div className={styles.close}>
+          <div className={cx('print-hidden', styles.close)}>
             <IconButton
               type="invert"
               size="small"

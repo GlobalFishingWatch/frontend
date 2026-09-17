@@ -9,11 +9,10 @@ import { stickToClosestInterval } from '@globalfishingwatch/data-transforms/date
 import { EVENT_SOURCE } from '@globalfishingwatch/timebar/constants'
 
 import { DEFAULT_TIME_RANGE } from 'data/map/config'
-import { selectIsWorkspaceReady, selectTimeMode } from 'features/_map/workspace/workspace.selectors'
+import { selectIsWorkspaceReady } from 'features/_map/workspace/workspace.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectHintsDismissed, setHintDismissed } from 'features/hints/hints.slice'
 import { useReplaceQueryParams } from 'router/routes.hook'
-import { getUTCDateTime } from 'utils/dates'
 
 import type { TimeRange } from './timebar.slice'
 
@@ -39,7 +38,12 @@ const getTimerangeFromUrl = (locationUrl = window.location.toString()) => {
       const decodedStart = decodeURIComponent(start)
       const decodedEnd = decodeURIComponent(end)
       if (isValidISODate(decodedStart) && isValidISODate(decodedEnd)) {
-        return { start: decodedStart, end: decodedEnd }
+        // Historical data granularity bottoms out at HOUR, so a hand-written or stale url
+        // with minute/second precision has to be snapped like any in-app change would be.
+        // Real time keeps the exact timestamps it gets from the latest update.
+        const isRealTime = url.searchParams.get('timeMode') === 'realTime'
+        const timerange = { start: decodedStart, end: decodedEnd }
+        return isRealTime ? timerange : stickToClosestInterval(timerange)
       }
     }
   } catch (e) {
@@ -64,7 +68,6 @@ export const useSetTimerange = () => {
   const { replaceQueryParams } = useReplaceQueryParams()
   const hintsDismissed = useSelector(selectHintsDismissed)
   const isWorkspaceMapReady = useSelector(selectIsWorkspaceReady)
-  const timeMode = useSelector(selectTimeMode)
 
   // Debounce the URL write so we only navigate once the user stops scrubbing the
   // timebar, instead of firing a full router.navigate() on every frame (navigation storm).
@@ -82,13 +85,7 @@ export const useSetTimerange = () => {
     (timerange: TimeRange, stickToInterval = true) => {
       let stuckTimerange = timerange
       if (stickToInterval) {
-        const { start: newStart, end: newEndInitial } = stickToClosestInterval(timerange)
-        let newEnd = newEndInitial
-        const minEnd = getUTCDateTime(newStart).plus({ hours: 24 })
-        if (timeMode !== 'realTime' && getUTCDateTime(newEnd) < minEnd) {
-          newEnd = minEnd.toISO() as string
-        }
-        stuckTimerange = { start: newStart, end: newEnd }
+        stuckTimerange = stickToClosestInterval(timerange)
       }
       setAtomTimerange((timerangeAtom) => {
         if (
@@ -110,7 +107,6 @@ export const useSetTimerange = () => {
       hintsDismissed?.changingTheTimeRange,
       isWorkspaceMapReady,
       setAtomTimerange,
-      timeMode,
     ]
   )
 

@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
+import cx from 'classnames'
 
 import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
@@ -71,6 +72,7 @@ const ContextLayerReportLink = ({
     return (
       <IconButton
         icon="analysis"
+        className="print-hidden"
         disabled={!isDataviewReportAnalysable}
         size="small"
         tooltip={t((t) => t.common.analysisNotAvailable)}
@@ -124,7 +126,7 @@ const ContextLayerReportLink = ({
     <Fragment>
       {!isSameArea && (
         <Link
-          className={label ? layerStyles.reportLink : styles.workspaceLink}
+          className={cx(label ? layerStyles.reportLink : styles.workspaceLink, 'print-hidden')}
           to={ROUTE_PATHS.WORKSPACE_REPORT}
           params={reportLinkParams}
           search={(prev: QueryParams) => ({ ...prev, ...reportLinkSearch })}
@@ -148,7 +150,7 @@ const ContextLayerReportLink = ({
       )}
       {addAreaToReport && (
         <Link
-          className={styles.workspaceLink}
+          className={cx(styles.workspaceLink, 'print-hidden')}
           to={ROUTE_PATHS.WORKSPACE_REPORT}
           params={addReportLinkParams}
           search={(prev: QueryParams) => ({ ...prev, ...reportLinkSearch })}
@@ -165,7 +167,7 @@ const ContextLayerReportLink = ({
       )}
       {removeAreaFromReport && (
         <Link
-          className={styles.workspaceLink}
+          className={cx(styles.workspaceLink, 'print-hidden')}
           to={ROUTE_PATHS.WORKSPACE_REPORT}
           params={removeReportLinkParams}
           search={(prev: QueryParams) => ({ ...prev, ...reportLinkSearch })}

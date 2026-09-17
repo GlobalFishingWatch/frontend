@@ -82,7 +82,7 @@ const ContextTooltipRow = ({
           <span className={styles.rowText}>{parsedLabel}</span>
         )}
         {showFeaturesDetails && (
-          <div className={styles.rowActions}>
+          <div className={cx(styles.rowActions, 'print-hidden')}>
             {/* the report shortcut stays in the header so the feature is discoverable without
                 opening the row; target / download / info move into the footer */}
             {!canExpand && showFitArea && (
@@ -136,14 +136,14 @@ const ContextTooltipRow = ({
                   ) : (
                     <button
                       type="button"
-                      className={layerStyles.zoomPrompt}
+                      className={cx(layerStyles.zoomPrompt, 'print-hidden')}
                       disabled={fitAreaLoading}
                       onClick={fitAreaBounds}
                     >
                       {t((t) => t.analysis.zoomToAreaForActivity)}
                     </button>
                   )}
-                  <div className={layerStyles.rowFooter}>
+                  <div className={cx(layerStyles.rowFooter, 'print-hidden')}>
                     <IconButton
                       icon="target"
                       tooltip={t((t) => t.common.fitArea)}

@@ -76,7 +76,7 @@ function WorkspacePointsTooltipSection({
                   label={feature.properties.label}
                   viewAccess={feature.properties.viewAccess}
                 />
-                <IconButton icon="arrow-right" size="small" />
+                <IconButton icon="arrow-right" size="small" className="print-hidden" />
               </Link>
             ) : (
               <WorkspaceLabel

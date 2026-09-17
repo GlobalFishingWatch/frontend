@@ -1,6 +1,7 @@
 import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -190,7 +191,7 @@ function EventsGapTooltipRow({
                           <Button
                             target="_blank"
                             size="small"
-                            className={styles.btnLarge}
+                            className={cx(styles.btnLarge, 'print-hidden')}
                             onClick={() => seeGapEventClick(event.dataset)}
                           >
                             {t((t) => t.common.seeMore)}
