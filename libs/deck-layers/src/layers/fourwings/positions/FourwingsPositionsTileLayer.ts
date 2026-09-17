@@ -740,6 +740,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
               getText: this._getVesselLabel,
               getPosition: (d) => d.geometry.coordinates as [number, number, number],
               getColor: this._getLabelColor,
+              avoidOverlap: true,
               // LabelLayer defaults to a 50ms getPosition transition, which TextLayer forwards down
               // to the per-character instances. `lastPositions` has no stable index -> vessel
               // mapping between loads, so character n animates from one vessel's glyph to another's
