@@ -108,11 +108,6 @@ function LayerFilters({
       {showGapsFilter && (
         <LayerFiltersGap dataview={dataview} onGapChange={onDataviewFilterChange} />
       )}
-      {showHistogramFilter && (
-        <Suspense fallback={null}>
-          <HistogramRangeFilter dataview={dataview} onSelect={onSelectHistogramRangeFilterClick} />
-        </Suspense>
-      )}
       {filtersAllowed.map((schemaFilter) => {
         if (!showSchemaFilter(schemaFilter)) {
           return null
@@ -129,6 +124,11 @@ function LayerFilters({
           />
         )
       })}
+      {showHistogramFilter && (
+        <Suspense fallback={null}>
+          <HistogramRangeFilter dataview={dataview} onSelect={onSelectHistogramRangeFilterClick} />
+        </Suspense>
+      )}
       <div className={cx(styles.footer, { [styles.spaceBetween]: showApplyToAll })}>
         {showApplyToAll && (
           <Button type="secondary" onClick={() => onConfirmFilters({ applyToAll: true })}>

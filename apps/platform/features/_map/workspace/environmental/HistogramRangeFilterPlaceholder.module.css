@@ -1,0 +1,74 @@
+/* Mirrors the real control: label, histogram, slider with its two thumbs, and the two inputs.
+   Heights add up to the same total as HistogramRangeFilter, so nothing shifts when it swaps in. */
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: var(--space-S);
+}
+
+.label,
+.histogram,
+.track,
+.thumb,
+.input {
+  border-radius: 0.5rem;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--primary-blue-rgb), 0.1) 0%,
+    rgba(var(--primary-blue-rgb), 0.2) 40%,
+    rgba(var(--primary-blue-rgb), 0.1) 70%
+  );
+  background-size: 1000px 100%;
+  animation: placeHolderShimmer 2s linear forwards infinite;
+}
+
+.label {
+  height: 1.1rem;
+  width: 12rem;
+}
+
+.histogram {
+  height: 3.2rem;
+}
+
+.slider {
+  display: flex;
+  align-items: center;
+  height: 1.6rem;
+}
+
+.track {
+  flex: 1;
+  height: 0.4rem;
+  border-radius: 0;
+}
+
+.thumb {
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.inputs {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.4rem;
+}
+
+.input {
+  height: 3.6rem;
+  flex: 1;
+}
+
+@keyframes placeHolderShimmer {
+  0% {
+    background-position: -500px 0;
+  }
+
+  100% {
+    background-position: 500px 0;
+  }
+}
