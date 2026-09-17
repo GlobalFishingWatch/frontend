@@ -1161,6 +1161,14 @@ export const selectRealTimePositionsInteractionError = (state: { map: MapState }
 export const selectApiEventStatus = (state: { map: MapState }) => state.map.apiEventStatus
 export const selectApiEventError = (state: { map: MapState }) => state.map.apiEventError
 
+export const selectIsMapInteractionLoading = (state: { map: MapState }) =>
+  [
+    state.map.apiActivityStatus,
+    state.map.apiDetectionPositionsStatus,
+    state.map.apiRealTimePositionsStatus,
+    state.map.apiEventStatus,
+  ].includes(AsyncReducerStatus.Loading)
+
 export const {
   setMapLoaded,
   setClickedEvent,
