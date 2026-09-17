@@ -2,6 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
 
 import type { VesselGroup } from '@globalfishingwatch/api-types'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { resolveVesselPropertyColumn } from '@globalfishingwatch/data-transforms/schema'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
@@ -15,7 +16,7 @@ import {
   selectWorkspaceDataviewInstances,
 } from 'features/_map/workspace/workspace.selectors'
 import type { LastWorkspaceVisited } from 'features/_map/workspace/workspace.slice'
-import { getVesselDatasetsWithoutEventsRelated } from 'features/_reports/shared/vessels/report-vessels.selectors'
+import { getVesselDatasetsWithoutRelated } from 'features/_reports/shared/vessels/report-vessels.selectors'
 import { selectUserId } from 'features/_user/selectors/user.permissions.selectors'
 import { selectIsGFWUser, selectIsJACUser } from 'features/_user/selectors/user.selectors'
 import { getVesselGroupVesselsCount } from 'features/_user/vessel-groups/vessel-groups.utils'
@@ -113,7 +114,11 @@ export const selectIsVessselGroupsFiltering = createSelector(
 export const selectVesselGroupModalDatasetsWithoutEventsRelated = createSelector(
   [selectVesselGroupModalVessels, selectVesselsDatasets],
   (vessels = [], vesselDatasets) => {
-    return getVesselDatasetsWithoutEventsRelated(vessels, vesselDatasets)
+    return getVesselDatasetsWithoutRelated({
+      vessels,
+      vesselDatasets,
+      relatedType: DatasetTypes.Events,
+    })
   }
 )
 

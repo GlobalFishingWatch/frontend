@@ -8,7 +8,7 @@ import { selectVesselsDatasets } from 'features/_map/datasets/datasets.selectors
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
 import { selectLonglineSetsInsight } from 'features/_map/workspace/workspace.selectors'
-import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/_reports/shared/vessels/report-vessels.selectors'
+import { selectVGRVesselDatasetsWithoutInsightsRelated } from 'features/_reports/shared/vessels/report-vessels.selectors'
 import { MIN_INSIGHTS_YEAR } from 'features/_vessels/vessel/insights/insights.config'
 import DataTerminology from 'features/cms/data-terminology/DataTerminology'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
@@ -26,17 +26,16 @@ const VesselGroupReportInsights = () => {
   const { t } = useTranslation()
   const { start, end } = useSelector(selectTimeRange)
   const vesselDatasets = useSelector(selectVesselsDatasets)
-  const datasetsWithoutRelatedEvents = useSelector(selectVGRVesselDatasetsWithoutEventsRelated)
+  const datasetsWithoutInsightsDatasets = useSelector(selectVGRVesselDatasetsWithoutInsightsRelated)
   const longlineSetsInsight = useSelector(selectLonglineSetsInsight)
 
-  if (datasetsWithoutRelatedEvents.length >= 1) {
+  if (datasetsWithoutInsightsDatasets.length >= 1) {
     return (
       <div className={styles.disclaimer}>
         <Icon icon="warning" type="warning" />
         {t((t) => t.vesselGroup.disclaimerFeaturesNotAvailable, {
           features: t((t) => t.common.insights),
-
-          datasets: Array.from(datasetsWithoutRelatedEvents)
+          datasets: Array.from(datasetsWithoutInsightsDatasets)
             .map((d) => getDatasetLabel(d))
             .join(', '),
         })}
