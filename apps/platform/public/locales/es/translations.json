@@ -1655,6 +1655,7 @@
     "emptyStateUser": "Cargar conjuntos de datos personalizados haciendo clic en el icono de más.",
     "emptyStateVesselGroups": "Añade grupos de buques para ver su presencia y huella de operaciones.",
     "emptyStateVessels": "Las embarcaciones seleccionadas en la búsqueda o haciendo clic en el mapa de calor aparecerán aquí.",
+    "layerNotAvailableInTimeMode": "This layer is not available in {{timeMode}} mode",
     "list": "Lista de espacios de trabajo",
     "marineManagerLink": "Ver el portal",
     "migrationDisclaimer": "Algunas capas en este área de trabajo están usando datos desactualizados",
