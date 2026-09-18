@@ -20,8 +20,10 @@ import {
   fetchDataviewsByIdsThunk,
   selectAllDataviews,
 } from 'features/_map/dataviews/dataviews.slice'
+import { isDataviewInTimeMode } from 'features/_map/dataviews/dataviews.utils'
 import { selectDataviewInstancesResolvedVisible } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
+import { selectTimeMode } from 'features/_map/workspace/workspace.selectors'
 import { setWorkspaceSuggestSave } from 'features/_map/workspace/workspace.slice'
 import { getNextColor } from 'features/_map/workspace/workspace.utils'
 import GFWOnly from 'features/_user/GFWOnly'
@@ -62,6 +64,11 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
   const datasetTypeIcon = getDatasetTypeIcon(dataset)
   const datasetSourceIcon = getDatasetSourceIcon(dataset)
   const allDataviews = useSelector(selectAllDataviews)
+  const timeMode = useSelector(selectTimeMode)
+  const availableInTimeMode = isDataviewInTimeMode(
+    { id, category, dataviewId, datasets: dataview.datasets },
+    timeMode
+  )
 
   const onAddToWorkspaceClick = async () => {
     const usedColors = uniq((dataviews || []).flatMap((dataview) => dataview.config?.color || []))
@@ -134,6 +141,17 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
               className={styles.cta}
               onClick={onAddToWorkspaceClick}
               loading={loading}
+              disabled={!availableInTimeMode}
+              tooltip={
+                availableInTimeMode
+                  ? undefined
+                  : t((t) => t.workspace.layerNotAvailableInTimeMode, {
+                      timeMode:
+                        timeMode === 'realTime'
+                          ? t((t) => t.common.realTime)
+                          : t((t) => t.common.historical),
+                    })
+              }
               testId={`add-layer-${id}-button`}
             >
               {t((t) => t.workspace.addLayer)}
