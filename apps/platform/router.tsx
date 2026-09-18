@@ -47,7 +47,7 @@ export function getCreateRouterOptions() {
     scrollToTopSelectors: [`#${SCROLL_CONTAINER_DOM_ID}`],
     /* Don't add `defaultPendingComponent`, it was deleted on purpose to avoid initial load flashes. */
     defaultErrorComponent: ({ error }: any) => <RouterErrorBoundary error={error} />,
-    defaultOnCatch: (error: Error) => {
+    defaultOnCatch: (error: unknown) => {
       reportRouteError(error, 'router-render')
     },
     defaultNotFoundComponent: () => <Navigate to={ROUTE_PATHS.MAP} />,

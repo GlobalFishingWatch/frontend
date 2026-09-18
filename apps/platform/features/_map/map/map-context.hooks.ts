@@ -2,7 +2,7 @@ import type { RefObject } from 'react'
 import { useEffect } from 'react'
 import type { Deck, MapView } from '@deck.gl/core'
 import type { DeckGLRef } from '@deck.gl/react'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValueRawSync, useSetAtom } from 'jotai'
 import { selectAtom } from 'jotai/utils'
 
 import { mapInstanceAtom } from 'features/_map/map/map.atoms'
@@ -21,5 +21,5 @@ export function useSetMapInstance(mapRef: RefObject<DeckGLRef<MapView> | null> |
 }
 
 export function useDeckMap(): Deck {
-  return useAtomValue(selectMapInstance) as Deck
+  return useAtomValueRawSync(selectMapInstance) as Deck
 }

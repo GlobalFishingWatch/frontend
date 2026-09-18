@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import type { Deck, PickingInfo } from '@deck.gl/core'
 import type { DeckGLRef } from '@deck.gl/react'
 import { throttle } from 'es-toolkit'
-import { atom, useAtomValue, useSetAtom } from 'jotai'
+import { atom, useAtomValue, useAtomValueRawSync, useSetAtom } from 'jotai'
 
 import type { TrackLabelerPoint } from '@globalfishingwatch/deck-layers'
 
@@ -134,5 +134,5 @@ export function useSetMapInstance(mapRef: RefObject<DeckGLRef | null> | undefine
 }
 
 export function useDeckMap(): Deck {
-  return useAtomValue(mapInstanceAtom) as Deck
+  return useAtomValueRawSync(mapInstanceAtom) as Deck
 }
