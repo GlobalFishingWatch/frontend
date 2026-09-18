@@ -85,7 +85,12 @@ export function TimebarPlayback({ disabled, disabledTooltip, onTogglePlay }: Pla
       // Live range is the shared truth; notifyChange advances it synchronously, so the
       // next frame/click reads the value just emitted (no optimistic write-back needed).
       const { start, end } = rangeRef.current
-      if (!start || !end || isNaN(getUTCDate(start).getTime()) || isNaN(getUTCDate(end).getTime())) {
+      if (
+        !start ||
+        !end ||
+        isNaN(getUTCDate(start).getTime()) ||
+        isNaN(getUTCDate(end).getTime())
+      ) {
         return false
       }
 

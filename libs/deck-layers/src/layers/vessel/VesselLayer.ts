@@ -413,6 +413,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
 
   /** Last point of the track, course inferred from the point before it */
   _getLastPositionFeature(): VesselTrackPositionFeature | undefined {
+    const { startTime, endTime } = this.props
     const trackData = this.getVesselTrackData()
     for (let i = trackData.length - 1; i >= 0; i--) {
       const chunk = trackData[i]
@@ -420,7 +421,17 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       if (!timestamps?.length) {
         continue
       }
-      const index = timestamps.length - 1
+      const relativeEnd = toRelativeTimestamp(endTime, chunk.timestampBase ?? 0)
+      let index = timestamps.length - 1
+      while (index >= 0 && timestamps[index] > relativeEnd) {
+        index--
+      }
+      if (index < 0) {
+        continue
+      }
+      if (toAbsoluteTimestamp(timestamps[index], chunk.timestampBase ?? 0) < startTime) {
+        return undefined
+      }
       const coordIndex = index * 2
       const path = chunk.attributes.getPath.value
       const coords = [path[coordIndex], path[coordIndex + 1]]
@@ -463,7 +474,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             iconSize: 18,
             iconBorder: true,
             useCollisionFilter: false,
-            highlightStartTime,
+            showLabel: true,
           })
         ),
       ]
@@ -541,7 +552,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           data,
           getColor: color,
           name,
-          highlightStartTime,
+          showLabel: true,
         })
       ),
     ]
