@@ -6,7 +6,6 @@ import { TIMEOUTS } from '../helpers/timeouts'
 
 const EEZ_DATAVIEW_ID = 'context-layer-eez'
 const MAP_POPUP_TESTID = 'map-popup-wrapper'
-const OPEN_ANALYSIS_BUTTON_NAME = 'Create an analysis for this area'
 const SEE_FULL_ANALYSIS_LINK_NAME = 'See full analysis for this area'
 
 export class ReportPage {
