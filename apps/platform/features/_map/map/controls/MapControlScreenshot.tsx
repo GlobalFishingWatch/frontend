@@ -18,6 +18,7 @@ import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectIsAnyReportLocation, selectIsAnyVesselLocation } from 'router/routes.selectors'
 
+import { selectIsMapInteractionLoading } from '../map.slice'
 import type { MAP_CONTAINER_ID } from '../map-viewport.hooks'
 
 import { ScrenshotAreaIds, selectScreenshotAreaId, setScreenshotAreaId } from './screenshot.slice'
@@ -41,6 +42,7 @@ const MapControlScreenshot = ({
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const showScreenshot = !isVesselLocation && !isAnyReportLocation
   const screenshotAreaId = useSelector(selectScreenshotAreaId)
+  const interactionLoading = useSelector(selectIsMapInteractionLoading)
   const rootElement = useDOMElement()
 
   const SCREENSHOT_AREA_OPTIONS: SelectOption<ScrenshotDOMArea>[] = useMemo(
@@ -117,6 +119,10 @@ const MapControlScreenshot = ({
     [dispatch, generateImage]
   )
 
+  // capturing mid-fetch freezes a popup showing its spinner instead of its contents
+  const captureDisabled = mapLoading || interactionLoading || loading
+  const previewPending = previewImageLoading || !previewImage
+
   return (
     <Fragment>
       {showScreenshot && (
@@ -124,10 +130,8 @@ const MapControlScreenshot = ({
           icon="camera"
           type="map-tool"
           loading={loading}
-          disabled={mapLoading || loading}
-          tooltip={
-            mapLoading || loading ? t((t) => t.map.mapLoadingWait) : t((t) => t.map.captureMap)
-          }
+          disabled={captureDisabled}
+          tooltip={captureDisabled ? t((t) => t.map.mapLoadingWait) : t((t) => t.map.captureMap)}
           onClick={onScreenshotClick}
         />
       )}
@@ -139,7 +143,7 @@ const MapControlScreenshot = ({
         contentClassName={styles.previewContainer}
       >
         <div className={styles.previewPlaceholder}>
-          {previewImageLoading || !previewImage ? (
+          {previewPending ? (
             <Spinner />
           ) : (
             <img className={styles.previewImage} src={previewImage} alt="screenshot preview" />
@@ -151,7 +155,12 @@ const MapControlScreenshot = ({
             onSelect={(option) => onSelectScreenshotArea(option.id)}
             activeOption={screenshotAreaId}
           />
-          <Button id="image-preview-download" loading={loading} onClick={onImageDownloadClick}>
+          <Button
+            id="image-preview-download"
+            loading={loading}
+            disabled={previewPending}
+            onClick={onImageDownloadClick}
+          >
             {t((t) => t.map.screenshotDownload)}
           </Button>
         </div>

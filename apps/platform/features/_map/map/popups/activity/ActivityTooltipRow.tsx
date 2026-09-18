@@ -61,7 +61,7 @@ function ActivityTooltipRow({
               t((t) => t.common.fromVessels, { count: vesselsCount })}
           </span>
           {collapsible && (
-            <div className={cx(popupStyles.rowActions, popupStyles.rowActionsEnd)}>
+            <div className={cx(popupStyles.rowActions, popupStyles.rowActionsEnd, 'print-hidden')}>
               <IconButton
                 icon={expanded ? 'section-collapse' : 'section-expand'}
                 size="small"

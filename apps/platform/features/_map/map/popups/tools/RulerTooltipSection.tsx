@@ -38,7 +38,15 @@ function RulerTooltipSection({ features, showFeaturesDetails }: RulerTooltipSect
       {showFeaturesDetails ? (
         <div className={styles.rulerContainer}>
           <span>{lengthLabel}</span>
-          {id && <IconButton size="small" icon="delete" type="warning" onClick={onDeleteClick} />}
+          {id && (
+            <IconButton
+              size="small"
+              icon="delete"
+              type="warning"
+              className="print-hidden"
+              onClick={onDeleteClick}
+            />
+          )}
         </div>
       ) : (
         <span className={styles.rowText}>{t((t) => t.map.rulersHover)}</span>

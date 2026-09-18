@@ -160,7 +160,7 @@ vitest.config.*.timestamp*
 # Vitest traces
 __traces__
 apps/platform/**/__screenshots__
-.vitest-attachments
+.vitest
 
 # Playwright test artifacts
 test-results/

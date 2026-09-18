@@ -3,7 +3,8 @@ import type { StyleSpecification } from 'react-map-gl/maplibre'
 import { Map } from 'react-map-gl/maplibre'
 import { useSelector } from 'react-redux'
 import type { RequestParameters } from 'maplibre-gl'
-import maplibregl from 'maplibre-gl'
+// maplibre-gl v6 is ESM-only and has no default export
+import * as maplibregl from 'maplibre-gl'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 
@@ -76,7 +77,7 @@ const MapWrapper = (): React.ReactElement<any> => {
         latitude={viewport.latitude}
         longitude={viewport.longitude}
         zoom={viewport.zoom}
-        mapLib={maplibregl as any}
+        mapLib={maplibregl}
         mapStyle={style as unknown as StyleSpecification}
         onMouseDown={onMouseDown as any}
         onMouseMove={onMouseMove as any}

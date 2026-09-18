@@ -9,7 +9,7 @@
     "**/.nx/**": true,
     "**/.output/**": true,
     "**/.turbo/**": true,
-    "**/.vitest-attachments/**": true,
+    "**/.vitest/**": true,
     "**/coverage/**": true,
     "**/dist/**": true,
     "**/node_modules/**": true

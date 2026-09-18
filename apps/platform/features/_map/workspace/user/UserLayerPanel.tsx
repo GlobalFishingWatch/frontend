@@ -28,8 +28,10 @@ import {
   useDatasetModalOpenConnect,
 } from 'features/_map/datasets/datasets.hook'
 import {
+  getDatasetImportLogs,
   getDatasetLabel,
   getIsBQEditorDataset,
+  hasDatasetError,
   isPrivateDataset,
 } from 'features/_map/datasets/datasets.utils'
 import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
@@ -90,10 +92,8 @@ function UserPanel({
   const layerActive = dataview?.config?.visible ?? true
   const dataset = getUserDataviewDataset(dataview)
   const datasetGeometryType = getDatasetGeometryType(dataset)
-  const datasetError = dataset?.status === DatasetStatus.Error
-  const datasetImportLogs = Object.values(dataset?.configuration ?? {}).find(
-    (config): config is { importLogs: string } => Boolean((config as any)?.importLogs)
-  )?.importLogs
+  const datasetError = hasDatasetError(dataset)
+  const datasetImportLogs = getDatasetImportLogs(dataset)
   const { instance, loaded, hasFeaturesColoredByField, error } = useUserLayerMetadata(
     dataview,
     mergedDataviewId

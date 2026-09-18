@@ -1,11 +1,10 @@
-import type { Store as JotaiStore } from 'jotai/vanilla/store'
 import { expect, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
 import { mapInstanceAtom } from 'features/_map/map/map.atoms'
 import { MAP_VIEW_ID } from 'features/_map/map/map-viewport.hooks'
 
-import type { render } from '../appTestUtils'
+import type { JotaiStore, render } from '../appTestUtils'
 
 /** Geographic coords where Gabu Reefer track is clickable at default workspace zoom */
 export const GABU_REEFER_CLICK_COORDS: [number, number] = [-17.3, 26.4]

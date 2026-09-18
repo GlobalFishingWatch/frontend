@@ -97,20 +97,36 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       error: '',
       scales: [],
       viewportLoaded: false,
-      tilesCache: getTileDataCache({
-        zoom: Math.round(this.context.viewport.zoom),
-        startTime: this.props.startTime,
-        endTime: this.props.endTime,
-        availableIntervals: this.props.availableIntervals,
-        compareStart: this.props.compareStart,
-        compareEnd: this.props.compareEnd,
-        intervalCacheMode: this.props.intervalCacheMode,
-      }),
+      tilesCache: this._getTilesCache(),
       colorDomain: [],
       colorRanges: this._getColorRanges(),
       rampDirty: false,
       tilesCacheUpdateTimeout: null,
     }
+  }
+
+  _getTilesCache = (zoom = Math.round(this.context.viewport.zoom)) => {
+    const {
+      startTime,
+      endTime,
+      availableIntervals,
+      compareStart,
+      compareEnd,
+      intervalCacheMode,
+      bufferedStartTime,
+      bufferedEndTime,
+    } = this.props
+    return getTileDataCache({
+      zoom,
+      startTime,
+      endTime,
+      availableIntervals,
+      compareStart,
+      compareEnd,
+      intervalCacheMode,
+      bufferedStartTime,
+      bufferedEndTime,
+    })
   }
 
   finalizeState(context: LayerContext) {
@@ -174,7 +190,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       endTime,
       availableIntervals,
       skipColorDomainSampling,
-      intervalCacheMode,
     } = this.props
 
     const currentZoomData = this.getData()
@@ -186,14 +201,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       startTime,
       endTime,
       availableIntervals,
-      bufferedStart:
-        getTileDataCache({
-          zoom: Math.round(this.context.viewport.zoom),
-          startTime: this.props.startTime,
-          endTime: this.props.endTime,
-          availableIntervals: this.props.availableIntervals,
-          intervalCacheMode,
-        })?.bufferedStart || 0,
+      bufferedStart: this._getTilesCache()?.bufferedStart || 0,
     })
 
     const timeRangeKey = getTimeRangeKey(startFrame, endFrame)
@@ -542,15 +550,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
-    const {
-      startTime,
-      endTime,
-      compareStart,
-      compareEnd,
-      availableIntervals,
-      comparisonMode,
-      intervalCacheMode,
-    } = props
+    const { startTime, endTime, compareStart, compareEnd, availableIntervals, comparisonMode } =
+      props
 
     const { tilesCache, colorRanges } = this.state
     const zoom = Math.round(this.context.viewport.zoom)
@@ -590,32 +591,14 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
 
     if (needsImmediateCacheUpdate) {
       this._clearPendingTilesCacheUpdate()
-      deferredStateUpdates.tilesCache = getTileDataCache({
-        zoom,
-        startTime,
-        endTime,
-        availableIntervals,
-        compareStart,
-        compareEnd,
-        intervalCacheMode,
-      })
+      deferredStateUpdates.tilesCache = this._getTilesCache(zoom)
     } else if (isTimeRangeOutOfCache && this.state.tilesCacheUpdateTimeout === null) {
       // Coalesces a scrub across several chunk boundaries into one tile
       // refetch round per debounceTime window instead of one round per
       // boundary crossed. Reads this.props at fire time to use the latest range
       this.state.tilesCacheUpdateTimeout = setTimeout(() => {
         this.state.tilesCacheUpdateTimeout = null
-        this.setState({
-          tilesCache: getTileDataCache({
-            zoom: Math.round(this.context.viewport.zoom),
-            startTime,
-            endTime,
-            availableIntervals,
-            compareStart,
-            compareEnd,
-            intervalCacheMode,
-          }),
-        })
+        this.setState({ tilesCache: this._getTilesCache() })
       }, this.debounceTime)
     }
 

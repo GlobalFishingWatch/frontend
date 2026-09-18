@@ -124,6 +124,10 @@ export default defineConfig(({ mode }): ViteUserConfig => {
         ui: isUiMode,
         headless: !isUiMode,
         viewport: DEFAULT_VIEWPORT,
+        locators: {
+          // vitest 5 flipped this to `true`.
+          exact: false,
+        },
         trace: {
           screenshots: true,
           snapshots: true,

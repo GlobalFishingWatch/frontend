@@ -23,8 +23,7 @@ import { selectAllDatasets, selectDeprecatedDatasets } from 'features/_map/datas
 import { selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
 import {
   isDataviewDeprecated,
-  isHistoricalDataview,
-  isRealTimeDataview,
+  isDataviewInTimeMode,
   resolveVesselDataviewInstance,
   withLonglineSetsEvents,
 } from 'features/_map/dataviews/dataviews.utils'
@@ -208,9 +207,9 @@ export const selectAllDataviewInstancesResolved = createSelector(
         }
       })
 
-    return dataviewInstancesResolvedExtendedUniqDeprecated.filter((d) => {
-      return timeMode === 'realTime' ? isRealTimeDataview(d) : isHistoricalDataview(d)
-    })
+    return dataviewInstancesResolvedExtendedUniqDeprecated.filter((d) =>
+      isDataviewInTimeMode(d, timeMode)
+    )
   }
 )
 

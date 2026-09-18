@@ -114,7 +114,7 @@ describe('Vessel map popup', () => {
     await expect.element(getByTestId('link-vessel-profile').first()).toBeVisible()
     await getByTestId('link-vessel-profile').first().click()
 
-    await expect.element(getByTestId('vv-vessel-name')).toHaveTextContent('Gabu Reefer')
+    await expect.element(getByTestId('vv-vessel-name')).toMatchTextContent('Gabu Reefer')
   })
 
   it('should display the vessel track on the timebar', async () => {

@@ -173,6 +173,7 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
           data: this.state.positions,
           iconBorder: false,
           positionMode: visualizationMode === 'points' ? 'point' : 'icon',
+          showLabel: !!props.highlightStartTime,
         })
       )
     }

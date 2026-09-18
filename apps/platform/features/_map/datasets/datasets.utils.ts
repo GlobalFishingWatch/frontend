@@ -84,6 +84,13 @@ export function isRealTimeDataset(dataset: Dataset) {
   return dataset.subcategory === DatasetSubCategory.RealTime
 }
 
+export const hasDatasetError = (dataset?: Dataset) => dataset?.status === DatasetStatus.Error
+
+export const getDatasetImportLogs = (dataset?: Dataset) =>
+  Object.values(dataset?.configuration ?? {}).find((config): config is { importLogs: string } =>
+    Boolean((config as any)?.importLogs)
+  )?.importLogs
+
 export const GFW_ONLY_SUFFIX = ' - GFW Only'
 
 export type GetDatasetLabelParams = { id: string; name?: string }

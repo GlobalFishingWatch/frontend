@@ -28,28 +28,8 @@ const style = {
       tiles: [NSLABELS_ENDOPOINT],
       tileSize: 256,
     },
-    bathymetry: {
-      type: 'raster',
-      tiles: ['https://storage.googleapis.com/public-tiles/basemap/bathymetry/{z}/{x}/{y}.png'],
-      maxzoom: 8,
-      attribution:
-        '<a href="https://visibleearth.nasa.gov/images/73963/bathymetry" target="_blank" rel="noopener noreferrer">NASA</a>',
-    },
   },
   layers: [
-    {
-      id: 'bathymetry',
-      type: 'raster',
-      source: 'bathymetry',
-      metadata: {
-        group: 'basemap',
-        generatorId: 'basemap',
-        generatorType: 'BASEMAP',
-      },
-      layout: {
-        visibility: 'visible',
-      },
-    },
     {
       id: 'graticules_30',
       type: 'line',

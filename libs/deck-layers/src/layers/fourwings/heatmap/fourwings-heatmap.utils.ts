@@ -520,7 +520,7 @@ export const getTileDataCache = ({
   intervalCacheMode?: FourwingsIntervalCacheMode
 }): FourwingsHeatmapTilesCache => {
   const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
-  const { start, end, bufferedStart } = getFourwingsChunk({
+  const { start, end, bufferedStart, bufferedEnd } = getFourwingsChunk({
     start: startTime,
     end: endTime,
     availableIntervals,
@@ -529,10 +529,12 @@ export const getTileDataCache = ({
     bufferedStartTime,
     bufferedEndTime,
   })
+  const cacheStart = intervalCacheMode === 'NONE' ? bufferedStart : start
+  const cacheEnd = intervalCacheMode === 'NONE' ? bufferedEnd : end
   return {
     zoom,
-    start: temporalAggregation ? startTime : start,
-    end: temporalAggregation ? endTime : end,
+    start: temporalAggregation ? startTime : cacheStart,
+    end: temporalAggregation ? endTime : cacheEnd,
     bufferedStart,
     interval,
     compareStart,

@@ -179,7 +179,7 @@ function VesselTracksTooltipRow({
           !isVesselLocation &&
           isTurningTidesWorkspace && (
             <div>
-              <Button onClick={onReportClick} className={styles.rowMarginTop}>
+              <Button onClick={onReportClick} className={cx(styles.rowMarginTop, 'print-hidden')}>
                 <span>{t((t) => t.trackCorrection.logAnIssue)}</span>
               </Button>
             </div>

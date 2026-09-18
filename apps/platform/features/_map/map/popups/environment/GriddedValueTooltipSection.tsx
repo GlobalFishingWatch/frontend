@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 import { format } from 'd3-format'
 
 import { DataviewType } from '@globalfishingwatch/api-types'
@@ -72,7 +73,7 @@ function GriddedValueTooltipSection({
               </span>
               {dataview && isBathymetryDataview(dataview) && showFeaturesDetails && (
                 <IconButton
-                  className={styles.bathymetryDisclaimer}
+                  className={cx(styles.bathymetryDisclaimer, 'print-hidden')}
                   icon={'warning'}
                   size="small"
                   tooltip={t((t) => t.common.bathymetry_disclaimer)}

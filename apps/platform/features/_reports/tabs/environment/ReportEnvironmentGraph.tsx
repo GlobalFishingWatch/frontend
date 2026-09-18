@@ -14,8 +14,10 @@ import { getAvailableIntervalsInDataviews } from '@globalfishingwatch/deck-layer
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { DATASETS_USER_SOURCE_ID } from 'features/_map/datasets/datasets.slice'
+import { getDatasetImportLogs, hasDatasetError } from 'features/_map/datasets/datasets.utils'
 import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
 import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import InfoError from 'features/_map/workspace/shared/InfoError'
 import { showSchemaFilter } from 'features/_map/workspace/shared/LayerSchemaFilter.utils'
 import OutOfTimerangeDisclaimer from 'features/_map/workspace/shared/OutOfBoundsDisclaimer'
 import type {
@@ -70,6 +72,8 @@ function ReportEnvironmentGraph({
   const title = dataset?.name
   const hasError =
     layersTimeseriesErrors?.[index] !== undefined && layersTimeseriesErrors?.[index] !== ''
+  const datasetError = hasDatasetError(dataset)
+  const datasetImportLogs = getDatasetImportLogs(dataset)
   const unit = dataset?.unit
 
   const timeseries = Array.isArray(data) ? data[0]?.timeseries : data?.timeseries
@@ -107,7 +111,15 @@ function ReportEnvironmentGraph({
           <ReportSummaryTags dataview={dataview} showColor={false} />
         </div>
       )}
-      {(isDynamic || isHeatmapVector) &&
+      {datasetError ? (
+        <ReportActivityPlaceholder showHeader={false}>
+          <p className={styles.errorMessage}>
+            {t((t) => t.errors.uploadError)}
+            {datasetImportLogs && <InfoError error tooltip={datasetImportLogs} />}
+          </p>
+        </ReportActivityPlaceholder>
+      ) : (
+        (isDynamic || isHeatmapVector) &&
         (isLoading || hasError ? (
           <ReportActivityPlaceholder showHeader={false} loading={isLoading}>
             {hasError && <p className={styles.errorMessage}>{t((t) => t.errors.layerLoading)}</p>}
@@ -135,8 +147,9 @@ function ReportEnvironmentGraph({
               ) : undefined
             }
           />
-        ) : null)}
-      {isLoading ? (
+        ) : null)
+      )}
+      {datasetError ? null : isLoading ? (
         <ReportStatsPlaceholder />
       ) : min !== undefined && mean !== undefined && max !== undefined ? (
         <p className={cx(styles.disclaimer, { [styles.marginTop]: isDynamic })}>
