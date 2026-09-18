@@ -131,7 +131,7 @@ function ReportPolygonsGraph({
                   maximumFractionDigits: 1,
                 }).toString(),
                 coverage: formatI18nNumber(areaCoverageRatio * 100, {
-                  maximumFractionDigits: 3,
+                  maximumFractionDigits: 2,
                 }).toString(),
               })}
             </Fragment>
