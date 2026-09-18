@@ -58,6 +58,7 @@ import {
   isRealTimeDataset,
 } from 'features/_map/datasets/datasets.utils'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/_vessels/vessel/vessel.config'
+import type { TimeMode } from 'types'
 import { formatInfoField } from 'utils/info'
 
 export {
@@ -749,6 +750,10 @@ export function isHistoricalDataview(dataview: UrlDataviewInstance) {
     return !isRealTimeActivityDataview(dataview)
   }
   return dataview.datasets ? dataview.datasets?.every((d) => !isRealTimeDataset(d)) : true
+}
+
+export function isDataviewInTimeMode(dataview: UrlDataviewInstance, timeMode: TimeMode) {
+  return timeMode === 'realTime' ? isRealTimeDataview(dataview) : isHistoricalDataview(dataview)
 }
 
 export function hasWorkspaceDataviewsDeprecated(

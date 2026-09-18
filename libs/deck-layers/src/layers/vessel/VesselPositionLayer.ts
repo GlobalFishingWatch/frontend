@@ -34,7 +34,7 @@ type _VesselTrackPositionLayerProps = {
   data: VesselTrackPositionFeature[]
   getColor: Accessor<VesselTrackPositionFeature, Color>
   name: string
-  highlightStartTime: number
+  showLabel?: boolean
 }
 export type VesselTrackPositionLayerProps = DeckLayerProps<_VesselTrackPositionLayerProps>
 
@@ -49,17 +49,17 @@ export class VesselTrackPositionLayer extends CompositeLayer<
       data,
       getColor,
       name,
-      highlightStartTime,
+      showLabel,
       iconBorder = true,
       iconSize = 15,
       positionMode = 'icon',
-      pointRadius = 2,
+      pointRadius = 1,
     } = this.props
 
     if (!visible) return []
 
     const positions = data ?? []
-    const labelData = name && highlightStartTime ? positions : []
+    const labelData = name && showLabel ? positions : []
 
     if (positionMode === 'point') {
       return [
@@ -80,6 +80,7 @@ export class VesselTrackPositionLayer extends CompositeLayer<
           id: `${this.props.id}-vessel-position-label`,
           data: labelData,
           getText: () => name,
+          avoidOverlap: true,
         }),
       ]
     }
@@ -137,6 +138,7 @@ export class VesselTrackPositionLayer extends CompositeLayer<
         id: `${this.props.id}-vessel-position-label`,
         data: labelData,
         getText: () => name,
+        avoidOverlap: true,
       }),
     ]
   }

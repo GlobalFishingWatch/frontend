@@ -1655,6 +1655,7 @@
     "emptyStateUser": "Upload custom datasets clicking on the plus icon.",
     "emptyStateVesselGroups": "Add vessel groups to see group presence and operation footprint.",
     "emptyStateVessels": "Search for vessels or add them from the map.",
+    "layerNotAvailableInTimeMode": "This layer is not available in {{timeMode}} mode",
     "list": "Workspaces list",
     "marineManagerLink": "See map",
     "migrationDisclaimer": "Some layers in this workspace are using outdated data",

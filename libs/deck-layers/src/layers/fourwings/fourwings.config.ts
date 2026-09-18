@@ -51,7 +51,7 @@ export const MAX_POSITIONS_PER_TILE_VISUALIZED = 4000
 export const POSITIONS_VISUALIZATION_MAX_ZOOM = 12
 // Latest position of each vessel keeps the full size icon, the rest of the track is drawn smaller
 export const POSITIONS_ICON_SIZE = 15
-export const POSITIONS_TRAIL_ICON_SIZE = 9
+export const POSITIONS_TRAIL_ICON_SIZE = 6
 export const POSITIONS_CIRCLE_SIZE = 10
 export const POSITIONS_TRAIL_CIRCLE_SIZE = 5
 // Added on top of whatever size the position already has, so a highlighted trail position
