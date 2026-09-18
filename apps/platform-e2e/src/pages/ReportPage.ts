@@ -17,9 +17,7 @@ export class ReportPage {
   constructor(page: Page) {
     this.page = page
     const mapPopup = page.getByTestId(MAP_POPUP_TESTID)
-    this.openAnalysisButton = mapPopup
-      .getByRole('button', { name: OPEN_ANALYSIS_BUTTON_NAME })
-      .or(mapPopup.getByRole('link', { name: SEE_FULL_ANALYSIS_LINK_NAME }))
+    this.openAnalysisButton = mapPopup.getByRole('link', { name: SEE_FULL_ANALYSIS_LINK_NAME })
     this.reportTitle = page.getByRole('heading', { level: 1 })
   }
 
