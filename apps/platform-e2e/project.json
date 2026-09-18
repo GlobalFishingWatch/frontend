@@ -7,6 +7,7 @@
   "implicitDependencies": ["platform"],
   "targets": {
     "test": {
+      "cache": false,
       "options": {
         "grep": "^(?!.*Screenshot comparison).*"
       },
