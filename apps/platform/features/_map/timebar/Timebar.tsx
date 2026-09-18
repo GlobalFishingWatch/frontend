@@ -347,7 +347,7 @@ const TimebarWrapper = () => {
       >
         {!screenshotMode && (
           <Fragment>
-            {!isReportLocation && timeMode === 'historical' && (
+            {!isReportLocation && (
               <Timebar.Playback
                 disabled={vesselGroupsFiltering || hasVectorDataviews}
                 disabledTooltip={

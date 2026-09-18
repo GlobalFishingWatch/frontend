@@ -45,8 +45,8 @@ export const useClusterEventsGraph = () => {
     ...(isRealTimeMode &&
       realTimeTimerange && {
         intervalCacheMode: 'NONE',
-        bufferedStart: getUTCDate(realTimeTimerange.start).getTime(),
-        bufferedEnd: getUTCDate(realTimeTimerange.end).getTime(),
+        bufferedStartTime: getUTCDate(realTimeTimerange.start).getTime(),
+        bufferedEndTime: getUTCDate(realTimeTimerange.end).getTime(),
       }),
   })
 
