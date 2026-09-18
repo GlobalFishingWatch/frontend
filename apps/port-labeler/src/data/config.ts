@@ -1,4 +1,4 @@
-import { API_GATEWAY } from '@globalfishingwatch/api-client'
+import { API_GATEWAY, API_VERSION } from '@globalfishingwatch/api-client'
 
 export const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 
@@ -24,4 +24,4 @@ export const DEFAULT_VIEWPORT = {
   longitude: 26,
 }
 
-export const NSLABELS_ENDOPOINT = `${API_GATEWAY}/v1/tileset/nslabels/tile?x={x}&y={y}&z={z}`
+export const NSLABELS_ENDOPOINT = `${API_GATEWAY}/${API_VERSION}/tileset/nslabels/tile?x={x}&y={y}&z={z}`
