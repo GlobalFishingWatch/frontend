@@ -14,7 +14,7 @@ describe('Vessel viewer', async () => {
     const { getByTestId, getByText, router } = await render({ store })
     await router.navigate(navigateToVesselViewer())
 
-    await expect.element(getByTestId('vv-vessel-name')).toHaveTextContent('Gabu Reefer')
+    await expect.element(getByTestId('vv-vessel-name')).toMatchTextContent('Gabu Reefer')
     await expect.element(getByText('Registry', { exact: true })).toBeVisible()
     await expect.element(getByText('AIS', { exact: true })).toBeVisible()
     await expect.element(getByText('Name').first()).toBeVisible()

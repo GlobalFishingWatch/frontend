@@ -283,6 +283,6 @@ describe('Datasets', () => {
 
     const valueElement = getByTestId('map-popup-wrapper').getByTestId('activity-tooltip-row-value')
     await expect.element(valueElement).toBeVisible()
-    await expect.element(valueElement).toHaveTextContent(/[\d,]+\s+hours/)
+    await expect.element(valueElement).toMatchTextContent(/[\d,]+\s+hours/)
   })
 })
