@@ -113,6 +113,11 @@
   z-index: 1;
 }
 
+/* the legend renders nothing when its layer has no data in the viewport */
+.properties:empty {
+  padding: 0;
+}
+
 .propertiesNoPaddingBlock {
   padding: 0 var(--space-S);
 }

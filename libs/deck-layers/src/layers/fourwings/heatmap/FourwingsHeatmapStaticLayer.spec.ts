@@ -114,6 +114,28 @@ describe('FourwingsHeatmapStaticLayer', () => {
     })
   })
 
+  describe('_updateColorDomain', () => {
+    it('clears rampDirty when the viewport has no cells', () => {
+      const layer = makeLayer()
+      layer.state.rampDirty = true
+      layer.state.colorDomain = []
+      vi.spyOn(layer, 'getData').mockReturnValue([])
+      const setState = vi.spyOn(layer, 'setState').mockImplementation(() => {})
+      layer._updateColorDomain()
+      expect(setState).toHaveBeenCalledWith({ rampDirty: false })
+    })
+
+    // setState marks the layer for an update, so an unconditional call here loops on every render
+    it('does not touch state when rampDirty is already false', () => {
+      const layer = makeLayer()
+      layer.state.colorDomain = []
+      vi.spyOn(layer, 'getData').mockReturnValue([])
+      const setState = vi.spyOn(layer, 'setState').mockImplementation(() => {})
+      layer._updateColorDomain()
+      expect(setState).not.toHaveBeenCalled()
+    })
+  })
+
   it('cacheHash tracks ramp dirtiness', () => {
     const layer = makeLayer()
     expect(layer.cacheHash).toBe('teal|false|undefined-undefined')

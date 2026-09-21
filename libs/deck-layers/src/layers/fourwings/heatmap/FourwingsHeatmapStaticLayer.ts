@@ -150,6 +150,8 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
         scales: [scaleLinear(colorDomain, colorRanges[0])],
         rampDirty: false,
       })
+    } else if (this.state.rampDirty) {
+      this.setState({ rampDirty: false })
     }
   }
 

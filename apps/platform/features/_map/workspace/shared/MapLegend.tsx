@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { DeckLegendAtom } from '@globalfishingwatch/deck-layer-composer'
-import { useGetDeckLayerLegend } from '@globalfishingwatch/deck-layer-composer'
+import { useDeckLayerLoaded, useGetDeckLayerLegend } from '@globalfishingwatch/deck-layer-composer'
 import type { ColorRampBrushRange, UILegend } from '@globalfishingwatch/ui-components'
 import { LegendType, MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
 
@@ -73,6 +73,7 @@ const MapLegendWrapper = ({
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [lastScale, setLastScale] = useState<LegendScale | undefined>(undefined)
   const deckLegend = getLegendLabelTranslated(useGetDeckLayerLegend(dataviewId))
+  const layerLoaded = useDeckLayerLoaded(dataviewId)
   const isBivariate = deckLegend?.type === LegendType.Bivariate
 
   const onBrushChange = useCallback(
@@ -129,7 +130,9 @@ const MapLegendWrapper = ({
 
   const scale = currentScale || (lastScale?.type === deckLegend.type ? lastScale : undefined)
   if (!scale) {
-    return showPlaceholder ? <MapLegendPlaceholder /> : null
+    // a loaded layer with no ramp has no cells in the viewport, so the placeholder would never
+    // resolve into a legend
+    return showPlaceholder && !layerLoaded ? <MapLegendPlaceholder /> : null
   }
 
   const { domain, max, ranges, sublayerIndex } = scale
