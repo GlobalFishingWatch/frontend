@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -7,13 +7,17 @@ import { VESSEL_GRAPH_COLORS } from '@globalfishingwatch/deck-layers'
 import type { ColorRampBrushRange, UILegendColorRamp } from '@globalfishingwatch/ui-components'
 import { LegendType, MapLegend } from '@globalfishingwatch/ui-components'
 
-import { isDataviewFilterSupported } from 'features/_map/dataviews/dataviews.filters'
+import {
+  getFiltersInDataview,
+  isDataviewFilterSupported,
+} from 'features/_map/dataviews/dataviews.filters'
 import { selectVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import {
   useTimebarTracksGraphExtent,
   useTimebarTracksGraphSteps,
 } from 'features/_map/map/timebar-graph.hooks'
 import { selectTimebarGraph } from 'features/_map/workspace/selectors/app.timebar.selectors'
+import { getFilterValueById } from 'features/_map/workspace/shared/LayerSchemaFilter.utils'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 
@@ -33,11 +37,27 @@ function VesselTracksLegend(): React.ReactElement<any> | null {
   const isDepth = vesselsTimebarGraph === 'elevation'
   const filterKey: SupportedDatasetFilter = isDepth ? 'elevation' : 'speed'
 
-  // Depth is stored as a negative elevation and shown as a positive depth
-  const toStored = useCallback((value: number) => (isDepth ? -value : value), [isDepth])
+  const [lastGraph, setLastGraph] = useState<{
+    graph: typeof vesselsTimebarGraph
+    steps: typeof steps
+    extent: NonNullable<typeof extent>
+  }>()
+  useEffect(() => {
+    if (steps.length && extent) {
+      setLastGraph({ graph: vesselsTimebarGraph, steps, extent })
+    }
+  }, [steps, extent, vesselsTimebarGraph])
+  const graph =
+    steps.length && extent
+      ? { steps, extent }
+      : lastGraph?.graph === vesselsTimebarGraph
+        ? lastGraph
+        : undefined
 
-  const displayExtent = extent
-    ? ([Math.abs(extent[0]), Math.abs(extent[1])].sort(ascending) as [number, number])
+  const toStored = (value: number) => (isDepth ? -value : value)
+
+  const displayExtent = graph
+    ? ([Math.abs(graph.extent[0]), Math.abs(graph.extent[1])].sort(ascending) as [number, number])
     : undefined
 
   // One legend for every vessel, so a brush writes the same filter to all of them
@@ -45,40 +65,46 @@ function VesselTracksLegend(): React.ReactElement<any> | null {
     isDataviewFilterSupported(dataview, filterKey)
   )
 
-  const onBrushChange = useCallback(
-    ([min, max]: ColorRampBrushRange) => {
-      if (!displayExtent) {
-        return
-      }
-      const filterValues =
-        min === undefined && max === undefined
-          ? ''
-          : [min ?? displayExtent[0], max ?? displayExtent[1]]
-              .map(toStored)
-              .sort(ascending)
-              .map(String)
-      upsertDataviewInstance(
-        filterableDataviews.map((dataview) => ({
-          id: dataview.id,
-          config: {
-            filters: { ...(dataview.config?.filters || {}), [filterKey]: filterValues },
-          },
-        }))
-      )
-      trackEvent({
-        category: TrackCategory.Tracks,
-        action: `Filter vessel tracks by ${filterKey}`,
-        label: `${min} - ${max}`,
-      })
-    },
-    [displayExtent, filterKey, filterableDataviews, toStored, upsertDataviewInstance]
-  )
+  const limitOptions = filterableDataviews.length
+    ? getFiltersInDataview(filterableDataviews[0], { fieldsToInclude: [filterKey] })
+        .filtersAllowed[0]?.options?.map(({ id }) => getFilterValueById(id, { id: filterKey }))
+        .sort(ascending)
+    : undefined
+  const displayLimits = limitOptions?.length
+    ? ([limitOptions[0], limitOptions[limitOptions.length - 1]] as [number, number])
+    : undefined
+
+  const onBrushChange = ([min, max]: ColorRampBrushRange) => {
+    if (!displayLimits) {
+      return
+    }
+    const filterValues =
+      min === undefined && max === undefined
+        ? ''
+        : [min ?? displayLimits[0], max ?? displayLimits[1]]
+            .map(toStored)
+            .sort(ascending)
+            .map(String)
+    upsertDataviewInstance(
+      filterableDataviews.map((dataview) => ({
+        id: dataview.id,
+        config: {
+          filters: { ...(dataview.config?.filters || {}), [filterKey]: filterValues },
+        },
+      }))
+    )
+    trackEvent({
+      category: TrackCategory.Tracks,
+      action: `Filter vessel tracks by ${filterKey}`,
+      label: `${min} - ${max}`,
+    })
+  }
 
   if (vesselsTimebarGraph === 'none') {
     return null
   }
 
-  if (!steps || !steps.length) {
+  if (!graph) {
     return (
       <div className={styles.legend}>
         <MapLegendPlaceholder />
@@ -100,7 +126,7 @@ function VesselTracksLegend(): React.ReactElement<any> | null {
     type: LegendType.ColorRampDiscrete,
     label: isDepth ? t((t) => t.eventInfo.depth) : t((t) => t.eventInfo.speed),
     unit: isDepth ? t((t) => t.common.meters) : t((t) => t.common.knots),
-    values: steps.map((step) => Math.abs(step.value)),
+    values: graph.steps.map((step) => Math.abs(step.value)),
     colors: isDepth ? VESSEL_GRAPH_COLORS.slice().reverse() : VESSEL_GRAPH_COLORS,
   }
 

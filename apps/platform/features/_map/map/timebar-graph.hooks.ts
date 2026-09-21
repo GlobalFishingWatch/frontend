@@ -14,7 +14,12 @@ export const useTimebarTracksGraphExtent = () => {
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
   const vessels = useVesselTracksLayers()
   const areAllVesselsLoaded = vessels.every((vessel) => vessel.loaded)
-  const vesselsHash = vessels.map((v) => v.id).join()
+  const vesselsHash = vessels
+    .map(
+      (v) =>
+        `${v.id}:${v.loaded}:${(v.instance as VesselLayer)?.getVesselTracksLayersLoaded?.() || ''}`
+    )
+    .join()
 
   return useMemo(() => {
     if (vesselsTimebarGraph === 'none' || !vessels?.length || !areAllVesselsLoaded) {
