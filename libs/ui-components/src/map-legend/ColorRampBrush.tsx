@@ -185,6 +185,8 @@ export function ColorRampBrush({
     const other = percents[bound === 0 ? 1 : 0]
     return percents[bound] === other ? bound === 0 : percents[bound] < other
   }
+
+  const isIdleHandle = (bound: Bound) => !drag && range[bound] === undefined
   const atStart = drag !== undefined && percents[drag.bound] <= 0
   const atEnd = drag !== undefined && percents[drag.bound] >= 100
 
@@ -209,7 +211,8 @@ export function ColorRampBrush({
               <span
                 className={cx(
                   styles.handle,
-                  styles[`handle${isLowerHandle(bound) ? 'Left' : 'Right'}`]
+                  styles[`handle${isLowerHandle(bound) ? 'Left' : 'Right'}`],
+                  { [styles.handleDimmed]: isIdleHandle(bound) }
                 )}
                 role="slider"
                 tabIndex={0}

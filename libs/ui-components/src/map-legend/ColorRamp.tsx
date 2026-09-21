@@ -215,6 +215,7 @@ export function ColorRampLegend({
             )}
             {brush && rampScale && !layer.divergent && (
               <ColorRampBrush
+                key={layer.id}
                 unit={unit}
                 {...brush}
                 valueToPercent={brushValueToPercent}

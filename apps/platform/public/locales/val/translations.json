@@ -1655,6 +1655,7 @@
     "emptyStateUser": "crwdns134593:0crwdne134593:0",
     "emptyStateVesselGroups": "crwdns134595:0crwdne134595:0",
     "emptyStateVessels": "crwdns134597:0crwdne134597:0",
+    "layerNotAvailableInTimeMode": "crwdns138581:0{{timeMode}}crwdne138581:0",
     "list": "crwdns134599:0crwdne134599:0",
     "marineManagerLink": "crwdns134601:0crwdne134601:0",
     "migrationDisclaimer": "crwdns134603:0crwdne134603:0",

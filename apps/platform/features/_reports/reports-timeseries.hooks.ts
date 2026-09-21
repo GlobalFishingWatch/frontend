@@ -114,6 +114,7 @@ export type PolygonsReportTopArea = {
   feature: ContextPickingObject | UserLayerPickingObject
   label: string
   km2: number
+  contained: boolean
   ratio: number
 }
 
@@ -341,7 +342,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
 
   // Reset state when critical parameters change
   useLayoutEffect(() => {
-    if (!isAreaInViewport) {
+    if (!isAreaInViewport || processingHash === lastProcessedHash.current) {
       return
     }
     const shouldShowLoading =

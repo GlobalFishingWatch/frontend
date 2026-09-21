@@ -164,6 +164,11 @@
     "moreInfoLink": "",
     "name": "Présence de navire"
   },
+  "presence-realtime": {
+    "description": "The same vessel presence analysis as the presence layer, built from the automatic identification system (AIS) positions received in the last few days, so it can be explored in real time mode.",
+    "moreInfoLink": "",
+    "name": "Vessel presence (real time)"
+  },
   "protectedseas": {
     "description": "Les aires marines protégées (AMP) sont des zones de l'océan réservées à la conservation à long terme. Elles peuvent bénéficier de niveaux de protection différents et la gamme des activités autorisées ou interdites à l'intérieur de leurs limites varie considérablement. Source: https://navigatormap.org/methodology/",
     "moreInfoLink": "",
