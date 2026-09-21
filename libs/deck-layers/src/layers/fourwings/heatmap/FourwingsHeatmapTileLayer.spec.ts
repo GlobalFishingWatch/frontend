@@ -226,7 +226,7 @@ describe('FourwingsHeatmapTileLayer', () => {
       const layer = makeLayer()
       layer.state.colorDomain = [1, 2, 3]
       vi.spyOn(layer, 'getData').mockReturnValue([])
-      expect(layer._calculateColorDomain()).toEqual([1, 2, 3])
+      expect(layer._calculateColorDomain()).toEqual({ domain: [1, 2, 3], max: undefined })
     })
 
     it('returns ascending steps in compare mode', () => {
@@ -234,10 +234,21 @@ describe('FourwingsHeatmapTileLayer', () => {
       vi.spyOn(layer, 'getData').mockReturnValue(
         Array.from({ length: 30 }, (_, i) => feature([[i + 1], [i * 2 + 1]]))
       )
-      const domain = layer._calculateColorDomain() as number[]
+      const domain = layer._calculateColorDomain().domain as number[]
       expect(domain.length).toBeGreaterThan(0)
       const sorted = [...domain].sort((a, b) => a - b)
       expect(domain).toEqual(sorted)
+    })
+
+    it('returns the data max, which the outlier-clipped steps never reach', () => {
+      const layer = makeLayer()
+      vi.spyOn(layer, 'getData').mockReturnValue(
+        Array.from({ length: 30 }, (_, i) => feature([[i + 1], [i * 2 + 1]]))
+      )
+      const { domain, max } = layer._calculateColorDomain()
+      // highest fixture value is the last sublayer cell, 29 * 2 + 1
+      expect(max).toBe(59)
+      expect(max).toBeGreaterThan((domain as number[])[domain.length - 1] as number)
     })
 
     it('returns negative and positive steps around 0 in time compare mode', () => {
@@ -250,7 +261,7 @@ describe('FourwingsHeatmapTileLayer', () => {
         ...Array.from({ length: 10 }, (_, i) => feature([[10 + i], [2]])), // negative change
         ...Array.from({ length: 10 }, (_, i) => feature([[2], [10 + i]])), // positive change
       ])
-      const domain = layer._calculateColorDomain() as number[]
+      const domain = layer._calculateColorDomain().domain as number[]
       expect(domain).toContain(0)
       expect(domain.some((d) => d < 0)).toBe(true)
       expect(domain.some((d) => d > 0)).toBe(true)
@@ -261,7 +272,7 @@ describe('FourwingsHeatmapTileLayer', () => {
       vi.spyOn(layer, 'getData').mockReturnValue(
         Array.from({ length: 30 }, (_, i) => feature([[i + 1], [i * 3 + 1]]))
       )
-      const domain = layer._calculateColorDomain() as number[][]
+      const domain = layer._calculateColorDomain().domain as number[][]
       expect(domain).toHaveLength(2)
       expect(domain[0].length).toBeGreaterThan(0)
       expect(domain[1].length).toBeGreaterThan(0)

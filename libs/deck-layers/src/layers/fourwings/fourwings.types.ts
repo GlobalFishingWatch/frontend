@@ -28,6 +28,12 @@ export type FourwingsTileLayerColorRange = FourwingsColorObject[][] | FourwingsC
 export type FourwingsTileLayerColorScale = {
   colorDomain: FourwingsTileLayerColorDomain
   colorRange: FourwingsTileLayerColorRange
+  colorDomainMax?: number
+}
+
+export type FourwingsColorDomainWithMax = {
+  domain: FourwingsTileLayerColorDomain
+  max?: number
 }
 
 export type FourwingsDeckSublayer = {

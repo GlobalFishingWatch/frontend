@@ -238,7 +238,7 @@ export function ColorRampLegend({
                       number: roundValue,
                       roundValues,
                       isFirst: (omitFirstBucket && i === 0) || (!omitFirstBucket && i === 1),
-                      isLast: i === domainValues.length - 1,
+                      isLast: !layer.lastValueIsMax && i === domainValues.length - 1,
                       divergent: layer.divergent,
                     })
 

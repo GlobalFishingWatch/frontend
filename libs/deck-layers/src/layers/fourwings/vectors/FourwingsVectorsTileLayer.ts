@@ -481,9 +481,11 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
       return {
         colorDomain: [],
         colorRange: [],
+        colorDomainMax: undefined,
       }
     }
     return {
+      colorDomainMax: undefined,
       colorDomain: [
         this.state.maxVelocity * 0.25,
         this.state.maxVelocity * 0.5,

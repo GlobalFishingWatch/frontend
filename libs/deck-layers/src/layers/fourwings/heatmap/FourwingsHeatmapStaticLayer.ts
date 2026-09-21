@@ -126,22 +126,26 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   _calculateColorDomain = () => {
     // The visible-value bounds are deliberately not passed: like the dynamic layers, brushing the
     // legend filters cells out of the map (FourwingsHeatmapLayer) but leaves the ramp alone
-    const colorDomain = getFourwingsColorDomain({
+    const { domain, max } = getFourwingsColorDomain({
       features: this.getData(),
       aggregationOperation: this.props.aggregationOperation,
       startFrame: STATIC_START_FRAME,
       endFrame: STATIC_END_FRAME,
       timeRangeKey: getTimeRangeKey(STATIC_START_FRAME, STATIC_END_FRAME),
     })
-    return colorDomain.length ? colorDomain : this.getColorDomain()
+    return domain.length
+      ? { domain, max }
+      : { domain: this.getColorDomain(), max: this.state?.colorDomainMax }
   }
 
   _updateColorDomain = () => {
-    const colorDomain = this._calculateColorDomain() as number[]
+    const { domain, max } = this._calculateColorDomain()
+    const colorDomain = domain as number[]
     const colorRanges = this._getColorRanges()
     if (colorDomain?.length && colorRanges[0]?.length) {
       this.setState({
         colorDomain,
+        colorDomainMax: max,
         colorRanges,
         scales: [scaleLinear(colorDomain, colorRanges[0])],
         rampDirty: false,
@@ -314,6 +318,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     return {
       colorRange: this.getColorRange(),
       colorDomain: this.getColorDomain(),
+      colorDomainMax: this.state?.colorDomainMax,
     }
   }
 }

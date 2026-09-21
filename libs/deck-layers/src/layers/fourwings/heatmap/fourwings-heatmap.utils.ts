@@ -428,9 +428,9 @@ export function getFourwingsColorDomain({
   skipColorDomainSampling?: boolean
   minVisibleValue?: number
   maxVisibleValue?: number
-}): number[] {
+}): { domain: number[]; max?: number } {
   if (!features?.length) {
-    return []
+    return { domain: [] }
   }
   const dataSample =
     features.length > MAX_RAMP_VALUES || skipColorDomainSampling
@@ -460,9 +460,13 @@ export function getFourwingsColorDomain({
     )
   }
   if (!allValues.length) {
-    return []
+    return { domain: [] }
   }
-  return getSteps(removeOutliers({ allValues, aggregationOperation }))
+
+  return {
+    domain: getSteps(removeOutliers({ allValues, aggregationOperation })),
+    max: allValues.reduce((acc, value) => (value > acc ? value : acc), allValues[0] as number),
+  }
 }
 
 export const getResolutionByVisualizationMode = (

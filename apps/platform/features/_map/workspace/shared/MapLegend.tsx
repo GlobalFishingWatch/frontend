@@ -21,6 +21,7 @@ import styles from './MapLegend.module.css'
 
 type LegendScale = {
   domain: number[]
+  max?: number
   ranges: DeckLegendAtom['ranges']
   sublayerIndex: number
   type: DeckLegendAtom['type']
@@ -98,12 +99,20 @@ const MapLegendWrapper = ({
       hasScale
         ? {
             domain: deckLegend.domain as number[],
+            max: deckLegend.max,
             ranges: deckLegend.ranges,
             sublayerIndex: legendSublayerIndex,
             type: deckLegend.type,
           }
         : undefined,
-    [hasScale, deckLegend.domain, deckLegend.ranges, deckLegend.type, legendSublayerIndex]
+    [
+      hasScale,
+      deckLegend.domain,
+      deckLegend.max,
+      deckLegend.ranges,
+      deckLegend.type,
+      legendSublayerIndex,
+    ]
   )
   useEffect(() => {
     if (currentScale) {
@@ -123,13 +132,16 @@ const MapLegendWrapper = ({
     return showPlaceholder ? <MapLegendPlaceholder /> : null
   }
 
-  const { domain, ranges, sublayerIndex } = scale
+  const { domain, max, ranges, sublayerIndex } = scale
   const colors =
     isBivariate || isSymbols ? (ranges as string[]) : (ranges[sublayerIndex] as string[])
+  const showMax = max !== undefined && !isBivariate && !isSymbols && max > (domain.at(-1) as number)
+  const values = showMax ? [...domain.slice(0, -1), max] : domain
   const uiLegend: UILegend = {
     id: deckLegend.id,
     type: deckLegend?.type,
-    values: domain,
+    values,
+    lastValueIsMax: showMax,
     colors,
     gradient: !isBivariate && !isSymbols,
     currentValue: isBivariate
