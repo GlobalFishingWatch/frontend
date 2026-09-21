@@ -342,7 +342,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
 
   // Reset state when critical parameters change
   useLayoutEffect(() => {
-    if (!isAreaInViewport) {
+    if (!isAreaInViewport || processingHash === lastProcessedHash.current) {
       return
     }
     const shouldShowLoading =
