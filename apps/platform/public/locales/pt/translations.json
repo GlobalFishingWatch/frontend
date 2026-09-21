@@ -1655,6 +1655,7 @@
     "emptyStateUser": "Carregue conjuntos de dados personalizados clicando no ícone do sinal de mais.",
     "emptyStateVesselGroups": "Adicione grupos de embarcações para ver a presença do grupo e a área operacional.",
     "emptyStateVessels": "As embarcações selecionadas na busca ou clicando nas células grid de atividade aparecerão aqui.",
+    "layerNotAvailableInTimeMode": "This layer is not available in {{timeMode}} mode",
     "list": "Workspaces list",
     "marineManagerLink": "Ver o portal",
     "migrationDisclaimer": "Some layers in this workspace are using outdated data",
