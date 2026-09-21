@@ -114,6 +114,7 @@ export type PolygonsReportTopArea = {
   feature: ContextPickingObject | UserLayerPickingObject
   label: string
   km2: number
+  contained: boolean
   ratio: number
 }
 
