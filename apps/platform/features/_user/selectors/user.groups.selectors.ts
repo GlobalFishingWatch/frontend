@@ -1,9 +1,14 @@
 import { createSelector } from '@reduxjs/toolkit'
 
 import type { UserGroupId } from '@globalfishingwatch/api-types'
+import {
+  getPrivateGroupDatasetCode,
+  isPrivateDatasetId,
+  isPrivateGroupDataset,
+  PRIVATE_SUPPORTED_GROUPS,
+} from '@globalfishingwatch/datasets-client'
 
 import { selectIsGFWUser, selectUserData } from 'features/_user/selectors/user.selectors'
-import { PRIVATE_SUPPORTED_GROUPS } from 'features/_user/user.config'
 
 const selectUserGroups = createSelector([selectUserData], (userData) => {
   return userData?.groups
@@ -17,5 +22,59 @@ export const selectPrivateUserGroups = createSelector(
       : userGroups.filter((g) => PRIVATE_SUPPORTED_GROUPS.includes(g)).map((g) => g.toLowerCase())
 
     return groupsWithAccess as UserGroupId[]
+  }
+)
+
+const selectPrivateDatasetPermissions = createSelector([selectUserData], (userData) => {
+  return (userData?.permissions ?? []).filter(
+    (permission) => permission.type === 'dataset' && isPrivateDatasetId(permission.value)
+  )
+})
+
+const selectPrivateDatasetPermissionValues = createSelector(
+  [selectPrivateDatasetPermissions],
+  (permissions) => [...new Set(permissions.map((permission) => permission.value))]
+)
+
+export const selectPrivateDatasetIds = createSelector(
+  [selectPrivateDatasetPermissionValues],
+  (values) => values.filter((value) => !value.includes('*'))
+)
+
+export const selectPrivateSearchDatasetIds = createSelector(
+  [selectPrivateDatasetPermissions],
+  (permissions) => [
+    ...new Set(
+      permissions.flatMap((permission) =>
+        permission.action.endsWith('-search') && !permission.value.includes('*')
+          ? [permission.value]
+          : []
+      )
+    ),
+  ]
+)
+
+const hasPrivateDatasetPermission = (group: string, permissionValues: string[]) => {
+  const code = getPrivateGroupDatasetCode(group)
+  return code !== undefined && permissionValues.some((value) => isPrivateGroupDataset(value, code))
+}
+
+export const selectPrivateUserGroupsWithDatasetPermission = createSelector(
+  [selectPrivateUserGroups, selectPrivateDatasetPermissionValues],
+  (privateUserGroups, permissionValues) => {
+    return privateUserGroups.filter((group) => hasPrivateDatasetPermission(group, permissionValues))
+  }
+)
+
+// Groups the user belongs to but has no private dataset permission for
+// so the API configuration is missing even though the group is set up.
+export const selectGroupsWithoutDatasetPermission = createSelector(
+  [selectUserGroups, selectPrivateDatasetPermissionValues],
+  (userGroups = [], permissionValues) => {
+    return userGroups.filter(
+      (group) =>
+        getPrivateGroupDatasetCode(group) !== undefined &&
+        !hasPrivateDatasetPermission(group, permissionValues)
+    )
   }
 )
