@@ -402,6 +402,29 @@ export function getSublayersVisibleValuesHash(
   return (sublayers || []).map((s) => `${s.minVisibleValue}-${s.maxVisibleValue}`).join(',')
 }
 
+type RampFitSublayer = {
+  visible?: boolean
+  colorRampFitToRange?: boolean
+  minVisibleValue?: number
+  maxVisibleValue?: number
+}
+
+export function getRampFitRange(sublayers?: RampFitSublayer[]) {
+  const visibleSublayers = (sublayers || []).filter((sublayer) => sublayer.visible)
+  const sublayer = visibleSublayers.length === 1 ? visibleSublayers[0] : undefined
+  if (!sublayer?.colorRampFitToRange) {
+    return {}
+  }
+  const { minVisibleValue, maxVisibleValue } = sublayer
+  return { minVisibleValue, maxVisibleValue }
+}
+
+export function getSublayersRampFitHash(sublayers?: RampFitSublayer[]) {
+  return (sublayers || [])
+    .map((s) => `${s.visible}-${s.colorRampFitToRange}-${s.minVisibleValue}-${s.maxVisibleValue}`)
+    .join(',')
+}
+
 export function filterCells(value: any, index: number, minValue?: number, maxValue?: number) {
   // Select only 5% of elements
   return (

@@ -87,6 +87,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
       filterIds: sublayer?.filterIds,
       minVisibleValue: sublayer?.minVisibleValue,
       maxVisibleValue: sublayer?.maxVisibleValue,
+      colorRampFitToRange: sublayer?.colorRampFitToRange,
       vesselGroups: sublayer?.vesselGroups,
       vesselGroupsLength: sublayer?.vesselGroupsLength,
       extentStart,

@@ -251,6 +251,27 @@ describe('FourwingsHeatmapTileLayer', () => {
       expect(max).toBeGreaterThan((domain as number[])[domain.length - 1] as number)
     })
 
+    it('fits the steps inside the visible range only when a single sublayer is visible', () => {
+      const data = Array.from({ length: 30 }, (_, i) => feature([[i + 1], [i * 2 + 1]]))
+      const fitSublayer = {
+        ...baseProps.sublayers[0],
+        minVisibleValue: 10,
+        maxVisibleValue: 20,
+        colorRampFitToRange: true,
+      }
+
+      const fitted = makeLayer({ sublayers: [fitSublayer] })
+      vi.spyOn(fitted, 'getData').mockReturnValue(data)
+      const fittedDomain = fitted._calculateColorDomain().domain as number[]
+      expect(Math.min(...fittedDomain)).toBeGreaterThanOrEqual(10)
+      expect(fitted._calculateColorDomain().max).toBe(20)
+
+      // a second visible sublayer shares the domain, so the fit has to be ignored
+      const merged = makeLayer({ sublayers: [fitSublayer, baseProps.sublayers[1]] })
+      vi.spyOn(merged, 'getData').mockReturnValue(data)
+      expect(merged._calculateColorDomain().max).toBe(59)
+    })
+
     it('returns negative and positive steps around 0 in time compare mode', () => {
       const layer = makeLayer({
         comparisonMode: FourwingsComparisonMode.TimeCompare,

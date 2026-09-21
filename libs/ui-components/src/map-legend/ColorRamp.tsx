@@ -2,6 +2,8 @@ import React, { Fragment, useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import { scaleLinear } from 'd3-scale'
 
+import { Switch } from '../switch'
+
 import type { ColorRampBrushConfig } from './ColorRampBrush'
 import { ColorRampBrush } from './ColorRampBrush'
 import {
@@ -109,6 +111,9 @@ export function ColorRampLegend({
     }
   }, [colors, type, gradient])
 
+  const { fit } = brush || {}
+  const hasBrushRange = brush?.range?.some((bound) => bound !== undefined)
+
   const Label = labelComponent ? (
     labelComponent
   ) : (
@@ -122,6 +127,20 @@ export function ColorRampLegend({
         </span>
       )}
     </p>
+  )
+
+  const fitSwitchId = `color-ramp-fit-${layer.id}`
+  const FitSwitch = fit && hasBrushRange && (
+    <label htmlFor={fitSwitchId} className={cx(styles.fitRow, 'print-hidden')}>
+      <Switch
+        id={fitSwitchId}
+        active={fit.active}
+        size="small"
+        testId="color-ramp-brush-fit"
+        onClick={(event) => fit.onChange(!event.active)}
+      />
+      <span>{fit.label}</span>
+    </label>
   )
 
   if (loading && colors && type === 'colorramp-discrete') {
@@ -258,6 +277,7 @@ export function ColorRampLegend({
               )
             })}
           </div>
+          {FitSwitch}
         </Fragment>
       )}
     </div>

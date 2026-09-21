@@ -70,7 +70,8 @@ import {
   getFourwingsChunk,
   getFourwingsColorDomain,
   getIntervalFrames,
-  getSublayersVisibleValuesHash,
+  getRampFitRange,
+  getSublayersRampFitHash,
   getTileDataCache,
   getZoomOffsetByResolution,
 } from './fourwings-heatmap.utils'
@@ -148,7 +149,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       return ''
     }
     const colorRamps = this.props.sublayers?.map(({ colorRamp }) => colorRamp).join(',')
-    return `${this._getTileDataCacheKey()}|${this.props.comparisonMode}|${colorRamps}|${this.state.rampDirty}|${this.state.viewportLoaded}|${getSublayersVisibleValuesHash(this.props.sublayers)}`
+    return `${this._getTileDataCacheKey()}|${this.props.comparisonMode}|${colorRamps}|${this.state.rampDirty}|${this.state.viewportLoaded}|${getSublayersRampFitHash(this.props.sublayers)}`
   }
 
   get debounceTime(): number {
@@ -196,6 +197,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       endTime,
       availableIntervals,
       skipColorDomainSampling,
+      sublayers,
     } = this.props
 
     const currentZoomData = this.getData()
@@ -291,6 +293,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       endFrame,
       timeRangeKey,
       skipColorDomainSampling,
+      ...getRampFitRange(sublayers),
     })
     return domain.length ? { domain, max } : this._getCurrentColorDomain()
   }
@@ -565,11 +568,15 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const newSublayerColorRanges = this._getColorRanges()
     const sublayersHaveNewColors = !isEqual(colorRanges, newSublayerColorRanges)
     const newMode = oldProps.comparisonMode && comparisonMode !== oldProps.comparisonMode
+    // toggling the ramp fit, or moving a bound while fitted, has to recalculate right away: the
+    // only other trigger is a viewport load, and it is gated by DYNAMIC_RAMP_CHANGE_THRESHOLD
+    const newRampFit =
+      getSublayersRampFitHash(props.sublayers) !== getSublayersRampFitHash(oldProps.sublayers)
     const deferredStateUpdates: Partial<FourwingsTileLayerState> = {}
 
-    const needsColorUpdate = newMode || sublayersHaveNewColors
+    const needsColorUpdate = newMode || newRampFit || sublayersHaveNewColors
     if (needsColorUpdate) {
-      const recalculateDomain = newMode
+      const recalculateDomain = newMode || newRampFit
       const { domain: newColorDomain, max: newColorDomainMax } = recalculateDomain
         ? this._calculateColorDomain()
         : this._getCurrentColorDomain()

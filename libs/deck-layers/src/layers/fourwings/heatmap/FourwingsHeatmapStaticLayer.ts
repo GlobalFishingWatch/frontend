@@ -35,7 +35,8 @@ import type {
 import { FourwingsAggregationOperation, FourwingsComparisonMode } from './fourwings-heatmap.types'
 import {
   getFourwingsColorDomain,
-  getSublayersVisibleValuesHash,
+  getRampFitRange,
+  getSublayersRampFitHash,
   getURLFromTemplate,
   getZoomOffsetByResolution,
 } from './fourwings-heatmap.utils'
@@ -91,7 +92,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       return ''
     }
     const colorRamps = this.props.sublayers?.map(({ colorRamp }) => colorRamp).join(',')
-    return `${colorRamps}|${this.state.rampDirty}|${getSublayersVisibleValuesHash(this.props.sublayers)}`
+    return `${colorRamps}|${this.state.rampDirty}|${getSublayersRampFitHash(this.props.sublayers)}`
   }
 
   get debounceTime(): number {
@@ -124,14 +125,16 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   _calculateColorDomain = () => {
-    // The visible-value bounds are deliberately not passed: like the dynamic layers, brushing the
-    // legend filters cells out of the map (FourwingsHeatmapLayer) but leaves the ramp alone
+    // The visible-value bounds only narrow the ramp when the sublayer opted into it, otherwise
+    // brushing the legend filters cells out of the map (FourwingsHeatmapLayer) and leaves the
+    // ramp alone
     const { domain, max } = getFourwingsColorDomain({
       features: this.getData(),
       aggregationOperation: this.props.aggregationOperation,
       startFrame: STATIC_START_FRAME,
       endFrame: STATIC_END_FRAME,
       timeRangeKey: getTimeRangeKey(STATIC_START_FRAME, STATIC_END_FRAME),
+      ...getRampFitRange(this.props.sublayers),
     })
     return domain.length
       ? { domain, max }
@@ -214,8 +217,12 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     const oldColors = oldProps.sublayers?.map(({ colorRamp }) => colorRamp).join(',')
     const colors = sublayers?.map(({ colorRamp }) => colorRamp).join(',')
     const isColorChanged = oldColors !== colors
+    // the only other trigger is a viewport load, so without this toggling the ramp fit does
+    // nothing until the next pan or zoom
+    const isRampFitChanged =
+      getSublayersRampFitHash(sublayers) !== getSublayersRampFitHash(oldProps.sublayers)
 
-    if (isColorChanged) {
+    if (isColorChanged || isRampFitChanged) {
       this._updateColorDomain()
     }
   }

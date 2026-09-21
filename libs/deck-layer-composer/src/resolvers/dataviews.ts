@@ -139,6 +139,7 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
     filterIds: config.filterIds,
     minVisibleValue: config.minVisibleValue,
     maxVisibleValue: config.maxVisibleValue,
+    colorRampFitToRange: config.colorRampFitToRange,
     vesselGroups: config['vessel-groups'],
     vesselGroupsLength:
       dataview.vesselGroup?.vesselsSummary?.distinctRelationIds ??

@@ -78,11 +78,31 @@ const MapLegendWrapper = ({
 
   const onBrushChange = useCallback(
     ([minVisibleValue, maxVisibleValue]: ColorRampBrushRange) => {
-      upsertDataviewInstance({ id: dataview.id, config: { minVisibleValue, maxVisibleValue } })
+      upsertDataviewInstance({
+        id: dataview.id,
+        config: {
+          minVisibleValue,
+          maxVisibleValue,
+          ...(minVisibleValue === undefined &&
+            maxVisibleValue === undefined && { colorRampFitToRange: undefined }),
+        },
+      })
       trackEvent({
         category: TrackCategory.ActivityData,
         action: `Filter ${dataview.category} layer by value`,
         label: getEventLabel([dataview.name as string, `${minVisibleValue}`, `${maxVisibleValue}`]),
+      })
+    },
+    [dataview.category, dataview.id, dataview.name, upsertDataviewInstance]
+  )
+
+  const onFitChange = useCallback(
+    (colorRampFitToRange: boolean) => {
+      upsertDataviewInstance({ id: dataview.id, config: { colorRampFitToRange } })
+      trackEvent({
+        category: TrackCategory.ActivityData,
+        action: `Fit ${dataview.category} layer ramp to value range`,
+        label: getEventLabel([dataview.name as string, `${colorRampFitToRange}`]),
       })
     },
     [dataview.category, dataview.id, dataview.name, upsertDataviewInstance]
@@ -155,8 +175,13 @@ const MapLegendWrapper = ({
   }
 
   const showBrush = !isBivariate && !isSymbols
-  const { minVisibleValue, maxVisibleValue } = dataview.config || {}
+  const { minVisibleValue, maxVisibleValue, colorRampFitToRange } = dataview.config || {}
   const hasRange = minVisibleValue !== undefined || maxVisibleValue !== undefined
+  // Merged layers (activity, detections) share one ramp domain across their sublayers, so fitting
+  // it to one layer's range would rescale the others. Mirrors getRampFitRange in deck-layers
+  const canFit =
+    (deckLegend.sublayers || []).filter((sublayer) => 'visible' in sublayer && sublayer.visible)
+      .length === 1
 
   return (
     <MapLegend
@@ -170,6 +195,13 @@ const MapLegendWrapper = ({
           onChange: onBrushChange,
           className: hasRange ? undefined : brushClassName,
           handleTooltip: t((t) => t.map.legendBrushHelp),
+          ...(canFit && {
+            fit: {
+              active: colorRampFitToRange === true,
+              label: t((t) => t.map.legendBrushFit),
+              onChange: onFitChange,
+            },
+          }),
         },
       })}
       labelComponent={
