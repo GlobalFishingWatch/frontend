@@ -40,6 +40,10 @@
   transition: opacity 0.15s;
 }
 
+.handleDimmed {
+  opacity: 0.5;
+}
+
 .handleRight {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
