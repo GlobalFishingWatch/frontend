@@ -470,7 +470,8 @@ export function getFourwingsColorDomain({
         })
     )
     .filter((value): value is number => value !== undefined)
-  if (minVisibleValue !== undefined || maxVisibleValue !== undefined) {
+  const fitsToRange = minVisibleValue !== undefined || maxVisibleValue !== undefined
+  if (fitsToRange) {
     allValues = allValues.filter((value) =>
       isSublayerValueVisible(value, { minVisibleValue, maxVisibleValue })
     )
@@ -481,7 +482,12 @@ export function getFourwingsColorDomain({
 
   return {
     domain: getSteps(removeOutliers({ allValues, aggregationOperation })),
-    max: allValues.reduce((acc, value) => (value > acc ? value : acc), allValues[0] as number),
+    // Bounds are only passed when the ramp is fitted to them (see getRampFitRange), and then the
+    // steps already span the selection: labelling the end with the max of that same selection
+    // would spend a step restating the bound the user set
+    ...(!fitsToRange && {
+      max: allValues.reduce((acc, value) => (value > acc ? value : acc), allValues[0] as number),
+    }),
   }
 }
 

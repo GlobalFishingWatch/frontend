@@ -264,7 +264,8 @@ describe('FourwingsHeatmapTileLayer', () => {
       vi.spyOn(fitted, 'getData').mockReturnValue(data)
       const fittedDomain = fitted._calculateColorDomain().domain as number[]
       expect(Math.min(...fittedDomain)).toBeGreaterThanOrEqual(10)
-      expect(fitted._calculateColorDomain().max).toBe(20)
+      // the steps already end at the selection, so no max is handed to the legend
+      expect(fitted._calculateColorDomain().max).toBeUndefined()
 
       // a second visible sublayer shares the domain, so the fit has to be ignored
       const merged = makeLayer({ sublayers: [fitSublayer, baseProps.sublayers[1]] })
