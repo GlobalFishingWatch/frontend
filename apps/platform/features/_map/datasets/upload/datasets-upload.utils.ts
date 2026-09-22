@@ -163,7 +163,7 @@ export const getGriddedDatasetMetadata = ({
     type: DatasetTypes.UserFourwings,
     configuration: {
       userFourwingsV1: {
-        agregationMode: 'AVG',
+        aggregationMode: 'AVG',
         // GDAL band index, 1-based. NetCDF sends it too — the variable picks the grid, the
         // band stays 1 and is not offered in the UI
         band: 1,

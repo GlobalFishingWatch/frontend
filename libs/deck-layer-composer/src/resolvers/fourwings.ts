@@ -118,7 +118,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
     .map((dataset) => {
       return getDatasetConfigurationProperty({
         dataset,
-        property: 'agregationMode',
+        property: 'aggregationMode',
         type: 'userFourwingsV1',
       })
     })

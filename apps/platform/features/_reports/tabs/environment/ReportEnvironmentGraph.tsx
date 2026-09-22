@@ -90,7 +90,7 @@ function ReportEnvironmentGraph({
   const isHeatmapVector = isHeatmapVectorsDataview(dataview)
   const aggregationFunction =
     dataset?.type === DatasetTypes.UserFourwings
-      ? getDatasetConfiguration(dataset, 'userFourwingsV1').agregationMode
+      ? getDatasetConfiguration(dataset, 'userFourwingsV1').aggregationMode
       : getDatasetConfiguration(dataset, 'fourwingsV1').function
 
   const { filtersAllowed } = getFiltersInDataview(dataview)

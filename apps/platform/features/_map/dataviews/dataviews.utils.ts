@@ -516,14 +516,14 @@ export const getUserPointsDataviewInstance = (dataset: Dataset): DataviewInstanc
 export const getUserFourwingsDataviewInstance = (
   dataset: Dataset
 ): DataviewInstance<DataviewType> => {
-  const { agregationMode, timestampColumn } = getDatasetConfiguration(dataset, 'userFourwingsV1')
+  const { aggregationMode, timestampColumn } = getDatasetConfiguration(dataset, 'userFourwingsV1')
   return {
     id: `${USER_4WINGS_PREFIX}${dataset.id}`,
     category: DataviewCategory.User,
     config: {
       colorCyclingType: 'fill' as ColorCyclingType,
       aggregationOperation:
-        (agregationMode?.toLowerCase() as FourwingsAggregationOperation) ||
+        (aggregationMode?.toLowerCase() as FourwingsAggregationOperation) ||
         FourwingsAggregationOperation.Avg,
       datasets: [dataset.id],
       group: LayerGroup.HeatmapStatic,

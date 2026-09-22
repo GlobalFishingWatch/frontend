@@ -402,14 +402,7 @@ export function getSublayersVisibleValuesHash(
   return (sublayers || []).map((s) => `${s.minVisibleValue}-${s.maxVisibleValue}`).join(',')
 }
 
-type RampFitSublayer = {
-  visible?: boolean
-  colorRampFitToRange?: boolean
-  minVisibleValue?: number
-  maxVisibleValue?: number
-}
-
-export function getRampFitRange(sublayers?: RampFitSublayer[]) {
+export function getRampFitRange(sublayers?: FourwingsDeckSublayer[]) {
   const visibleSublayers = (sublayers || []).filter((sublayer) => sublayer.visible)
   const sublayer = visibleSublayers.length === 1 ? visibleSublayers[0] : undefined
   if (!sublayer?.colorRampFitToRange) {
@@ -419,7 +412,7 @@ export function getRampFitRange(sublayers?: RampFitSublayer[]) {
   return { minVisibleValue, maxVisibleValue }
 }
 
-export function getSublayersRampFitHash(sublayers?: RampFitSublayer[]) {
+export function getSublayersRampFitHash(sublayers?: FourwingsDeckSublayer[]) {
   return (sublayers || [])
     .map((s) => `${s.visible}-${s.colorRampFitToRange}-${s.minVisibleValue}-${s.maxVisibleValue}`)
     .join(',')

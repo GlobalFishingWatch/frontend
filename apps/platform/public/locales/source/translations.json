@@ -490,7 +490,6 @@
     "fieldNumericPlaceholder": "Select a numerical field from your dataset",
     "fieldPlaceholder": "Select a field from your dataset",
     "gridded": {
-      "aggregation": "Aggregation",
       "band": "Band to import",
       "unit": "Unit",
       "unitPlaceholder": "e.g., 'detections', '°C', 'm/s",
