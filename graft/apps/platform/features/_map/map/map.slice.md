@@ -1,0 +1,36 @@
+# apps/platform/features/_map/map/map.slice.ts · [[map-interaction-feature-picking]] [[redux-state-slices]] [[vessel-interaction-ranking-limiting]]
+
+- loadCategorySelectors · function · L69-L70 — Dynamically imports category selectors to avoid bundling dataview selector dependencies into every page entry.
+- loadDataviewSelectors · function · L71-L71 — Dynamically imports dataview selectors to avoid bundling heavy dataview selector dependencies into every page entry.
+- loadDatasetsUtils · function · L72-L72 — Dynamically imports dataset utilities to defer loading heavy dependencies until needed.
+- ExtendedFeatureVesselDatasets · type · L74-L81 — Augments base identity vessel data with dataset tracking and optional related dataset references for tracks and real-time data.
+- ExtendedFeatureVessel · type · L83-L91 — Extends vessel dataset info with skylight detection properties and activity metrics (hours, detections, events) for heatmap tooltip display.
+- ExtendedEventVessel · type · L93-L93 — Associates an event vessel with its source dataset ID for event interaction tracking.
+- ExtendedFeatureSingleEvent · type · L95-L95 — Wraps a single API event with extended vessel data and dataset context for single-event interactions.
+- ExtendedFeatureByVesselEventPort · type · L96-L102 — Captures port details associated with multi-vessel events for display in event tooltips.
+- ExtendedFeatureByVesselEvent · type · L103-L109 — Groups multiple vessels involved in the same event (e.g., port visit) with shared event metadata and optional port information.
+- ExtendedFeatureEvent · type · L110-L110 — Union type supporting both single-event and multi-vessel-event representations for polymorphic event interaction handling.
+- SliceExtendedFourwingsDeckSublayer · type · L112-L114 — Augments deck sublayer with extracted vessel data from fourwings heatmap interaction queries.
+- SliceExtendedFourwingsPickingObject · type · L115-L120 — Wraps fourwings heatmap picking results with vessel-enriched sublayers for use in map state.
+- SliceExtendedClusterPickingObject · type · L122-L125 — Attaches extended event data to cluster picking objects to preserve full event context in map interactions.
+- SliceExtendedFeature · type · L127-L134 — Union of all possible enriched picking object types (heatmap, cluster, positions, context, user layer, vessel event) for type-safe feature handling.
+- SliceInteractionEvent · type · L137-L140 — Enriches map interaction events with extended feature data and zoom level for comprehensive map click/hover state.
+- MapState · type · L142-L157 — Stores map interaction state (clicked/hovered events) and async request status for activity, events, and position data.
+- SublayerVessels · type · L176-L179 — Groups vessels by their heatmap sublayer ID to organize interaction results by data source.
+- getInteractionEndpointDatasetConfig · function · L181-L242 — Constructs the fourwings interaction API endpoint configuration from heatmap features and dataviews, aggregating datasets and filters.
+- getVesselInfoEndpoint · function · L244-L268 — Builds the vessel list API endpoint URL for fetching extended vessel identity information given datasets and vessel IDs.
+- fetchVesselInfo · function · L270-L290 — Fetches detailed vessel identity and self-reported info from the API using vessel IDs.
+- searchVesselMMSI · function · L292-L313 — Searches for vessels by MMSI (real-time position identifier) using advanced vessel search with abort signal support.
+- ActivityProperty · type · L315-L315 — Enumeration of activity metrics (hours, detections, events) used to rank and sort vessels in heatmap tooltips.
+- PositionRealTimeVessel · type · L824-L827 — Pairs a vessel with its identity data for real-time position tracking and display.
+- BQClusterEvent · type · L923-L923 — Flexible record type for cluster event data from BigQuery event interactions.
+- selectIsMapLoaded · function · L1147-L1147 — Selector that returns whether the map slice has completed initialization.
+- selectClickedEvent · function · L1148-L1148 — Selector that returns the currently clicked map interaction event with enriched feature data.
+- selectActivityInteractionStatus · function · L1149-L1150 — Selector that returns the async status of heatmap activity interaction API requests.
+- selectActivityInteractionError · function · L1151-L1152 — Selector that returns error messages from failed heatmap activity interaction requests.
+- selectDetectionPositionsInteractionStatus · function · L1153-L1154 — Selector that returns the async status of detection position interaction API requests.
+- selectDetectionPositionsInteractionError · function · L1155-L1156 — Selector that returns error messages from failed detection position interaction requests.
+- selectRealTimePositionsInteractionStatus · function · L1157-L1158 — Selector that returns the async status of real-time position interaction API requests.
+- selectRealTimePositionsInteractionError · function · L1159-L1160 — Selector that returns error messages from failed real-time position interaction requests.
+- selectApiEventStatus · function · L1161-L1161 — Selector that returns the async status of event API requests.
+- selectApiEventError · function · L1162-L1162 — Selector that returns error messages from failed event API requests.

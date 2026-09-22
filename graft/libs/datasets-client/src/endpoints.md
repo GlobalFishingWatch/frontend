@@ -1,0 +1,21 @@
+# libs/datasets-client/src/endpoints.ts · [[api-endpoint-configuration]]
+
+- InferEndpoint · type · L18-L25 — Extracts a specific endpoint configuration from the global endpoints map by matching both dataset type and endpoint ID.
+- ExtractQueryParamIds · type · L29-L29 — Extracts the union of all query parameter IDs from an endpoint's query parameter array.
+- QueryParamIds · type · L33-L35 — Combines endpoint lookup and query parameter ID extraction to get typed query parameter identifiers for a specific dataset type and endpoint pair.
+- ParamTypeMap · type · L38-L44 — Maps endpoint parameter type names to their corresponding TypeScript runtime types.
+- InferParamType · type · L47-L62 — Converts endpoint parameter metadata (enum, type, array flags) into the correct TypeScript type for runtime validation and type-safe parameter building.
+- QueryParamItem · type · L64-L64 — Extracts a single query parameter item from an endpoint's query parameter array.
+- QueryParamId · type · L65-L65 — Derives the union of query parameter IDs from an endpoint's query parameter metadata.
+- RequiredQueryParamId · type · L66-L69 — Filters query parameter IDs to include only those marked as required in the endpoint definition.
+- OptionalQueryParamId · type · L70-L73 — Derives the union of optional query parameter IDs by excluding required parameters from all parameters.
+- QueryParamById · type · L74-L77 — Extracts a single query parameter definition by its ID from an endpoint's query parameter array.
+- InferQueryParams · type · L81-L87 — Builds a typed parameter object where required query parameters become mandatory keys and optional ones become optional keys with inferred TypeScript types.
+- replacePathVersion · function · L106-L111 — Replaces the API version placeholder in an endpoint's path template with a specific version string.
+- replaceEndpointsVersion · function · L113-L118 — Maps over an array of endpoints to replace the API version placeholder in each endpoint's path template.
+- GetEndpointParams · type · L120-L120 — Defines optional version parameter for endpoint retrieval functions.
+- getEndpoints · function · L121-L128 — Retrieves all endpoints from the configuration map organized by dataset type, with API version placeholders replaced.
+- GetEndpointsByDataset · type · L130-L132 — Extends endpoint parameters with a required dataset type field.
+- getEndpointsByDatasetType · function · L133-L135 — Retrieves all endpoints for a specific dataset type with API version placeholders replaced.
+- GetEndpointByType · type · L137-L139 — Extends dataset endpoint parameters with an endpoint ID field to identify a specific endpoint.
+- getEndpointByType · function · L147-L155 — Retrieves a single typed endpoint by dataset type and endpoint ID, throwing an error if not found, with version placeholder replaced.

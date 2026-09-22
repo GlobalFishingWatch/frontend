@@ -1,0 +1,48 @@
+# libs/api-client/src/api-client.ts · [[global-fishing-watch-api-client]] [[session-token-management]]
+
+API client library that manages authentication tokens, handles token refresh strategies, and provides typed fetch wrapper methods for making authenticated requests to the Global Fishing Watch API.
+
+- UserTokens · interface · L37-L40 — Data structure holding authentication tokens for API access and refresh operations.
+- LoginParams · interface · L42-L45 — Optional parameters accepting external access and refresh tokens for session initialization.
+- ApiVersion · type · L46-L46 — Union type specifying supported API version strings for endpoint generation.
+- FetchOptions · type · L47-L58 — Configuration options for HTTP requests including headers, token, caching, and response parsing strategy.
+- InternalFetchOptions · type · L60-L65 — Internal parameters for fetch retry logic including URL, options, retry counter, and login wait flag.
+- RefreshStrategy · type · L67-L67 — Callback type for externally-managed token refresh, enabling integration with external auth providers.
+- SessionInvalidateStrategy · type · L68-L68 — Callback type invoked when the local session is cleared due to auth errors or logout.
+- RequestStatus · type · L70-L70 — State machine union tracking the current operation mode: idle, token refresh, login, or download.
+- GFW_API_CLASS · class · L71-L811 — Main API client class managing OAuth token lifecycle, HTTP fetch with retry/refresh, and user session state.
+- constructor · method · L90-L111 — Initializes the API client with configurable base URL, token storage keys, and debugging state.
+- debugLog · method · L113-L117 — Conditionally logs debug messages only when debug mode is enabled.
+- debugWarn · method · L119-L123 — Conditionally logs debug warnings only when debug mode is enabled.
+- debugAuthState · method · L125-L136 — Logs comprehensive authentication state including tokens, strategies, and request status for debugging.
+- configure · method · L138-L180 — Updates client configuration at runtime including base URL, token storage, refresh strategy, and headers.
+- invalidateClientSession · method · L182-L189 — Clears stored tokens and invokes session invalidation callback when session becomes invalid.
+- token · method · L191-L193 — Getter retrieving the current access token from storage.
+- token · method · L195-L200 — Setter storing the access token in persistent storage with debug logging.
+- refreshToken · method · L202-L207 — Getter retrieving the refresh token from storage, returning empty string if externally-managed refresh strategy exists.
+- refreshToken · method · L209-L216 — Setter storing refresh token only when using local token management (no external refresh strategy).
+- getStoredLocale · method · L218-L220 — Retrieves the user's preferred locale from browser storage, defaulting to English.
+- getRegisterUrl · method · L222-L230 — Constructs the absolute URL for user registration flow with callback and localization parameters.
+- getLoginUrl · method · L232-L247 — Constructs the absolute URL for user login with optional header suppression and localization.
+- getSettingsUrl · method · L249-L264 — Constructs the absolute URL for user settings/profile management page with callback and locale.
+- getLogoutSessionUrl · method · L266-L280 — Constructs the absolute URL for server-side session logout with client identification.
+- getConfig · method · L282-L290 — Returns a snapshot of current client configuration including debug flag, base URL, storage keys, and tokens.
+- exchangeAccessToken · method · L292-L304 — Exchanges an external access token for API tokens using the auth service.
+- reloadTokens · method · L306-L315 — Fetches new tokens by sending the refresh token to the auth service endpoint.
+- revokeRefreshToken · method · L317-L324 — Calls the auth service logout endpoint to revoke the refresh token server-side.
+- reloadAPIToken · method · L326-L342 — Fetches new tokens with transient error retry logic, updating stored tokens on success.
+- withTokenRefreshLock · method · L344-L349 — Ensures token refresh runs serially across browser tabs using the Web Locks API.
+- getRotatedRefreshToken · method · L351-L354 — Detects if the refresh token has changed since a prior point in time (indicating cross-tab rotation).
+- refreshTokens · method · L356-L376 — Refreshes tokens with cross-tab coordination, reusing tokens rotated by other tabs to avoid redundant reloads.
+- refreshAPIToken · method · L378-L410 — Orchestrates token refresh using either an external strategy or local reload, with deduplication for in-flight requests.
+- generateUrl · method · L412-L429 — Normalizes API endpoint URLs by applying base URL and API version prefix based on options.
+- fetch · method · L431-L436 — Public entry point for making authenticated API requests with automatic URL resolution.
+- download · method · L438-L452 — Downloads a file via fetch and saves it locally using the file-saver library with status tracking.
+- normalizeError · method · L454-L456 — Converts raw fetch errors to parsed API errors unless the response type is 'default'.
+- _internalFetch · method · L458-L484 — Waits for any in-progress login, delegates to fetch attempt, and normalizes errors based on response type.
+- _fetchAttempt · method · L486-L634 — Executes the HTTP request with auth headers, handles various response types, and implements auth error retry with token refresh.
+- fetchUser · method · L636-L656 — Fetches the current authenticated user profile and handles fallback to guest user on auth failure.
+- fetchGuestUser · method · L658-L679 — Constructs and returns a minimal guest user object with no permissions when user is unauthenticated.
+- _login · method · L681-L771 — Exchanges provided tokens for session data, stores tokens, clears login flag, and handles auth errors by invalidating session.
+- login · method · L773-L785 — Public entry point for login that wraps the internal login logic and sets the logging promise state.
+- logout · method · L787-L810 — Revokes the refresh token server-side, clears local session, and stops any ongoing login operation.

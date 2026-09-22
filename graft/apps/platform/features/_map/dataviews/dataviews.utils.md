@@ -1,0 +1,41 @@
+# apps/platform/features/_map/dataviews/dataviews.utils.ts · [[dataviews-management]] [[geospatial-data-transform-contracts]] [[longline-fishing-events-dataset-specialization]] [[real-time-support-categorization]] [[vessel-dataview-instance-matching-and-resolution]]
+
+Utility library providing factory functions and helpers for creating, resolving, and configuring dataview instances (vessel profiles, tracks, context layers, and heatmaps) across the platform's map feature.
+
+- dataviewHasVesselGroupId · function · L88-L90 — Checks whether a dataview's vessel-group filter includes a specific vessel group identifier.
+- getContextDataviewDataset · function · L93-L100 — Extracts the polygon/point context dataset from a dataview, supporting UserContext, Context, and PMTiles formats.
+- dataviewHasUserTimeRange · function · L102-L110 — Determines whether a dataview's context dataset has a user-configurable time filter.
+- GetVesselInWorkspaceParams · type · L112-L116 — Type definition for parameters needed to search and filter vessel dataviews in a workspace.
+- getVesselDataview · function · L118-L136 — Locates the dataview instance for a specific vessel within a workspace, optionally filtering by origin.
+- getHasVesselProfileInstance · function · L138-L148 — Checks whether a vessel profile dataview instance exists for a given vessel ID in the workspace.
+- getVesselInfoDataviewInstanceDatasetConfig · function · L150-L170 — Constructs the dataset configuration for a vessel's info endpoint, including related identities and registry data.
+- getVesselDataviewInstanceDatasetConfig · function · L172-L208 — Builds a complete dataset configuration list for a vessel dataview, incorporating track, info, real-time, and event data sources.
+- resolveVesselTrackConfig · function · L212-L236 — Resolves missing vessel track dataset IDs from available datasets to avoid storing full config in the URL.
+- resolveVesselDataviewInstance · function · L238-L268 — Completes a vessel dataview instance by resolving dataset configurations and applying track thinning zoom settings.
+- withLonglineSetsEvents · function · L272-L310 — Augments a fishing events dataview with longline-specific event attributes (day/night category and night fraction).
+- isFishingEventsConfig · function · L276-L278 — Predicate that identifies dataset configurations representing fishing event data.
+- VesselDataviewInstanceTemplateParams · type · L312-L320 — Type definition specifying parameters for creating a vessel dataview instance from a template.
+- vesselDataviewInstanceTemplate · function · L322-L352 — Constructs the configuration object for a vessel dataview instance with color, highlight events, and dataset assignments.
+- getBestVesselTemplateSlug · function · L355-L370 — Selects the most appropriate vessel dataview template based on the vessel's info dataset, preserving AIS vs VMS separation.
+- findTemplate · function · L361-L364 — Helper that finds a dataview template matching a vessel's info dataset, with optional dataset ID normalization.
+- getVesselDataviewInstance · function · L372-L411 — Creates a complete vessel dataview instance with datasets, track configuration, and visual settings.
+- getVesselEncounterTrackDataviewInstance · function · L413-L456 — Builds a dataview instance for displaying a track segment of an encountered vessel with temporal bounds and highlights.
+- getUserPolygonsDataviewInstance · function · L458-L475 — Creates a dataview instance for user-uploaded polygon context data.
+- getUserPointsDataviewInstance · function · L477-L513 — Generates a dataview instance for user-uploaded point data, extracting circle radius and time filter properties.
+- getUserFourwingsDataviewInstance · function · L515-L541 — Creates a dataview instance for user-uploaded 4wings heatmap data with configurable aggregation operation.
+- getUserTrackDataviewInstance · function · L543-L560 — Builds a dataview instance for user-uploaded track/trajectory data.
+- getContextDataviewInstance · function · L562-L579 — Creates a dataview instance for context layer data with line color cycling.
+- getDataviewInstanceFromDataview · function · L581-L586 — Converts a dataview template definition into a dataview instance.
+- getBigQuery4WingsDataviewInstance · function · L588-L615 — Creates a dataview instance for BigQuery 4wings heatmap data with customizable aggregation operation.
+- getBigQueryEventsDataviewInstance · function · L617-L634 — Builds a dataview instance for BigQuery event point data.
+- dataviewWithPrivateDatasets · function · L636-L639 — Checks whether a dataview contains any private datasets.
+- isBathymetryDataview · function · L641-L646 — Determines whether a dataview represents bathymetry context data.
+- isBathymetryContourDataview · function · L648-L650 — Checks whether a dataview is a bathymetry contour layer.
+- getIsPositionSupportedInDataview · function · L652-L664 — Determines whether a dataview supports position-based features or filtering.
+- hasVesselGroupDatasetsDeprecated · function · L666-L674 — Checks whether any of a vessel group's datasets have been deprecated and require migration.
+- hasVesselGroupDatasetsDeleted · function · L676-L684 — Determines whether any of a vessel group's datasets have been deleted.
+- isDataviewDeprecated · function · L686-L724 — Validates whether a dataview or any of its datasets have been deprecated and need migration.
+- isRealTimeActivityDataview · function · L733-L738 — Identifies whether a dataview displays real-time fishing activity data.
+- isRealTimeDataview · function · L740-L745 — Checks whether a dataview is sourced from real-time datasets.
+- isHistoricalDataview · function · L747-L752 — Determines whether a dataview contains only historical (non-real-time) data.
+- hasWorkspaceDataviewsDeprecated · function · L754-L766 — Checks whether a workspace contains any dataviews with deprecated datasets.

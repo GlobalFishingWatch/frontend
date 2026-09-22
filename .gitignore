@@ -187,3 +187,10 @@ local.globalfishingwatch.org.pem
 .github/instructions/nx.instructions.md
 
 .nx/migrate-runs
+
+# graft: cards under /graft/*.md are committed and shared with the team, so a
+# teammate gets the meaning tier without paying for their own --deep build.
+# The LLM response cache and the binary graph are local and regenerable.
+# Run builds with --no-gitignore, or graft re-adds /graft/ here.
+/graft/.cache/
+/graft/.graph/

@@ -1,0 +1,37 @@
+# libs/deck-layers/src/layers/vessel/VesselLayer.ts · [[color-and-configuration-management]] [[deck-gl-layer-foundation]] [[global-fishing-watch-api-integration]] [[interactive-picking-and-enrichment]] [[shared-picking-and-layer-utilities]] [[spatial-indexing-and-geometry]] [[vessel-layer-system]]
+
+- VesselEventsLayerProps · type · L55-L57 — Type alias combining vessel events layer props with an array of events, omitting internal highlight-related fields from the base type.
+- VesselLayerProps · type · L59-L63 — Type alias composing track layer props, events layer props, and additional vessel-specific props into a single configuration type for the composite layer.
+- VesselLayerState · type · L65-L73 — State type tracking layer errors, highlighted features, and time/event highlighting configuration for the vessel layer.
+- mergeBboxes · function · L78-L99 — Merges multiple bounding boxes while shifting them across the antimeridian to minimize total width for tracks crossing the date line.
+- VesselLayer · class · L102-L670 — Composite deck.gl layer that renders vessel tracks and events with support for zoom-based track thinning, time highlighting, filtering by speed/elevation, and gap visualization.
+- initializeState · method · L107-L113 — Initializes the layer state with empty error tracking and highlighted features.
+- isLoaded · method · L115-L117 — Getter returning whether all sublayers have finished loading.
+- cacheHash · method · L119-L123 — Generates a cache key combining layer id, color, applied filters, and gap threshold to identify unique layer configurations.
+- shouldUpdateState · method · L192-L207 — Determines whether state should update by checking prop/data changes or if zoom-driven track thinning level has changed.
+- _getTrackThinningLevel · method · L209-L218 — Resolves the appropriate track thinning level for a given zoom based on configured zoom-to-thinning mappings.
+- _getTracksUrl · method · L220-L248 — Constructs and configures a track data URL with date range, zoom-based thinning parameters, and enforces DECKGL format.
+- setHighlightedTime · method · L264-L272 — Updates the state with highlighted time range for visual emphasis on track segments.
+- setHighlightEventIds · method · L274-L279 — Updates the state with event IDs to highlight in the events layer.
+- _getVesselTrackLayers · method · L281-L368 — Generates VesselTrackLayer instances for each time chunk with zoom-based thinning, speed/elevation filters, and color modes.
+- _getVesselEventLayers · method · L370-L405 — Generates VesselEventsLayer instances for each event type and time chunk with visibility and highlight filtering.
+- setHighlightedFeatures · method · L407-L412 — Updates the state with features that are currently hovered or selected for UI emphasis.
+- _getLastPositionFeature · method · L415-L438 — Extracts the most recent track position point with computed course bearing from the last two track points.
+- _getVesselPositionLayer · method · L440-L548 — Creates a VesselTrackPositionLayer displaying the vessel's current or highlighted position with icon and course.
+- renderLayers · method · L550-L560 — Assembles and returns all active sublayers (track, position, and event layers) for the composite layer.
+- getTrackLayers · method · L562-L564 — Public accessor delegating to internal _getVesselTrackLayers for external layer queries.
+- getEventLayers · method · L566-L568 — Public accessor delegating to internal _getVesselEventLayers for external layer queries.
+- getVesselName · method · L570-L572 — Trivial accessor returning the vessel display name from props.
+- getColor · method · L574-L576 — Trivial accessor returning the vessel color from props.
+- getFilters · method · L578-L586 — Collects active speed and elevation filter bounds from props into a structured object.
+- getVesselsData · method · L588-L590 — Delegates to sublayer method to access aggregated vessel position data from track layers.
+- getVesselEventsData · method · L592-L598 — Queries and aggregates vessel event data from event sublayers filtered by optional event types.
+- getVesselTrackData · method · L600-L602 — Delegates to sublayer method to access parsed vessel track geometry and attributes.
+- getVesselTrackSegments · method · L604-L606 — Extracts track segments with optional filtering by time range or other segment parameters.
+- getVesselTrackGraphExtent · method · L608-L614 — Computes min/max extent for speed or elevation graph visualization across track data.
+- getVesselTrackBounds · method · L616-L624 — Computes geographic bounding box for track with optional time filtering, merging across antimeridian.
+- getVesselEventsBounds · method · L626-L637 — Computes geographic bounding box encompassing all visible vessel events.
+- getVesselEventsLayersLoaded · method · L639-L645 — Returns loaded status of all event sublayers combined with aggregate error state.
+- getVesselTracksLayersLoaded · method · L647-L655 — Returns loaded status of all track sublayers combined with aggregate error state.
+- getVesselLayersError · method · L657-L665 — Retrieves accumulated error message for a specific event type or track layer.
+- getAllSublayersLoaded · method · L667-L669 — Checks if all track and event sublayers have finished loading.

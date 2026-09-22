@@ -1,0 +1,38 @@
+# libs/dataviews-client/src/resolve-dataviews.ts · [[dataview-resolution-filtering]] [[sql-filter-computation]]
+
+- isActivityDataview · function · L33-L38 — Classifies whether a dataview is an activity heatmap animation.
+- isDetectionsDataview · function · L40-L45 — Classifies whether a dataview is a detections heatmap animation.
+- isComparisonDataview · function · L47-L49 — Classifies whether a dataview is a comparison dataset with the comparison origin suffix.
+- isVesselGroupDataview · function · L51-L56 — Classifies whether a dataview is a vessel group heatmap animation.
+- isTrackDataview · function · L58-L62 — Classifies whether a dataview is a vessel track visualization.
+- isUserHeatmapDataview · function · L64-L69 — Classifies whether a dataview is a user-generated heatmap animation.
+- isContextDataview · function · L71-L73 — Classifies whether a dataview is a context layer.
+- isUserTrackDataview · function · L75-L77 — Classifies whether a dataview is a user-generated track.
+- isUserPolygonsDataview · function · L79-L81 — Classifies whether a dataview is user-drawn polygon features.
+- isUserPointsDataview · function · L83-L85 — Classifies whether a dataview is user-drawn point features.
+- isAnyContextDataview · function · L87-L94 — Checks if a dataview is any form of context layer including tracks, points, or polygons.
+- isHeatmapStaticDataview · function · L96-L98 — Classifies whether a dataview is a static heatmap.
+- isHeatmapVectorsDataview · function · L100-L102 — Classifies whether a dataview is a Fourwings vector heatmap.
+- isEnvironmentalDataview · function · L104-L109 — Classifies whether a dataview is an environmental heatmap animation.
+- getIsSingleHeatmapDataview · function · L111-L120 — Determines whether exactly one heatmap (activity, detections, or environmental) is present among the dataviews.
+- getMergedDataviewId · function · L122-L128 — Generates a composite identifier by joining all dataview ids with commas.
+- getDatasetSchemaItem · function · L143-L146 — Finds the schema metadata for a filter in a dataset's flattened filter structure.
+- isFilterableDataviewInstanceGenerator · function · L148-L150 — Checks whether a dataview's type supports dataset filtering.
+- mergeWorkspaceUrlDataviewInstances · function · L158-L201 — Merges URL-provided dataview instances with workspace instances, preserving new instances and overriding existing configs.
+- GetDatasetConfigsParams · type · L203-L206 — Parameter type for filtering dataset configurations by type and optional endpoint.
+- getDatasetConfigsByDatasetType · function · L207-L235 — Retrieves dataset configurations for a dataview filtered by dataset type and optional endpoint, with fallback logic for legacy track datasets.
+- getDatasetConfigByDatasetType · function · L237-L242 — Returns the first matching dataset configuration for a given dataset type.
+- getTrackDataviewDatasetConfigs · function · L247-L263 — Collects and merges vessel info, track, and event dataset configs required for track dataview rendering.
+- DatasetConfigsTransforms · type · L265-L267 — Type defining optional transformations for dataset configs keyed by dataview type.
+- getDataviewsForResourceQuerying · function · L277-L301 — Prepares dataviews for resource querying by applying dataset-config transforms specific to track dataviews.
+- resolveResourcesFromDatasetConfigs · function · L307-L324 — Extracts and resolves resource URLs from track dataviews' dataset configurations.
+- generateDataviewDatasetResourceKey · function · L326-L335 — Creates a unique cache key from dataset id and all parameter and query values.
+- resolveDataviewDatasetResources · function · L340-L381 — Resolves all resource URLs and metadata for datasets of a given type or id in a dataview.
+- resolveDataviewDatasetResource · function · L383-L388 — Returns the first resource for a dataview dataset by type or id.
+- getOperationLabel · function · L390-L393 — Converts a dataset filter operation to its symbolic representation (>, <, ≥, ≤).
+- getOperationOperator · function · L395-L397 — Converts a dataset filter operation to its textual operator (>, <, >=, <=).
+- getDataviewFilters · function · L399-L409 — Merges dataset-config filters and dataview config filters into a single filter object.
+- getDataviewSqlFiltersResolved · function · L411-L474 — Constructs a SQL WHERE clause from dataview filters with support for range, numeric, and string values with include/exclude operators.
+- getDataviewVesselGroupId · function · L476-L478 — Extracts the vessel group id from a dataview's filter configuration.
+- getDataviewVesselGroup · function · L480-L488 — Finds the vessel group object matching a dataview's vessel-groups filter.
+- resolveDataviews · function · L496-L648 — Resolves dataview instances by matching them with dataview definitions and applying workspace dataset configurations.
