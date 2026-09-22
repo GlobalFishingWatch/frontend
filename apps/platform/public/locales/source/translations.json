@@ -1077,6 +1077,9 @@
     "months_one": "{{count}} month",
     "months_other": "{{count}} months",
     "now": "now",
+    "weeks": "{{count}} week",
+    "weeks_one": "{{count}} week",
+    "weeks_other": "{{count}} weeks",
     "years": "{{count}} year",
     "years_one": "{{count}} year",
     "years_other": "{{count}} years"
@@ -1635,7 +1638,9 @@
       "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} fishing events from {{vessels}} vessels detected outside known RFMO authorized areas",
       "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} fishing events from {{vessels}} vessels detected outside known RFMO authorized areas",
       "gaps_one": "{{count}} AIS Off Event from {{vessels}} vessels detected",
-      "gaps_other": "{{count}} AIS Off Event from {{vessels}} vessels detected"
+      "gaps_other": "{{count}} AIS Off Event from {{vessels}} vessels detected",
+      "longline_one": "{{count}} longline set from {{vessels}} vessels detected",
+      "longline_other": "{{count}} longline sets from {{vessels}} vessels detected"
     }
   },
   "workspace": {
