@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
@@ -45,8 +45,12 @@ export function useResponsiveDimensions(containerRef: ResponsiveVisualizationCon
     if (!element) return
 
     const resizeObserver = new ResizeObserver(() => {
-      const { width, height } = element.getBoundingClientRect()
-      setDimensions({ width, height })
+      const rect = element.getBoundingClientRect()
+      const width = Math.round(rect.width)
+      const height = Math.round(rect.height)
+      setDimensions((dimensions) =>
+        dimensions.width === width && dimensions.height === height ? dimensions : { width, height }
+      )
     })
     resizeObserver.observe(element)
 
@@ -71,6 +75,30 @@ type UseResponsiveVisualizationDataProps = {
     typeof getIsIndividualBarChartSupported | typeof getIsIndividualTimeseriesSupported
 }
 
+type AggregatedDataGetter = NonNullable<BaseResponsiveChartProps['getAggregatedData']>
+type IndividualDataGetter = NonNullable<BaseResponsiveChartProps['getIndividualData']>
+type AnyDataGetter = AggregatedDataGetter | IndividualDataGetter
+type DataGetterCache<T extends AnyDataGetter> = { getter: T; promise: ReturnType<T> } | null
+
+function callCachedDataGetter<T extends AnyDataGetter>(
+  cacheRef: React.RefObject<DataGetterCache<T>>,
+  getter?: T
+): ReturnType<T> | undefined {
+  if (!getter) {
+    return undefined
+  }
+  if (cacheRef.current?.getter !== getter) {
+    const promise = (getter() as ReturnType<T>).catch((e: unknown) => {
+      if (cacheRef.current?.getter === getter) {
+        cacheRef.current = null
+      }
+      throw e
+    }) as ReturnType<T>
+    cacheRef.current = { getter, promise }
+  }
+  return cacheRef.current!.promise
+}
+
 export function useResponsiveVisualizationData({
   labelKey = DEFAULT_LABEL_KEY,
   individualValueKey = DEFAULT_INDIVIDUAL_ITEM_KEY,
@@ -86,6 +114,9 @@ export function useResponsiveVisualizationData({
   const [isIndividualSupported, setIsIndividualSupported] = useState(false)
   const [individualItemSize, setIndividualItemSize] = useState(DEFAULT_POINT_SIZE)
 
+  const aggregatedCache = useRef<DataGetterCache<AggregatedDataGetter>>(null)
+  const individualCache = useRef<DataGetterCache<IndividualDataGetter>>(null)
+
   const loadData = useCallback(
     async ({ width, height }: { width: number; height: number }) => {
       const isIndividualParams: Omit<IsIndividualSupportedParams, 'data'> = {
@@ -98,7 +129,7 @@ export function useResponsiveVisualizationData({
         aggregatedValueKeys,
       }
       if (getAggregatedData) {
-        const aggregatedData = await getAggregatedData()
+        const aggregatedData = await callCachedDataGetter(aggregatedCache, getAggregatedData)
         if (!aggregatedData) {
           return
         }
@@ -107,7 +138,7 @@ export function useResponsiveVisualizationData({
           ...isIndividualParams,
         })
         if (getIndividualData && isSupported) {
-          const individualData = await getIndividualData()
+          const individualData = await callCachedDataGetter(individualCache, getIndividualData)
           if (!individualData) {
             setIsIndividualSupported(false)
             setIndividualItemSize(DEFAULT_POINT_SIZE)
@@ -135,7 +166,7 @@ export function useResponsiveVisualizationData({
           setData(aggregatedData)
         }
       } else if (getIndividualData) {
-        const individualData = await getIndividualData()
+        const individualData = await callCachedDataGetter(individualCache, getIndividualData)
         if (!individualData) {
           return
         }
@@ -190,11 +221,12 @@ export function useResponsiveVisualization(
   const { data, isIndividualSupported, individualItemSize, loadData } =
     useResponsiveVisualizationData(params)
 
+  const { width, height } = dimensions
   useEffect(() => {
-    if (dimensions.width && dimensions.height) {
-      loadData(dimensions)
+    if (width && height) {
+      loadData({ width, height })
     }
-  }, [dimensions, loadData])
+  }, [width, height, loadData])
 
   return useMemo(
     () => ({ ...dimensions, data, isIndividualSupported, individualItemSize }),
