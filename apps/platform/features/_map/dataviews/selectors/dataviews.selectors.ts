@@ -150,7 +150,7 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
         dataviews = othersActiveReportDataviews
         break
       default:
-        dataviews = environmentalDataviews
+        dataviews = environmentalDataviews.filter(isSupportedReportDataview)
         break
     }
     return dataviews
