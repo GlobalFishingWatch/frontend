@@ -56,6 +56,12 @@ export default function ReportSummaryEvents() {
         ).toLowerCase()
       : ''
 
+    const area = isPortReportLocation
+      ? t((t) => t.portsReport.toThisPort, { defaultValue: 'to this port' })
+      : reportAreaId
+        ? t((t) => t.analysis.inTheArea, { defaultValue: 'in the area' })
+        : t((t) => t.analysis.globally)
+
     if (!totalEventsVessels) {
       if (eventsStatsDataGrouped === undefined) {
         return ''
@@ -63,7 +69,7 @@ export default function ReportSummaryEvents() {
       return t((t) => t.analysis.summaryEventsNoVessels, {
         activityQuantity: activityQuantity as string,
         activityUnit,
-        area: reportAreaId ? '' : t((t) => t.analysis.globally),
+        area,
         start: startDate,
         end: endDate,
       })
@@ -85,7 +91,7 @@ export default function ReportSummaryEvents() {
       activityUnit,
       start: startDate,
       end: endDate,
-      area: reportAreaId ? '' : t((t) => t.analysis.globally),
+      area,
     })
   }, [
     eventType,
