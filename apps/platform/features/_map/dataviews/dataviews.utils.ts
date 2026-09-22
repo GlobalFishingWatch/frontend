@@ -120,17 +120,19 @@ export const getVesselDataview = ({
   dataviews = [],
   vesselId = '',
   origin,
-}: GetVesselInWorkspaceParams) => {
-  if (!vesselId) return null
+}: Omit<GetVesselInWorkspaceParams, 'vesselId'> & { vesselId: string | string[] }) => {
+  // A vessel can have several self reported identities, any of them can be the pinned one
+  const vesselIds = (Array.isArray(vesselId) ? vesselId : [vesselId]).filter(Boolean)
+  if (!vesselIds.length) return null
   const vesselInWorkspace = dataviews.find((v) => {
     const vesselDatasetConfig = v.datasetsConfig?.find(
       (datasetConfig) => datasetConfig.endpoint === EndpointId.Vessel
     )
-    const isVesselInEndpointParams =
-      vesselDatasetConfig?.params?.find((p) => p.id === 'vesselId' && p.value === vesselId) !==
-      undefined
+    const isVesselInEndpointParams = vesselDatasetConfig?.params?.some(
+      (p) => p.id === 'vesselId' && vesselIds.includes(p.value as string)
+    )
     const matchesOrigin = origin !== undefined ? v.origin === origin : true
-    const isInVesselRelatedIds = v.config?.relatedVesselIds?.includes(vesselId)
+    const isInVesselRelatedIds = v.config?.relatedVesselIds?.some((id) => vesselIds.includes(id))
     return (isVesselInEndpointParams || isInVesselRelatedIds) && matchesOrigin
   })
   return vesselInWorkspace
