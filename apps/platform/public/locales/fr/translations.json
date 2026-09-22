@@ -116,7 +116,7 @@
     "selectAggregationProperty": "Select a property to analyze",
     "selectDatasetPlaceholder": "Select a dataset to compare",
     "share": "Partager le rapport",
-    "showFullReport": "Analyse complète",
+    "showFullReport": "See full analysis for this area",
     "statsDisclaimerDynamic": "Au cours de cette plage de temps, les valeurs minimales et maximales par {{interval}} et lieu à l'intérieur de votre zone étaient {{min}} {{unit}} et {{max}} {{unit}}.",
     "statsDisclaimerDynamicMean": "During this time, the average value at any given {{interval}} and place inside your area was {{mean}} {{unit}}.",
     "statsDisclaimerStatic": "La valeur moyenne pour votre zone est {{mean}} {{unit}}. Le minimum et le maximum sont {{min}} {{unit}} et {{max}} {{unit}}.",
