@@ -251,7 +251,7 @@ export const useTimebarVesselTracksGraph = () => {
   }, [tracksColor, timebarVisualisation])
 
   useEffect(() => {
-    requestAnimationFrame(() => {
+    const frame = requestAnimationFrame(() => {
       const showGraph = timebarGraph === TimebarGraphs.Speed || timebarGraph === TimebarGraphs.Depth
       if (
         showGraph &&
@@ -304,12 +304,15 @@ export const useTimebarVesselTracksGraph = () => {
           return trackGraphData
         })
         setVesselTracksGraph(vesselTracks as any)
-      } else if (tracksGraph) {
-        setVesselTracksGraph(undefined)
+      } else {
+        setVesselTracksGraph((currentTracksGraph) =>
+          currentTracksGraph === undefined ? currentTracksGraph : undefined
+        )
       }
     })
+    return () => cancelAnimationFrame(frame)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tracksLoaded, timebarGraph, tracksGraph, timebarVisualisation])
+  }, [tracksLoaded, timebarGraph, timebarVisualisation])
 
   const tracksFiltersHash = useMemo(() => {
     return trackLayers

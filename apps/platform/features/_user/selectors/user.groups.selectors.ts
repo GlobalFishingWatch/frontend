@@ -9,11 +9,16 @@ import {
   PRIVATE_SUPPORTED_GROUPS,
 } from '@globalfishingwatch/datasets-client'
 
-import { selectIsGFWUser, selectUserData } from 'features/_user/selectors/user.selectors'
+import {
+  selectIsGFWUser,
+  selectIsUserExpired,
+  selectUserData,
+} from 'features/_user/selectors/user.selectors'
 
-const selectUserGroups = createSelector([selectUserData], (userData) => {
-  return userData?.groups
-})
+const selectUserGroups = createSelector(
+  [selectUserData, selectIsUserExpired],
+  (userData, isUserExpired) => (isUserExpired ? undefined : userData?.groups)
+)
 
 export const selectPrivateUserGroups = createSelector(
   [selectUserGroups, selectIsGFWUser],

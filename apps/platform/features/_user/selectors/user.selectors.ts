@@ -18,26 +18,31 @@ export const selectUserSettings = (state: RootState) => state.user.settings
 export const selectUserLanguage = (state: RootState) => state.user.language
 export const selectLoginSource = (state: RootState) => state.user.loginSource
 
-export const selectUserGroups = createSelector([selectUserData], (userData) => {
-  return (userData?.groups || []).map((group) => group.toLowerCase())
+const selectActiveUserGroups = createSelector(
+  [selectUserData, selectIsUserExpired],
+  (userData, isUserExpired) => (isUserExpired ? undefined : userData?.groups)
+)
+
+export const selectUserGroups = createSelector([selectActiveUserGroups], (userGroups) => {
+  return (userGroups || []).map((group) => group.toLowerCase())
 })
 
-export const selectIsGFWUser = createSelector([selectUserData], (userData) => {
-  return userData?.groups.includes(GFW_GROUP_ID)
+export const selectIsGFWUser = createSelector([selectActiveUserGroups], (userGroups) => {
+  return userGroups?.includes(GFW_GROUP_ID)
 })
 
-export const selectIsJACUser = createSelector([selectUserData], (userData) => {
-  return userData?.groups.includes(JAC_GROUP_ID)
+export const selectIsJACUser = createSelector([selectActiveUserGroups], (userGroups) => {
+  return userGroups?.includes(JAC_GROUP_ID)
 })
 
-export const selectIsGFWAdminUser = createSelector([selectUserData], (userData) => {
-  return userData?.groups.some((g) => g.toLowerCase() === ADMIN_GROUP_ID.toLowerCase())
+export const selectIsGFWAdminUser = createSelector([selectActiveUserGroups], (userGroups) => {
+  return userGroups?.some((g) => g.toLowerCase() === ADMIN_GROUP_ID.toLowerCase())
 })
-export const selectIsGFWDeveloper = createSelector([selectUserData], (userData) => {
-  return userData?.groups.includes(GFW_DEV_GROUP_ID)
+export const selectIsGFWDeveloper = createSelector([selectActiveUserGroups], (userGroups) => {
+  return userGroups?.includes(GFW_DEV_GROUP_ID)
 })
-export const selectIsGFWTestGroup = createSelector([selectUserData], (userData) => {
-  return userData?.groups.includes(GFW_TEST_GROUP_ID)
+export const selectIsGFWTestGroup = createSelector([selectActiveUserGroups], (userGroups) => {
+  return userGroups?.includes(GFW_TEST_GROUP_ID)
 })
 
 export const selectIsGuestUser = createSelector([selectUserData], (userData) => {

@@ -186,12 +186,16 @@ export default function Report() {
     return <ErrorPlaceholder title={t((t) => t.errors.areaLoad)}></ErrorPlaceholder>
   }
 
-  if (!reportCategory) {
+  if (workspaceStatus !== AsyncReducerStatus.Finished) {
     return <Spinner />
   }
 
   if (reportArea?.id === OUT_OF_TIME_REPORT_AREA_ID) {
     return <ErrorPlaceholder title={t((t) => t.errors.areaOutOfTime)}></ErrorPlaceholder>
+  }
+
+  if (!reportCategory) {
+    return <ErrorPlaceholder title={t((t) => t.analysis.noLayersActive)}></ErrorPlaceholder>
   }
 
   return filteredCategoryTabs.length > 1 ? (

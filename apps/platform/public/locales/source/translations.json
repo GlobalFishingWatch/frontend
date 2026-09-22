@@ -77,6 +77,7 @@
     "newTimeRange": "Click the button to see the vessels active in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "noDataByArea": "No data available for the selected area",
     "noDataByComparedDataset": "No data available for the selected compared dataset, adjust your timerange or change the selection.",
+    "noLayersActive": "No active layers to report on, turn on a layer to see its report",
     "noPolygonsContainedOrOverlapping": "No polygons inside or overlapping your area",
     "noTimeComparisonAllowed": "Time comparison modes are not available when layers have different filters",
     "noVesselDataFiltered": "There are no vessels matching your filter",
@@ -1005,7 +1006,8 @@
   },
   "portsReport": {
     "seePortReport": "See all entry events to this port",
-    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>"
+    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "toThisPort": "to this port"
   },
   "search": {
     "advanced": "Advanced",
