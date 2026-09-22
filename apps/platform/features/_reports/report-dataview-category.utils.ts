@@ -106,6 +106,10 @@ const SUPPORTED_COMPARISON_TYPES = [
   DataviewType.FourwingsTileCluster,
 ]
 
+export const isSupportedReportDataviewType = (type?: DataviewType) => {
+  return type !== undefined && SUPPORTED_REPORT_TYPES.includes(type)
+}
+
 export const isSupportedReportDataview = (dataview: Dataview | UrlDataviewInstance) => {
   const { category, config } = dataview
   if (!category || !config?.visible || !config?.type) {
