@@ -34,9 +34,9 @@ import { DebugOption, selectDebugOptions, setDebugOption } from 'features/debug/
 import { selectIsAnyReportLocation } from 'router/routes.selectors'
 
 const DeckGLWrapper = () => {
+  const viewStateSynced = useMapViewStateUrlSync()
   const deckRef = useRef<DeckGLRef<MapView>>(null)
   useSetMapInstance(deckRef)
-  useMapViewStateUrlSync()
   // drag-and-drop dataset upload — only while the map is mounted
   useDatasetDrag()
   const setViewState = useMapSetViewState()
@@ -123,6 +123,10 @@ const DeckGLWrapper = () => {
     }
     return true
   }, [])
+
+  if (!viewStateSynced) {
+    return null
+  }
 
   return (
     <DeckGL
