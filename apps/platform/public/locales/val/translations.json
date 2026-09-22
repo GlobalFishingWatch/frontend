@@ -77,6 +77,7 @@
     "newTimeRange": "crwdns131839:0{{start}}crwdnd131839:0{{end}}crwdne131839:0",
     "noDataByArea": "crwdns131841:0crwdne131841:0",
     "noDataByComparedDataset": "crwdns138377:0crwdne138377:0",
+    "noLayersActive": "crwdns138591:0crwdne138591:0",
     "noPolygonsContainedOrOverlapping": "crwdns131843:0crwdne131843:0",
     "noTimeComparisonAllowed": "crwdns131845:0crwdne131845:0",
     "noVesselDataFiltered": "crwdns131847:0crwdne131847:0",
@@ -1005,7 +1006,8 @@
   },
   "portsReport": {
     "seePortReport": "crwdns133391:0crwdne133391:0",
-    "summaryEvents": "crwdns133393:0{{vessels}}crwdnd133393:0{{flags}}crwdnd133393:0{{activityQuantity}}crwdnd133393:0{{start}}crwdnd133393:0{{end}}crwdne133393:0"
+    "summaryEvents": "crwdns133393:0{{vessels}}crwdnd133393:0{{flags}}crwdnd133393:0{{activityQuantity}}crwdnd133393:0{{start}}crwdnd133393:0{{end}}crwdne133393:0",
+    "toThisPort": "crwdns138593:0crwdne138593:0"
   },
   "search": {
     "advanced": "crwdns133395:0crwdne133395:0",
