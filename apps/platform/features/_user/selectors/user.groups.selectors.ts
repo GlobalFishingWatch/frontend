@@ -3,6 +3,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { UserGroupId } from '@globalfishingwatch/api-types'
 import {
   getPrivateGroupDatasetCode,
+  getPrivateSearchDatasetIds,
   isPrivateDatasetId,
   isPrivateGroupDataset,
   PRIVATE_SUPPORTED_GROUPS,
@@ -36,22 +37,8 @@ const selectPrivateDatasetPermissionValues = createSelector(
   (permissions) => [...new Set(permissions.map((permission) => permission.value))]
 )
 
-export const selectPrivateDatasetIds = createSelector(
-  [selectPrivateDatasetPermissionValues],
-  (values) => values.filter((value) => !value.includes('*'))
-)
-
-export const selectPrivateSearchDatasetIds = createSelector(
-  [selectPrivateDatasetPermissions],
-  (permissions) => [
-    ...new Set(
-      permissions.flatMap((permission) =>
-        permission.action.endsWith('-search') && !permission.value.includes('*')
-          ? [permission.value]
-          : []
-      )
-    ),
-  ]
+export const selectPrivateSearchDatasetIds = createSelector([selectUserData], (userData) =>
+  getPrivateSearchDatasetIds(userData?.permissions)
 )
 
 const hasPrivateDatasetPermission = (group: string, permissionValues: string[]) => {
