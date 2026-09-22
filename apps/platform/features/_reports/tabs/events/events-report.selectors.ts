@@ -3,6 +3,7 @@ import { groupBy } from 'es-toolkit'
 import { matchSorter } from 'match-sorter'
 import type { GetReportEventParams } from 'queries/map/report-events-stats-api'
 import {
+  getEventsDataviewFilters,
   selectReportEventsPorts,
   selectReportEventsStats,
   selectReportEventsStatsApiSlice,
@@ -11,8 +12,6 @@ import {
 
 import type { DataviewDatasetFilter, FilterOperators } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { getFlattenDatasetFilters } from '@globalfishingwatch/datasets-client'
-import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
@@ -105,32 +104,12 @@ export const selectFetchEventsVesselsParams = createSelector(
       (dataview) => dataview.datasets?.find((d) => d.type === DatasetTypes.Events)?.id || []
     )
     const filters = eventsDataviews?.flatMap((dataview) => {
-      const filter = {
+      return {
         portId,
         vesselGroupId: reportVesselGroupId,
-        ...getDataviewFilters(dataview),
+        ...getEventsDataviewFilters(dataview),
         // TODO:CVP2 add other filters using this
       } as DataviewDatasetFilter
-
-      const eventsDataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Events)
-      const durationSchema = getFlattenDatasetFilters(eventsDataset?.filters).find(
-        (f) => f.id === 'duration'
-      )
-      const addMinDuration =
-        durationSchema !== undefined &&
-        filter.duration?.[0] !== undefined &&
-        filter.duration[0].toString() !== durationSchema.enum?.[0].toString()
-      const addMaxDuration =
-        durationSchema !== undefined &&
-        filter?.duration?.[1] !== undefined &&
-        filter.duration[1].toString() !== durationSchema.enum?.[1].toString()
-      if (addMinDuration) {
-        filter.minDuration = parseInt(filter.duration[0])
-      }
-      if (addMaxDuration) {
-        filter.maxDuration = parseInt(filter.duration[1])
-      }
-      return filter
     })
 
     const filtersOperators = eventsDataviews?.map((dataview) => {
