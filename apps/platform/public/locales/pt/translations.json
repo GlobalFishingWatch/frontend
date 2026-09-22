@@ -77,6 +77,7 @@
     "newTimeRange": "Clique o botão para ver as embarcações ativas na área entre <strong>{{start}}</strong> e <strong>{{end}}</strong>",
     "noDataByArea": "Não há dados disponíveis para a área selecionada",
     "noDataByComparedDataset": "No data available for the selected compared dataset, adjust your timerange or change the selection.",
+    "noLayersActive": "No active layers to report on, turn on a layer to see its report",
     "noPolygonsContainedOrOverlapping": "No polygons inside or overlapping your area",
     "noTimeComparisonAllowed": "Os modos de comparação de tempo não ficam disponíveis quando as camadas têm filtros diferentes",
     "noVesselDataFiltered": "Não há nenhuma embarcação correspondente ao seu filtro",
@@ -1005,7 +1006,8 @@
   },
   "portsReport": {
     "seePortReport": "Ver todos os eventos de entrada neste porto",
-    "summaryEvents": "<strong>{{vessels}} embarcações</strong> com as <strong>bandeiras {{flags}}</strong> entraram neste porto <strong>{{activityQuantity}}</strong> vezes entre <strong>{{start}}</strong> e <strong>{{end}}</strong>"
+    "summaryEvents": "<strong>{{vessels}} embarcações</strong> com as <strong>bandeiras {{flags}}</strong> entraram neste porto <strong>{{activityQuantity}}</strong> vezes entre <strong>{{start}}</strong> e <strong>{{end}}</strong>",
+    "toThisPort": "to this port"
   },
   "search": {
     "advanced": "Avançado",
