@@ -247,7 +247,7 @@ export const getCommonFiltersInDataview = (
           if (filter === 'geartypes' || filter === 'geartype') {
             // There is an fixed list of gearTypes independant of the dataset
             label = getVesselGearTypeLabel({ geartypes: field as string })
-          } else if (filter === 'vessel_type') {
+          } else if (filter === 'vessel_type' || filter === 'shiptypes') {
             label = getVesselShipTypeLabel({ shiptypes: field as string })
           } else if (
             dataview.category !== DataviewCategory.Context &&
