@@ -921,7 +921,8 @@
   },
   "portsReport": {
     "seePortReport": "See all entry events to this port",
-    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>"
+    "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "toThisPort": "to this port"
   },
   "search": {
     "advanced": "Advanced",
