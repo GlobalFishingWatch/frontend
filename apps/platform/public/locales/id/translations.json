@@ -1157,6 +1157,7 @@
     },
     "datasets": "Dataset pengguna",
     "gfwBadges": "GFW Badges",
+    "groupDatasetPermissionMissing": "This group has no dataset permissions configured yet, so its private data is not available. Contact support if you need access.",
     "groupMissing": "Apakah Anda termasuk dalam grup pengguna yang tidak muncul di sini? <2>Meminta akses</2>",
     "groups": "Grup Pengguna",
     "info": "Info Pengguna",
