@@ -1,4 +1,17 @@
-import type { UserGroupId } from '@globalfishingwatch/api-types'
+import type { CountryDatasetId } from './migrations/datasets.conventions'
+import {
+  BELIZE_DATASET_ID,
+  BRAZIL_DATASET_ID,
+  CHILE_DATASET_ID,
+  COSTA_RICA_DATASET_ID,
+  ECUADOR_DATASET_ID,
+  MONTENEGRO_DATASET_ID,
+  NORWAY_DATASET_ID,
+  PALAU_DATASET_ID,
+  PANAMA_DATASET_ID,
+  PERU_DATASET_ID,
+  PNG_DATASET_ID,
+} from './migrations/datasets.conventions'
 
 export const GFW_GROUP_ID = 'GFW Staff'
 export const JAC_GROUP_ID = 'Joint Analytical Cell (JAC)'
@@ -38,20 +51,20 @@ export const PRIVATE_SUPPORTED_GROUPS = [
   'SSF-Rare',
 ]
 
-export const PRIVATE_SEARCH_DATASET_BY_GROUP: Record<UserGroupId, string[]> = {
-  'costa rica': ['private-vms-cri-vessel-identity:v4.0'],
-  'papua new guinea': ['private-png-vessel-identity:v4.0'],
-  belize: ['private-vms-blz-vessel-identity:v4.0'],
-  brazil: ['private-vms-bra-vessel-identity:v4.0'],
-  chile: ['private-vms-chl-vessel-identity:v4.0'],
-  costarica: ['private-vms-cri-vessel-identity:v4.0'],
-  ecuador: ['private-vms-ecu-vessel-identity:v4.0'],
-  montenegro: ['private-mne-vessel-identity:v4.0'],
-  norway: ['private-vms-nor-vessel-identity:v4.0'],
-  palau: ['private-vms-plw-vessel-identity:v4.0'],
-  panama: ['private-vms-pan-vessel-identity:v4.1'],
-  peru: ['private-vms-per-vessel-identity:v4.0'],
-  'ssf-aruna': [],
-  'ssf-rare': [],
-  'ssf-ipnlf': [],
-}
+// Country code used in the private dataset ids, the only link between a user group and its
+// datasets. Groups missing here never warn about permissions.
+export const PRIVATE_GROUP_DATASET_CODE = {
+  [PRIVATE_BELIZE_GROUP_ID]: BELIZE_DATASET_ID,
+  [PRIVATE_BRAZIL_GROUP_ID]: BRAZIL_DATASET_ID,
+  [PRIVATE_CHILE_GROUP_ID]: CHILE_DATASET_ID,
+  [PRIVATE_COSTA_RICA_GROUP_ID]: COSTA_RICA_DATASET_ID,
+  [PRIVATE_ECUADOR_GROUP_ID]: ECUADOR_DATASET_ID,
+  [PRIVATE_MONTENEGRO_GROUP_ID]: MONTENEGRO_DATASET_ID,
+  [PRIVATE_NORWAY_GROUP_ID]: NORWAY_DATASET_ID,
+  [PRIVATE_PALAU_GROUP_ID]: PALAU_DATASET_ID,
+  [PRIVATE_PANAMA_GROUP_ID]: PANAMA_DATASET_ID,
+  [PRIVATE_PAPUA_NEW_GUINEA_GROUP_ID]: PNG_DATASET_ID,
+  [PRIVATE_PERU_GROUP_ID]: PERU_DATASET_ID,
+} as const satisfies Record<string, CountryDatasetId>
+
+export const PRIVATE_BRAZIL_DATASET_CODE = BRAZIL_DATASET_ID

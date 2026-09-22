@@ -1,14 +1,14 @@
 import { createSelector } from '@reduxjs/toolkit'
 
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-
 import {
   ADMIN_GROUP_ID,
   GFW_DEV_GROUP_ID,
   GFW_GROUP_ID,
   GFW_TEST_GROUP_ID,
   JAC_GROUP_ID,
-} from 'features/_user/user.config'
+} from '@globalfishingwatch/datasets-client'
+
 import type { RootState } from 'reducers'
 
 export const selectUserData = (state: RootState) => state.user.data

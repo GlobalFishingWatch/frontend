@@ -3,7 +3,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-import { Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
+import { Icon, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 
 import ambassadorImg from 'assets/images/badges/ambassador.webp'
 import ambassadorPlaceholderImg from 'assets/images/badges/ambassador-placeholder.webp'
@@ -24,6 +24,7 @@ import {
 } from 'features/_user/selectors/user.selectors'
 import SettingsButton from 'features/_user/SettingsButton'
 
+import { selectGroupsWithoutDatasetPermission } from './selectors/user.groups.selectors'
 import {
   selectHasAmbassadorBadge,
   selectHasFeedbackProviderBadge,
@@ -44,6 +45,7 @@ function UserInfo() {
   const isGFWUser = useSelector(selectIsGFWUser)
   const userData = useSelector(selectUserData)
   const userGroups = useSelector(selectUserGroupsClean)
+  const groupsWithoutDatasetPermission = useSelector(selectGroupsWithoutDatasetPermission)
   const hasAmbassadorBadge = useSelector(selectHasAmbassadorBadge)
   const hasFeedbackProviderBadge = useSelector(selectHasFeedbackProviderBadge)
   const hasPresenterBadge = useSelector(selectHasPresenterBadge)
@@ -122,7 +124,22 @@ function UserInfo() {
         </div>
         <div className={styles.row}>
           <label>{t((t) => t.user.groups)}</label>
-          {userGroups && <p className={styles.textSpaced}>{userGroups.join(', ')}</p>}
+          {userGroups && (
+            <ul className={styles.groups}>
+              {userGroups.map((group) => (
+                <li key={group} className={styles.group}>
+                  {group}
+                  {groupsWithoutDatasetPermission.includes(group) && (
+                    <Tooltip content={t((t) => t.user.groupDatasetPermissionMissing)}>
+                      <span className={styles.groupWarning}>
+                        <Icon icon="warning" type="warning" />
+                      </span>
+                    </Tooltip>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
           <p className={styles.missingGroup}>
             <Trans i18nKey={(t) => t.user.groupMissing}>
               Do you belong to a user group that doesn’t appear here?{' '}

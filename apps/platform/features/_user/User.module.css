@@ -154,6 +154,24 @@
   color: var(--color-secondary-blue);
 }
 
+.groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-S);
+  padding: var(--space-XS) 0;
+}
+
+.group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+}
+
+.groupWarning {
+  display: flex;
+  cursor: help;
+}
+
 .link {
   text-decoration: underline;
   cursor: pointer;
