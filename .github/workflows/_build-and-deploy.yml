@@ -148,6 +148,15 @@ jobs:
           nx-cloud-access-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
           extra-build-args: ${{ inputs.build-args }}
 
+      - name: Run smoke tests
+        if: matrix.app == 'platform' && (inputs.env-suffix == 'sta' || inputs.env-suffix == 'pro')
+        uses: ./.github/actions/smoke-test
+        with:
+          image: ${{ env.IMAGE }}
+          nx-cloud-access-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+          test-user-email: ${{ secrets.TEST_USER_EMAIL }}
+          test-user-password: ${{ secrets.TEST_USER_PASSWORD }}
+
       - name: Deploy
         uses: ./.github/actions/deploy-cloudrun
         with:
