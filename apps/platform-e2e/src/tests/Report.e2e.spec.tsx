@@ -1,37 +1,27 @@
 import { expect, test } from '../fixtures'
-import { clickMapUntilVisible } from '../helpers/map'
+import { waitForHydration } from '../helpers/hydration'
+import { searchMapArea } from '../helpers/map'
 import { MAP_PATH } from '../paths'
+import { TAGS } from '../tags'
 
-test('Report01 - Create report area', async ({ page }) => {
-  // Set a fixed time for the test
-  await page.clock.setFixedTime(new Date('2026-01-07T12:00:00'))
-
+test.beforeEach(async ({ page }) => {
   await page.goto(MAP_PATH)
-  await page.waitForLoadState('networkidle')
-
-  await page.locator('[data-testid="context-layer-context-layer-eez"]').scrollIntoViewIfNeeded()
-  await page.locator('[data-testid="context-layer-context-layer-eez"]').click()
-
-  await page.waitForLoadState('networkidle')
-
-  await clickMapUntilVisible(
-    page,
-    { x: 8, y: 385 },
-    page.getByText('Ecuadorian Exclusive Economic Zone')
-  )
-
-  await page.locator('[data-testid="open-analysis"]').click()
-
-  await page.waitForLoadState('load')
-
-  await expect(page.getByText('Ecuadorian EEZ 251,938 km²')).toBeVisible()
-
-  await page.waitForTimeout(5000)
-
-  await expect(
-    page.locator('[data-test="source-tag-item-public-global-fishing-effort:v4.0"]')
-  ).toBeVisible()
+  await waitForHydration(page)
 })
+
+test(
+  'Report - A guest should create an area report from map',
+  { tag: [TAGS.SMOKE] },
+  async ({ page, reportPage }) => {
+    await reportPage.toggleEezLayer()
+    await searchMapArea(page, 'Canary Islands')
+    await reportPage.openAnalysisFromMap()
+
+    await reportPage.expectReportTitleVisible(/km²/)
+    await reportPage.expectSourceTagVisible()
+    reportPage.expectReportUrl()
+  }
+)
 
 test.skip('Report02 - View full report area', async ({ page }) => {
   // Set a fixed time for the test

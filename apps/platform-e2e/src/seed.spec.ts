@@ -1,5 +1,4 @@
-import { test } from '@playwright/test'
-
+import { test } from './fixtures'
 import { MAP_PATH } from './paths'
 
 test('seed', async ({ page }) => {
