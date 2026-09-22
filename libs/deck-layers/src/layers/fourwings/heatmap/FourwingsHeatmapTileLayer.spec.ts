@@ -226,7 +226,7 @@ describe('FourwingsHeatmapTileLayer', () => {
       const layer = makeLayer()
       layer.state.colorDomain = [1, 2, 3]
       vi.spyOn(layer, 'getData').mockReturnValue([])
-      expect(layer._calculateColorDomain()).toEqual([1, 2, 3])
+      expect(layer._calculateColorDomain()).toEqual({ domain: [1, 2, 3], max: undefined })
     })
 
     it('returns ascending steps in compare mode', () => {
@@ -234,10 +234,43 @@ describe('FourwingsHeatmapTileLayer', () => {
       vi.spyOn(layer, 'getData').mockReturnValue(
         Array.from({ length: 30 }, (_, i) => feature([[i + 1], [i * 2 + 1]]))
       )
-      const domain = layer._calculateColorDomain() as number[]
+      const domain = layer._calculateColorDomain().domain as number[]
       expect(domain.length).toBeGreaterThan(0)
       const sorted = [...domain].sort((a, b) => a - b)
       expect(domain).toEqual(sorted)
+    })
+
+    it('returns the data max, which the outlier-clipped steps never reach', () => {
+      const layer = makeLayer()
+      vi.spyOn(layer, 'getData').mockReturnValue(
+        Array.from({ length: 30 }, (_, i) => feature([[i + 1], [i * 2 + 1]]))
+      )
+      const { domain, max } = layer._calculateColorDomain()
+      // highest fixture value is the last sublayer cell, 29 * 2 + 1
+      expect(max).toBe(59)
+      expect(max).toBeGreaterThan((domain as number[])[domain.length - 1] as number)
+    })
+
+    it('fits the steps inside the visible range only when a single sublayer is visible', () => {
+      const data = Array.from({ length: 30 }, (_, i) => feature([[i + 1], [i * 2 + 1]]))
+      const fitSublayer = {
+        ...baseProps.sublayers[0],
+        minVisibleValue: 10,
+        maxVisibleValue: 20,
+        colorRampFitToRange: true,
+      }
+
+      const fitted = makeLayer({ sublayers: [fitSublayer] })
+      vi.spyOn(fitted, 'getData').mockReturnValue(data)
+      const fittedDomain = fitted._calculateColorDomain().domain as number[]
+      expect(Math.min(...fittedDomain)).toBeGreaterThanOrEqual(10)
+      // the steps already end at the selection, so no max is handed to the legend
+      expect(fitted._calculateColorDomain().max).toBeUndefined()
+
+      // a second visible sublayer shares the domain, so the fit has to be ignored
+      const merged = makeLayer({ sublayers: [fitSublayer, baseProps.sublayers[1]] })
+      vi.spyOn(merged, 'getData').mockReturnValue(data)
+      expect(merged._calculateColorDomain().max).toBe(59)
     })
 
     it('returns negative and positive steps around 0 in time compare mode', () => {
@@ -250,7 +283,7 @@ describe('FourwingsHeatmapTileLayer', () => {
         ...Array.from({ length: 10 }, (_, i) => feature([[10 + i], [2]])), // negative change
         ...Array.from({ length: 10 }, (_, i) => feature([[2], [10 + i]])), // positive change
       ])
-      const domain = layer._calculateColorDomain() as number[]
+      const domain = layer._calculateColorDomain().domain as number[]
       expect(domain).toContain(0)
       expect(domain.some((d) => d < 0)).toBe(true)
       expect(domain.some((d) => d > 0)).toBe(true)
@@ -261,7 +294,7 @@ describe('FourwingsHeatmapTileLayer', () => {
       vi.spyOn(layer, 'getData').mockReturnValue(
         Array.from({ length: 30 }, (_, i) => feature([[i + 1], [i * 3 + 1]]))
       )
-      const domain = layer._calculateColorDomain() as number[][]
+      const domain = layer._calculateColorDomain().domain as number[][]
       expect(domain).toHaveLength(2)
       expect(domain[0].length).toBeGreaterThan(0)
       expect(domain[1].length).toBeGreaterThan(0)

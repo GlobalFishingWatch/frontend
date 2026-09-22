@@ -130,7 +130,7 @@ function NewGriddedDataset({
   })
   const isNetCDF = sourceFormat === 'NetCDF'
   const fourwingsConfig = getDatasetConfiguration(datasetMetadata, 'userFourwingsV1')
-  const agregationMode = fourwingsConfig.agregationMode ?? 'AVG'
+  // const aggregationMode = fourwingsConfig.aggregationMode ?? 'AVG'
   const band = fourwingsConfig.band ?? 1
   const bandOptions: SelectOption<number>[] = Array.from({ length: bandsCount }, (_, index) => ({
     id: index + 1,
@@ -142,7 +142,7 @@ function NewGriddedDataset({
   ).map((id) => ({ id, label: id }))
 
   const setFourwingsConfig = useCallback(
-    (patch: { agregationMode?: AggregationFunction; band?: number; variable?: string }) => {
+    (patch: { aggregationMode?: AggregationFunction; band?: number; variable?: string }) => {
       setDatasetMetadata({
         configuration: {
           ...datasetMetadata.configuration,
@@ -198,17 +198,17 @@ function NewGriddedDataset({
       />
       {errors.name && <p className={cx(styles.errorMsg, styles.errorMargin)}>{errors.name}</p>}
       <div className={styles.row}>
-        <Choice
+        {/* <Choice
           size="medium"
           label={t((t) => t.datasetUpload.gridded.aggregation)}
           options={AGGREGATION_OPTIONS}
-          activeOption={AGGREGATION_OPTIONS.find((option) => option.id === agregationMode)?.id}
+          activeOption={AGGREGATION_OPTIONS.find((option) => option.id === aggregationMode)?.id}
           onSelect={(option) =>
-            setFourwingsConfig({ agregationMode: option.id as AggregationFunction })
+            setFourwingsConfig({ aggregationMode: option.id as AggregationFunction })
           }
           className={styles.input}
           disabled={loading || isEditing}
-        />
+        /> */}
         <InputText
           value={datasetMetadata?.unit ?? ''}
           label={t((t) => t.datasetUpload.gridded.unit)}

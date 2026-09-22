@@ -32,7 +32,7 @@ export type UserContextLayerV1Configuration = {
 }
 
 export type UserFourwingsV1Configuration = {
-  agregationMode: AggregationFunction
+  aggregationMode: AggregationFunction
   /** GDAL band index, 1-based, in file order. NetCDF always gets 1 for now */
   band?: number
   /** Name of the variable to import. NetCDF only */

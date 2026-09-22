@@ -11,12 +11,19 @@ import styles from './ColorRampBrush.module.css'
 
 export type ColorRampBrushRange = [number | undefined, number | undefined]
 
+export type ColorRampBrushFit = {
+  active: boolean
+  label?: string
+  onChange: (fit: boolean) => void
+}
+
 export type ColorRampBrushConfig = {
   range: ColorRampBrushRange
   onChange: (range: ColorRampBrushRange) => void
   className?: string
   handleTooltip?: string
   unit?: string
+  fit?: ColorRampBrushFit
 }
 
 type ColorRampBrushProps = ColorRampBrushConfig & {

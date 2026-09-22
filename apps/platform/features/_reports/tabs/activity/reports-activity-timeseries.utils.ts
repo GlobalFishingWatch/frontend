@@ -4,13 +4,13 @@ import { max, mean, min } from 'simple-statistics'
 
 import { formatDateForInterval, getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type {
-  FourwingsAggregationOperation,
   FourwingsDeckSublayer,
   FourwingsLayer,
   FourwingsLayerProps,
 } from '@globalfishingwatch/deck-layers'
 import {
   aggregateCell,
+  FourwingsAggregationOperation,
   getIntervalFrames,
   isSublayerValueVisible,
   sliceCellValues,
@@ -176,6 +176,7 @@ export const getFourwingsTimeseriesStats = ({
   const sublayer = (instance.props as FourwingsLayerProps).sublayers?.[0]
   const hasVisibleValuesFilter =
     sublayer?.minVisibleValue !== undefined || sublayer?.maxVisibleValue !== undefined
+  const showMinAndMax = instance.getAggregationOperation?.() === FourwingsAggregationOperation.Sum
   if (features?.[0]?.contained?.length > 0) {
     if ((instance as FourwingsLayer).props.static) {
       // The API already aggregated time away, so a static cell holds a single value
@@ -186,9 +187,8 @@ export const getFourwingsTimeseriesStats = ({
       if (allValues.length > 0) {
         return {
           type: 'fourwings' as const,
-          min: min(allValues),
-          max: max(allValues),
           mean: mean(allValues),
+          ...(showMinAndMax && { min: min(allValues), max: max(allValues) }),
         }
       }
       return

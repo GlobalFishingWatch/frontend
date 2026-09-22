@@ -28,6 +28,12 @@ export type FourwingsTileLayerColorRange = FourwingsColorObject[][] | FourwingsC
 export type FourwingsTileLayerColorScale = {
   colorDomain: FourwingsTileLayerColorDomain
   colorRange: FourwingsTileLayerColorRange
+  colorDomainMax?: number
+}
+
+export type FourwingsColorDomainWithMax = {
+  domain: FourwingsTileLayerColorDomain
+  max?: number
 }
 
 export type FourwingsDeckSublayer = {
@@ -41,6 +47,8 @@ export type FourwingsDeckSublayer = {
   filter?: string
   minVisibleValue?: number
   maxVisibleValue?: number
+  /** Refit the color ramp steps inside the visible values range, see getRampFitRange */
+  colorRampFitToRange?: boolean
   // Used only blue-planet workspace to be able to show only one detection by id
   filterIds?: string[]
   positionProperties?: string[]
