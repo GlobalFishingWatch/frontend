@@ -2,6 +2,7 @@ import { Fragment, useCallback, useEffect, useLayoutEffect, useRef, useState } f
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import geojsonArea from '@mapbox/geojson-area'
+import { QueryStatus } from '@reduxjs/toolkit/query/react'
 import cx from 'classnames'
 
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
@@ -66,7 +67,12 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   const reportCategory = useSelector(selectReportCategory)
   const eventsStatsStatus = useSelector(selectEventsStatsStatus)
   const loading =
-    reportCategory === ReportCategory.Events ? eventsStatsStatus === 'pending' : featuresLoading
+    reportCategory === ReportCategory.Events
+      ? // uninitialized means the stats query has not started yet, which is still not loaded
+        eventsStatsStatus === QueryStatus.pending ||
+        eventsStatsStatus === QueryStatus.uninitialized ||
+        eventsStatsStatus === undefined
+      : featuresLoading
   const fitAreaInViewport = useFitAreaInViewport()
   const { closeSidePanel } = useSidePanel()
   const isGlobalReport = useSelector(selectIsGlobalReport)
@@ -299,7 +305,6 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
                   size="medium"
                   tooltipPlacement="bottom"
                   onClick={onPrintClick}
-                  disabled={loading}
                 />
               )}
             </div>
