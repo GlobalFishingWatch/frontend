@@ -9,6 +9,7 @@ import { Button, Icon, IconButton, Popover } from '@globalfishingwatch/ui-compon
 
 import { AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION } from 'data/map/config'
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
+import { selectWorkspaceStatus } from 'features/_map/workspace/workspace.selectors'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/_map/workspace/workspace.slice'
 import {
   DEFAULT_BUFFER_VALUE,
@@ -24,7 +25,8 @@ import {
 } from 'features/_reports/report-area/area-reports.selectors'
 import { getReportAreaStringByLocale } from 'features/_reports/report-area/title/report-title.utils'
 import { DEFAULT_BUFFER_OPERATION } from 'features/_reports/reports.config'
-import { selectCurrentReport } from 'features/_reports/reports.selectors'
+import { selectCurrentReport, selectReportCategory } from 'features/_reports/reports.selectors'
+import { ReportCategory } from 'features/_reports/reports.types'
 import { useReportFeaturesLoading } from 'features/_reports/reports-timeseries.hooks'
 import AreaReportSearch from 'features/_reports/shared/area-search/AreaReportSearch'
 import ReportTitlePlaceholder from 'features/_reports/shared/placeholders/ReportTitlePlaceholder'
@@ -33,6 +35,7 @@ import {
   selectReportPreviewBuffer,
   setPreviewBuffer,
 } from 'features/_reports/tabs/activity/reports-activity.slice'
+import { selectEventsStatsStatus } from 'features/_reports/tabs/events/events-report.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setPrintMode } from 'features/app/print.slice'
@@ -42,6 +45,7 @@ import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectIsStandaloneReportLocation } from 'router/routes.selectors'
 import { getCurrentAppUrl } from 'router/routes.utils'
 import type { BufferOperation, BufferUnit } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse } from 'utils/html-parser'
 
 import { useFitAreaInViewport, useReportTitle } from '../area-reports.hooks'
@@ -58,7 +62,11 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   const [expandedDescription, setExpandedDescription] = useState(false)
   const descriptionRef = useRef<HTMLSpanElement>(null)
   const dispatch = useAppDispatch()
-  const loading = useReportFeaturesLoading()
+  const featuresLoading = useReportFeaturesLoading()
+  const reportCategory = useSelector(selectReportCategory)
+  const eventsStatsStatus = useSelector(selectEventsStatsStatus)
+  const loading =
+    reportCategory === ReportCategory.Events ? eventsStatsStatus === 'pending' : featuresLoading
   const fitAreaInViewport = useFitAreaInViewport()
   const { closeSidePanel } = useSidePanel()
   const isGlobalReport = useSelector(selectIsGlobalReport)
@@ -70,6 +78,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   const urlBufferUnit = useSelector(selectReportBufferUnit)
   const urlBufferOperation = useSelector(selectReportBufferOperation)
   const isStandaloneReportLocation = useSelector(selectIsStandaloneReportLocation)
+  const workspaceStatus = useSelector(selectWorkspaceStatus)
   const isClientHydrated = useIsClientHydrated()
 
   const handleBufferUnitChange = useCallback(
@@ -206,7 +215,10 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
     setExpandedDescription(!expandedDescription)
   }, [expandedDescription])
 
-  if (!reportTitle) {
+  const isWorkspaceLoading =
+    workspaceStatus === AsyncReducerStatus.Idle || workspaceStatus === AsyncReducerStatus.Loading
+
+  if (isWorkspaceLoading || !reportTitle) {
     return (
       <div className={cx(styles.container, styles.placeholder)}>
         <ReportTitlePlaceholder />
@@ -278,16 +290,18 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
                   </div>
                 </Popover>
               )}
-              <IconButton
-                className={styles.actionButton}
-                type="border"
-                icon="print"
-                tooltip={t((t) => t.analysis.print)}
-                size="medium"
-                tooltipPlacement="bottom"
-                onClick={onPrintClick}
-                disabled={loading}
-              />
+              {!loading && (
+                <IconButton
+                  className={styles.actionButton}
+                  type="border"
+                  icon="print"
+                  tooltip={t((t) => t.analysis.print)}
+                  size="medium"
+                  tooltipPlacement="bottom"
+                  onClick={onPrintClick}
+                  disabled={loading}
+                />
+              )}
             </div>
           )}
         </div>

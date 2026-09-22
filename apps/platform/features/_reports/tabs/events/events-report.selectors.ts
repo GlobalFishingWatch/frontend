@@ -188,6 +188,10 @@ export const selectEventsStatsData = createSelector([selectEventsStats], (stats)
   return stats?.data
 })
 
+export const selectEventsStatsStatus = createSelector([selectEventsStats], (stats) => {
+  return stats?.status
+})
+
 export const selectEventsPortsStats = createSelector(
   [selectReportEventsStatsApiSlice, selectFetchEventsPortsStatsParams],
   (reportEventsStatsApi, params) => {
