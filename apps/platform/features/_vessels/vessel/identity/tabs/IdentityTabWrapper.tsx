@@ -10,12 +10,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
 import VesselInfoCorrection from 'features/_map/workspace/vessels/VesselInfoCorrection'
-import {
-  selectIsGFWUser,
-  selectIsGuestUser,
-  selectIsJACUser,
-  selectIsUserExpired,
-} from 'features/_user/selectors/user.selectors'
+import { selectIsGFWUser, selectIsJACUser } from 'features/_user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/_user/UserLoggedIconButton'
 import VesselIdentityField from 'features/_vessels/vessel/identity/fields/VesselIdentityField'
 import VesselExternalToolLinks from 'features/_vessels/vessel/identity/VesselExternalToolLinks'
@@ -52,8 +47,6 @@ const IdentityTabWrapper = ({ children }: { children: ReactNode }) => {
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
   const { setTimerange } = useTimerangeConnect()
 
-  const guestUser = useSelector(selectIsGuestUser)
-  const isUserExpired = useSelector(selectIsUserExpired)
   const isGFWUser = useSelector(selectIsGFWUser)
   const isJACUser = useSelector(selectIsJACUser)
 
@@ -154,9 +147,8 @@ const IdentityTabWrapper = ({ children }: { children: ReactNode }) => {
           </div>
         </div>
         <div className={styles.actionsContainer}>
-          {!(guestUser || isUserExpired) &&
-            (isJACUser || isGFWUser) &&
-            !source?.[0]?.includes('VMS') && <VesselInfoCorrection />}
+          {/* selectIsGFWUser / selectIsJACUser are already expiry aware, and a guest has no groups */}
+          {(isJACUser || isGFWUser) && !source?.[0]?.includes('VMS') && <VesselInfoCorrection />}
           <UserLoggedIconButton
             loginSource="vessel-download"
             type="border"
