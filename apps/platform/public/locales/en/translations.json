@@ -1157,6 +1157,7 @@
     },
     "datasets": "User Datasets",
     "gfwBadges": "GFW Badges",
+    "groupDatasetPermissionMissing": "This group has no dataset permissions configured yet, so its private data is not available. Contact support if you need access.",
     "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",
     "groups": "Groups",
     "info": "User Info",
