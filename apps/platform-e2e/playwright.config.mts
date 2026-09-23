@@ -91,10 +91,18 @@ export default defineConfig({
     return allProjects.filter((project) => allowed.has(project.name))
   })(),
 
-  /* Run your local dev server before starting the tests */
   /*
-   * Using dependsOn in project.json (simpler, Nx-native approach).
-   * Nx will start the server before running tests.
-   * For CI, you can optionally use webServer here for health checks.
+   * The dev server is started by Nx's `dependsOn: platform:start` (project.json), not by this
+   * config — but that only guarantees the process was launched, not that it's accepting
+   * connections yet. `command` here is a no-op that just idles: reuseExistingServer means it's
+   * only spawned if Nx's server isn't already listening on the port, and it must not exit before
+   * `url` responds or Playwright treats that as a startup failure. Either way, the real wait
+   * happens on `url`.
    */
+  webServer: {
+    command: 'node -e "setInterval(() => {}, 60000)"',
+    url: baseURL,
+    reuseExistingServer: true,
+    timeout: 120 * 1000,
+  },
 })
