@@ -1077,6 +1077,9 @@
     "months_one": "crwdns133509:0{{count}}crwdne133509:0",
     "months_other": "crwdns133513:0{{count}}crwdne133513:0",
     "now": "crwdns133515:0crwdne133515:0",
+    "weeks": "crwdns138595:0{{count}}crwdne138595:0",
+    "weeks_one": "crwdns138597:0{{count}}crwdne138597:0",
+    "weeks_other": "crwdns138599:0{{count}}crwdne138599:0",
     "years": "crwdns138537:0{{count}}crwdne138537:0",
     "years_one": "crwdns138539:0{{count}}crwdne138539:0",
     "years_other": "crwdns138541:0{{count}}crwdne138541:0"
