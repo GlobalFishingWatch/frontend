@@ -23,7 +23,7 @@ const useIsomorphicLayoutEffect = getIsBrowser() ? useLayoutEffect : useEffect
 // Returns false until the URL viewport has been written into the atom Deck must not be created before that
 export const useMapViewStateUrlSync = () => {
   const setViewState = useSetAtom(viewStateAtom)
-  const [synced, setSynced] = useState(!getIsBrowser())
+  const [synced, setSynced] = useState(false)
   useIsomorphicLayoutEffect(() => {
     const longitude = getUrlViewstateNumericParam('longitude')
     const latitude = getUrlViewstateNumericParam('latitude')
