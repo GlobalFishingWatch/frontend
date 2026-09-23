@@ -128,6 +128,9 @@ jobs:
     env:
       IMAGE: us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${{ matrix.app }}:${{ inputs.image-tag || format('latest-{0}', inputs.env-suffix) }}
       CLOUDRUN_SA: frontend-${{ inputs.env-suffix }}@${{ inputs.cloudrun-project }}.iam.gserviceaccount.com
+      # Single gate for the whole job: only platform, only staging/production. Everything
+      # below branches on this once instead of repeating the condition per step.
+      RUN_SMOKE_TESTS: ${{ matrix.app == 'platform' && (inputs.env-suffix == 'sta' || inputs.env-suffix == 'pro') }}
 
     steps:
       - name: Checkout code
@@ -139,7 +142,10 @@ jobs:
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
-      - name: Build and push
+      # Untested path: build and push in one step, exactly as before — no extra cost
+      # for the deploys (dev, and every non-platform app) that never run smoke tests.
+      - name: Build image
+        if: env.RUN_SMOKE_TESTS != 'true'
         uses: ./.github/actions/build-and-push
         with:
           app: ${{ matrix.app }}
@@ -148,14 +154,31 @@ jobs:
           nx-cloud-access-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
           extra-build-args: ${{ inputs.build-args }}
 
+      # Tested path: build only (loaded into the local daemon, not pushed) so a failing
+      # smoke test can never land a broken image in the registry.
+      - name: Build image
+        if: env.RUN_SMOKE_TESTS == 'true'
+        uses: ./.github/actions/build-and-push
+        with:
+          app: ${{ matrix.app }}
+          image: ${{ env.IMAGE }}
+          config: ${{ inputs.config }}
+          nx-cloud-access-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+          extra-build-args: ${{ inputs.build-args }}
+          push: 'false'
+
       - name: Run smoke tests
-        if: matrix.app == 'platform' && (inputs.env-suffix == 'sta' || inputs.env-suffix == 'pro')
+        if: env.RUN_SMOKE_TESTS == 'true'
         uses: ./.github/actions/smoke-test
         with:
           image: ${{ env.IMAGE }}
           nx-cloud-access-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
           test-user-email: ${{ secrets.TEST_USER_EMAIL }}
           test-user-password: ${{ secrets.TEST_USER_PASSWORD }}
+
+      - name: Push image
+        if: env.RUN_SMOKE_TESTS == 'true'
+        run: docker push "${{ env.IMAGE }}"
 
       - name: Deploy
         uses: ./.github/actions/deploy-cloudrun

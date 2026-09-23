@@ -51,7 +51,8 @@ runs:
       shell: bash
       run: |
         set -euo pipefail
-        docker pull "${{ inputs.image }}"
+        # No pull: the caller just built this image and loaded it into the local
+        # daemon, so it's already here — pulling would just refetch what we have.
         # No BASIC_AUTH: the deploy-time env vars are Cloud Run's, and setting Restricted here
         # would make every request need credentials the Playwright context is not given.
         docker run -d --name smoke-target \
