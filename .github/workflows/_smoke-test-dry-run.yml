@@ -3,9 +3,15 @@ name: Smoke Test Dry Run (temporary — do not merge)
 # Throwaway: times the Build -> Test portion of _build-and-deploy.yml in isolation,
 # on a real GitHub-hosted runner, with no push to the registry and no deploy.
 # Delete this file (and close the PR) once it's served its purpose.
+#
+# Triggers on push instead of workflow_dispatch: GitHub only lists/allows dispatching
+# a workflow_dispatch-triggered workflow once its file exists on the default branch
+# (develop here), so it can't be run on demand from a feature branch. push has no
+# such restriction — every push to this branch just runs it.
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [test/smoke-dry-run]
 
 jobs:
   build-and-test:
