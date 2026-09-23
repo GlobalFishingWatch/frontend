@@ -1,10 +1,11 @@
 /// <reference types='vitest' />
 import react from '@vitejs/plugin-react'
+import { config } from 'dotenv'
 import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import svgr from 'vite-plugin-svgr'
 
-import 'dotenv/config'
+config({ quiet: true })
 
 const basePath =
   process.env.PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/port-labeler' : '')

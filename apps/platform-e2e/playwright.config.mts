@@ -8,7 +8,7 @@ import * as dotenv from 'dotenv'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-dotenv.config({ path: resolve(__dirname, '.env') })
+dotenv.config({ path: resolve(__dirname, '.env'), quiet: true })
 
 // Origin only — absolute paths like /platform/map replace the URL path entirely,
 // so embedding /platform in baseURL does not work with goto('/map').
