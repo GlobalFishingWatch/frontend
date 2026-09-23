@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { deepEqual } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
 import { z } from 'zod'
 
@@ -41,6 +42,33 @@ export function getNavigateToolLinkProps(navigation: NavigateToolNavigation) {
     params: navigation.params ?? {},
     search: normalizedSearch,
   }
+}
+
+type SearchRecord = Record<string, unknown>
+type InstanceLike = { id?: string }
+
+export function isNavigateToolViewActive(current: SearchRecord, linkSearch: SearchRecord) {
+  const {
+    latitude: _lat,
+    longitude: _lng,
+    zoom: _zoom,
+    dataviewInstances: linkInstances,
+    ...rest
+  } = linkSearch
+  if (!deepEqual(current, rest, true)) {
+    return false
+  }
+  if (!Array.isArray(linkInstances)) {
+    return true
+  }
+  const currentInstances = (current.dataviewInstances ?? []) as InstanceLike[]
+  return (linkInstances as InstanceLike[]).every((linkInstance) =>
+    deepEqual(
+      currentInstances.find((instance) => instance.id === linkInstance.id),
+      linkInstance,
+      true
+    )
+  )
 }
 
 /** Map state the router search params don't drive on their own. */
