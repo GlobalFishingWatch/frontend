@@ -154,15 +154,17 @@ const VesselLink = ({
         return instance
       })
     } else {
+      const vesselDataviewInstance = getVesselDataviewInstance({
+        vessel: { id: vesselId, ssvid: identity?.ssvid },
+        datasets: { info: vesselDatasetId },
+        dataviewTemplates: vesselTemplateDataviews,
+      })
       dataviewInstances = [
         ...dataviewInstances,
         {
-          ...getVesselDataviewInstance({
-            vessel: { id: vesselId, ssvid: identity?.ssvid },
-            datasets: { info: vesselDatasetId },
-            dataviewTemplates: vesselTemplateDataviews,
-          }),
+          ...vesselDataviewInstance,
           config: {
+            ...vesselDataviewInstance.config,
             visible: true,
           },
         },

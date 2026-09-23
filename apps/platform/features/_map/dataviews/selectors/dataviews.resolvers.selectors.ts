@@ -126,6 +126,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
       dataviewInstance && getIsVesselDataviewInstanceId(dataviewInstance.id)
         ? resolveVesselDataviewInstance(dataviewInstance, {
             datasets,
+            dataviews,
             loggedUser,
             trackThinningZoomConfig,
           })
