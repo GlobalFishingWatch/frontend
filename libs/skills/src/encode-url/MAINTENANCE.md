@@ -17,7 +17,8 @@ Paste (or point Claude at) the following:
 > 7. **Routes come from `ROUTE_PATHS`** (`apps/platform/config/routes.ts`) and the basename from `DEFAULT_PATH_BASENAME` in the same file. `routes.ts` (`ROUTE_PATTERNS`, `LEGACY_ROUTE_PATTERNS`) must cover every pattern an agent can build or decode, and `references/routes.md` must show the full patterns including the `/map` segment. Redirect-only paths (`apps/platform/routes/_platform/_map/map/{user,vessel-search,report.$reportId,vessel.$vesselId}.tsx`) belong in `LEGACY_ROUTE_PATTERNS` for decoding only, never in the build tables.
 > 8. **Examples live in two files.** `references/examples.md` holds input recipes; `references/examples-conversations.md` holds conversation transcripts with expected output URLs. Update transcripts if encoder output changes.
 > 9. **`references/areas.json` stays one area per line** (`{"datasetId","areaId","label"}`), so a grep by name returns the id too. FAO labels carry `FAO <code>` plus both word orders. It is in `.prettierignore` — never reformat it pretty-printed.
-> 10. **Verify, don't trust.** `pnpm nx build skills`, then run `node scripts/encode-url.mjs` (node >= 24) with inputs exercising every param you touched; confirm expected abbreviations/pass-through names in the output path. Round-trip against the transcripts in examples-conversations.md. Finish with `pnpm prettier --write` on every markdown file touched.
+> 10. **Dataset filters are generated, never hand-edited.** Run `GFW_API_TOKEN=<token> pnpm nx sync-dataset-filters skills`. It rewrites `references/dataset-filters.json`, taking dataset lists and filter enums from the API for every activity, detections and events dataview in `dictionary.ts`. Review the git diff; it shows exactly what a release changed. When a hand-written table in `references/filters.md` disagrees with the new JSON, fix the table. Do not copy per-dataset VMS values into the markdown.
+> 11. **Verify, don't trust.** `pnpm nx build skills`, then run `node scripts/encode-url.mjs` (node >= 24) with inputs exercising every param you touched; confirm expected abbreviations/pass-through names in the output path. Round-trip against the transcripts in examples-conversations.md. Finish with `pnpm prettier --write` on every markdown file touched.
 
 ## Value sources (for update checks)
 
@@ -55,6 +56,11 @@ Every enumerated value in `references/query-params.md` is copied from one of the
 - AIS apparent-fishing-effort instances with a non-empty `config.filters` get `distance_from_port_km: "3"` added unless the key is present (URL filters replace dataview defaults; filterless instances keep the server-side default).
 - Layer-library instance ids get `dataviewId` filled from `dictionary.ts`; `{PIPE_DATASET_VERSION}` tokens resolve from the env.
 - `start`/`end` snap to the fourwings interval resolution.
+- `withCompatibleFilters` (runs after the AIS default): a filter must be supported, with its values, by every active dataset of the instance (`config.datasets`, or the dataview's list in `references/dataset-filters.json`). This mirrors the app's `isDataviewFilterSupported` / `getCommonFiltersInDataview` in `apps/platform/features/_map/dataviews/dataviews.filters.ts`.
+  - Some datasets support it → `config.datasets` is narrowed to them, plus a `warnings` entry.
+  - None support it, or an explicit `config.datasets` includes one that doesn't → the encoder throws.
+  - Datasets or dataviews missing from the JSON are passed through with a warning, so a stale sync never blocks encoding.
+  - Not covered yet: dataview `filtersConfig.incompatibility` rules (detections, e.g. `matched=false` disables `flag`).
 
 ## Doc structure invariants
 
