@@ -1,0 +1,116 @@
+name: Smoke Tests
+description: Runs a locally built image and drives it with the @smoke Playwright suite
+
+inputs:
+  image:
+    description: Local Docker image tag to run
+    required: true
+  nx-cloud-access-token:
+    description: NX Cloud access token
+    required: false
+    default: ''
+  test-user-email:
+    description: Account the login smoke test signs in with
+    required: true
+  test-user-password:
+    description: Password for test-user-email
+    required: true
+  test-user-name:
+    description: Display name shown once test-user-email is logged in — LoginPage asserts on it
+    required: true
+  port:
+    description: |
+      Host port to publish the container on. Nitro listens on 3000 inside — this is
+      the host-side mapping only. Must stay 3003: that's the exact localhost callback
+      staging's SSO app has allowlisted (matching local dev's `vite --port=3003`); any
+      other host port makes login fail with "Callback ... not registered".
+    required: false
+    default: '3003'
+
+runs:
+  using: composite
+  steps:
+    - name: Setup pnpm
+      uses: pnpm/setup@v2
+      with:
+        install: false # the explicit --frozen-lockfile step below owns installing
+    - name: Setup Node.js
+      uses: actions/setup-node@v7
+      with:
+        node-version-file: .nvmrc
+        cache: 'pnpm'
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile
+
+    - name: Cache Playwright browsers
+      id: playwright-cache
+      uses: actions/cache@v6
+      with:
+        path: ~/.cache/ms-playwright
+        key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
+    - name: Install Playwright browsers
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: npx playwright install --with-deps chromium
+
+    - name: Run the image
+      shell: bash
+      run: |
+        set -euo pipefail
+        # No pull: the caller just built this image and loaded it into the local
+        # daemon, so it's already here — pulling would just refetch what we have.
+        # No BASIC_AUTH: the deploy-time env vars are Cloud Run's, and setting Restricted here
+        # would make every request need credentials the Playwright context is not given.
+        docker run -d --name smoke-target \
+          -p ${{ inputs.port }}:3000 \
+          "${{ inputs.image }}"
+
+    - name: Wait for the container
+      shell: bash
+      run: |
+        set -uo pipefail
+        for _ in $(seq 1 60); do
+          if curl -sf "http://localhost:${{ inputs.port }}/platform/map" > /dev/null; then
+            exit 0
+          fi
+          if [ -z "$(docker ps -q -f name=smoke-target)" ]; then
+            echo "::error::Container exited before serving a request"
+            docker logs smoke-target
+            exit 1
+          fi
+          sleep 5
+        done
+        echo "::error::No answer on http://localhost:${{ inputs.port }}/platform/map within 5 minutes"
+        docker logs smoke-target
+        exit 1
+
+    - name: Run smoke tests
+      shell: bash
+      run: pnpm exec nx test platform-e2e -c smoke
+      env:
+        CI: '1'
+        NX_DAEMON: 'false'
+        NX_CLOUD_ACCESS_TOKEN: ${{ inputs.nx-cloud-access-token }}
+        PLAYWRIGHT_BASE_URL: http://localhost:${{ inputs.port }}
+        TEST_USER_EMAIL: ${{ inputs.test-user-email }}
+        TEST_USER_PASSWORD: ${{ inputs.test-user-password }}
+        TEST_USER_NAME: ${{ inputs.test-user-name }}
+
+    - name: Upload Playwright report
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: playwright-report-${{ github.run_id }}
+        path: apps/platform-e2e/playwright-report
+        retention-days: 7
+
+    - name: Dump container logs
+      if: failure()
+      shell: bash
+      run: docker logs smoke-target || true
+
+    - name: Stop the container
+      if: always()
+      shell: bash
+      run: docker rm -f smoke-target || true
