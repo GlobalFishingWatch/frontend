@@ -12,6 +12,9 @@ libs/ocean-areas/src/data/**
 libs/ocean-areas/src/source/**
 libs/ui-components/src/miniglobe/ne_110m_land.json
 
+# One area per line on purpose: a grep hit must carry datasetId + areaId + label together
+libs/skills/src/encode-url/references/areas.json
+
 /dist
 /coverage
 
