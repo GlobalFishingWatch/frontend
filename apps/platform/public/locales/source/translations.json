@@ -1077,6 +1077,9 @@
     "months_one": "{{count}} month",
     "months_other": "{{count}} months",
     "now": "now",
+    "weeks": "{{count}} week",
+    "weeks_one": "{{count}} week",
+    "weeks_other": "{{count}} weeks",
     "years": "{{count}} year",
     "years_one": "{{count}} year",
     "years_other": "{{count}} years"
