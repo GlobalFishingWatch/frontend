@@ -212,11 +212,15 @@ export const getVesselDataviewInstanceDatasetConfig = (
 
 // Resolves track dataset ids not stored in the url instance config, to avoid
 // storing all the datasetConfig in the instance and save url string characters
-export const resolveVesselTrackConfig = (
-  config: UrlDataviewInstance['config'],
-  datasets: Dataset[],
+export const resolveVesselTrackConfig = ({
+  config,
+  datasets,
+  loggedUser,
+}: {
+  config: UrlDataviewInstance['config']
+  datasets: Dataset[]
   loggedUser: boolean
-) => {
+}) => {
   const resolvedConfig = { ...config }
   if (!resolvedConfig.info) {
     return resolvedConfig
@@ -242,10 +246,12 @@ export const resolveVesselDataviewInstance = (
   dataviewInstance: UrlDataviewInstance,
   {
     datasets,
+    dataviews,
     loggedUser,
     trackThinningZoomConfig,
   }: {
     datasets: Dataset[]
+    dataviews: Dataview[]
     loggedUser: boolean
     trackThinningZoomConfig: DataviewConfig['trackThinningZoomConfig']
   }
@@ -260,7 +266,20 @@ export const resolveVesselDataviewInstance = (
     },
   }
   if (!dataviewInstance.datasetsConfig?.length) {
-    const config = resolveVesselTrackConfig(dataviewInstance.config, datasets, loggedUser)
+    // Url instances can come with no datasets at all, so we fallback to the dataview template one
+    const dataviewInfoDatasetId = dataviews
+      .find((dataview) => dataview.slug === dataviewInstance.dataviewId)
+      ?.datasetsConfig?.find(
+        (datasetConfig) => datasetConfig.endpoint === EndpointId.Vessel
+      )?.datasetId
+    const config = resolveVesselTrackConfig({
+      config: {
+        ...dataviewInstance.config,
+        info: dataviewInstance.config?.info || dataviewInfoDatasetId,
+      },
+      datasets,
+      loggedUser,
+    })
     const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
       getVesselIdFromInstanceId(dataviewInstance.id),
       config
