@@ -1,9 +1,9 @@
 name: Smoke Tests
-description: Runs the pushed container and drives it with the @smoke Playwright suite
+description: Runs a locally built image and drives it with the @smoke Playwright suite
 
 inputs:
   image:
-    description: Full Docker image URI to run — the one about to be deployed
+    description: Local Docker image tag to run
     required: true
   nx-cloud-access-token:
     description: NX Cloud access token
@@ -14,6 +14,9 @@ inputs:
     required: true
   test-user-password:
     description: Password for test-user-email
+    required: true
+  test-user-name:
+    description: Display name shown once test-user-email is logged in — LoginPage asserts on it
     required: true
   port:
     description: Host port to publish the container on. Nitro listens on 3000 inside.
@@ -88,6 +91,7 @@ runs:
         PLAYWRIGHT_BASE_URL: http://localhost:${{ inputs.port }}
         TEST_USER_EMAIL: ${{ inputs.test-user-email }}
         TEST_USER_PASSWORD: ${{ inputs.test-user-password }}
+        TEST_USER_NAME: ${{ inputs.test-user-name }}
 
     - name: Upload Playwright report
       if: failure()

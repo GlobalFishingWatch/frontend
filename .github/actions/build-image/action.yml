@@ -1,12 +1,12 @@
-name: Build and Push Docker Image
-description: Reads build config, fetches secrets, and builds a Docker image — pushed to Artifact Registry unless push is false
+name: Build Docker Image
+description: Reads build config, fetches secrets, and builds a Docker image, loaded into the local Docker daemon. Never pushes — the caller pushes explicitly once it's ready to.
 
 inputs:
   app:
     description: Application name
     required: true
   image:
-    description: Full Docker image URI to push
+    description: Local Docker image tag to build
     required: true
   config:
     description: Path to the app config YAML file
@@ -22,13 +22,6 @@ inputs:
       config, so they override it. Every KEY still needs an ARG in the Dockerfile.
     required: false
     default: ''
-  push:
-    description: |
-      Push the built image to Artifact Registry. Set to 'false' to only build and
-      load it into the local Docker daemon instead — e.g. to smoke-test it before
-      a caller decides whether to push.
-    required: false
-    default: 'true'
 
 runs:
   using: composite
@@ -115,8 +108,8 @@ runs:
       with:
         context: .
         target: ${{ steps.prepare.outputs.target }}
-        push: ${{ inputs.push }}
-        load: ${{ inputs.push != 'true' }}
+        push: false
+        load: true
         tags: ${{ inputs.image }}
         build-args: ${{ steps.prepare.outputs.args }}
         secrets: ${{ steps.docker-secrets.outputs.value }}
