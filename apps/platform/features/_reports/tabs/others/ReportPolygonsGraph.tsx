@@ -1,25 +1,98 @@
-import { Fragment } from 'react'
+import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
-import { DatasetTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import type { ContextLayer, ContextPickingObject } from '@globalfishingwatch/deck-layers'
+import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 
 import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
-import { dataviewHasUserTimeRange } from 'features/_map/dataviews/dataviews.utils'
+import {
+  dataviewHasUserTimeRange,
+  getContextDataviewDataset,
+} from 'features/_map/dataviews/dataviews.utils'
+import { useMapFitBounds } from 'features/_map/map/map-bounds.hooks'
+import ContextLayerReportLink from 'features/_map/map/popups/context/ContextLayerReportLink'
+import { useContextInteractions } from 'features/_map/map/popups/context/ContextLayers.hooks'
 import { showSchemaFilter } from 'features/_map/workspace/shared/LayerSchemaFilter.utils'
-import type { ReportGraphProps } from 'features/_reports/reports-timeseries.hooks'
+import type {
+  PolygonsReportTopArea,
+  ReportGraphProps,
+} from 'features/_reports/reports-timeseries.hooks'
 import { useTimeseriesStats } from 'features/_reports/reports-timeseries.hooks'
 import { getStatsValue } from 'features/_reports/reports-timeseries-shared.utils'
 import ReportActivityPlaceholder from 'features/_reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportStatsPlaceholder from 'features/_reports/shared/placeholders/ReportStatsPlaceholder'
 import ReportSummaryTags from 'features/_reports/shared/summary/ReportSummaryTags'
 import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
+import type { Bbox } from 'types'
 
 import ReportPolygonsEvolution from './ReportPolygonsEvolution'
 import ReportSublayerValues from './ReportSublayerValues'
 
 import styles from './ReportPolygonsGraph.module.css'
+
+function formatArea(km2: number) {
+  return km2 < 1
+    ? `${formatI18nNumber(km2 * 1_000_000, { maximumFractionDigits: 0 })} m²`
+    : `${formatI18nNumber(km2, { maximumFractionDigits: 0 })} km²`
+}
+
+// tile properties are flat, so a bbox arrives as the JSON string '[minX,minY,maxX,maxY]'
+function parseBboxProperty(value: unknown): Bbox | undefined {
+  let parsed = value
+  if (typeof value === 'string') {
+    try {
+      parsed = JSON.parse(value)
+    } catch {
+      return undefined
+    }
+  }
+  return Array.isArray(parsed) && parsed.length === 4 && parsed.every(Number.isFinite)
+    ? (parsed as Bbox)
+    : undefined
+}
+
+function ReportTopAreaRow({
+  topArea,
+  onHighlight,
+  onReportClick,
+}: {
+  topArea: PolygonsReportTopArea
+  onHighlight: (id?: string) => void
+  onReportClick: ReturnType<typeof useContextInteractions>['onReportClick']
+}) {
+  const { t } = useTranslation()
+  const fitBounds = useMapFitBounds()
+  const bbox = parseBboxProperty(topArea.feature.properties?.bbox)
+  return (
+    <li
+      className={styles.topArea}
+      onMouseEnter={() => onHighlight(topArea.id)}
+      onMouseLeave={() => onHighlight()}
+    >
+      <span className={styles.topAreaLabel} title={topArea.label}>
+        {topArea.label}
+        <span className={styles.topAreaActions}>
+          {bbox && (
+            <IconButton
+              icon="target"
+              tooltip={t((t) => t.common.fitArea)}
+              size="small"
+              onClick={() => fitBounds(bbox, { fitZoom: true, flyTo: true })}
+            />
+          )}
+          {/* reporting on a fully contained area would analyse this layer against itself */}
+          {!topArea.contained && (
+            <ContextLayerReportLink feature={topArea.feature} onClick={onReportClick} />
+          )}
+        </span>
+      </span>
+      <span className={styles.topAreaValue}>{formatArea(topArea.km2)}</span>
+    </li>
+  )
+}
 
 function ReportPolygonsGraph({
   dataview,
@@ -43,10 +116,20 @@ function ReportPolygonsGraph({
   const { t } = useTranslation()
   const timeseriesStats = useTimeseriesStats()
   const tags = dataviews ?? [dataview]
+  const contextLayer = useGetDeckLayer<ContextLayer>(statsId ?? dataview.id)
+  const { onReportClick } = useContextInteractions()
 
-  const dataset = dataview.datasets?.find(
-    (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
+  // getPickedFeatureToHighlight matches on id alone, so no need to keep the geometry around
+  const highlightArea = useCallback(
+    (id?: string) => {
+      contextLayer?.instance?.setHighlightedFeatures(
+        id ? [{ id } as ContextPickingObject] : ([] as ContextPickingObject[])
+      )
+    },
+    [contextLayer]
   )
+
+  const dataset = getContextDataviewDataset(dataview)
   const title = dataset?.name
   const unit =
     dataset?.unit && dataset.unit !== 'TBD' && dataset.unit !== 'NA' ? dataset.unit : undefined
@@ -62,6 +145,7 @@ function ReportPolygonsGraph({
     : []
   const areaCoverageRatio = layerStats ? getStatsValue(layerStats, 'areaCoverageRatio') : undefined
   const areaCoverageKm2 = layerStats ? getStatsValue(layerStats, 'areaCoverageKm2') : undefined
+  const topAreas = layerStats ? getStatsValue(layerStats, 'topAreas') : undefined
 
   const { filtersAllowed } = getFiltersInDataview(dataview)
   const hasFilters = filtersAllowed.some(showSchemaFilter)
@@ -69,12 +153,12 @@ function ReportPolygonsGraph({
 
   return (
     <div className={cx('card', styles.container, className)}>
-      <p className={styles.title}>
+      <div className={styles.title}>
         {tags.length === 1 && <ReportSummaryTags dataview={tags[0]} showFilters={false} />}
         <span>
           <strong>{title}</strong> {unit && <span>({unit})</span>}
         </span>
-      </p>
+      </div>
       {loading || !layerStats ? (
         <ReportStatsPlaceholder />
       ) : containedCount || overlappingCount ? (
@@ -99,15 +183,19 @@ function ReportPolygonsGraph({
           {t((t) => t.analysis.polygons, {
             count: (containedCount || 0) + (overlappingCount || 0),
           })}
-          {', '}
-          {t((t) => t.analysis.polygonsAreaCoverage, {
-            areakm2: formatI18nNumber(areaCoverageKm2 as number, {
-              maximumFractionDigits: 1,
-            }).toString(),
-            coverage: formatI18nNumber((areaCoverageRatio as number) * 100, {
-              maximumFractionDigits: 3,
-            }).toString(),
-          })}
+          {typeof areaCoverageRatio === 'number' && typeof areaCoverageKm2 === 'number' && (
+            <Fragment>
+              {', '}
+              {t((t) => t.analysis.polygonsAreaCoverage, {
+                areakm2: formatI18nNumber(areaCoverageKm2, {
+                  maximumFractionDigits: 1,
+                }).toString(),
+                coverage: formatI18nNumber(areaCoverageRatio * 100, {
+                  maximumFractionDigits: 2,
+                }).toString(),
+              })}
+            </Fragment>
+          )}
         </p>
       ) : (
         <p className={styles.summary}>{t((t) => t.analysis.noPolygonsContainedOrOverlapping)}</p>
@@ -124,6 +212,25 @@ function ReportPolygonsGraph({
         ) : (
           <ReportPolygonsEvolution start={start} end={end} data={data} />
         ))}
+
+      {topAreas && topAreas.length > 1 && (
+        <details className={styles.topAreas}>
+          <summary className={styles.topAreasTitle}>
+            {t((t) => t.analysis.polygonsTopAreas, { count: topAreas.length })}
+            <Icon icon="arrow-down" className={styles.topAreasChevron} />
+          </summary>
+          <ol>
+            {topAreas.map((topArea, index) => (
+              <ReportTopAreaRow
+                key={`${topArea.id}-${index}`}
+                topArea={topArea}
+                onHighlight={highlightArea}
+                onReportClick={onReportClick}
+              />
+            ))}
+          </ol>
+        </details>
+      )}
     </div>
   )
 }

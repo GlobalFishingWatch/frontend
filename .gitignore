@@ -160,11 +160,12 @@ vitest.config.*.timestamp*
 # Vitest traces
 __traces__
 apps/platform/**/__screenshots__
-.vitest-attachments
+.vitest
 
 # Playwright test artifacts
 test-results/
 .playwright/
+.playwright-cli/
 .playwright-mcp/
 playwright-report/
 
@@ -186,3 +187,4 @@ local.globalfishingwatch.org.pem
 .github/instructions/nx.instructions.md
 
 .nx/migrate-runs
+apps/platform-e2e/specs/

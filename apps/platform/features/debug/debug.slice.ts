@@ -5,8 +5,6 @@ import type { RootState } from 'reducers'
 
 export enum FeatureFlag {
   HotspotButton = 'hotspotButton',
-  PolygonsReport = 'polygonsReport',
-  ReportPreview = 'reportPreview',
 }
 
 export enum DebugOption {
@@ -14,7 +12,6 @@ export enum DebugOption {
   DeckStats = 'deckStats',
   Thinning = 'thinning',
   DatasetIdHash = 'addDatasetIdHash',
-  ExperimentalLayers = 'experimentalLayers',
   AreasOnScreen = 'areasOnScreen',
   VesselsAsPositions = 'vesselsAsPositions',
   HideVesselNames = 'hideVesselNames',
@@ -35,15 +32,12 @@ export const debugInitialState: DebugState = {
   active: false,
   featureFlags: {
     hotspotButton: false,
-    polygonsReport: false,
-    reportPreview: false,
   },
   options: {
     debugTiles: false,
     deckStats: false,
     thinning: true,
     addDatasetIdHash: true,
-    experimentalLayers: false,
     areasOnScreen: false,
     vesselsAsPositions: false,
     hideVesselNames: false,

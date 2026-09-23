@@ -20,6 +20,7 @@ const DYNAMIC_SUBTREES = [
   'datasetUpload.errors.*', // API dynamic properties
   'map.screenshotArea.*', // MapControlScreenshot
   'search.searchTypes.*', // MapSearch, keyed by OceanAreaType
+  'time.*', // t.time[unit] — getTimeAgo, plural forms included
   'user.badges.*', // UserInfo
   'vessel.fleetCodes.*', // formatInfoField('fleetCode') — VMS Brazil
   'vessel.gearTypes.*', // getVesselGearTypeLabel
@@ -86,26 +87,24 @@ const DYNAMIC_KEYS = [
   'layer.vesselGroup',
   // plural base form for t(t.search.seeVesselsOnMap, { count })
   'search.seeVesselsOnMap',
-  // t.time[keyBase] — utils/dates.ts
-  'time.days',
-  'time.hours',
-  'time.minutes',
-  'time.months',
-  'time.weeks',
   // t.userGuide[slug] — UserGuideLink
   'userGuide.activity-fishing',
   'userGuide.activity-vessel-presence',
   'userGuide.analysis-and-dynamic-reports',
+  'userGuide.analyzing-activity-over-time',
+  'userGuide.central-section-showing-spatial-activity-maps',
   'userGuide.downloading-data',
   'userGuide.filtering-activity-layers',
   'userGuide.night-light-detections-visible-infrared-imaging-radiometer-suite',
   'userGuide.radar-detections-synthetic-aperture-radar',
+  'userGuide.timebar',
   'userGuide.upload-points',
   'userGuide.upload-polygons',
   'userGuide.upload-tracks',
   'userGuide.uploading-data',
   'userGuide.vessel-groups',
   'userGuide.vessel-search',
+  'userGuide.viewing-vessel-activity-in-layers',
   // t.vessel[field] — identity fields, advanced search, data terminology
   'vessel.authorization',
   'vessel.beam',

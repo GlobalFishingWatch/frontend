@@ -1,19 +1,31 @@
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { DeckLegendAtom } from '@globalfishingwatch/deck-layer-composer'
-import { useGetDeckLayerLegend } from '@globalfishingwatch/deck-layer-composer'
-import type { UILegend } from '@globalfishingwatch/ui-components'
+import { useDeckLayerLoaded, useGetDeckLayerLegend } from '@globalfishingwatch/deck-layer-composer'
+import type { ColorRampBrushRange, UILegend } from '@globalfishingwatch/ui-components'
 import { LegendType, MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { useActivityDataviewId } from 'features/_map/map/map-layers.hooks'
 import MapLegendPlaceholder from 'features/_map/workspace/shared/MapLegendPlaceholder'
+import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { t } from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
+import { getEventLabel } from 'utils/analytics'
 
 import styles from './MapLegend.module.css'
+
+type LegendScale = {
+  domain: number[]
+  max?: number
+  ranges: DeckLegendAtom['ranges']
+  sublayerIndex: number
+  type: DeckLegendAtom['type']
+}
 
 const getLegendLabelTranslated = (legend?: DeckLegendAtom, tFn = t) => {
   if (!legend) {
@@ -45,43 +57,131 @@ const getLegendLabelTranslated = (legend?: DeckLegendAtom, tFn = t) => {
 
 const MapLegendWrapper = ({
   dataview,
+  // deck layer id to read the legend from, when it isn't resolved from the dataview category
+  layerId,
   showPlaceholder = true,
+  brushClassName,
 }: {
   dataview: UrlDataviewInstance
+  layerId?: string
   showPlaceholder?: boolean
+  brushClassName?: string
 }) => {
   const { t } = useTranslation()
-  const dataviewId = useActivityDataviewId(dataview)
+  const activityDataviewId = useActivityDataviewId(dataview)
+  const dataviewId = layerId || activityDataviewId
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const [lastScale, setLastScale] = useState<LegendScale | undefined>(undefined)
   const deckLegend = getLegendLabelTranslated(useGetDeckLayerLegend(dataviewId))
+  const layerLoaded = useDeckLayerLoaded(dataviewId)
   const isBivariate = deckLegend?.type === LegendType.Bivariate
+
+  const onBrushChange = useCallback(
+    ([minVisibleValue, maxVisibleValue]: ColorRampBrushRange) => {
+      upsertDataviewInstance({
+        id: dataview.id,
+        config: {
+          minVisibleValue,
+          maxVisibleValue,
+          ...(minVisibleValue === undefined &&
+            maxVisibleValue === undefined && { colorRampFitToRange: undefined }),
+        },
+      })
+      trackEvent({
+        category: TrackCategory.ActivityData,
+        action: `Filter ${dataview.category} layer by value`,
+        label: getEventLabel([dataview.name as string, `${minVisibleValue}`, `${maxVisibleValue}`]),
+      })
+    },
+    [dataview.category, dataview.id, dataview.name, upsertDataviewInstance]
+  )
+
+  const onFitChange = useCallback(
+    (colorRampFitToRange: boolean) => {
+      upsertDataviewInstance({ id: dataview.id, config: { colorRampFitToRange } })
+      trackEvent({
+        category: TrackCategory.ActivityData,
+        action: `Fit ${dataview.category} layer ramp to value range`,
+        label: getEventLabel([dataview.name as string, `${colorRampFitToRange}`]),
+      })
+    },
+    [dataview.category, dataview.id, dataview.name, upsertDataviewInstance]
+  )
+
   const isSymbols = deckLegend?.type === LegendType.Symbols
   const legendSublayerIndex = deckLegend?.sublayers?.findIndex(
     (sublayer) => sublayer.id === dataview.id
   )
+
+  const hasScale =
+    legendSublayerIndex >= 0 && !!deckLegend?.ranges?.length && !!deckLegend?.domain?.length
+  const currentScale = useMemo(
+    () =>
+      hasScale
+        ? {
+            domain: deckLegend.domain as number[],
+            max: deckLegend.max,
+            ranges: deckLegend.ranges,
+            sublayerIndex: legendSublayerIndex,
+            type: deckLegend.type,
+          }
+        : undefined,
+    [
+      hasScale,
+      deckLegend.domain,
+      deckLegend.max,
+      deckLegend.ranges,
+      deckLegend.type,
+      legendSublayerIndex,
+    ]
+  )
+  useEffect(() => {
+    if (currentScale) {
+      setLastScale(currentScale)
+    }
+  }, [currentScale])
+
   if (!deckLegend) {
     return null
   }
   if (isBivariate && legendSublayerIndex !== 0) {
     return null
   }
-  if (legendSublayerIndex < 0 || !deckLegend.ranges?.length || !deckLegend.domain?.length) {
-    return showPlaceholder ? <MapLegendPlaceholder /> : null
+
+  const scale = currentScale || (lastScale?.type === deckLegend.type ? lastScale : undefined)
+  if (!scale) {
+    // a loaded layer with no ramp has no cells in the viewport, so the placeholder would never
+    // resolve into a legend
+    return showPlaceholder && !layerLoaded ? <MapLegendPlaceholder /> : null
   }
 
+  const { domain, max, ranges, sublayerIndex } = scale
   const colors =
-    isBivariate || isSymbols
-      ? (deckLegend.ranges as string[])
-      : (deckLegend.ranges[legendSublayerIndex] as string[])
+    isBivariate || isSymbols ? (ranges as string[]) : (ranges[sublayerIndex] as string[])
+  const showMax = max !== undefined && !isBivariate && !isSymbols && max > (domain.at(-1) as number)
+  const values = showMax ? [...domain.slice(0, -1), max] : domain
   const uiLegend: UILegend = {
     id: deckLegend.id,
     type: deckLegend?.type,
-    values: deckLegend.domain as number[],
+    values,
+    lastValueIsMax: showMax,
     colors,
+    gradient: !isBivariate && !isSymbols,
     currentValue: isBivariate
       ? deckLegend.currentValues
-      : deckLegend.currentValues?.[legendSublayerIndex],
+      : deckLegend.currentValues?.[sublayerIndex],
     label: deckLegend.label || '',
+    unit: deckLegend.unit,
   }
+
+  const showBrush = !isBivariate && !isSymbols
+  const { minVisibleValue, maxVisibleValue, colorRampFitToRange } = dataview.config || {}
+  const hasRange = minVisibleValue !== undefined || maxVisibleValue !== undefined
+  // Merged layers (activity, detections) share one ramp domain across their sublayers, so fitting
+  // it to one layer's range would rescale the others. Mirrors getRampFitRange in deck-layers
+  const canFit =
+    (deckLegend.sublayers || []).filter((sublayer) => 'visible' in sublayer && sublayer.visible)
+      .length === 1
 
   return (
     <MapLegend
@@ -89,6 +189,21 @@ const MapLegendWrapper = ({
       className={styles.legend}
       roundValues={dataview.category !== DataviewCategory.Environment}
       currentValueClassName={styles.currentValue}
+      {...(showBrush && {
+        brush: {
+          range: [minVisibleValue, maxVisibleValue] as ColorRampBrushRange,
+          onChange: onBrushChange,
+          className: hasRange ? undefined : brushClassName,
+          handleTooltip: t((t) => t.map.legendBrushHelp),
+          ...(canFit && {
+            fit: {
+              active: colorRampFitToRange === true,
+              label: t((t) => t.map.legendBrushFit),
+              onChange: onFitChange,
+            },
+          }),
+        },
+      })}
       labelComponent={
         uiLegend.label?.includes('²') ? (
           <Tooltip content={t((t) => t.map.legend_help)}>

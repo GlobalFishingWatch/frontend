@@ -22,6 +22,8 @@ import {
 import type { DataviewFilterConfig } from 'features/_map/dataviews/dataviews.filters'
 import type { OnSelectFilterArgs } from 'features/_map/workspace/shared/LayerFilters.utils'
 import {
+  getFilterLabelById,
+  getFilterValueTransform,
   getLabelWithUnit,
   getSchemaValueRounded,
   showSchemaFilter,
@@ -68,9 +70,14 @@ const VALUE_TRANSFORMATIONS_BY_UNIT: Record<TransformationUnit, Transformation> 
 
 const getValueByUnit = (
   value: string | number,
-  { unit, transformDirection = 'in' } = {} as { unit?: string; transformDirection?: 'in' | 'out' }
+  { unit, id, transformDirection = 'in' } = {} as {
+    unit?: string
+    id?: DataviewFilterConfig['id']
+    transformDirection?: 'in' | 'out'
+  }
 ): number => {
-  const transformConfig = VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]
+  const transformConfig =
+    getFilterValueTransform(id) || VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]
   if (transformConfig?.[transformDirection]) {
     return transformConfig[transformDirection](value)
   }
@@ -92,12 +99,17 @@ const getFilterOperatorOptions = () => {
 }
 
 const getSliderConfigBySchema = (schemaFilter: DataviewFilterConfig) => {
-  const schemaMin = getValueByUnit(schemaFilter.options?.[0]?.id, { unit: schemaFilter.unit }) ?? 0
+  const schemaMin =
+    getValueByUnit(schemaFilter.options?.[0]?.id, {
+      unit: schemaFilter.unit,
+      id: schemaFilter.id,
+    }) ?? 0
   const schemaMaxValue =
     schemaFilter.options.length === 2
       ? schemaFilter.options?.[1]?.id
       : schemaFilter.options?.[schemaFilter.options.length - 1]?.id
-  const schemaMax = getValueByUnit(schemaMaxValue, { unit: schemaFilter.unit }) ?? 1
+  const schemaMax =
+    getValueByUnit(schemaMaxValue, { unit: schemaFilter.unit, id: schemaFilter.id }) ?? 1
   const supportsRounding = Math.abs(schemaMax - schemaMin) > 1
   const min = supportsRounding ? getSchemaValueRounded(schemaMin) : schemaMin
   const max = supportsRounding ? getSchemaValueRounded(schemaMax) : schemaMax
@@ -116,8 +128,10 @@ const getSliderConfigBySchema = (schemaFilter: DataviewFilterConfig) => {
 }
 
 const getRangeLimitsBySchema = (schemaFilter: DataviewFilterConfig): number[] => {
-  const { options } = schemaFilter
-  const optionValues = options.map(({ id }) => parseFloat(id)).sort((a, b) => a - b)
+  const { options, unit } = schemaFilter
+  const optionValues = options
+    .map(({ id }) => getValueByUnit(id, { unit, id: schemaFilter.id }))
+    .sort((a, b) => a - b)
 
   if (optionValues.length === 1) {
     return optionValues
@@ -135,14 +149,16 @@ const getRangeLimitsBySchema = (schemaFilter: DataviewFilterConfig): number[] =>
 
 const getRangeBySchema = (schemaFilter: DataviewFilterConfig): number[] => {
   const { options, optionsSelected, unit } = schemaFilter
-  const optionValues = options.map(({ id }) => getValueByUnit(id, { unit })).sort((a, b) => a - b)
+  const optionValues = options
+    .map(({ id }) => getValueByUnit(id, { unit, id: schemaFilter.id }))
+    .sort((a, b) => a - b)
   const { min, max } = getSliderConfigBySchema(schemaFilter)
   const rangeValues =
     optionsSelected?.length > 0
       ? optionsSelected
           .map((option) => {
             const value = Array.isArray(option) ? parseFloat(option[0].id) : parseFloat(option.id)
-            return getValueByUnit(value, { unit })
+            return getValueByUnit(value, { unit, id: schemaFilter.id })
           })
           .sort((a, b) => a - b)
       : optionValues
@@ -199,15 +215,22 @@ function LayerSchemaFilter({
         if (rangeSelected[0] === filterRange[0] && rangeSelected[1] === filterRange[1]) {
           onClean(id)
         } else if (rangeSelected.length === 1 && !Number.isNaN(rangeSelected[0])) {
-          const selection = getValueByUnit(rangeSelected[0], { unit, transformDirection: 'out' })
+          const selection = getValueByUnit(rangeSelected[0], {
+            unit,
+            id,
+            transformDirection: 'out',
+          })
           onSelect({ filterKey: id, selection, singleValue: true })
         } else {
-          const selection = rangeSelected.map((range: number) => ({
-            // This id ideally would be a number but as the url parser always consider number as arrays
-            // TODO: find a way to identify when a filter is a range so we can parse properly
-            id: getValueByUnit(range, { unit, transformDirection: 'out' }).toString(),
-            label: getValueByUnit(range, { unit, transformDirection: 'out' }).toString(),
-          }))
+          const selection = rangeSelected
+            .map((range: number) => getValueByUnit(range, { unit, id, transformDirection: 'out' }))
+            .sort((a, b) => a - b)
+            .map((value) => ({
+              // This id ideally would be a number but as the url parser always consider number as arrays
+              // TODO: find a way to identify when a filter is a range so we can parse properly
+              id: value.toString(),
+              label: value.toString(),
+            }))
           onSelect({ filterKey: id, selection })
         }
       } else {
@@ -237,7 +260,7 @@ function LayerSchemaFilter({
           step={unit === 'hours' ? 1 : undefined}
           histogram={id === 'radiance'}
           onCleanClick={() => onClean(id)}
-          label={getLabelWithUnit(label, unit)}
+          label={getLabelWithUnit(getFilterLabelById(id, label), unit)}
           config={getSliderConfigBySchema(schemaFilter)}
           onChange={onSliderChange}
           showInputs
@@ -247,15 +270,15 @@ function LayerSchemaFilter({
   }
 
   if (type === 'number') {
-    const initialValue = getValueByUnit(getRangeBySchema(schemaFilter)[0], { unit })
-    const minValue = getValueByUnit(getRangeLimitsBySchema(schemaFilter)[0], { unit })
+    const initialValue = getValueByUnit(getRangeBySchema(schemaFilter)[0], { unit, id })
+    const minValue = getValueByUnit(getRangeLimitsBySchema(schemaFilter)[0], { unit, id })
     const operationLabel = getOperationLabel(schemaFilter.operation)
-    const maxValue = getValueByUnit(getRangeLimitsBySchema(schemaFilter)[1], { unit })
+    const maxValue = getValueByUnit(getRangeLimitsBySchema(schemaFilter)[1], { unit, id })
     return (
       <Slider
         className={styles.multiSelect}
         initialValue={initialValue}
-        label={getLabelWithUnit(label, unit)}
+        label={getLabelWithUnit(getFilterLabelById(id, label), unit)}
         operationLabel={operationLabel}
         config={{
           steps: [minValue, maxValue],

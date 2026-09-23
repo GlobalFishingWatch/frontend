@@ -27,7 +27,8 @@ export function removeOutliers({
   allValues: number[]
   aggregationOperation?: FourwingsAggregationOperation
 }) {
-  const allValuesCleaned = allValues.filter(Boolean)
+  // Number.isFinite, not Boolean: a real 0 belongs in the ramp, undefined does not
+  const allValuesCleaned = allValues.filter((value) => Number.isFinite(value))
   if (!allValuesCleaned.length) return []
   const meanValue = mean(allValuesCleaned)
   const deviationScale = aggregationOperation === 'avg' ? 2 : 1

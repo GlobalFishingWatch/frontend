@@ -74,6 +74,13 @@
       }
     },
     "publish": {},
+    "sync-dataset-filters": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "node libs/skills/scripts/sync-dataset-filters.mjs"
+      }
+    },
     "claude:encode-url": {
       "executor": "nx:run-commands",
       "dependsOn": ["build"],

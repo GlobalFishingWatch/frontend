@@ -104,9 +104,18 @@
   display: none;
 }
 
+.LayerPanel:not(.expandedContainerOpen, :hover) .brushIdle {
+  opacity: 0;
+}
+
 .properties {
   padding: 0 var(--space-S) var(--space-S);
   z-index: 1;
+}
+
+/* the legend renders nothing when its layer has no data in the viewport */
+.properties:empty {
+  padding: 0;
 }
 
 .propertiesNoPaddingBlock {

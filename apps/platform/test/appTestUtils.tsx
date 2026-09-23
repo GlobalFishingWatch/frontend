@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { createStore as createJotaiStore, Provider as JotaiProvider } from 'jotai'
-import type { Store as JotaiStore } from 'jotai/vanilla/store'
 import { vi } from 'vitest'
 import { page } from 'vitest/browser'
 import type { RenderOptions } from 'vitest-browser-react'
@@ -20,6 +19,8 @@ import { getIsBrowser } from 'utils/dom'
 import { getCreateRouterOptions } from '../router'
 import type { AppStore } from '../store/store'
 import { makeStore } from '../store/store'
+
+export type JotaiStore = ReturnType<typeof createJotaiStore>
 
 export interface AppRenderOptions extends Omit<RenderOptions, 'wrapper'> {
   store?: AppStore

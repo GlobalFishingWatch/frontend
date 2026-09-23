@@ -90,8 +90,10 @@ export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLa
         cellStartOffsets: feature.properties.startOffsets,
       })
     feature.aggregatedValues = aggregatedCellValues
-    if (aggregatedCellValues[0] > 0) {
-      target = hexToDeckColor(color!, Math.min(0.5 + aggregatedCellValues[0] * 0.01, 1))
+
+    const value = aggregatedCellValues[0] ?? 0
+    if (value > 0) {
+      target = hexToDeckColor(color!, Math.min(0.5 + value * 0.01, 1))
     } else {
       target = EMPTY_CELL_COLOR
     }
@@ -155,8 +157,7 @@ export class FourwingsFootprintLayer extends CompositeLayer<FourwingsFootprintLa
               getPath: (d: FourwingsFeature) => d.coordinates,
               getColor: COLOR_HIGHLIGHT_LINE,
               getOffset: 0.5,
-              getPolygonOffset: (params: any) =>
-                getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+              getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Default, params),
               extensions: [new PathStyleExtension({ offset: true })],
             })
           )

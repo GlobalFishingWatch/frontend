@@ -30,6 +30,7 @@ export type BaseUrlWorkspace = {
 const PARAMS_TO_ABBREVIATED = {
   activityVisualizationMode: 'aVM',
   bivariateDataviews: 'bDV',
+  clickedCoordinates: 'cCo',
   color: 'clr',
   config: 'cfg',
   collapsedSections: 'cS',
@@ -120,6 +121,18 @@ export const TOKEN_REGEX = /~(\d+)/
 
 const parseIntNumber = (value: any) => (typeof value === 'string' ? parseInt(value) : value)
 
+// A truncated or hand-edited URL can carry a stray `%`, on which decodeURIComponent throws
+// URIError. Parsing runs in the router's parseSearch, so an unguarded throw is an SSR 500 —
+// keep the raw value instead. The `decoder` below already does this for every other param.
+const safeDecodeURIComponent = (value: any) => {
+  if (typeof value !== 'string') return value
+  try {
+    return decodeURIComponent(value)
+  } catch {
+    return value
+  }
+}
+
 export const parseLegacyDataviewInstanceConfig = (
   dataviewInstance: AnyDataviewInstance
 ): UrlDataviewInstance => {
@@ -158,10 +171,12 @@ const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
     config.breaks = breaks
   }
   if (dataview.config?.color !== undefined) {
-    config.color = decodeURIComponent(dataview.config?.color)
+    config.color = safeDecodeURIComponent(dataview.config?.color)
   }
   if (dataview.config?.datasets !== undefined && dataview.config?.datasets.length) {
-    config.datasets = dataview.config?.datasets.map((datasetId) => decodeURIComponent(datasetId))
+    config.datasets = dataview.config?.datasets.map((datasetId) =>
+      safeDecodeURIComponent(datasetId)
+    )
   }
   if (dataview.config?.maxVisibleValue !== undefined) {
     config.maxVisibleValue = parseFloat(dataview.config?.maxVisibleValue as any)
@@ -189,8 +204,8 @@ const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
 }
 
 const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
-  start: (start) => decodeURIComponent(start),
-  end: (end) => decodeURIComponent(end),
+  start: (start) => safeDecodeURIComponent(start),
+  end: (end) => safeDecodeURIComponent(end),
   latitude: (latitude) => parseFloat(latitude),
   longitude: (longitude) => parseFloat(longitude),
   zoom: (zoom) => parseFloat(zoom),
@@ -218,6 +233,8 @@ const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
   },
   reportAreaBounds: (reportAreaBounds: string[]) =>
     reportAreaBounds?.map((bound: string) => parseFloat(bound)),
+  clickedCoordinates: (clickedCoordinates: string[]) =>
+    clickedCoordinates?.map((coordinate: string) => parseFloat(coordinate)),
   mapDrawing: (drawing: boolean | string) => {
     if (drawing === true || drawing === 'true') {
       return 'polygons'
@@ -225,7 +242,12 @@ const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
     return drawing
   },
   dataviewInstances: (dataviewInstances: AnyDataviewInstance[]) => {
-    return dataviewInstances.flatMap((dv) => (dv ? parseDataviewInstance(dv) : []))
+    const instances = Array.isArray(dataviewInstances)
+      ? dataviewInstances
+      : isObject(dataviewInstances)
+        ? (Object.values(dataviewInstances) as AnyDataviewInstance[])
+        : []
+    return instances.flatMap((dv) => (isObject(dv) ? parseDataviewInstance(dv) : []))
   },
 }
 

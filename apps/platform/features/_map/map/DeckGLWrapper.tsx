@@ -6,6 +6,7 @@ import DeckGL from '@deck.gl/react'
 import { _StatsWidget as StatsWidget } from '@deck.gl/widgets'
 
 import { useSetDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
+import { PICK_ONLY_LAYER_ID_SUFFIX } from '@globalfishingwatch/deck-layers/config'
 
 import { useDatasetDrag } from 'features/_map/map/drag-dataset.hooks'
 import { MAP_CANVAS_ID } from 'features/_map/map/map.config'
@@ -33,9 +34,9 @@ import { DebugOption, selectDebugOptions, setDebugOption } from 'features/debug/
 import { selectIsAnyReportLocation } from 'router/routes.selectors'
 
 const DeckGLWrapper = () => {
+  const viewStateSynced = useMapViewStateUrlSync()
   const deckRef = useRef<DeckGLRef<MapView>>(null)
   useSetMapInstance(deckRef)
-  useMapViewStateUrlSync()
   // drag-and-drop dataset upload — only while the map is mounted
   useDatasetDrag()
   const setViewState = useMapSetViewState()
@@ -108,7 +109,7 @@ const DeckGLWrapper = () => {
     setDeckLayerLoadedState(layers)
   }, [layers, setDeckLayerLoadedState])
 
-  const layerFilterHandler = useCallback(({ renderPass }: FilterContext) => {
+  const layerFilterHandler = useCallback(({ layer, isPicking, renderPass }: FilterContext) => {
     // This avoids performing the default picking
     // since we are handling it through pickMultipleObjects
     // discussion for reference https://github.com/visgl/deck.gl/discussions/5793
@@ -116,8 +117,16 @@ const DeckGLWrapper = () => {
       // if (!loadedLayers.includes(layer.id) || renderPass === 'picking:hover') {
       return false
     }
+
+    if (!isPicking && layer.id.endsWith(PICK_ONLY_LAYER_ID_SUFFIX)) {
+      return false
+    }
     return true
   }, [])
+
+  if (!viewStateSynced) {
+    return null
+  }
 
   return (
     <DeckGL

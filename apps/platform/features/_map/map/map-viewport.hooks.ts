@@ -1,6 +1,6 @@
-import { useEffect, useLayoutEffect, useMemo } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import type { MapViewProps, WebMercatorViewport } from '@deck.gl/core'
+import type { Deck, MapViewProps, WebMercatorViewport } from '@deck.gl/core'
 import { MapView } from '@deck.gl/core'
 import { debounce } from 'es-toolkit'
 import { useAtomValue, useSetAtom } from 'jotai'
@@ -20,8 +20,10 @@ export const useMapViewState = () => {
 // Runs before paint on the client, no-ops on the server.
 const useIsomorphicLayoutEffect = getIsBrowser() ? useLayoutEffect : useEffect
 
+// Returns false until the URL viewport has been written into the atom Deck must not be created before that
 export const useMapViewStateUrlSync = () => {
   const setViewState = useSetAtom(viewStateAtom)
+  const [synced, setSynced] = useState(!getIsBrowser())
   useIsomorphicLayoutEffect(() => {
     const longitude = getUrlViewstateNumericParam('longitude')
     const latitude = getUrlViewstateNumericParam('latitude')
@@ -32,8 +34,10 @@ export const useMapViewStateUrlSync = () => {
     if (Object.keys(urlViewport).length > 0) {
       setViewState((prev) => ({ ...prev, ...urlViewport }))
     }
+    setSynced(true)
     // mount-only: URL viewport is the initial deep-link, not a live source
   }, [])
+  return synced
 }
 // Moved to map-view-state.hooks so always-loaded callers (MainNav) can set the camera without pulling
 // @deck.gl/core, which this module imports as a value for MAP_VIEW. Re-exported for existing consumers.
@@ -75,8 +79,7 @@ export const MAP_VIEW = new MapView({
   pitch: 0,
 } as MapViewProps)
 
-export function useMapViewport() {
-  const deckMap = useDeckMap()
+export function getMapViewport(deckMap: Deck | undefined) {
   try {
     return (deckMap as any)
       ?.getViewports?.()
@@ -84,4 +87,9 @@ export function useMapViewport() {
   } catch {
     return undefined
   }
+}
+
+export function useMapViewport() {
+  const deckMap = useDeckMap()
+  return getMapViewport(deckMap)
 }

@@ -22,8 +22,8 @@ import { useAddDataset } from 'features/_map/datasets/datasets.hook'
 import { getDatasetLabel, isPrivateDataset } from 'features/_map/datasets/datasets.utils'
 import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
 import { selectBasemapLabelsDataviewInstance } from 'features/_map/dataviews/selectors/dataviews.selectors'
-import ContextLayerReportLink from 'features/_map/map/popups/categories/ContextLayerReportLink'
-import { useContextInteractions } from 'features/_map/map/popups/categories/ContextLayers.hooks'
+import ContextLayerReportLink from 'features/_map/map/popups/context/ContextLayerReportLink'
+import { useContextInteractions } from 'features/_map/map/popups/context/ContextLayers.hooks'
 import {
   CONTEXT_FEATURES_LIMIT,
   DATAVIEWS_WARNING,

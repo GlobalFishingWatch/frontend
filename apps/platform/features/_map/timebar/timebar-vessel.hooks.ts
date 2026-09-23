@@ -204,8 +204,11 @@ const vesselTracksGraphAtom = atom<VesselTrackAtom | undefined>(undefined)
 
 const getTrackGraphSpeedHighlighterLabel = ({ value }: HighlighterCallbackFnArgs) =>
   value ? `${value.value?.toFixed(2)} knots` : ''
+// Label only. The graph itself keeps the raw negative elevations: tracks-graph.tsx
+// derives its scale domain from `Math.min(...steps)` and flips its colour comparison
+// when the orientation is 'down', so negating the data would invert the chart.
 const getTrackGraphElevationighlighterLabel = ({ value }: HighlighterCallbackFnArgs) =>
-  value ? `${value.value} m` : ''
+  value?.value !== undefined ? `${Math.abs(value.value)} m` : ''
 
 export const useTimebarVesselTracksGraph = () => {
   const { timebarVisualisation } = useTimebarVisualisationConnect()

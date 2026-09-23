@@ -27,10 +27,11 @@ import type { NavItem } from 'features/nav/nav.config'
 import { isRouted } from 'features/nav/nav.config'
 import type { NavLinkContext } from 'features/nav/nav.links'
 import { useIsClientHydrated } from 'hooks/ssr.hooks'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnySearchLocation,
+  selectIsRouteWithWorkspace,
   selectIsWorkspaceLocation,
-  selectIsWorkspaceVesselLocation,
 } from 'router/routes.selectors'
 import { ROUTE_PATHS } from 'router/routes.utils'
 
@@ -50,13 +51,14 @@ export function useOpenFeedbackModal() {
 export function useNavLinkContext(): NavLinkContext {
   const dispatch = useAppDispatch()
   const cancelPendingInteractionRequests = useCancelInteractionPromises()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const setMapCoordinates = useSetMapCoordinates()
   const workspace = useSelector(selectWorkspace)
   const isClientHydrated = useIsClientHydrated()
   const lastVisitedWorkspaceState = useSelector(selectLastVisitedWorkspace)
   const lastVisitedWorkspace = isClientHydrated ? lastVisitedWorkspaceState : undefined
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
-  const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
+  const isWorkspaceScoped = useSelector(selectIsRouteWithWorkspace)
 
   const onCategoryClick = useCallback(
     (category: WorkspaceCategory) => {
@@ -65,12 +67,13 @@ export function useNavLinkContext(): NavLinkContext {
       // pulls deck-layer-composer and every overlay hook into this always-rendered component.
       cancelPendingInteractionRequests()
       dispatch(setClickedEvent(null))
+      replaceQueryParams({ clickedCoordinates: undefined })
       trackEvent({
         category: TrackCategory.General,
         action: `clicked on ${category}`,
       })
     },
-    [setMapCoordinates, cancelPendingInteractionRequests, dispatch]
+    [setMapCoordinates, cancelPendingInteractionRequests, dispatch, replaceQueryParams]
   )
 
   const onSearchClick = useCallback(() => {
@@ -94,7 +97,7 @@ export function useNavLinkContext(): NavLinkContext {
       workspace,
       lastVisitedWorkspace,
       isWorkspaceLocation,
-      isWorkspaceVesselLocation,
+      isWorkspaceScoped,
       onWorkspaceClick,
       onSearchClick,
       onCategoryClick,
@@ -103,7 +106,7 @@ export function useNavLinkContext(): NavLinkContext {
       workspace,
       lastVisitedWorkspace,
       isWorkspaceLocation,
-      isWorkspaceVesselLocation,
+      isWorkspaceScoped,
       onWorkspaceClick,
       onSearchClick,
       onCategoryClick,

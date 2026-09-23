@@ -1,12 +1,17 @@
-import { capitalize, lowerCase } from 'es-toolkit'
+import { capitalize, lowerCase, uniq } from 'es-toolkit'
 import type { FeatureCollection } from 'geojson'
 
 import type {
   DatasetConfigurationSourceFormat,
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
-import type { JSZipObject } from '@globalfishingwatch/data-transforms'
-import { isZipFile, zipToFiles } from '@globalfishingwatch/data-transforms'
+import type { JSZipObject } from '@globalfishingwatch/data-transforms/files'
+import {
+  findZipEntries,
+  isZipFile,
+  zipEntryToFile,
+  zipToFiles,
+} from '@globalfishingwatch/data-transforms/files'
 
 export function getFileName(file: File): string {
   if (!file?.name) {
@@ -35,6 +40,14 @@ export type MimeExtention =
   | '.KMZ'
   | '.shp'
   | '.SHP'
+  | '.tif'
+  | '.TIF'
+  | '.tiff'
+  | '.TIFF'
+  | '.nc'
+  | '.NC'
+  | '.nc4'
+  | '.NC4'
 type MimeType =
   | 'application/json'
   | 'application/geo+json'
@@ -45,6 +58,8 @@ type MimeType =
   | 'text/tab-separated-values'
   | 'application/vnd.google-earth.kml+xml'
   | 'application/vnd.google-earth.kmz'
+  | 'image/tiff'
+  | 'application/netcdf'
 
 export type MimeExtentionWithoutShp = Exclude<MimeExtention, '.shp' | '.SHP'>
 
@@ -63,17 +78,26 @@ const MIME_TYPES_BY_EXTENSION: Record<MimeExtentionWithoutShp, MimeType[]> = {
   '.KML': ['application/vnd.google-earth.kml+xml'],
   '.kmz': ['application/vnd.google-earth.kmz'],
   '.KMZ': ['application/vnd.google-earth.kmz'],
+  '.tif': ['image/tiff'],
+  '.TIF': ['image/tiff'],
+  '.tiff': ['image/tiff'],
+  '.TIFF': ['image/tiff'],
+  '.nc': ['application/netcdf'],
+  '.NC': ['application/netcdf'],
+  '.nc4': ['application/netcdf'],
+  '.NC4': ['application/netcdf'],
 }
 
 export type DatasetGeometryTypesSupported = Extract<
   DatasetGeometryType,
-  'polygons' | 'tracks' | 'points'
+  'polygons' | 'tracks' | 'points' | 'gridded'
 >
 
 const FILES_TYPES_BY_GEOMETRY_TYPE: Record<DatasetGeometryTypesSupported, FileType[]> = {
   polygons: ['GeoJSON', 'KML', 'Shapefile'],
   tracks: ['CSV', 'GeoJSON', 'KML', 'Shapefile'],
   points: ['CSV', 'GeoJSON', 'KML', 'Shapefile'],
+  gridded: ['GeoTIFF', 'NetCDF'],
 }
 
 export const getFileTypes = (datasetGeometryType: DatasetGeometryTypesSupported) =>
@@ -91,6 +115,12 @@ export const FILE_TYPES_CONFIG: Record<FileType, FileConfig> = {
   Shapefile: { id: 'Shapefile', files: ['.zip', '.ZIP', '.shp', '.SHP'], icon: 'zip' },
   CSV: { id: 'CSV', files: ['.csv', '.tsv', '.CSV', '.TSV'], icon: 'csv' },
   KML: { id: 'KML', files: ['.kml', '.kmz', '.KML', '.KMZ'], icon: 'kml' },
+  GeoTIFF: {
+    id: 'GeoTIFF',
+    files: ['.tif', '.tiff', '.TIF', '.TIFF', '.zip', '.ZIP'],
+    icon: 'tiff',
+  },
+  NetCDF: { id: 'NetCDF', files: ['.nc', '.nc4', '.NC', '.NC4'], icon: 'netcdf' },
 }
 
 export type FileTypeResult = { fileType: FileType | undefined; zipContent: JSZipObject[] }
@@ -112,6 +142,22 @@ export async function getFileType(file?: File): Promise<FileTypeResult> {
     return files.some((ext) => file.name.endsWith(ext))
   })?.id
   return { fileType, zipContent: [] }
+}
+
+export async function getFileFromZipContent(
+  zipContent: JSZipObject[],
+  fileType: FileType
+): Promise<File | undefined> {
+  const extensions = uniq(
+    FILE_TYPES_CONFIG[fileType].files
+      .map((extension) => extension.slice(1).toLowerCase())
+      .filter((extension) => extension !== 'zip')
+  )
+  const entries = findZipEntries(zipContent, new RegExp(`\\.(${extensions.join('|')})$`, 'i'))
+  if (entries.length > 1) {
+    throw new Error('datasetUpload.errors.zip.multipleFiles')
+  }
+  return entries.length ? zipEntryToFile(entries[0]) : undefined
 }
 
 export function getFilesAcceptedByMime(fileTypes: FileType[]) {
@@ -161,11 +207,15 @@ export function readBlobAs(blob: Blob, format: 'text' | 'arrayBuffer'): any {
 }
 
 export function getFileFromGeojson(geojson: FeatureCollection) {
-  try {
-    return new File([JSON.stringify(geojson)], 'file.json', {
-      type: 'application/json',
-    })
-  } catch (error) {
-    console.warn(error)
+  const { features, ...rest } = geojson
+  const parts: string[] = []
+  for (const [key, value] of Object.entries(rest)) {
+    parts.push(`${parts.length ? ',' : '{'}${JSON.stringify(key)}:${JSON.stringify(value)}`)
   }
+  parts.push(`${parts.length ? ',' : '{'}"features":[`)
+  ;(features ?? []).forEach((feature, index) => {
+    parts.push(index ? `,${JSON.stringify(feature)}` : JSON.stringify(feature))
+  })
+  parts.push(']}')
+  return new File(parts, 'file.json', { type: 'application/json' })
 }

@@ -13,8 +13,11 @@ import {
 import { getAvailableIntervalsInDataviews } from '@globalfishingwatch/deck-layer-composer'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
+import { DATASETS_USER_SOURCE_ID } from 'features/_map/datasets/datasets.slice'
+import { getDatasetImportLogs, hasDatasetError } from 'features/_map/datasets/datasets.utils'
 import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
 import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import InfoError from 'features/_map/workspace/shared/InfoError'
 import { showSchemaFilter } from 'features/_map/workspace/shared/LayerSchemaFilter.utils'
 import OutOfTimerangeDisclaimer from 'features/_map/workspace/shared/OutOfBoundsDisclaimer'
 import type {
@@ -45,7 +48,7 @@ function ReportEnvironmentGraph({
   isLoading = false,
   removeEmptyValues = false,
 }: {
-  GraphComponent: React.ComponentType<any>
+  GraphComponent?: React.ComponentType<any>
   dataview: UrlDataviewInstance<DataviewType>
   data: ReportGraphProps | ReportGraphProps[]
   isLoading?: boolean
@@ -63,17 +66,32 @@ function ReportEnvironmentGraph({
   if (!dataview) return null
 
   const { min, mean, max } = (timeseriesStats?.[dataview.id] as FourwingsReportGraphStats) || {}
-  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
+  // Only a SUM layer reports min and max, see getFourwingsTimeseriesStats
+  const showMindAndMax = min !== undefined && max !== undefined
+  // a dataview with no available intervals leaves interval undefined
+  const intervalLabel = interval
+    ? String(
+        t((t) => (t.common as any)[interval.toLowerCase() + 's'], { count: 1 } as any)
+      ).toLowerCase()
+    : ''
+  const dataset = dataview.datasets?.find(
+    (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.UserFourwings
+  )
   const title = dataset?.name
   const hasError =
     layersTimeseriesErrors?.[index] !== undefined && layersTimeseriesErrors?.[index] !== ''
+  const datasetError = hasDatasetError(dataset)
+  const datasetImportLogs = getDatasetImportLogs(dataset)
   const unit = dataset?.unit
 
   const timeseries = Array.isArray(data) ? data[0]?.timeseries : data?.timeseries
   const isEmptyData =
     data !== undefined && (!timeseries || (Array.isArray(timeseries) && timeseries.length === 0))
   const isHeatmapVector = isHeatmapVectorsDataview(dataview)
-  const { function: aggregationFunction } = getDatasetConfiguration(dataset, 'fourwingsV1')
+  const aggregationFunction =
+    dataset?.type === DatasetTypes.UserFourwings
+      ? getDatasetConfiguration(dataset, 'userFourwingsV1').aggregationMode
+      : getDatasetConfiguration(dataset, 'fourwingsV1').function
 
   const { filtersAllowed } = getFiltersInDataview(dataview)
   const hasVisibleValues = Boolean(
@@ -101,7 +119,15 @@ function ReportEnvironmentGraph({
           <ReportSummaryTags dataview={dataview} showColor={false} />
         </div>
       )}
-      {(isDynamic || isHeatmapVector) &&
+      {datasetError ? (
+        <ReportActivityPlaceholder showHeader={false}>
+          <p className={styles.errorMessage}>
+            {t((t) => t.errors.uploadError)}
+            {datasetImportLogs && <InfoError error tooltip={datasetImportLogs} />}
+          </p>
+        </ReportActivityPlaceholder>
+      ) : (
+        (isDynamic || isHeatmapVector) &&
         (isLoading || hasError ? (
           <ReportActivityPlaceholder showHeader={false} loading={isLoading}>
             {hasError && <p className={styles.errorMessage}>{t((t) => t.errors.layerLoading)}</p>}
@@ -113,7 +139,7 @@ function ReportEnvironmentGraph({
               {t((t) => t.analysis.noDataByArea)}
             </div>
           </ReportActivityPlaceholder>
-        ) : (
+        ) : GraphComponent ? (
           <GraphComponent
             start={start}
             end={end}
@@ -129,30 +155,39 @@ function ReportEnvironmentGraph({
               ) : undefined
             }
           />
-        ))}
-      {isLoading ? (
+        ) : null)
+      )}
+      {datasetError ? null : isLoading ? (
         <ReportStatsPlaceholder />
-      ) : min !== undefined && mean !== undefined && max !== undefined ? (
+      ) : mean !== undefined ? (
         <p className={cx(styles.disclaimer, { [styles.marginTop]: isDynamic })}>
           {isDynamic
-            ? t((t) => t.analysis.statsDisclaimerDynamic, {
-                interval: String(
-                  t((t) => (t.common as any)[interval.toLowerCase() + 's'], {
-                    count: 1,
-                  } as any)
-                ).toLowerCase(),
-
-                min: formatI18nNumber(min, { maximumFractionDigits: 2 }) as string,
-                max: formatI18nNumber(max, { maximumFractionDigits: 2 }) as string,
-                unit: unit ?? '',
-              })
-            : t((t) => t.analysis.statsDisclaimerStatic, {
-                min: formatI18nNumber(min, { maximumFractionDigits: 2 }) as string,
-                max: formatI18nNumber(max, { maximumFractionDigits: 2 }) as string,
-                mean: formatI18nNumber(mean, { maximumFractionDigits: 2 }) as string,
-                unit: unit ?? '',
-              })}{' '}
-          {dataset?.source && (
+            ? t(
+                (t) =>
+                  showMindAndMax
+                    ? t.analysis.statsDisclaimerDynamic
+                    : t.analysis.statsDisclaimerDynamicMean,
+                {
+                  interval: intervalLabel,
+                  min: formatI18nNumber(min ?? 0, { maximumFractionDigits: 2 }) as string,
+                  max: formatI18nNumber(max ?? 0, { maximumFractionDigits: 2 }) as string,
+                  mean: formatI18nNumber(mean, { maximumFractionDigits: 2 }) as string,
+                  unit: unit ?? '',
+                }
+              )
+            : t(
+                (t) =>
+                  showMindAndMax
+                    ? t.analysis.statsDisclaimerStatic
+                    : t.analysis.statsDisclaimerStaticMean,
+                {
+                  min: formatI18nNumber(min ?? 0, { maximumFractionDigits: 2 }) as string,
+                  max: formatI18nNumber(max ?? 0, { maximumFractionDigits: 2 }) as string,
+                  mean: formatI18nNumber(mean, { maximumFractionDigits: 2 }) as string,
+                  unit: unit ?? '',
+                }
+              )}{' '}
+          {dataset?.source && dataset.source !== DATASETS_USER_SOURCE_ID && (
             <span>
               {t((t) => t.analysis.dataSource)}: {htmlSafeParse(dataset.source)}
             </span>

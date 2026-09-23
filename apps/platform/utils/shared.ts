@@ -20,8 +20,8 @@ type Field = { id: string | number; label: string | number | JSX.Element }
 export const sortStrings = (a: string, b: string) => a.localeCompare(b)
 
 export const sortFields = (a: Field, b: Field) => {
-  const aLabel = (a.label && typeof a.label === 'string') || a.id
-  const bLabel = (b.label && typeof b.label === 'string') || b.id
+  const aLabel = typeof a.label === 'string' && a.label ? a.label : a.id
+  const bLabel = typeof b.label === 'string' && b.label ? b.label : b.id
 
   if (!aLabel && !bLabel) return 0
   if (!aLabel) return -1

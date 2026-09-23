@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Switch } from '@globalfishingwatch/ui-components'
 
+import { useRefreshClickedEvent } from 'features/_map/map/map-interactions.hooks'
+
 import { useDataviewInstancesConnect } from '../workspace.hook'
 
 type LayerSwitchProps = {
@@ -26,6 +28,7 @@ const LayerSwitch = ({
 }: LayerSwitchProps) => {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const refreshClickedEvent = useRefreshClickedEvent()
   const layerActive = dataview?.config?.visible ?? true
   const onToggleLayerActive = () => {
     upsertDataviewInstance({
@@ -34,6 +37,7 @@ const LayerSwitch = ({
         visible: !layerActive,
       },
     })
+    refreshClickedEvent(dataview.id, !layerActive)
     if (onToggle) {
       onToggle(!layerActive)
     }

@@ -299,7 +299,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
                 [styles.dragging]: isSorting && activeIndex > -1,
               })}
             >
-              <MapLegend dataview={dataview} />
+              <MapLegend dataview={dataview} brushClassName={styles.brushIdle} />
             </div>
           )}
         </div>

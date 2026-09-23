@@ -3,7 +3,7 @@
 Valid filter ids + values per layer, from the GFW API dataset definitions.
 Filters go in each dataview instance's `config.filters`. Array filters take arrays (`"flag": ["FRA", "ESP"]`).
 
-## Fishing effort (`ais`, `vms`, `fishing-effort-ais`) — dataset `public-global-fishing-effort:v4.0`
+## AIS fishing effort (`ais`, `fishing-effort-ais`) — dataset `public-global-fishing-effort:v4.0`
 
 | Filter                  | Values                                                                                                                                                                                                                                                                                          |
 | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -11,6 +11,17 @@ Filters go in each dataview instance's `config.filters`. Array filters take arra
 | `geartype`              | `tuna_purse_seines`, `driftnets`, `trollers`, `set_longlines`, `purse_seines`, `pots_and_traps`, `other_fishing`, `dredge_fishing`, `set_gillnets`, `fixed_gear`, `trawlers`, `fishing`, `seiners`, `other_purse_seines`, `other_seines`, `squid_jigger`, `pole_and_line`, `drifting_longlines` |
 | `distance_from_port_km` | `0`-`5` (gte). Default `"3"` filters out anchored vessels                                                                                                                                                                                                                                       |
 | `vessel-groups`         | vessel group id (single)                                                                                                                                                                                                                                                                        |
+
+## VMS fishing effort (`vms`, `fishing-effort-vms`, national datasets)
+
+The layer bundles one dataset per country, and each dataset has its own filters and vocabularies. The `geartype` above is AIS-only. Only these filters are safe on every dataset:
+
+| Filter          | Values          |
+| --------------- | --------------- |
+| `flag`          | ISO3            |
+| `vessel-groups` | vessel group id |
+
+For anything else (`geartype`, `source_fleet`, `origin`, `target_species`, `license_category`, `distance_from_port_km`), grep [dataset-filters.json](dataset-filters.json). `dataviews` lists the datasets in each layer. `datasets.<id>.filters.fourwings` (or `.events` for event layers) lists each dataset's filter ids and `enum` values. Set `config.datasets` to the datasets that support your filter (see SKILL.md step 3).
 
 ## Vessel presence (`presence`) — dataset `public-global-presence:v4.0`
 

@@ -2,9 +2,10 @@ import {
   FISHING_AIS_DATAVIEW_SLUG,
   FISHING_VMS_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
+  PRESENCE_REALTIME_DATAVIEW_SLUG,
 } from '@platform/config/map/dataviews'
 
-import { PATH_BASENAME } from 'data/map/config'
+import { IS_REALTIME_ENABLED, PATH_BASENAME } from 'data/map/config'
 import type { LibraryLayerConfig } from 'data/map/layer-library/layers.types'
 
 export const LAYERS_LIBRARY_ACTIVITY: LibraryLayerConfig[] = [
@@ -38,4 +39,17 @@ export const LAYERS_LIBRARY_ACTIVITY: LibraryLayerConfig[] = [
       colorRamp: 'magenta',
     },
   },
+  ...(IS_REALTIME_ENABLED
+    ? [
+        {
+          id: 'presence-realtime' as const,
+          dataviewId: PRESENCE_REALTIME_DATAVIEW_SLUG,
+          previewImageUrl: `${PATH_BASENAME}/images/layer-library/presence.jpg`,
+          config: {
+            color: '#00EEFF',
+            colorRamp: 'sky',
+          },
+        },
+      ]
+    : []),
 ]

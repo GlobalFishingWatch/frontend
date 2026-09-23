@@ -7,9 +7,12 @@ import cx from 'classnames'
 import Downshift from 'downshift'
 import { useDebouncedCallback } from 'use-debounce'
 
+import {
+  isPrivateGroupDataset,
+  PRIVATE_BRAZIL_DATASET_CODE,
+} from '@globalfishingwatch/datasets-client'
 import { InputText, Spinner } from '@globalfishingwatch/ui-components'
 
-import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/_user/user.config'
 import SearchBasicResultList from 'features/_vessels/search/basic/SearchBasicResultList'
 import { MIN_SEARCH_CHARACTERS, RESULTS_PER_PAGE } from 'features/_vessels/search/search.config'
 import { selectSearchQuery } from 'features/_vessels/search/search.config.selectors'
@@ -72,7 +75,7 @@ function SearchBasic({
   const isBrazilVMSWorkspace =
     basicSearchDatasets !== undefined &&
     basicSearchDatasets.length > 0 &&
-    basicSearchDatasets.some((d) => d.id === PRIVATE_SEARCH_DATASET_BY_GROUP.brazil[0])
+    basicSearchDatasets.some((d) => isPrivateGroupDataset(d.id, PRIVATE_BRAZIL_DATASET_CODE))
   const hasMoreResults =
     searchPagination.total !== 0 &&
     searchPagination.total > RESULTS_PER_PAGE &&

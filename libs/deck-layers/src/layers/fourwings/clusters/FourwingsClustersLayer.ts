@@ -49,6 +49,7 @@ import {
   MAX_ZOOM_TO_CLUSTER_POINTS,
   POSITIONS_VISUALIZATION_MAX_ZOOM,
 } from '#layers/fourwings/fourwings.config'
+import { fetchFourwingsTileBuffers } from '#layers/fourwings/heatmap/fourwings-heatmap.fetch'
 import { getURLFromTemplate } from '#layers/fourwings/heatmap/fourwings-heatmap.utils'
 import type { DeckLayerPickingObject } from '#types'
 import { getLayerGroupOffset, hexToDeckColor } from '#utils'
@@ -387,52 +388,17 @@ export class FourwingsClustersLayer extends CompositeLayer<
     }
   ) => {
     this.setState({ viewportLoaded: false })
-    const cols: number[] = []
-    const rows: number[] = []
-    const scale: number[] = []
-    const offset: number[] = []
-    const noDataValue: number[] = []
     try {
-      const response = await GFWAPI.fetch<any>(url, {
-        signal,
-        method: 'GET',
-        responseType: 'default',
-      })
-      if (response.status >= 400 && response.status !== 404) {
-        throw new Error(response.statusText || response.status)
-      }
-      if (response.headers.get('X-columns') && !cols[0]) {
-        cols[0] = parseInt(response.headers.get('X-columns') as string)
-      }
-      if (response.headers.get('X-rows') && !rows[0]) {
-        rows[0] = parseInt(response.headers.get('X-rows') as string)
-      }
-      if (response.headers.get('X-scale') && !scale[0]) {
-        scale[0] = parseFloat(response.headers.get('X-scale') as string)
-      }
-      if (response.headers.get('X-offset') && !offset[0]) {
-        offset[0] = parseInt(response.headers.get('X-offset') as string)
-      }
-      if (response.headers.get('X-empty-value') && !noDataValue[0]) {
-        noDataValue[0] = parseInt(response.headers.get('X-empty-value') as string)
-      }
+      const { buffers, headers } = await fetchFourwingsTileBuffers({ urls: [url], signal })
 
-      if (signal?.aborted) {
+      if (signal?.aborted || !buffers[0]?.byteLength) {
         return
       }
-      const data = await response.arrayBuffer()
-      if (data.byteLength === 0) {
-        return
-      }
-      return await parse(data, FourwingsClustersLoader, {
+      return await parse(buffers[0], FourwingsClustersLoader, {
         worker: !IS_TEST_ENV,
         fourwingsClusters: {
-          cols,
-          rows,
-          scale,
-          offset,
+          ...headers,
           tile,
-          noDataValue,
           interval: this.interval,
           temporalAggregation: this.props.temporalAggregation,
         },

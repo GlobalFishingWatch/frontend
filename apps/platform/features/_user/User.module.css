@@ -115,6 +115,26 @@
 .dataset > span {
   flex: 1 1 auto;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.datasetName,
+.datasetMeta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.datasetMeta {
+  font: var(--font-XS);
+  color: var(--color-secondary-blue);
+  padding-bottom: var(--space-XS);
+}
+
+.datasetMeta:empty {
+  display: none;
 }
 
 .dataset > div {
@@ -132,6 +152,24 @@
 
 .missingGroup {
   color: var(--color-secondary-blue);
+}
+
+.groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-S);
+  padding: var(--space-XS) 0;
+}
+
+.group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+}
+
+.groupWarning {
+  display: flex;
+  cursor: help;
 }
 
 .link {
@@ -154,6 +192,16 @@ div.modal {
 .search {
   padding: var(--space-M);
   padding-bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-S);
+}
+
+.searchInput,
+.searchTypeFilter {
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .highlighted {

@@ -16,6 +16,18 @@ import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { listAsSentence } from 'utils/shared'
 
+// bbox arrives either as a JSON string ("[minX,minY,maxX,maxY]") or already parsed
+function parseFeatureBbox(bbox: unknown): Bbox | undefined {
+  const values = Array.isArray(bbox)
+    ? bbox.map(Number)
+    : typeof bbox === 'string'
+      ? bbox.replace(/[[\]]/g, '').split(',').map(Number)
+      : []
+  return values.length === 4 && values.every((v) => Number.isFinite(v))
+    ? (values as Bbox)
+    : undefined
+}
+
 export type DrawnDatasetGeometry = FeatureCollection<Polygon, { draw_id: number }>
 
 export interface DatasetArea {
@@ -138,13 +150,16 @@ async function fetchAreaDetail({
     console.warn('No geometry found for area', area)
   }
   // Same reason as the @turf/turf import above: wrap-longitudes reaches turf
-  const { wrapBBoxLongitudes, wrapGeometryBbox } =
+  const { wrapBBoxLongitudes, wrapGeometryBbox, getTurfBbox } =
     await import('@globalfishingwatch/data-transforms/wrap-longitudes')
-  const bounds = area.bbox ? wrapBBoxLongitudes(area.bbox) : wrapGeometryBbox(geometry)
-  // Doing this once to avoid recomputing inside turf booleanPointInPolygon for each cell
-  // https://github.com/Turfjs/turf/blob/master/packages/turf-boolean-point-in-polygon/index.ts#L63
-  if (area.geometry) {
-    area.geometry.bbox = bounds
+  // Two different bboxes, on purpose.
+  // `bounds` is unwrapped (maxX can be 185) so fitBounds gets a continuous span.
+  // `geometry.bbox` must instead agree with the coordinates, because turf trusts it to reject points
+  // wrapGeometryBbox can only be used with the real geotry (or antimeridian issues arise)
+  const apiBbox = parseFeatureBbox(area.properties?.bbox) || area.bbox
+  const bounds = geometry ? wrapGeometryBbox(geometry) : apiBbox && wrapBBoxLongitudes(apiBbox)
+  if (geometry) {
+    geometry.bbox = getTurfBbox(geometry)
   }
   return {
     id: area.id,

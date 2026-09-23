@@ -10,6 +10,7 @@ import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { setModalOpen } from 'features/modals/modals.slice'
 import { useIsClientHydrated } from 'hooks/ssr.hooks'
 
 import hintsConfig from '../hints/hints.content'
@@ -89,6 +90,15 @@ function HelpHub() {
               {t((t) => t.common.resetHelpHints)}
             </button>
           )}
+        </li>
+        <li>
+          <button
+            type="button"
+            className={cx(styles.link)}
+            onClick={() => dispatch(setModalOpen({ id: 'onboarding', open: true }))}
+          >
+            {t((t) => t.onboarding.getStarted)}
+          </button>
         </li>
         <li>
           <button

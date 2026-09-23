@@ -1,0 +1,70 @@
+import type { CountryDatasetId } from './migrations/datasets.conventions'
+import {
+  BELIZE_DATASET_ID,
+  BRAZIL_DATASET_ID,
+  CHILE_DATASET_ID,
+  COSTA_RICA_DATASET_ID,
+  ECUADOR_DATASET_ID,
+  MONTENEGRO_DATASET_ID,
+  NORWAY_DATASET_ID,
+  PALAU_DATASET_ID,
+  PANAMA_DATASET_ID,
+  PERU_DATASET_ID,
+  PNG_DATASET_ID,
+} from './migrations/datasets.conventions'
+
+export const GFW_GROUP_ID = 'GFW Staff'
+export const JAC_GROUP_ID = 'Joint Analytical Cell (JAC)'
+export const GFW_DEV_GROUP_ID = 'development-group'
+export const GFW_TEST_GROUP_ID = 'testing-fishing-map'
+export const ADMIN_GROUP_ID = 'admin-group'
+export const DEFAULT_GROUP_ID = 'Default'
+export const PRIVATE_BELIZE_GROUP_ID = 'Belize'
+export const PRIVATE_BRAZIL_GROUP_ID = 'Brazil'
+export const PRIVATE_CHILE_GROUP_ID = 'Chile'
+export const PRIVATE_COSTA_RICA_GROUP_ID = 'Costa Rica'
+export const PRIVATE_ECUADOR_GROUP_ID = 'Ecuador'
+export const PRIVATE_INDONESIA_GROUP_ID = 'Indonesia'
+export const PRIVATE_MEXICO_GROUP_ID = 'Mexico'
+export const PRIVATE_MONTENEGRO_GROUP_ID = 'Montenegro'
+export const PRIVATE_NORWAY_GROUP_ID = 'Norway'
+export const PRIVATE_PALAU_GROUP_ID = 'Palau'
+export const PRIVATE_PANAMA_GROUP_ID = 'Panama'
+export const PRIVATE_PAPUA_NEW_GUINEA_GROUP_ID = 'Papua New Guinea'
+export const PRIVATE_PERU_GROUP_ID = 'Peru'
+export const PRIVATE_SUPPORTED_GROUPS = [
+  PRIVATE_BELIZE_GROUP_ID,
+  PRIVATE_BRAZIL_GROUP_ID,
+  PRIVATE_CHILE_GROUP_ID,
+  PRIVATE_COSTA_RICA_GROUP_ID,
+  PRIVATE_ECUADOR_GROUP_ID,
+  PRIVATE_INDONESIA_GROUP_ID,
+  PRIVATE_MEXICO_GROUP_ID,
+  PRIVATE_MONTENEGRO_GROUP_ID,
+  PRIVATE_NORWAY_GROUP_ID,
+  PRIVATE_PALAU_GROUP_ID,
+  PRIVATE_PANAMA_GROUP_ID,
+  PRIVATE_PAPUA_NEW_GUINEA_GROUP_ID,
+  PRIVATE_PERU_GROUP_ID,
+  'SSF-Aruna',
+  'SSF-Ipnlf',
+  'SSF-Rare',
+]
+
+// Country code used in the private dataset ids, the only link between a user group and its
+// datasets. Groups missing here never warn about permissions.
+export const PRIVATE_GROUP_DATASET_CODE = {
+  [PRIVATE_BELIZE_GROUP_ID]: BELIZE_DATASET_ID,
+  [PRIVATE_BRAZIL_GROUP_ID]: BRAZIL_DATASET_ID,
+  [PRIVATE_CHILE_GROUP_ID]: CHILE_DATASET_ID,
+  [PRIVATE_COSTA_RICA_GROUP_ID]: COSTA_RICA_DATASET_ID,
+  [PRIVATE_ECUADOR_GROUP_ID]: ECUADOR_DATASET_ID,
+  [PRIVATE_MONTENEGRO_GROUP_ID]: MONTENEGRO_DATASET_ID,
+  [PRIVATE_NORWAY_GROUP_ID]: NORWAY_DATASET_ID,
+  [PRIVATE_PALAU_GROUP_ID]: PALAU_DATASET_ID,
+  [PRIVATE_PANAMA_GROUP_ID]: PANAMA_DATASET_ID,
+  [PRIVATE_PAPUA_NEW_GUINEA_GROUP_ID]: PNG_DATASET_ID,
+  [PRIVATE_PERU_GROUP_ID]: PERU_DATASET_ID,
+} as const satisfies Record<string, CountryDatasetId>
+
+export const PRIVATE_BRAZIL_DATASET_CODE = BRAZIL_DATASET_ID

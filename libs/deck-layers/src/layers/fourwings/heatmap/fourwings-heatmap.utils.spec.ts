@@ -17,6 +17,7 @@ import {
   compareCell,
   filterCells,
   filterCellsByBounds,
+  getCellValuesFrameRange,
   getDataUrl,
   getFourwingsChunk,
   getIntervalFrames,
@@ -24,6 +25,7 @@ import {
   getURLFromTemplate,
   getVisualizationModeByResolution,
   getZoomOffsetByResolution,
+  isSublayerValueVisible,
   sliceCellValues,
 } from './fourwings-heatmap.utils'
 
@@ -38,6 +40,11 @@ describe('aggregateSublayerValues', () => {
 
   it('avg of all-empty values does not divide by zero', () => {
     expect(aggregateSublayerValues([0, 0], FourwingsAggregationOperation.Avg)).toBe(0)
+  })
+
+  it('returns undefined when the slice holds no data, so the cell is not painted as a 0', () => {
+    expect(aggregateSublayerValues(new Array(2))).toBeUndefined()
+    expect(aggregateSublayerValues(new Array(2), FourwingsAggregationOperation.Avg)).toBeUndefined()
   })
 
   it('averages degrees across the 0/360 wraparound', () => {
@@ -66,6 +73,28 @@ describe('sliceCellValues', () => {
   it('clamps start below the offset and keeps the tail when endFrame exceeds length', () => {
     expect(sliceCellValues({ values, startFrame: 0, endFrame: 10, startOffset: 2 })).toEqual(values)
   })
+
+  // isTilePositionsOverLimit reads the window in place instead of slicing, so the arithmetic is
+  // shared rather than duplicated — this pins the two to the same answer
+  it('reads the same window getCellValuesFrameRange reports', () => {
+    const cases = [
+      { startFrame: 1, endFrame: 1, startOffset: 0 },
+      { startFrame: 1, endFrame: 3, startOffset: 0 },
+      { startFrame: 0, endFrame: 10, startOffset: 2 },
+      { startFrame: 4, endFrame: 6, startOffset: 4 },
+    ]
+    for (const { startFrame, endFrame, startOffset } of cases) {
+      const [from, to] = getCellValuesFrameRange({
+        valuesLength: values.length,
+        startFrame,
+        endFrame,
+        startOffset,
+      })
+      expect(values.slice(from, to)).toEqual(
+        sliceCellValues({ values, startFrame, endFrame, startOffset })
+      )
+    }
+  })
 })
 
 describe('aggregateCell', () => {
@@ -83,7 +112,9 @@ describe('aggregateCell', () => {
     ).toEqual([5, 30])
   })
 
-  it('returns 0 for sublayers fully outside the time range', () => {
+  // These returned 0 until 2026-09-03. "No data here" has to be distinguishable from a
+  // measured 0, or every no-data cell paints at the bottom of the ramp.
+  it('returns undefined for sublayers fully outside the time range', () => {
     expect(
       aggregateCell({
         cellValues: [[1, 2, 3]],
@@ -91,10 +122,10 @@ describe('aggregateCell', () => {
         endFrame: 12,
         cellStartOffsets: [0],
       })
-    ).toEqual([0])
+    ).toEqual([undefined])
   })
 
-  it('returns 0 when offsets are missing or sublayer has no values', () => {
+  it('returns undefined when offsets are missing or sublayer has no values', () => {
     expect(
       aggregateCell({
         cellValues: [undefined as any],
@@ -102,13 +133,24 @@ describe('aggregateCell', () => {
         endFrame: 1,
         cellStartOffsets: [0],
       })
-    ).toEqual([0])
+    ).toEqual([undefined])
     expect(
       aggregateCell({
         cellValues: [[1]],
         startFrame: 0,
         endFrame: 1,
         cellStartOffsets: undefined,
+      })
+    ).toEqual([undefined])
+  })
+
+  it('keeps a measured 0 as a value', () => {
+    expect(
+      aggregateCell({
+        cellValues: [[0]],
+        startFrame: 0,
+        endFrame: 1,
+        cellStartOffsets: [0],
       })
     ).toEqual([0])
   })
@@ -129,6 +171,10 @@ describe('compareCell', () => {
 
   it('returns the difference when both have values', () => {
     expect(compareCell({ cellValues: [[2], [7]] })).toEqual([5])
+  })
+
+  it('keeps a measured 0 instead of treating it as empty', () => {
+    expect(compareCell({ cellValues: [[0], [0]] })).toEqual([0])
   })
 })
 
@@ -299,5 +345,26 @@ describe('resolution/visualization mode mappings', () => {
     expect(getZoomOffsetByResolution('low', 5)).toBe(-1)
     expect(getZoomOffsetByResolution('low', 0)).toBe(0)
     expect(getZoomOffsetByResolution('default', 5)).toBe(0)
+  })
+})
+
+describe('isSublayerValueVisible', () => {
+  // A cell the API measured as 0 must render; only a missing value hides it.
+  it('treats a measured 0 as visible', () => {
+    expect(isSublayerValueVisible(0)).toBe(true)
+    expect(isSublayerValueVisible(0, { minVisibleValue: 0 })).toBe(true)
+  })
+
+  it('hides missing values', () => {
+    expect(isSublayerValueVisible(undefined)).toBe(false)
+    expect(isSublayerValueVisible(null)).toBe(false)
+    expect(isSublayerValueVisible(NaN)).toBe(false)
+  })
+
+  it('still honours the visible value range', () => {
+    expect(isSublayerValueVisible(5, { minVisibleValue: 10 })).toBe(false)
+    expect(isSublayerValueVisible(0, { minVisibleValue: 1 })).toBe(false)
+    expect(isSublayerValueVisible(15, { maxVisibleValue: 10 })).toBe(false)
+    expect(isSublayerValueVisible(-3)).toBe(true)
   })
 })

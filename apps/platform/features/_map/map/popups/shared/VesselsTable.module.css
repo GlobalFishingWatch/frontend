@@ -1,0 +1,74 @@
+.vesselsTable {
+  /* full width so the value column lands on the card's right edge */
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.vesselsTable th {
+  text-align: left;
+  font: var(--font-XS);
+  color: var(--color-secondary-blue);
+  text-transform: uppercase;
+  height: 2.2rem;
+  vertical-align: bottom;
+}
+
+.vesselsTable td,
+.vesselsTable th {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0;
+  line-height: 2rem;
+  height: 3rem;
+  max-width: 14rem;
+  vertical-align: middle;
+}
+
+.vesselsTable td.largeColumn {
+  max-width: 24rem;
+}
+
+.vesselsTable tr:not(:last-child) td {
+  border-bottom: 1px solid var(--color-terthiary-blue);
+}
+
+.vesselsTable .columnSpace,
+.vesselsTable th:not(:first-child) {
+  padding-left: 2rem;
+}
+
+.vesselsTable td.icon {
+  width: 3rem;
+  overflow: visible;
+}
+
+/* the value column (hours / detections) is the last one and reads right-aligned */
+.vesselsTable th.vesselsTableValue,
+.vesselsTable td.vesselsTableValue {
+  text-align: right;
+}
+
+.modalContainer {
+  padding-bottom: 3rem;
+}
+
+.vesselsMore {
+  margin-top: var(--space-XS);
+  opacity: var(--opacity-secondary);
+  cursor: unset;
+}
+
+.timestampBtn {
+  cursor: pointer;
+  color: var(--color-secondary-blue);
+}
+
+.link {
+  text-decoration: underline;
+}
+
+.skylightLink {
+  display: inline-flex;
+  align-items: center;
+}

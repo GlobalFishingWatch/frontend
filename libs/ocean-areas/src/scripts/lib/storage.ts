@@ -1,7 +1,9 @@
 import { spawn } from 'child_process'
 import fs from 'fs/promises'
 
-import 'dotenv/config'
+import { config } from 'dotenv'
+
+config({ quiet: true })
 
 const bucketId = process.env.GOOGLE_BUCKET_ID
 if (!bucketId) {

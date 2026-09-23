@@ -44,8 +44,8 @@ import {
   selectShowTimeComparison,
   selectTimeComparisonValues,
 } from 'features/_reports/report-area/area-reports.selectors'
+import { selectReportHotspotArea } from 'features/_reports/reports.config.selectors'
 import { hotspotGeometryAtom } from 'features/_reports/reports-hotspot.hooks'
-import { selectReportHotspotSettings } from 'features/_reports/tabs/activity/reports-activity.slice'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import {
@@ -57,6 +57,7 @@ import {
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { useDrawLayerInstance } from './overlays/draw/draw.hooks'
+import { usePendingDrawOverlayLayer } from './overlays/draw/draw-pending.hooks'
 import { useMapRulerInstance } from './overlays/rulers/rulers.hooks'
 import { HOTSPOT_COLOR, HOTSPOT_FILL, REPORT_HOTSPOT_ID } from './map.config'
 import {
@@ -223,10 +224,10 @@ export const useMapDataviewsLayers = () => {
 }
 
 const useHotspotOverlayLayer = () => {
-  const settings = useSelector(selectReportHotspotSettings)
+  const hotspotArea = useSelector(selectReportHotspotArea)
   const geometry = useAtomValue(hotspotGeometryAtom)
   return useMemo(() => {
-    if (!settings.enabled || !geometry) return null
+    if (hotspotArea === undefined || !geometry) return null
     return new PolygonLayer({
       id: REPORT_HOTSPOT_ID,
       data: [geometry],
@@ -239,16 +240,19 @@ const useHotspotOverlayLayer = () => {
       lineWidthUnits: 'pixels',
       pickable: true,
     })
-  }, [settings.enabled, geometry])
+  }, [hotspotArea, geometry])
 }
 
 const useMapOverlayLayers = () => {
   const drawLayerInstance = useDrawLayerInstance()
   const rulerLayerInstance = useMapRulerInstance()
   const hotspotLayer = useHotspotOverlayLayer()
+  const pendingDrawLayer = usePendingDrawOverlayLayer()
   return useMemo(() => {
-    return [drawLayerInstance!, rulerLayerInstance!, hotspotLayer!].filter(Boolean)
-  }, [drawLayerInstance, rulerLayerInstance, hotspotLayer])
+    return [drawLayerInstance!, rulerLayerInstance!, hotspotLayer!, pendingDrawLayer!].filter(
+      Boolean
+    )
+  }, [drawLayerInstance, rulerLayerInstance, hotspotLayer, pendingDrawLayer])
 }
 
 export const useMapLayers = () => {

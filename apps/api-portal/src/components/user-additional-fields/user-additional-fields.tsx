@@ -41,11 +41,11 @@ export function UserAdditionalFields() {
     }
     if (intendedUse === 'commercial') {
       errors.intendedUse = (
-        <Fragment>
+        <p>
           For the moment we only allow API for non commercial purposes, if you are interested in a
           commercial option please contact us at{' '}
           <a href={`mailto:apis@globalfishingwatch.org`}>apis@globalfishingwatch.org</a>.
-        </Fragment>
+        </p>
       )
     }
     if (!whoEndUsers) {

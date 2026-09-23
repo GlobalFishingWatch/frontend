@@ -31,6 +31,18 @@
   margin-right: var(--space-S);
 }
 
+.fitRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+  cursor: pointer;
+  text-transform: none;
+  letter-spacing: unset;
+  font: var(--font-XS);
+  line-height: 1.2;
+  color: var(--color-secondary-blue);
+}
+
 .ramp {
   height: 1rem;
   width: 100%;
@@ -43,6 +55,10 @@
   position: absolute;
   inset: 0;
   border: var(--border);
+
+  /* Decorative border painted after the positioned children, so it would otherwise sit on top
+     of the brush (ColorRampBrush.module.css) and swallow the drag */
+  pointer-events: none;
 }
 
 .symbols {
@@ -140,10 +156,6 @@
   top: 0;
   transform: translateX(-50%);
   line-height: 1.8rem;
-}
-
-.firstStep {
-  transform: translateX(0);
 }
 
 .lastStep {

@@ -1,9 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { Feature, FeatureCollection, MultiPolygon } from 'geojson'
+import type { Feature, FeatureCollection } from 'geojson'
 
 import type { Dataset, ReportVessel } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
+import { getGeometryDissolved } from '@globalfishingwatch/data-transforms'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getUserContextTimeFilterProps } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextFeature, IsFeatureInRangeParams } from '@globalfishingwatch/deck-layers'
@@ -322,14 +322,13 @@ const selectReportBufferArea = createSelector(
   ],
   (area, unit, value, operation) => {
     if (!area || !unit || !value) return null
-    const bufferedArea = getBufferedArea({ area, value, unit, operation }) as Area
-    if (bufferedArea?.geometry) {
-      const bounds = wrapGeometryBbox(bufferedArea.geometry as MultiPolygon)
-      // bbox is needed inside Area geometry to computeTimeseries
-      // platform/features/_reports/report-area/reports-timeseries.hooks.ts
-      bufferedArea.geometry.bbox = bounds
-    }
-    return bufferedArea
+    return getBufferedArea({
+      area,
+      value,
+      unit,
+      operation,
+      splitAtAntimeridian: true,
+    }) as Area
   }
 )
 

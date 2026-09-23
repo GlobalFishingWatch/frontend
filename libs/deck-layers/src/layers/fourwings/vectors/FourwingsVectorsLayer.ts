@@ -9,16 +9,21 @@ import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 
 import { COLOR_TRANSPARENT } from '#config/colors.config'
+import { PICK_ONLY_LAYER_ID_SUFFIX } from '#config/layers.config'
 import { LayerGroup } from '#config/sort.config'
 import { HEATMAP_ID } from '#layers/fourwings/fourwings.config'
 import type {
+  FourwingsDeckSublayer,
   FourwingsHeatmapPickingObject,
+  FourwingsVectorDirection,
   FourwingsVectorsLayerProps,
 } from '#layers/fourwings/fourwings.types'
 import { FourwingsAggregationOperation } from '#layers/fourwings/heatmap/fourwings-heatmap.types'
 import {
   aggregateSublayerValues,
   getIntervalFrames,
+  getSublayersVisibleValuesHash,
+  isSublayerValueVisible,
   sliceCellValues,
 } from '#layers/fourwings/heatmap/fourwings-heatmap.utils'
 import { getLayerGroupOffset, hexToDeckColor } from '#utils'
@@ -38,6 +43,10 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
     this.endFrame = 0
   }
 
+  getSublayerByVector = (vector: FourwingsVectorDirection) => {
+    return this.props.sublayers?.find((sublayer) => sublayer.vector === vector)
+  }
+
   getPickingInfo = ({ info }: { info: PickingInfo<FourwingsFeature> }) => {
     const {
       id,
@@ -49,8 +58,6 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
       category,
       subcategory,
       availableIntervals,
-      minVisibleValue,
-      maxVisibleValue,
     } = this.props
 
     const { interval } = getIntervalFrames({
@@ -67,7 +74,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
       id: id,
       title: id,
       tile: tile.index,
-      sublayers,
+      sublayers: sublayers as unknown as FourwingsDeckSublayer[],
       startTime,
       endTime,
       interval,
@@ -79,12 +86,8 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
         value: info.object?.aggregatedValues?.[i],
       }))
       if (
-        !object.sublayers?.filter(
-          ({ value }) =>
-            value &&
-            (minVisibleValue === undefined || value >= minVisibleValue) &&
-            (maxVisibleValue === undefined || value <= maxVisibleValue)
-        ).length
+        !object.sublayers?.filter((sublayer) => isSublayerValueVisible(sublayer.value, sublayer))
+          .length
       ) {
         return { ...info, object: undefined }
       }
@@ -108,7 +111,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
         feature.properties.velocities.length > 0 &&
         this.startFrame !== undefined &&
         this.endFrame !== undefined
-          ? aggregateSublayerValues(
+          ? (aggregateSublayerValues(
               sliceCellValues({
                 values: feature.properties.velocities,
                 startFrame: this.startFrame,
@@ -116,19 +119,14 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
                 startOffset: feature.properties.startOffsets[0] ?? 0,
               }),
               FourwingsAggregationOperation.Avg
-            )
+            ) ?? 0)
           : 0
     }
     if (Array.isArray(feature.aggregatedValues)) {
       feature.aggregatedValues[0] = value
     }
 
-    const { minVisibleValue, maxVisibleValue } = this.props
-    if (
-      value &&
-      ((minVisibleValue !== undefined && value < minVisibleValue) ||
-        (maxVisibleValue !== undefined && value > maxVisibleValue))
-    ) {
+    if (value && !isSublayerValueVisible(value, this.getSublayerByVector('u'))) {
       target = 0
       return target
     }
@@ -154,7 +152,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
         feature.properties.directions.length > 0 &&
         this.startFrame !== undefined &&
         this.endFrame !== undefined
-          ? aggregateSublayerValues(
+          ? (aggregateSublayerValues(
               sliceCellValues({
                 values: feature.properties.directions,
                 startFrame: this.startFrame,
@@ -162,7 +160,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
                 startOffset: feature.properties.startOffsets[1] ?? 0,
               }),
               FourwingsAggregationOperation.AvgDegrees
-            )
+            ) ?? 0)
           : 0
     }
 
@@ -181,8 +179,6 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
       highlightedFeatures,
       availableIntervals,
       sublayers,
-      minVisibleValue,
-      maxVisibleValue,
     } = this.props
     const color = hexToDeckColor(sublayers?.[0]?.color || '#ffffff')
 
@@ -231,7 +227,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
       },
       updateTriggers: {
         getDirection: [startTime, endTime],
-        getVelocity: [startTime, endTime, minVisibleValue, maxVisibleValue],
+        getVelocity: [startTime, endTime, getSublayersVisibleValuesHash(sublayers)],
       },
     }
 
@@ -239,7 +235,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
       new SolidPolygonLayer(
         this.props,
         this.getSubLayerProps({
-          id: `fourwings-vectors-interactive`,
+          id: `fourwings-vectors${PICK_ONLY_LAYER_ID_SUFFIX}`,
           data,
           pickable: true,
           material: false,
@@ -291,8 +287,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
                     : (feature as Feature<any>).geometry.coordinates[0].flat(),
                 getColor: [255, 255, 255, 50],
                 getOffset: 0.5,
-                getPolygonOffset: (params: any) =>
-                  getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+                getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Default, params),
                 extensions: [new PathStyleExtension({ offset: true })],
               })
             ),

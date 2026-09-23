@@ -1,16 +1,3 @@
-// Mobile Safari doesn't expose HTMLEmbedElement globally. snapdom uses `instanceof HTMLEmbedElement`
-if (typeof HTMLElement !== 'undefined') {
-  if (typeof globalThis.HTMLEmbedElement === 'undefined') {
-    globalThis.HTMLEmbedElement =
-      class HTMLEmbedElement extends HTMLElement {} as typeof HTMLEmbedElement
-  }
-
-  if (typeof globalThis.HTMLObjectElement === 'undefined') {
-    globalThis.HTMLObjectElement =
-      class HTMLObjectElement extends HTMLElement {} as typeof HTMLObjectElement
-  }
-}
-
 if (typeof Array.prototype.toSorted !== 'function') {
   Array.prototype.toSorted = function (compareFn) {
     if (this === null) throw new TypeError('Array.prototype.toSorted called on null or undefined')

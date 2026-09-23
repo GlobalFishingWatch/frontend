@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo } from 'react'
+import { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -17,7 +17,11 @@ import {
   getFilterUnitInDataview,
 } from 'features/_map/dataviews/dataviews.filters'
 import { isHistogramDataviewSupported } from 'features/_map/workspace/shared/layer-properties.utils'
-import { getValueLabelByUnit } from 'features/_map/workspace/shared/LayerSchemaFilter.utils'
+import {
+  getFilterLabelById,
+  getFilterValueById,
+  getValueLabelByUnit,
+} from 'features/_map/workspace/shared/LayerSchemaFilter.utils'
 import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/_user/vessel-groups/vessel-groups.hooks'
 import { usePorts } from 'utils/ports'
@@ -25,6 +29,8 @@ import { usePorts } from 'utils/ports'
 import { useDataviewInstancesConnect } from '../workspace.hook'
 
 import styles from 'features/_map/workspace/shared/LayerPanel.module.css'
+
+const ascending = (a: number, b: number) => a - b
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
@@ -71,32 +77,38 @@ function DatasetSchemaField({
 
   const valuesIsNumber = filterConfig?.type === 'number' && Number(valuesSelected[0]?.label)
 
+  const toDisplay = (value: string | number) => getFilterValueById(value, { id: field })
+  const toStored = (value: number) =>
+    getFilterValueById(value, { id: field, transformDirection: 'out' })
+  // Both bounds are always stored, so removing one tag needs the limits to put that side back
+  let rangeBounds: { values: number[]; limits: number[] } | undefined
+
   if (valuesAreRangeOfNumbers) {
-    const dataviewWithHistogramFilter = isHistogramDataviewSupported(dataview)
     const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
     const { max, min } = getDatasetConfiguration(dataset)
     const unit = filterUnit || dataset?.unit
-    const minLabel = Array.isArray(valuesSelected[0])
-      ? valuesSelected[0][0]?.label
-      : valuesSelected[0]?.label
-    const maxLabel = Array.isArray(valuesSelected[valuesSelected.length - 1])
-      ? valuesSelected[valuesSelected.length - 1][0]?.label
-      : valuesSelected[valuesSelected.length - 1]?.label
-    let range: string
-    const minToCompare = dataviewWithHistogramFilter ? min : filterConfig?.options[0].label
-    const maxToCompare = dataviewWithHistogramFilter ? max : filterConfig?.options[1].label
-    if (minLabel.toString() === minToCompare?.toString()) {
-      const maxValueLabel = getValueLabelByUnit(maxLabel, { unit })
-      range = `≤ ${maxValueLabel}`
-    } else if (maxLabel.toString() === maxToCompare?.toString()) {
-      const minValueLabel = getValueLabelByUnit(minLabel, { unit })
-      range = `≥ ${minValueLabel}`
-    } else {
-      const minValueLabel = getValueLabelByUnit(minLabel, { unit, unitLabel: false })
-      const maxValueLabel = getValueLabelByUnit(maxLabel, { unit })
-      range = `${minValueLabel} - ${maxValueLabel}`
-    }
-    valuesSelected = [{ id: range, label: range }]
+    const values = (valuesSelected as { label: string }[][])
+      .flat()
+      .map(({ label }) => toDisplay(label))
+      .sort(ascending)
+    const limits = (
+      isHistogramDataviewSupported(dataview)
+        ? [min, max]
+        : [filterConfig.options[0].label, filterConfig.options[1].label]
+    )
+      .map(toDisplay)
+      .sort(ascending)
+    rangeBounds = { values: [values[0], values[values.length - 1]], limits }
+    valuesSelected = rangeBounds.values.flatMap((value, bound) =>
+      value === limits[bound]
+        ? []
+        : [
+            {
+              id: `${bound ? 'max' : 'min'}-${value}`,
+              label: `${bound ? '≤' : '≥'} ${getValueLabelByUnit(value, { unit })}`,
+            },
+          ]
+    )
   } else if (valuesIsNumber) {
     valuesSelected = [
       {
@@ -106,40 +118,51 @@ function DatasetSchemaField({
     ]
   }
 
-  const onRemoveFilterClick = useCallback(
-    (tag: TagItem, tags: TagItem[]) => {
-      if (field === 'visibleValues') {
-        upsertDataviewInstance({
-          id: dataview.id,
-          config: {
-            minVisibleValue: undefined,
-            maxVisibleValue: undefined,
+  const onRemoveFilterClick = (tag: TagItem, tags: TagItem[]) => {
+    if (field === 'visibleValues') {
+      const bound = tag.id.toString().startsWith('max-') ? 'maxVisibleValue' : 'minVisibleValue'
+      upsertDataviewInstance({
+        id: dataview.id,
+        config: { [bound]: undefined },
+      })
+    } else if (rangeBounds) {
+      const { values, limits } = rangeBounds
+      const next = values.map((value, bound) =>
+        tag.id.toString().startsWith(bound ? 'max' : 'min') ? limits[bound] : value
+      )
+      upsertDataviewInstance({
+        id: dataview.id,
+        config: {
+          filters: {
+            ...(dataview.config?.filters || {}),
+            [field]: next.every((value, bound) => value === limits[bound])
+              ? ''
+              : next.map(toStored).sort(ascending).map(String),
           },
-        })
-      } else {
-        upsertDataviewInstance({
-          id: dataview.id,
-          config: {
-            filters: {
-              ...(dataview.config?.filters || {}),
-              [field]: tags.length ? tags.map((t) => t.id) : '',
-            },
+        },
+      })
+    } else {
+      upsertDataviewInstance({
+        id: dataview.id,
+        config: {
+          filters: {
+            ...(dataview.config?.filters || {}),
+            [field]: tags.length ? tags.map((t) => t.id) : '',
           },
-        })
-      }
-      if (onRemove) {
-        onRemove({ id: field, label: tag.label })
-      }
-    },
-    [dataview, field, upsertDataviewInstance, onRemove]
-  )
+        },
+      })
+    }
+    if (onRemove) {
+      onRemove({ id: field, label: tag.label })
+    }
+  }
 
   return (
     <Fragment>
       {valuesSelected.length > 0 && (
         <div className={cx(styles.filter, className)}>
           <label className={styles.tagListLabel}>
-            {label}
+            {getFilterLabelById(field, label)}
             {filterOperation === EXCLUDE_FILTER_ID && ` (${t((t) => t.common.excluded)})`}
           </label>
           <TagList

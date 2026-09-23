@@ -49,6 +49,7 @@ export const selectVesselSelfReportedId = selectVesselProfileStateProperty('vess
 export const selectIncludeRelatedIdentities = selectVesselProfileStateProperty(
   'includeRelatedIdentities'
 )
+export const selectLonglineSetsOnMap = selectVesselProfileStateProperty('longlineSetsOnMap')
 
 export const selectVesselIdentityId = createSelector(
   [selectVesselIdentitySource, selectVesselRegistryId, selectVesselSelfReportedId],

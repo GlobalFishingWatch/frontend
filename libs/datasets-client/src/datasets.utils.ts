@@ -3,8 +3,10 @@ import { DateTime } from 'luxon'
 import type { Dataset, DatasetCategory, Dataview, VesselType } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 
+import type { CountryDatasetId } from './migrations/datasets.conventions'
 import { DATASET_FULL_PREFIX, DATASET_PRIVATE_PREFIX, DATASET_PUBLIC_PREFIX } from './constants'
 import type { UrlDataviewInstance } from './types'
+import { PRIVATE_GROUP_DATASET_CODE } from './user-groups'
 
 export const removeDatasetVersion = (datasetId: string) => {
   return datasetId ? datasetId?.split(':')[0] : ''
@@ -46,6 +48,20 @@ export const getIsDatasetVersionDowngrade = (deprecatedId: string, latestId: str
   return false
 }
 
+export const isPrivateDatasetId = (datasetId = '') =>
+  datasetId.startsWith(`${DATASET_PRIVATE_PREFIX}-`)
+
+// Matches any version of a group's private datasets, ids are private-vms-<code>-… or private-<code>-…
+export const isPrivateGroupDataset = (datasetId = '', code: CountryDatasetId) =>
+  isPrivateDatasetId(datasetId) && datasetId.includes(`-${code}-`)
+
+const PRIVATE_DATASET_CODE_BY_GROUP = Object.fromEntries(
+  Object.entries(PRIVATE_GROUP_DATASET_CODE).map(([group, code]) => [group.toLowerCase(), code])
+) as Record<string, CountryDatasetId>
+
+export const getPrivateGroupDatasetCode = (group: string): CountryDatasetId | undefined =>
+  PRIVATE_DATASET_CODE_BY_GROUP[group.toLowerCase()]
+
 export const replaceDatasetPublicToPrivate = (dataset: string): string => {
   return dataset.startsWith(DATASET_PUBLIC_PREFIX)
     ? dataset.replace(DATASET_PUBLIC_PREFIX, DATASET_PRIVATE_PREFIX)
@@ -68,6 +84,7 @@ export function getUserDataviewDataset(dataview?: Dataview | UrlDataviewInstance
       d.type === DatasetTypes.Context ||
       d.type === DatasetTypes.UserContext ||
       d.type === DatasetTypes.UserTracks ||
+      d.type === DatasetTypes.UserFourwings || // User uploaded gridded rasters
       d.type === DatasetTypes.Fourwings || // This is needed for the bq custom datasets
       d.type === DatasetTypes.Events // This is needed for the bq custom datasets
   ) as Dataset

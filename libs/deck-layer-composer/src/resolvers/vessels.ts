@@ -48,6 +48,7 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     const eventType = resource.dataset?.subcategory as EventTypes
     return {
       type: eventType,
+      datasetId: resource.dataset?.id,
       url: `${API_GATEWAY}${resource.url}`,
     }
   })
@@ -62,6 +63,7 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     ...(bufferedStart && { bufferedStartTime: getUTCDateTime(bufferedStart).toMillis() }),
     ...(bufferedEnd && { bufferedEndTime: getUTCDateTime(bufferedEnd).toMillis() }),
     showVesselIcon: dataview.config?.showVesselIcon ?? true,
+    showLastPositionIcon: timeMode === 'realTime',
     trackVisualizationMode: vesselTrackVisualizationMode || 'track',
     ...(dataview.config?.highlightEventStartTime && {
       highlightEventStartTime: getUTCDateTime(dataview.config.highlightEventStartTime).toMillis(),

@@ -61,7 +61,6 @@ function NewPointDataset({
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
   const [timeFilterError, setTimeFilterError] = useState<string>('')
-  const [dataParseError, setDataParseError] = useState<string>('')
   const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [sourceData, setSourceData] = useState<DataParsed | undefined>()
@@ -149,7 +148,7 @@ function NewPointDataset({
         setProcessingData(false)
       } catch (e: any) {
         setProcessingData(false)
-        onDatasetParseError(e, setDataParseError)
+        onDatasetParseError(e)
       }
     },
     [setDatasetMetadata, startTimeProperty, endTimeProperty, t, onDatasetParseError]
@@ -218,28 +217,36 @@ function NewPointDataset({
         setError(error)
       } else if (onConfirm) {
         setLoading(true)
-        const file = geojson
-          ? getFileFromGeojson(parseGeoJsonProperties<Point>(geojson, datasetMetadata))
-          : undefined
+        let file: File | undefined
+        try {
+          file = geojson
+            ? getFileFromGeojson(parseGeoJsonProperties<Point>(geojson, datasetMetadata))
+            : undefined
+        } catch (e: any) {
+          setLoading(false)
+          onDatasetParseError(new Error('datasetUpload.errors.fileTooBig', { cause: e }))
+          return
+        }
         await onConfirm(datasetMetadata, { file, isEditing })
         setLoading(false)
       }
     }
-  }, [datasetMetadata, sourceData, onConfirm, fileTypeResult, geojson, t, isEditing])
+  }, [
+    datasetMetadata,
+    sourceData,
+    onConfirm,
+    fileTypeResult,
+    geojson,
+    t,
+    isEditing,
+    onDatasetParseError,
+  ])
 
   if (processingData) {
     return (
       <div className={styles.processingData}>
         <Spinner className={styles.processingDataSpinner} />
         <p>{t((t) => t.datasetUpload.processingData)}</p>
-      </div>
-    )
-  }
-
-  if (dataParseError) {
-    return (
-      <div className={styles.processingData}>
-        <p className={styles.errorMsg}>{dataParseError}</p>
       </div>
     )
   }
@@ -254,7 +261,7 @@ function NewPointDataset({
         />
       )}
       <InputText
-        value={datasetMetadata?.name}
+        value={datasetMetadata?.name ?? ''}
         label={t((t) => t.datasetUpload.datasetName)}
         className={styles.input}
         onChange={(e) => setDatasetMetadata({ name: e.target.value })}

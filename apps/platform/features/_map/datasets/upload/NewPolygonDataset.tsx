@@ -57,7 +57,6 @@ function NewPolygonDataset({
   const [devMode, setDevMode] = useState(false)
   const [error] = useState<string>('')
   const [timeFilterError, setTimeFilterError] = useState<string>('')
-  const [dataParseError, setDataParseError] = useState<string>('')
   const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [geojson, setGeojson] = useState<PolygonFeatureCollection | undefined>()
@@ -109,7 +108,7 @@ function NewPolygonDataset({
         setProcessingData(false)
       } catch (e: any) {
         setProcessingData(false)
-        onDatasetParseError(e, setDataParseError)
+        onDatasetParseError(e)
       }
     },
     [setDatasetMetadata, onDatasetParseError]
@@ -150,30 +149,29 @@ function NewPolygonDataset({
   const onConfirmClick = useCallback(async () => {
     if (datasetMetadata && onConfirm) {
       setLoading(true)
-      const file = geojson
-        ? getFileFromGeojson(parseGeoJsonProperties<Polygon>(geojson, datasetMetadata))
-        : undefined
+      let file: File | undefined
+      try {
+        file = geojson
+          ? getFileFromGeojson(parseGeoJsonProperties<Polygon>(geojson, datasetMetadata))
+          : undefined
+      } catch (e: any) {
+        setLoading(false)
+        onDatasetParseError(new Error('datasetUpload.errors.fileTooBig', { cause: e }))
+        return
+      }
       if (devMode) {
         console.log('Dataset metadata:', datasetMetadata)
         console.log('Context layers on map:', file)
       } else await onConfirm(datasetMetadata, { file, isEditing })
       setLoading(false)
     }
-  }, [devMode, datasetMetadata, onConfirm, geojson, isEditing])
+  }, [devMode, datasetMetadata, onConfirm, geojson, isEditing, onDatasetParseError])
 
   if (processingData) {
     return (
       <div className={styles.processingData}>
         <Spinner className={styles.processingDataSpinner} />
         <p>{t((t) => t.datasetUpload.processingData)}</p>
-      </div>
-    )
-  }
-
-  if (dataParseError) {
-    return (
-      <div className={styles.processingData}>
-        <p className={styles.errorMsg}>{dataParseError}</p>
       </div>
     )
   }
@@ -188,7 +186,7 @@ function NewPolygonDataset({
         />
       )}
       <InputText
-        value={datasetMetadata?.name}
+        value={datasetMetadata?.name ?? ''}
         label={t((t) => t.datasetUpload.datasetName)}
         className={styles.input}
         onChange={(e) => setDatasetMetadata({ name: e.target.value })}

@@ -24,7 +24,15 @@ export type UserTrackRawData = FeatureCollection<
   UserTrackFeatureProperties
 >
 
+export type UserTrackLod = {
+  minZoom: number
+  tolerance: number
+  binary: UserTrackBinaryData
+}
+
 export type UserTrackData = {
   data: UserTrackRawData
-  binary: UserTrackBinaryData
+  /** Levels of Detail for zoom-based rendering.
+   * Coarse-to-fine, always non-empty; the last entry is the full-resolution binary. */
+  lods: UserTrackLod[]
 }

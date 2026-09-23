@@ -1,5 +1,6 @@
 .choiceContainer {
   width: 100%;
+  contain: inline-size;
 }
 
 .graph {

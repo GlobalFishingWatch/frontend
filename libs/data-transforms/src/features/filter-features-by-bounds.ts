@@ -4,7 +4,6 @@ import type {
   FourwingsFeature,
   FourwingsFeatureProperties,
   FourwingsPointFeature,
-  FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
 import { getFourwingsSublayerStartFrame } from '@globalfishingwatch/deck-loaders'
 
@@ -42,8 +41,7 @@ export const filterFeaturesByBounds = ({
   bounds,
   onlyValuesAndStartFrame = false,
 }: {
-  features:
-    GeoJSONFeature[] | FourwingsFeature[] | FourwingsStaticFeature[] | FourwingsPointFeature[]
+  features: GeoJSONFeature[] | FourwingsFeature[] | FourwingsPointFeature[]
   bounds: Bounds
   onlyValuesAndStartFrame?: boolean
 }) => {

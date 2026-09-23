@@ -4,8 +4,7 @@ import { uniqBy } from 'es-toolkit'
 import { DatasetCategory, DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
 import { replaceDatasetPrivateToPublic } from '@globalfishingwatch/datasets-client'
 
-import { selectPrivateUserGroups } from 'features/_user/selectors/user.groups.selectors'
-import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/_user/user.config'
+import { selectPrivateSearchDatasetIds } from 'features/_user/selectors/user.groups.selectors'
 import { VESSEL_GROUPS_MIN_API_VERSION } from 'features/_user/vessel-groups/vessel-groups.config'
 import { isDatasetSearchFieldNeededSupported } from 'features/_vessels/search/advanced/advanced-search.utils'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/_vessels/vessel/vessel.config'
@@ -34,6 +33,7 @@ const selectDatasetsByType = (type: DatasetTypes) => {
 export const selectFourwingsDatasets = selectDatasetsByType(DatasetTypes.Fourwings)
 export const selectVesselsDatasets = selectDatasetsByType(DatasetTypes.Vessels)
 export const selectTracksDatasets = selectDatasetsByType(DatasetTypes.Tracks)
+export const selectEventsDatasets = selectDatasetsByType(DatasetTypes.Events)
 
 export const selectVesselGroupCompatibleDatasets = createSelector(
   [selectVesselsDatasets, selectDeprecatedDatasets],
@@ -49,15 +49,10 @@ export const selectVesselGroupCompatibleDatasets = createSelector(
 )
 
 export const selectVesselGroupSearchDatasets = createSelector(
-  [selectVesselGroupCompatibleDatasets, selectPrivateUserGroups],
-  (datasets, privateUserGroups) => {
+  [selectVesselGroupCompatibleDatasets, selectPrivateSearchDatasetIds],
+  (datasets, privateSearchDatasetIds) => {
     const usersDatasetIds = [
-      ...privateUserGroups.flatMap((group) => {
-        return (PRIVATE_SEARCH_DATASET_BY_GROUP[group] || []).flatMap((id) => [
-          id,
-          replaceDatasetPrivateToPublic(id),
-        ])
-      }),
+      ...privateSearchDatasetIds.flatMap((id) => [id, replaceDatasetPrivateToPublic(id)]),
       DEFAULT_VESSEL_IDENTITY_ID,
     ]
     return [...datasets.filter((d) => usersDatasetIds.includes(d.id))]

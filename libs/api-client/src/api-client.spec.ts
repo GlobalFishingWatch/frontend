@@ -209,6 +209,19 @@ describe('api-client', () => {
 
         expect(result).toContain('locale=es')
       })
+
+      it('should fall back to en when localStorage is unavailable', () => {
+        const client = createApiClient()
+        const storage = (globalThis as any).localStorage
+        // Android WebViews with DOM storage disabled expose a null localStorage
+        vi.stubGlobal('localStorage', null)
+
+        try {
+          expect(client.getRegisterUrl('https://app.com/cb', { locale: '' })).toContain('locale=en')
+        } finally {
+          vi.stubGlobal('localStorage', storage)
+        }
+      })
     })
 
     describe('fetch', () => {

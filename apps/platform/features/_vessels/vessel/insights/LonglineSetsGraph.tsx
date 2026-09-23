@@ -1,26 +1,21 @@
+import type { CSSProperties, ReactNode } from 'react'
 import { Fragment, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
+import { kebabCase } from 'es-toolkit'
 
 import type { ApiEvents } from '@globalfishingwatch/api-types'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import type { LonglineCategory } from '@globalfishingwatch/deck-loaders'
+import { getLonglineCategory, LONGLINE_CATEGORY_COLORS } from '@globalfishingwatch/deck-loaders'
+import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
 import type { VesselEvent } from 'features/_vessels/vessel/vessel.types'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 
 import Event from '../activity/event/Event'
 
 import insightStyles from './Insights.module.css'
 import styles from './LonglineSetsGraph.module.css'
-
-type LonglineCategory = 'entirelyDay' | 'mostlyDay' | 'mostlyNight' | 'entirelyNight'
-
-const getLonglineCategory = (event: ApiEvents['entries'][number]): LonglineCategory => {
-  const category = event.fishing?.dayNightCategory
-  const fractionAtNight = event.fishing?.fractionAtNight ?? 0
-  if (category === 'day') return 'entirelyDay'
-  if (category === 'night') return 'entirelyNight'
-  return fractionAtNight < 0.5 ? 'mostlyDay' : 'mostlyNight'
-}
 
 const CATEGORY_ORDER: LonglineCategory[] = [
   'entirelyDay',
@@ -29,14 +24,28 @@ const CATEGORY_ORDER: LonglineCategory[] = [
   'entirelyNight',
 ]
 
+const CATEGORY_COLOR_VARS = Object.fromEntries(
+  CATEGORY_ORDER.map((key) => [`--longline-${kebabCase(key)}`, LONGLINE_CATEGORY_COLORS[key]])
+) as CSSProperties
+
 const LonglineSetsGraph = ({
   data,
   loading,
   showEvents = true,
+  renderCategoryContent,
+  onCategoryToggle,
+  onEventHover,
+  onEventMapClick,
 }: {
   data?: ApiEvents['entries']
   loading?: boolean
   showEvents?: boolean
+  /** Replaces the default flat event list shown when a category is expanded.
+   * Only one category is open at a time, so the content can key its own state on the vessel alone */
+  renderCategoryContent?: (events: ApiEvents['entries']) => ReactNode
+  onCategoryToggle?: (category: LonglineCategory | null) => void
+  onEventHover?: (event?: VesselEvent) => void
+  onEventMapClick?: (event: VesselEvent) => void
 }) => {
   const { t } = useTranslation()
   const [openCategory, setOpenCategory] = useState<LonglineCategory | null>(null)
@@ -57,44 +66,61 @@ const LonglineSetsGraph = ({
       mostlyNight: (count) => t((t) => t.vessel.insights.longlineMostlyNightSets, { count }),
       entirelyNight: (count) => t((t) => t.vessel.insights.longlineEntirelyNightSets, { count }),
     }
+    // Same sentences without the count, for while the events are still loading
+    const labelsWithoutCount: Record<LonglineCategory, string> = {
+      entirelyDay: t((t) => t.vessel.insights.longlineEntirelyDaySetsLabel),
+      mostlyDay: t((t) => t.vessel.insights.longlineMostlyDaySetsLabel),
+      mostlyNight: t((t) => t.vessel.insights.longlineMostlyNightSetsLabel),
+      entirelyNight: t((t) => t.vessel.insights.longlineEntirelyNightSetsLabel),
+    }
+    const total = data?.length || 0
     return CATEGORY_ORDER.map((key) => ({
       key,
       events: groups[key],
       count: groups[key].length,
       label: labels[key](groups[key].length),
+      labelWithoutCount: labelsWithoutCount[key],
+      percentage: total ? (groups[key].length / total) * 100 : 0,
     }))
   }, [data, t])
 
   return (
-    <div>
+    <div style={CATEGORY_COLOR_VARS}>
       {loading ? (
         <div className={cx(styles.bar, styles.loading)} />
       ) : (
         <div className={styles.bar}>
           {sets.map(
-            ({ key, count }) =>
+            ({ key, count, percentage }) =>
               count > 0 && (
-                <div
+                <Tooltip
                   key={key}
-                  className={cx(styles.barSegment, styles[key])}
-                  style={{ flexGrow: count }}
+                  content={`${formatI18nNumber(percentage, { maximumFractionDigits: 1 })}%`}
                 >
-                  {count}
-                </div>
+                  <div className={cx(styles.barSegment, styles[key])} style={{ flexGrow: count }}>
+                    {count}
+                  </div>
+                </Tooltip>
               )
           )}
         </div>
       )}
       <ul>
-        {sets.map(({ key, label, count, events }) => (
+        {sets.map(({ key, label, labelWithoutCount, count, events }) => (
           <Fragment key={key}>
             <li className={styles.legend}>
               <span className={cx(styles.legendDot, styles[key])} />
-              {label}
+              {/* every count is still 0 while loading, and rendering them reads as real data */}
+              {loading ? labelWithoutCount : label}
               {showEvents && count > 0 && (
                 <IconButton
                   size="small"
-                  onClick={() => setOpenCategory((open) => (open === key ? null : key))}
+                  onClick={() => {
+                    // computed outside the updater so StrictMode's double invoke can't double fire
+                    const next = openCategory === key ? null : key
+                    setOpenCategory(next)
+                    onCategoryToggle?.(next)
+                  }}
                   icon={openCategory === key ? 'arrow-top' : 'arrow-down'}
                   tooltip={
                     openCategory === key
@@ -104,17 +130,23 @@ const LonglineSetsGraph = ({
                 />
               )}
             </li>
-            {showEvents && openCategory === key && (
-              <ul className={insightStyles.eventDetailsList}>
-                {events.map((event) => (
-                  <Event
-                    key={event.id}
-                    event={event as VesselEvent}
-                    className={insightStyles.event}
-                  />
-                ))}
-              </ul>
-            )}
+            {showEvents &&
+              openCategory === key &&
+              (renderCategoryContent ? (
+                renderCategoryContent(events)
+              ) : (
+                <ul className={insightStyles.eventDetailsList}>
+                  {events.map((event) => (
+                    <Event
+                      key={event.id}
+                      event={event as VesselEvent}
+                      className={insightStyles.event}
+                      onMapHover={onEventHover}
+                      onMapClick={onEventMapClick}
+                    />
+                  ))}
+                </ul>
+              ))}
           </Fragment>
         ))}
       </ul>

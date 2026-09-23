@@ -1,4 +1,5 @@
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import type {
   ContextPickingObject,
   DeckLayerPickingObject,
@@ -11,7 +12,64 @@ import type {
 import { getContextValue } from 'features/_map/map/popups/map-popups.utils'
 import { TrackCategory } from 'features/app/analytics.hooks'
 
-import type { SliceExtendedFourwingsPickingObject } from './map.slice'
+import type {
+  SliceExtendedFeature,
+  SliceExtendedFourwingsPickingObject,
+  SliceInteractionEvent,
+} from './map.slice'
+
+export const getSliceInteractionEvent = (deckEvent: InteractionEvent): SliceInteractionEvent =>
+  ({
+    features: deckEvent.features?.map((feature: any) => {
+      if (feature.tile) {
+        const { x, y, z } = feature.tile
+        return { ...feature, tile: { x, y, z } }
+      }
+      return feature
+    }),
+    latitude: deckEvent.latitude,
+    longitude: deckEvent.longitude,
+    zoom: deckEvent.viewport?.zoom,
+    point: { x: deckEvent.point?.x, y: deckEvent.point?.y },
+  }) as SliceInteractionEvent
+
+// ~0.1m. Both the URL write and the restore's dedup guard go through this, so they can never
+// disagree about what "the same clicked point" means.
+const CLICKED_COORDINATES_PRECISION = 1e6
+
+export const getClickedCoordinatesParam = (
+  longitude?: number,
+  latitude?: number
+): [number, number] | undefined => {
+  if (longitude === undefined || latitude === undefined) {
+    return undefined
+  }
+  const round = (value: number) =>
+    Math.round(value * CLICKED_COORDINATES_PRECISION) / CLICKED_COORDINATES_PRECISION
+  return [round(longitude), round(latitude)]
+}
+
+const getClickedFeatureKey = (feature: SliceExtendedFeature) =>
+  `${feature.layerId}-${feature.id}-${
+    (feature as SliceExtendedFourwingsPickingObject).sublayers?.map(({ id }) => id).join(',') || ''
+  }`
+
+export const getNewClickedFeatures = (
+  features: SliceExtendedFeature[] = [],
+  previousFeatures: SliceExtendedFeature[] = []
+) => {
+  const previousKeys = previousFeatures.map(getClickedFeatureKey)
+  return features.filter((feature) => !previousKeys.includes(getClickedFeatureKey(feature)))
+}
+
+export const getUpdatedClickedFeatures = (
+  features: SliceExtendedFeature[] = [],
+  previousFeatures: SliceExtendedFeature[] = []
+) =>
+  features.map((feature) => {
+    const key = getClickedFeatureKey(feature)
+    return previousFeatures.find((previous) => getClickedFeatureKey(previous) === key) || feature
+  })
 
 export const isTilesClusterLayer = (pickingObject: DeckLayerPickingObject) =>
   pickingObject.subcategory === DataviewType.FourwingsTileCluster
@@ -21,6 +79,9 @@ export const isTilesClusterLayerCluster = (pickingObject: FourwingsClusterPickin
 
 export const isRulerLayerPoint = (pickingObject: DeckLayerPickingObject) =>
   pickingObject.category === 'rulers'
+
+export const isBathymetryContour = (pickingObject: DeckLayerPickingObject) =>
+  pickingObject.subcategory === DataviewType.Bathymetry
 
 export const isTrackSegment = (pickingObject: DeckLayerPickingObject) =>
   pickingObject.subcategory === DataviewType.Track &&

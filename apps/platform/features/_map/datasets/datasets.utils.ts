@@ -84,6 +84,13 @@ export function isRealTimeDataset(dataset: Dataset) {
   return dataset.subcategory === DatasetSubCategory.RealTime
 }
 
+export const hasDatasetError = (dataset?: Dataset) => dataset?.status === DatasetStatus.Error
+
+export const getDatasetImportLogs = (dataset?: Dataset) =>
+  Object.values(dataset?.configuration ?? {}).find((config): config is { importLogs: string } =>
+    Boolean((config as any)?.importLogs)
+  )?.importLogs
+
 export const GFW_ONLY_SUFFIX = ' - GFW Only'
 
 export type GetDatasetLabelParams = { id: string; name?: string }
@@ -94,6 +101,15 @@ export const getDatasetLabel = (dataset = {} as GetDatasetLabelParams): string =
   if (isGFWOnlyDataset(dataset)) return `${label}${GFW_ONLY_SUFFIX}`
   if (isPrivateDataset(dataset)) return `${PRIVATE_ICON} ${label}`
   return label
+}
+
+export const getDatasetMatchesSearch = (dataset: Dataset, searchQuery: string): boolean => {
+  if (!searchQuery) return true
+  const query = searchQuery.toLowerCase()
+  return (
+    getDatasetLabel(dataset).toLowerCase().includes(query) ||
+    (dataset.description?.toLowerCase().includes(query) ?? false)
+  )
 }
 
 export const getDataviewsSources = (dataviews: UrlDataviewInstance[]) => {
@@ -111,7 +127,9 @@ export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {
   if (!dataset) {
     return null
   }
-  if (dataset.type === DatasetTypes.Fourwings) return 'heatmap'
+  if (dataset.type === DatasetTypes.Fourwings || dataset.type === DatasetTypes.UserFourwings) {
+    return 'heatmap'
+  }
   if (dataset.type === DatasetTypes.Events) return 'clusters'
   const geometryType = getDatasetGeometryType(dataset)
   if (geometryType === 'draw') {
@@ -137,11 +155,21 @@ export const getIsBQEditorDataset = (dataset: Dataset): boolean => {
   )
 }
 
+const warnedMissingGeometryType = new Set<string>()
+const warnMissingGeometryType = (dataset: Dataset) => {
+  if (warnedMissingGeometryType.has(dataset.id)) {
+    return
+  }
+  warnedMissingGeometryType.add(dataset.id)
+  console.warn('Dataset hidden from the layer library, it has no geometryType', dataset.id)
+}
+
 export const groupDatasetsByGeometryType = (datasets: Dataset[]): Record<string, Dataset[]> => {
   const orderedObject: Record<string, Dataset[]> = {
     tracks: [],
     polygons: [],
     points: [],
+    gridded: [],
     bigQuery: [],
   }
 
@@ -157,6 +185,7 @@ export const groupDatasetsByGeometryType = (datasets: Dataset[]): Record<string,
       property: 'geometryType',
     })
     if (!geometryType) {
+      warnMissingGeometryType(dataset)
       return acc
     }
     if (!acc[geometryType]) {
@@ -165,6 +194,23 @@ export const groupDatasetsByGeometryType = (datasets: Dataset[]): Record<string,
     acc[geometryType].push(dataset)
     return acc
   }, orderedObject)
+}
+
+export const getGeometryTypeLabel = (geometryType: string): string => {
+  switch (geometryType) {
+    case 'tracks':
+      return t((t) => t.dataset.typeTracks).trim()
+    case 'polygons':
+      return t((t) => t.dataset.typePolygons).trim()
+    case 'points':
+      return t((t) => t.dataset.typePoints).trim()
+    case 'gridded':
+      return t((t) => t.dataset.typeGridded).trim()
+    case 'bigQuery':
+      return t((t) => t.dataset.typeBigQuery).trim()
+    default:
+      return geometryType
+  }
 }
 
 export const getDatasetSourceIcon = (dataset: Dataset): IconType | null => {

@@ -305,7 +305,7 @@ describe('Reports', () => {
     await getByTestId('add-layer-presence-button').click()
     const subselector = getByTestId('report-subsection-selector')
     await expect.element(subselector).toBeVisible()
-    await expect.element(subselector).toHaveTextContent(/presence/i)
+    await expect.element(subselector).toMatchTextContent(/presence/i)
   })
 
   // TODO: fix flaky tests
@@ -326,11 +326,11 @@ describe('Reports', () => {
   //   await expect.element(getByTestId('report-vessels-graph')).toBeVisible()
   //   const vesselsTable = getByTestId('report-vessels-table')
   //   await expect.element(vesselsTable).toBeVisible()
-  //   await expect.element(vesselsTable).toHaveTextContent('Name')
-  //   await expect.element(vesselsTable).toHaveTextContent('MMSI')
-  //   await expect.element(vesselsTable).toHaveTextContent('Flag')
-  //   await expect.element(vesselsTable).toHaveTextContent('Type')
-  //   await expect.element(vesselsTable).toHaveTextContent('hours')
+  //   await expect.element(vesselsTable).toMatchTextContent('Name')
+  //   await expect.element(vesselsTable).toMatchTextContent('MMSI')
+  //   await expect.element(vesselsTable).toMatchTextContent('Flag')
+  //   await expect.element(vesselsTable).toMatchTextContent('Type')
+  //   await expect.element(vesselsTable).toMatchTextContent('hours')
 
   //   const vesselLink = vesselsTable.getByTestId('link-vessel-profile').first()
   //   await expect.element(vesselLink).toBeVisible()
@@ -461,9 +461,9 @@ describe('Global reports', () => {
 
     const subselector = getByTestId('report-subsection-selector')
     await expect.element(subselector).toBeVisible()
-    await expect.element(subselector).toHaveTextContent(/Night light detections \(VIIRS\)/i)
-    await expect.element(subselector).toHaveTextContent(/Radar vessel detections \(SAR\)/i)
-    await expect.element(subselector).toHaveTextContent(/Sentinel 2/i)
+    await expect.element(subselector).toMatchTextContent(/Night light detections \(VIIRS\)/i)
+    await expect.element(subselector).toMatchTextContent(/Radar vessel detections \(SAR\)/i)
+    await expect.element(subselector).toMatchTextContent(/Sentinel 2/i)
   })
 })
 

@@ -5,6 +5,8 @@ import type { ApiEvent } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import type { SupportedDateType } from '@globalfishingwatch/data-transforms'
 import type { DatasetEventSource } from '@globalfishingwatch/datasets-client'
+import type { LonglineCategory } from '@globalfishingwatch/deck-loaders'
+import { getLonglineCategory, isLonglineSetEvent } from '@globalfishingwatch/deck-loaders'
 
 import { EVENTS_COLORS } from 'data/map/config'
 import { t } from 'features/i18n/i18n'
@@ -69,13 +71,33 @@ export const getTimeLabels = ({
   }
 }
 
+const getLonglineCategoryLabel = (category: LonglineCategory) => {
+  switch (category) {
+    case 'entirelyDay':
+      return t((t) => t.event.longlineCategoryEntirelyDay)
+    case 'mostlyDay':
+      return t((t) => t.event.longlineCategoryMostlyDay)
+    case 'mostlyNight':
+      return t((t) => t.event.longlineCategoryMostlyNight)
+    case 'entirelyNight':
+      return t((t) => t.event.longlineCategoryEntirelyNight)
+  }
+}
+
 export const getEventDescription = (
-  { start, end, type, vessel, encounter, port_visit }: ApiEvent,
+  { start, end, type, vessel, encounter, port_visit, fishing }: ApiEvent,
   { source }: { source?: DatasetEventSource } = {}
 ) => {
   const time = getTimeLabels({ start, end })
   let description: string
   let descriptionGeneric: string
+  if (isLonglineSetEvent({ fishing })) {
+    const category = getLonglineCategoryLabel(getLonglineCategory({ fishing }))
+    return {
+      description: t((t) => t.event.longlineSetAction, { ...time, category }),
+      descriptionGeneric: t((t) => t.event.longlineSet, { category }),
+    }
+  }
   switch (type) {
     case EventTypes.Encounter: {
       const mainVesselName = vessel?.name

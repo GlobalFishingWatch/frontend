@@ -336,7 +336,7 @@ it('should render tabs and vessel basic info', async () => {
 
   await router.navigate(navigateToVesselViewer())
 
-  await expect.element(getByTestId('vv-vessel-name')).toHaveTextContent('Gabu Reefer')
+  await expect.element(getByTestId('vv-vessel-name')).toMatchTextContent('Gabu Reefer')
   await expect.element(getByText('Registry', { exact: true })).toBeVisible()
   await expect.element(getByText('AIS', { exact: true })).toBeVisible()
   await expect.element(getByTestId('vv-summary-tab')).toBeVisible()

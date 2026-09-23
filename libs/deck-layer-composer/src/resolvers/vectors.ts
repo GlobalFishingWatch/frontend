@@ -33,7 +33,9 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
         color: dataview.config?.color || '#163f89',
         unit: dataset.unit,
         datasets: [datasetConfig.datasetId],
-        direction: datasetConfig.datasetId.includes('uo') ? 'u' : 'v',
+        vector: datasetConfig.datasetId.includes('uo') ? 'u' : 'v',
+        minVisibleValue: dataview.config?.minVisibleValue,
+        maxVisibleValue: dataview.config?.maxVisibleValue,
       }
     }
   )
@@ -74,8 +76,6 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
     maxZoom: dataview.config?.maxZoom,
     visible: dataview.config?.visible ?? true,
     availableIntervals,
-    minVisibleValue: dataview.config?.minVisibleValue,
-    maxVisibleValue: dataview.config?.maxVisibleValue,
     temporalAggregation: vectorsTemporalAggregation,
     ...(tilesUrl && { tilesUrl }),
     ...(extentStart && { extentStart: getUTCDateTime(extentStart).toMillis() }),

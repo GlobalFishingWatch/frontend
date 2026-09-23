@@ -1,4 +1,4 @@
-import type { DefaultProps, Layer, LayerProps, PickingInfo } from '@deck.gl/core'
+import type { DefaultProps, Layer, LayerProps, PickingInfo, UpdateParameters } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type { PathLayerProps } from '@deck.gl/layers'
 import { PathLayer } from '@deck.gl/layers'
@@ -12,14 +12,23 @@ import {
   geoJSONToSegments,
 } from '@globalfishingwatch/data-transforms'
 import type {
-  UserTrackBinaryData,
   UserTrackFeature,
+  UserTrackLod,
   UserTrackRawData,
 } from '@globalfishingwatch/deck-loaders'
-import { UserTrackLoader } from '@globalfishingwatch/deck-loaders'
+import {
+  getUserTrackLodIndex,
+  USER_TRACK_LOD_LEVELS,
+  UserTrackLoader,
+} from '@globalfishingwatch/deck-loaders'
 
-import { COLOR_HIGHLIGHT_LINE, COLOR_TRANSPARENT } from '#config/colors.config'
-import { DEFAULT_ID_PROPERTY, MAX_FILTER_VALUE } from '#config/layers.config'
+import { COLOR_HIGHLIGHT_LINE } from '#config/colors.config'
+import {
+  DEFAULT_ID_PROPERTY,
+  MAX_FILTER_VALUE,
+  TRACK_PICK_WIDTH,
+  TRACK_VISIBLE_WIDTH,
+} from '#config/layers.config'
 import { LayerGroup } from '#config/sort.config'
 import type { ContextFeature, ContextSublayerCallbackParams } from '#layers/context/context.types'
 import { getContextId } from '#layers/context/context.utils'
@@ -42,8 +51,10 @@ import type {
 } from './user.types'
 
 type _UserTrackLayerProps<DataT = any> = UserTrackLayerProps & PathLayerProps<DataT>
+
 const defaultProps: DefaultProps<_UserTrackLayerProps> = {
   _pathType: 'open',
+  pickWidth: { type: 'number', value: TRACK_PICK_WIDTH, min: 0 },
   loaders: [UserTrackLoader],
   endTime: { type: 'number', value: 0, min: 0 },
   startTime: { type: 'number', value: 0, min: 0 },
@@ -59,6 +70,7 @@ const uniformBlock = `
     uniform float endTime;
     uniform float highlightStartTime;
     uniform float highlightEndTime;
+    uniform float pickWidthRatio;
   } track;
 `
 
@@ -71,6 +83,7 @@ const trackLayerUniforms = {
     endTime: 'f32',
     highlightStartTime: 'f32',
     highlightEndTime: 'f32',
+    pickWidthRatio: 'f32',
   },
 }
 
@@ -90,6 +103,13 @@ export class UserTracksPathLayer<
         in float instanceTimestamps;
         out float vTime;
       `,
+      // Widen the stroke to the hover target, but only in the picking pass. Keeps one layer
+      // doing both jobs without paying for the wide band's fragments on every drawn frame.
+      'vs:DECKGL_FILTER_SIZE': /*glsl*/ `
+        if (picking.isActive > 0.5) {
+          size *= track.pickWidthRatio;
+        }
+      `,
       // Timestamp of the vertex
       'vs:#main-end': /*glsl*/ `
         vTime = instanceTimestamps;
@@ -100,8 +120,8 @@ export class UserTracksPathLayer<
       'fs:#decl': /*glsl*/ `
         in float vTime;
       `,
-      // Drop the segments outside of the time window
       'fs:#main-start': /*glsl*/ `
+      // Drop the segments outside of the time window
         if(vTime > 0.0 && (vTime < track.startTime || vTime > track.endTime)) {
           discard;
         }
@@ -132,7 +152,14 @@ export class UserTracksPathLayer<
   }
 
   draw(params: any) {
-    const { startTime, endTime, highlightStartTime = 0, highlightEndTime = 0 } = this.props
+    const {
+      startTime,
+      endTime,
+      highlightStartTime = 0,
+      highlightEndTime = 0,
+      pickWidth = TRACK_PICK_WIDTH,
+      getWidth,
+    } = this.props
 
     if (this.state.model) {
       this.state.model.shaderInputs.setProps({
@@ -141,6 +168,10 @@ export class UserTracksPathLayer<
           endTime: endTime || MAX_FILTER_VALUE,
           highlightStartTime,
           highlightEndTime,
+          // Read back from getWidth rather than assuming TRACK_VISIBLE_WIDTH, so a caller
+          // drawing at another width still gets a `pickWidth`-wide hover target.
+          pickWidthRatio:
+            pickWidth / (typeof getWidth === 'number' ? getWidth : TRACK_VISIBLE_WIDTH),
         },
       })
     }
@@ -149,12 +180,22 @@ export class UserTracksPathLayer<
   }
 }
 
+type UserTrackContextLayer = UserTrackLayerProps['layers'][number]
+type UserTrackSublayer = UserTrackContextLayer['sublayers'][number]
+
 type RawDataIndex = { index: number; length: number }
 type UserTracksLayerState = {
   error: string
   rawData?: UserTrackRawData
   rawDataIndexes: RawDataIndex[]
-  binaryData?: UserTrackBinaryData
+  /** Path index -> feature index. Avoids a linear scan per path in `_getColor`. */
+  pathFeatureIndexes?: Int32Array
+  /** Coarse-to-fine simplified copies; the last entry is the unsimplified original. */
+  lods?: UserTrackLod[]
+  /** Index into `lods` currently being drawn, derived from viewport zoom. */
+  lodIndex?: number
+  /** Identity of what `lods`/`rawData` were parsed from, so a filter change invalidates them. */
+  dataKey?: string
   highlightedFeatures?: UserLayerPickingObject[]
   highlightStartTime?: number
   highlightEndTime?: number
@@ -169,6 +210,62 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   static layerName = 'UserTracksLayer'
   static defaultProps = defaultProps
   declare state: UserTracksLayerState
+
+  /**
+   * Base `Layer.shouldUpdateState` only reports `propsOrDataChanged`, so without this
+   * `renderLayers` never re-runs on a pure zoom change and the LOD would never switch.
+   * Compared against the level index rather than a viewport hash, so this fires at
+   * bucket boundaries instead of on every frame of a zoom.
+   */
+  shouldUpdateState(params: UpdateParameters<this>) {
+    return super.shouldUpdateState(params) || this._getLodIndex() !== this.state?.lodIndex
+  }
+
+  updateState(params: UpdateParameters<this>) {
+    super.updateState(params)
+    // Filters/tilesUrl feed the parse, so anything already parsed is stale once they change.
+    // Without this the sublayers keep rendering `state.lods` and never refetch.
+    const dataKey = this._getDataKey()
+    if (dataKey !== this.state?.dataKey) {
+      this.setState({
+        dataKey,
+        rawData: undefined,
+        rawDataIndexes: [],
+        pathFeatureIndexes: undefined,
+        lods: undefined,
+        lodIndex: undefined,
+      })
+      return
+    }
+    const lodIndex = this._getLodIndex()
+    if (lodIndex !== this.state?.lodIndex) {
+      this.setState({ lodIndex })
+    }
+  }
+
+  _getLayerKey(layer?: UserTrackContextLayer, sublayer?: UserTrackSublayer) {
+    return [
+      layer?.id,
+      sublayer?.id,
+      layer?.tilesUrl,
+      Object.entries(sublayer?.filters || {}).join(','),
+      Object.entries(sublayer?.filterOperators || {}).join(','),
+      this.props.timeFilterType ?? '',
+    ].join('|')
+  }
+
+  _getDataKey() {
+    // TODO: support multiple sublayers
+    const layer = this.props.layers?.[0]
+    return this._getLayerKey(layer, layer?.sublayers?.[0])
+  }
+
+  _getLodIndex() {
+    return getUserTrackLodIndex(
+      this.state?.lods ?? USER_TRACK_LOD_LEVELS,
+      this.context.viewport.zoom
+    )
+  }
 
   _getHighlightedFeatures() {
     return this.state?.highlightedFeatures || emptyHighlightedFeatures
@@ -226,10 +323,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   }
 
   getPickingInfo = ({ info }: { info: PickingInfo<UserTrackFeature> }): UserLayerPickingInfo => {
-    const featureIndex =
-      info.index >= 0
-        ? this.state?.rawDataIndexes?.find(({ length }) => info.index < length)?.index
-        : undefined
+    const featureIndex = this._getFeatureIndex(info.index)
     const feature =
       featureIndex !== undefined ? this.state?.rawData?.features[featureIndex] : undefined
     // TODO: support multiple sublayers
@@ -315,7 +409,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
           : [],
       },
     }
-    const { data, binary } = await parse(response, UserTrackLoader, userTracksLoadOptions)
+    const { data, lods } = await parse(response, UserTrackLoader, userTracksLoadOptions)
     let totalCoordinatesLength = 0
     const rawDataIndexes = data.features.reduce(
       (acc: RawDataIndex[], feature: any, index: number) => {
@@ -326,9 +420,36 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       },
       [] as RawDataIndex[]
     )
+    const pathFeatureIndexes = new Int32Array(totalCoordinatesLength)
+    let pathCursor = 0
+    for (const { index, length } of rawDataIndexes) {
+      while (pathCursor < length) {
+        pathFeatureIndexes[pathCursor] = index
+        pathCursor++
+      }
+    }
 
-    this.setState({ rawData: data, binaryData: binary, rawDataIndexes })
-    return binary
+    const lodIndex = this._getLodIndex()
+    this.setState({
+      dataKey: this._getDataKey(),
+      rawData: data,
+      rawDataIndexes,
+      pathFeatureIndexes,
+      lods,
+      lodIndex,
+    })
+    return lods[lodIndex].binary
+  }
+
+  _getFeatureIndex(pathIndex: number): number | undefined {
+    if (pathIndex < 0) {
+      return undefined
+    }
+    const pathFeatureIndexes = this.state?.pathFeatureIndexes
+    if (!pathFeatureIndexes) {
+      return undefined
+    }
+    return pathIndex < pathFeatureIndexes.length ? pathFeatureIndexes[pathIndex] : undefined
   }
 
   _onLayerError = (error: Error) => {
@@ -418,8 +539,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   ) => {
     const { singleTrack } = this.props
     const highlightedFeatures = this._getHighlightedFeatures()
-    const featureIndex = this.state?.rawDataIndexes?.find(({ length }) => index < length)
-      ?.index as number
+    const featureIndex = this._getFeatureIndex(index) as number
     const currentFeature = this.state?.rawData?.features?.[featureIndex]
     const isHighlighted = highlightedFeatures?.some(
       (feature) =>
@@ -440,11 +560,8 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
 
     return layers.map((layer) => {
       const sublayer = layer.sublayers?.[0]
-      // TODO support multiple layers
-      // return layer.sublayers.map((sublayer) => {
       const tilesUrl = new URL(layer.tilesUrl)
-      const layerIdHash = `${layer.id}-${sublayer.id}-${Object.values(sublayer.filters || {}).join(',')}-${Object.values(sublayer.filterOperators || {}).join(',')}`
-      // tilesUrl.searchParams.set('filters', Object.values(sublayer.filters || {}).join(','))
+      const layerIdHash = this._getLayerKey(layer, sublayer)
 
       const commonProps = {
         _pathType: 'open',
@@ -457,27 +574,22 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
       } as _UserTrackLayerProps
 
+      const activeBinary = this.state?.lods?.[this.state?.lodIndex ?? 0]?.binary
+
       return [
         new UserTracksPathLayer<any>({
           ...commonProps,
-          id: `${layerIdHash}-interactive`,
-          data: this.state.binaryData,
-          pickable: layer.pickable,
-          getWidth: 5,
-          getColor: COLOR_TRANSPARENT,
-        }),
-        new UserTracksPathLayer<any>({
-          ...commonProps,
           id: layerIdHash,
-          data: tilesUrl.toString(),
+          data: activeBinary ?? tilesUrl.toString(),
           fetch: this._fetch,
+          pickable: layer.pickable,
           highlightStartTime,
           highlightEndTime,
           onError: this._onLayerError,
           jointRounded: true,
-          capRounded: true,
-          getWidth: 1.5,
-          getColor: (d, { index }) => this._getColor(d, { layer, sublayer, index }),
+          getWidth: TRACK_VISIBLE_WIDTH,
+          getColor: (d, { index: pathIndex }) =>
+            this._getColor(d, { layer, sublayer, index: pathIndex }),
           updateTriggers: {
             getColor: [singleTrack, sublayer.color, highlightedFeatures],
           },

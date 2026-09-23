@@ -3,7 +3,11 @@ import type { _TileLoadProps as TileLoadProps } from '@deck.gl/geo-layers'
 import { DateTime } from 'luxon'
 import { stringify } from 'qs'
 
-import type { FourwingsInterval, TileCell } from '@globalfishingwatch/deck-loaders'
+import type {
+  FourwingsFeature,
+  FourwingsInterval,
+  TileCell,
+} from '@globalfishingwatch/deck-loaders'
 import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import {
@@ -12,7 +16,9 @@ import {
   HEATMAP_HIGH_RES_ID,
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
+  MAX_RAMP_VALUES,
 } from '#layers/fourwings/fourwings.config'
+import { getSteps, removeOutliers } from '#layers/fourwings/fourwings.stats'
 import type {
   FourwingsDeckSublayer,
   FourwingsDeckVectorSublayer,
@@ -32,10 +38,15 @@ import type {
 } from './fourwings-heatmap.types'
 import { FourwingsAggregationOperation } from './fourwings-heatmap.types'
 
+/** `undefined` when the slice holds no data. A 0 total is a real total: absent frames travel
+ * as the no-data sentinel, which the parser drops, so every number here was measured. */
 export function aggregateSublayerValues(
   values: number[],
   aggregationOperation = FourwingsAggregationOperation.Sum
-) {
+): number | undefined {
+  if (!values.some(Number.isFinite)) {
+    return undefined
+  }
   if (aggregationOperation === FourwingsAggregationOperation.Avg) {
     let nonEmptyValuesLength = 0
     return (
@@ -59,6 +70,25 @@ export function aggregateSublayerValues(
   }, 0)
 }
 
+export const getCellValuesFrameRange = ({
+  valuesLength,
+  startFrame,
+  endFrame,
+  startOffset,
+}: {
+  valuesLength: number
+  startFrame: number
+  endFrame: number
+  startOffset: number
+}): [number, number] => {
+  const from = Math.max(startFrame - startOffset, 0)
+  if (startFrame === endFrame) {
+    return [from, from + 1]
+  }
+  const to = endFrame - startOffset
+  return [from, to < valuesLength ? to : valuesLength]
+}
+
 export const sliceCellValues = ({
   values,
   startFrame,
@@ -73,23 +103,28 @@ export const sliceCellValues = ({
   if (!values || !values.length) {
     return []
   }
-  if (startFrame === endFrame) return [values[Math.max(startFrame - startOffset, 0)]]
-  return values.slice(
-    Math.max(startFrame - startOffset, 0),
-    endFrame - startOffset < values.length ? endFrame - startOffset : undefined
-  )
+  const [from, to] = getCellValuesFrameRange({
+    valuesLength: values.length,
+    startFrame,
+    endFrame,
+    startOffset,
+  })
+  return values.slice(from, to)
 }
 
+/**
+ * Returns `undefined` — not 0 — for a sublayer the cell holds no data
+ */
 export const aggregateCell = ({
   cellValues,
   startFrame,
   endFrame,
   cellStartOffsets,
   aggregationOperation = FourwingsAggregationOperation.Sum,
-}: AggregateCellParams): number[] => {
+}: AggregateCellParams): (number | undefined)[] => {
   return cellValues.map((sublayerValues, sublayerIndex) => {
     if (!sublayerValues || !cellStartOffsets) {
-      return 0
+      return undefined
     }
     const startOffset = cellStartOffsets[sublayerIndex]
     if (
@@ -98,7 +133,7 @@ export const aggregateCell = ({
       // all values are after time range
       startFrame - startOffset >= sublayerValues.length
     ) {
-      return 0
+      return undefined
     }
     return aggregateSublayerValues(
       sliceCellValues({
@@ -118,18 +153,17 @@ export const compareCell = ({
 }: CompareCellParams): number[] => {
   const [initialValue, comparedValue] = cellValues.map((sublayerValues) => {
     if (!sublayerValues || !sublayerValues?.length) {
-      return 0
+      return undefined
     }
-    const value = aggregateSublayerValues(sublayerValues, aggregationOperation)
-    return value ?? 0
+    return aggregateSublayerValues(sublayerValues, aggregationOperation)
   })
-  if (!initialValue && !comparedValue) {
+  if (initialValue === undefined && comparedValue === undefined) {
     return []
   }
-  if (!comparedValue) {
-    return [-initialValue]
+  if (comparedValue === undefined) {
+    return [-(initialValue as number)]
   }
-  if (!initialValue) {
+  if (initialValue === undefined) {
     return [comparedValue]
   }
   return [comparedValue - initialValue]
@@ -347,11 +381,114 @@ export function getIntervalFrames({
   return result
 }
 
+export function isSublayerValueVisible(
+  value: number | undefined | null,
+  sublayer?: { minVisibleValue?: number; maxVisibleValue?: number }
+): value is number {
+  // 0 is a value the API actually measured; only a missing one hides the cell
+  if (value === undefined || value === null || Number.isNaN(value)) {
+    return false
+  }
+  const { minVisibleValue, maxVisibleValue } = sublayer || {}
+  return (
+    (minVisibleValue === undefined || value >= minVisibleValue) &&
+    (maxVisibleValue === undefined || value <= maxVisibleValue)
+  )
+}
+
+export function getSublayersVisibleValuesHash(
+  sublayers?: { minVisibleValue?: number; maxVisibleValue?: number }[]
+) {
+  return (sublayers || []).map((s) => `${s.minVisibleValue}-${s.maxVisibleValue}`).join(',')
+}
+
+export function getRampFitRange(sublayers?: FourwingsDeckSublayer[]) {
+  const visibleSublayers = (sublayers || []).filter((sublayer) => sublayer.visible)
+  const sublayer = visibleSublayers.length === 1 ? visibleSublayers[0] : undefined
+  if (!sublayer?.colorRampFitToRange) {
+    return {}
+  }
+  const { minVisibleValue, maxVisibleValue } = sublayer
+  return { minVisibleValue, maxVisibleValue }
+}
+
+export function getSublayersRampFitHash(sublayers?: FourwingsDeckSublayer[]) {
+  return (sublayers || [])
+    .map((s) => `${s.visible}-${s.colorRampFitToRange}-${s.minVisibleValue}-${s.maxVisibleValue}`)
+    .join(',')
+}
+
 export function filterCells(value: any, index: number, minValue?: number, maxValue?: number) {
   // Select only 5% of elements
   return (
     value && index % 20 === 1 && (!minValue || value > minValue) && (!maxValue || value < maxValue)
   )
+}
+
+export function getFourwingsColorDomain({
+  features,
+  aggregationOperation,
+  startFrame,
+  endFrame,
+  timeRangeKey,
+  // note this forces the 5% sample instead of skipping it, matching the previous behaviour
+  skipColorDomainSampling,
+  minVisibleValue,
+  maxVisibleValue,
+}: {
+  features: FourwingsFeature[]
+  aggregationOperation?: FourwingsAggregationOperation
+  startFrame: number
+  endFrame: number
+  timeRangeKey: string
+  skipColorDomainSampling?: boolean
+  minVisibleValue?: number
+  maxVisibleValue?: number
+}): { domain: number[]; max?: number } {
+  if (!features?.length) {
+    return { domain: [] }
+  }
+  const dataSample =
+    features.length > MAX_RAMP_VALUES || skipColorDomainSampling
+      ? features.filter((d, i) => filterCells(d, i))
+      : features
+
+  // The previous filter on values was a no-op (the predicate returned an
+  // array, always truthy) that allocated two copies per cell and compacted
+  // sparse sublayers out of alignment with startOffsets, so values are
+  // passed through directly
+  let allValues = dataSample
+    .flatMap(
+      (feature) =>
+        feature.properties.initialValues[timeRangeKey] ||
+        aggregateCell({
+          cellValues: feature.properties.values,
+          aggregationOperation,
+          startFrame,
+          endFrame,
+          cellStartOffsets: feature.properties.startOffsets,
+        })
+    )
+    .filter((value): value is number => value !== undefined)
+  const fitsToRange = minVisibleValue !== undefined || maxVisibleValue !== undefined
+  if (fitsToRange) {
+    allValues = allValues.filter((value) =>
+      isSublayerValueVisible(value, { minVisibleValue, maxVisibleValue })
+    )
+  }
+  if (!allValues.length) {
+    return { domain: [] }
+  }
+
+  return {
+    domain: getSteps(removeOutliers({ allValues, aggregationOperation })),
+    // Bounds are only passed when the ramp is fitted to them (see getRampFitRange), and then the
+    // steps already span the selection: labelling the end with the max of that same selection
+    // would spend a step restating the bound the user set
+    ...(!fitsToRange && {
+      max: allValues.reduce((acc, value) => (value > acc ? value : acc), allValues[0] as number),
+    }),
+  }
 }
 
 export const getResolutionByVisualizationMode = (
@@ -409,7 +546,7 @@ export const getTileDataCache = ({
   intervalCacheMode?: FourwingsIntervalCacheMode
 }): FourwingsHeatmapTilesCache => {
   const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
-  const { start, end, bufferedStart } = getFourwingsChunk({
+  const { start, end, bufferedStart, bufferedEnd } = getFourwingsChunk({
     start: startTime,
     end: endTime,
     availableIntervals,
@@ -418,10 +555,12 @@ export const getTileDataCache = ({
     bufferedStartTime,
     bufferedEndTime,
   })
+  const cacheStart = intervalCacheMode === 'NONE' ? bufferedStart : start
+  const cacheEnd = intervalCacheMode === 'NONE' ? bufferedEnd : end
   return {
     zoom,
-    start: temporalAggregation ? startTime : start,
-    end: temporalAggregation ? endTime : end,
+    start: temporalAggregation ? startTime : cacheStart,
+    end: temporalAggregation ? endTime : cacheEnd,
     bufferedStart,
     interval,
     compareStart,

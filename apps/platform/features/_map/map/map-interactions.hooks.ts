@@ -1,6 +1,6 @@
-import { startTransition, useCallback, useMemo } from 'react'
-import { useSelector } from 'react-redux'
-import type { DeckProps, PickingInfo } from '@deck.gl/core'
+import { startTransition, useCallback, useEffect, useMemo } from 'react'
+import { useSelector, useStore as useReduxStore } from 'react-redux'
+import type { DeckProps, PickingInfo, WebMercatorViewport } from '@deck.gl/core'
 import { debounce, throttle } from 'es-toolkit'
 import { atom, useAtomValue, useSetAtom, useStore } from 'jotai'
 import type { MjolnirPointerEvent } from 'mjolnir.js'
@@ -13,6 +13,8 @@ import type {
 import {
   deckHoverInteractionAtom,
   deckLayersAtom,
+  deckLayersStateAtom,
+  isDeckLayersLoadingAtom,
   useSetMapHoverInteraction,
 } from '@globalfishingwatch/deck-layer-composer'
 import type {
@@ -52,27 +54,34 @@ import type { ActivityEvent } from 'features/_vessels/vessel/activity/vessels-ac
 import { trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setHintDismissed } from 'features/hints/hints.slice'
+import type { RootState } from 'reducers'
+import { useAppSearch, useReplaceQueryParams } from 'router/routes.hook'
 
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
-import type { SliceExtendedClusterPickingObject, SliceInteractionEvent } from './map.slice'
+import type { SliceExtendedClusterPickingObject } from './map.slice'
 import {
   fetchClusterEventThunk,
-  fetchDetectionThumbnailsThunk,
   fetchHeatmapInteractionThunk,
   fetchRealTimePositionsThunk,
+  removeClickedEventDataview,
   selectActivityInteractionStatus,
   selectApiEventStatus,
   selectClickedEvent,
   setClickedEvent,
+  setClickedEventFeatures,
 } from './map.slice'
 import {
   getAnalyticsEvent,
+  getClickedCoordinatesParam,
+  getNewClickedFeatures,
+  getSliceInteractionEvent,
+  getUpdatedClickedFeatures,
   isRulerLayerPoint,
   isTilesClusterLayer,
   isTilesClusterLayerCluster,
   isTrackSegment,
 } from './map-interaction.utils'
-import { useSetMapCoordinates } from './map-viewport.hooks'
+import { useMapViewport, useSetMapCoordinates } from './map-viewport.hooks'
 
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
   DataviewCategory.Activity,
@@ -99,20 +108,11 @@ function useGetAreClusterTilesLoading() {
 // Re-exported for existing consumers (`export ... from` alone would not bind them locally).
 export { useCancelInteractionPromises } from 'features/_map/map/map-interactions.atoms'
 
-export const useClickedEventConnect = () => {
+const useInteractionHandlers = () => {
   const dispatch = useAppDispatch()
   const activityDataviews = useSelector(selectActivityDataviews)
   const eventsDataviews = useSelector(selectEventsDataviews)
   const setInteractionPromises = useSetAtom(interactionPromisesAtom)
-  const cancelPendingInteractionRequests = useCancelInteractionPromises()
-  const clickedEvent = useSelector(selectClickedEvent)
-  const fishingInteractionStatus = useSelector(selectActivityInteractionStatus)
-  const apiEventStatus = useSelector(selectApiEventStatus)
-  const setMapCoordinates = useSetMapCoordinates()
-  const fitMapBounds = useMapFitBounds()
-  const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
-  const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
-  const { rulersEditing, onRulerMapClick } = useRulers()
   const getAreClusterTilesLoading = useGetAreClusterTilesLoading()
   const scrollToEvent = useVesselProfileScrollToEvent()
   const setEventGroup = useEventActivityToggle()[1]
@@ -184,18 +184,7 @@ export const useClickedEventConnect = () => {
         const dataview = activityDataviews.find((d) => d.id === feature.layerId)
         return dataview ? isRealTimeDataview(dataview) : false
       })
-      const detectionFeatures = positionFeatures.filter(
-        (feature) => !realTimeFeatures.includes(feature)
-      )
-      if (detectionFeatures?.length) {
-        const detectionsPositionPromise = dispatch(
-          fetchDetectionThumbnailsThunk({ detectionFeatures })
-        )
-        setInteractionPromises((prev) => ({
-          ...prev,
-          detectionPositions: detectionsPositionPromise,
-        }))
-      }
+      // detection thumbnails are heavy, PositionsTooltipRow requests only the visible one
       if (realTimeFeatures?.length) {
         const realTimePositionsPromise = dispatch(fetchRealTimePositionsThunk({ realTimeFeatures }))
         setInteractionPromises((prev) => ({
@@ -256,6 +245,35 @@ export const useClickedEventConnect = () => {
     [setEventGroup, scrollToEvent]
   )
 
+  return {
+    handleHeatmapInteraction,
+    handleDetectionPositionsInteraction,
+    handleTileClusterInteraction,
+    handleVesselEventInteraction,
+  }
+}
+
+export const useClickedEventConnect = () => {
+  const dispatch = useAppDispatch()
+  const eventsDataviews = useSelector(selectEventsDataviews)
+  const cancelPendingInteractionRequests = useCancelInteractionPromises()
+  const clickedEvent = useSelector(selectClickedEvent)
+  const fishingInteractionStatus = useSelector(selectActivityInteractionStatus)
+  const apiEventStatus = useSelector(selectApiEventStatus)
+  const setMapCoordinates = useSetMapCoordinates()
+  const fitMapBounds = useMapFitBounds()
+  const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
+  const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
+  const { rulersEditing, onRulerMapClick } = useRulers()
+  const getAreClusterTilesLoading = useGetAreClusterTilesLoading()
+  const { replaceQueryParams } = useReplaceQueryParams()
+  const {
+    handleHeatmapInteraction,
+    handleDetectionPositionsInteraction,
+    handleTileClusterInteraction,
+    handleVesselEventInteraction,
+  } = useInteractionHandlers()
+
   const dispatchClickedEvent = useCallback(
     (deckEvent: InteractionEvent | null) => {
       // Cancel all pending promises
@@ -263,6 +281,7 @@ export const useClickedEventConnect = () => {
 
       if (deckEvent === null) {
         dispatch(setClickedEvent(null))
+        replaceQueryParams({ clickedCoordinates: undefined })
         return
       }
       if (isMapAnnotating) {
@@ -278,19 +297,7 @@ export const useClickedEventConnect = () => {
         return
       }
       // TODO: identify if clicked on a track correction overlay and return to stop propagation from opening events popup
-      const event = {
-        features: deckEvent.features?.map((feature: any) => {
-          if (feature.tile) {
-            const { x, y, z } = feature.tile
-            return { ...feature, tile: { x, y, z } }
-          }
-          return feature
-        }),
-        latitude: deckEvent.latitude,
-        longitude: deckEvent.longitude,
-        zoom: deckEvent.viewport?.zoom,
-        point: { x: deckEvent.point.x, y: deckEvent.point.y },
-      } as SliceInteractionEvent
+      const event = getSliceInteractionEvent(deckEvent)
 
       event?.features?.forEach((feature) => {
         const analyticsEvent = getAnalyticsEvent(feature)
@@ -339,11 +346,15 @@ export const useClickedEventConnect = () => {
       if (!event || !event.features) {
         if (clickedEvent) {
           dispatch(setClickedEvent(null))
+          replaceQueryParams({ clickedCoordinates: undefined })
         }
         return
       }
 
       dispatch(setClickedEvent(event))
+      replaceQueryParams({
+        clickedCoordinates: getClickedCoordinatesParam(event.longitude, event.latitude),
+      })
 
       handleHeatmapInteraction(event)
       handleDetectionPositionsInteraction(event)
@@ -368,6 +379,7 @@ export const useClickedEventConnect = () => {
       setMapCoordinates,
       fitMapBounds,
       clickedEvent,
+      replaceQueryParams,
     ]
   )
 
@@ -433,6 +445,229 @@ const useGetPickingInteraction = () => {
   return getPickingInteraction
 }
 
+// Only the last refresh requested is applied, as the previous ones are outdated
+let lastRefreshId = 0
+
+const isDataviewLayerLoaded = (store: ReturnType<typeof useStore>, dataviewId: string) =>
+  Object.entries(store.get(deckLayersStateAtom)).some(
+    // fourwings dataviews are merged in a single layer with their ids joined
+    ([layerId, layer]) => layer.loaded && layerId.split(',').includes(dataviewId)
+  )
+
+// A pick fabricated from coordinates instead of a pointer event: used to rebuild the clicked popup
+// when the layers change or when it is restored from the URL. `viewport` is needed because
+// getSliceInteractionEvent reads the zoom off it.
+const getSyntheticPickingInfo = (
+  coordinate: [number, number],
+  viewport: WebMercatorViewport
+): PickingInfo => {
+  const [x, y] = viewport.project(coordinate)
+  return { x, y, coordinate, viewport } as unknown as PickingInfo
+}
+
+const waitForLayersUpdate = ({
+  store,
+  isUpdated,
+  isOutdated,
+  timeout,
+}: {
+  store: ReturnType<typeof useStore>
+  isUpdated: () => boolean
+  isOutdated: () => boolean
+  // resolves false when the layers don't settle in time, for callers that aren't triggered by a
+  // layer change themselves and so have no guarantee the atom will ever emit again
+  timeout?: number
+}) =>
+  new Promise<boolean>((resolve) => {
+    let settled = false
+    let unsubscribe: () => void = () => {}
+    let timeoutId: ReturnType<typeof setTimeout> | undefined
+    const finish = (updated: boolean) => {
+      if (settled) {
+        return
+      }
+      settled = true
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+      }
+      unsubscribe()
+      resolve(updated)
+    }
+    const check = () => {
+      if (isOutdated()) {
+        finish(false)
+      } else if (!store.get(isDeckLayersLoadingAtom) && isUpdated()) {
+        finish(true)
+      }
+    }
+    if (timeout) {
+      timeoutId = setTimeout(() => finish(false), timeout)
+    }
+    unsubscribe = store.sub(deckLayersStateAtom, check)
+    // the layers may already be settled, in which case the atom never emits again
+    check()
+  })
+
+export const useRefreshClickedEvent = () => {
+  const dispatch = useAppDispatch()
+  const store = useStore()
+  const reduxStore = useReduxStore()
+  const mapViewport = useMapViewport()
+  const getPickingInteraction = useGetPickingInteraction()
+  const cancelPendingInteractionRequests = useCancelInteractionPromises()
+  const {
+    handleHeatmapInteraction,
+    handleDetectionPositionsInteraction,
+    handleTileClusterInteraction,
+  } = useInteractionHandlers()
+
+  return useCallback(
+    async (dataviewId: string, visible: boolean) => {
+      // read on demand so consumers don't rerender on every popup change
+      const clicked = selectClickedEvent(reduxStore.getState() as RootState)
+      const refreshId = ++lastRefreshId
+      if (!mapViewport || !clicked) {
+        return
+      }
+      if (!visible) {
+        dispatch(removeClickedEventDataview(dataviewId))
+        return
+      }
+
+      const isOutdated = () => {
+        const currentClicked = selectClickedEvent(reduxStore.getState() as RootState)
+        return (
+          refreshId !== lastRefreshId ||
+          currentClicked?.longitude !== clicked.longitude ||
+          currentClicked?.latitude !== clicked.latitude
+        )
+      }
+      const pickFeatures = () => {
+        const interaction = getPickingInteraction(
+          getSyntheticPickingInfo([clicked.longitude, clicked.latitude], mapViewport),
+          'click'
+        )
+        return interaction ? getSliceInteractionEvent(interaction).features : []
+      }
+
+      const updated = await waitForLayersUpdate({
+        store,
+        isUpdated: () => isDataviewLayerLoaded(store, dataviewId),
+        isOutdated,
+      })
+      if (!updated) {
+        return
+      }
+      // read again as a previous refresh could have updated the popup while waiting
+      const previousFeatures =
+        selectClickedEvent(reduxStore.getState() as RootState)?.features || clicked.features
+      const features = pickFeatures()
+      dispatch(setClickedEventFeatures(getUpdatedClickedFeatures(features, previousFeatures)))
+      // only the new features are requested, the rest keep the data already fetched for them
+      const newFeatures = getNewClickedFeatures(features, previousFeatures)
+      if (!newFeatures.length) {
+        return
+      }
+      // a pending request of a previous refresh would overwrite the data of this one
+      cancelPendingInteractionRequests()
+      const newEvent = { ...clicked, features: newFeatures } as InteractionEvent
+      handleHeatmapInteraction(newEvent)
+      handleDetectionPositionsInteraction(newEvent)
+      handleTileClusterInteraction(newEvent)
+    },
+    [
+      cancelPendingInteractionRequests,
+      dispatch,
+      getPickingInteraction,
+      handleDetectionPositionsInteraction,
+      handleHeatmapInteraction,
+      handleTileClusterInteraction,
+      mapViewport,
+      reduxStore,
+      store,
+    ]
+  )
+}
+
+// Long enough for a cold tile load on a slow connection. On timeout we give up rather than pick
+// into half-loaded layers, which would show a partial popup the sharer never saw.
+const RESTORE_PICK_TIMEOUT = 10000
+
+/**
+ * Rebuilds the clicked popup from the coordinates in the URL, so a clicked cell survives a reload
+ * and can be shared. Features are re-picked from deck rather than serialized: the URL never carries
+ * anything about the layers themselves, so a link cannot leak a private dataset's content.
+ */
+export const useClickedEventUrlSync = () => {
+  const dispatch = useAppDispatch()
+  const store = useStore()
+  const reduxStore = useReduxStore()
+  const deckMap = useDeckMap()
+  const mapViewport = useMapViewport()
+  const getPickingInteraction = useGetPickingInteraction()
+  const { clickedCoordinates } = useAppSearch()
+  const {
+    handleHeatmapInteraction,
+    handleDetectionPositionsInteraction,
+    handleTileClusterInteraction,
+  } = useInteractionHandlers()
+
+  // primitive so the effect doesn't rerun on every parse of the same coordinates
+  const coordinatesKey = clickedCoordinates?.join(',')
+
+  useEffect(() => {
+    if (!clickedCoordinates?.length || !deckMap || !mapViewport) {
+      return
+    }
+    // read on demand so this doesn't rerender on every popup change
+    const clicked = selectClickedEvent(reduxStore.getState() as RootState)
+    // the click that wrote this param already built the popup, nothing to restore
+    if (
+      getClickedCoordinatesParam(clicked?.longitude, clicked?.latitude)?.join(',') ===
+      coordinatesKey
+    ) {
+      return
+    }
+
+    let cancelled = false
+    const restore = async () => {
+      const settled = await waitForLayersUpdate({
+        store,
+        isUpdated: () => Object.keys(store.get(deckLayersStateAtom)).length > 0,
+        isOutdated: () => cancelled,
+        timeout: RESTORE_PICK_TIMEOUT,
+      })
+      if (!settled || cancelled) {
+        return
+      }
+      const [longitude, latitude] = clickedCoordinates
+      const interaction = getPickingInteraction(
+        getSyntheticPickingInfo([longitude, latitude], mapViewport),
+        'click'
+      )
+      const event = interaction ? getSliceInteractionEvent(interaction) : undefined
+      if (!event?.features?.length) {
+        // leave the param alone: a reload retries, and rewriting the URL under the user is worse
+        return
+      }
+      dispatch(setClickedEvent(event))
+      // only the pure-fetch handlers: handleVesselEventInteraction navigates the sidebar and
+      // scrolls the activity list, which opening a link must not do
+      handleHeatmapInteraction(event as InteractionEvent)
+      handleDetectionPositionsInteraction(event as InteractionEvent)
+      handleTileClusterInteraction(event as InteractionEvent)
+    }
+    restore()
+
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [coordinatesKey, deckMap, mapViewport])
+}
+
+const EMPTY_INTERACTION_EVENT = {} as InteractionEvent
+
 export const hoverCoordinatesAtom = atom<[number, number] | undefined>()
 export const useMapMouseHover = () => {
   const getPickingInteraction = useGetPickingInteraction()
@@ -454,7 +689,7 @@ export const useMapMouseHover = () => {
           isMapDrawing ||
           isErrorNotificationEditing
         ) {
-          setMapHoverFeatures({} as InteractionEvent)
+          setMapHoverFeatures(EMPTY_INTERACTION_EVENT)
           return
         }
         if (rulersEditing) {

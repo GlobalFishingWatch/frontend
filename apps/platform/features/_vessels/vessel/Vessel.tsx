@@ -1,6 +1,7 @@
 import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { DateTime } from 'luxon'
 
 import { isAuthError } from '@globalfishingwatch/api-client'
 import type { Dataview } from '@globalfishingwatch/api-types'
@@ -16,12 +17,18 @@ import { getDatasetsInDataviews } from 'features/_map/datasets/datasets.utils'
 import { fetchDataviewsByIdsThunk } from 'features/_map/dataviews/dataviews.slice'
 import { useClickedEventConnect } from 'features/_map/map/map-interactions.hooks'
 import ErrorPlaceholder from 'features/_map/workspace/ErrorPlaceholder'
+import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
+import {
+  selectIsRealTimeMode,
+  selectLonglineSetsInsight,
+} from 'features/_map/workspace/workspace.selectors'
 import { useMigrateWorkspaceToast } from 'features/_map/workspace/workspace-migration.hooks'
 import WorkspaceLoginError from 'features/_map/workspace/WorkspaceLoginError'
 import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import VesselAreas from 'features/_vessels/vessel/areas/VesselAreas'
 import Insights from 'features/_vessels/vessel/insights/Insights'
+import { MIN_INSIGHTS_YEAR } from 'features/_vessels/vessel/insights/insights.config'
 import RelatedVessels from 'features/_vessels/vessel/related-vessels/RelatedVessels'
 import { selectVesselHasEventsDatasets } from 'features/_vessels/vessel/selectors/vessel.resources.selectors'
 import {
@@ -32,6 +39,7 @@ import {
 } from 'features/_vessels/vessel/selectors/vessel.selectors'
 import {
   selectIncludeRelatedIdentities,
+  selectLonglineSetsOnMap,
   selectVesselAreaSubsection,
   selectVesselDatasetId,
   selectVesselIdentityId,
@@ -70,6 +78,9 @@ const Vessel = () => {
   const vesselId = useSelector(selectVesselId)
   const includeRelatedIdentities = useSelector(selectIncludeRelatedIdentities)
   const vesselSection = useSelector(selectVesselSection)
+  const longlineSetsOnMap = useSelector(selectLonglineSetsOnMap)
+  const longlineSetsInsight = useSelector(selectLonglineSetsInsight)
+  const { start } = useSelector(selectTimeRange)
   const vesselArea = useSelector(selectVesselAreaSubsection)
   const datasetId = useSelector(selectVesselDatasetId)
   const infoStatus = useSelector(selectVesselInfoStatus)
@@ -80,6 +91,7 @@ const Vessel = () => {
   const vesselData = useSelector(selectVesselInfoData)
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
+  const isRealTimeMode = useSelector(selectIsRealTimeMode)
   const hasSelfReportedData =
     getVesselIdentities(vesselData, {
       identitySource: VesselIdentitySourceEnum.SelfReported,
@@ -90,6 +102,19 @@ const Vessel = () => {
   useUpdateVesselEventsVisibility()
   useSetVesselProfileEvents()
   useFetchDataviewResources(infoStatus === AsyncReducerStatus.Finished)
+
+  useEffect(() => {
+    if (!longlineSetsOnMap) {
+      return
+    }
+    const insightsUnavailable =
+      vesselSection !== 'insights' ||
+      !longlineSetsInsight ||
+      DateTime.fromISO(start).year < MIN_INSIGHTS_YEAR
+    if (insightsUnavailable) {
+      replaceQueryParams({ longlineSetsOnMap: undefined })
+    }
+  }, [vesselSection, longlineSetsOnMap, longlineSetsInsight, start, replaceQueryParams])
 
   const vesselIdentity = useMemo(() => {
     if (!vesselData) {
@@ -137,6 +162,7 @@ const Vessel = () => {
         content: <VesselAreas updateAreaLayersVisibility={updateAreaLayersVisibility} />,
         disabled: !hasEventsDataset,
         testId: 'vv-areas-tab',
+        tooltip: hasEventsDataset ? undefined : t((t) => t.vessel.sectionEventsTooltip),
       },
       {
         id: 'related_vessels',
@@ -144,6 +170,7 @@ const Vessel = () => {
         content: <RelatedVessels />,
         disabled: !hasEventsDataset,
         testId: 'vv-related-tab',
+        tooltip: hasEventsDataset ? undefined : t((t) => t.vessel.sectionEventsTooltip),
       },
       {
         id: 'insights' as VesselSection,
@@ -222,7 +249,7 @@ const Vessel = () => {
     <Fragment>
       <VesselSubHeader />
       {infoStatus === AsyncReducerStatus.Finished && <VesselIdentity />}
-      {guestUser ? (
+      {isRealTimeMode ? null : guestUser ? (
         <WorkspaceLoginError
           title={t((t) => t.errors.vesselActivityLogin)}
           loginSource="vessel-events"

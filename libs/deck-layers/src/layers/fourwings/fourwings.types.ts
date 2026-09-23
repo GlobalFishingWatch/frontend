@@ -4,7 +4,6 @@ import type { DeckLayerProps, DeckPickingObject } from '#types'
 import type {
   FourwingsHeatmapPickingInfo,
   FourwingsHeatmapPickingObject,
-  FourwingsHeatmapStaticPickingObject,
 } from './heatmap/fourwings-heatmap.types'
 import type {
   FourwingsPositionsPickingInfo,
@@ -29,6 +28,12 @@ export type FourwingsTileLayerColorRange = FourwingsColorObject[][] | FourwingsC
 export type FourwingsTileLayerColorScale = {
   colorDomain: FourwingsTileLayerColorDomain
   colorRange: FourwingsTileLayerColorRange
+  colorDomainMax?: number
+}
+
+export type FourwingsColorDomainWithMax = {
+  domain: FourwingsTileLayerColorDomain
+  max?: number
 }
 
 export type FourwingsDeckSublayer = {
@@ -40,6 +45,10 @@ export type FourwingsDeckSublayer = {
   value?: number
   unit?: string
   filter?: string
+  minVisibleValue?: number
+  maxVisibleValue?: number
+  /** Refit the color ramp steps inside the visible values range, see getRampFitRange */
+  colorRampFitToRange?: boolean
   // Used only blue-planet workspace to be able to show only one detection by id
   filterIds?: string[]
   positionProperties?: string[]
@@ -54,8 +63,10 @@ export type FourwingsDeckVectorSublayer = {
   id: FourwingsSublayerId
   color: string
   datasets: FourwingsDatasetId[]
-  direction: FourwingsVectorDirection
+  vector: FourwingsVectorDirection
   unit?: string
+  minVisibleValue?: number
+  maxVisibleValue?: number
 }
 
 export type BaseFourwingsLayerProps = DeckLayerProps<{
@@ -65,11 +76,11 @@ export type BaseFourwingsLayerProps = DeckLayerProps<{
   tilesUrl?: string
   extentStart?: number
   extentEnd?: number
+  /** Override for MAX_POSITIONS_PER_TILE_VISUALIZED */
+  maxPositionsPerTile?: number
 }>
 
 export type FourwingsPickingInfo = FourwingsHeatmapPickingInfo | FourwingsPositionsPickingInfo
 export type FourwingsPickingObject = DeckPickingObject<
-  | FourwingsHeatmapPickingObject
-  | FourwingsHeatmapStaticPickingObject
-  | FourwingsPositionsPickingObject
+  FourwingsHeatmapPickingObject | FourwingsPositionsPickingObject
 >

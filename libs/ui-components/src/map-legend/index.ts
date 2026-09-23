@@ -1,5 +1,6 @@
 export * from './MapLegend'
 export * from './map-legend.utils'
 export * from './ColorRamp'
+export * from './ColorRampBrush'
 export * from './Bivariate'
 export * from './types'

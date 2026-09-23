@@ -22,6 +22,17 @@ export function createHeatmapPbfBuffer(
   return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer
 }
 
+/** `temporal-aggregation=true` payload: one `(cellNum, value)` pair per cell, no frames */
+export function createAggregatedHeatmapPbfBuffer(cells: { cellNum: number; value: number }[]) {
+  const pbf = new Pbf()
+  pbf.writePackedVarint(
+    1,
+    cells.flatMap((cell) => [cell.cellNum, cell.value])
+  )
+  const bytes = pbf.finish()
+  return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer
+}
+
 export function createVectorsPbfBuffer(
   temporalAggregation: boolean,
   cells: {

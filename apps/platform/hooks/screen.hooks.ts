@@ -20,7 +20,6 @@ export const useDownloadDomElementAsImage = () => {
         const { snapdom } = await import('@zumer/snapdom')
         const capture = await snapdom(domElement, {
           exclude: ['[data-modal-overlay]'],
-          embedFonts: true,
           dpr: 2,
           scale: 2,
         })
@@ -67,7 +66,7 @@ export const useDownloadDomElementAsImage = () => {
         try {
           setLoading(true)
           if (capture) {
-            capture.download({ format: 'png', filename, dpr: 2, scale: 2 })
+            capture.download({ format: 'png', filename, scale: 4 })
             setLoading(false)
             setFinished(true)
             return true

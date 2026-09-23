@@ -32,8 +32,6 @@ type GetGraphDataFromFourwingsFeaturesParams = Pick<
   | 'interval'
   | 'sublayers'
   | 'aggregationOperation'
-  | 'minVisibleValue'
-  | 'maxVisibleValue'
 >
 
 type FeatureDates = Record<number, ActivityTimeseriesFrame & { count?: number[] }>
@@ -258,8 +256,6 @@ export function getGraphDataFromFourwingsHeatmap(
     interval,
     sublayers,
     aggregationOperation,
-    minVisibleValue,
-    maxVisibleValue,
   }: GetGraphDataFromFourwingsFeaturesParams
 ): ActivityTimeseriesFrame[] {
   if (!features?.length || start == null || end == null) {
@@ -292,8 +288,8 @@ export function getGraphDataFromFourwingsHeatmap(
           values: velocities,
           data,
           sublayerIndex: 0,
-          minVisibleValue,
-          maxVisibleValue,
+          minVisibleValue: sublayers[0]?.minVisibleValue,
+          maxVisibleValue: sublayers[0]?.maxVisibleValue,
         })
         return
       }
@@ -309,8 +305,8 @@ export function getGraphDataFromFourwingsHeatmap(
           values: sublayerValues,
           data,
           sublayerIndex,
-          minVisibleValue,
-          maxVisibleValue,
+          minVisibleValue: sublayers[sublayerIndex]?.minVisibleValue,
+          maxVisibleValue: sublayers[sublayerIndex]?.maxVisibleValue,
         })
       })
     })
@@ -329,8 +325,8 @@ export function getGraphDataFromFourwingsHeatmap(
           values,
           data,
           sublayerIndex,
-          minVisibleValue,
-          maxVisibleValue,
+          minVisibleValue: sublayers[sublayerIndex]?.minVisibleValue,
+          maxVisibleValue: sublayers[sublayerIndex]?.maxVisibleValue,
         })
       }
     })

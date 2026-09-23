@@ -3,6 +3,7 @@ import cx from 'classnames'
 
 import { BivariateLegend } from './Bivariate'
 import { ColorRampLegend } from './ColorRamp'
+import type { ColorRampBrushConfig } from './ColorRampBrush'
 import { SolidLegend } from './Solid'
 import { SymbolsLegend } from './Symbols'
 import type {
@@ -21,9 +22,10 @@ interface MapLegendProps {
   layer: UILegend
   labelComponent?: React.ReactNode
   roundValues?: boolean
+  brush?: ColorRampBrushConfig
 }
 
-interface MapLegendsProps extends Omit<MapLegendProps, 'layer'> {
+interface MapLegendsProps extends Omit<MapLegendProps, 'layer' | 'brush'> {
   layers?: UILegend[]
 }
 
@@ -33,6 +35,7 @@ export function MapLegend({
   currentValueClassName,
   labelComponent,
   roundValues,
+  brush,
 }: MapLegendProps) {
   // TODO: include user context and categorical options
   if (layer.type === 'symbols') {
@@ -49,6 +52,7 @@ export function MapLegend({
         roundValues={roundValues}
         currentValueClassName={currentValueClassName}
         labelComponent={labelComponent}
+        brush={brush}
       />
     )
   }

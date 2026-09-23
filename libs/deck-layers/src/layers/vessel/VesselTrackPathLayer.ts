@@ -9,7 +9,7 @@ import type { Bbox } from '@globalfishingwatch/data-transforms'
 import type { VesselTrackData, VesselTrackGraphExtent } from '@globalfishingwatch/deck-loaders'
 import { toRelativeTimestamp } from '@globalfishingwatch/deck-loaders'
 
-import { MAX_FILTER_VALUE } from '#config/layers.config'
+import { MAX_FILTER_VALUE, TRACK_PICK_WIDTH, TRACK_VISIBLE_WIDTH } from '#config/layers.config'
 import { getUTCDateTime } from '#utils'
 import { colorToVec, hexToDeckColor } from '#utils/colors'
 
@@ -140,6 +140,12 @@ export type _VesselTrackPathLayerProps<DataT = any> = {
    * The maximum time gap in hours to split the track into segments
    */
   gapSegmentThreshold?: number
+  /**
+   * Width of the hover target, in pixels. The track is drawn at `getWidth`;
+   * then the vertex shader widens it to this only during the picking pass
+   * @default 15
+   */
+  pickWidth?: number
   // /**
   //  * Color to be used as a highlight path
   //  * @default [255, 255, 255, 255]
@@ -201,6 +207,7 @@ function generateShaderColorSteps({
 
 const defaultProps: DefaultProps<VesselTrackPathLayerProps> = {
   _pathType: 'open',
+  pickWidth: { type: 'number', value: TRACK_PICK_WIDTH, min: 0 },
   endTime: { type: 'number', value: 0, min: 0 },
   startTime: { type: 'number', value: 0, min: 0 },
   highlightStartTime: { type: 'number', value: 0, min: 0 },
@@ -234,7 +241,6 @@ const uniformBlock = `
     uniform float maxSpeedFilter;
     uniform float minElevationFilter;
     uniform float maxElevationFilter;
-    uniform float discardOnFilter;
     uniform float value0;
     uniform float value1;
     uniform float value2;
@@ -257,6 +263,7 @@ const uniformBlock = `
     uniform vec4 color9;
     uniform float colorBy;
     uniform float gapSegmentThreshold;
+    uniform float pickWidthRatio;
   } track;
 `
 
@@ -275,7 +282,6 @@ const trackLayerUniforms = {
     maxSpeedFilter: 'f32',
     minElevationFilter: 'f32',
     maxElevationFilter: 'f32',
-    discardOnFilter: 'f32',
     value0: 'f32',
     value1: 'f32',
     value2: 'f32',
@@ -298,6 +304,7 @@ const trackLayerUniforms = {
     color9: 'vec4<f32>',
     colorBy: 'f32',
     gapSegmentThreshold: 'f32',
+    pickWidthRatio: 'f32',
   },
 }
 
@@ -332,6 +339,11 @@ export class VesselTrackPathLayer<
         if (vTime > track.highlightEventStartTime && vTime < track.highlightEventEndTime) {
           size *= 4.0;
         }
+        // Widen the stroke to the hover target, but only in the picking pass. Keeps one layer
+        // doing both jobs without paying for the wide band's fragments on every drawn frame.
+        if (picking.isActive > 0.5) {
+          size *= track.pickWidthRatio;
+        }
         `,
       'vs:#main-end': /*glsl*/ `
         if(vTime > track.highlightStartTime && vTime < track.highlightEndTime) {
@@ -363,20 +375,22 @@ export class VesselTrackPathLayer<
           })}
         }
 
+        // Filtered-out segments stay visible but faded, and are not pickable.
         if (vSpeed < track.minSpeedFilter ||
             vSpeed > track.maxSpeedFilter ||
             vElevation < track.minElevationFilter ||
             vElevation > track.maxElevationFilter)
         {
-          if (track.discardOnFilter == 1.0) {
+          if (picking.isActive > 0.5) {
             discard;
-          } else {
-            color.a = 0.25;
           }
+          color.a = 0.25;
         }
 
-        // Hide segments whose time gap to the next point exceeds gapSegmentThreshold
-        if (track.gapSegmentThreshold > 0.0 && vGap > track.gapSegmentThreshold) {
+        // Hide segments whose time gap to the next point exceeds gapSegmentThreshold.
+        // Only in the draw pass: a hidden gap stays pickable, as it was when picking ran on a
+        // separate layer built without gapSegmentThreshold.
+        if (picking.isActive < 0.5 && track.gapSegmentThreshold > 0.0 && vGap > track.gapSegmentThreshold) {
           discard;
         }
 
@@ -459,7 +473,8 @@ export class VesselTrackPathLayer<
       maxElevationFilter = MAX_FILTER_VALUE,
       colorBy,
       gapSegmentThreshold = 0,
-      id,
+      pickWidth = TRACK_PICK_WIDTH,
+      getWidth,
     } = this.props
 
     const steps =
@@ -501,9 +516,9 @@ export class VesselTrackPathLayer<
         maxSpeedFilter,
         minElevationFilter,
         maxElevationFilter,
-        discardOnFilter: id.includes('interactive') ? 1.0 : 0.0,
         colorBy: colorBy ? COLOR_BY[colorBy] : COLOR_BY.track,
         gapSegmentThreshold,
+        pickWidthRatio: pickWidth / (typeof getWidth === 'number' ? getWidth : TRACK_VISIBLE_WIDTH),
         ...values,
         ...colors,
       },
@@ -541,17 +556,8 @@ export class VesselTrackPathLayer<
     const timestampBase = data.timestampBase ?? 0
     const relativeStartDate = toRelativeTimestamp(startDate, timestampBase)
     const relativeEndDate = toRelativeTimestamp(endDate, timestampBase)
-    const firstPointIndex = timestamps.findIndex((t) => t > relativeStartDate)
-    const lastPointIndex = timestamps.findLastIndex((t) => t < relativeEndDate)
-    if (firstPointIndex === -1 || lastPointIndex === -1 || firstPointIndex > lastPointIndex) {
-      return null
-    }
-    if (firstPointIndex === lastPointIndex) {
-      const index = firstPointIndex
-      const longitude = positions[index * positionsSize]
-      const latitude = positions[index * positionsSize + 1]
-      return [longitude, latitude, longitude, latitude] as Bbox
-    }
+    const timestampSize = data.attributes?.getTimestamp?.size || 1
+    const pointCount = Math.floor(timestamps.length / timestampSize)
 
     let minLon = Infinity
     let maxLon = -Infinity
@@ -559,7 +565,18 @@ export class VesselTrackPathLayer<
     let maxShiftedLon = -Infinity
     let minLat = Infinity
     let maxLat = -Infinity
-    for (let index = firstPointIndex; index <= lastPointIndex + 1; index++) {
+    let pointsInRange = 0
+    // Every point is tested against the range instead of scanning between a first and a last
+    // matching index: a vessel track holds the segments of every related identity concatenated,
+    // so timestamps only ascend within a segment. An index range between the first and last match
+    // therefore swallows whole segments that fall outside the range - for an 82 minute event it
+    // was keeping 600 of 790 points and fitting the map to most of the year.
+    for (let index = 0; index < pointCount; index++) {
+      const timestamp = timestamps[index * timestampSize]
+      if (timestamp < relativeStartDate || timestamp > relativeEndDate) {
+        continue
+      }
+      pointsInRange++
       const longitude = positions[index * positionsSize]
       const latitude = positions[index * positionsSize + 1]
       if (longitude < minLon) minLon = longitude
@@ -569,6 +586,9 @@ export class VesselTrackPathLayer<
       if (shiftedLon > maxShiftedLon) maxShiftedLon = shiftedLon
       if (latitude < minLat) minLat = latitude
       if (latitude > maxLat) maxLat = latitude
+    }
+    if (!pointsInRange) {
+      return null
     }
     const [west, east] = getNarrowestLonSpan(minLon, maxLon, minShiftedLon, maxShiftedLon)
     return [west, minLat, east, maxLat] as Bbox
