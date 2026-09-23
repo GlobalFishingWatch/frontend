@@ -19,9 +19,13 @@ inputs:
     description: Display name shown once test-user-email is logged in — LoginPage asserts on it
     required: true
   port:
-    description: Host port to publish the container on. Nitro listens on 3000 inside.
+    description: |
+      Host port to publish the container on. Nitro listens on 3000 inside — this is
+      the host-side mapping only. Must stay 3003: that's the exact localhost callback
+      staging's SSO app has allowlisted (matching local dev's `vite --port=3003`); any
+      other host port makes login fail with "Callback ... not registered".
     required: false
-    default: '3000'
+    default: '3003'
 
 runs:
   using: composite
