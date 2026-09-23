@@ -1,0 +1,44 @@
+name: Smoke Test Dry Run (temporary — do not merge)
+
+# Throwaway: times the Build -> Test portion of _build-and-deploy.yml in isolation,
+# on a real GitHub-hosted runner, with no push to the registry and no deploy.
+# Delete this file (and close the PR) once it's served its purpose.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Build platform (staging config) and run smoke tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      IMAGE: smoke-test-dry-run:${{ github.run_id }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Build image
+        uses: ./.github/actions/build-image
+        with:
+          app: platform
+          image: ${{ env.IMAGE }}
+          config: .github/apps/staging.yml
+          nx-cloud-access-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+
+      - name: Run smoke tests
+        uses: ./.github/actions/smoke-test
+        with:
+          image: ${{ env.IMAGE }}
+          nx-cloud-access-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+          test-user-email: ${{ secrets.TEST_USER_EMAIL }}
+          test-user-password: ${{ secrets.TEST_USER_PASSWORD }}
+          test-user-name: ${{ secrets.TEST_USER_NAME }}
