@@ -132,7 +132,7 @@ jobs:
       # Vite build-time var), and that gateway's SSO app doesn't allow a CI runner's
       # callback URL, so a production image can't be smoke-tested as itself. Revisit
       # with the frontend team before extending this to production.
-      RUN_SMOKE_TESTS: ${{ matrix.app == 'platform' && inputs.env-suffix == 'sta' }}
+      RUN_SMOKE_TESTS: ${{ matrix.app == 'platform' && inputs.env-suffix == 'sta' || inputs.env-suffix == 'dev' }}
 
     steps:
       - name: Checkout code
