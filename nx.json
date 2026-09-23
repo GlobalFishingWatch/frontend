@@ -209,6 +209,13 @@
         "version": {
           "currentVersionResolver": "disk"
         }
+      },
+      "platform-config": {
+        "projects": ["@platform/config"],
+        "version": {
+          "currentVersionResolver": "disk",
+          "updateDependents": "never"
+        }
       }
     }
   },
