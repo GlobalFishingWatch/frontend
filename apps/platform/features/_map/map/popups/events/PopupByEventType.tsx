@@ -1,12 +1,12 @@
 import { DataviewType, EventTypes } from '@globalfishingwatch/api-types'
-import { LAYER_LIBRARY_ID_SEPARATOR } from '@platform/config/map/dataviews'
-
 import {
-  ENCOUNTER_EVENTS_SOURCES,
   GAPS_EVENTS_SOURCE_ID,
+  LAYER_LIBRARY_ID_SEPARATOR,
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
-} from 'features/_map/dataviews/dataviews.utils'
+} from '@platform/config/map/dataviews'
+
+import { ENCOUNTER_EVENTS_SOURCES } from 'features/_map/dataviews/dataviews.utils'
 import { VESSEL_GROUP_EVENTS_DATAVIEW_IDS } from 'features/_reports/report-vessel-group/vessel-group-report.dataviews'
 
 import type {

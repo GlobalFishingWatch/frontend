@@ -4,7 +4,7 @@ import { stringify } from 'qs'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { APIPagination, IdentityVessel, VesselGroup } from '@globalfishingwatch/api-types'
-import { FISHING_ALL_DATAVIEW_SLUG, PRESENCE_DATAVIEW_SLUG } from '@platform/config'
+import { FISHING_ALL_DATAVIEW_SLUG, PRESENCE_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
 
 import { getDatasetByIdsThunk, selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import {

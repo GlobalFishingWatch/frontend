@@ -22,9 +22,8 @@ import {
 } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { parseLegacyDataviewInstanceConfig } from '@globalfishingwatch/dataviews-client'
-import { GAPS_EVENTS_WORKSPACE_ID } from '@platform/config'
 import { TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
-import { DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import { DEFAULT_WORKSPACE_ID, GAPS_EVENTS_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import type { VALID_PASSWORD } from 'data/map/config'
 import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX, WORKSPACE_HISTORY_NAVIGATION } from 'data/map/config'

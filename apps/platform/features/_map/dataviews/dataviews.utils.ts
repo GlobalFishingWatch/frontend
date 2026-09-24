@@ -61,14 +61,6 @@ import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/_vessels/vessel
 import type { TimeMode } from 'types'
 import { formatInfoField } from 'utils/info'
 
-export {
-  BATHYMETRY_DATAVIEW_PREFIX,
-  ENCOUNTER_EVENTS_SOURCE_ID,
-  GAPS_EVENTS_SOURCE_ID,
-  LOITERING_EVENTS_SOURCE_ID,
-  PORT_VISITS_EVENTS_SOURCE_ID,
-} from '@platform/config/map/dataviews'
-
 const ENCOUNTER_EVENTS_30MIN_SOURCE_ID = 'proto-global-encounters-events-30min'
 export const PORT_VISITS_REPORT_DATAVIEW_ID = `${PORT_VISITS_EVENTS_SOURCE_ID}-report`
 export const GAPS_AIS_OFF_EVENTS_SOURCE_ID = `${GAPS_EVENTS_SOURCE_ID}s-ais-off`

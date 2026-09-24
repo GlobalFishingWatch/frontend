@@ -1,5 +1,6 @@
 import { LayerGroup } from '@globalfishingwatch/deck-layers/config'
 import {
+  BATHYMETRY_DATAVIEW_PREFIX,
   CURRENTS_DATAVIEW_SLUG,
   TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
   TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
@@ -9,7 +10,6 @@ import {
 
 import { PATH_BASENAME } from 'data/map/config'
 import type { LibraryLayerConfig } from 'data/map/layer-library/layers.types'
-import { BATHYMETRY_DATAVIEW_PREFIX } from 'features/_map/dataviews/dataviews.utils'
 
 const heatmapDatasetConfig = {
   params: [

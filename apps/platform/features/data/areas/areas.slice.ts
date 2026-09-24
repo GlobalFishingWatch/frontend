@@ -239,7 +239,7 @@ export const fetchAreaDetailThunk = createAsyncThunk(
               `${t((t) => t.common.unionOf)} ${listAsSentence(areas.flatMap((a) => a?.name || []))}`,
             bounds,
             geometry: mergedGeometry,
-            properties: { areaIds, datasetIds },
+            properties: { areaIds, datasetIds, areaNames: areas.map((a) => a?.name || '') },
           }
         } catch (e) {
           console.error('Error merging areas', e)

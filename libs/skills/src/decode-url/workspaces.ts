@@ -1,4 +1,4 @@
-import { DEFAULT_WORKSPACE_ID } from '@platform/config'
+import { DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 /**
  * Curated public workspace names, to describe what the user is looking at.

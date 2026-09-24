@@ -5,30 +5,8 @@
   "description": "platform app configuration constants, shared as source (no build) inside the monorepo",
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./index.ts",
-      "default": "./index.ts"
-    },
-    "./routes": {
-      "types": "./routes.ts",
-      "default": "./routes.ts"
-    },
-    "./map/app": {
-      "types": "./map/app.ts",
-      "default": "./map/app.ts"
-    },
-    "./map/datasets": {
-      "types": "./map/datasets.ts",
-      "default": "./map/datasets.ts"
-    },
-    "./map/dataviews": {
-      "types": "./map/dataviews.ts",
-      "default": "./map/dataviews.ts"
-    },
-    "./map/workspaces": {
-      "types": "./map/workspaces.ts",
-      "default": "./map/workspaces.ts"
-    }
+    "./routes": "./routes.ts",
+    "./map/*": "./map/*.ts"
   },
   "dependencies": {
     "@globalfishingwatch/datasets-client": "workspace:^"
