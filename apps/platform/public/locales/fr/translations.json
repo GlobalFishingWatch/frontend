@@ -1216,7 +1216,7 @@
     "exitTrackCorrection": "Exit activity issue (track correction) panel to be able to navigate to the vessel profile",
     "externalId": "External ID",
     "extraInfo": "Demandez des informations supplémentaires à",
-    "extraInfoTooltip": "TMT has additional insights relating to the vessel’s compliance history and/or IUU listing",
+    "extraInfoTooltip": "TMT dispose de plus d'informations sur ce navire. Demandez des informations supplémentaires à jac-coord@tm-tracking.org",
     "firstTransmissionDate": "Première date de transmission",
     "fishingLicenseCode": "Fishing license code",
     "fishingLicenseEndDate": "Fishing license end date",
