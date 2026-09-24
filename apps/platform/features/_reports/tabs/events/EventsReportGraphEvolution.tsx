@@ -153,7 +153,9 @@ export default function EventsReportGraphEvolution({
   const fetchEventsData = useFetchEventReportGraphEvents()
   const [isIndividualSupported, setIsIndividualSupported] = useState(false)
 
-  const datasetId = dataviews?.[0]?.datasets?.find((d) => d.type === DatasetTypes.Events)?.id
+  const hasEventsDataset = dataviews?.some((dataview) =>
+    dataview.datasets?.some((d) => d.type === DatasetTypes.Events)
+  )
 
   let icon: ReactElement | undefined
   if (eventType === 'encounter') {
@@ -167,7 +169,7 @@ export default function EventsReportGraphEvolution({
   const getAggregatedData = useCallback(async () => data, [data])
 
   const getIndividualData = useCallback(async () => {
-    if (!dataviews?.length || !datasetId) {
+    if (!hasEventsDataset) {
       setIsIndividualSupported(false)
       return []
     }
@@ -177,7 +179,7 @@ export default function EventsReportGraphEvolution({
     return Object.entries(groupedData)
       .map(([date, events]) => ({ date, values: events }))
       .sort((a, b) => a.date.localeCompare(b.date))
-  }, [dataviews, datasetId, fetchEventsData, start, end, includesMemo, interval])
+  }, [dataviews, hasEventsDataset, fetchEventsData, start, end, includesMemo, interval])
 
   if (!data.length) {
     return null

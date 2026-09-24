@@ -1483,7 +1483,7 @@ importers:
         specifier: workspace:^
         version: link:../dataviews-client
       '@platform/config':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../apps/platform/config
       '@tanstack/router-core':
         specifier: 1.x

@@ -1,11 +1,7 @@
 import { interpolatePath } from '@tanstack/router-core'
 
-import {
-  DEFAULT_PATH_BASENAME,
-  DEFAULT_WORKSPACE_CATEGORY,
-  DEFAULT_WORKSPACE_ID,
-  ROUTE_PATHS,
-} from '@platform/config'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import { DEFAULT_PATH_BASENAME, ROUTE_PATHS } from '@platform/config/routes'
 
 export const DEFAULT_BASENAME: string = DEFAULT_PATH_BASENAME
 

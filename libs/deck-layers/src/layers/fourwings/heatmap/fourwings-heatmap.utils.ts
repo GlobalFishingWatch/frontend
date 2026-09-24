@@ -402,6 +402,22 @@ export function getSublayersVisibleValuesHash(
   return (sublayers || []).map((s) => `${s.minVisibleValue}-${s.maxVisibleValue}`).join(',')
 }
 
+export function getRampFitRange(sublayers?: FourwingsDeckSublayer[]) {
+  const visibleSublayers = (sublayers || []).filter((sublayer) => sublayer.visible)
+  const sublayer = visibleSublayers.length === 1 ? visibleSublayers[0] : undefined
+  if (!sublayer?.colorRampFitToRange) {
+    return {}
+  }
+  const { minVisibleValue, maxVisibleValue } = sublayer
+  return { minVisibleValue, maxVisibleValue }
+}
+
+export function getSublayersRampFitHash(sublayers?: FourwingsDeckSublayer[]) {
+  return (sublayers || [])
+    .map((s) => `${s.visible}-${s.colorRampFitToRange}-${s.minVisibleValue}-${s.maxVisibleValue}`)
+    .join(',')
+}
+
 export function filterCells(value: any, index: number, minValue?: number, maxValue?: number) {
   // Select only 5% of elements
   return (
@@ -428,9 +444,9 @@ export function getFourwingsColorDomain({
   skipColorDomainSampling?: boolean
   minVisibleValue?: number
   maxVisibleValue?: number
-}): number[] {
+}): { domain: number[]; max?: number } {
   if (!features?.length) {
-    return []
+    return { domain: [] }
   }
   const dataSample =
     features.length > MAX_RAMP_VALUES || skipColorDomainSampling
@@ -454,15 +470,25 @@ export function getFourwingsColorDomain({
         })
     )
     .filter((value): value is number => value !== undefined)
-  if (minVisibleValue !== undefined || maxVisibleValue !== undefined) {
+  const fitsToRange = minVisibleValue !== undefined || maxVisibleValue !== undefined
+  if (fitsToRange) {
     allValues = allValues.filter((value) =>
       isSublayerValueVisible(value, { minVisibleValue, maxVisibleValue })
     )
   }
   if (!allValues.length) {
-    return []
+    return { domain: [] }
   }
-  return getSteps(removeOutliers({ allValues, aggregationOperation }))
+
+  return {
+    domain: getSteps(removeOutliers({ allValues, aggregationOperation })),
+    // Bounds are only passed when the ramp is fitted to them (see getRampFitRange), and then the
+    // steps already span the selection: labelling the end with the max of that same selection
+    // would spend a step restating the bound the user set
+    ...(!fitsToRange && {
+      max: allValues.reduce((acc, value) => (value > acc ? value : acc), allValues[0] as number),
+    }),
+  }
 }
 
 export const getResolutionByVisualizationMode = (

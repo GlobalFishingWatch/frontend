@@ -130,6 +130,8 @@ export type DataviewConfig<Type = DataviewType> = DataviewConfigVessel & {
   minVisibleValue?: number
   /** Max value for filters in environmental layers to perform frontend data filtering */
   maxVisibleValue?: number
+  /** Recalculates the color ramp steps inside min/maxVisibleValue instead of the full data range */
+  colorRampFitToRange?: boolean
   /** Fourwings dataset without temporal data */
   static?: boolean
   /** Initial breaks for fourwings datasets */

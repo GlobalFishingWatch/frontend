@@ -1,11 +1,12 @@
 /// <reference types='vitest' />
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import react from '@vitejs/plugin-react'
+import { config } from 'dotenv'
 import { defineConfig, loadEnv } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import svgr from 'vite-plugin-svgr'
 
-import 'dotenv/config'
+config({ quiet: true })
 
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, import.meta.dirname, '')

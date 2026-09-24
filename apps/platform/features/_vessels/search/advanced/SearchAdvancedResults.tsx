@@ -18,6 +18,10 @@ import { uniq } from 'es-toolkit'
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import {
+  isPrivateGroupDataset,
+  PRIVATE_BRAZIL_DATASET_CODE,
+} from '@globalfishingwatch/datasets-client'
+import {
   getVesselDataviewInstanceId,
   getVesselIdFromInstanceId,
 } from '@globalfishingwatch/dataviews-client'
@@ -28,7 +32,6 @@ import { FIRST_YEAR_OF_DATA, PRIVATE_ICON } from 'data/map/config'
 import { isPrivateDataset } from 'features/_map/datasets/datasets.utils'
 import { selectVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
-import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/_user/user.config'
 import AdvancedResultCellWithFilter from 'features/_vessels/search/advanced/AdvancedResultCellWithFilter'
 import type { SearchComponentProps } from 'features/_vessels/search/basic/SearchBasic'
 import { selectSearchQuery } from 'features/_vessels/search/search.config.selectors'
@@ -233,8 +236,8 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const { searchFilters } = useSearchFiltersConnect()
-  const sourceIsBrazilVMS = searchFilters?.sources?.every(
-    (s) => s === PRIVATE_SEARCH_DATASET_BY_GROUP.brazil[0]
+  const sourceIsBrazilVMS = searchFilters?.sources?.every((s) =>
+    isPrivateGroupDataset(s, PRIVATE_BRAZIL_DATASET_CODE)
   )
   const searchQuery = useSelector(selectSearchQuery)
   const searchStatus = useSelector(selectSearchStatus)

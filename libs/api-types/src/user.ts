@@ -80,7 +80,6 @@ export type UserGroupId =
   | 'brazil'
   | 'chile'
   | 'costa rica'
-  | 'costarica'
   | 'ecuador'
   | 'montenegro'
   | 'norway'

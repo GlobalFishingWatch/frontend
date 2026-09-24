@@ -77,6 +77,7 @@
     "newTimeRange": "Haga clic en el boton para ver las embarcaciones activas en el área entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
     "noDataByArea": "no hay datos disponibles para el area seleccionada",
     "noDataByComparedDataset": "No data available for the selected compared dataset, adjust your timerange or change the selection.",
+    "noLayersActive": "No active layers to report on, turn on a layer to see its report",
     "noPolygonsContainedOrOverlapping": "No hay polígonos dentro o superposición de tu área",
     "noTimeComparisonAllowed": "Modos de comparación de tiempo no están disponibles cuando las capas tienen diferentes filtros",
     "noVesselDataFiltered": "No hay embarcaciones que coincidan con su filtro",
@@ -118,7 +119,9 @@
     "share": "Compartir informe",
     "showFullReport": "Ver análisis completo",
     "statsDisclaimerDynamic": "Durante este tiempo, los valores mínimos y máximos de cualquier {{interval}} y lugar dados dentro de su área fueron {{min}} {{unit}} y {{max}} {{unit}}.",
+    "statsDisclaimerDynamicMean": "During this time, the average value at any given {{interval}} and place inside your area was {{mean}} {{unit}}.",
     "statsDisclaimerStatic": "El valor promedio de su área es {{mean}} {{unit}}. El mínimo y el máximo son {{min}} {{unit}} y {{max}} {{unit}}.",
+    "statsDisclaimerStaticMean": "The average value for your area is {{mean}} {{unit}}.",
     "summary": "<strong>{{vessels}} embarcaciones{{sources}} </strong> tuvieron <strong>{{activityQuantity}} {{activityUnit}}</strong> de <strong>{{activityType}}</strong> {{area}} entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
     "summaryEvents": "<strong>{{vessels}} barcos</strong> de <strong>{{flags}} banderas</strong> tenían <strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
     "summaryEventsNoVessels": "<strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
@@ -488,7 +491,6 @@
     "fieldNumericPlaceholder": "Seleccione un campo numérico de su conjunto de datos",
     "fieldPlaceholder": "Seleccione un campo de su conjunto de datos",
     "gridded": {
-      "aggregation": "Aggregation",
       "band": "Band to import",
       "unit": "Unit",
       "unitPlaceholder": "e.g., 'detections', '°C', 'm/s",
@@ -920,6 +922,7 @@
     "highRes": "Ver mapas de calor de alta resolución",
     "highResDisabled": "Los mapas de calor de alta resolución están desactivados cuando se utiliza un filtro de grupo de embarcaciones",
     "legend_help": "Área de celda de cuadrícula aproximada en el ecuador",
+    "legendBrushFit": "Fit color scale to selected values",
     "legendBrushHelp": "Click or drag to adjust the value",
     "loading": "Cargando",
     "lowRes": "Ver mapas de calor de baja resolución",
@@ -1003,7 +1006,8 @@
   },
   "portsReport": {
     "seePortReport": "Ver todos los eventos de entrada a este puerto",
-    "summaryEvents": "<strong>{{vessels}} buques</strong> de <strong>{{flags}} banderas</strong> entraron en este puerto <strong>{{activityQuantity}}</strong> veces entre <strong>{{start}}</strong> y <strong>{{end}}</strong>"
+    "summaryEvents": "<strong>{{vessels}} buques</strong> de <strong>{{flags}} banderas</strong> entraron en este puerto <strong>{{activityQuantity}}</strong> veces entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
+    "toThisPort": "to this port"
   },
   "search": {
     "advanced": "Avanzada",
@@ -1073,6 +1077,9 @@
     "months_one": "mes",
     "months_other": "{{count}} meses",
     "now": "ahora",
+    "weeks": "{{count}} week",
+    "weeks_one": "{{count}} week",
+    "weeks_other": "{{count}} weeks",
     "years": "{{count}} year",
     "years_one": "{{count}} year",
     "years_other": "{{count}} years"
@@ -1157,6 +1164,7 @@
     },
     "datasets": "Datos de usuario",
     "gfwBadges": "Insignias GFW",
+    "groupDatasetPermissionMissing": "This group has no dataset permissions configured yet, so its private data is not available. Contact support if you need access.",
     "groupMissing": "¿Perteneces a un grupo de usuarios que no aparece aquí? <2>Solicitar acceso</2>",
     "groups": "Grupos",
     "info": "Información de usuario",

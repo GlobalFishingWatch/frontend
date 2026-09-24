@@ -199,9 +199,8 @@
       "libs": {
         "projects": ["libs/*", "!libs/i18n-labels"],
         "version": {
-          "currentVersionResolver": "git-tag",
-          "fallbackCurrentVersionResolver": "disk",
-          "preserveLocalDependencyProtocols": false
+          "currentVersionResolver": "disk",
+          "preserveLocalDependencyProtocols": true
         }
       },
       "i18n-labels": {

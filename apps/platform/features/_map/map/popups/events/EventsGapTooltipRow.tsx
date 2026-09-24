@@ -50,6 +50,7 @@ function EventsGapTooltipRow({
   const gapSegmentThreshold = vesselGapsThresholdFilter
     ? (encounterDataview?.config?.filters?.duration?.[0] as number)
     : undefined
+  const vesselConfig = { ...(!!gapSegmentThreshold && { gapSegmentThreshold }) }
   const encounterDataset = encounterDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
   const encounterVesselDatasetId = getRelatedDatasetByType(
     encounterDataset,
@@ -150,6 +151,8 @@ function EventsGapTooltipRow({
                                     vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
                                     vesselSelfReportedId: event.vessel.id,
                                   }}
+                                  dataviewTemplateId={TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG}
+                                  dataviewConfig={vesselConfig}
                                   onClick={() => seeGapEventClick(event.dataset)}
                                 >
                                   {formatInfoField(event.vessel?.name, 'shipname')}
@@ -162,11 +165,7 @@ function EventsGapTooltipRow({
                                     datasetId: vesselDatasetId,
                                   }}
                                   dataviewTemplateId={TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG}
-                                  config={{
-                                    ...(!!gapSegmentThreshold && {
-                                      gapSegmentThreshold,
-                                    }),
-                                  }}
+                                  config={vesselConfig}
                                 />
                               )}
                             </div>

@@ -35,6 +35,7 @@ export type DeckLegend = {
   unit?: string
   gridArea?: number | string
   domain?: FourwingsTileLayerColorDomain
+  max?: number
   ranges?: FourwingsTileLayerColorRange
   color?: string
   loading?: boolean

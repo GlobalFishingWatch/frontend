@@ -6,17 +6,17 @@ export const DATASET_SOURCE_ID = [AIS_DATASET_ID, VMS_DATASET_ID]
 
 export type DatasetSourceId = (typeof DATASET_SOURCE_ID)[number]
 
-const BELIZE_DATASET_ID = 'blz' as const
-const BRAZIL_DATASET_ID = 'bra' as const
-const CHILE_DATASET_ID = 'chl' as const
-const COSTA_RICA_DATASET_ID = 'cri' as const
-const ECUADOR_DATASET_ID = 'ecu' as const
-const NORWAY_DATASET_ID = 'nor' as const
-const MONTENEGRO_DATASET_ID = 'mne' as const
-const PALAU_DATASET_ID = 'plw' as const
-const PANAMA_DATASET_ID = 'pan' as const
-const PERU_DATASET_ID = 'per' as const
-const PNG_DATASET_ID = 'png' as const
+export const BELIZE_DATASET_ID = 'blz' as const
+export const BRAZIL_DATASET_ID = 'bra' as const
+export const CHILE_DATASET_ID = 'chl' as const
+export const COSTA_RICA_DATASET_ID = 'cri' as const
+export const ECUADOR_DATASET_ID = 'ecu' as const
+export const NORWAY_DATASET_ID = 'nor' as const
+export const MONTENEGRO_DATASET_ID = 'mne' as const
+export const PALAU_DATASET_ID = 'plw' as const
+export const PANAMA_DATASET_ID = 'pan' as const
+export const PERU_DATASET_ID = 'per' as const
+export const PNG_DATASET_ID = 'png' as const
 
 export const COUNTRY_DATASET_IDS = [
   BELIZE_DATASET_ID,

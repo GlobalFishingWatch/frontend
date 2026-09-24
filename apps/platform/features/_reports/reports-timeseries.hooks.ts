@@ -97,9 +97,10 @@ export interface ReportGraphProps {
 
 export type FourwingsReportGraphStats = {
   type: 'fourwings'
-  min: number
-  max: number
   mean: number
+  /** Only for a SUM layer: an averaged cell's extremes belong to the tile zoom, not the area */
+  min?: number
+  max?: number
 }
 
 export type PointsReportGraphStats = {

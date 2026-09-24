@@ -22,9 +22,8 @@ import {
 } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { parseLegacyDataviewInstanceConfig } from '@globalfishingwatch/dataviews-client'
-import { GAPS_EVENTS_WORKSPACE_ID } from '@platform/config'
 import { TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
-import { DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import { DEFAULT_WORKSPACE_ID, GAPS_EVENTS_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import type { VALID_PASSWORD } from 'data/map/config'
 import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX, WORKSPACE_HISTORY_NAVIGATION } from 'data/map/config'
@@ -39,9 +38,11 @@ import { fetchDatasetsByIdsThunk } from 'features/_map/datasets/datasets.slice'
 import { fetchDataviewsByIdsThunk } from 'features/_map/dataviews/dataviews.slice'
 import type { AppWorkspace } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { fetchReportsThunk } from 'features/_reports/reports.slice'
-import { selectPrivateUserGroups } from 'features/_user/selectors/user.groups.selectors'
+import {
+  selectPrivateSearchDatasetIds,
+  selectPrivateUserGroupsWithDatasetPermission,
+} from 'features/_user/selectors/user.groups.selectors'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/_user/selectors/user.selectors'
-import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/_user/user.config'
 import { logoutUserThunk } from 'features/_user/user.slice'
 import { fetchVesselGroupsThunk } from 'features/_user/vessel-groups/vessel-groups.slice'
 import { REPORT, ROUTES_WITH_DEFAULT_WORKSPACE } from 'router/routes'
@@ -195,7 +196,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const guestUser = selectIsGuestUser(state)
     const gfwUser = selectIsGFWUser(state)
     const currentWorkspace = selectWorkspace(state)
-    const privateUserGroups = selectPrivateUserGroups(state)
+    const privateUserGroupsWithDatasetPermission =
+      selectPrivateUserGroupsWithDatasetPermission(state)
+    const privateSearchDatasetIds = selectPrivateSearchDatasetIds(state)
     const reportId = reportIdParam || selectReportId(state)
     let workspaceReportId: string | null | undefined = null
     let dataviewInstancesToUpsert: UrlDataviewInstance[] | undefined
@@ -297,8 +300,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       if (gfwUser && ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
         // Inject dataviews for gfw staff only
         dataviewIds.push(...ONLY_GFW_STAFF_DATAVIEW_SLUGS)
-      } else if (privateUserGroups.length) {
-        const vmsDataviewSlugs = privateUserGroups
+      }
+      if (privateUserGroupsWithDatasetPermission.length) {
+        const vmsDataviewSlugs = privateUserGroupsWithDatasetPermission
           .map((group) => VMS_VESSEL_DATAVIEW_SLUGS[group])
           .filter(Boolean) as string[]
         if (vmsDataviewSlugs.length) {
@@ -383,15 +387,11 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         const userDatasetsIds = datasetsIds.filter(matchUserDataset)
         dispatch(fetchDatasetsByIdsThunk({ ids: userDatasetsIds }))
 
-        if (privateUserGroups.length) {
+        if (privateSearchDatasetIds.length) {
           try {
-            const privateDatasets = privateUserGroups.flatMap((group) => {
-              return PRIVATE_SEARCH_DATASET_BY_GROUP[group] || []
-            })
-
-            dispatch(fetchDatasetsByIdsThunk({ ids: privateDatasets }))
+            dispatch(fetchDatasetsByIdsThunk({ ids: privateSearchDatasetIds }))
           } catch (e) {
-            console.warn('Error fetching private datasets for search within user groups', e)
+            console.warn('Error fetching private datasets for search within user permissions', e)
           }
         }
 

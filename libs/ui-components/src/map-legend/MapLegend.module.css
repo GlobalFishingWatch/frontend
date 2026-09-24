@@ -31,6 +31,18 @@
   margin-right: var(--space-S);
 }
 
+.fitRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+  cursor: pointer;
+  text-transform: none;
+  letter-spacing: unset;
+  font: var(--font-XS);
+  line-height: 1.2;
+  color: var(--color-secondary-blue);
+}
+
 .ramp {
   height: 1rem;
   width: 100%;

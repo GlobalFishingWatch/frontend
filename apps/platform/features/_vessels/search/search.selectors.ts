@@ -13,9 +13,8 @@ import {
   getDatasetsInDataviews,
 } from 'features/_map/datasets/datasets.utils'
 import { selectAllDataviewsInWorkspace } from 'features/_map/dataviews/selectors/dataviews.selectors'
-import { selectPrivateUserGroups } from 'features/_user/selectors/user.groups.selectors'
+import { selectPrivateSearchDatasetIds } from 'features/_user/selectors/user.groups.selectors'
 import { selectIsGuestUser, selectUserData } from 'features/_user/selectors/user.selectors'
-import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/_user/user.config'
 import { isDatasetSearchFieldNeededSupported } from 'features/_vessels/search/advanced/advanced-search.utils'
 import type { SearchType } from 'features/_vessels/search/search.config'
 import { selectSearchSources } from 'features/_vessels/search/search.config.selectors'
@@ -32,7 +31,7 @@ const selectSearchDatasetsInWorkspace = createSelector(
     selectAllDataviewsInWorkspace,
     selectVesselsDatasets,
     selectAllDatasets,
-    selectPrivateUserGroups,
+    selectPrivateSearchDatasetIds,
     selectSearchSources,
     selectDeprecatedDatasets,
     selectWorkspaceId,
@@ -41,17 +40,12 @@ const selectSearchDatasetsInWorkspace = createSelector(
     dataviews,
     vesselsDatasets,
     allDatasets,
-    privateUserGroups,
+    privateSearchDatasetIds,
     searchSources,
     deprecatedDatasets,
     workspaceId
   ) => {
-    const datasetsIds = [
-      ...getDatasetsInDataviews(dataviews),
-      ...privateUserGroups.flatMap((group) => {
-        return PRIVATE_SEARCH_DATASET_BY_GROUP[group] || []
-      }),
-    ]
+    const datasetsIds = [...getDatasetsInDataviews(dataviews), ...privateSearchDatasetIds]
     const datasets = allDatasets.flatMap(({ id, relatedDatasets }) => {
       if (!datasetsIds.includes(id)) return EMPTY_ARRAY
       return [id, ...(relatedDatasets || []).map((d) => d.id)]

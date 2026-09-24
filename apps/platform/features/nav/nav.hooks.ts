@@ -30,8 +30,8 @@ import { useIsClientHydrated } from 'hooks/ssr.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnySearchLocation,
+  selectIsRouteWithWorkspace,
   selectIsWorkspaceLocation,
-  selectIsWorkspaceVesselLocation,
 } from 'router/routes.selectors'
 import { ROUTE_PATHS } from 'router/routes.utils'
 
@@ -58,7 +58,7 @@ export function useNavLinkContext(): NavLinkContext {
   const lastVisitedWorkspaceState = useSelector(selectLastVisitedWorkspace)
   const lastVisitedWorkspace = isClientHydrated ? lastVisitedWorkspaceState : undefined
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
-  const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
+  const isWorkspaceScoped = useSelector(selectIsRouteWithWorkspace)
 
   const onCategoryClick = useCallback(
     (category: WorkspaceCategory) => {
@@ -97,7 +97,7 @@ export function useNavLinkContext(): NavLinkContext {
       workspace,
       lastVisitedWorkspace,
       isWorkspaceLocation,
-      isWorkspaceVesselLocation,
+      isWorkspaceScoped,
       onWorkspaceClick,
       onSearchClick,
       onCategoryClick,
@@ -106,7 +106,7 @@ export function useNavLinkContext(): NavLinkContext {
       workspace,
       lastVisitedWorkspace,
       isWorkspaceLocation,
-      isWorkspaceVesselLocation,
+      isWorkspaceScoped,
       onWorkspaceClick,
       onSearchClick,
       onCategoryClick,

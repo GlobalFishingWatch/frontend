@@ -25,6 +25,7 @@ import {
 } from 'features/_map/layer-library/LayerLibrary.utils'
 import LayerLibraryItem from 'features/_map/layer-library/LayerLibraryItem'
 import LayerLibraryUserPanel from 'features/_map/layer-library/LayerLibraryUserPanel'
+import { isSupportedReportDataviewType } from 'features/_reports/report-dataview-category.utils'
 import { selectUserDatasets } from 'features/_user/selectors/user.permissions.selectors'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { selectAllVisibleVesselGroups } from 'features/_user/vessel-groups/vessel-groups.selectors'
@@ -99,8 +100,15 @@ const LayerLibrary: FC = () => {
     if (!i18nReady) {
       return []
     }
-    return resolveLibraryLayers(dataviews)
-  }, [dataviews, i18nReady])
+    const layers = resolveLibraryLayers(dataviews)
+    // Opened from a report's "Add layer" button: hide layers the report can't graph,
+    // eg BATHYMETRY contour lines, which would leave the graphs loading forever.
+    return layerLibraryUniqueCategory
+      ? layers.filter((layer) =>
+          isSupportedReportDataviewType(layer.config?.type ?? layer.dataview?.config?.type)
+        )
+      : layers
+  }, [dataviews, i18nReady, layerLibraryUniqueCategory])
 
   const uniqCategories = useMemo(() => {
     if (layerLibraryUniqueCategory) {

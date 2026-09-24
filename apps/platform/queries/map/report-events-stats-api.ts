@@ -5,6 +5,7 @@ import { injectQueryApi } from 'queries/inject-api'
 
 import {
   DatasetTypes,
+  type DataviewDatasetFilter,
   EndpointId,
   EXCLUDE_FILTER_ID,
   type FilterOperator,
@@ -13,7 +14,9 @@ import {
   type StatsGroupBy,
   type StatsIncludes,
 } from '@globalfishingwatch/api-types'
-import { getEndpointByType } from '@globalfishingwatch/datasets-client'
+import { getEndpointByType, getFlattenDatasetFilters } from '@globalfishingwatch/datasets-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders/fourwings/helpers'
 
 import type { BufferOperation, BufferUnit } from 'types'
@@ -121,6 +124,34 @@ function getEncounterTypesFilter(
     return {}
   }
   return getFilterWithOperator('encounter-types', expandedTypes, filtersOperator)
+}
+
+/**
+ * Resolves a dataview's filters into the shape parseEventsFilters expects, mapping the
+ * `duration` range filter into the `minDuration`/`maxDuration` the events API understands.
+ * Every events request (stats, by-vessel and the raw /events fetch) has to go through here,
+ * otherwise the graph and the vessels table end up filtering by different criteria.
+ */
+export function getEventsDataviewFilters(dataview: UrlDataviewInstance): DataviewDatasetFilter {
+  const filters = getDataviewFilters(dataview)
+  const eventsDataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Events)
+  const durationSchema = getFlattenDatasetFilters(eventsDataset?.filters).find(
+    (f) => f.id === 'duration'
+  )
+  const addMinDuration =
+    durationSchema !== undefined &&
+    filters.duration?.[0] !== undefined &&
+    filters.duration[0].toString() !== durationSchema.enum?.[0].toString()
+  const addMaxDuration =
+    durationSchema !== undefined &&
+    filters.duration?.[1] !== undefined &&
+    filters.duration[1].toString() !== durationSchema.enum?.[1].toString()
+
+  return {
+    ...filters,
+    ...(addMinDuration && { minDuration: parseInt(filters.duration[0]) }),
+    ...(addMaxDuration && { maxDuration: parseInt(filters.duration[1]) }),
+  }
 }
 
 export function parseEventsFilters(

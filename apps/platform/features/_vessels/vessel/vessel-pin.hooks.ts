@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
+import { uniq } from 'es-toolkit'
 import { stringify } from 'qs'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -11,7 +12,7 @@ import type {
   DataviewInstanceOrigin,
   IdentityVessel,
 } from '@globalfishingwatch/api-types'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getRelatedDatasetsByType, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
@@ -32,6 +33,7 @@ import { usePopulateVesselResource } from 'features/_reports/shared/vessels/repo
 import {
   getRelatedIdentityVesselIds,
   getVesselId,
+  getVesselIdentities,
   getVesselProperty,
 } from 'features/_vessels/vessel/vessel.utils'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -92,9 +94,18 @@ export function usePinVessel({
   const vesselInstanceId = vessel
     ? getVesselId(vessel)
     : vesselToResolve?.id || vesselToSearch?.id || ''
+  // Match every self reported identity, the pinned instance can be keyed by any of them
+  const vesselInstanceIds = vessel
+    ? uniq([
+        vesselInstanceId,
+        ...getVesselIdentities(vessel, {
+          identitySource: VesselIdentitySourceEnum.SelfReported,
+        }).map((identity) => identity.id),
+      ])
+    : [vesselInstanceId]
   const vesselInWorkspace = getVesselDataview({
     dataviews: vesselsInWorkspace,
-    vesselId: vesselInstanceId,
+    vesselId: vesselInstanceIds,
     origin,
   }) as UrlDataviewInstance | undefined
 
@@ -105,7 +116,7 @@ export function usePinVessel({
     let infoDatasetResolved = infoDataset ? ({ ...infoDataset } as Dataset) : undefined
     const vesselInWorkspaceDataview = getVesselDataview({
       dataviews: vesselsInWorkspace,
-      vesselId: vesselInstanceId,
+      vesselId: vesselInstanceIds,
     })
     if (vesselInWorkspace) {
       deleteDataviewInstance(vesselInWorkspace.id)

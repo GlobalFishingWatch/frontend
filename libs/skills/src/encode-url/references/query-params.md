@@ -10,7 +10,7 @@ Defaults live in `DEFAULT_WORKSPACE` (`apps/platform/data/map/config.ts`) and `D
 | Param                           | Type                            | Notes                                                                                                                           |
 | ------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | `latitude`, `longitude`, `zoom` | number                          | Viewport. zoom 0 = world, ~4-6 = country, ~12 = port                                                                            |
-| `start`, `end`                  | ISO datetime                    | Time range, e.g. `2026-07-01T00:00:00.000Z`                                                                                     |
+| `start`, `end`                  | ISO datetime                    | Time range, e.g. `2026-07-01T00:00:00.000Z`. `end` is exclusive: year 2025 → `end=2026-01-01T00:00:00.000Z`                     |
 | `dataviewInstances`             | array                           | The layers (see layers.md)                                                                                                      |
 | `timebarVisualisation`          | string                          | `heatmap` (activity) \| `heatmapDetections` \| `events` \| `vessel` \| `vesselGroup` \| `environment`                           |
 | `visibleEvents`                 | array \| `all` \| `none`        | Event types on vessel tracks: `fishing`, `encounter`, `port_visit`, `loitering`, `gaps` (default `all`)                         |

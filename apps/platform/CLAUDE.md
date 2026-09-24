@@ -8,3 +8,4 @@ workspace-wide facts (lib resolution, build target names, dependency layout, Typ
 @.claude/memory/locales-source-is-the-only-editable.md
 @.claude/memory/popup-component-naming.md
 @.claude/memory/report-area-antimeridian.md
+@.claude/memory/deck-viewstate-url-seed.md

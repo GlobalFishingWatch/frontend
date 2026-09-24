@@ -20,7 +20,7 @@ export type NavLinkContext = {
   workspace: ReturnType<typeof selectWorkspace>
   lastVisitedWorkspace: ReturnType<typeof selectLastVisitedWorkspace>
   isWorkspaceLocation: boolean
-  isWorkspaceVesselLocation: boolean
+  isWorkspaceScoped: boolean
   onWorkspaceClick: () => void
   onSearchClick: () => void
   onCategoryClick: (category: WorkspaceCategory) => void
@@ -84,17 +84,13 @@ const NAV_LINK_RESOLVERS: Record<string, (ctx: NavLinkContext) => NavLinkProps> 
     replace: true,
     onClick: onWorkspaceClick,
   }),
-  // Search stays inside the workspace (keeping its state) when there is one.
-  search: ({ workspace, isWorkspaceLocation, isWorkspaceVesselLocation, onSearchClick }) => {
-    const workspaceScoped = isWorkspaceLocation || isWorkspaceVesselLocation
-    return {
-      to: workspaceScoped ? ROUTE_PATHS.WORKSPACE_SEARCH : ROUTE_PATHS.SEARCH,
-      params: workspaceParams(workspace),
-      search: workspaceScoped ? (prev: QueryParams) => prev : {},
-      replace: !workspaceScoped,
-      onClick: onSearchClick,
-    }
-  },
+  search: ({ workspace, isWorkspaceScoped, onSearchClick }) => ({
+    to: isWorkspaceScoped ? ROUTE_PATHS.WORKSPACE_SEARCH : ROUTE_PATHS.SEARCH,
+    params: workspaceParams(workspace),
+    search: isWorkspaceScoped ? (prev: QueryParams) => prev : {},
+    replace: !isWorkspaceScoped,
+    onClick: onSearchClick,
+  }),
 }
 
 export function getNavLinkProps(item: RoutedNavItem, ctx: NavLinkContext): NavLinkProps {

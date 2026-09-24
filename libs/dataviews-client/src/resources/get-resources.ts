@@ -107,7 +107,8 @@ export const extendDataviewDatasetConfig = (
         ...preparedTrackDatasetConfigs,
         ...preparedTrackRealTimeDatasetConfigs,
         ...preparedEventsDatasetConfigs,
-      ].filter(Boolean),
+        // track and trackRealTime fall back to {} when the vessel has no data for them
+      ].filter((datasetConfig) => datasetConfig && Object.keys(datasetConfig).length > 0),
     }
     return preparedDataview
   })

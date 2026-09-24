@@ -101,7 +101,7 @@ describe('FourwingsHeatmapStaticLayer', () => {
       vi.spyOn(layer, 'getData').mockReturnValue(
         Array.from({ length: 30 }, (_, i) => staticFeature([i + 1]))
       )
-      const domain = layer._calculateColorDomain() as number[]
+      const domain = layer._calculateColorDomain().domain as number[]
       expect(domain.length).toBeGreaterThan(0)
       expect(domain).toEqual([...domain].sort((a, b) => a - b))
     })
@@ -110,15 +110,37 @@ describe('FourwingsHeatmapStaticLayer', () => {
       const layer = makeLayer()
       layer.state.colorDomain = [1, 2, 3]
       vi.spyOn(layer, 'getData').mockReturnValue([])
-      expect(layer._calculateColorDomain()).toEqual([1, 2, 3])
+      expect(layer._calculateColorDomain()).toEqual({ domain: [1, 2, 3], max: undefined })
+    })
+  })
+
+  describe('_updateColorDomain', () => {
+    it('clears rampDirty when the viewport has no cells', () => {
+      const layer = makeLayer()
+      layer.state.rampDirty = true
+      layer.state.colorDomain = []
+      vi.spyOn(layer, 'getData').mockReturnValue([])
+      const setState = vi.spyOn(layer, 'setState').mockImplementation(() => {})
+      layer._updateColorDomain()
+      expect(setState).toHaveBeenCalledWith({ rampDirty: false })
+    })
+
+    // setState marks the layer for an update, so an unconditional call here loops on every render
+    it('does not touch state when rampDirty is already false', () => {
+      const layer = makeLayer()
+      layer.state.colorDomain = []
+      vi.spyOn(layer, 'getData').mockReturnValue([])
+      const setState = vi.spyOn(layer, 'setState').mockImplementation(() => {})
+      layer._updateColorDomain()
+      expect(setState).not.toHaveBeenCalled()
     })
   })
 
   it('cacheHash tracks ramp dirtiness', () => {
     const layer = makeLayer()
-    expect(layer.cacheHash).toBe('teal|false|undefined-undefined')
+    expect(layer.cacheHash).toBe('teal|false|true-undefined-undefined-undefined')
     layer.state.rampDirty = true
-    expect(layer.cacheHash).toBe('teal|true|undefined-undefined')
+    expect(layer.cacheHash).toBe('teal|true|true-undefined-undefined-undefined')
   })
 
   // The report timeseries retriggers off cacheHash, and it honours min/maxVisibleValue even

@@ -1,12 +1,12 @@
-name: Build and Push Docker Image
-description: Reads build config, fetches secrets, and builds/pushes a Docker image to Artifact Registry
+name: Build Docker Image
+description: Reads build config, fetches secrets, and builds a Docker image, loaded into the local Docker daemon. Never pushes — the caller pushes explicitly once it's ready to.
 
 inputs:
   app:
     description: Application name
     required: true
   image:
-    description: Full Docker image URI to push
+    description: Local Docker image tag to build
     required: true
   config:
     description: Path to the app config YAML file
@@ -103,12 +103,13 @@ runs:
         done < <(echo '${{ steps.prepare.outputs.secret_names }}' | jq -r '.[]')
         { echo "value<<EOF"; echo "$SECRETS"; echo "EOF"; } >> "$GITHUB_OUTPUT"
 
-    - name: Build and push Docker image
+    - name: Build Docker image
       uses: docker/build-push-action@v7
       with:
         context: .
         target: ${{ steps.prepare.outputs.target }}
-        push: true
+        push: false
+        load: true
         tags: ${{ inputs.image }}
         build-args: ${{ steps.prepare.outputs.args }}
         secrets: ${{ steps.docker-secrets.outputs.value }}

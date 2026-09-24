@@ -50,26 +50,27 @@ Pattern: keep `dataviewId` as the base `vms`/`fishing-effort-vms` dataview, but 
   "id": "fishing-effort-vms__<unique>",
   "config": {
     "visible": true,
-    "datasets": ["public-<country>-fishing-effort:v<version>", "public-global-fishing-effort:v3.0"],
+    "datasets": ["public-<country>-fishing-effort:v<version>", "public-global-fishing-effort:v4.0"],
     "filters": { "flag": ["<ISO3>"] }
   }
 }
 ```
 
+Only `flag` is safe here: the national and global datasets use different `geartype` vocabularies, so a gear filter across both fails in the encoder (see filters.md, VMS section).
+
 Known national dataset ids (source: `gfw-terraform-api-resources/resources/datasets`, `dataviews/shared_countries.tf`) — flag is the ISO3 to filter on:
 
-| Country          | ISO3  | Public dataset id                    |
-| ---------------- | ----- | ------------------------------------ |
-| Belize           | `BLZ` | `public-vms-blz-fishing-effort:v4.0` |
-| Brazil           | `BRA` | `public-vms-bra-fishing-effort:v4.0` |
-| Chile            | `CHL` | `public-vms-chl-fishing-effort:v4.1` |
-| Costa Rica       | `CRI` | `public-vms-cri-fishing-effort:v4.0` |
-| Ecuador          | `ECU` | `public-vms-ecu-fishing-effort:v4.0` |
-| Norway           | `NOR` | `public-vms-nor-fishing-effort:v4.0` |
-| Panama           | `PAN` | `public-vms-pan-fishing-effort:v4.1` |
-| Peru             | `PER` | `public-vms-per-fishing-effort:v4.0` |
-| Palau            | `PLW` | `public-vms-plw-fishing-effort:v4.0` |
-| Papua New Guinea | `PNG` | `public-vms-png-fishing-effort:v4.0` |
+| Country          | ISO3  | Public dataset id                        |
+| ---------------- | ----- | ---------------------------------------- |
+| Belize           | `BLZ` | `public-belize-fishing-effort:v20220304` |
+| Brazil           | `BRA` | `public-vms-bra-fishing-effort:v4.0`     |
+| Chile            | `CHL` | `public-vms-chl-fishing-effort:v4.1`     |
+| Costa Rica       | `CRI` | `public-vms-cri-fishing-effort:v4.0`     |
+| Ecuador          | `ECU` | `public-vms-ecu-fishing-effort:v4.0`     |
+| Norway           | `NOR` | `public-vms-nor-fishing-effort:v4.0`     |
+| Panama           | `PAN` | `public-vms-pan-fishing-effort:v4.1`     |
+| Peru             | `PER` | `public-vms-per-fishing-effort:v4.0`     |
+| Papua New Guinea | `PNG` | `public-vms-png-fishing-effort:v4.0`     |
 
 ### Detections
 

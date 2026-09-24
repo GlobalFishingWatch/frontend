@@ -921,6 +921,31 @@ export const USER_CONTEXT_LAYER_ENDPOINTS = [
   },
 ] as const
 
+const CONTEXT_FEATURE_ENDPOINT = {
+  id: EndpointId.ContextFeature,
+  description: 'Endpoint to retrieve a feature from a context layer',
+  downloadable: true,
+  method: 'GET',
+  pathTemplate: '/{{apiVersion}}/datasets/{{dataset}}/context-layers/{{id}}',
+  params: [
+    {
+      id: 'dataset',
+      type: 'string',
+    },
+    {
+      id: 'id',
+      type: 'number',
+    },
+  ],
+  query: [
+    {
+      id: 'simplify',
+      type: 'number',
+      required: false,
+    },
+  ],
+} as const
+
 export const CONTEXT_LAYER_ENDPOINTS = [
   {
     id: EndpointId.ContextTiles,
@@ -948,30 +973,7 @@ export const CONTEXT_LAYER_ENDPOINTS = [
     ],
     query: [],
   },
-  {
-    id: EndpointId.ContextFeature,
-    description: 'Endpoint to retrieve a feature from a context layer',
-    downloadable: true,
-    method: 'GET',
-    pathTemplate: '/{{apiVersion}}/datasets/{{dataset}}/context-layers/{{id}}',
-    params: [
-      {
-        id: 'dataset',
-        type: 'string',
-      },
-      {
-        id: 'id',
-        type: 'number',
-      },
-    ],
-    query: [
-      {
-        id: 'simplify',
-        type: 'number',
-        required: false,
-      },
-    ],
-  },
+  CONTEXT_FEATURE_ENDPOINT,
 ] as const
 
 export const TEMPORAL_CONTEXT_LAYER_ENDPOINTS = [
@@ -1017,6 +1019,7 @@ export const PM_TILES_ENDPOINTS = [
     ],
     query: [],
   },
+  CONTEXT_FEATURE_ENDPOINT,
 ] as const
 
 export const THUMBNAILS_ENDPOINTS = [

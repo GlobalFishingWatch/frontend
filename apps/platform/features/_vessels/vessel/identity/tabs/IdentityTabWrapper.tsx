@@ -45,9 +45,10 @@ const IdentityTabWrapper = ({ children }: { children: ReactNode }) => {
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
+  const { setTimerange } = useTimerangeConnect()
+
   const isGFWUser = useSelector(selectIsGFWUser)
   const isJACUser = useSelector(selectIsJACUser)
-  const { setTimerange } = useTimerangeConnect()
 
   const vesselIdentity = getCurrentIdentityVessel(vesselData, { identityId, identitySource })
   const latestVesselIdentity = getLatestIdentityPrioritised(vesselData)
@@ -146,6 +147,7 @@ const IdentityTabWrapper = ({ children }: { children: ReactNode }) => {
           </div>
         </div>
         <div className={styles.actionsContainer}>
+          {/* selectIsGFWUser / selectIsJACUser are already expiry aware, and a guest has no groups */}
           {(isJACUser || isGFWUser) && !source?.[0]?.includes('VMS') && <VesselInfoCorrection />}
           <UserLoggedIconButton
             loginSource="vessel-download"

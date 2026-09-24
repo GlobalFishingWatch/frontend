@@ -61,14 +61,6 @@ import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/_vessels/vessel
 import type { TimeMode } from 'types'
 import { formatInfoField } from 'utils/info'
 
-export {
-  BATHYMETRY_DATAVIEW_PREFIX,
-  ENCOUNTER_EVENTS_SOURCE_ID,
-  GAPS_EVENTS_SOURCE_ID,
-  LOITERING_EVENTS_SOURCE_ID,
-  PORT_VISITS_EVENTS_SOURCE_ID,
-} from '@platform/config/map/dataviews'
-
 const ENCOUNTER_EVENTS_30MIN_SOURCE_ID = 'proto-global-encounters-events-30min'
 export const PORT_VISITS_REPORT_DATAVIEW_ID = `${PORT_VISITS_EVENTS_SOURCE_ID}-report`
 export const GAPS_AIS_OFF_EVENTS_SOURCE_ID = `${GAPS_EVENTS_SOURCE_ID}s-ais-off`
@@ -120,17 +112,19 @@ export const getVesselDataview = ({
   dataviews = [],
   vesselId = '',
   origin,
-}: GetVesselInWorkspaceParams) => {
-  if (!vesselId) return null
+}: Omit<GetVesselInWorkspaceParams, 'vesselId'> & { vesselId: string | string[] }) => {
+  // A vessel can have several self reported identities, any of them can be the pinned one
+  const vesselIds = (Array.isArray(vesselId) ? vesselId : [vesselId]).filter(Boolean)
+  if (!vesselIds.length) return null
   const vesselInWorkspace = dataviews.find((v) => {
     const vesselDatasetConfig = v.datasetsConfig?.find(
       (datasetConfig) => datasetConfig.endpoint === EndpointId.Vessel
     )
-    const isVesselInEndpointParams =
-      vesselDatasetConfig?.params?.find((p) => p.id === 'vesselId' && p.value === vesselId) !==
-      undefined
+    const isVesselInEndpointParams = vesselDatasetConfig?.params?.some(
+      (p) => p.id === 'vesselId' && vesselIds.includes(p.value as string)
+    )
     const matchesOrigin = origin !== undefined ? v.origin === origin : true
-    const isInVesselRelatedIds = v.config?.relatedVesselIds?.includes(vesselId)
+    const isInVesselRelatedIds = v.config?.relatedVesselIds?.some((id) => vesselIds.includes(id))
     return (isVesselInEndpointParams || isInVesselRelatedIds) && matchesOrigin
   })
   return vesselInWorkspace
@@ -210,11 +204,15 @@ export const getVesselDataviewInstanceDatasetConfig = (
 
 // Resolves track dataset ids not stored in the url instance config, to avoid
 // storing all the datasetConfig in the instance and save url string characters
-export const resolveVesselTrackConfig = (
-  config: UrlDataviewInstance['config'],
-  datasets: Dataset[],
+export const resolveVesselTrackConfig = ({
+  config,
+  datasets,
+  loggedUser,
+}: {
+  config: UrlDataviewInstance['config']
+  datasets: Dataset[]
   loggedUser: boolean
-) => {
+}) => {
   const resolvedConfig = { ...config }
   if (!resolvedConfig.info) {
     return resolvedConfig
@@ -240,10 +238,12 @@ export const resolveVesselDataviewInstance = (
   dataviewInstance: UrlDataviewInstance,
   {
     datasets,
+    dataviews,
     loggedUser,
     trackThinningZoomConfig,
   }: {
     datasets: Dataset[]
+    dataviews: Dataview[]
     loggedUser: boolean
     trackThinningZoomConfig: DataviewConfig['trackThinningZoomConfig']
   }
@@ -258,7 +258,20 @@ export const resolveVesselDataviewInstance = (
     },
   }
   if (!dataviewInstance.datasetsConfig?.length) {
-    const config = resolveVesselTrackConfig(dataviewInstance.config, datasets, loggedUser)
+    // Url instances can come with no datasets at all, so we fallback to the dataview template one
+    const dataviewInfoDatasetId = dataviews
+      .find((dataview) => dataview.slug === dataviewInstance.dataviewId)
+      ?.datasetsConfig?.find(
+        (datasetConfig) => datasetConfig.endpoint === EndpointId.Vessel
+      )?.datasetId
+    const config = resolveVesselTrackConfig({
+      config: {
+        ...dataviewInstance.config,
+        info: dataviewInstance.config?.info || dataviewInfoDatasetId,
+      },
+      datasets,
+      loggedUser,
+    })
     const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
       getVesselIdFromInstanceId(dataviewInstance.id),
       config
@@ -516,14 +529,14 @@ export const getUserPointsDataviewInstance = (dataset: Dataset): DataviewInstanc
 export const getUserFourwingsDataviewInstance = (
   dataset: Dataset
 ): DataviewInstance<DataviewType> => {
-  const { agregationMode, timestampColumn } = getDatasetConfiguration(dataset, 'userFourwingsV1')
+  const { aggregationMode, timestampColumn } = getDatasetConfiguration(dataset, 'userFourwingsV1')
   return {
     id: `${USER_4WINGS_PREFIX}${dataset.id}`,
     category: DataviewCategory.User,
     config: {
       colorCyclingType: 'fill' as ColorCyclingType,
       aggregationOperation:
-        (agregationMode?.toLowerCase() as FourwingsAggregationOperation) ||
+        (aggregationMode?.toLowerCase() as FourwingsAggregationOperation) ||
         FourwingsAggregationOperation.Avg,
       datasets: [dataset.id],
       group: LayerGroup.HeatmapStatic,

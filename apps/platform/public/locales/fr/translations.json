@@ -77,6 +77,7 @@
     "newTimeRange": "Cliquez sur le bouton pour voir les navires actifs dans la zone située entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
     "noDataByArea": "Aucune donnée disponible pour la zone sélectionnée",
     "noDataByComparedDataset": "No data available for the selected compared dataset, adjust your timerange or change the selection.",
+    "noLayersActive": "No active layers to report on, turn on a layer to see its report",
     "noPolygonsContainedOrOverlapping": "No polygons inside or overlapping your area",
     "noTimeComparisonAllowed": "Les modes de comparaison temporelle ne sont pas disponibles lorsque des filtres différents ont été appliqués aux calques",
     "noVesselDataFiltered": "Aucun navire ne correspond à votre filtre",
@@ -116,9 +117,11 @@
     "selectAggregationProperty": "Select a property to analyze",
     "selectDatasetPlaceholder": "Select a dataset to compare",
     "share": "Partager le rapport",
-    "showFullReport": "Analyse complète",
+    "showFullReport": "See full analysis for this area",
     "statsDisclaimerDynamic": "Au cours de cette plage de temps, les valeurs minimales et maximales par {{interval}} et lieu à l'intérieur de votre zone étaient {{min}} {{unit}} et {{max}} {{unit}}.",
+    "statsDisclaimerDynamicMean": "During this time, the average value at any given {{interval}} and place inside your area was {{mean}} {{unit}}.",
     "statsDisclaimerStatic": "La valeur moyenne pour votre zone est {{mean}} {{unit}}. Le minimum et le maximum sont {{min}} {{unit}} et {{max}} {{unit}}.",
+    "statsDisclaimerStaticMean": "The average value for your area is {{mean}} {{unit}}.",
     "summary": "<strong>{{vessels}} navires{{sources}} </strong> ont eu <strong>{{activityQuantity}} {{activityUnit}}</strong> d'<strong>{{activityType}}</strong> {{area}} entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
     "summaryEvents": "<strong>{{vessels}} navires</strong> de<strong>{{flags}} drapeau</strong> ont eu <strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
     "summaryEventsNoVessels": "<strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
@@ -488,7 +491,6 @@
     "fieldNumericPlaceholder": "Sélectionnez un champ numérique dans votre jeu de données",
     "fieldPlaceholder": "Sélectionnez un champ dans votre jeu de données",
     "gridded": {
-      "aggregation": "Aggregation",
       "band": "Band to import",
       "unit": "Unit",
       "unitPlaceholder": "e.g., 'detections', '°C', 'm/s",
@@ -920,6 +922,7 @@
     "highRes": "Voir les cartes thermiques haute résolution",
     "highResDisabled": "High resolution heatmaps are disabled when using a vessel group filter",
     "legend_help": "Zone approximatie des cellules de la grille par rapport à l'équateur",
+    "legendBrushFit": "Fit color scale to selected values",
     "legendBrushHelp": "Click or drag to adjust the value",
     "loading": "Chargement",
     "lowRes": "Voir les cartes thermiques basse résolution",
@@ -1003,7 +1006,8 @@
   },
   "portsReport": {
     "seePortReport": "Voir tous les événements d'entrée dans ce port",
-    "summaryEvents": "<strong>{{vessels}} navires</strong> battant pavillon du/de<strong>{{flags}} </strong> sont entrés dans ce port <strong>{{activityQuantity}}</strong> fois entre <strong>{{start}}</strong> et <strong>{{end}}</strong>"
+    "summaryEvents": "<strong>{{vessels}} navires</strong> battant pavillon du/de<strong>{{flags}} </strong> sont entrés dans ce port <strong>{{activityQuantity}}</strong> fois entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
+    "toThisPort": "to this port"
   },
   "search": {
     "advanced": "Avancé",
@@ -1073,6 +1077,9 @@
     "months_one": "month",
     "months_other": "{{count}} months",
     "now": "now",
+    "weeks": "{{count}} week",
+    "weeks_one": "{{count}} week",
+    "weeks_other": "{{count}} weeks",
     "years": "{{count}} year",
     "years_one": "{{count}} year",
     "years_other": "{{count}} years"
@@ -1157,6 +1164,7 @@
     },
     "datasets": "Jeux de données utilisateur",
     "gfwBadges": "GFW Badges",
+    "groupDatasetPermissionMissing": "This group has no dataset permissions configured yet, so its private data is not available. Contact support if you need access.",
     "groupMissing": "Appartenez-vous à un groupe d’utilisateurs qui n’apparaît pas ici ? <2>Demander l'accès</2>",
     "groups": "Groupes",
     "info": "Informations utilisateur",

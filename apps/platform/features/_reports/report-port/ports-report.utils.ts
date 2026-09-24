@@ -1,7 +1,6 @@
 import type { ClusterMaxZoomLevelConfig } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-
-import { PORT_VISITS_EVENTS_SOURCE_ID } from 'features/_map/dataviews/dataviews.utils'
+import { PORT_VISITS_EVENTS_SOURCE_ID } from '@platform/config/map/dataviews'
 
 export function isPortClusterDataviewForReport(dataview: UrlDataviewInstance) {
   return dataview?.id?.includes(PORT_VISITS_EVENTS_SOURCE_ID)

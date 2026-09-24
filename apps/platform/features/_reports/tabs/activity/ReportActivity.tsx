@@ -261,7 +261,7 @@ function ActivityReport() {
         </ReportVesselsPlaceholder>
       )
     }
-    if (workspaceStatus === AsyncReducerStatus.Loading) {
+    if (workspaceStatus === AsyncReducerStatus.Loading || reportLoading) {
       return <ReportVesselsPlaceholder className="print-hidden" />
     }
     if (timerangeTooLong) {
@@ -274,7 +274,7 @@ function ActivityReport() {
       )
     }
 
-    if (reportError || (!reportLoading && !reportDataviews?.length)) {
+    if (reportError || !reportDataviews?.length) {
       return ReportVesselError
     }
 
@@ -288,11 +288,7 @@ function ActivityReport() {
       )
     }
 
-    if (
-      (reportOutdated || reportStatus === AsyncReducerStatus.Idle) &&
-      !reportLoading &&
-      !hasAuthError
-    ) {
+    if ((reportOutdated || reportStatus === AsyncReducerStatus.Idle) && !hasAuthError) {
       return (
         <ReportVesselsPlaceholder animate={false} className="print-hidden">
           <div className={cx(styles.cover, styles.center, styles.top)}>
@@ -362,8 +358,9 @@ function ActivityReport() {
       )
     }
 
-    return <ReportVesselsPlaceholder animate={false} className="print-hidden" />
+    return ReportVesselError
   }, [
+    isRealTimeMode,
     isBQEditorDataset,
     workspaceStatus,
     timerangeTooLong,
@@ -377,7 +374,8 @@ function ActivityReport() {
     reportLoaded,
     t,
     ReportVesselError,
-    timerange,
+    timerange.start,
+    timerange.end,
     dispatch,
     dispatchFetchReport,
     hasVessels,

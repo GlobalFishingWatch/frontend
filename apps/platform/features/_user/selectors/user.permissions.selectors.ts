@@ -4,6 +4,7 @@ import { orderBy } from 'es-toolkit'
 import type { UserPermission } from '@globalfishingwatch/api-types'
 import { BADGES_GROUP_PREFIX, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
 import { checkExistPermissionInList } from '@globalfishingwatch/auth-middleware/utils'
+import { DEFAULT_GROUP_ID } from '@globalfishingwatch/datasets-client'
 
 import {
   AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX,
@@ -14,7 +15,6 @@ import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { selectWorkspaces } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { selectAllReports } from 'features/_reports/reports.slice'
 import { selectUserData } from 'features/_user/selectors/user.selectors'
-import { DEFAULT_GROUP_ID } from 'features/_user/user.config'
 
 import { USER_GROUP_WORKSPACE } from '../user.slice'
 

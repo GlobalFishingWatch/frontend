@@ -1,18 +1,15 @@
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   AIS_DATAVIEW_INSTANCE_ID,
+  ENCOUNTER_EVENTS_SOURCE_ID,
+  LOITERING_EVENTS_SOURCE_ID,
+  PORT_VISITS_EVENTS_SOURCE_ID,
   PRESENCE_DATAVIEW_INSTANCE_ID,
   SAR_DATAVIEW_INSTANCE_ID,
   SENTINEL2_DATAVIEW_INSTANCE_ID,
   VIIRS_DATAVIEW_INSTANCE_ID,
   VMS_DATAVIEW_INSTANCE_ID,
 } from '@platform/config/map/dataviews'
-
-import {
-  ENCOUNTER_EVENTS_SOURCE_ID,
-  LOITERING_EVENTS_SOURCE_ID,
-  PORT_VISITS_EVENTS_SOURCE_ID,
-} from 'features/_map/dataviews/dataviews.utils'
 
 const REPORT_DATAVIEW_INSTANCES_IDS: string[] = [
   AIS_DATAVIEW_INSTANCE_ID,

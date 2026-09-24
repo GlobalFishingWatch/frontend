@@ -111,7 +111,11 @@ export default function ReportActivityComparisonTotals({
       </li>
       <li className={styles.total}>
         <label className={styles.label}>{t((t) => t.analysis.comparisonTotalChange)}</label>
-        <span style={{ color: change > 0 ? COLOR_INCREASE : COLOR_DECREASE }}>
+        <span>
+          <span
+            className={styles.changeDot}
+            style={{ color: change > 0 ? COLOR_INCREASE : COLOR_DECREASE }}
+          ></span>
           {formatTooltipValue(change, unit as string, true)}
           {changePercentage !== undefined && (
             <span className={styles.percentage}>

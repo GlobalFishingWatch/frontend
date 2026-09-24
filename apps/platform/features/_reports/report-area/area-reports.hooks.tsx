@@ -2,7 +2,7 @@ import type { JSX } from 'react'
 import { Fragment, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { uniq } from 'es-toolkit'
+import { countBy } from 'es-toolkit'
 import { useGetStatsByDataviewQuery } from 'queries/map/stats-api'
 
 import {
@@ -77,6 +77,7 @@ import { getCurrentAppUrl } from 'router/routes.utils'
 import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getIsBrowser } from 'utils/dom'
+import { listAsSentence } from 'utils/shared'
 
 import styles from './title/ReportTitle.module.css'
 
@@ -465,13 +466,26 @@ export function useReportTitle() {
     )
     if (!areaName) {
       if (areaDataviews?.length > 1) {
-        const datasets = areaDataviews.flatMap((d) => d.datasets?.[0] || [])
-        const uniqDatasetLabels = uniq(datasets?.map((d) => getDatasetLabel(d)))
+        const datasetLabels = areaDataviews.map((d) => getDatasetLabel(d.datasets?.[0]))
+        const labelCounts = countBy(datasetLabels, (label) => label)
+        const areaNames: string[] | undefined = reportArea?.properties?.areaNames
         areaName = (
-          <Tooltip content={reportArea?.name}>
-            <span
-              className={styles.reportTitleTooltip}
-            >{`${areaDataviews.length > 1 ? `${areaDataviews.length} ` : ''}${uniqDatasetLabels.length > 1 ? t((t) => t.common.areas) : uniqDatasetLabels[0]}`}</span>
+          <Tooltip
+            content={
+              areaNames ? (
+                <ul>
+                  {areaNames.map((name, index) => (
+                    <li key={index}>{`${datasetLabels[index]}: ${name}`}</li>
+                  ))}
+                </ul>
+              ) : (
+                reportArea?.name
+              )
+            }
+          >
+            <span className={styles.reportTitleTooltip}>
+              {`${listAsSentence(Object.entries(labelCounts).map(([label, count]) => `${count} ${label}`))} ${t((t) => t.common.area, { count: areaDataviews.length })}`}
+            </span>
           </Tooltip>
         )
       } else {

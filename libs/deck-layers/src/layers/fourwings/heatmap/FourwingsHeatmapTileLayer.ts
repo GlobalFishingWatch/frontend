@@ -39,6 +39,7 @@ import {
 } from '#layers/fourwings/fourwings.config'
 import { getSteps, removeOutliers } from '#layers/fourwings/fourwings.stats'
 import type {
+  FourwingsColorDomainWithMax,
   FourwingsColorObject,
   FourwingsDeckSublayer,
   FourwingsTileLayerColorDomain,
@@ -69,7 +70,8 @@ import {
   getFourwingsChunk,
   getFourwingsColorDomain,
   getIntervalFrames,
-  getSublayersVisibleValuesHash,
+  getRampFitRange,
+  getSublayersRampFitHash,
   getTileDataCache,
   getZoomOffsetByResolution,
 } from './fourwings-heatmap.utils'
@@ -147,7 +149,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       return ''
     }
     const colorRamps = this.props.sublayers?.map(({ colorRamp }) => colorRamp).join(',')
-    return `${this._getTileDataCacheKey()}|${this.props.comparisonMode}|${colorRamps}|${this.state.rampDirty}|${this.state.viewportLoaded}|${getSublayersVisibleValuesHash(this.props.sublayers)}`
+    return `${this._getTileDataCacheKey()}|${this.props.comparisonMode}|${colorRamps}|${this.state.rampDirty}|${this.state.viewportLoaded}|${getSublayersRampFitHash(this.props.sublayers)}`
   }
 
   get debounceTime(): number {
@@ -182,7 +184,12 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     )
   }
 
-  _calculateColorDomain = () => {
+  _getCurrentColorDomain = (): FourwingsColorDomainWithMax => ({
+    domain: this.getColorDomain(),
+    max: this.state?.colorDomainMax,
+  })
+
+  _calculateColorDomain = (): FourwingsColorDomainWithMax => {
     const {
       comparisonMode,
       aggregationOperation,
@@ -190,11 +197,12 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       endTime,
       availableIntervals,
       skipColorDomainSampling,
+      sublayers,
     } = this.props
 
     const currentZoomData = this.getData()
     if (!currentZoomData.length) {
-      return this.getColorDomain()
+      return this._getCurrentColorDomain()
     }
 
     const { startFrame, endFrame } = getIntervalFrames({
@@ -231,7 +239,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         })
       })
       if (!allValues.length) {
-        return this.getColorDomain()
+        return this._getCurrentColorDomain()
       }
 
       const steps = allValues.map((sublayerValues) =>
@@ -242,7 +250,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
             )
           : []
       )
-      return steps
+      return { domain: steps }
     }
 
     if (comparisonMode === FourwingsComparisonMode.TimeCompare) {
@@ -262,7 +270,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         }
       }
       if (!allNegativeValues.length || !allPositiveValues.length) {
-        return this.getColorDomain()
+        return this._getCurrentColorDomain()
       }
       const negativeValuesFiltered = removeOutliers({
         allValues: allNegativeValues,
@@ -275,25 +283,26 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       })
       const negativeSteps = getSteps(negativeValuesFiltered, COLOR_RAMP_DEFAULT_NUM_STEPS / 2 - 1)
       const positiveSteps = getSteps(positiveValuesFiltered, COLOR_RAMP_DEFAULT_NUM_STEPS / 2)
-      return [...negativeSteps, 0, ...positiveSteps]
+      return { domain: [...negativeSteps, 0, ...positiveSteps] }
     }
 
-    const colorDomain = getFourwingsColorDomain({
+    const { domain, max } = getFourwingsColorDomain({
       features: currentZoomData,
       aggregationOperation,
       startFrame,
       endFrame,
       timeRangeKey,
       skipColorDomainSampling,
+      ...getRampFitRange(sublayers),
     })
-    return colorDomain.length ? colorDomain : this.getColorDomain()
+    return domain.length ? { domain, max } : this._getCurrentColorDomain()
   }
 
   updateColorDomain = debounce(() => {
     requestAnimationFrame(() => {
       const { comparisonMode } = this.props
       const { colorDomain: oldColorDomain } = this.state
-      const newColorDomain = this._calculateColorDomain()
+      const { domain: newColorDomain, max: newColorDomainMax } = this._calculateColorDomain()
       let avgChange = Infinity
       let change: number[] = []
       if (oldColorDomain.length) {
@@ -329,6 +338,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         const scales = this._getColorScales(newColorDomain, colorRanges)
         this.setState({
           colorDomain: newColorDomain,
+          colorDomainMax: newColorDomainMax,
           colorRanges,
           scales,
           rampDirty: false,
@@ -558,18 +568,23 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const newSublayerColorRanges = this._getColorRanges()
     const sublayersHaveNewColors = !isEqual(colorRanges, newSublayerColorRanges)
     const newMode = oldProps.comparisonMode && comparisonMode !== oldProps.comparisonMode
+    // toggling the ramp fit, or moving a bound while fitted, has to recalculate right away: the
+    // only other trigger is a viewport load, and it is gated by DYNAMIC_RAMP_CHANGE_THRESHOLD
+    const newRampFit =
+      getSublayersRampFitHash(props.sublayers) !== getSublayersRampFitHash(oldProps.sublayers)
     const deferredStateUpdates: Partial<FourwingsTileLayerState> = {}
 
-    const needsColorUpdate = newMode || sublayersHaveNewColors
+    const needsColorUpdate = newMode || newRampFit || sublayersHaveNewColors
     if (needsColorUpdate) {
-      const recalculateDomain = newMode
-      const newColorDomain = recalculateDomain
+      const recalculateDomain = newMode || newRampFit
+      const { domain: newColorDomain, max: newColorDomainMax } = recalculateDomain
         ? this._calculateColorDomain()
-        : this.state.colorDomain
+        : this._getCurrentColorDomain()
       const scales = this._getColorScales(newColorDomain, newSublayerColorRanges)
       this.setState({
         colorRanges: newSublayerColorRanges,
         colorDomain: newColorDomain,
+        colorDomainMax: newColorDomainMax,
         scales,
         rampDirty: false,
       })
@@ -758,6 +773,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     return {
       colorRange: this.getColorRange(),
       colorDomain: this.getColorDomain(),
+      colorDomainMax: this.state?.colorDomainMax,
     } as FourwingsTileLayerColorScale
   }
 
