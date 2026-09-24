@@ -13,8 +13,6 @@ import {
   getContextDataviewDataset,
 } from 'features/_map/dataviews/dataviews.utils'
 import { useMapFitBounds } from 'features/_map/map/map-bounds.hooks'
-import ContextLayerReportLink from 'features/_map/map/popups/context/ContextLayerReportLink'
-import { useContextInteractions } from 'features/_map/map/popups/context/ContextLayers.hooks'
 import { showSchemaFilter } from 'features/_map/workspace/shared/LayerSchemaFilter.utils'
 import type {
   PolygonsReportTopArea,
@@ -57,11 +55,9 @@ function parseBboxProperty(value: unknown): Bbox | undefined {
 function ReportTopAreaRow({
   topArea,
   onHighlight,
-  onReportClick,
 }: {
   topArea: PolygonsReportTopArea
   onHighlight: (id?: string) => void
-  onReportClick: ReturnType<typeof useContextInteractions>['onReportClick']
 }) {
   const { t } = useTranslation()
   const fitBounds = useMapFitBounds()
@@ -82,10 +78,6 @@ function ReportTopAreaRow({
               size="small"
               onClick={() => fitBounds(bbox, { fitZoom: true, flyTo: true })}
             />
-          )}
-          {/* reporting on a fully contained area would analyse this layer against itself */}
-          {!topArea.contained && (
-            <ContextLayerReportLink feature={topArea.feature} onClick={onReportClick} />
           )}
         </span>
       </span>
@@ -117,7 +109,6 @@ function ReportPolygonsGraph({
   const timeseriesStats = useTimeseriesStats()
   const tags = dataviews ?? [dataview]
   const contextLayer = useGetDeckLayer<ContextLayer>(statsId ?? dataview.id)
-  const { onReportClick } = useContextInteractions()
 
   // getPickedFeatureToHighlight matches on id alone, so no need to keep the geometry around
   const highlightArea = useCallback(
@@ -225,7 +216,6 @@ function ReportPolygonsGraph({
                 key={`${topArea.id}-${index}`}
                 topArea={topArea}
                 onHighlight={highlightArea}
-                onReportClick={onReportClick}
               />
             ))}
           </ol>
