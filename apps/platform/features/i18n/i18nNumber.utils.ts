@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { Locale } from 'types'
 
 import i18n from './i18n'
+import { toContentLocale } from './i18n.config'
 
 type I18Number = string | number
 type I18NumberOptions =
@@ -21,7 +22,7 @@ export const formatI18nNumber = (
   const locale = typeof options === 'object' ? options.locale || i18n.language : options
   const parsedNumber = number === 'string' ? parseFloat(number) : (number as number)
   try {
-    return new Intl.NumberFormat(locale, {
+    return new Intl.NumberFormat(toContentLocale(locale), {
       maximumFractionDigits: 2,
       ...(typeof options === 'object' && { ...options }),
     }).format(parsedNumber)

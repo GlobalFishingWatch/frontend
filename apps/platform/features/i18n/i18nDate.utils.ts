@@ -8,6 +8,7 @@ import type { Locale } from 'types'
 import { getUTCDateTime } from 'utils/dates'
 
 import i18n from './i18n'
+import { toContentLocale } from './i18n.config'
 
 type formatI18DateParams = {
   format?: DateTimeFormatOptions | object
@@ -32,7 +33,9 @@ export const formatI18nDate = (
   if ((isDateTimeFormat && showUTCLabel === undefined) || showUTCLabel) {
     utcSuffix = ` ${UTC_SUFFIX}`
   }
-  return `${dateTimeDate?.setLocale(locale).toLocaleString(format)}${utcSuffix}`
+  // toContentLocale: dev-only codes (source, val) are not Intl locales, so server and browser
+  // would each fall back to their own default locale and break hydration
+  return `${dateTimeDate?.setLocale(toContentLocale(locale)).toLocaleString(format)}${utcSuffix}`
 }
 
 export const useI18nDate = (
