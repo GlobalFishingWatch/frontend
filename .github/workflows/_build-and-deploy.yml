@@ -128,11 +128,16 @@ jobs:
     env:
       IMAGE: us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${{ matrix.app }}:${{ inputs.image-tag || format('latest-{0}', inputs.env-suffix) }}
       CLOUDRUN_SA: frontend-${{ inputs.env-suffix }}@${{ inputs.cloudrun-project }}.iam.gserviceaccount.com
-      # Only staging: a production build bakes in production's own VITE_API_GATEWAY (a
-      # Vite build-time var), and that gateway's SSO app doesn't allow a CI runner's
-      # callback URL, so a production image can't be smoke-tested as itself. Revisit
-      # with the frontend team before extending this to production.
-      RUN_SMOKE_TESTS: ${{ matrix.app == 'platform' && inputs.env-suffix == 'sta' }}
+      # Staging and dev, never production: a production build bakes in production's own
+      # VITE_API_GATEWAY (a Vite build-time var), and that gateway's SSO app doesn't allow
+      # a CI runner's callback URL, so a production image can't be smoke-tested as itself.
+      # Revisit with the frontend team before extending this to production.
+      #
+      # && binds tighter than || in GitHub Actions expressions too — the parens on the
+      # right are load-bearing. Without them this becomes
+      # (matrix.app == 'platform' && env-suffix == 'sta') || (env-suffix == 'dev'), which
+      # runs the platform-only smoke suite against every app's dev deploy.
+      RUN_SMOKE_TESTS: ${{ matrix.app == 'platform' && (inputs.env-suffix == 'sta' || inputs.env-suffix == 'dev') }}
 
     steps:
       - name: Checkout code

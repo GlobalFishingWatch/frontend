@@ -14,7 +14,8 @@
       "configurations": {
         "smoke": {
           "grep": "@smoke",
-          "project": "chromium"
+          "project": "chromium",
+          "workers": 3
         },
         "extended": {
           "grep": "@smoke|@extended",
@@ -50,7 +51,8 @@
         },
         "smoke": {
           "grep": "@smoke",
-          "project": "chromium"
+          "project": "chromium",
+          "workers": 3
         },
         "extended": {
           "grep": "@smoke|@extended",
