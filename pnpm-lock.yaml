@@ -1482,12 +1482,18 @@ importers:
       '@globalfishingwatch/dataviews-client':
         specifier: workspace:^
         version: link:../dataviews-client
+      '@globalfishingwatch/i18n-labels':
+        specifier: workspace:^
+        version: link:../i18n-labels
       '@platform/config':
         specifier: workspace:^
         version: link:../../apps/platform/config
       '@tanstack/router-core':
         specifier: 1.x
         version: 1.171.27
+      '@typesafe-ai/sdk':
+        specifier: ~0.6.0
+        version: 0.6.0
 
   libs/timebar:
     dependencies:
@@ -6454,6 +6460,10 @@ packages:
 
   '@types/use-sync-external-store@0.0.6':
     resolution: {integrity: sha512-zFDAD+tlpf2r4asuHEj0XH6pY6i0g5NeAHPn+15wk3BV6JA69eERFXC1gyGThDkVa1zCyKr5jox1+2LbV/AMLg==}
+
+  '@typesafe-ai/sdk@0.6.0':
+    resolution: {integrity: sha512-IddX+Q0XM+VagOUZFeP7wZjaO4SHMdvnh2zEBdrZZnXedWI3BNK1lKhMx3ayrkFWvVLbVcUHJy6AVZlY+e6Jaw==}
+    engines: {node: '>=20'}
 
   '@typescript-eslint/eslint-plugin@8.70.0':
     resolution: {integrity: sha512-/v8HZt6RlyIZxB3ntehELOcUcfxKPVGWXnQdJuHRmzrqgF8nQypcC/oxGW+Ot4VGKDq81XugPKxx0n5PBtf9PA==}
@@ -19801,6 +19811,8 @@ snapshots:
   '@types/upng-js@2.1.5': {}
 
   '@types/use-sync-external-store@0.0.6': {}
+
+  '@typesafe-ai/sdk@0.6.0': {}
 
   '@typescript-eslint/eslint-plugin@8.70.0(@typescript-eslint/parser@8.70.0(@typescript/typescript6@6.0.2)(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(@typescript/typescript6@6.0.2)(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)':
     dependencies:

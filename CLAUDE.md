@@ -71,7 +71,7 @@ Durable facts about this repo live in a `.claude/memory/` folder, one fact per f
 
 ### Project-scoped knowledge lives with the project
 
-The eight facts below are **not** imported here. Each project's own `CLAUDE.md` imports them, so
+The nine facts below are **not** imported here. Each project's own `CLAUDE.md` imports them, so
 they load only once a file in that project is opened. A cross-link above pointing at one of these
 names resolves to the paths listed here.
 
@@ -80,7 +80,7 @@ names resolves to the paths listed here.
 | [apps/platform](apps/platform/CLAUDE.md)         | `platform-testing`, `locales-source-is-the-only-editable`, `popup-component-naming` |
 | [libs/deck-layers](libs/deck-layers/CLAUDE.md)   | `deck-collision-priority-range`, `label-layer-sdf-outline-opacity`                  |
 | [libs/deck-loaders](libs/deck-loaders/CLAUDE.md) | `deck-loaders-parsers-run-in-prebuilt-workers`                                      |
-| [libs/skills](libs/skills/CLAUDE.md)             | `skills-lib`, `encode-url-skill-maintenance`                                        |
+| [libs/skills](libs/skills/CLAUDE.md)             | `skills-lib`, `encode-url-skill-maintenance`, `encode-url-jev-skill`                |
 
 **Why the split:** `@` imports are inlined into the session prompt at startup, in full, every
 session — so a flat root import list charges every session for facts about projects it never

@@ -14,10 +14,12 @@
         "main": "libs/skills/src/index.ts",
         "additionalEntryPoints": [
           "libs/skills/src/encode-url/index.ts",
-          "libs/skills/src/decode-url/index.ts"
+          "libs/skills/src/decode-url/index.ts",
+          "libs/skills/src/encode-url-jev/index.ts"
         ],
         "tsConfig": "libs/skills/tsconfig.lib.json",
         "bundle": true,
+        "sourcemap": true,
         "format": ["esm"],
         "thirdParty": true,
         "declaration": false,
@@ -52,6 +54,21 @@
             "glob": "**/*",
             "input": "libs/skills/src/decode-url/scripts",
             "output": "decode-url/scripts"
+          },
+          {
+            "glob": "SKILL.md",
+            "input": "libs/skills/src/encode-url-jev",
+            "output": "encode-url-jev"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/skills/src/encode-url-jev/scripts",
+            "output": "encode-url-jev/scripts"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/skills/src/encode-url/references",
+            "output": "encode-url-jev/references"
           }
         ],
         "esbuildOptions": {
@@ -93,6 +110,27 @@
       "dependsOn": ["build"],
       "options": {
         "command": "mkdir -p ~/.claude/skills && rm -rf ~/.claude/skills/decode-url && cp -r libs/skills/dist/decode-url ~/.claude/skills/"
+      }
+    },
+    "claude:encode-url-jev": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "mkdir -p ~/.claude/skills && rm -rf ~/.claude/skills/encode-url-jev && cp -r libs/skills/dist/encode-url-jev ~/.claude/skills/"
+      }
+    },
+    "try-jev": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "node libs/skills/scripts/try-encode-url-jev.mjs"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "node --test libs/skills/scripts/encode-url-jev.test.mjs"
       }
     },
     "typecheck": {}

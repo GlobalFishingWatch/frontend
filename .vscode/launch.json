@@ -10,6 +10,34 @@
       "console": "integratedTerminal",
       "outFiles": ["${workspaceFolder}/**/*.js", "!**/node_modules/**"],
       "cwd": "${workspaceFolder}/apps/platform"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "try-encode-url-jev",
+      "program": "${workspaceFolder}/libs/skills/scripts/try-encode-url-jev.mjs",
+      "preLaunchTask": "skills: build",
+      "args": ["${input:jevMessage}", "--url", "${input:jevUrl}"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/libs/skills/dist/**/*.js"],
+      "resolveSourceMapLocations": ["${workspaceFolder}/libs/skills/**", "!**/node_modules/**"]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "jevMessage",
+      "type": "promptString",
+      "description": "Message to plan",
+      "default": "Fishing of Peru, Argentina, Brazil and Chile"
+    },
+    {
+      "id": "jevUrl",
+      "type": "promptString",
+      "description": "Current map URL. Leave empty for a new request.",
+      "default": ""
     }
   ]
 }

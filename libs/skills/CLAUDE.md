@@ -6,3 +6,4 @@ workspace root — see the root `CLAUDE.md`.
 
 @.claude/memory/skills-lib.md
 @.claude/memory/encode-url-skill-maintenance.md
+@.claude/memory/encode-url-jev-skill.md

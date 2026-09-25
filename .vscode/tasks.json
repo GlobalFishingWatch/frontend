@@ -1,0 +1,12 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "skills: build",
+      "type": "shell",
+      "command": "pnpm nx build skills",
+      "group": "build",
+      "problemMatcher": []
+    }
+  ]
+}
