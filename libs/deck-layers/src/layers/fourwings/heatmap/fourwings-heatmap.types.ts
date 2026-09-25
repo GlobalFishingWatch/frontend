@@ -16,6 +16,7 @@ import type {
   FourwingsDeckSublayer,
   FourwingsDeckVectorSublayer,
   FourwingsPickingObject,
+  FourwingsRampFit,
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
   FourwingsVisualizationMode,
@@ -121,6 +122,8 @@ export type FourwingsTileLayerState = {
   tilesCache: FourwingsHeatmapTilesCache
   colorDomain: FourwingsTileLayerColorDomain
   colorDomainMax?: number
+  colorDomainExtent?: [number, number]
+  colorDomainFits?: (FourwingsRampFit | undefined)[]
   colorRanges: FourwingsTileLayerColorRange
   comparisonMode?: FourwingsComparisonMode
   scales?: FourwinsTileLayerScale[]

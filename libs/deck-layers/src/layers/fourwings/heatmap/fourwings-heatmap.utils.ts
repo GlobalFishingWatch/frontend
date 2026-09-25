@@ -10,6 +10,7 @@ import type {
 } from '@globalfishingwatch/deck-loaders'
 import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
+import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '#config/colorRamps.config'
 import {
   FOOTPRINT_HIGH_RES_ID,
   HEATMAP_API_TILES_URL,
@@ -20,8 +21,10 @@ import {
 } from '#layers/fourwings/fourwings.config'
 import { getSteps, removeOutliers } from '#layers/fourwings/fourwings.stats'
 import type {
+  FourwingsColorDomainWithMax,
   FourwingsDeckSublayer,
   FourwingsDeckVectorSublayer,
+  FourwingsRampFit,
   FourwingsVisualizationMode,
 } from '#layers/fourwings/fourwings.types'
 import type { GetChunkByIntervalParams } from '#layers/fourwings/fourwings.utils'
@@ -402,19 +405,79 @@ export function getSublayersVisibleValuesHash(
   return (sublayers || []).map((s) => `${s.minVisibleValue}-${s.maxVisibleValue}`).join(',')
 }
 
+const getRangeSteps = (
+  min: number | undefined,
+  max: number | undefined,
+  extent: [number, number]
+): number[] => {
+  const low = min ?? extent[0]
+  let high = max ?? extent[1]
+  if (high <= low) {
+    high = low + (extent[1] - extent[0] || Math.abs(low) || 1)
+  }
+  return Array.from(
+    { length: COLOR_RAMP_DEFAULT_NUM_STEPS },
+    (_, i) => low + ((high - low) * i) / (COLOR_RAMP_DEFAULT_NUM_STEPS - 1)
+  )
+}
+
+const getValuesExtent = (values: number[]): [number, number] | undefined => {
+  if (!values.length) {
+    return undefined
+  }
+  let min = values[0] as number
+  let max = min
+  for (const value of values) {
+    if (value < min) min = value
+    if (value > max) max = value
+  }
+  return [min, max]
+}
+
 export function getRampFitRange(sublayers?: FourwingsDeckSublayer[]) {
   const visibleSublayers = (sublayers || []).filter((sublayer) => sublayer.visible)
   const sublayer = visibleSublayers.length === 1 ? visibleSublayers[0] : undefined
-  if (!sublayer?.colorRampFitToRange) {
+  if (!sublayer) {
     return {}
   }
   const { minVisibleValue, maxVisibleValue } = sublayer
   return { minVisibleValue, maxVisibleValue }
 }
 
+export function getSublayersRampFits(
+  params: Omit<
+    Parameters<typeof getFourwingsColorDomain>[0],
+    'minVisibleValue' | 'maxVisibleValue' | 'sublayerIndex'
+  > & { sublayers?: FourwingsDeckSublayer[] }
+): (FourwingsRampFit | undefined)[] | undefined {
+  const { sublayers, ...domainParams } = params
+  const fits = (sublayers || []).map((sublayer, sublayerIndex) => {
+    const { visible, minVisibleValue, maxVisibleValue } = sublayer
+    if (!visible || (minVisibleValue === undefined && maxVisibleValue === undefined)) {
+      return undefined
+    }
+    const { domain, extent } = getFourwingsColorDomain({
+      ...domainParams,
+      minVisibleValue,
+      maxVisibleValue,
+      sublayerIndex,
+    })
+    if (domain.length) {
+      return { domain, extent }
+    }
+    return extent
+      ? { domain: getRangeSteps(minVisibleValue, maxVisibleValue, extent), extent }
+      : undefined
+  })
+  return fits.some(Boolean) ? fits : undefined
+}
+
+export const getRampFitsHash = (fits?: (FourwingsRampFit | undefined)[]) =>
+  (fits || []).map((fit) => `${fit?.domain}-${fit?.extent}`).join(',')
+
 export function getSublayersRampFitHash(sublayers?: FourwingsDeckSublayer[]) {
   return (sublayers || [])
-    .map((s) => `${s.visible}-${s.colorRampFitToRange}-${s.minVisibleValue}-${s.maxVisibleValue}`)
+    .map((s) => `${s.visible}-${s.minVisibleValue}-${s.maxVisibleValue}`)
     .join(',')
 }
 
@@ -435,6 +498,7 @@ export function getFourwingsColorDomain({
   skipColorDomainSampling,
   minVisibleValue,
   maxVisibleValue,
+  sublayerIndex,
 }: {
   features: FourwingsFeature[]
   aggregationOperation?: FourwingsAggregationOperation
@@ -444,7 +508,8 @@ export function getFourwingsColorDomain({
   skipColorDomainSampling?: boolean
   minVisibleValue?: number
   maxVisibleValue?: number
-}): { domain: number[]; max?: number } {
+  sublayerIndex?: number
+}): FourwingsColorDomainWithMax & { domain: number[] } {
   if (!features?.length) {
     return { domain: [] }
   }
@@ -458,8 +523,8 @@ export function getFourwingsColorDomain({
   // sparse sublayers out of alignment with startOffsets, so values are
   // passed through directly
   let allValues = dataSample
-    .flatMap(
-      (feature) =>
+    .flatMap((feature) => {
+      const cellValues =
         feature.properties.initialValues[timeRangeKey] ||
         aggregateCell({
           cellValues: feature.properties.values,
@@ -468,8 +533,10 @@ export function getFourwingsColorDomain({
           endFrame,
           cellStartOffsets: feature.properties.startOffsets,
         })
-    )
+      return sublayerIndex === undefined ? cellValues : [cellValues[sublayerIndex]]
+    })
     .filter((value): value is number => value !== undefined)
+  const extent = getValuesExtent(allValues)
   const fitsToRange = minVisibleValue !== undefined || maxVisibleValue !== undefined
   if (fitsToRange) {
     allValues = allValues.filter((value) =>
@@ -477,10 +544,11 @@ export function getFourwingsColorDomain({
     )
   }
   if (!allValues.length) {
-    return { domain: [] }
+    return { domain: [], extent }
   }
 
   return {
+    extent,
     domain: getSteps(removeOutliers({ allValues, aggregationOperation })),
     // Bounds are only passed when the ramp is fitted to them (see getRampFitRange), and then the
     // steps already span the selection: labelling the end with the max of that same selection

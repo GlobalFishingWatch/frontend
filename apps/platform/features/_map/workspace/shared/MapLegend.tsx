@@ -21,7 +21,7 @@ import styles from './MapLegend.module.css'
 
 type LegendScale = {
   domain: number[]
-  max?: number
+  extent?: [number, number]
   ranges: DeckLegendAtom['ranges']
   sublayerIndex: number
   type: DeckLegendAtom['type']
@@ -80,12 +80,7 @@ const MapLegendWrapper = ({
     ([minVisibleValue, maxVisibleValue]: ColorRampBrushRange) => {
       upsertDataviewInstance({
         id: dataview.id,
-        config: {
-          minVisibleValue,
-          maxVisibleValue,
-          ...(minVisibleValue === undefined &&
-            maxVisibleValue === undefined && { colorRampFitToRange: undefined }),
-        },
+        config: { minVisibleValue, maxVisibleValue },
       })
       trackEvent({
         category: TrackCategory.ActivityData,
@@ -96,44 +91,26 @@ const MapLegendWrapper = ({
     [dataview.category, dataview.id, dataview.name, upsertDataviewInstance]
   )
 
-  const onFitChange = useCallback(
-    (colorRampFitToRange: boolean) => {
-      upsertDataviewInstance({ id: dataview.id, config: { colorRampFitToRange } })
-      trackEvent({
-        category: TrackCategory.ActivityData,
-        action: `Fit ${dataview.category} layer ramp to value range`,
-        label: getEventLabel([dataview.name as string, `${colorRampFitToRange}`]),
-      })
-    },
-    [dataview.category, dataview.id, dataview.name, upsertDataviewInstance]
-  )
-
   const isSymbols = deckLegend?.type === LegendType.Symbols
   const legendSublayerIndex = deckLegend?.sublayers?.findIndex(
     (sublayer) => sublayer.id === dataview.id
   )
 
+  const fit = deckLegend?.fits?.[legendSublayerIndex]
   const hasScale =
     legendSublayerIndex >= 0 && !!deckLegend?.ranges?.length && !!deckLegend?.domain?.length
   const currentScale = useMemo(
     () =>
       hasScale
         ? {
-            domain: deckLegend.domain as number[],
-            max: deckLegend.max,
+            domain: fit?.domain ?? (deckLegend.domain as number[]),
+            extent: fit?.extent,
             ranges: deckLegend.ranges,
             sublayerIndex: legendSublayerIndex,
             type: deckLegend.type,
           }
         : undefined,
-    [
-      hasScale,
-      deckLegend.domain,
-      deckLegend.max,
-      deckLegend.ranges,
-      deckLegend.type,
-      legendSublayerIndex,
-    ]
+    [hasScale, fit, deckLegend.domain, deckLegend.ranges, deckLegend.type, legendSublayerIndex]
   )
   useEffect(() => {
     if (currentScale) {
@@ -155,16 +132,13 @@ const MapLegendWrapper = ({
     return showPlaceholder && !layerLoaded ? <MapLegendPlaceholder /> : null
   }
 
-  const { domain, max, ranges, sublayerIndex } = scale
+  const { domain, extent, ranges, sublayerIndex } = scale
   const colors =
     isBivariate || isSymbols ? (ranges as string[]) : (ranges[sublayerIndex] as string[])
-  const showMax = max !== undefined && !isBivariate && !isSymbols && max > (domain.at(-1) as number)
-  const values = showMax ? [...domain.slice(0, -1), max] : domain
   const uiLegend: UILegend = {
     id: deckLegend.id,
     type: deckLegend?.type,
-    values,
-    lastValueIsMax: showMax,
+    values: domain,
     colors,
     gradient: !isBivariate && !isSymbols,
     currentValue: isBivariate
@@ -175,14 +149,8 @@ const MapLegendWrapper = ({
   }
 
   const showBrush = !isBivariate && !isSymbols
-  const { minVisibleValue, maxVisibleValue, colorRampFitToRange } = dataview.config || {}
+  const { minVisibleValue, maxVisibleValue } = dataview.config || {}
   const hasRange = minVisibleValue !== undefined || maxVisibleValue !== undefined
-  // Merged layers (activity, detections) share one ramp domain across their sublayers, so fitting
-  // it to one layer's range would rescale the others. Mirrors getRampFitRange in deck-layers
-  const canFit =
-    (deckLegend.sublayers || []).filter((sublayer) => 'visible' in sublayer && sublayer.visible)
-      .length === 1
-
   return (
     <MapLegend
       layer={uiLegend}
@@ -195,13 +163,7 @@ const MapLegendWrapper = ({
           onChange: onBrushChange,
           className: hasRange ? undefined : brushClassName,
           handleTooltip: t((t) => t.map.legendBrushHelp),
-          ...(canFit && {
-            fit: {
-              active: colorRampFitToRange === true,
-              label: t((t) => t.map.legendBrushFit),
-              onChange: onFitChange,
-            },
-          }),
+          extent,
         },
       })}
       labelComponent={

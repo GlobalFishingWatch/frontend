@@ -138,9 +138,9 @@ describe('FourwingsHeatmapStaticLayer', () => {
 
   it('cacheHash tracks ramp dirtiness', () => {
     const layer = makeLayer()
-    expect(layer.cacheHash).toBe('teal|false|true-undefined-undefined-undefined')
+    expect(layer.cacheHash).toBe('teal|false|true-undefined-undefined')
     layer.state.rampDirty = true
-    expect(layer.cacheHash).toBe('teal|true|true-undefined-undefined-undefined')
+    expect(layer.cacheHash).toBe('teal|true|true-undefined-undefined')
   })
 
   // The report timeseries retriggers off cacheHash, and it honours min/maxVisibleValue even
