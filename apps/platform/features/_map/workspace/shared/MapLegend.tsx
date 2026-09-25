@@ -77,11 +77,15 @@ const MapLegendWrapper = ({
   const isBivariate = deckLegend?.type === LegendType.Bivariate
 
   const onBrushChange = useCallback(
-    ([minVisibleValue, maxVisibleValue]: ColorRampBrushRange) => {
+    ([minVisibleValue, maxVisibleValue]: ColorRampBrushRange, live?: boolean) => {
       upsertDataviewInstance({
         id: dataview.id,
         config: { minVisibleValue, maxVisibleValue },
       })
+      // a zoom out drag commits every few ms to re-fit the ramp, only its release is tracked
+      if (live) {
+        return
+      }
       trackEvent({
         category: TrackCategory.ActivityData,
         action: `Filter ${dataview.category} layer by value`,

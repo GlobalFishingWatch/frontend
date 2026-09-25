@@ -13,7 +13,7 @@ export type ColorRampBrushRange = [number | undefined, number | undefined]
 
 export type ColorRampBrushConfig = {
   range: ColorRampBrushRange
-  onChange: (range: ColorRampBrushRange) => void
+  onChange: (range: ColorRampBrushRange, live?: boolean) => void
   className?: string
   handleTooltip?: string
   extent?: [number, number]
@@ -181,7 +181,7 @@ export function ColorRampBrush({
           heldCommit = held
           const next: ColorRampBrushRange = [...range]
           next[bound] = held
-          onChange(next)
+          onChange(next, true)
         }
         raf = requestAnimationFrame(onFrame)
         return
@@ -189,16 +189,18 @@ export function ColorRampBrush({
       const target = extent[bound]
       const step = Math.min(OUTER_SPEED * (now - last) * outer.depth, 1)
       last = now
-      const moved = outer.value + (target - outer.value) * step
+      // A bound already past the extent stays put: heading for the extent would pull it inwards
+      const beyond = bound === 0 ? outer.value <= target : outer.value >= target
+      const moved = beyond ? outer.value : outer.value + (target - outer.value) * step
       const snap = Math.max(Math.abs(target) * OUTER_SNAP, Math.abs(extent[1] - extent[0]) * 1e-4)
-      const value = Math.abs(target - moved) <= snap ? target : moved
+      const value = !beyond && Math.abs(target - moved) <= snap ? target : moved
       if (now - lastCommit > OUTER_COMMIT_MS && roundValue(value) !== range[bound]) {
         lastCommit = now
         const next: ColorRampBrushRange = [...range]
         // The extent itself is only turned into "no bound" on release, clearing it mid drag would
         // take the brush out of inset mode under the pointer
         next[bound] = roundValue(value)
-        onChange(next)
+        onChange(next, true)
       }
       // Only the value is the loop's to write: a pointer move not rendered yet (the pause, the
       // depth) has to survive, which a copy of the ref's snapshot would overwrite
