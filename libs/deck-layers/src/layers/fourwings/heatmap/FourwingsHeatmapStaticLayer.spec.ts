@@ -136,6 +136,29 @@ describe('FourwingsHeatmapStaticLayer', () => {
     })
   })
 
+  describe('getColorScale fits', () => {
+    const data = Array.from({ length: 30 }, (_, i) => staticFeature([i + 1]))
+    const updateWithData = (layer: ReturnType<typeof makeLayer>) => {
+      vi.spyOn(layer, 'getData').mockReturnValue(data)
+      vi.spyOn(layer, 'setState').mockImplementation((s) => Object.assign(layer.state, s))
+      layer._updateColorDomain()
+    }
+
+    it('reports no fit when the single visible sublayer has no bounds', () => {
+      const layer = makeLayer()
+      updateWithData(layer)
+      expect(layer.getColorScale().colorDomainFits).toBeUndefined()
+    })
+
+    it('returns the same fits reference until the domain updates', () => {
+      const layer = makeLayer({ sublayers: [{ ...baseProps.sublayers[0], maxVisibleValue: 20 }] })
+      updateWithData(layer)
+      const fits = layer.getColorScale().colorDomainFits
+      expect(fits?.[0]?.extent).toEqual([1, 30])
+      expect(layer.getColorScale().colorDomainFits).toBe(fits)
+    })
+  })
+
   it('cacheHash tracks ramp dirtiness', () => {
     const layer = makeLayer()
     expect(layer.cacheHash).toBe('teal|false|true-undefined-undefined')

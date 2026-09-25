@@ -125,9 +125,9 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   _calculateColorDomain = () => {
-    // The visible-value bounds only narrow the ramp when the sublayer opted into it, otherwise
+    // The visible-value bounds only narrow the ramp when a single sublayer is visible, otherwise
     // brushing the legend filters cells out of the map (FourwingsHeatmapLayer) and leaves the
-    // ramp alone
+    // shared ramp alone
     const { domain, extent } = getFourwingsColorDomain({
       features: this.getData(),
       aggregationOperation: this.props.aggregationOperation,
@@ -146,9 +146,12 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     const colorDomain = domain as number[]
     const colorRanges = this._getColorRanges()
     if (colorDomain?.length && colorRanges[0]?.length) {
+      const isFitted = Object.keys(getRampFitRange(this.props.sublayers)).length > 0
       this.setState({
         colorDomain,
         colorDomainExtent: extent,
+        // stored so getColorScale hands the legend a stable reference between domain updates
+        colorDomainFits: isFitted ? [{ domain: colorDomain, extent }] : undefined,
         colorRanges,
         scales: [scaleLinear(colorDomain, colorRanges[0])],
         rampDirty: false,
@@ -327,9 +330,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     return {
       colorRange: this.getColorRange(),
       colorDomain: this.getColorDomain(),
-      colorDomainFits: Object.keys(getRampFitRange(this.props.sublayers)).length
-        ? [{ domain: this.getColorDomain() as number[], extent: this.state?.colorDomainExtent }]
-        : undefined,
+      colorDomainFits: this.state?.colorDomainFits,
     }
   }
 }

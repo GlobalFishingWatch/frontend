@@ -437,7 +437,10 @@ const getValuesExtent = (values: number[]): [number, number] | undefined => {
 export function getRampFitRange(sublayers?: FourwingsDeckSublayer[]) {
   const visibleSublayers = (sublayers || []).filter((sublayer) => sublayer.visible)
   const sublayer = visibleSublayers.length === 1 ? visibleSublayers[0] : undefined
-  if (!sublayer) {
+  if (
+    !sublayer ||
+    (sublayer.minVisibleValue === undefined && sublayer.maxVisibleValue === undefined)
+  ) {
     return {}
   }
   const { minVisibleValue, maxVisibleValue } = sublayer
