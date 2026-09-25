@@ -25,15 +25,25 @@ export type GetViewportDataParams = {
 export type FourwingsColorObject = { r: number; g: number; b: number; a: number }
 export type FourwingsTileLayerColorDomain = number[] | number[][]
 export type FourwingsTileLayerColorRange = FourwingsColorObject[][] | FourwingsColorObject[]
+
+export type FourwingsRampFit = {
+  domain: number[]
+  extent?: [number, number]
+}
+
 export type FourwingsTileLayerColorScale = {
   colorDomain: FourwingsTileLayerColorDomain
   colorRange: FourwingsTileLayerColorRange
-  colorDomainMax?: number
+  colorDomainFits?: (FourwingsRampFit | undefined)[]
+  /** Min and max of all cells, per sublayer, before any visible-value filter */
+  colorDomainExtents?: ([number, number] | undefined)[]
 }
 
-export type FourwingsColorDomainWithMax = {
+export type FourwingsColorDomainWithExtent = {
   domain: FourwingsTileLayerColorDomain
-  max?: number
+  extent?: [number, number]
+  extents?: ([number, number] | undefined)[]
+  fits?: (FourwingsRampFit | undefined)[]
 }
 
 export type FourwingsDeckSublayer = {
@@ -47,8 +57,6 @@ export type FourwingsDeckSublayer = {
   filter?: string
   minVisibleValue?: number
   maxVisibleValue?: number
-  /** Refit the color ramp steps inside the visible values range, see getRampFitRange */
-  colorRampFitToRange?: boolean
   // Used only blue-planet workspace to be able to show only one detection by id
   filterIds?: string[]
   positionProperties?: string[]

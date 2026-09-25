@@ -10,6 +10,7 @@ import type {
 } from '@globalfishingwatch/deck-loaders'
 import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
+import { COLOR_RAMP_DEFAULT_NUM_STEPS } from '#config/colorRamps.config'
 import {
   FOOTPRINT_HIGH_RES_ID,
   HEATMAP_API_TILES_URL,
@@ -20,8 +21,10 @@ import {
 } from '#layers/fourwings/fourwings.config'
 import { getSteps, removeOutliers } from '#layers/fourwings/fourwings.stats'
 import type {
+  FourwingsColorDomainWithExtent,
   FourwingsDeckSublayer,
   FourwingsDeckVectorSublayer,
+  FourwingsRampFit,
   FourwingsVisualizationMode,
 } from '#layers/fourwings/fourwings.types'
 import type { GetChunkByIntervalParams } from '#layers/fourwings/fourwings.utils'
@@ -402,19 +405,41 @@ export function getSublayersVisibleValuesHash(
   return (sublayers || []).map((s) => `${s.minVisibleValue}-${s.maxVisibleValue}`).join(',')
 }
 
+const getRangeSteps = (
+  min: number | undefined,
+  max: number | undefined,
+  extent: [number, number]
+): number[] => {
+  const low = min ?? extent[0]
+  let high = max ?? extent[1]
+  if (high <= low) {
+    high = low + (extent[1] - extent[0] || Math.abs(low) || 1)
+  }
+  return Array.from(
+    { length: COLOR_RAMP_DEFAULT_NUM_STEPS },
+    (_, i) => low + ((high - low) * i) / (COLOR_RAMP_DEFAULT_NUM_STEPS - 1)
+  )
+}
+
 export function getRampFitRange(sublayers?: FourwingsDeckSublayer[]) {
   const visibleSublayers = (sublayers || []).filter((sublayer) => sublayer.visible)
   const sublayer = visibleSublayers.length === 1 ? visibleSublayers[0] : undefined
-  if (!sublayer?.colorRampFitToRange) {
+  if (
+    !sublayer ||
+    (sublayer.minVisibleValue === undefined && sublayer.maxVisibleValue === undefined)
+  ) {
     return {}
   }
   const { minVisibleValue, maxVisibleValue } = sublayer
   return { minVisibleValue, maxVisibleValue }
 }
 
+export const getRampFitsHash = (fits?: (FourwingsRampFit | undefined)[]) =>
+  (fits || []).map((fit) => `${fit?.domain}-${fit?.extent}`).join(',')
+
 export function getSublayersRampFitHash(sublayers?: FourwingsDeckSublayer[]) {
   return (sublayers || [])
-    .map((s) => `${s.visible}-${s.colorRampFitToRange}-${s.minVisibleValue}-${s.maxVisibleValue}`)
+    .map((s) => `${s.visible}-${s.minVisibleValue}-${s.maxVisibleValue}`)
     .join(',')
 }
 
@@ -425,7 +450,23 @@ export function filterCells(value: any, index: number, minValue?: number, maxVal
   )
 }
 
-export function getFourwingsColorDomain({
+type VisibleRange = { minVisibleValue?: number; maxVisibleValue?: number }
+type SublayerExtent = [number, number] | undefined
+
+type ColorDomainParams = {
+  features: FourwingsFeature[]
+  aggregationOperation?: FourwingsAggregationOperation
+  startFrame: number
+  endFrame: number
+  timeRangeKey: string
+  skipColorDomainSampling?: boolean
+}
+
+// One pass feeds the shared domain and every fit. Only the sample pays for an aggregation, which
+// keeps it capped; the extent also reads every cell whose value is already cached (the parser's
+// initialValues, or the render's aggregatedValues for this same time range), so it catches the
+// max outliers a 5% sample misses without aggregating the rest
+function getSublayersValues({
   features,
   aggregationOperation,
   startFrame,
@@ -433,61 +474,101 @@ export function getFourwingsColorDomain({
   timeRangeKey,
   // note this forces the 5% sample instead of skipping it, matching the previous behaviour
   skipColorDomainSampling,
+}: ColorDomainParams) {
+  const samples: number[][] = []
+  const extents: SublayerExtent[] = []
+  const isSampled = features.length > MAX_RAMP_VALUES || skipColorDomainSampling
+  features.forEach((feature, i) => {
+    const inSample = !isSampled || filterCells(feature, i)
+    // Values are passed through directly: filtering out empty entries would compact sparse
+    // sublayers out of alignment with startOffsets
+    const cellValues =
+      feature.properties.initialValues[timeRangeKey] ||
+      (feature.aggregatedValuesKey === timeRangeKey ? feature.aggregatedValues : undefined) ||
+      (inSample
+        ? aggregateCell({
+            cellValues: feature.properties.values,
+            aggregationOperation,
+            startFrame,
+            endFrame,
+            cellStartOffsets: feature.properties.startOffsets,
+          })
+        : undefined)
+    cellValues?.forEach((value, sublayerIndex) => {
+      if (value === undefined) return
+      const extent = extents[sublayerIndex]
+      if (!extent) {
+        extents[sublayerIndex] = [value, value]
+      } else if (value < extent[0]) {
+        extent[0] = value
+      } else if (value > extent[1]) {
+        extent[1] = value
+      }
+      if (inSample) {
+        ;(samples[sublayerIndex] ||= []).push(value)
+      }
+    })
+  })
+  return { samples, extents }
+}
+
+const mergeExtents = (extents: SublayerExtent[]): SublayerExtent =>
+  extents.reduce<SublayerExtent>(
+    (acc, extent) =>
+      !extent ? acc : !acc ? [...extent] : [Math.min(acc[0], extent[0]), Math.max(acc[1], extent[1])],
+    undefined
+  )
+
+const getStepsInRange = (
+  values: number[],
+  aggregationOperation: FourwingsAggregationOperation | undefined,
+  { minVisibleValue, maxVisibleValue }: VisibleRange
+) => {
+  const visible =
+    minVisibleValue === undefined && maxVisibleValue === undefined
+      ? values
+      : values.filter((value) => isSublayerValueVisible(value, { minVisibleValue, maxVisibleValue }))
+  return visible.length ? getSteps(removeOutliers({ allValues: visible, aggregationOperation })) : []
+}
+
+/**
+ * The shared domain, narrowed to minVisibleValue / maxVisibleValue when passed, plus a fitted ramp
+ * for every visible sublayer with its own bounds when `sublayers` is passed
+ */
+export function getFourwingsColorDomain({
   minVisibleValue,
   maxVisibleValue,
-}: {
-  features: FourwingsFeature[]
-  aggregationOperation?: FourwingsAggregationOperation
-  startFrame: number
-  endFrame: number
-  timeRangeKey: string
-  skipColorDomainSampling?: boolean
-  minVisibleValue?: number
-  maxVisibleValue?: number
-}): { domain: number[]; max?: number } {
-  if (!features?.length) {
+  sublayers,
+  ...params
+}: ColorDomainParams &
+  VisibleRange & { sublayers?: FourwingsDeckSublayer[] }): FourwingsColorDomainWithExtent & {
+  domain: number[]
+} {
+  if (!params.features?.length) {
     return { domain: [] }
   }
-  const dataSample =
-    features.length > MAX_RAMP_VALUES || skipColorDomainSampling
-      ? features.filter((d, i) => filterCells(d, i))
-      : features
-
-  // The previous filter on values was a no-op (the predicate returned an
-  // array, always truthy) that allocated two copies per cell and compacted
-  // sparse sublayers out of alignment with startOffsets, so values are
-  // passed through directly
-  let allValues = dataSample
-    .flatMap(
-      (feature) =>
-        feature.properties.initialValues[timeRangeKey] ||
-        aggregateCell({
-          cellValues: feature.properties.values,
-          aggregationOperation,
-          startFrame,
-          endFrame,
-          cellStartOffsets: feature.properties.startOffsets,
-        })
-    )
-    .filter((value): value is number => value !== undefined)
-  const fitsToRange = minVisibleValue !== undefined || maxVisibleValue !== undefined
-  if (fitsToRange) {
-    allValues = allValues.filter((value) =>
-      isSublayerValueVisible(value, { minVisibleValue, maxVisibleValue })
-    )
-  }
-  if (!allValues.length) {
-    return { domain: [] }
-  }
-
+  const { samples, extents } = getSublayersValues(params)
+  const domain = getStepsInRange(samples.flat(), params.aggregationOperation, {
+    minVisibleValue,
+    maxVisibleValue,
+  })
+  const fits = sublayers?.map((sublayer, sublayerIndex): FourwingsRampFit | undefined => {
+    const extent = extents[sublayerIndex]
+    const { visible, minVisibleValue: min, maxVisibleValue: max } = sublayer
+    if (!visible || (min === undefined && max === undefined) || !extent) {
+      return undefined
+    }
+    const fitDomain = getStepsInRange(samples[sublayerIndex] || [], params.aggregationOperation, {
+      minVisibleValue: min,
+      maxVisibleValue: max,
+    })
+    return { domain: fitDomain.length ? fitDomain : getRangeSteps(min, max, extent), extent }
+  })
   return {
-    domain: getSteps(removeOutliers({ allValues, aggregationOperation })),
-    // Bounds are only passed when the ramp is fitted to them (see getRampFitRange), and then the
-    // steps already span the selection: labelling the end with the max of that same selection
-    // would spend a step restating the bound the user set
-    ...(!fitsToRange && {
-      max: allValues.reduce((acc, value) => (value > acc ? value : acc), allValues[0] as number),
-    }),
+    domain,
+    extent: mergeExtents(extents),
+    extents,
+    fits: fits?.some(Boolean) ? fits : undefined,
   }
 }
 

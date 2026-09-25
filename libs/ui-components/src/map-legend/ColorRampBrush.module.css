@@ -12,6 +12,41 @@
   cursor: ew-resize;
 }
 
+.root:not(.rootMoving),
+.root:not(.rootMoving) :is(.handleAnchor, .gradient, .scrim) {
+  transition-property: left, right, width;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root:not(.rootMoving),
+  .root:not(.rootMoving) :is(.handleAnchor, .gradient, .scrim) {
+    transition: none;
+  }
+}
+
+.rootInsetStart {
+  left: calc(-1 * var(--brush-inset));
+}
+
+.rootInsetEnd {
+  right: calc(-1 * var(--brush-inset));
+}
+
+.backdrop,
+.gradient {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.backdrop {
+  inset: 0;
+  background-color: var(--color-map-background);
+}
+
 .scrim {
   position: absolute;
   top: 0;
@@ -135,7 +170,8 @@
   display: flex;
   align-items: center;
   gap: var(--space-XS);
-  padding: var(--space-XS) var(--space-S);
+  padding: var(--space-XS);
+  padding-left: var(--space-S);
 }
 
 .popover input {

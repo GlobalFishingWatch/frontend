@@ -35,17 +35,10 @@ function HistogramRangeFilter({ dataview, onSelect }: HistogramRangeFilterProps)
 
   const onSliderChange = useCallback(
     (rangeSelected: SliderRangeValues) => {
-      if (rangeSelected[0] === layerRange?.min && rangeSelected[1] === layerRange?.max) {
-        onSelect({
-          minVisibleValue: undefined,
-          maxVisibleValue: undefined,
-        })
-      } else {
-        onSelect({
-          minVisibleValue: rangeSelected[0],
-          maxVisibleValue: rangeSelected[1],
-        })
-      }
+      onSelect({
+        minVisibleValue: rangeSelected[0] === layerRange?.min ? undefined : rangeSelected[0],
+        maxVisibleValue: rangeSelected[1] === layerRange?.max ? undefined : rangeSelected[1],
+      })
       trackEvent({
         category: isEnvironmental ? TrackCategory.EnvironmentalData : TrackCategory.ActivityData,
         action: `Filter ${dataview.category} layer by value`,
