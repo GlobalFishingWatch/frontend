@@ -2,10 +2,13 @@ import { sentryTanstackStart } from '@sentry/tanstackstart-react/vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import react from '@vitejs/plugin-react'
 import { nitro } from 'nitro/vite'
+import { resolve } from 'node:path'
 import { visualizer } from 'rollup-plugin-visualizer'
 import type { Plugin } from 'vite'
 import { defineConfig, loadEnv } from 'vite'
 import svgr from 'vite-plugin-svgr'
+
+const RESELECT_SIGNALS_SHIM = 'store/reselect-signals-shim.ts'
 
 export const basePath =
   import.meta.env?.VITE_PUBLIC_URL || process.env.VITE_PUBLIC_URL || '/platform'
@@ -63,6 +66,11 @@ export default defineConfig(({ command, mode }) => {
       tsconfigPaths: true,
       dedupe: ['jotai'],
     },
+    // Dep pre-bundling skips resolve plugins, so RTK would keep the real reselect in dev.
+    optimizeDeps:
+      process.env.REACT_REDUX_SIGNALS !== 'false'
+        ? { exclude: ['@reduxjs/toolkit', 'reselect'] }
+        : undefined,
     server: {
       // Dev resolves libs through their `development` export condition (src), so the d.ts/js
       // that `types-watch` keeps re-emitting into libs/*/dist is irrelevant here
@@ -75,6 +83,24 @@ export default defineConfig(({ command, mode }) => {
     },
     plugins: [
       ...plugins,
+      // react-redux 9.4 alpha: swap Provider/useSelector for the signals implementation.
+      // Not a resolve.alias because that also rewrites deps' imports — recharts bundles its own
+      // react-redux@9.3 (no `./signals` export) for its internal chart store.
+      // `reselect` is swapped for every importer (RTK included), see store/reselect-signals-shim.ts.
+      // REACT_REDUX_SIGNALS=false falls back to the stock hooks (A/B benchmarks, alpha rollback).
+      process.env.REACT_REDUX_SIGNALS !== 'false' &&
+        ({
+          name: 'react-redux-signals',
+          enforce: 'pre',
+          resolveId(id, importer, options) {
+            if (id === 'react-redux' && importer && !importer.includes('/node_modules/')) {
+              return this.resolve('react-redux/signals', importer, { ...options, skipSelf: true })
+            }
+            if (id === 'reselect' && importer && !importer.endsWith(RESELECT_SIGNALS_SHIM)) {
+              return resolve(import.meta.dirname, RESELECT_SIGNALS_SHIM)
+            }
+          },
+        } satisfies Plugin),
       command === 'serve' &&
         ({
           name: 'deck-layers-full-reload',

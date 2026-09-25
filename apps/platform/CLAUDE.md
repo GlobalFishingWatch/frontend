@@ -9,3 +9,4 @@ workspace-wide facts (lib resolution, build target names, dependency layout, Typ
 @.claude/memory/popup-component-naming.md
 @.claude/memory/report-area-antimeridian.md
 @.claude/memory/deck-viewstate-url-seed.md
+@.claude/memory/react-redux-signals-alpha.md
