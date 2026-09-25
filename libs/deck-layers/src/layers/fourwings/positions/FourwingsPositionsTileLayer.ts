@@ -781,6 +781,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         (sublayer) => sublayer as FourwingsColorObject[]
       ),
       colorDomainFits: undefined,
+      colorDomainExtents: undefined,
     }
   }
 

@@ -35,11 +35,14 @@ export type FourwingsTileLayerColorScale = {
   colorDomain: FourwingsTileLayerColorDomain
   colorRange: FourwingsTileLayerColorRange
   colorDomainFits?: (FourwingsRampFit | undefined)[]
+  /** Min and max of all cells, per sublayer, before any visible-value filter */
+  colorDomainExtents?: ([number, number] | undefined)[]
 }
 
 export type FourwingsColorDomainWithExtent = {
   domain: FourwingsTileLayerColorDomain
   extent?: [number, number]
+  extents?: ([number, number] | undefined)[]
   fits?: (FourwingsRampFit | undefined)[]
 }
 

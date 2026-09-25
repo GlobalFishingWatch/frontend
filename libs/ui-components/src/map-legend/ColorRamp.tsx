@@ -71,16 +71,32 @@ export function ColorRampLegend({
 
   const valueToPercent = useCallback((value: number) => toPercent(rampScale, value), [rampScale])
 
+  // Outliers are clipped out of the steps, so the last one stops well short of the ramp end. The
+  // brush runs its last stretch up to the max bound, or to the data max, instead of extrapolating
+  // the last bucket: otherwise the values past the last step are out of reach and the resting
+  // inset handle jumps straight from that step to the bound. Without an extent the handle is not
+  // inset, and 100% means "no bound", so the bound cannot sit there
+  const brushTop = brush?.extent ? (brush.range[1] ?? brush.extent[1]) : undefined
   const brushScale = useMemo(() => {
     if (!rampScale) return null
-    const range = rampScale.range() as number[]
-    if (range[0] === 0) return rampScale
+    let domain = rampScale.domain() as number[]
+    let range = rampScale.range() as number[]
+    if (
+      brushTop !== undefined &&
+      brushTop > (domain.at(-1) as number) &&
+      (range.at(-1) as number) < 100
+    ) {
+      domain = [...domain, brushTop]
+      range = [...range, 100]
+    }
     const firstValue = values?.[0] as number
     const floor = omitFirstBucket && Number.isFinite(firstValue) ? firstValue : 0
-    return scaleLinear()
-      .domain([floor, ...(rampScale.domain() as number[])])
-      .range([0, ...range])
-  }, [rampScale, omitFirstBucket, values])
+    return range[0] === 0
+      ? scaleLinear().domain(domain).range(range)
+      : scaleLinear()
+          .domain([floor, ...domain])
+          .range([0, ...range])
+  }, [rampScale, omitFirstBucket, values, brushTop])
 
   const brushValueToPercent = useCallback(
     (value: number) => toPercent(brushScale, value),

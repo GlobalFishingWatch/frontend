@@ -12,7 +12,7 @@ import { stringify } from 'qs'
 
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
-import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
+import { TEMPORAL_AGGREGATED_TIME_RANGE_KEY } from '@globalfishingwatch/deck-loaders'
 
 import type { ColorRampId } from '#config/colorRamps.config'
 import { LayerGroup } from '#config/sort.config'
@@ -128,21 +128,25 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     // The visible-value bounds only narrow the ramp when a single sublayer is visible, otherwise
     // brushing the legend filters cells out of the map (FourwingsHeatmapLayer) and leaves the
     // shared ramp alone
-    const { domain, extent } = getFourwingsColorDomain({
+    const { domain, extent, extents } = getFourwingsColorDomain({
       features: this.getData(),
       aggregationOperation: this.props.aggregationOperation,
       startFrame: STATIC_START_FRAME,
       endFrame: STATIC_END_FRAME,
-      timeRangeKey: getTimeRangeKey(STATIC_START_FRAME, STATIC_END_FRAME),
+      timeRangeKey: TEMPORAL_AGGREGATED_TIME_RANGE_KEY,
       ...getRampFitRange(this.props.sublayers),
     })
     return domain.length
-      ? { domain, extent }
-      : { domain: this.getColorDomain(), extent: this.state?.colorDomainExtent }
+      ? { domain, extent, extents }
+      : {
+          domain: this.getColorDomain(),
+          extent: this.state?.colorDomainExtent,
+          extents: this.state?.colorDomainExtents,
+        }
   }
 
   _updateColorDomain = () => {
-    const { domain, extent } = this._calculateColorDomain()
+    const { domain, extent, extents } = this._calculateColorDomain()
     const colorDomain = domain as number[]
     const colorRanges = this._getColorRanges()
     if (colorDomain?.length && colorRanges[0]?.length) {
@@ -150,6 +154,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       this.setState({
         colorDomain,
         colorDomainExtent: extent,
+        colorDomainExtents: extents,
         // stored so getColorScale hands the legend a stable reference between domain updates
         colorDomainFits: isFitted ? [{ domain: colorDomain, extent }] : undefined,
         colorRanges,
@@ -331,6 +336,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       colorRange: this.getColorRange(),
       colorDomain: this.getColorDomain(),
       colorDomainFits: this.state?.colorDomainFits,
+      colorDomainExtents: this.state?.colorDomainExtents,
     }
   }
 }

@@ -101,6 +101,7 @@ const MapLegendWrapper = ({
   )
 
   const fit = deckLegend?.fits?.[legendSublayerIndex]
+  const legendExtent = fit?.extent ?? deckLegend?.extents?.[legendSublayerIndex]
   const hasScale =
     legendSublayerIndex >= 0 && !!deckLegend?.ranges?.length && !!deckLegend?.domain?.length
   const currentScale = useMemo(
@@ -108,13 +109,21 @@ const MapLegendWrapper = ({
       hasScale
         ? {
             domain: fit?.domain ?? (deckLegend.domain as number[]),
-            extent: fit?.extent,
+            extent: legendExtent,
             ranges: deckLegend.ranges,
             sublayerIndex: legendSublayerIndex,
             type: deckLegend.type,
           }
         : undefined,
-    [hasScale, fit, deckLegend.domain, deckLegend.ranges, deckLegend.type, legendSublayerIndex]
+    [
+      hasScale,
+      fit,
+      legendExtent,
+      deckLegend.domain,
+      deckLegend.ranges,
+      deckLegend.type,
+      legendSublayerIndex,
+    ]
   )
   useEffect(() => {
     if (currentScale) {

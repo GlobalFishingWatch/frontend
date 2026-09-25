@@ -37,6 +37,7 @@ export type DeckLegend = {
   gridArea?: number | string
   domain?: FourwingsTileLayerColorDomain
   fits?: (FourwingsRampFit | undefined)[]
+  extents?: ([number, number] | undefined)[]
   ranges?: FourwingsTileLayerColorRange
   color?: string
   loading?: boolean
