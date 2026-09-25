@@ -226,7 +226,7 @@ describe('FourwingsHeatmapTileLayer', () => {
       const layer = makeLayer()
       layer.state.colorDomain = [1, 2, 3]
       vi.spyOn(layer, 'getData').mockReturnValue([])
-      expect(layer._calculateColorDomain()).toEqual({ domain: [1, 2, 3], max: undefined })
+      expect(layer._calculateColorDomain()).toEqual({ domain: [1, 2, 3] })
     })
 
     it('returns ascending steps in compare mode', () => {
@@ -240,17 +240,6 @@ describe('FourwingsHeatmapTileLayer', () => {
       expect(domain).toEqual(sorted)
     })
 
-    it('returns the data max, which the outlier-clipped steps never reach', () => {
-      const layer = makeLayer()
-      vi.spyOn(layer, 'getData').mockReturnValue(
-        Array.from({ length: 30 }, (_, i) => feature([[i + 1], [i * 2 + 1]]))
-      )
-      const { domain, max } = layer._calculateColorDomain()
-      // highest fixture value is the last sublayer cell, 29 * 2 + 1
-      expect(max).toBe(59)
-      expect(max).toBeGreaterThan((domain as number[])[domain.length - 1] as number)
-    })
-
     it('fits a ramp to each filtered sublayer and leaves the shared domain alone', () => {
       const data = Array.from({ length: 30 }, (_, i) => feature([[i + 1], [i * 2 + 1]]))
       const fitSublayer = {
@@ -262,8 +251,7 @@ describe('FourwingsHeatmapTileLayer', () => {
       // a second visible sublayer no longer prevents the fit, it just keeps the shared domain
       const layer = makeLayer({ sublayers: [fitSublayer, baseProps.sublayers[1]] })
       vi.spyOn(layer, 'getData').mockReturnValue(data)
-      const { domain, max, fits } = layer._calculateColorDomain()
-      expect(max).toBe(59)
+      const { domain, fits } = layer._calculateColorDomain()
       expect(Math.min(...(domain as number[]))).toBeLessThan(10)
 
       const fit = fits?.[0]

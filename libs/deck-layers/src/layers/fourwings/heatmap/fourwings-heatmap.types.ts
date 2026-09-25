@@ -121,7 +121,6 @@ export type FourwingsTileLayerState = {
   error: string
   tilesCache: FourwingsHeatmapTilesCache
   colorDomain: FourwingsTileLayerColorDomain
-  colorDomainMax?: number
   colorDomainExtent?: [number, number]
   colorDomainFits?: (FourwingsRampFit | undefined)[]
   colorRanges: FourwingsTileLayerColorRange

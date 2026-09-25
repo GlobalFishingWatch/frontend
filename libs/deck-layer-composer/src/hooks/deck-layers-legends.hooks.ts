@@ -38,8 +38,7 @@ export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
     const interaction = (deckLayerHoverFeatures?.features as FourwingsPickingObject[])?.find(
       (feature) => feature.layerId === layer.id
     )
-    const { colorDomain, colorRange, colorDomainMax, colorDomainFits } =
-      layer.instance.getColorScale() || {}
+    const { colorDomain, colorRange, colorDomainFits } = layer.instance.getColorScale() || {}
     const visualizationMode = layer.instance.getVisualizationMode()
     const unit = layer.instance.props.sublayers?.[0]?.unit
     let label = layer.instance.props.sublayers?.[0]?.unit || ''
@@ -91,7 +90,6 @@ export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
       gridArea: gridAreaM,
       type,
       domain: colorDomain,
-      max: colorDomainMax,
       fits: colorDomainFits,
       sublayers: layer.instance.props.sublayers,
       ranges,

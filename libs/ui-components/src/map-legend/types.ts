@@ -35,7 +35,6 @@ export type UILegendSymbols = BaseLegend & {
 export type UILegendColorRamp = BaseLegend & {
   type: LegendType
   values?: number[]
-  lastValueIsMax?: boolean
   colors?: string[]
   currentValue?: number | number[]
   gradient?: boolean

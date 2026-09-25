@@ -110,7 +110,7 @@ describe('FourwingsHeatmapStaticLayer', () => {
       const layer = makeLayer()
       layer.state.colorDomain = [1, 2, 3]
       vi.spyOn(layer, 'getData').mockReturnValue([])
-      expect(layer._calculateColorDomain()).toEqual({ domain: [1, 2, 3], max: undefined })
+      expect(layer._calculateColorDomain()).toEqual({ domain: [1, 2, 3] })
     })
   })
 

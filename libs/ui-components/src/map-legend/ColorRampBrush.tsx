@@ -16,7 +16,6 @@ export type ColorRampBrushConfig = {
   onChange: (range: ColorRampBrushRange) => void
   className?: string
   handleTooltip?: string
-  unit?: string
   extent?: [number, number]
 }
 

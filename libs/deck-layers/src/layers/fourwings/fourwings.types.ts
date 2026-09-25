@@ -34,13 +34,11 @@ export type FourwingsRampFit = {
 export type FourwingsTileLayerColorScale = {
   colorDomain: FourwingsTileLayerColorDomain
   colorRange: FourwingsTileLayerColorRange
-  colorDomainMax?: number
   colorDomainFits?: (FourwingsRampFit | undefined)[]
 }
 
-export type FourwingsColorDomainWithMax = {
+export type FourwingsColorDomainWithExtent = {
   domain: FourwingsTileLayerColorDomain
-  max?: number
   extent?: [number, number]
   fits?: (FourwingsRampFit | undefined)[]
 }

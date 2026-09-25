@@ -21,7 +21,7 @@ import {
 } from '#layers/fourwings/fourwings.config'
 import { getSteps, removeOutliers } from '#layers/fourwings/fourwings.stats'
 import type {
-  FourwingsColorDomainWithMax,
+  FourwingsColorDomainWithExtent,
   FourwingsDeckSublayer,
   FourwingsDeckVectorSublayer,
   FourwingsRampFit,
@@ -509,7 +509,7 @@ export function getFourwingsColorDomain({
   minVisibleValue?: number
   maxVisibleValue?: number
   sublayerIndex?: number
-}): FourwingsColorDomainWithMax & { domain: number[] } {
+}): FourwingsColorDomainWithExtent & { domain: number[] } {
   if (!features?.length) {
     return { domain: [] }
   }
@@ -550,12 +550,6 @@ export function getFourwingsColorDomain({
   return {
     extent,
     domain: getSteps(removeOutliers({ allValues, aggregationOperation })),
-    // Bounds are only passed when the ramp is fitted to them (see getRampFitRange), and then the
-    // steps already span the selection: labelling the end with the max of that same selection
-    // would spend a step restating the bound the user set
-    ...(!fitsToRange && {
-      max: allValues.reduce((acc, value) => (value > acc ? value : acc), allValues[0] as number),
-    }),
   }
 }
 

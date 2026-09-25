@@ -780,7 +780,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       colorRange: this.state?.colorScale?.colorRange?.map(
         (sublayer) => sublayer as FourwingsColorObject[]
       ),
-      colorDomainMax: undefined,
       colorDomainFits: undefined,
     }
   }
