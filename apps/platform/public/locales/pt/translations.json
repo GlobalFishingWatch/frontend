@@ -190,7 +190,6 @@
     "applyToAll": "Aplicar a tudo",
     "area_one": "área",
     "area_other": "áreas",
-    "areas": "areas",
     "assistant": "Assistant",
     "assistantLogin": "Register or log in to use the assistant (free, 2 minutes)",
     "assistantPlaceholder": "Ask about fishing activity, vessels, or areas.",
@@ -922,7 +921,6 @@
     "highRes": "Ver mapas de calor em alta resolução",
     "highResDisabled": "High resolution heatmaps are disabled when using a vessel group filter",
     "legend_help": "Área aproximada de células do grid na região do Equador",
-    "legendBrushFit": "Fit color scale to selected values",
     "legendBrushHelp": "Click or drag to adjust the value",
     "loading": "Carregando",
     "lowRes": "Ver mapas de calor em baixa resolução",
@@ -1644,9 +1642,9 @@
   "workspace": {
     "addLayer": "Adicionar ao espaço de trabalho",
     "categories": {
-      "fishing-activity": "Highlighted workspaces",
+      "fishing-activity": "Área de trabalho em destaque",
       "marine-manager": "Marine Manager workspaces",
-      "reports": "Highlighted reports",
+      "reports": "Relatórios em destaque",
       "search": "Vessel search"
     },
     "confirmRemove": "Tem certeza de que deseja excluir permanentemente este espaço de trabalho?",
