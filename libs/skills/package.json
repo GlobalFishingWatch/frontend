@@ -9,7 +9,8 @@
   "exports": {
     ".": "./dist/index.js",
     "./encode-url": "./dist/encode-url/index.js",
-    "./decode-url": "./dist/decode-url/index.js"
+    "./decode-url": "./dist/decode-url/index.js",
+    "./encode-url-jev": "./dist/encode-url-jev/index.js"
   },
   "main": "./dist/index.js",
   "engines": {
@@ -23,7 +24,9 @@
     "@globalfishingwatch/data-transforms": "workspace:^",
     "@globalfishingwatch/datasets-client": "workspace:^",
     "@globalfishingwatch/dataviews-client": "workspace:^",
+    "@globalfishingwatch/i18n-labels": "workspace:^",
     "@platform/config": "workspace:^",
-    "@tanstack/router-core": "1.x"
+    "@tanstack/router-core": "1.x",
+    "@typesafe-ai/sdk": "~0.6.0"
   }
 }
