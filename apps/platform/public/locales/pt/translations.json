@@ -1642,9 +1642,9 @@
   "workspace": {
     "addLayer": "Adicionar ao espaço de trabalho",
     "categories": {
-      "fishing-activity": "Highlighted workspaces",
+      "fishing-activity": "Área de trabalho em destaque",
       "marine-manager": "Marine Manager workspaces",
-      "reports": "Highlighted reports",
+      "reports": "Relatórios em destaque",
       "search": "Vessel search"
     },
     "confirmRemove": "Tem certeza de que deseja excluir permanentemente este espaço de trabalho?",
