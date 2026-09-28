@@ -146,6 +146,75 @@
   outline: none;
 }
 
+.lastXNumContainer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-S);
+}
+
+.lastXNumInput {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 3.6rem;
+  background: var(--color-terthiary-blue);
+  border-bottom: var(--border);
+  border-radius: var(--border-radius-0);
+}
+
+.lastXNumInput .input {
+  width: 4.5rem;
+  height: 100%;
+  padding: 0 0 0 var(--space-S);
+  border: none;
+  background: transparent;
+  color: var(--color-primary-blue);
+  appearance: textfield;
+}
+
+.lastXNumInput .input::-webkit-inner-spin-button,
+.lastXNumInput .input::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.lastXNumInput .input:focus {
+  outline: none;
+}
+
+.lastXNumInput .lastXNumSelect {
+  position: static;
+  height: 100%;
+  border: none !important;
+  background: transparent;
+  box-shadow: none;
+}
+
+.lastXNumInput .lastXNumSelect ul {
+  bottom: 100% !important;
+  left: 0 !important;
+  width: 100% !important;
+}
+
+.lastXNumInput:has([aria-expanded='true']) {
+  border-radius: 0 0 var(--border-radius-0) var(--border-radius-0);
+}
+
+.lastXNumSelect > div:first-child {
+  flex: 0;
+  padding: 0;
+}
+
+.lastXNumDone {
+  display: block;
+  margin-top: 2rem;
+  margin-left: auto;
+}
+
+.lastXNumTooltip {
+  z-index: calc(var(--timebar-z-date-selector, 999) + 1) !important;
+}
+
 @media only screen and (width <= 540px) {
   .TimeRangeSelector {
     width: 100vw;
