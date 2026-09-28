@@ -68,7 +68,7 @@ export function TimebarIntervalSelector() {
   const currentInterval = getCurrentInterval(start, end, intervals)
   const intervalsSorted = [...intervals].reverse()
   return (
-    <ul className={styles.intervalContainer}>
+    <ul className={cx('print-hidden', styles.intervalContainer)}>
       {intervalsSorted.map((interval) => {
         const active = currentInterval === interval
         const intervalLabel =

@@ -41,6 +41,7 @@
 
 :global(.printing) .handler {
   background-color: transparent;
+  box-shadow: none;
 }
 
 :global(.printing) .handler svg {

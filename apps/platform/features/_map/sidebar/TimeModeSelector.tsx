@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
@@ -52,7 +53,7 @@ function TimeModeSelector() {
   }
 
   return (
-    <div className={styles.header}>
+    <div className={cx(styles.header, 'print-hidden')}>
       <Choice size="medium" options={options} activeOption={timeMode} onSelect={onSelect} />
     </div>
   )

@@ -47,5 +47,5 @@
 }
 
 :global(.printing) .info {
-  padding: 0 var(--space-XS);
+  bottom: 0;
 }
