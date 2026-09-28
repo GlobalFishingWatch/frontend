@@ -482,16 +482,38 @@ export const deleteDatasetThunk = createAsyncThunk<
 
 export const refreshDatasetsLocaleThunk = createAsyncThunk<
   void,
-  Locale,
+  { locale: Locale; priorityIds?: string[] },
   { rejectValue: AsyncError }
->('datasets/refreshLocale', async (locale, { getState, dispatch }) => {
-  const state = getState() as DatasetsSliceState
-  const ids = (state.datasets.ids as string[]) || []
-  if (!ids.length) {
-    return
+>(
+  'datasets/refreshLocale',
+  async ({ locale, priorityIds = [] }, { getState, dispatch, signal }) => {
+    const state = getState() as DatasetsSliceState
+    const ids = (state.datasets.ids as string[]) || []
+    if (!ids.length) {
+      return
+    }
+    const workspaceIds = ids.filter((id) => priorityIds.includes(id))
+    const restIds = without(ids, ...workspaceIds)
+    const [workspaceRequest, restRequest] = [workspaceIds, restIds].map((batch) =>
+      batch.length
+        ? dispatch(
+            fetchDatasetsByIdsThunk({
+              ids: batch,
+              locale,
+              forceRefresh: true,
+              includeRelated: false,
+            })
+          )
+        : undefined
+    )
+    signal.addEventListener('abort', () => {
+      workspaceRequest?.abort()
+      restRequest?.abort()
+    })
+    // Only the workspace batch is awaited; the rest finishes in the background
+    await workspaceRequest
   }
-  await dispatch(fetchDatasetsByIdsThunk({ ids, locale, forceRefresh: true }))
-})
+)
 
 const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, Dataset>({
   name: 'datasets',
