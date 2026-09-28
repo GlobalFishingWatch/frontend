@@ -129,6 +129,7 @@
 
 .hover .popupSection {
   max-width: var(--sidebar-width);
+  align-items: center;
 }
 
 .click .popupSection {

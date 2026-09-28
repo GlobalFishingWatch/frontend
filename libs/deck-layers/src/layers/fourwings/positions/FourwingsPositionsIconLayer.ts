@@ -21,6 +21,8 @@ export type _FourwingsPositionsIconLayerProps<DataT = any> = {
    */
   highlightTimeStart?: number
   highlightTimeEnd?: number
+  /** icon size multiplier applied while the position is highlighted, by vessel or by time */
+  getHighlightScale?: Accessor<DataT, number>
 }
 
 export type FourwingsPositionsIconLayerProps<DataT = any> = IconLayerProps<DataT> &
@@ -32,6 +34,7 @@ const defaultProps: DefaultProps<FourwingsPositionsIconLayerProps> = {
   dimOpacity: { type: 'number', value: 1 },
   highlightTimeStart: { type: 'number', value: 0 },
   highlightTimeEnd: { type: 'number', value: 0 },
+  getHighlightScale: { type: 'accessor', value: 1 },
 }
 
 const uniformBlock = /* glsl */ `
@@ -42,9 +45,20 @@ const uniformBlock = /* glsl */ `
   } positionsHighlight;
 `
 
+const vsModuleSource = /* glsl */ `${uniformBlock}
+  float positions_isHighlighted(float vesselHighlighted, float stime) {
+    if (positionsHighlight.highlightTimeEnd > positionsHighlight.highlightTimeStart &&
+        stime >= positionsHighlight.highlightTimeStart &&
+        stime < positionsHighlight.highlightTimeEnd) {
+      return 1.0;
+    }
+    return vesselHighlighted;
+  }
+`
+
 const positionsHighlightUniforms = {
   name: 'positionsHighlight',
-  vs: uniformBlock,
+  vs: vsModuleSource,
   fs: uniformBlock,
   uniformTypes: {
     dimOpacity: 'f32',
@@ -54,8 +68,8 @@ const positionsHighlightUniforms = {
 } as const
 
 /**
- * IconLayer that fades every position not belonging to the highlighted vessel, and lights up the
- * ones inside the highlighted time range.
+ * IconLayer that fades every position not belonging to the highlighted vessel, and lights up and
+ * enlarges the ones of that vessel or inside the highlighted time range.
  */
 export class FourwingsPositionsIconLayer<
   DataT = any,
@@ -69,6 +83,7 @@ export class FourwingsPositionsIconLayer<
     this.getAttributeManager()?.addInstanced({
       instanceHighlighted: { size: 1, accessor: 'getHighlighted', defaultValue: 0 },
       instanceStime: { size: 1, accessor: 'getStime', defaultValue: 0 },
+      instanceHighlightScale: { size: 1, accessor: 'getHighlightScale', defaultValue: 1 },
     })
   }
 
@@ -79,25 +94,22 @@ export class FourwingsPositionsIconLayer<
       'vs:#decl': /* glsl */ `
         in float instanceHighlighted;
         in float instanceStime;
+        in float instanceHighlightScale;
         out float vHighlighted;
-        out float vStime;
+      `,
+      // luma emits #decl before the hook functions, so the hook can read the instance attributes
+      'vs:DECKGL_FILTER_SIZE': /* glsl */ `
+        size *= mix(1.0, instanceHighlightScale,
+          positions_isHighlighted(instanceHighlighted, instanceStime));
       `,
       'vs:#main-end': /* glsl */ `
-        vHighlighted = instanceHighlighted;
-        vStime = instanceStime;
+        vHighlighted = positions_isHighlighted(instanceHighlighted, instanceStime);
       `,
       'fs:#decl': /* glsl */ `
         in float vHighlighted;
-        in float vStime;
       `,
       'fs:DECKGL_FILTER_COLOR': /* glsl */ `
-        float highlighted = vHighlighted;
-        if (positionsHighlight.highlightTimeEnd > positionsHighlight.highlightTimeStart &&
-            vStime >= positionsHighlight.highlightTimeStart &&
-            vStime < positionsHighlight.highlightTimeEnd) {
-          highlighted = 1.0;
-        }
-        color.a *= mix(positionsHighlight.dimOpacity, 1.0, highlighted);
+        color.a *= mix(positionsHighlight.dimOpacity, 1.0, vHighlighted);
       `,
     }
     return shaders

@@ -39,6 +39,7 @@ import {
   POSITIONS_HIGHLIGHT_CIRCLE_OFFSET,
   POSITIONS_HIGHLIGHT_ICON_OFFSET,
   POSITIONS_HIGHLIGHT_OPACITY,
+  POSITIONS_HIGHLIGHT_SCALE,
   POSITIONS_ICON_SIZE,
   POSITIONS_TRACK_HIGHLIGHT_OPACITY,
   POSITIONS_TRACK_OPACITY,
@@ -89,7 +90,11 @@ type FourwingsPositionsTileLayerState = {
   colorScale?: FourwingsTileLayerColorScale
   highlightedVesselIds: Set<string>
   highlightedFeatureIds: Set<string>
+  /** `${id}-${stime}` of the hovered positions themselves, not their whole vessel */
+  highlightedPositionKeys: Set<string>
 }
+
+const getPositionKey = (d: FourwingsPositionFeature) => `${d.properties?.id}-${d.properties?.stime}`
 
 const defaultProps: DefaultProps<FourwingsPositionsTileLayerProps> = {
   tilesUrl: POSITIONS_API_TILES_URL,
@@ -182,6 +187,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       vesselTracks: [],
       lastPositionFeatures: new Set<FourwingsPositionFeature>(),
       highlightedFeatureIds: new Set<string>(),
+      highlightedPositionKeys: new Set<string>(),
       highlightedVesselIds: new Set<string>(),
     }
   }
@@ -229,13 +235,15 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         this.setState({ colorScale: this._getColorRamp(this.positions) })
       }
     }
-    const highlightedFeatureIds = new Set<string>()
-    if (props.highlightedFeatures?.length) {
-      for (const feature of props.highlightedFeatures) {
+    if (props.highlightedFeatures !== oldProps.highlightedFeatures) {
+      const highlightedFeatureIds = new Set<string>()
+      const highlightedPositionKeys = new Set<string>()
+      for (const feature of props.highlightedFeatures || []) {
         highlightedFeatureIds.add(feature?.properties?.id)
+        highlightedPositionKeys.add(getPositionKey(feature))
       }
+      this.setState({ highlightedFeatureIds, highlightedPositionKeys })
     }
-    this.setState({ highlightedFeatureIds })
   }
 
   getPickingInfo = ({
@@ -361,10 +369,18 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return canShowVesselIcon ? POSITIONS_ICON_SIZE : POSITIONS_CIRCLE_SIZE
   }
 
-  _getHighlightedIconSize = (d: FourwingsPositionFeature): number => {
-    if (this._isTrailPosition(d)) {
-      return 0
+  _getIsHighlightedBorder = (d: FourwingsPositionFeature): number => {
+    if (this.state.highlightedPositionKeys.has(getPositionKey(d))) {
+      return 1
     }
+    return this._isTrailPosition(d) ? 0 : this._getIsHighlighted(d)
+  }
+
+  _getHighlightScale = (d: FourwingsPositionFeature): number => {
+    return this._isTrailPosition(d) ? POSITIONS_HIGHLIGHT_SCALE : 1
+  }
+
+  _getHighlightedIconSize = (d: FourwingsPositionFeature): number => {
     const size = this._getIconSize(d)
     if (!size) {
       return 0
@@ -578,6 +594,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       highlightedVesselIds,
     } = this.state
     const IconLayerClass = this.getSubLayerClass('icons', FourwingsPositionsIconLayer)
+    const timeHighlightProps = { getStime: this._getStime, ...this.highlightTimeRange }
     const getIconAngle = (d: FourwingsPositionFeature) => {
       const bearing = getPositionBearing(d)
       return bearing ? 360 - bearing : 0
@@ -631,6 +648,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         getColor: this._getFillColor,
         getHighlighted: this._getIsHighlighted,
         dimOpacity: this.dimOpacity,
+        ...timeHighlightProps,
+        getHighlightScale: this._getHighlightScale,
         getSize: this._getIconSize,
         getAngle: getIconAngle,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
@@ -640,6 +659,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           getColor: [sublayers],
           getSize: [sublayers, lastPositionFeatures],
           getHighlighted: [highlightedFeatureIds, highlightedVesselIds],
+          getStime: [this.timestampBase],
+          getHighlightScale: [lastPositionFeatures],
         },
       }),
       ...(lastPositionsData.length
@@ -657,6 +678,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
                   : COLOR_TRANSPARENT,
               getHighlighted: this._getIsHighlighted,
               dimOpacity: this.dimOpacity,
+              ...timeHighlightProps,
               getSize: this._getIconSize,
               getAngle: getIconAngle,
               getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
@@ -664,6 +686,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
                 getColor: [sublayers],
                 getSize: [sublayers, lastPositionFeatures],
                 getHighlighted: [highlightedFeatureIds, highlightedVesselIds],
+                getStime: [this.timestampBase],
               },
             }),
             new IconLayerClass(this.props, {
@@ -676,6 +699,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
               getColor: this._getFillColor,
               getHighlighted: this._getIsHighlighted,
               dimOpacity: this.dimOpacity,
+              ...timeHighlightProps,
               getSize: this._getIconSize,
               getAngle: getIconAngle,
               getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
@@ -683,6 +707,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
                 getColor: [sublayers],
                 getSize: [sublayers, lastPositionFeatures],
                 getHighlighted: [highlightedFeatureIds, highlightedVesselIds],
+                getStime: [this.timestampBase],
               },
             }),
             new IconLayerClass(this.props, {
@@ -698,6 +723,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
                   : COLOR_TRANSPARENT,
               getHighlighted: this._getIsHighlighted,
               dimOpacity: this.dimOpacity,
+              ...timeHighlightProps,
               getSize: this._getIconSize,
               getAngle: getIconAngle,
               getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
@@ -705,6 +731,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
                 getColor: [sublayers],
                 getSize: [sublayers, lastPositionFeatures],
                 getHighlighted: [highlightedFeatureIds, highlightedVesselIds],
+                getStime: [this.timestampBase],
               },
             }),
           ]
@@ -719,16 +746,22 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         getColor: this._getHighlightColor,
         // dimOpacity 0 turns the shared shader into "show only what is highlighted"
         dimOpacity: 0,
-        getHighlighted: this._getIsHighlighted,
-        getStime: this._getStime,
-        ...this.highlightTimeRange,
+        getHighlighted: this._getIsHighlightedBorder,
+        ...timeHighlightProps,
+        getHighlightScale: this._getHighlightScale,
         getSize: this._getHighlightedIconSize,
         getAngle: getIconAngle,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
         updateTriggers: {
           getColor: [sublayers],
-          getHighlighted: [highlightedFeatureIds, highlightedVesselIds],
+          getHighlighted: [
+            highlightedFeatureIds,
+            highlightedVesselIds,
+            this.state.highlightedPositionKeys,
+            lastPositionFeatures,
+          ],
           getStime: [this.timestampBase],
+          getHighlightScale: [lastPositionFeatures],
           getSize: [sublayers, lastPositionFeatures],
         },
       }),
