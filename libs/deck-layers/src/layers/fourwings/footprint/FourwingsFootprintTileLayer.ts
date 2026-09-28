@@ -262,6 +262,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
       startFrame,
       endFrame,
       maxPositions: this.props.maxPositionsPerTile,
+      sublayers: this.props.sublayers,
     })
   }
 

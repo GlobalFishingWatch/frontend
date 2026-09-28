@@ -740,6 +740,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       startFrame,
       endFrame,
       maxPositions: this.props.maxPositionsPerTile,
+      sublayers: this.props.sublayers,
+      aggregationOperation: this.props.aggregationOperation,
     })
   }
 
