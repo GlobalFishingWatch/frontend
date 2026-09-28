@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
 import { selectTrackCorrectionOpen } from 'features/_vessels/track-correction/track-selection.selectors'
 import { htmlSafeParse } from 'utils/html-parser'
@@ -140,7 +140,11 @@ const ContextTooltipRow = ({
                       disabled={fitAreaLoading}
                       onClick={fitAreaBounds}
                     >
-                      {t((t) => t.analysis.zoomToAreaForActivity)}
+                      {fitAreaLoading ? (
+                        <Spinner size="small" />
+                      ) : (
+                        t((t) => t.analysis.zoomToAreaForActivity)
+                      )}
                     </button>
                   )}
                   <div className={cx(layerStyles.rowFooter, 'print-hidden')}>
@@ -148,7 +152,7 @@ const ContextTooltipRow = ({
                       icon="target"
                       tooltip={t((t) => t.common.fitArea)}
                       size="small"
-                      loading={fitAreaLoading}
+                      disabled={fitAreaLoading}
                       onClick={fitAreaBounds}
                     />
                     {handleDownloadClick && (
