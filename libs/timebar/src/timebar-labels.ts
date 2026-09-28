@@ -34,6 +34,7 @@ export const DEFAULT_LABELS = {
     last6months: 'Last 6 months',
     lastYear: 'Last year',
     month: 'month',
+    quickSelect: 'Quick select',
     selectAValidDate: 'Please select a valid date',
     start: 'start',
     title: 'Select a time range',

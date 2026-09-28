@@ -97,6 +97,7 @@
 .actions {
   width: 100%;
   display: flex;
+  align-items: center;
   justify-content: space-between;
 }
 
@@ -131,18 +132,41 @@
   opacity: 0.6;
 }
 
-.lastX {
-  color: var(--color-primary-blue);
-  display: flex;
-  line-height: 3.6rem;
-  background: var(--color-terthiary-blue);
-  border-bottom: var(--border);
-  padding-left: var(--space-XS);
+.inner .quickSelectPopover {
+  background: var(--color-off-white-1);
+  border-radius: var(--border-radius-0);
+  overflow: hidden;
+  border: var(--border);
 }
 
-.lastX:hover,
-.lastX:focus {
-  background: var(--color-terthiary-blue);
+.quickSelectMenu {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.quickSelectMenu li:not(:last-child) {
+  border-bottom: var(--border);
+}
+
+.quickSelectOption {
+  display: block;
+  width: 100%;
+  min-height: var(--size-M);
+  padding: var(--space-S);
+  border: none;
+  background: none;
+  color: var(--color-secondary-blue);
+  font: var(--font-M);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.quickSelectOption:hover,
+.quickSelectOption:focus-visible {
+  color: var(--color-primary-blue);
+  background-color: rgba(var(--primary-blue-rgb), 0.05);
   outline: none;
 }
 
@@ -211,7 +235,7 @@
   margin-left: auto;
 }
 
-.lastXNumTooltip {
+.panelTooltip {
   z-index: calc(var(--timebar-z-date-selector, 999) + 1) !important;
 }
 

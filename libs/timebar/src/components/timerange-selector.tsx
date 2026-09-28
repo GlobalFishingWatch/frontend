@@ -11,7 +11,8 @@ import {
   getFourwingsInterval,
   LIMITS_BY_INTERVAL,
 } from '@globalfishingwatch/deck-loaders'
-import type { SelectOption } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { Popover } from '@globalfishingwatch/ui-components/popover'
 import { Select } from '@globalfishingwatch/ui-components/select'
 import { Tooltip } from '@globalfishingwatch/ui-components/tooltip'
 
@@ -217,10 +218,10 @@ function TimeRangeSelector({
   const lastXOptions = useMemo<LastXOption[]>(
     () =>
       lastXOptionsProp ?? [
-        { id: 'last30days', label: labels.last30days, num: 30, unit: 'day' },
-        { id: 'last3months', label: labels.last3months, num: 3, unit: 'month' },
-        { id: 'last6months', label: labels.last6months, num: 6, unit: 'month' },
         { id: 'lastYear', label: labels.lastYear, num: 1, unit: 'year' },
+        { id: 'last6months', label: labels.last6months, num: 6, unit: 'month' },
+        { id: 'last3months', label: labels.last3months, num: 3, unit: 'month' },
+        { id: 'last30days', label: labels.last30days, num: 30, unit: 'day' },
       ],
     [lastXOptionsProp, labels.last30days, labels.last3months, labels.last6months, labels.lastYear]
   )
@@ -250,9 +251,7 @@ function TimeRangeSelector({
     month: true,
     day: true,
   }))
-  const [currentLastXSelectedOption, setCurrentLastXSelectedOption] = useState<LastXOption>(
-    () => lastXOptions[0]
-  )
+  const [quickSelectOpen, setQuickSelectOpen] = useState(false)
 
   const maxLastX = Math.max(...lastXOptions.map((o) => o.num))
   const [lastXNum, setLastXNum] = useState<number | ''>(() => {
@@ -300,7 +299,6 @@ function TimeRangeSelector({
   }
 
   const onLastXSelect = (option: LastXOption) => {
-    setCurrentLastXSelectedOption(option)
     const { start, end } = getLastX(option.num, option.unit, latestAvailableDataDate)
     if (!start || !end) {
       return
@@ -499,7 +497,7 @@ function TimeRangeSelector({
           <div className={styles.actions}>
             {!showDateInputs && (
               <Tooltip
-                className={styles.lastXNumTooltip}
+                className={styles.panelTooltip}
                 content={
                   lastXNumValid
                     ? ''
@@ -517,15 +515,42 @@ function TimeRangeSelector({
               </Tooltip>
             )}
             {showDateInputs && (
-              <Select
-                className={classNames(styles.cta, styles.lastX)}
-                direction="top"
-                options={lastXOptions as SelectOption[]}
-                selectedOption={currentLastXSelectedOption as SelectOption}
-                onSelect={(selected: SelectOption) => {
-                  onLastXSelect(selected as LastXOption)
-                }}
-              />
+              <Popover
+                open={quickSelectOpen}
+                onOpenChange={setQuickSelectOpen}
+                placement="top-start"
+                showArrow={false}
+                className={styles.quickSelectPopover}
+                content={
+                  <ul className={styles.quickSelectMenu}>
+                    {lastXOptions.map((option) => (
+                      <li key={option.id}>
+                        <button
+                          type="button"
+                          className={styles.quickSelectOption}
+                          onClick={() => {
+                            setQuickSelectOpen(false)
+                            onLastXSelect(option)
+                          }}
+                        >
+                          {option.label}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                }
+              >
+                <span>
+                  <Tooltip
+                    className={styles.panelTooltip}
+                    content={labels.quickSelect ?? DEFAULT_LABELS.timerange.quickSelect}
+                  >
+                    <span>
+                      <IconButton icon="lightning" type="border" />
+                    </span>
+                  </Tooltip>
+                </span>
+              </Popover>
             )}
             {showDateInputs && (
               <button
