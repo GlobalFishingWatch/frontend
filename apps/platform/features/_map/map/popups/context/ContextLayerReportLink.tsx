@@ -136,7 +136,7 @@ const ContextLayerReportLink = ({
           {label ? (
             <Button size="small" className={styles.btnLarge}>
               <Icon icon="analysis" />
-              {label}
+              <span className={styles.btnLabel}>{label}</span>
             </Button>
           ) : (
             <IconButton

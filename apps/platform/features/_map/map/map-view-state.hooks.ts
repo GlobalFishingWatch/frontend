@@ -6,9 +6,10 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { boundsAtom, viewStateAtom } from 'features/_map/map/map.atoms'
 import { useDeckMap } from 'features/_map/map/map-context.hooks'
 
+// Web Mercator is only defined up to ±85.051129°; at ±90 the projection goes to infinity.
+export const MAX_MERCATOR_LATITUDE = 85.051129
+
 export const getSafeViewState = (coordinates: Partial<ViewStateMap<MapView>>) => {
-  // Web Mercator is only defined up to ±85.051129°; at ±90 the projection goes to infinity.
-  const MAX_MERCATOR_LATITUDE = 85.051129
   const entries: [string, unknown][] = []
   for (const [key, value] of Object.entries(coordinates)) {
     if (value === undefined) continue

@@ -14,7 +14,9 @@ import {
 } from 'features/_map/workspace/selectors/app.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { findSectionForSlug } from 'features/help/userGuide.utils'
 import UserGuideLink from 'features/help/UserGuideLink'
+import { selectSidePanelContent, selectSidePanelId } from 'router/routes.selectors'
 
 import type { HintId } from './hints.content'
 import hintsConfig from './hints.content'
@@ -35,6 +37,12 @@ function Hint({ id, className }: HintProps) {
   const dispatch = useAppDispatch()
   const [visible, setVisible] = useState(openedByDefault || false)
   const hintsDismissed = useSelector(selectHintsDismissed)
+  const sidePanelContent = useSelector(selectSidePanelContent)
+  const sidePanelId = useSelector(selectSidePanelId)
+  const isGuideSectionOpen =
+    userGuideSlug !== undefined &&
+    sidePanelContent === 'userGuide' &&
+    sidePanelId === findSectionForSlug(userGuideSlug)?.section
 
   const onDismiss = useCallback(() => {
     setVisible(false)
@@ -103,13 +111,8 @@ function Hint({ id, className }: HintProps) {
               {t((t) => t[id], {
                 ns: 'help-hints',
               })}
-              {userGuideSlug && (
-                <UserGuideLink
-                  slug={userGuideSlug}
-                  mode="link"
-                  className={styles.userGuideLink}
-                  onClick={onDismiss}
-                >
+              {userGuideSlug && !isGuideSectionOpen && (
+                <UserGuideLink slug={userGuideSlug} mode="link" className={styles.userGuideLink}>
                   {t((t) => t.common.seeMore, {
                     ns: 'translations',
                   })}

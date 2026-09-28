@@ -1,6 +1,7 @@
 import type { KeyboardEventHandler } from 'react'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import type { UseComboboxStateChange } from 'downshift'
 import { useCombobox } from 'downshift'
@@ -10,6 +11,9 @@ import { InputText } from '@globalfishingwatch/ui-components'
 
 import { useNavigateToAreaReport } from 'features/_reports/shared/area-search/area-report.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
+import Hint from 'features/hints/Hint'
+import { selectHintsDismissed, setHintDismissed } from 'features/hints/hints.slice'
 import { t as trans } from 'features/i18n/i18n'
 import { useOceanAreas } from 'hooks/ocean-areas'
 import { getEventLabel } from 'utils/analytics'
@@ -29,6 +33,8 @@ const getItemLabel = (item: OceanArea | null) => {
 
 function AreaReportSearch({ className }: { className?: string }) {
   const { t, i18n } = useTranslation()
+  const dispatch = useAppDispatch()
+  const isHintDismissed = useSelector(selectHintsDismissed)?.reportAreaSearch === true
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
   const [selectedItem, setSelectedItem] = useState<OceanArea | null>(null)
@@ -55,6 +61,9 @@ function AreaReportSearch({ className }: { className?: string }) {
       setAreasMatching([])
     } else {
       updateMatchingAreas(inputValue as string)
+      if (!isHintDismissed) {
+        dispatch(setHintDismissed('reportAreaSearch'))
+      }
     }
     setInputSearch(inputValue as string)
   }
@@ -114,6 +123,7 @@ function AreaReportSearch({ className }: { className?: string }) {
       )}
     >
       <div className={styles.comboContainer}>
+        <Hint id="reportAreaSearch" className={styles.helpHint} />
         <InputText
           {...inputProps}
           className={styles.input}

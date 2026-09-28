@@ -56,6 +56,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { setHintDismissed } from 'features/hints/hints.slice'
 import type { RootState } from 'reducers'
 import { useAppSearch, useReplaceQueryParams } from 'router/routes.hook'
+import type { Bbox } from 'types'
 
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
 import type { SliceExtendedClusterPickingObject } from './map.slice'
@@ -339,6 +340,12 @@ export const useClickedEventConnect = () => {
               })
               return
             }
+          }
+          const { cellBounds } = clusterFeature.properties
+          if (clusterFeature.clusterMode === 'default' && cellBounds?.length) {
+            // All points share one cell, so no expansion is possible
+            fitMapBounds(cellBounds as Bbox, { fitZoom: true, flyTo: true })
+            return
           }
         }
       }
@@ -770,10 +777,13 @@ export const useMapCursor = () => {
         return 'move'
       }
       if (features?.some(isTilesClusterLayer)) {
+        // Mirrors useClickedEventConnect: 'default' clusters always zoom on click
         const isCluster = (features as FourwingsClusterPickingObject[]).some(
           (f) =>
             isTilesClusterLayerCluster(f) &&
-            (f.expansionBounds !== undefined || f.expansionZoom !== undefined)
+            (f.expansionBounds !== undefined ||
+              f.expansionZoom !== undefined ||
+              f.clusterMode === 'default')
         )
         const isCountryClusterMode = (features as FourwingsClusterPickingObject[]).some(
           (f) => f.clusterMode === 'country'
