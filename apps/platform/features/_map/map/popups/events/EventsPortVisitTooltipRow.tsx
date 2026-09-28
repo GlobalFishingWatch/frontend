@@ -129,7 +129,7 @@ function EventsPortVisitTooltipRow({
                 className={cx(styles.btnLarge, styles.rowMarginTop, 'print-hidden')}
                 onClick={() => seePortReportClick(event.port)}
               >
-                {t((t) => t.portsReport.seePortReport)}
+                <span className={styles.btnLabel}>{t((t) => t.portsReport.seePortReport)}</span>
               </Button>
             </PortsReportLink>
           )}
