@@ -50,6 +50,7 @@ import type {
 } from '#layers/fourwings/fourwings.types'
 import {
   EMPTY_FOURWINGS_TILE_DATA,
+  fourwingsRefinementStrategy,
   getAreTilePositionsAvailable,
 } from '#layers/fourwings/fourwings-tile.utils'
 import { hexToRgb } from '#utils'
@@ -607,9 +608,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
         domain: newColorDomain,
         extents: newColorDomainExtents,
         fits: newColorDomainFits,
-      } = recalculateDomain
-        ? this._calculateColorDomain()
-        : this._getCurrentColorDomain()
+      } = recalculateDomain ? this._calculateColorDomain() : this._getCurrentColorDomain()
       const scales = this._getColorScales(
         newColorDomain,
         newSublayerColorRanges,
@@ -672,6 +671,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       this.getSubLayerProps({
         id: `tiles-${resolution}`,
         tileSize: FOURWINGS_TILE_SIZE,
+        refinementStrategy: fourwingsRefinementStrategy,
         colorDomain,
         colorRanges,
         comparisonMode,

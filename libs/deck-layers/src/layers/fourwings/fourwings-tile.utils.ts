@@ -1,4 +1,5 @@
 import type { Viewport } from '@deck.gl/core'
+import type { _Tile2DHeader as Tile2DHeader } from '@deck.gl/geo-layers'
 
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
@@ -10,6 +11,42 @@ import { MAX_POSITIONS_PER_TILE_VISUALIZED } from './fourwings.config'
 
 /** Reused for stale/aborted tile loads so Tileset2D always sees a finite byteLength. */
 export const EMPTY_FOURWINGS_TILE_DATA = assignFourwingsFeaturesByteLength([])
+
+const MAX_PLACEHOLDER_ZOOM_DELTA = 2
+
+const hasTileContent = (tile: Tile2DHeader) => tile.isLoaded || Boolean(tile.content)
+
+/**
+ * deck.gl's 'best-available' refinement, but only when MAX_PLACEHOLDER_ZOOM_DELTA zoom levels away.
+ * https://deck.gl/docs/api-reference/geo-layers/tile-layer#refinementstrategy
+ */
+export function fourwingsRefinementStrategy(tiles: Tile2DHeader[]) {
+  const visible = new Set<Tile2DHeader>()
+  const setAncestorPlaceholder = (selected: Tile2DHeader) => {
+    let tile: Tile2DHeader | null = selected
+    while (tile && selected.zoom - tile.zoom <= MAX_PLACEHOLDER_ZOOM_DELTA) {
+      if (hasTileContent(tile)) {
+        visible.add(tile)
+        return true
+      }
+      tile = tile.parent
+    }
+    return false
+  }
+  const setChildrenPlaceholder = (tile: Tile2DHeader, depth = 1) => {
+    if (depth > MAX_PLACEHOLDER_ZOOM_DELTA) return
+    for (const child of tile.children || []) {
+      if (hasTileContent(child)) visible.add(child)
+      else setChildrenPlaceholder(child, depth + 1)
+    }
+  }
+  for (const tile of tiles) {
+    if (tile.isSelected && !setAncestorPlaceholder(tile)) setChildrenPlaceholder(tile)
+  }
+  for (const tile of tiles) {
+    tile.isVisible = visible.has(tile)
+  }
+}
 
 export type FourwingsTileFrames = {
   startFrame: number

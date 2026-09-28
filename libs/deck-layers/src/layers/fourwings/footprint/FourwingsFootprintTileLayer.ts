@@ -29,6 +29,7 @@ import type {
 import { FourwingsAggregationOperation } from '#layers/fourwings/fourwings.types'
 import {
   EMPTY_FOURWINGS_TILE_DATA,
+  fourwingsRefinementStrategy,
   getAreTilePositionsAvailable,
 } from '#layers/fourwings/fourwings-tile.utils'
 import { fetchFourwingsTileData } from '#layers/fourwings/heatmap/fourwings-heatmap.fetch'
@@ -198,6 +199,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
       this.getSubLayerProps({
         id: `tiles-footprint`,
         tileSize: FOURWINGS_TILE_SIZE,
+        refinementStrategy: fourwingsRefinementStrategy,
         tilesCache,
         minZoom: 0,
         onTileError: this._onLayerError,

@@ -23,7 +23,10 @@ import {
   HEATMAP_API_TILES_URL,
 } from '#layers/fourwings/fourwings.config'
 import type { GetViewportDataParams } from '#layers/fourwings/fourwings.types'
-import { EMPTY_FOURWINGS_TILE_DATA } from '#layers/fourwings/fourwings-tile.utils'
+import {
+  EMPTY_FOURWINGS_TILE_DATA,
+  fourwingsRefinementStrategy,
+} from '#layers/fourwings/fourwings-tile.utils'
 import { getColorRamp } from '#utils/colorRamps'
 
 import { fetchFourwingsTileData } from './fourwings-heatmap.fetch'
@@ -244,6 +247,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       this.getSubLayerProps({
         id: `static-${resolution}-${this.props.aggregationOperation}`,
         tileSize: FOURWINGS_TILE_SIZE,
+        refinementStrategy: fourwingsRefinementStrategy,
         // these have to travel as TileLayer props, not captured in the renderSubLayers
         // closure: that is what makes deck push a new ramp down to the rendered cells
         colorDomain,
