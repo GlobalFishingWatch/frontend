@@ -1,5 +1,5 @@
 import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from '@globalfishingwatch/dataviews-client'
-import * as WORKSPACE_CONFIG from '@platform/config'
+import * as WORKSPACE_CONFIG from '@platform/config/map/dataviews'
 
 export type LayerCategory = 'activity' | 'detections' | 'events' | 'environment' | 'context'
 

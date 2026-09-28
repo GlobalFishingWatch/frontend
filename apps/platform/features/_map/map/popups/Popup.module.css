@@ -129,6 +129,7 @@
 
 .hover .popupSection {
   max-width: var(--sidebar-width);
+  align-items: center;
 }
 
 .click .popupSection {
@@ -280,6 +281,14 @@
 
 .btnLarge {
   width: 100%;
+  min-width: 0;
+}
+
+.btnLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .centered {

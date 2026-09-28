@@ -2,15 +2,13 @@ import {
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
+  ENCOUNTER_EVENTS_SOURCE_ID,
+  LOITERING_EVENTS_SOURCE_ID,
+  PORT_VISITS_EVENTS_SOURCE_ID,
 } from '@platform/config/map/dataviews'
 
 import { PATH_BASENAME } from 'data/map/config'
 import type { LibraryLayerConfig } from 'data/map/layer-library/layers.types'
-import {
-  ENCOUNTER_EVENTS_SOURCE_ID,
-  LOITERING_EVENTS_SOURCE_ID,
-  PORT_VISITS_EVENTS_SOURCE_ID,
-} from 'features/_map/dataviews/dataviews.utils'
 
 export const LAYERS_LIBRARY_EVENTS: LibraryLayerConfig[] = [
   {

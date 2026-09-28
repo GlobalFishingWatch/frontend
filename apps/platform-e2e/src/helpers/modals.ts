@@ -10,6 +10,7 @@ export async function disableWelcomePopups(page: Page) {
       changingTheTimeRange: true,
       areaSearch: true,
       periodComparisonBaseline: true,
+      reportAreaSearch: true,
       userContextLayers: true,
     })
     // Map onboarding modal — auto-opens on a first visit and would cover every layout below.

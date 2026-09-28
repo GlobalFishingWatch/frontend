@@ -12,7 +12,7 @@ import {
   LAYER_LIBRARY_ID_SEPARATOR,
   MPA_DATAVIEW_INSTANCE_ID,
   RFMO_DATAVIEW_INSTANCE_ID,
-} from '@platform/config'
+} from '@platform/config/map/dataviews'
 
 import datasetFilters from './references/dataset-filters.json'
 import { resolveDataviewSlug } from './config'

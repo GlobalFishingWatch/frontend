@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from '@tanstack/react-router'
+import { Link, useRouterState } from '@tanstack/react-router'
 import { getToolName, isToolUIPart, type UIMessage } from 'ai'
 import cx from 'classnames'
 import type { TFunction } from 'i18next'
@@ -18,6 +18,7 @@ import {
 import { useSetThreadLoading } from 'features/_map/content-panel/chat/chat-threads.hooks'
 import {
   getNavigateToolLinkProps,
+  isNavigateToolViewActive,
   navigateToolInputSchema,
   useNavigateToolMapState,
 } from 'features/_map/content-panel/chat/navigate-tool'
@@ -99,21 +100,30 @@ function NavigateToolLink({ input }: { input: unknown }) {
   const { t } = useTranslation()
   const { markExplicitSettings, applyNavigateMapState } = useNavigateToolMapState()
   const parsed = navigateToolInputSchema.safeParse(input)
-  if (!parsed.success) return null
+  const linkProps = parsed.success ? getNavigateToolLinkProps(parsed.data.navigation) : undefined
+  const isSameViewSearch = useRouterState({
+    select: (s) =>
+      !!linkProps && isNavigateToolViewActive(s.location.search, linkProps.search),
+  })
+  if (!parsed.success || !linkProps) return null
   const { navigation } = parsed.data
   return (
     <Link
-      {...(getNavigateToolLinkProps(navigation) as any)}
+      {...(linkProps as any)}
+      activeOptions={{ includeSearch: false }}
       onClick={() => {
         markExplicitSettings(navigation.search)
         applyNavigateMapState(navigation.search)
       }}
     >
-      {({ isActive }) => (
-        <span className={cx(styles.toolLink, { [styles.toolLinkBtn]: !isActive })}>
-          {isActive ? t((t) => t.chat.toolNavigation) : t((t) => t.chat.toolNavigateBack)}
-        </span>
-      )}
+      {({ isActive }) => {
+        const isCurrentView = isActive && isSameViewSearch
+        return (
+          <span className={cx(styles.toolLink, { [styles.toolLinkBtn]: !isCurrentView })}>
+            {isCurrentView ? t((t) => t.chat.toolNavigation) : t((t) => t.chat.toolNavigateBack)}
+          </span>
+        )
+      }}
     </Link>
   )
 }

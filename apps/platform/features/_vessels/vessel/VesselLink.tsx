@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 
-import type { EventType } from '@globalfishingwatch/api-types'
+import type { Dataview, DataviewConfigVessel, EventType } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getIsEncounteredVesselDataviewInstanceId } from '@globalfishingwatch/dataviews-client'
 import { Tooltip } from '@globalfishingwatch/ui-components'
@@ -44,6 +44,8 @@ type VesselLinkProps = {
   className?: string
   datasetId?: string
   dataviewId?: string
+  dataviewTemplateId?: Dataview['slug']
+  dataviewConfig?: DataviewConfigVessel
   eventId?: string
   eventType?: EventType
   fitBounds?: boolean
@@ -60,6 +62,8 @@ const VesselLink = ({
   className = '',
   datasetId,
   dataviewId,
+  dataviewTemplateId,
+  dataviewConfig,
   eventId,
   eventType,
   fitBounds = false,
@@ -133,11 +137,11 @@ const VesselLink = ({
   )?.id
 
   let dataviewInstances = locationQuery?.dataviewInstances || []
-  if (dataviewInstanceToUpdateId) {
+  if (dataviewInstanceToUpdateId || dataviewTemplateId) {
     // When coming from a saved workspace the vessel instance might not be in the url yet
-    const isInWorkspace = dataviewInstances?.some(
-      ({ id }: any) => id === dataviewInstanceToUpdateId
-    )
+    const isInWorkspace =
+      dataviewInstanceToUpdateId &&
+      dataviewInstances?.some(({ id }: any) => id === dataviewInstanceToUpdateId)
     if (isInWorkspace) {
       dataviewInstances = dataviewInstances?.map((instance) => {
         const matches = instance.id === dataviewInstanceToUpdateId
@@ -158,6 +162,8 @@ const VesselLink = ({
         vessel: { id: vesselId, ssvid: identity?.ssvid },
         datasets: { info: vesselDatasetId },
         dataviewTemplates: vesselTemplateDataviews,
+        dataviewTemplateId,
+        config: dataviewConfig,
       })
       dataviewInstances = [
         ...dataviewInstances,

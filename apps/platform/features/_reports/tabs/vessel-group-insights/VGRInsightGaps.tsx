@@ -7,11 +7,9 @@ import { useGetVesselGroupInsightQuery } from 'queries/map/vessel-insight-api'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Collapsable, Tooltip } from '@globalfishingwatch/ui-components'
+import { GAPS_EVENTS_SOURCE_ID } from '@platform/config/map/dataviews'
 
-import {
-  GAPS_EVENTS_SOURCE_ID,
-  VESSEL_GROUP_DATAVIEW_PREFIX,
-} from 'features/_map/dataviews/dataviews.utils'
+import { VESSEL_GROUP_DATAVIEW_PREFIX } from 'features/_map/dataviews/dataviews.utils'
 import InsightError from 'features/_vessels/vessel/insights/InsightErrorMessage'
 import VesselLink from 'features/_vessels/vessel/VesselLink'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'

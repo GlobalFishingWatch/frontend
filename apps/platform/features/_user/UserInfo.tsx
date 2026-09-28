@@ -126,7 +126,7 @@ function UserInfo() {
           <label>{t((t) => t.user.groups)}</label>
           {userGroups && (
             <ul className={styles.groups}>
-              {userGroups.map((group) => (
+              {userGroups.map((group, index) => (
                 <li key={group} className={styles.group}>
                   {group}
                   {groupsWithoutDatasetPermission.includes(group) && (
@@ -136,6 +136,7 @@ function UserInfo() {
                       </span>
                     </Tooltip>
                   )}
+                  {index < userGroups.length - 1 && <span>, </span>}
                 </li>
               ))}
             </ul>

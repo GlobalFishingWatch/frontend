@@ -106,6 +106,8 @@ export type FourwingsFeature<Properties = FourwingsFeatureProperties> = {
 } & {
   // undefined entries are sublayers the cell holds no data for; 0 is a measured value
   aggregatedValues?: (number | undefined)[]
+  // time range key aggregatedValues were computed for, so the color domain never reads a stale one
+  aggregatedValuesKey?: string
 }
 
 // values in first place, absolute start frame in second: the timestamp of

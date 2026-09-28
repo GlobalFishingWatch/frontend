@@ -57,39 +57,14 @@ runs:
     - name: Run the image
       shell: bash
       run: |
-        set -euo pipefail
-        # No pull: the caller just built this image and loaded it into the local
-        # daemon, so it's already here — pulling would just refetch what we have.
-        # No BASIC_AUTH: the deploy-time env vars are Cloud Run's, and setting Restricted here
-        # would make every request need credentials the Playwright context is not given.
         docker run -d --name smoke-target \
           -p ${{ inputs.port }}:3000 \
           "${{ inputs.image }}"
-
-    - name: Wait for the container
-      shell: bash
-      run: |
-        set -uo pipefail
-        for _ in $(seq 1 60); do
-          if curl -sf "http://localhost:${{ inputs.port }}/platform/map" > /dev/null; then
-            exit 0
-          fi
-          if [ -z "$(docker ps -q -f name=smoke-target)" ]; then
-            echo "::error::Container exited before serving a request"
-            docker logs smoke-target
-            exit 1
-          fi
-          sleep 5
-        done
-        echo "::error::No answer on http://localhost:${{ inputs.port }}/platform/map within 5 minutes"
-        docker logs smoke-target
-        exit 1
 
     - name: Run smoke tests
       shell: bash
       run: pnpm exec nx test platform-e2e -c smoke
       env:
-        CI: '1'
         NX_DAEMON: 'false'
         NX_CLOUD_ACCESS_TOKEN: ${{ inputs.nx-cloud-access-token }}
         PLAYWRIGHT_BASE_URL: http://localhost:${{ inputs.port }}

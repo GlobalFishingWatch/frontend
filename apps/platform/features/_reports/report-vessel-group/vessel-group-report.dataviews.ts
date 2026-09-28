@@ -21,11 +21,11 @@ import {
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
   FISHING_ALL_DATAVIEW_SLUG,
+  GAPS_EVENTS_SOURCE_ID,
   PRESENCE_DATAVIEW_SLUG,
 } from '@platform/config/map/dataviews'
 
 import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/map/config'
-import { GAPS_EVENTS_SOURCE_ID } from 'features/_map/dataviews/dataviews.utils'
 
 import type {
   AnyReportSubCategory,

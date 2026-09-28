@@ -19,6 +19,8 @@ import { deckLayersAtom } from './deck-layers.hooks'
 
 export type DeckLegendAtom = Omit<DeckLegend, 'ranges'> & { ranges: string[] | string[][] }
 
+const lastGridAreaByLayerId = new Map<string, number>()
+
 export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
   const deckLayers = get(deckLayersAtom)
   const deckLayerHoverFeatures = get(deckHoverInteractionAtom)
@@ -36,7 +38,8 @@ export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
     const interaction = (deckLayerHoverFeatures?.features as FourwingsPickingObject[])?.find(
       (feature) => feature.layerId === layer.id
     )
-    const { colorDomain, colorRange, colorDomainMax } = layer.instance.getColorScale() || {}
+    const { colorDomain, colorRange, colorDomainFits, colorDomainExtents } =
+      layer.instance.getColorScale() || {}
     const visualizationMode = layer.instance.getVisualizationMode()
     const unit = layer.instance.props.sublayers?.[0]?.unit
     let label = layer.instance.props.sublayers?.[0]?.unit || ''
@@ -47,13 +50,16 @@ export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
       (label === 'hours' || label === 'detections') &&
       visualizationMode !== POSITIONS_ID
     ) {
-      const gridZoom = Math.round(
-        Math.min(
-          layer.instance.context?.viewport?.zoom + layer.instance.getZoomOffset(),
-          HEATMAP_DEFAULT_MAX_ZOOM
-        )
-      )
-      gridAreaM = GRID_AREA_BY_ZOOM_LEVEL[gridZoom]
+      const zoom = layer.instance.context?.viewport?.zoom
+      gridAreaM =
+        zoom === undefined
+          ? lastGridAreaByLayerId.get(layer.id)
+          : GRID_AREA_BY_ZOOM_LEVEL[
+              Math.round(Math.min(zoom + layer.instance.getZoomOffset(), HEATMAP_DEFAULT_MAX_ZOOM))
+            ]
+      if (gridAreaM !== undefined) {
+        lastGridAreaByLayerId.set(layer.id, gridAreaM)
+      }
       const isSquareKm = (gridAreaM as number) > 50000
       const gridArea = isSquareKm ? (gridAreaM as number) / 1000000 : gridAreaM
       const gridAreaFormatted = gridArea ? `${gridArea}${isSquareKm ? 'km' : 'm'}` : ''
@@ -85,7 +91,8 @@ export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
       gridArea: gridAreaM,
       type,
       domain: colorDomain,
-      max: colorDomainMax,
+      fits: colorDomainFits,
+      extents: colorDomainExtents,
       sublayers: layer.instance.props.sublayers,
       ranges,
       currentValues: (interaction as FourwingsPickingObject)?.sublayers?.map(

@@ -18,6 +18,7 @@ import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishin
 import {
   ContextLayer,
   FourwingsLayer,
+  POSITIONS_ID,
   UserContextTileLayer,
   UserPointsTileLayer,
 } from '@globalfishingwatch/deck-layers'
@@ -115,7 +116,6 @@ export type PolygonsReportTopArea = {
   feature: ContextPickingObject | UserLayerPickingObject
   label: string
   km2: number
-  contained: boolean
   ratio: number
 }
 
@@ -253,9 +253,11 @@ export async function getFeaturesFilteredByArea({
         mode = 'polygon'
       } else if (instance instanceof FourwingsLayer) {
         mode =
-          instance.props.category === 'environment' || instance.props.category === 'user'
-            ? 'cellCenter'
-            : 'cell'
+          instance.getMode() === POSITIONS_ID
+            ? 'point'
+            : instance.props.category === 'environment' || instance.props.category === 'user'
+              ? 'cellCenter'
+              : 'cell'
       } else if (instance.props.category === 'user' || instance.props.category === 'context') {
         mode = 'point'
       }

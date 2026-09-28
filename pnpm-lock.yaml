@@ -1279,13 +1279,7 @@ importers:
       '@loaders.gl/core':
         specifier: 4.x
         version: 4.5.1
-      '@loaders.gl/loader-utils':
-        specifier: 4.x
-        version: 4.5.1(@loaders.gl/core@4.5.1)
       '@loaders.gl/mvt':
-        specifier: 4.x
-        version: 4.5.1(@loaders.gl/core@4.5.1)
-      '@loaders.gl/pmtiles':
         specifier: 4.x
         version: 4.5.1(@loaders.gl/core@4.5.1)
       '@loaders.gl/schema':
@@ -1321,6 +1315,9 @@ importers:
       luxon:
         specifier: 3.x
         version: 3.7.2
+      pmtiles:
+        specifier: 3.x
+        version: 3.2.1
       qs:
         specifier: 6.x
         version: 6.16.0

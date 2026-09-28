@@ -212,7 +212,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
   }
 
   renderLayers() {
-    const { visible, layers, pickable } = this.props
+    const { visible, layers, pickable, debounceTime, maxRequests } = this.props
 
     if (!visible) return []
 
@@ -225,12 +225,13 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
       const loaderProps = isPMTiles
         ? {}
         : { loaders: [GFWMVTLoader], loadOptions: { ...getFetchLoadOptions() } }
+      const tilesLoadProps = { ...loaderProps, debounceTime, maxRequests }
 
       if (layer.id === ContextLayerId.EEZBoundaries) {
         return new TilesLayer<ContextFeature>({
           id: `${layer.id}-boundaries-layer`,
           data: layer.tilesUrl,
-          ...loaderProps,
+          ...tilesLoadProps,
           maxZoom: 8,
           renderSubLayers: (props: any) => {
             const mvtSublayerProps = { ...props, ...getSublayerProps(props) }
@@ -268,7 +269,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
       return new TilesLayer<ContextFeature>({
         id: `${layer.id}-base-layer`,
         data: layer.tilesUrl,
-        ...loaderProps,
+        ...tilesLoadProps,
         maxZoom: 8,
         onViewportLoad: this.props.onViewportLoad,
         updateTriggers: {

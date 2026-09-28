@@ -51,14 +51,16 @@ export const MAX_POSITIONS_PER_TILE_VISUALIZED = 4000
 export const POSITIONS_VISUALIZATION_MAX_ZOOM = 12
 // Latest position of each vessel keeps the full size icon, the rest of the track is drawn smaller
 export const POSITIONS_ICON_SIZE = 15
-export const POSITIONS_TRAIL_ICON_SIZE = 6
+export const POSITIONS_TRAIL_ICON_SIZE = 7
 export const POSITIONS_CIRCLE_SIZE = 10
 export const POSITIONS_TRAIL_CIRCLE_SIZE = 5
 // Added on top of whatever size the position already has, so a highlighted trail position
 // stays smaller than a highlighted last position
 export const POSITIONS_HIGHLIGHT_ICON_OFFSET = 3
 export const POSITIONS_HIGHLIGHT_CIRCLE_OFFSET = 1
-export const POSITIONS_HIGHLIGHT_OPACITY = 0.8
+export const POSITIONS_HIGHLIGHT_OPACITY = 1
+// Icon size multiplier for positions of the hovered vessel or inside the hovered time range
+export const POSITIONS_HIGHLIGHT_SCALE = 1.5
 // Two positions farther apart than this is cut instead of drawing a straight line across the gap
 export const POSITIONS_TRACK_MAX_GAP_SECONDS = 60 * 60
 // The track line is a support for the position icons, it shouldn't compete with them, and only

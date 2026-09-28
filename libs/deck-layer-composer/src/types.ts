@@ -3,6 +3,7 @@ import type {
   DeckLayerSubcategory,
   FourwingsDeckSublayer,
   FourwingsDeckVectorSublayer,
+  FourwingsRampFit,
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
 } from '@globalfishingwatch/deck-layers'
@@ -35,7 +36,8 @@ export type DeckLegend = {
   unit?: string
   gridArea?: number | string
   domain?: FourwingsTileLayerColorDomain
-  max?: number
+  fits?: (FourwingsRampFit | undefined)[]
+  extents?: ([number, number] | undefined)[]
   ranges?: FourwingsTileLayerColorRange
   color?: string
   loading?: boolean

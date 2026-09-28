@@ -229,7 +229,7 @@ function EventsEncounterTooltipRow({
                             className={cx(styles.btnLarge, 'print-hidden')}
                             onClick={() => seeEncounterClick(event.dataset)}
                           >
-                            {t((t) => t.common.seeMore)}
+                            <span className={styles.btnLabel}>{t((t) => t.common.seeMore)}</span>
                           </Button>
                         </VesselLink>
                       </div>

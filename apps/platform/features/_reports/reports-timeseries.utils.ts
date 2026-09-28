@@ -143,15 +143,13 @@ export const getPolygonsTimeseriesStats = ({
 
     // km2 is the sort key, so it is computed for every polygon; the rest of the payload
     // (feature clone, label lookup) is only built for the TOP_AREAS_COUNT that survive the slice.
-    const topAreaCandidates: { feature: any; km2: number; contained: boolean }[] = []
+    const topAreaCandidates: { feature: any; km2: number }[] = []
     const addTopArea = ({
       feature,
       geometry,
-      isWholePolygon,
     }: {
       feature: any
       geometry: Polygon | MultiPolygon
-      isWholePolygon: boolean
     }) => {
       // An aggregated feature is many areas at once, so it is not one of the top ones.
       if (getFeatureCount(feature) > 1) {
@@ -159,8 +157,8 @@ export const getPolygonsTimeseriesStats = ({
       }
       // Properties only where the polygon is counted whole: an overlapping one is measured
       // after clipping, so its own area_km2 would overstate what is inside the report area.
-      const km2 = getAreaKm2({ geometry, properties: isWholePolygon ? feature.properties : null })
-      topAreaCandidates.push({ feature, km2, contained: isWholePolygon })
+      const km2 = getAreaKm2({ geometry, properties: feature.properties })
+      topAreaCandidates.push({ feature, km2 })
     }
 
     const polygonsToUnion: PolygonGeomCoords[] = []
@@ -174,7 +172,7 @@ export const getPolygonsTimeseriesStats = ({
         return
       }
       // Contained polygons are already fully inside, no clipping needed.
-      addTopArea({ feature, geometry, isWholePolygon: true })
+      addTopArea({ feature, geometry })
       polygonsToUnion.push(geometry.coordinates as PolygonGeomCoords)
     })
 
@@ -195,7 +193,6 @@ export const getPolygonsTimeseriesStats = ({
       addTopArea({
         feature: p,
         geometry: { type: 'MultiPolygon', coordinates: clipped },
-        isWholePolygon: false,
       })
       polygonsToUnion.push(clipped)
     })
@@ -220,7 +217,7 @@ export const getPolygonsTimeseriesStats = ({
       topAreas: topAreaCandidates
         .sort((a, b) => b.km2 - a.km2)
         .slice(0, TOP_AREAS_COUNT)
-        .map(({ feature, km2, contained }): PolygonsReportTopArea => {
+        .map(({ feature, km2 }): PolygonsReportTopArea => {
           const nameProperty = (feature.valueProperties as string[] | undefined)?.[0]
           // Leave geometries out of the atom
           const { geometry: _geometry, ...featureRef } = feature
@@ -232,7 +229,6 @@ export const getPolygonsTimeseriesStats = ({
               feature.value ??
               feature.id,
             km2,
-            contained,
             ratio: reportAreaM2 > 0 ? (km2 * 1_000_000) / reportAreaM2 : 0,
           }
         }),

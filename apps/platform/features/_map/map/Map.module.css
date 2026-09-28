@@ -24,7 +24,7 @@
 .logo {
   position: absolute;
   top: 0;
-  left: var(--space-XS);
+  left: var(--space-S);
   z-index: 10;
 }
 

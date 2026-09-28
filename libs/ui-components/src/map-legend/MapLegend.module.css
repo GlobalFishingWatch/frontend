@@ -31,34 +31,10 @@
   margin-right: var(--space-S);
 }
 
-.fitRow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-XS);
-  cursor: pointer;
-  text-transform: none;
-  letter-spacing: unset;
-  font: var(--font-XS);
-  line-height: 1.2;
-  color: var(--color-secondary-blue);
-}
-
 .ramp {
   height: 1rem;
-  width: 100%;
   position: relative;
   background-color: var(--color-map-background);
-}
-
-.ramp::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border: var(--border);
-
-  /* Decorative border painted after the positioned children, so it would otherwise sit on top
-     of the brush (ColorRampBrush.module.css) and swallow the drag */
-  pointer-events: none;
 }
 
 .symbols {
@@ -142,11 +118,31 @@
 }
 
 .stepsContainer {
-  width: 100%;
   position: relative;
   min-height: 1.5rem;
   line-height: 1;
   padding-top: 0.2rem;
+}
+
+/* Entering and leaving inset brush mode slides the ramp to its new margins along with the handles
+   (ColorRampBrush). Both stay at the default auto width for this: a fixed 100% would overflow while
+   the margin animates back to 0 */
+.ramp,
+.stepsContainer {
+  transition-property: margin, opacity;
+  transition-duration: 0.3s, 0.15s;
+  transition-timing-function: ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ramp,
+  .stepsContainer {
+    transition: none;
+  }
+}
+
+.row:has([data-moving]) .stepsContainer:is(.insetStart, .insetEnd) {
+  opacity: 0;
 }
 
 .step {
@@ -224,4 +220,42 @@
   100% {
     opacity: 1;
   }
+}
+
+.ramp::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: var(--border);
+  pointer-events: none;
+  transition-property: left, right;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ramp::after {
+    transition: none;
+  }
+}
+
+.ramp.insetStart::after {
+  left: calc(-1 * var(--brush-inset));
+}
+
+.ramp.insetEnd::after {
+  right: calc(-1 * var(--brush-inset));
+}
+
+.insetStart,
+.insetEnd {
+  --brush-inset: 4rem;
+}
+
+.insetStart {
+  margin-left: var(--brush-inset);
+}
+
+.insetEnd {
+  margin-right: var(--brush-inset);
 }

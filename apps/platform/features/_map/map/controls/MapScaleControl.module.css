@@ -18,3 +18,7 @@
     bottom: 2.8rem;
   }
 }
+
+:global(.printing) .scale {
+  bottom: 3.2rem;
+}

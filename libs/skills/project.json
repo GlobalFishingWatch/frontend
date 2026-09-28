@@ -61,7 +61,7 @@
             "js": "import { createRequire as __createRequire } from 'node:module'; const require = __createRequire(import.meta.url);"
           },
           "alias": {
-            "@platform/config": "./apps/platform/config/index.ts",
+            "@platform/config": "./apps/platform/config",
             "@globalfishingwatch/api-types": "./libs/api-types/dist",
             "@globalfishingwatch/api-client": "./libs/api-client/dist",
             "@globalfishingwatch/data-transforms": "./libs/data-transforms/dist",

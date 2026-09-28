@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 
 import type { VesselGroup } from '@globalfishingwatch/api-types'
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
-import { PRESENCE_DATAVIEW_SLUG } from '@platform/config'
+import { PRESENCE_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
 
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { selectPresenceDataviews } from 'features/_map/dataviews/selectors/dataviews.static.selectors'

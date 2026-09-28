@@ -4,7 +4,11 @@ import { PbfReader as Pbf } from 'pbf'
 import { assignFourwingsFeaturesByteLength } from '../helpers/byte-length'
 import type { BBox } from '../helpers/cells'
 import { generateUniqueId, getCellCoordinates, getCellProperties } from '../helpers/cells'
-import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
+import {
+  CONFIG_BY_INTERVAL,
+  getTimeRangeKey,
+  TEMPORAL_AGGREGATED_TIME_RANGE_KEY,
+} from '../helpers/time'
 
 import type { FourwingsFeature, FourwingsLoaderOptions, ParseFourwingsOptions } from './types'
 
@@ -235,15 +239,16 @@ export const getCellTemporalAggregated = (
               cellId: generateUniqueId(tile!.index.x, tile!.index.y, cellNum),
               cellNum,
               startOffsets: new Array(sublayersLength),
-              initialValues: {},
+              initialValues: { [TEMPORAL_AGGREGATED_TIME_RANGE_KEY]: new Array(sublayersLength) },
             },
           }
           data.features.set(cellNum, feature)
         }
         // one frame per cell, so the aggregation window is always frame 0
-        feature.properties.values[subLayerIndex] = [
-          descaleFourwingsValue(value, sublayerScale, sublayerOffset),
-        ]
+        const descaledValue = descaleFourwingsValue(value, sublayerScale, sublayerOffset)
+        feature.properties.values[subLayerIndex] = [descaledValue]
+        feature.properties.initialValues[TEMPORAL_AGGREGATED_TIME_RANGE_KEY]![subLayerIndex] =
+          descaledValue
         feature.properties.startOffsets[subLayerIndex] = 0
       }
       // resseting indexInCell to start with the new cell
