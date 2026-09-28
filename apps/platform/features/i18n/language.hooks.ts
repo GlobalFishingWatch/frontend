@@ -7,7 +7,6 @@ import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { IS_DEVELOPMENT_ENV } from 'data/map/config'
 import { refreshDatasetsLocaleThunk } from 'features/_map/datasets/datasets.slice'
-import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectHasEditTranslationsPermissions } from 'features/_user/selectors/user.permissions.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -52,8 +51,11 @@ export function useLanguageOptions() {
 
       setIsLoading(true)
       const locale = lang === 'source' ? Locale.en : (lang as Locale)
+      // Read at click time instead of useSelector so the nav doesn't re-render on dataview changes.
+      // Lazy import keeps the dataview selector graph out of the platform shell (check-store-graph).
+      const { selectAllDataviewInstancesResolved } =
+        await import('features/_map/dataviews/selectors/dataviews.resolvers.selectors')
       datasetsRefreshRef.current?.abort()
-      // Read at click time instead of useSelector so the nav doesn't re-render on dataview changes
       const priorityIds = (selectAllDataviewInstancesResolved(store.getState()) || []).flatMap(
         (dataview) => dataview.datasets?.map(({ id }) => id) || []
       )
