@@ -13,6 +13,7 @@ import type { UserGuideSlug } from 'features/cms/loaders/user-guide.types'
 // t('help-hints:filterActivityLayers')
 // t('help-hints:fishingEffortHeatmap')
 // t('help-hints:periodComparisonBaseline')
+// t('help-hints:reportAreaSearch')
 // t('help-hints:userContextLayers')
 // t('userGuide.analyzing-activity-over-time')
 // t('userGuide.central-section-showing-spatial-activity-maps')
@@ -26,6 +27,7 @@ export type HintId =
   | 'changingTheTimeRange'
   | 'areaSearch'
   | 'periodComparisonBaseline'
+  | 'reportAreaSearch'
   | 'userContextLayers'
 
 type HintConfig = {
@@ -73,6 +75,11 @@ const hintsConfig: Record<HintId, HintConfig> = {
     pulse: 'dark',
     openedByDefault: true,
     userGuideSlug: 'analyzing-activity-over-time',
+  },
+  reportAreaSearch: {
+    placement: 'bottom',
+    pulse: 'dark',
+    userGuideSlug: 'analysis-and-dynamic-reports',
   },
   userContextLayers: {
     placement: 'top',

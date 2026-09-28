@@ -11,8 +11,10 @@ import {
   pendingPromptAtom,
 } from 'features/_map/content-panel/chat/chat.atoms'
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
-import { setMapSearchOpenRequested } from 'features/_map/map/controls/map-controls.slice'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
+import { cleanReportPayload } from 'features/_map/workspace/workspace.utils'
+import { useFitAreaInViewport } from 'features/_reports/report-area/area-reports.hooks'
+import { ReportCategory } from 'features/_reports/reports.types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import type { UserGuideSlug } from 'features/cms/loaders/user-guide.types'
@@ -37,22 +39,25 @@ export function useOnboardingCardActions() {
   const router = useRouter()
   const workspace = useSelector(selectWorkspace)
   const { openSidePanel } = useSidePanel()
+  const fitAreaInViewport = useFitAreaInViewport()
 
   const track = useCallback((action: string) => {
     trackEvent({ category: TrackCategory.HelpHints, action: `onboarding panel - ${action}` })
   }, [])
 
   const navigateWithGuide = useCallback(
-    (to: string, slug: UserGuideSlug) => {
+    (to: string, slug: UserGuideSlug, search: QueryParams = {}) => {
       const { id, subcontentId } = getGuideTarget(slug)
+      const params = {
+        category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+        workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+      }
       router.navigate({
         to,
-        params: {
-          category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-          workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-        },
+        params: to === ROUTE_PATHS.WORKSPACE_REPORT ? cleanReportPayload(params) : params,
         search: (prev: QueryParams): QueryParams => ({
           ...prev,
+          ...search,
           sidePanelContent: 'userGuide',
           sidePanelId: id,
           sidePanelSubcontentId: subcontentId,
@@ -67,11 +72,18 @@ export function useOnboardingCardActions() {
     navigateWithGuide(ROUTE_PATHS.WORKSPACE_SEARCH, 'vessel-search')
   }, [navigateWithGuide, track])
 
+  // Same destination as the activity section's GlobalReportLink.
   const onAreaReportClick = useCallback(() => {
     track('run a report on an area')
-    dispatch(setMapSearchOpenRequested(true))
-    navigateWithGuide(ROUTE_PATHS.WORKSPACE, 'analysis-and-dynamic-reports')
-  }, [dispatch, navigateWithGuide, track])
+    fitAreaInViewport()
+    navigateWithGuide(ROUTE_PATHS.WORKSPACE_REPORT, 'analysis-and-dynamic-reports', {
+      reportCategory: ReportCategory.Activity,
+      latitude: 0,
+      longitude: 0,
+      zoom: 0,
+      bivariateDataviews: null,
+    } as QueryParams)
+  }, [fitAreaInViewport, navigateWithGuide, track])
 
   const onUserGuideClick = useCallback(() => {
     track('learn how to use the tools')
