@@ -11,10 +11,12 @@ type HintsDismissed = Record<HintId, boolean>
 
 interface HintsState {
   hintsDismissed?: HintsDismissed
+  hintToOpen?: HintId
 }
 
 const initialState: HintsState = {
   hintsDismissed: undefined,
+  hintToOpen: undefined,
 }
 
 const hintsSlice = createSlice({
@@ -27,6 +29,9 @@ const hintsSlice = createSlice({
     resetHints: (state) => {
       state.hintsDismissed = undefined
       setLocalStorageItem(HINTS, '{}')
+    },
+    setHintToOpen: (state, action: PayloadAction<HintId | undefined>) => {
+      state.hintToOpen = action.payload
     },
     setHintDismissed: (state, action: PayloadAction<HintId>) => {
       let currentHintsDismissed: HintsDismissed = state.hintsDismissed ?? ({} as HintsDismissed)
@@ -45,8 +50,10 @@ const hintsSlice = createSlice({
   },
 })
 
-export const { hydrateHintsDismissed, resetHints, setHintDismissed } = hintsSlice.actions
+export const { hydrateHintsDismissed, resetHints, setHintDismissed, setHintToOpen } =
+  hintsSlice.actions
 
 export const selectHintsDismissed = (state: RootState) => state.hints.hintsDismissed
+export const selectHintToOpen = (state: RootState) => state.hints.hintToOpen
 
 export default hintsSlice.reducer
