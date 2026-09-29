@@ -36,6 +36,7 @@ import { getTimeseries } from 'features/_reports/reports-timeseries.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   fetchAreaDetailThunk,
+  parseFeatureBbox,
   selectDatasetAreaDetail,
   selectDatasetAreaStatus,
 } from 'features/data/areas/areas.slice'
@@ -197,7 +198,7 @@ export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickin
       }
       return
     }
-    let bounds: Bbox | undefined = areaDetail?.bounds
+    let bounds: Bbox | undefined = parseFeatureBbox(feature.properties?.bbox) || areaDetail?.bounds
     if (!bounds) {
       const area = await dispatch(
         fetchAreaDetailThunk({ datasetId, areaId, areaName, simplify })
@@ -209,7 +210,8 @@ export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickin
     }
   }, [
     trackLayer,
-    areaDetail?.bounds,
+    areaDetail,
+    feature.properties?.bbox,
     start,
     end,
     fitBounds,
