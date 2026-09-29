@@ -6,7 +6,7 @@ import type {
   DatasetFilterType,
   Dataview,
   FilterOperator,
-  IdentityVessel,
+  VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, INCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import type { SupportedDatasetFilter } from '@globalfishingwatch/datasets-client'
@@ -36,8 +36,7 @@ const EXPERIMENTAL_FIELDS_BY_FILTER: { [key in SupportedDatasetFilter]?: string[
 }
 
 type FilterCompatibilityOperation = 'every' | 'some'
-// TODO:DR review if FilterOriginParam is still needed
-type FilterOriginParam = keyof Pick<IdentityVessel, 'selfReportedInfo' | 'registryInfo'> | 'all'
+type FilterOriginParam = VesselIdentitySourceEnum | 'all'
 export type GetFiltersInDataviewParams = {
   fieldsToInclude?: SupportedDatasetFilter[]
   vesselGroups?: MultiSelectOption[]
@@ -165,13 +164,17 @@ export const getNotSupportedFilterDatasets = (
   return datasetsWithoutFiltersSupport
 }
 
+const getInfoSource = (filterOrigin?: FilterOriginParam) =>
+  filterOrigin === 'all' ? undefined : filterOrigin
+
 const getCommonFilterTypeInDataview = (
   dataview: DataviewWithFilters,
-  filter: SupportedDatasetFilter
+  filter: SupportedDatasetFilter,
+  filterOrigin?: FilterOriginParam
 ) => {
   const activeDatasets = getActiveDatasetsInDataview(dataview as UrlDataviewInstance)
   const datasetFilters = activeDatasets
-    ?.map((d) => getDatasetFilterItem(d, filter)?.type)
+    ?.map((d) => getDatasetFilterItem(d, filter, getInfoSource(filterOrigin))?.type)
     .filter(Boolean)
   return datasetFilters?.[0]
 }
@@ -188,6 +191,7 @@ export const getCommonFiltersInDataview = (
     vesselGroups = [],
     isGuestUser = true,
     compatibilityOperation = 'every',
+    filterOrigin,
   } = {} as GetFiltersInDataviewParams
 ): DataviewFilterSelection[] => {
   const activeDatasets = getActiveDatasetsInDataview(dataview as UrlDataviewInstance)
@@ -210,9 +214,9 @@ export const getCommonFiltersInDataview = (
     }
     return []
   }
-  const filterType = getCommonFilterTypeInDataview(dataview, filter)
+  const filterType = getCommonFilterTypeInDataview(dataview, filter, filterOrigin)
   let filterFields = (activeDatasets || [])?.map((d) => {
-    const filterConfig = getDatasetFilterItem(d, filter)
+    const filterConfig = getDatasetFilterItem(d, filter, getInfoSource(filterOrigin))
     const filterEnum = filterConfig?.enum || []
     return Array.isArray(filterEnum)
       ? filterEnum.filter((e) => e !== null && e !== undefined)
@@ -412,7 +416,7 @@ export const getDataviewFilterConfig = (
     filterOrigin,
     isGuestUser,
   })
-  const type = getCommonFilterTypeInDataview(dataview, filter) as DatasetFilterType
+  const type = getCommonFilterTypeInDataview(dataview, filter, filterOrigin) as DatasetFilterType
   const singleSelection = getIsFilterSingleSelection(dataview, filter)
   const operation = getFilterOperation(dataview, filter) as DatasetFilterOperation
   const filterOperator = getFilterOperationInDataview(dataview, filter) as FilterOperator
