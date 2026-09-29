@@ -33,6 +33,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectLayerLibraryModal,
   selectLayerLibraryUniqueCategory,
+  selectLayerLibraryUserGeometries,
 } from 'features/modals/modals.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { upperFirst } from 'utils/info'
@@ -51,6 +52,7 @@ const LayerLibrary: FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const initialCategory = useSelector(selectLayerLibraryModal)
   const layerLibraryUniqueCategory = useSelector(selectLayerLibraryUniqueCategory)
+  const layerLibraryUserGeometries = useSelector(selectLayerLibraryUserGeometries)
   const isGFWUser = useSelector(selectIsGFWUser)
   const guestUser = useSelector(selectIsGuestUser)
   const [currentCategory, setCurrentCategory] = useState<DataviewCategory>(
@@ -124,7 +126,7 @@ const LayerLibrary: FC = () => {
   }, [layersResolved, layerLibraryUniqueCategory, initialCategory])
 
   const extendedCategories = useMemo(() => {
-    if (layerLibraryUniqueCategory) {
+    if (layerLibraryUniqueCategory && !layerLibraryUserGeometries?.length) {
       return [...uniqCategories.map((category) => ({ category, subcategories: [] }))]
     }
     const userSubcategories = [] as UserSubcategory[]
@@ -142,10 +144,18 @@ const LayerLibrary: FC = () => {
       ...uniqCategories.map((category) => ({ category, subcategories: [] })),
       {
         category: DataviewCategory.User,
-        subcategories: userSubcategories,
+        subcategories: layerLibraryUserGeometries
+          ? userSubcategories.filter((s) => layerLibraryUserGeometries.some((type) => type === s))
+          : userSubcategories,
       },
     ]
-  }, [uniqCategories, userGeometries, layerLibraryUniqueCategory, userDatasetsLoaded])
+  }, [
+    uniqCategories,
+    userGeometries,
+    layerLibraryUniqueCategory,
+    layerLibraryUserGeometries,
+    userDatasetsLoaded,
+  ])
 
   const allCategories = useMemo(() => {
     return extendedCategories.map(({ category }) => category)
@@ -407,6 +417,7 @@ const LayerLibrary: FC = () => {
               <div className={styles.categoryContainer}>
                 <LayerLibraryUserPanel
                   searchQuery={activeSearchQuery}
+                  geometryTypes={layerLibraryUserGeometries}
                   datasetsLoaded={userDatasetsLoaded}
                   datasetsError={userDatasetsStatus === AsyncReducerStatus.Error}
                   onRetryFetch={onRetryFetch}
