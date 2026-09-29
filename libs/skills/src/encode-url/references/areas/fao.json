@@ -1,0 +1,21 @@
+[
+{"datasetId":"public-fao-major","areaId":"18","label":"FAO 18 Arctic Sea","bbox":[-180,48,180,89.99]},
+{"datasetId":"public-fao-major","areaId":"61","label":"FAO 61 Pacific, Northwest (Northwest Pacific)","bbox":[-180,15,180,66.5]},
+{"datasetId":"public-fao-major","areaId":"67","label":"FAO 67 Pacific, Northeast (Northeast Pacific)","bbox":[-175,40,-120,66.5]},
+{"datasetId":"public-fao-major","areaId":"37","label":"FAO 37 Mediterranean and Black Sea","bbox":[-5.91,28,43,48]},
+{"datasetId":"public-fao-major","areaId":"27","label":"FAO 27 Atlantic, Northeast (Northeast Atlantic)","bbox":[-44,36,68.5,89.99]},
+{"datasetId":"public-fao-major","areaId":"31","label":"FAO 31 Atlantic, Western Central (Western Central Atlantic)","bbox":[-100,4.41,-40,36]},
+{"datasetId":"public-fao-major","areaId":"34","label":"FAO 34 Atlantic, Eastern Central (Eastern Central Atlantic)","bbox":[-40,-6.44,14.68,36]},
+{"datasetId":"public-fao-major","areaId":"51","label":"FAO 51 Indian Ocean, Western (Western Indian Ocean)","bbox":[30,-45,80,32]},
+{"datasetId":"public-fao-major","areaId":"57","label":"FAO 57 Indian Ocean, Eastern (Eastern Indian Ocean)","bbox":[77,-55,150,30]},
+{"datasetId":"public-fao-major","areaId":"71","label":"FAO 71 Pacific, Western Central (Western Central Pacific)","bbox":[-180,-28.15,180,20]},
+{"datasetId":"public-fao-major","areaId":"87","label":"FAO 87 Pacific, Southeast (Southeast Pacific)","bbox":[-120,-60,-65.72,8]},
+{"datasetId":"public-fao-major","areaId":"41","label":"FAO 41 Atlantic, Southwest (Southwest Atlantic)","bbox":[-70.75,-60,-20,5]},
+{"datasetId":"public-fao-major","areaId":"81","label":"FAO 81 Pacific, Southwest (Southwest Pacific)","bbox":[-180,-60,180,-25]},
+{"datasetId":"public-fao-major","areaId":"58","label":"FAO 58 Indian Ocean, Antarctic (Antarctic Indian Ocean)","bbox":[29.99,-87.79,150,-45]},
+{"datasetId":"public-fao-major","areaId":"48","label":"FAO 48 Atlantic, Antarctic (Antarctic Atlantic)","bbox":[-90,-87.94,30,-50]},
+{"datasetId":"public-fao-major","areaId":"88","label":"FAO 88 Pacific, Antarctic (Antarctic Pacific)","bbox":[-180,-88,180,-60]},
+{"datasetId":"public-fao-major","areaId":"77","label":"FAO 77 Pacific, Eastern Central (Eastern Central Pacific)","bbox":[-175,-25,-77.2,40.5]},
+{"datasetId":"public-fao-major","areaId":"47","label":"FAO 47 Atlantic, Southeast (Southeast Atlantic)","bbox":[-20,-50,30,-6]},
+{"datasetId":"public-fao-major","areaId":"21","label":"FAO 21 Atlantic, Northwest (Northwest Atlantic)","bbox":[-82.41,35,-40,78.17]}
+]

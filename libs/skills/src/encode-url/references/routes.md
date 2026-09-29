@@ -24,7 +24,7 @@ Map views live under a `/map` segment. The vessel profile, vessel search, saved 
 - `category`: `fishing-activity` (default for reports) | `reports` (global report) | `marine-manager` (curated, link-only)
 - `workspaceId`: `default-public` (default public workspace)
 - report `datasetId` values: `public-eez-areas`, `public-fao-major`, `public-rfmo`, `public-mpa-all`
-- `areaId`: grep `areas.json` — numeric for EEZs, FAO major area code (`41`), RFMO acronym (`ICCAT`)
+- `areaId`: grep `areas/<eez|fao|rfmo|mpa>.json` — numeric for EEZs and MPAs (WDPA id), FAO major area code (`41`), RFMO acronym (`ICCAT`)
 - `vesselId`: GFW vessel id (uuid-like, from vessel search results)
 - `portId`: e.g. `arg-camarones` (see `ports.json`)
 
