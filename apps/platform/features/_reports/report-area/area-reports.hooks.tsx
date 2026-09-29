@@ -2,7 +2,9 @@ import type { JSX } from 'react'
 import { Fragment, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { useRouterState } from '@tanstack/react-router'
 import { countBy } from 'es-toolkit'
+import { useAtomValue } from 'jotai'
 import { useGetStatsByDataviewQuery } from 'queries/map/stats-api'
 
 import {
@@ -24,6 +26,7 @@ import { FIT_BOUNDS_REPORT_PADDING } from 'data/map/config'
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
 import { selectVGReportActivityDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { selectDataviewInstancesResolvedVisible } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
+import { mapSizeAtom } from 'features/_map/map/map.atoms'
 import type { FitBoundsParams } from 'features/_map/map/map-bounds.hooks'
 import { getMapCoordinatesFromBounds } from 'features/_map/map/map-bounds.hooks'
 import { useDeckMap } from 'features/_map/map/map-context.hooks'
@@ -95,21 +98,27 @@ const isClose = (a?: number, b?: number, tolerance = LAT_LON_TOLERANCE) => {
   return Math.abs(a - b) <= tolerance
 }
 
+const getReportAreaCenter = (bounds: Bbox, params: FitBoundsParams, screenshotMode: boolean) => {
+  const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(bounds, {
+    padding: FIT_BOUNDS_REPORT_PADDING,
+    mapWidth: getIsBrowser() ? (screenshotMode ? window.innerWidth : undefined) : 800,
+    ...params,
+  })
+  return {
+    latitude: parseFloat(latitude.toFixed(8)),
+    longitude: parseFloat(longitude.toFixed(8)),
+    zoom: parseFloat(zoom.toFixed(8)),
+  }
+}
+
 export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
   const screenshotMode = useSelector(selectScreenshotMode)
+  const mapSize = useAtomValue(mapSizeAtom)
   return useMemo(() => {
     if (!bounds) return null
-    const { latitude, longitude, zoom } = getMapCoordinatesFromBounds(bounds, {
-      padding: FIT_BOUNDS_REPORT_PADDING,
-      mapWidth: getIsBrowser() ? (screenshotMode ? window.innerWidth : undefined) : 800,
-      ...params,
-    })
-    return {
-      latitude: parseFloat(latitude.toFixed(8)),
-      longitude: parseFloat(longitude.toFixed(8)),
-      zoom: parseFloat(zoom.toFixed(8)),
-    }
-  }, [bounds, params])
+    return getReportAreaCenter(bounds, params, screenshotMode)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bounds, params, screenshotMode, mapSize])
 }
 
 export function useStatsBounds(dataview?: UrlDataviewInstance) {
@@ -279,32 +288,34 @@ export function useFitAreaInViewport(params = defaultParams) {
   const setMapCoordinates = useSetMapCoordinates()
   const deckMap = useDeckMap()
   const viewState = useMapViewState()
+  const screenshotMode = useSelector(selectScreenshotMode)
+  const isNavigating = useRouterState({ select: (s) => s.status === 'pending' })
   const { id, bbox } = useReportAreaBounds()
-  const areaCenter = useReportAreaCenter(bbox as Bbox, params)
-  const areaInViewport = isAreaCenterInViewport(viewState, areaCenter, id)
   const pendingFitInAreaRef = useRef(false)
-  const prevDeckMapRef = useRef(deckMap)
+  const canFit = Boolean(deckMap) && !isNavigating
 
-  // This ensures the useFitAreaInViewport is triggered when deckMap is not available yet
-  useEffect(() => {
-    const deckMapJustLoaded = !prevDeckMapRef.current && deckMap
-    prevDeckMapRef.current = deckMap
-
-    if (deckMapJustLoaded && pendingFitInAreaRef.current && !areaInViewport && areaCenter) {
-      pendingFitInAreaRef.current = false
+  const fitArea = useCallback(() => {
+    if (!bbox) return
+    const areaCenter = getReportAreaCenter(bbox as Bbox, params, screenshotMode)
+    if (!isAreaCenterInViewport(viewState, areaCenter, id)) {
       setMapCoordinates(areaCenter)
     }
-  }, [deckMap, areaInViewport, areaCenter, setMapCoordinates])
+  }, [bbox, params, screenshotMode, viewState, id, setMapCoordinates])
+
+  useEffect(() => {
+    if (canFit && pendingFitInAreaRef.current) {
+      pendingFitInAreaRef.current = false
+      fitArea()
+    }
+  }, [canFit, fitArea])
 
   return useCallback(() => {
-    if (!areaInViewport && areaCenter) {
-      if (deckMap) {
-        setMapCoordinates(areaCenter)
-      } else {
-        pendingFitInAreaRef.current = true
-      }
+    if (canFit) {
+      fitArea()
+    } else {
+      pendingFitInAreaRef.current = true
     }
-  }, [areaCenter, areaInViewport, deckMap, setMapCoordinates])
+  }, [canFit, fitArea])
 }
 
 // 0 - 20MB No simplifyTrack

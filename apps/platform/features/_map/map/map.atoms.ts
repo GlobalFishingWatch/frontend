@@ -3,8 +3,12 @@ import { atom } from 'jotai'
 
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 import { DEFAULT_VIEWPORT } from '@platform/config/map/app'
+
 // MAP INSTANCE
 export const mapInstanceAtom = atom<Deck<MapView> | undefined>(undefined)
+
+// MAP SIZE
+export const mapSizeAtom = atom<{ width: number; height: number } | undefined>(undefined)
 
 // BOUNDS
 type BoundsAtom = MiniglobeBounds & { isTransitioning?: boolean }
