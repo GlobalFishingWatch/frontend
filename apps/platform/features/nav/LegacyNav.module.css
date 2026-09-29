@@ -97,8 +97,8 @@
   opacity: 0.5;
 }
 
-.user > .tabContent {
-  overflow: visible;
+.tab.current .tabContent.disabled {
+  opacity: 1;
 }
 
 .tab.current .tabContent,
