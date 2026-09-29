@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { ReactTable, Row } from '@tanstack/react-table'
@@ -762,4 +762,4 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
   )
 }
 
-export default SearchAdvancedResults
+export default memo(SearchAdvancedResults)

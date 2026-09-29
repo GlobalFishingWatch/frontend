@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo } from 'react'
+import { Fragment, memo, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -346,4 +346,4 @@ function SearchAdvancedFilters() {
   )
 }
 
-export default SearchAdvancedFilters
+export default memo(SearchAdvancedFilters)
