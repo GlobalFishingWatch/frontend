@@ -26,17 +26,39 @@ export const getDatasetFiltersAllowed = (dataset: Dataset) => {
   return flattenFilters.flatMap((filter) => (filter.enabled ? filter.id : []))
 }
 
+// Vessel identity datasets expose some filters under a different id than the one used in the app
+const FILTER_ID_ALIASES: Partial<Record<SupportedDatasetFilter, string>> = {
+  owner: 'registryOwners.name',
+  shiptypes: 'combinedSourcesInfo.shiptypes.name',
+  geartypes: 'combinedSourcesInfo.geartypes.name',
+}
+
+// Candidate ids for a filter, most specific first
+const getDatasetFilterIds = (
+  filter: SupportedDatasetFilter,
+  infoSource?: VesselIdentitySourceEnum
+): string[] => {
+  return [
+    infoSource ? `${infoSource}.${filter}` : undefined,
+    FILTER_ID_ALIASES[filter],
+    filter,
+  ].filter((id): id is string => id !== undefined)
+}
+
 export const getDatasetFilterItem = <T extends DatasetTypes = DatasetTypes>(
   dataset: Dataset<T>,
-  filter: SupportedDatasetFilter
+  filter: SupportedDatasetFilter,
+  infoSource?: VesselIdentitySourceEnum
 ): DatasetFilter | null => {
   if (!dataset?.filters) {
     return null
   }
   const filters = getFlattenDatasetFilters(dataset.filters)
-  const filterItem = filters.find((f) => f.id === filter)
-  if (filterItem) {
-    return filterItem
+  for (const id of getDatasetFilterIds(filter, infoSource)) {
+    const filterItem = filters.find((f) => f.id === id)
+    if (filterItem) {
+      return filterItem
+    }
   }
 
   return null
@@ -75,16 +97,8 @@ export const isFilterInFiltersAllowed = ({
   filtersAllowed: string[]
   infoSource?: VesselIdentitySourceEnum
 }): boolean => {
-  return filtersAllowed?.some((f) => {
-    return (
-      f === filter ||
-      f.includes(filter) ||
-      f === `${infoSource}.${filter}` ||
-      (filter === 'owner' && f === 'registryOwners.name') ||
-      (filter === 'shiptypes' && f === 'combinedSourcesInfo.shiptypes.name') ||
-      (filter === 'geartypes' && f === 'combinedSourcesInfo.geartypes.name')
-    )
-  })
+  const filterIds = getDatasetFilterIds(filter, infoSource)
+  return filtersAllowed?.some((f) => f.includes(filter) || filterIds.includes(f))
 }
 
 export const datasetHasFilterAllowed = (dataset: Dataset, filter: SupportedDatasetFilter) => {

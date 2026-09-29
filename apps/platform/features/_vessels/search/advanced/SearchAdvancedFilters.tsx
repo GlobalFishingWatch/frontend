@@ -134,7 +134,7 @@ function SearchAdvancedFilters() {
         const isSharedSelectionSchema = FILTERS_WITH_SHARED_SELECTION_COMPATIBILITY.includes(id)
         return getDataviewFilterConfig(dataview, id as SupportedDatasetFilter, {
           ...(isSharedSelectionSchema && {
-            schemaOrigin: infoSource || 'all',
+            filterOrigin: infoSource || 'all',
             compatibilityOperation: 'some',
             isGuestUser,
           }),
