@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -20,7 +20,12 @@ import { selectSidePanelContent, selectSidePanelId } from 'router/routes.selecto
 
 import type { HintId } from './hints.content'
 import hintsConfig from './hints.content'
-import { selectHintsDismissed, setHintDismissed } from './hints.slice'
+import {
+  selectHintsDismissed,
+  selectHintToOpen,
+  setHintDismissed,
+  setHintToOpen,
+} from './hints.slice'
 
 import styles from './Hint.module.css'
 
@@ -35,7 +40,8 @@ function Hint({ id, className }: HintProps) {
   const isReadOnly = useSelector(selectReadOnly)
   const screenshotMode = useSelector(selectScreenshotMode)
   const dispatch = useAppDispatch()
-  const [visible, setVisible] = useState(openedByDefault || false)
+  const hintToOpen = useSelector(selectHintToOpen)
+  const [visible, setVisible] = useState(() => openedByDefault || hintToOpen === id)
   const hintsDismissed = useSelector(selectHintsDismissed)
   const sidePanelContent = useSelector(selectSidePanelContent)
   const sidePanelId = useSelector(selectSidePanelId)
@@ -43,6 +49,12 @@ function Hint({ id, className }: HintProps) {
     userGuideSlug !== undefined &&
     sidePanelContent === 'userGuide' &&
     sidePanelId === findSectionForSlug(userGuideSlug)?.section
+
+  useEffect(() => {
+    if (hintToOpen === id) {
+      dispatch(setHintToOpen(undefined))
+    }
+  }, [dispatch, hintToOpen, id])
 
   const onDismiss = useCallback(() => {
     setVisible(false)

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { Dataset } from '@globalfishingwatch/api-types'
+import type { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { DatasetStatus, DataviewCategory } from '@globalfishingwatch/api-types'
 import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
@@ -40,11 +40,13 @@ const COLLAPSED_DATASETS_COUNT = 10
 
 const LayerLibraryUserPanel = ({
   searchQuery,
+  geometryTypes,
   datasetsLoaded,
   datasetsError,
   onRetryFetch,
 }: {
   searchQuery: string
+  geometryTypes?: DatasetGeometryType[]
   datasetsLoaded: boolean
   datasetsError: boolean
   onRetryFetch: () => void
@@ -75,9 +77,11 @@ const LayerLibraryUserPanel = ({
   const datasetsByGeometryType = useMemo(
     () =>
       Object.entries(groupDatasetsByGeometryType(filteredDatasets)).filter(
-        ([, geometryDatasets]) => geometryDatasets.length > 0
+        ([geometryType, geometryDatasets]) =>
+          geometryDatasets.length > 0 &&
+          (!geometryTypes || geometryTypes.some((type) => type === geometryType))
       ),
-    [filteredDatasets]
+    [filteredDatasets, geometryTypes]
   )
 
   const onAddToWorkspaceClick = useCallback(

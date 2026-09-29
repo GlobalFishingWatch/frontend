@@ -4,3 +4,9 @@
   background-color: var(--color-off-white-1);
   border: var(--border);
 }
+
+.addLayerContainer {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--space-M);
+}

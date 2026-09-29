@@ -17,7 +17,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { listAsSentence } from 'utils/shared'
 
 // bbox arrives either as a JSON string ("[minX,minY,maxX,maxY]") or already parsed
-function parseFeatureBbox(bbox: unknown): Bbox | undefined {
+export function parseFeatureBbox(bbox: unknown): Bbox | undefined {
   const values = Array.isArray(bbox)
     ? bbox.map(Number)
     : typeof bbox === 'string'

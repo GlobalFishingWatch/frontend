@@ -144,6 +144,10 @@ div.HintPanel {
 .hintTarget {
   position: absolute;
   cursor: pointer;
+
+  /* Floating UI needs at least 1px to track the hint */
+  width: 1px;
+  height: 1px;
 }
 
 .hintBubble {

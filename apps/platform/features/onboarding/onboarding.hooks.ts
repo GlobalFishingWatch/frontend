@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useRouter } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
 
+import { AIS_DATAVIEW_INSTANCE_ID, VMS_DATAVIEW_INSTANCE_ID } from '@platform/config/map/dataviews'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import {
@@ -11,6 +12,7 @@ import {
   pendingPromptAtom,
 } from 'features/_map/content-panel/chat/chat.atoms'
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
+import { mergeDataviewIntancesToUpsert } from 'features/_map/workspace/workspace.hook'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { cleanReportPayload } from 'features/_map/workspace/workspace.utils'
 import { useFitAreaInViewport } from 'features/_reports/report-area/area-reports.hooks'
@@ -19,21 +21,18 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import type { UserGuideSlug } from 'features/cms/loaders/user-guide.types'
 import { findSectionForSlug } from 'features/help/userGuide.utils'
+import { setHintToOpen } from 'features/hints/hints.slice'
 import { setModalOpen } from 'features/modals/modals.slice'
 import type { OnboardingCardId } from 'features/onboarding/onboarding.config'
 import { ROUTE_PATHS } from 'router/routes.utils'
-import type { QueryParams } from 'types'
 
-/** Which user guide article a slug points at, in `openSidePanel` shape. */
+const DEFAULT_ACTIVITY_INSTANCE_IDS = [AIS_DATAVIEW_INSTANCE_ID, VMS_DATAVIEW_INSTANCE_ID]
+
 function getGuideTarget(slug: UserGuideSlug) {
   const match = findSectionForSlug(slug)
   return { id: match?.section, subcontentId: match?.subSection }
 }
 
-/**
- * What each onboarding card does: close the modal, perform the action, and show the guide article
- * explaining it in the content side panel.
- */
 export function useOnboardingCardActions() {
   const dispatch = useAppDispatch()
   const router = useRouter()
@@ -45,49 +44,57 @@ export function useOnboardingCardActions() {
     trackEvent({ category: TrackCategory.HelpHints, action: `onboarding panel - ${action}` })
   }, [])
 
-  const navigateWithGuide = useCallback(
-    (to: string, slug: UserGuideSlug, search: QueryParams = {}) => {
-      const { id, subcontentId } = getGuideTarget(slug)
-      const params = {
-        category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-        workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-      }
-      router.navigate({
-        to,
-        params: to === ROUTE_PATHS.WORKSPACE_REPORT ? cleanReportPayload(params) : params,
-        search: (prev: QueryParams): QueryParams => ({
-          ...prev,
-          ...search,
-          sidePanelContent: 'userGuide',
-          sidePanelId: id,
-          sidePanelSubcontentId: subcontentId,
-        }),
-      })
-    },
-    [router, workspace]
+  const workspaceParams = useMemo(
+    () => ({
+      category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+      workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+    }),
+    [workspace]
   )
 
   const onSearchVesselClick = useCallback(() => {
+    const { id, subcontentId } = getGuideTarget('vessel-search')
+    router.navigate({
+      to: ROUTE_PATHS.WORKSPACE_SEARCH,
+      params: workspaceParams,
+      search: (prev) => ({
+        ...prev,
+        sidePanelContent: 'userGuide',
+        sidePanelId: id,
+        sidePanelSubcontentId: subcontentId,
+      }),
+    })
     track('search for a vessel')
-    navigateWithGuide(ROUTE_PATHS.WORKSPACE_SEARCH, 'vessel-search')
-  }, [navigateWithGuide, track])
+  }, [router, workspaceParams, track])
 
-  // Same destination as the activity section's GlobalReportLink.
   const onAreaReportClick = useCallback(() => {
-    track('run a report on an area')
     fitAreaInViewport()
-    navigateWithGuide(ROUTE_PATHS.WORKSPACE_REPORT, 'analysis-and-dynamic-reports', {
-      reportCategory: ReportCategory.Activity,
-      latitude: 0,
-      longitude: 0,
-      zoom: 0,
-      bivariateDataviews: null,
-    } as QueryParams)
-  }, [fitAreaInViewport, navigateWithGuide, track])
+    dispatch(setHintToOpen('reportAreaSearch'))
+    const defaultActivityInstances = DEFAULT_ACTIVITY_INSTANCE_IDS.filter((id) =>
+      workspace?.dataviewInstances?.some((instance) => instance.id === id)
+    ).map((id) => ({ id, deleted: false, config: { visible: true } }))
+    router.navigate({
+      to: ROUTE_PATHS.WORKSPACE_REPORT,
+      params: cleanReportPayload(workspaceParams),
+      search: (prev) => ({
+        ...prev,
+        reportCategory: ReportCategory.Activity,
+        latitude: 0,
+        longitude: 0,
+        zoom: 0,
+        bivariateDataviews: null,
+        dataviewInstances: mergeDataviewIntancesToUpsert(
+          defaultActivityInstances,
+          prev.dataviewInstances || []
+        ),
+      }),
+    })
+    track('run a report on an area')
+  }, [dispatch, track, fitAreaInViewport, router, workspaceParams, workspace?.dataviewInstances])
 
   const onUserGuideClick = useCallback(() => {
-    track('learn how to use the tools')
     openSidePanel({ type: 'userGuide' })
+    track('learn how to use the tools')
   }, [openSidePanel, track])
 
   return useCallback(

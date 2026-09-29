@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo } from 'react'
+import { Fragment, memo, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -134,7 +134,7 @@ function SearchAdvancedFilters() {
         const isSharedSelectionSchema = FILTERS_WITH_SHARED_SELECTION_COMPATIBILITY.includes(id)
         return getDataviewFilterConfig(dataview, id as SupportedDatasetFilter, {
           ...(isSharedSelectionSchema && {
-            schemaOrigin: infoSource || 'all',
+            filterOrigin: infoSource || 'all',
             compatibilityOperation: 'some',
             isGuestUser,
           }),
@@ -346,4 +346,4 @@ function SearchAdvancedFilters() {
   )
 }
 
-export default SearchAdvancedFilters
+export default memo(SearchAdvancedFilters)
