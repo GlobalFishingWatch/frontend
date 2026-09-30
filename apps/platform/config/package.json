@@ -6,6 +6,7 @@
   "type": "module",
   "exports": {
     "./routes": "./routes.ts",
+    "./user-guide": "./user-guide.ts",
     "./map/*": "./map/*.ts"
   },
   "dependencies": {
