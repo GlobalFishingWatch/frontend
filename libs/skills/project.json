@@ -7,7 +7,7 @@
   "targets": {
     "build": {
       "executor": "@nx/esbuild:esbuild",
-      "dependsOn": ["^build", "sync-areas"],
+      "dependsOn": ["^build", "sync-areas", "sync-dataset-filters"],
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "libs/skills/dist",
@@ -76,7 +76,7 @@
     "publish": {},
     "sync-dataset-filters": {
       "executor": "nx:run-commands",
-      "dependsOn": ["build"],
+      "dependsOn": ["^build"],
       "options": {
         "command": "node libs/skills/scripts/sync-dataset-filters.mjs"
       }
