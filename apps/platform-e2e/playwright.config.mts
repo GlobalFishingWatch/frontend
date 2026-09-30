@@ -44,6 +44,9 @@ export default defineConfig({
   use: {
     /* Origin only; tests navigate to /platform/map via appPath() / MAP_PATH. */
     baseURL,
+    // No-op against plain http; needed for the local-ssl-proxy + local.globalfishingwatch.org
+    // setup (apps/platform/README.md) production smoke tests run against, whose cert is self-signed.
+    ignoreHTTPSErrors: true,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     /* Screenshot on failure */
@@ -102,6 +105,7 @@ export default defineConfig({
   webServer: {
     command: 'node -e "setInterval(() => {}, 60000)"',
     url: baseURL,
+    ignoreHTTPSErrors: true,
     reuseExistingServer: true,
     timeout: 120 * 1000,
   },
