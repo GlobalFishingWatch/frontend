@@ -162,6 +162,7 @@
     "skillQueryParams": "crwdns131985:0crwdne131985:0",
     "skillRoutes": "crwdns131987:0crwdne131987:0",
     "thinking": "crwdns131989:0crwdne131989:0",
+    "toolAlternatives": "crwdns138613:0crwdne138613:0",
     "toolBash": "crwdns131991:0crwdne131991:0",
     "toolLoadSkill": "crwdns131993:0crwdne131993:0",
     "toolNavigate": "crwdns131995:0crwdne131995:0",
