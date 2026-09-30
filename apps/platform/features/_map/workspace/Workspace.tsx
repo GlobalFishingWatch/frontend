@@ -18,6 +18,7 @@ import {
 } from 'features/_map/workspace/workspace.selectors'
 import { isPrivateWorkspaceNotAllowed } from 'features/_map/workspace/workspace.utils'
 import { useMigrateWorkspaceToast } from 'features/_map/workspace/workspace-migration.hooks'
+import { useReadOnlyWorkspaceToast } from 'features/_map/workspace/workspace-read-only.hooks'
 import WorkspaceError from 'features/_map/workspace/WorkspaceError'
 import WorkspacePassword from 'features/_map/workspace/WorkspacePassword'
 import WorkspaceTitle from 'features/_map/workspace/WorkspaceTitle'
@@ -45,6 +46,7 @@ function Workspace() {
   useHideLegacyActivityCategoryDataviews()
   useUserExpiredToast()
   useMigrateWorkspaceToast()
+  useReadOnlyWorkspaceToast()
   const dispatch = useAppDispatch()
   const { replaceQueryParams } = useReplaceQueryParams()
   const isWorkspacePasswordRequired = useSelector(selectIsWorkspacePasswordRequired)
