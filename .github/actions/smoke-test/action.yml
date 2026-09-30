@@ -72,13 +72,6 @@ runs:
           -p ${{ inputs.port }}:3000 \
           "${{ inputs.image }}"
 
-      # A throwaway cert is fine: the only clients hitting it are Playwright and the
-      # webServer readiness check, both configured with ignoreHTTPSErrors, never a real
-      # browser. GitHub-hosted runners have passwordless sudo, so this is non-interactive.
-      # ::1 matters as much as 127.0.0.1 — local.globalfishingwatch.org has a real public
-      # AAAA record (Google-hosted), and Node's dual-stack (Happy Eyeballs) connection
-      # racing will happily race that real remote host if only the A record is overridden,
-      # resetting the TLS handshake instead of ever reaching this proxy.
     - name: Set up local.globalfishingwatch.org proxy
       if: inputs.use-local-domain-proxy == 'true'
       shell: bash
