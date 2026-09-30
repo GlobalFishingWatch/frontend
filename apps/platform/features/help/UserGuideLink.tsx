@@ -19,6 +19,7 @@ type UserGuideLinkProps = {
   onClick?: () => void
   mode?: UserGuideLinkMode
   children?: ReactNode
+  fallbackArticleLabel?: ReactNode
 }
 
 function UserGuideLink({
@@ -27,6 +28,7 @@ function UserGuideLink({
   onClick,
   mode = 'button',
   children,
+  fallbackArticleLabel,
 }: UserGuideLinkProps) {
   const { t, i18n } = useTranslation()
   const { openSidePanel } = useSidePanel()
@@ -60,15 +62,17 @@ function UserGuideLink({
   }
 
   return (
-    <div className={cx(styles.link, className)} onClick={handleClick} role="button" tabIndex={0}>
+    <span className={cx(styles.link, className)} onClick={handleClick} role="button" tabIndex={0}>
       <IconButton size="small" icon="help" className={styles.icon} />
-      <div className={styles.labelContainer}>
+      <span className={styles.labelContainer}>
         <span className={styles.label}>{label}</span>
-        {hasArticleLabel && (
+        {hasArticleLabel ? (
           <span>{t((t) => t.userGuide[articleKey as keyof typeof t.userGuide])}</span>
+        ) : (
+          fallbackArticleLabel && <span>{fallbackArticleLabel}</span>
         )}
-      </div>
-    </div>
+      </span>
+    </span>
   )
 }
 
