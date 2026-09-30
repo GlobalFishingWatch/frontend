@@ -144,6 +144,26 @@
         "cwd": "apps/platform"
       }
     },
+    "user-guide:sync": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "commands": [
+          "node config/scripts/generate-user-guide.mjs",
+          "prettier --write config/user-guide.ts"
+        ],
+        "parallel": false,
+        "cwd": "apps/platform"
+      },
+      "configurations": {
+        "dev": {
+          "commands": [
+            "node config/scripts/generate-user-guide.mjs --dev",
+            "prettier --write config/user-guide.ts"
+          ]
+        }
+      }
+    },
     "proxy": {
       "executor": "nx:run-commands",
       "dependsOn": [],
