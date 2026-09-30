@@ -2,7 +2,8 @@ import { createSelector } from '@reduxjs/toolkit'
 
 import type { Dataset, UserData } from '@globalfishingwatch/api-types'
 import { checkExistPermissionInList } from '@globalfishingwatch/auth-middleware/utils'
-import { PIPE_5_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import { getDatasetVersion } from '@globalfishingwatch/datasets-client'
+import { PIPE_4_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import { PRIVATE_SUFIX, PUBLIC_SUFIX } from 'data/map/config'
 import { selectVesselsDatasets } from 'features/_map/datasets/datasets.selectors'
@@ -18,10 +19,6 @@ import { selectIsGuestUser, selectUserData } from 'features/_user/selectors/user
 import { isDatasetSearchFieldNeededSupported } from 'features/_vessels/search/advanced/advanced-search.utils'
 import type { SearchType } from 'features/_vessels/search/search.config'
 import { selectSearchSources } from 'features/_vessels/search/search.config.selectors'
-import {
-  DEFAULT_VESSEL_IDENTITY_ID,
-  VESSEL_IDENTITY_ID_V5,
-} from 'features/_vessels/vessel/vessel.config'
 import { selectWorkspaceId } from 'router/routes.selectors'
 
 const EMPTY_ARRAY: [] = []
@@ -50,10 +47,11 @@ const selectSearchDatasetsInWorkspace = createSelector(
       if (!datasetsIds.includes(id)) return EMPTY_ARRAY
       return [id, ...(relatedDatasets || []).map((d) => d.id)]
     })
-    // In the pipe 5 workspace the vessel identity dataset is searched in its v5 version
+    // The pipe 4 workspace searches only v4 datasets. The default dataviews injected into every
+    // workspace are built for the current pipe and would mix v5 identities into the request
     const searchDatasetsIds =
-      workspaceId === PIPE_5_WORKSPACE_ID
-        ? datasets.map((id) => (id === DEFAULT_VESSEL_IDENTITY_ID ? VESSEL_IDENTITY_ID_V5 : id))
+      workspaceId === PIPE_4_WORKSPACE_ID
+        ? datasets.filter((id) => getDatasetVersion(id)?.startsWith('v4.'))
         : datasets
     const filteredDatasets = vesselsDatasets.filter((dataset) =>
       searchDatasetsIds.includes(dataset.id)
