@@ -1,10 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { orderBy } from 'es-toolkit'
+import { orderBy, uniqBy } from 'es-toolkit'
 
 import type { UserPermission } from '@globalfishingwatch/api-types'
 import { BADGES_GROUP_PREFIX, DatasetCategory, DatasetStatus } from '@globalfishingwatch/api-types'
 import { checkExistPermissionInList } from '@globalfishingwatch/auth-middleware/utils'
 import { DEFAULT_GROUP_ID } from '@globalfishingwatch/datasets-client'
+import { PIPE_4_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import {
   AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX,
@@ -12,6 +13,8 @@ import {
   USER_SUFIX,
 } from 'data/map/config'
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
+import { getIsWorkspaceArchived } from 'features/_map/workspace/workspace.utils'
+import type { AppWorkspace } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { selectWorkspaces } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { selectAllReports } from 'features/_reports/reports.slice'
 import { selectUserData } from 'features/_user/selectors/user.selectors'
@@ -126,6 +129,34 @@ export const selectUserWorkspacesPrivate = createSelector(
         )
     )
     return orderBy(privateWorkspaces, ['createdAt'], ['desc'])
+  }
+)
+
+const filterActiveWorkspaces = (workspaces: AppWorkspace[]) =>
+  workspaces.filter((workspace) => !getIsWorkspaceArchived(workspace))
+
+export const selectUserWorkspacesActive = createSelector(
+  [selectUserWorkspaces],
+  filterActiveWorkspaces
+)
+
+export const selectUserWorkspacesPrivateActive = createSelector(
+  [selectUserWorkspacesPrivate],
+  filterActiveWorkspaces
+)
+
+export const selectUserWorkspacesArchived = createSelector(
+  [selectUserWorkspaces, selectUserWorkspacesPrivate, selectWorkspaces],
+  (userWorkspaces, privateWorkspaces, workspaces) => {
+    const archivedDefault = workspaces.filter((w) => w.id === PIPE_4_WORKSPACE_ID)
+    const archived = [...archivedDefault, ...privateWorkspaces, ...userWorkspaces].filter(
+      getIsWorkspaceArchived
+    )
+    return orderBy(
+      uniqBy(archived, (w) => w.id),
+      ['createdAt'],
+      ['desc']
+    )
   }
 )
 

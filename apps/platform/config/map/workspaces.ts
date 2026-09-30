@@ -14,4 +14,6 @@ export const DEFAULT_WORKSPACE_CATEGORY = WorkspaceCategory.FishingActivity
 
 export const DEEP_SEA_MINING_WORKSPACE_ID = 'deep-sea-mining-public' as const
 export const GAPS_EVENTS_WORKSPACE_ID = 'private_gap_events-public' as const
-export const PIPE_4_WORKSPACE_ID = 'default_v4-public' as const
+
+export const ARCHIVED_WORKSPACE_SUFFIX = '_archive'
+export const PIPE_4_WORKSPACE_ID = 'default_v4_archive-public' as const

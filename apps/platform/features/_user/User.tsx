@@ -6,6 +6,7 @@ import cx from 'classnames'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import type { Tab } from '@globalfishingwatch/ui-components'
 import { Tabs } from '@globalfishingwatch/ui-components'
+import { PIPE_4_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import {
   // fetchDefaultWorkspaceThunk,
@@ -76,6 +77,7 @@ function User() {
   useEffect(() => {
     if (userLogged && userData?.id) {
       dispatch(fetchWorkspacesThunk({}))
+      dispatch(fetchWorkspacesThunk({ ids: [PIPE_4_WORKSPACE_ID] }))
     }
   }, [dispatch, userData?.id, userLogged])
 
