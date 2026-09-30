@@ -158,10 +158,6 @@ jobs:
           test-user-email: ${{ secrets.TEST_USER_EMAIL }}
           test-user-password: ${{ secrets.TEST_USER_PASSWORD }}
           test-user-name: ${{ secrets.TEST_USER_NAME }}
-          # Production bakes in production's own VITE_API_GATEWAY (a Vite build-time var),
-          # and that gateway's SSO app allows no plain-localhost callback at all — only
-          # https://local.globalfishingwatch.org (see apps/platform/README.md). Staging and
-          # dev's SSO apps already allow a plain localhost callback, so they don't need this.
           use-local-domain-proxy: ${{ inputs.env-suffix == 'pro' }}
 
       - name: Push image
