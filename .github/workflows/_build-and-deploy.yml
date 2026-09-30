@@ -128,11 +128,7 @@ jobs:
     env:
       IMAGE: us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${{ matrix.app }}:${{ inputs.image-tag || format('latest-{0}', inputs.env-suffix) }}
       CLOUDRUN_SA: frontend-${{ inputs.env-suffix }}@${{ inputs.cloudrun-project }}.iam.gserviceaccount.com
-      # Only staging: a production build bakes in production's own VITE_API_GATEWAY (a
-      # Vite build-time var), and that gateway's SSO app doesn't allow a CI runner's
-      # callback URL, so a production image can't be smoke-tested as itself. Revisit
-      # with the frontend team before extending this to production.
-      RUN_SMOKE_TESTS: ${{ matrix.app == 'platform' && (inputs.env-suffix == 'sta' || inputs.env-suffix == 'dev') }}
+      RUN_SMOKE_TESTS: ${{ matrix.app == 'platform' && (inputs.env-suffix == 'sta' || inputs.env-suffix == 'dev' || inputs.env-suffix == 'pro') }}
 
     steps:
       - name: Checkout code
@@ -162,6 +158,7 @@ jobs:
           test-user-email: ${{ secrets.TEST_USER_EMAIL }}
           test-user-password: ${{ secrets.TEST_USER_PASSWORD }}
           test-user-name: ${{ secrets.TEST_USER_NAME }}
+          use-local-domain-proxy: ${{ inputs.env-suffix == 'pro' }}
 
       - name: Push image
         run: docker push "${{ env.IMAGE }}"
