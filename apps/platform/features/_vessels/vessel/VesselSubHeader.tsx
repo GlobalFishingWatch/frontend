@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { useRouter } from '@tanstack/react-router'
 
 import { Button, Icon } from '@globalfishingwatch/ui-components'
+import { PIPE_4_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import GFWOnly from 'features/_user/GFWOnly'
 import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
@@ -22,8 +23,6 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './Vessel.module.css'
 
-const PIPE_5_WORKSPACE_ID = 'pipe_v_5-public'
-
 const VesselSubHeader = () => {
   const router = useRouter()
   const { replaceQueryParams } = useReplaceQueryParams()
@@ -33,7 +32,7 @@ const VesselSubHeader = () => {
   const includeRelatedIdentities = useSelector(selectIncludeRelatedIdentities)
   const infoStatus = useSelector(selectVesselInfoStatus)
   const datasetId = useSelector(selectVesselDatasetId)
-  const isPipe5Workspace = workspaceId === PIPE_5_WORKSPACE_ID
+  const isPipe4Workspace = workspaceId === PIPE_4_WORKSPACE_ID
 
   const handleFullProfileClick = useCallback(() => {
     replaceQueryParams({
@@ -81,7 +80,7 @@ const VesselSubHeader = () => {
           </Button>
         </div>
       )}
-      {infoStatus === AsyncReducerStatus.Finished && isPipe5Workspace && (
+      {infoStatus === AsyncReducerStatus.Finished && isPipe4Workspace && (
         <div className={styles.fullProfileMessage}>
           <div>
             <GFWOnly className={styles.pipe4Disclaimer}>

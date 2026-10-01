@@ -1,4 +1,4 @@
-import type { Workspace } from '@globalfishingwatch/api-types'
+import type { DataviewInstance, Workspace } from '@globalfishingwatch/api-types'
 import { WORKSPACE_PRIVATE_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 import { DEFAULT_VIEWPORT } from '@platform/config/map/app'
 import {
@@ -17,6 +17,7 @@ import {
   GRATICULES_DATAVIEW_SLUG,
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
+  PORTS_GLOBAL_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_INSTANCE_ID,
   PRESENCE_DATAVIEW_SLUG,
   SAR_DATAVIEW_INSTANCE_ID,
@@ -32,6 +33,7 @@ import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/conf
 import { APP_NAME, DEFAULT_TIME_RANGE } from 'data/map/config'
 import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/map/default-workspaces/context-layers'
 import { BATHYMETRY_DATAVIEW_INSTANCE } from 'data/map/layer-library/layers-environment'
+import { PORTS_LAYER_ID } from 'features/_map/map/map.config'
 import type { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
@@ -146,22 +148,11 @@ const workspace: Workspace<WorkspaceState> = {
     //   },
     //   dataviewId: FIXED_INFRASTRUCTURE_DATAVIEW_SLUG,
     // },
-    // {
-    //   id: `${PORTS_LAYER_ID}-ais`,
-    //   config: {
-    //     visible: false,
-    //     color: '#9AEEFF',
-    //   },
-    //   dataviewId: PORTS_AIS_DATAVIEW_SLUG,
-    // },
-    // {
-    //   id: `${PORTS_LAYER_ID}-vms`,
-    //   config: {
-    //     visible: false,
-    //     color: '#9AEEFF',
-    //   },
-    //   dataviewId: PORTS_VMS_DATAVIEW_SLUG,
-    // },
+    {
+      id: `${PORTS_LAYER_ID}`,
+      config: { visible: false, color: '#9AEEFF' },
+      dataviewId: PORTS_GLOBAL_DATAVIEW_SLUG,
+    },
     {
       id: BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
       config: {

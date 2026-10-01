@@ -74,12 +74,12 @@ Known national dataset ids (source: `gfw-terraform-api-resources/resources/datas
 
 ### Detections
 
-| Library id       | dataviewId                                      |
-| ---------------- | ----------------------------------------------- |
-| `viirs`          | `viirs-match-v-{PIPE_DATASET_VERSION}`          |
-| `viirs-skylight` | `viirs-match-skylight-v-{PIPE_DATASET_VERSION}` |
-| `sar`            | `sar-v-{PIPE_DATASET_VERSION}`                  |
-| `sentinel2`      | `sentinel-2-v-{PIPE_DATASET_VERSION}`           |
+| Library id       | dataviewId                                          |
+| ---------------- | --------------------------------------------------- |
+| `viirs`          | `viirs-match-v-4` (not migrated to pipe 5)          |
+| `viirs-skylight` | `viirs-match-skylight-v-4` (not migrated to pipe 5) |
+| `sar`            | `sar-v-{PIPE_DATASET_VERSION}`                      |
+| `sentinel2`      | `sentinel-2-v-{PIPE_DATASET_VERSION}`               |
 
 ### Events
 

@@ -22,7 +22,7 @@ import { ROUTE_PATHS } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getHighlightedText } from 'utils/text'
 
-import { selectUserWorkspaces } from './selectors/user.permissions.selectors'
+import { selectUserWorkspacesActive } from './selectors/user.permissions.selectors'
 
 import styles from './User.module.css'
 
@@ -31,7 +31,7 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
   const dispatch = useAppDispatch()
   const setMapCoordinates = useSetMapCoordinates()
   const [editWorkspace, setEditWorkspace] = useState<AppWorkspace | undefined>()
-  const workspaces = useSelector(selectUserWorkspaces)
+  const workspaces = useSelector(selectUserWorkspacesActive)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
   const workspacesStatusId = useSelector(selectWorkspaceListStatusId)
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)

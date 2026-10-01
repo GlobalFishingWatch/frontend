@@ -13,6 +13,7 @@ platform:
       VITE_USE_LOCAL_DATAVIEWS: 'false'
       VITE_WORKSPACE_ENV: staging
       VITE_REPORT_DAYS_LIMIT: '366'
+      VITE_PIPE_DATASET_VERSION: '5'
     secrets:
       SENTRY_AUTH_TOKEN: projects/706952489382/secrets/FISHING_MAP_SENTRY_AUTH_TOKEN/versions/latest
   deploy:
