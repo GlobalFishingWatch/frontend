@@ -70,10 +70,13 @@ function ChatHeader() {
     deleteThread,
     newThread,
   } = useChatThreads()
+  const activeThreadTitle = threads.find((thread) => thread.id === activeThreadId)?.title
 
   return (
     <div className={styles.header}>
-      <label className={styles.title}>{t((t) => t.common.assistant)}</label>
+      <span className={styles.title}>
+        {activeThreadTitle || t((t) => t.common.newConversation)}
+      </span>
       <Fragment>
         <Popover
           open={historyOpen}
