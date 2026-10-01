@@ -9,27 +9,23 @@ import { DEFAULT_WORKSPACE_CATEGORY } from '@platform/config/map/workspaces'
 import { useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
 import { getWorkspaceLabel } from 'features/_map/workspace/workspace.utils'
 import { selectWorkspaceListStatus } from 'features/_map/workspaces-list/workspaces-list.slice'
-import { useReplaceQueryParams } from 'router/routes.hook'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { sortByCreationDate } from 'utils/dates'
 import { getHighlightedText } from 'utils/text'
 
-import { selectUserWorkspacesPrivateActive } from './selectors/user.permissions.selectors'
+import { selectUserWorkspacesArchived } from './selectors/user.permissions.selectors'
 
 import styles from './User.module.css'
 
-function UserWorkspacesPrivate({ searchQuery }: { searchQuery: string }) {
+function UserWorkspacesArchive({ searchQuery }: { searchQuery: string }) {
   const { t } = useTranslation()
-  const { replaceQueryParams } = useReplaceQueryParams()
-  const workspaces = useSelector(selectUserWorkspacesPrivateActive)
+  const workspaces = useSelector(selectUserWorkspacesArchived)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
   const setMapCoordinates = useSetMapCoordinates()
 
   const onWorkspaceClick = (workspace: Workspace) => {
     if (workspace.viewport) {
       setMapCoordinates(workspace.viewport)
-      replaceQueryParams(workspace.viewport)
     }
   }
 
@@ -44,10 +40,10 @@ function UserWorkspacesPrivate({ searchQuery }: { searchQuery: string }) {
   return (
     <div className={styles.views}>
       <div className={styles.viewsHeader}>
-        <label>{t((t) => t.workspace.privateTitle)}</label>
+        <label>{t((t) => t.workspace.archiveTitle)}</label>
       </div>
       <ul>
-        {sortByCreationDate<Workspace>(workspaces).map((workspace) => {
+        {workspaces.map((workspace) => {
           const label = getWorkspaceLabel(workspace as any)
           if (!label.toLowerCase().includes(searchQuery.toLowerCase())) {
             return null
@@ -62,7 +58,6 @@ function UserWorkspacesPrivate({ searchQuery }: { searchQuery: string }) {
                   workspaceId: workspace.id,
                 }}
                 search={{}}
-                replace
                 onClick={() => onWorkspaceClick(workspace)}
               >
                 <span className={styles.workspaceTitle}>
@@ -78,4 +73,4 @@ function UserWorkspacesPrivate({ searchQuery }: { searchQuery: string }) {
   )
 }
 
-export default UserWorkspacesPrivate
+export default UserWorkspacesArchive

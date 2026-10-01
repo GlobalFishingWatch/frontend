@@ -141,12 +141,12 @@ function SidebarHeader() {
             {isSearchLocation && !readOnly && !isSmallScreen && (
               <SearchTypeChoice className={styles.searchOption} />
             )}
-            {isClientHydrated && workspaceHistoryNavigation?.length ? (
-              <NavigationHistoryButton />
-            ) : (
-              <NavigationWorkspaceButton />
-            )}
           </Fragment>
+        )}
+        {isClientHydrated && workspaceHistoryNavigation?.length ? (
+          <NavigationHistoryButton />
+        ) : (
+          <NavigationWorkspaceButton />
         )}
       </div>
       <SidebarHeaderSections isSticky={isSticky} />

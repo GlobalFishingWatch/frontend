@@ -51,6 +51,7 @@ export const PROTECTED_SEAS_DATAVIEW_SLUG = 'protected-seas' as const
 export const MPATLAS_DATAVIEW_SLUG = 'mpatlas' as const
 export const GRATICULES_DATAVIEW_SLUG = 'graticules' as const
 export const FIXED_INFRASTRUCTURE_DATAVIEW_SLUG = 'fixed-infrastructure' as const
+export const PORTS_GLOBAL_DATAVIEW_SLUG = 'global-ports-v-5' as const
 export const PORTS_AIS_DATAVIEW_SLUG = 'ais-ports' as const
 export const PORTS_VMS_DATAVIEW_SLUG = 'vms-ports' as const
 export const FAO_AREAS_DATAVIEW_SLUG = 'fao-areas' as const
@@ -78,9 +79,9 @@ export const PRESENCE_REALTIME_DATAVIEW_SLUG =
   `presence-realtime-v-${PIPE_DATASET_VERSION}` as const
 
 // Detections dataview slugs
-export const VIIRS_MATCH_DATAVIEW_SLUG = `viirs-match-v-${PIPE_DATASET_VERSION}` as const
-export const VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG =
-  `viirs-match-skylight-v-${PIPE_DATASET_VERSION}` as const
+// VIIRS was not migrated to pipe 5
+export const VIIRS_MATCH_DATAVIEW_SLUG = 'viirs-match-v-4' as const
+export const VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG = 'viirs-match-skylight-v-4' as const
 export const SAR_DATAVIEW_SLUG = `sar-v-${PIPE_DATASET_VERSION}` as const
 export const SENTINEL2_DATAVIEW_SLUG = `sentinel-2-v-${PIPE_DATASET_VERSION}` as const
 
