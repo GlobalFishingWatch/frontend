@@ -34,7 +34,7 @@ import {
   VESSEL_RELATED_SUBSECTIONS,
   VESSEL_SECTIONS,
 } from 'features/_vessels/vessel/vessel.types'
-import type { QueryParams } from 'types'
+import type { QueryParams, SidePanelContent, SidePanelState } from 'types'
 import {
   BUFFER_OPERATIONS,
   BUFFER_UNITS,
@@ -263,8 +263,35 @@ export const vesselSearchQuerySchema = z
 // only validates its own params. .passthrough() on all schemas ensures params
 // from other routes flow through without being stripped.
 
+// Legacy single-panel links (sidePanelContent/sidePanelId/sidePanelSubcontentId) are folded into
+// sidePanels so shared URLs keep opening the same panel.
+function migrateLegacySidePanel(search: Record<string, unknown>) {
+  const { sidePanelContent, sidePanelId, sidePanelSubcontentId, ...rest } = search
+  const isValidShape = rest.sidePanels === undefined || Array.isArray(rest.sidePanels)
+  if (!sidePanelContent && isValidShape) return search
+  // anything that isn't a list (e.g. a hand-edited link) is dropped rather than crashing panels
+  const sidePanels = Array.isArray(rest.sidePanels) ? (rest.sidePanels as SidePanelState[]) : []
+  const type = sidePanelContent as SidePanelContent | undefined
+  return {
+    ...rest,
+    // explicit undefined: child routes pass raw search through, so omitting the keys would keep them
+    sidePanelContent: undefined,
+    sidePanelId: undefined,
+    sidePanelSubcontentId: undefined,
+    sidePanels: type
+      ? [
+          ...sidePanels.filter((panel) => panel.type !== type),
+          { type, id: sidePanelId, subcontentId: sidePanelSubcontentId },
+        ]
+      : sidePanels.length
+        ? sidePanels
+        : undefined,
+    sidePanelActive: type ?? rest.sidePanelActive,
+  }
+}
+
 export function validateRootSearchParams(search: Record<string, unknown>): QueryParams {
-  return rootSearchSchema.parse(search) as QueryParams
+  return rootSearchSchema.parse(migrateLegacySidePanel(search)) as QueryParams
 }
 
 export function validateVesselProfileParams(search: Record<string, unknown>): QueryParams {

@@ -18,6 +18,7 @@ import ContentMarkdown from 'features/_map/content-panel/ContentMarkdown'
 import {
   useScrollToTopOnChange,
   useSidePanel,
+  useSidePanelItem,
 } from 'features/_map/content-panel/contentPanel.hooks'
 import EmptyContent from 'features/_map/content-panel/EmptyContent'
 import DatasetLabel from 'features/_map/datasets/DatasetLabel'
@@ -27,14 +28,13 @@ import { selectDataviewInstancesResolved } from 'features/_map/dataviews/selecto
 import { selectWorkspaceStatus } from 'features/_map/workspace/workspace.selectors'
 import type { UserGuideSlug } from 'features/cms/loaders/user-guide.types'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { useAppSearch } from 'router/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from '../ContentPanel.module.css'
 
 const DatasetInfoContainer = () => {
   const { ready: i18nReady } = useTranslation()
-  const { sidePanelId, sidePanelSubcontentId } = useAppSearch()
+  const { id: sidePanelId, subcontentId: sidePanelSubcontentId } = useSidePanelItem()
   const { openSidePanel } = useSidePanel()
   const scrollContainerRef = useScrollToTopOnChange<HTMLDivElement>(sidePanelId)
   const workspaceStatus = useSelector(selectWorkspaceStatus)

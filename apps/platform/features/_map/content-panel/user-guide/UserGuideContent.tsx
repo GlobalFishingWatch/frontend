@@ -7,16 +7,15 @@ import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
 
 import ContentHeader from 'features/_map/content-panel/ContentHeader'
 import ContentMarkdown from 'features/_map/content-panel/ContentMarkdown'
-import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
+import { useSidePanel, useSidePanelItem } from 'features/_map/content-panel/contentPanel.hooks'
 import EmptyContent from 'features/_map/content-panel/EmptyContent'
 import TableOfContents from 'features/_map/content-panel/user-guide/TableOfContents'
 import { toContentLocale } from 'features/i18n/i18n.config'
-import { useAppSearch } from 'router/routes.hook'
 
 import styles from '../ContentPanel.module.css'
 
 export const UserGuideContentComponent = () => {
-  const { sidePanelId, sidePanelSubcontentId } = useAppSearch()
+  const { id: sidePanelId, subcontentId: sidePanelSubcontentId } = useSidePanelItem()
   const { i18n, t } = useTranslation()
 
   const {
