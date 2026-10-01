@@ -27,7 +27,7 @@
   ],
   "dependencies": {
     "@turf/turf": "7.x",
-    "dotenv": "17.x",
+    "dotenv": "18.x",
     "es-toolkit": "1.x",
     "geojson": "0.x",
     "match-sorter": "8.x",

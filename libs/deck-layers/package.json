@@ -72,7 +72,7 @@
     "geokdbush": "2.x",
     "kdbush": "4.x",
     "luxon": "3.x",
-    "pmtiles": "3.x",
+    "pmtiles": "4.x",
     "qs": "6.x",
     "simple-statistics": "7.x",
     "supercluster": "9.x",
