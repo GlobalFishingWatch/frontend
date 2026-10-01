@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useGetVesselEventsQuery } from 'queries/map/vessel-events-api'
@@ -30,7 +30,7 @@ import { useReplaceQueryParams } from 'router/routes.hook'
 
 import InsightError from './InsightErrorMessage'
 import { removeNonTunaRFMO } from './insights.utils'
-import LonglineSetsGraph from './LonglineSetsGraph'
+import LonglineSetsGraph, { LonglineTimeChoice } from './LonglineSetsGraph'
 
 import styles from './Insights.module.css'
 
@@ -38,6 +38,7 @@ const InsightLongline = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { start, end } = useSelector(selectTimeRange)
+  const [localTime, setLocalTime] = useState(false)
   const vessel = useSelector(selectVesselInfoData)
   const longlineSetsOnMap = useSelector(selectLonglineSetsOnMap)
   const identityId = useSelector(selectVesselIdentityId)
@@ -108,6 +109,7 @@ const InsightLongline = () => {
       <div className={styles.insightTitle}>
         <label>{t((t) => t.vessel.insights.longline)}</label>
         <div className={styles.insightTitleActions}>
+          <LonglineTimeChoice localTime={localTime} onChange={setLocalTime} />
           <UserLoggedIconButton
             loginSource="vessel-download"
             size="medium"
@@ -140,6 +142,7 @@ const InsightLongline = () => {
       ) : (
         <LonglineSetsGraph
           data={data.map(removeNonTunaRFMO)}
+          localTime={localTime}
           onEventHover={longlineSetsOnMap ? onEventHover : undefined}
           onEventMapClick={longlineSetsOnMap ? onEventMapClick : undefined}
         />

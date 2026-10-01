@@ -16,7 +16,9 @@ import UserLoggedIconButton from 'features/_user/UserLoggedIconButton'
 import Event from 'features/_vessels/vessel/activity/event/Event'
 import InsightError from 'features/_vessels/vessel/insights/InsightErrorMessage'
 import { removeNonTunaRFMO } from 'features/_vessels/vessel/insights/insights.utils'
-import LonglineSetsGraph from 'features/_vessels/vessel/insights/LonglineSetsGraph'
+import LonglineSetsGraph, {
+  LonglineTimeChoice,
+} from 'features/_vessels/vessel/insights/LonglineSetsGraph'
 import { parseLonglineSetsToCSV } from 'features/_vessels/vessel/vessel.download'
 import type { VesselEvent } from 'features/_vessels/vessel/vessel.types'
 import VesselLink from 'features/_vessels/vessel/VesselLink'
@@ -53,6 +55,7 @@ const getVesselsWithEvents = (events: ApiEvents['entries']): VesselWithEvents[] 
 const VesselGroupReportInsightLongline = ({ skip }: { skip?: boolean }) => {
   const { t } = useTranslation()
   const [openVesselId, setOpenVesselId] = useState<string | null>(null)
+  const [localTime, setLocalTime] = useState(false)
   const vesselGroup = useSelector(selectVGRData)
   const vesselGroupId = useSelector(selectReportVesselGroupId)
   const { start, end } = useSelector(selectTimeRange)
@@ -142,6 +145,7 @@ const VesselGroupReportInsightLongline = ({ skip }: { skip?: boolean }) => {
                     key={event.id}
                     event={event as VesselEvent}
                     className={insightStyles.event}
+                    localTime={localTime}
                   />
                 ))}
               </ul>
@@ -157,6 +161,7 @@ const VesselGroupReportInsightLongline = ({ skip }: { skip?: boolean }) => {
       <div className={styles.insightTitle}>
         <label>{t((t) => t.vessel.insights.longline)}</label>
         <div className={insightStyles.insightTitleActions}>
+          <LonglineTimeChoice localTime={localTime} onChange={setLocalTime} />
           <UserLoggedIconButton
             loginSource="vessel-download"
             size="medium"
@@ -181,6 +186,7 @@ const VesselGroupReportInsightLongline = ({ skip }: { skip?: boolean }) => {
         <div className={cx(styles.nested, styles.row)}>
           <LonglineSetsGraph
             data={events}
+            localTime={localTime}
             renderCategoryContent={renderCategoryVessels}
             onCategoryToggle={onCategoryToggle}
           />

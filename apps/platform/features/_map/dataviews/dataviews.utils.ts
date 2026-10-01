@@ -281,7 +281,7 @@ export const resolveVesselDataviewInstance = (
   return newDataviewInstance
 }
 
-const LONGLINE_EVENTS_INCLUDES = ['fishing.dayNightCategory', 'fishing.fractionAtNight']
+const LONGLINE_EVENTS_INCLUDES = ['fishing.dayNightSummary']
 
 export const withLonglineSetsEvents = (
   dataview: UrlDataviewInstance,
