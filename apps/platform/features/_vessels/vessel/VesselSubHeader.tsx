@@ -3,13 +3,13 @@ import { useSelector } from 'react-redux'
 import { useRouter } from '@tanstack/react-router'
 
 import { Button, Icon } from '@globalfishingwatch/ui-components'
-import { PIPE_4_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
+import { getIsWorkspaceArchived } from 'features/_map/workspace/workspace.utils'
 import GFWOnly from 'features/_user/GFWOnly'
 import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
 import { selectVesselInfoStatus } from 'features/_vessels/vessel/selectors/vessel.selectors'
 import {
-  DEFAULT_VESSEL_IDENTITY_ID,
+  VESSEL_IDENTITY_ID_V4,
   VESSEL_IDENTITY_ID_V5,
 } from 'features/_vessels/vessel/vessel.config'
 import {
@@ -32,7 +32,7 @@ const VesselSubHeader = () => {
   const includeRelatedIdentities = useSelector(selectIncludeRelatedIdentities)
   const infoStatus = useSelector(selectVesselInfoStatus)
   const datasetId = useSelector(selectVesselDatasetId)
-  const isPipe4Workspace = workspaceId === PIPE_4_WORKSPACE_ID
+  const isPipe4Workspace = !!workspaceId && getIsWorkspaceArchived({ id: workspaceId })
 
   const handleFullProfileClick = useCallback(() => {
     replaceQueryParams({
@@ -89,7 +89,7 @@ const VesselSubHeader = () => {
               <a
                 href={getSwitchVersionHref(
                   datasetId === VESSEL_IDENTITY_ID_V5
-                    ? DEFAULT_VESSEL_IDENTITY_ID
+                    ? VESSEL_IDENTITY_ID_V4
                     : VESSEL_IDENTITY_ID_V5
                 )}
                 className={styles.pipe4DisclaimerLink}
