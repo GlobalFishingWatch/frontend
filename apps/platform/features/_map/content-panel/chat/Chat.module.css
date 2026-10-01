@@ -152,7 +152,7 @@
 
 .agent {
   align-self: flex-start;
-  background-color: var(--color-off-white-0);
+  background-color: var(--color-off-white-1);
   border-end-start-radius: 0;
   border: none;
 }
