@@ -117,6 +117,10 @@
   gap: var(--space-XS);
 }
 
+.listItemRow > :not(.listItem) {
+  margin-left: auto;
+}
+
 .listItem,
 .searchPreview {
   cursor: pointer;
@@ -140,13 +144,18 @@
 
 .searchPreview {
   padding-bottom: var(--space-S);
-  font-size: var(--font-size-XS);
+  font: var(--font-S);
 }
 
 .listItem:hover,
 .subTopic:hover,
 .listItemActive {
   color: var(--color-primary-blue);
+}
+
+.listItem:hover .listItemLabel,
+.subTopic:hover {
+  text-decoration: underline;
 }
 
 .listItem button {
@@ -166,10 +175,21 @@
 }
 
 .titleText {
+  display: flex;
+  align-items: center;
   flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.titleText > :last-child {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+}
+
+.titleText > :not(:last-child) {
+  flex-shrink: 0;
 }
 
 .pointer {
@@ -185,7 +205,7 @@
 }
 
 .separator {
-  margin-inline: var(--space-S);
+  margin-right: var(--space-XS);
 }
 
 .sourceSelector {
@@ -198,8 +218,8 @@
 }
 
 .highlighted {
-  display: inline-block;
   background: var(--color-highlight-blue);
+  box-decoration-break: clone;
 }
 
 .sectionsNav {
@@ -224,4 +244,19 @@
 
 .nextSectionLinkAlignRight {
   margin-left: auto;
+}
+
+/* the header clips overflow, so the focus ring is cut: drop it, keep an inset one for keyboard */
+.homeButton.homeButton:focus {
+  box-shadow: none;
+  background-color: transparent;
+}
+
+.homeButton.homeButton:focus-visible {
+  outline: 2px solid var(--color-primary-blue);
+  outline-offset: -2px;
+}
+
+.headerSearch {
+  width: 100%;
 }

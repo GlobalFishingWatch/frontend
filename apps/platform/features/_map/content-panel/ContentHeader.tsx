@@ -12,7 +12,7 @@ function ContentHeader({ title }: ContentHeaderProps) {
 
   return (
     <div className={styles.sidebarHeader}>
-      <div className={styles.labelContainer}>{title || t((t) => t.common.content)}</div>
+      <span className={styles.labelContainer}>{title || t((t) => t.common.content)}</span>
     </div>
   )
 }

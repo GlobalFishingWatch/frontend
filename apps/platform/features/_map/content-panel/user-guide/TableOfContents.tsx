@@ -8,6 +8,16 @@ import { getHighlightedText, getSearchPreview } from 'utils/text'
 
 import styles from '../ContentPanel.module.css'
 
+const markdownToText = (markdown = '') =>
+  markdown
+    .replace(/<[^>]*>/g, ' ') // html tags (iframes, etc)
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ') // images
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1') // links -> their text
+    .replace(/[#*_`>~|]+/g, ' ') // emphasis, headings, quotes, tables
+    .replace(/^\s*[-+]\s+/gm, ' ') // list bullets
+    .replace(/\s+/g, ' ')
+    .trim()
+
 export type TableOfContentsSection = {
   id: string
   slug?: string
@@ -17,6 +27,7 @@ export type TableOfContentsSection = {
     id: string
     slug?: string
     title: string
+    body?: string
   }[]
 }
 
@@ -26,6 +37,8 @@ type TableOfContentsProps = {
   className?: string
   onClick?: (id: string) => void
   onSubItemClick?: (sectionId: string, subId: string) => void
+  /** pass it to render the search input elsewhere (e.g. a header); omit to use the built-in one */
+  searchQuery?: string
 }
 
 function TableOfContents({
@@ -34,9 +47,12 @@ function TableOfContents({
   className,
   onClick,
   onSubItemClick,
+  searchQuery: controlledSearchQuery,
 }: TableOfContentsProps) {
   const { t } = useTranslation()
-  const [searchQuery, setSearchQuery] = useState('')
+  const [localSearchQuery, setSearchQuery] = useState('')
+  const isSearchControlled = controlledSearchQuery !== undefined
+  const searchQuery = isSearchControlled ? controlledSearchQuery : localSearchQuery
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
 
   const toggleCollapsed = (id: string) => {
@@ -51,13 +67,26 @@ function TableOfContents({
     })
   }
 
+  // match and preview against plain text so urls and html attributes don't count as hits
+  const searchableSections = useMemo(
+    () =>
+      data.map((s) => ({
+        ...s,
+        // most articles keep their content in subsections, not in the section body
+        body: markdownToText(
+          [s.body, ...(s.subsections ?? []).flatMap((sub) => [sub.title, sub.body])].join('\n')
+        ),
+      })),
+    [data]
+  )
+
   const filteredSections = useMemo(() => {
-    if (!searchQuery.trim()) return data
+    if (!searchQuery.trim()) return searchableSections
     const q = searchQuery.toLowerCase()
-    return data.filter(
-      (s) => s.title.toLowerCase().includes(q) || s.body?.toLowerCase().includes(q)
+    return searchableSections.filter(
+      (s) => s.title.toLowerCase().includes(q) || s.body.toLowerCase().includes(q)
     )
-  }, [data, searchQuery])
+  }, [searchableSections, searchQuery])
 
   const listItems = useMemo(
     () =>
@@ -77,12 +106,14 @@ function TableOfContents({
       className={cx(styles.tableOfContentsContainer, styles.notranslate, className)}
       translate="no"
     >
-      <InputText
-        onChange={(e) => setSearchQuery(e.target.value)}
-        value={searchQuery}
-        type="search"
-        placeholder={t((t) => t.search.title)}
-      />
+      {!isSearchControlled && (
+        <InputText
+          onChange={(e) => setSearchQuery(e.target.value)}
+          value={searchQuery}
+          type="search"
+          placeholder={t((t) => t.search.title)}
+        />
+      )}
       <ul>
         {listItems.map((item) => {
           const isCollapsed = !expandedIds.has(item.id)
@@ -95,9 +126,11 @@ function TableOfContents({
                   onClick={() => onClick?.(item.id)}
                   className={cx(styles.listItem, { [styles.listItemActive]: activeId == item.id })}
                 >
-                  <h3 className={styles.listItemLabel}>{item.label}</h3>
+                  <h3 className={styles.listItemLabel}>
+                    {getHighlightedText(item.label, searchQuery, styles)}
+                  </h3>
                 </button>
-                {hasSubTopics && (
+                {hasSubTopics && !searchQuery && (
                   <IconButton
                     icon={isCollapsed ? 'arrow-down' : 'arrow-top'}
                     size="small"
@@ -105,7 +138,7 @@ function TableOfContents({
                   />
                 )}
               </div>
-              {hasSubTopics && !isCollapsed && (
+              {hasSubTopics && !isCollapsed && !searchQuery && (
                 <ul>
                   {item.subTopics!.map((sub) => (
                     <li key={sub.id}>
