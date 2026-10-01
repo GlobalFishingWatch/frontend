@@ -1642,6 +1642,7 @@
   },
   "workspace": {
     "addLayer": "Add to workspace",
+    "archiveTitle": "Archived workspaces",
     "categories": {
       "fishing-activity": "Highlighted workspaces",
       "marine-manager": "Marine Manager workspaces",
@@ -1675,6 +1676,8 @@
     "passwordRequired": "Password is required",
     "privateEditAcessInfo": "Your current view access permissions do not allow for others to edit this workspace",
     "privateTitle": "Private workspaces",
+    "readOnlyDisclaimer": "This workspace is for comparison between data layers",
+    "readOnlyDisclaimerNote": "Pipe 4 data is for viewing/comparison only, not analysis",
     "remove": "Hapus ruang kerja",
     "save": "Simpan tampilan saat ini",
     "saveAs": "Save as a new workspace",
