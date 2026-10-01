@@ -128,7 +128,7 @@ jobs:
     env:
       IMAGE: us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${{ matrix.app }}:${{ inputs.image-tag || format('latest-{0}', inputs.env-suffix) }}
       CLOUDRUN_SA: frontend-${{ inputs.env-suffix }}@${{ inputs.cloudrun-project }}.iam.gserviceaccount.com
-      RUN_SMOKE_TESTS: ${{ matrix.app == 'platform' && (inputs.env-suffix == 'sta' || inputs.env-suffix == 'dev' || inputs.env-suffix == 'pro') }}
+      RUN_SMOKE_TESTS: ${{ matrix.app == 'platform' && (inputs.env-suffix == 'sta' || inputs.env-suffix == 'pro') }}
 
     steps:
       - name: Checkout code

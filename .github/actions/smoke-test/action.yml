@@ -71,6 +71,9 @@ runs:
         docker run -d --name smoke-target \
           -p ${{ inputs.port }}:3000 \
           "${{ inputs.image }}"
+        # Wait until Nitro accepts connections. No -f: any HTTP status means it is listening.
+        curl -s -o /dev/null --retry 60 --retry-delay 1 --retry-all-errors \
+          "http://localhost:${{ inputs.port }}/"
 
     - name: Set up local.globalfishingwatch.org proxy
       if: inputs.use-local-domain-proxy == 'true'
@@ -99,6 +102,7 @@ runs:
         NX_DAEMON: 'false'
         NX_CLOUD_ACCESS_TOKEN: ${{ inputs.nx-cloud-access-token }}
         PLAYWRIGHT_BASE_URL: ${{ inputs.use-local-domain-proxy == 'true' && 'https://local.globalfishingwatch.org' || format('http://localhost:{0}', inputs.port) }}
+        PLAYWRIGHT_IGNORE_HTTPS_ERRORS: ${{ inputs.use-local-domain-proxy }}
         TEST_USER_EMAIL: ${{ inputs.test-user-email }}
         TEST_USER_PASSWORD: ${{ inputs.test-user-password }}
         TEST_USER_NAME: ${{ inputs.test-user-name }}
