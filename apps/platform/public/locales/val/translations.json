@@ -162,6 +162,7 @@
     "skillQueryParams": "crwdns131985:0crwdne131985:0",
     "skillRoutes": "crwdns131987:0crwdne131987:0",
     "thinking": "crwdns131989:0crwdne131989:0",
+    "toolAlternatives": "crwdns138613:0crwdne138613:0",
     "toolBash": "crwdns131991:0crwdne131991:0",
     "toolLoadSkill": "crwdns131993:0crwdne131993:0",
     "toolNavigate": "crwdns131995:0crwdne131995:0",
@@ -1641,6 +1642,7 @@
   },
   "workspace": {
     "addLayer": "crwdns134561:0crwdne134561:0",
+    "archiveTitle": "crwdns138615:0crwdne138615:0",
     "categories": {
       "fishing-activity": "crwdns134563:0crwdne134563:0",
       "marine-manager": "crwdns134565:0crwdne134565:0",
@@ -1674,6 +1676,8 @@
     "passwordRequired": "crwdns134617:0crwdne134617:0",
     "privateEditAcessInfo": "crwdns134619:0crwdne134619:0",
     "privateTitle": "crwdns134621:0crwdne134621:0",
+    "readOnlyDisclaimer": "crwdns138617:0crwdne138617:0",
+    "readOnlyDisclaimerNote": "crwdns138619:0crwdne138619:0",
     "remove": "crwdns134623:0crwdne134623:0",
     "save": "crwdns134625:0crwdne134625:0",
     "saveAs": "crwdns134627:0crwdne134627:0",

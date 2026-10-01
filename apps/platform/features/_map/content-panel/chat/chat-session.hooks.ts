@@ -1,18 +1,14 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useChat } from '@ai-sdk/react'
 import { useNavigate } from '@tanstack/react-router'
-import {
-  DefaultChatTransport,
-  lastAssistantMessageIsCompleteWithToolCalls,
-  type UIMessage,
-} from 'ai'
+import { DefaultChatTransport, getToolName, isToolUIPart, type UIMessage } from 'ai'
 import { AGENT_BASE_URL } from 'queries/map/chat-api'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 
 import {
   getNavigateToolLinkProps,
-  navigateToolInputSchema,
+  navigateToolOutputSchema,
   useNavigateToolMapState,
 } from 'features/_map/content-panel/chat/navigate-tool'
 
@@ -107,47 +103,39 @@ export function useChatSession({ threadId, userId, initialMessages, onFinished }
     sendMessage: sendMessageToSession,
     status,
     error,
-    addToolOutput,
   } = useChat<UIMessage>({
     id: threadId,
     messages: initialMessages,
     transport,
-    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
     onFinish: onFinished,
-    async onToolCall({ toolCall }) {
-      if (toolCall.toolName !== 'navigate') {
-        return
-      }
-      const reportNavigate = (output: { ok: boolean; detail: string }) =>
-        addToolOutput({ tool: 'navigate', toolCallId: toolCall.toolCallId, output })
-
-      const parsed = navigateToolInputSchema.safeParse(toolCall.input)
-      if (!parsed.success) {
-        reportNavigate({
-          ok: false,
-          detail: `Invalid navigate input: ${parsed.error.issues.map((i) => i.message).join('; ')}`,
-        })
-        return
-      }
-      const { navigation, path } = parsed.data
-      try {
-        markExplicitSettings(navigation.search)
-        await routerNavigate(
-          getNavigateToolLinkProps(navigation) as unknown as Parameters<typeof routerNavigate>[0]
-        )
-        applyNavigateMapState(navigation.search)
-        reportNavigate({
-          ok: true,
-          detail: `Navigated via router to path: ${path ?? ''}`,
-        })
-      } catch (err) {
-        reportNavigate({
-          ok: false,
-          detail: `TanStack Router navigate failed: ${String(err)}`,
-        })
-      }
-    },
   })
+
+  const handledNavigateCalls = useRef<Set<string>>(
+    new Set(
+      initialMessages.flatMap((m) =>
+        (m.parts ?? []).flatMap((part) => (isToolUIPart(part) ? [part.toolCallId] : []))
+      )
+    )
+  )
+  useEffect(() => {
+    const last = messages[messages.length - 1]
+    if (last?.role !== 'assistant') return
+    for (const part of last.parts ?? []) {
+      if (!isToolUIPart(part) || getToolName(part) !== 'navigate') continue
+      if (part.state !== 'output-available') continue
+      if (handledNavigateCalls.current.has(part.toolCallId)) continue
+      handledNavigateCalls.current.add(part.toolCallId)
+      const parsed = navigateToolOutputSchema.safeParse(part.output)
+      if (!parsed.success) continue
+      const { navigation } = parsed.data
+      markExplicitSettings(navigation.search)
+      routerNavigate(
+        getNavigateToolLinkProps(navigation) as unknown as Parameters<typeof routerNavigate>[0]
+      )
+        .then(() => applyNavigateMapState(navigation.search))
+        .catch((err) => console.warn('navigate tool: router navigation failed', err))
+    }
+  }, [messages, routerNavigate, markExplicitSettings, applyNavigateMapState])
 
   const loading = status === 'submitted' || status === 'streaming'
 

@@ -21,7 +21,7 @@ import type { QueryParams, WorkspaceState } from 'types'
 export const MIN_WORKSPACE_PASSWORD_LENGTH = 5
 
 export const getIsWorkspaceArchived = (workspace: Pick<Workspace, 'id'>) =>
-  workspace.id.includes(ARCHIVED_WORKSPACE_SUFFIX)
+  workspace?.id?.includes(ARCHIVED_WORKSPACE_SUFFIX) ?? false
 
 export const parseUpsertWorkspace = (
   workspace: AppWorkspace | Partial<AppWorkspace>

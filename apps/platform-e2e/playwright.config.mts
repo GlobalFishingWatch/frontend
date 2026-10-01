@@ -13,6 +13,9 @@ dotenv.config({ path: resolve(__dirname, '.env'), quiet: true })
 // Origin only — absolute paths like /platform/map replace the URL path entirely,
 // so embedding /platform in baseURL does not work with goto('/map').
 const baseURL = new URL(process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3003').origin
+// Only the smoke-test action's local-ssl-proxy setup sets this: its cert is self-signed.
+// Everywhere else a bad cert must still fail the run.
+const ignoreHTTPSErrors = process.env.PLAYWRIGHT_IGNORE_HTTPS_ERRORS === 'true'
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -44,6 +47,7 @@ export default defineConfig({
   use: {
     /* Origin only; tests navigate to /platform/map via appPath() / MAP_PATH. */
     baseURL,
+    ignoreHTTPSErrors,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     /* Screenshot on failure */
@@ -102,6 +106,7 @@ export default defineConfig({
   webServer: {
     command: 'node -e "setInterval(() => {}, 60000)"',
     url: baseURL,
+    ignoreHTTPSErrors,
     reuseExistingServer: true,
     timeout: 120 * 1000,
   },

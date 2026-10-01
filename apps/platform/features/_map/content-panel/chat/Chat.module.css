@@ -192,6 +192,24 @@
   display: inline-block;
 }
 
+.toolAlternatives {
+  margin-top: var(--space-S);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-XS);
+}
+
+.toolAlternativesTitle {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+}
+
+.toolLink.toolLinkAlternative {
+  margin-top: 0;
+  text-decoration: underline;
+}
+
 .toolLinkBtn {
   text-transform: uppercase;
   padding: var(--space-XS) var(--space-S);

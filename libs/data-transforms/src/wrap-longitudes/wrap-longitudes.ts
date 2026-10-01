@@ -170,7 +170,6 @@ export function getTurfBbox(geometry: Polygon | MultiPolygon): Bbox {
 }
 
 export function wrapGeometryBbox(geometry: Polygon | MultiPolygon): Bbox {
-  console.log('🚀 ~ wrapGeometryBbox ~ geometry:', geometry)
   const fullBbox = bbox(geometry)
   let minX = fullBbox[0]
   const minY = fullBbox[1]
@@ -186,7 +185,6 @@ export function wrapGeometryBbox(geometry: Polygon | MultiPolygon): Bbox {
       }
     })
   }
-  console.log('🚀 ~ wrapGeometryBbox ~ [minX, minY, maxX, maxY]:', [minX, minY, maxX, maxY])
   return [minX, minY, maxX, maxY]
 }
 

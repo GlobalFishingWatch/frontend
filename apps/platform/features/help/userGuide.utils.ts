@@ -1,9 +1,10 @@
+import { USER_GUIDE_SECTIONS } from '@platform/config/user-guide'
+
 import type {
   UserGuideSectionSlug,
   UserGuideSlug,
   UserGuideSubSectionSlug,
 } from 'features/cms/loaders/user-guide.types'
-import { CATEGORIES_CONFIG } from 'features/cms/loaders/user-guide.types'
 
 export function findSectionForSlug(slug: UserGuideSlug | string): {
   section: UserGuideSectionSlug
@@ -12,10 +13,10 @@ export function findSectionForSlug(slug: UserGuideSlug | string): {
   if (!slug) {
     return null
   }
-  if (slug in CATEGORIES_CONFIG) {
+  if (slug in USER_GUIDE_SECTIONS) {
     return { section: slug as UserGuideSectionSlug }
   }
-  for (const [section, subsections] of Object.entries(CATEGORIES_CONFIG) as [
+  for (const [section, subsections] of Object.entries(USER_GUIDE_SECTIONS) as [
     UserGuideSectionSlug,
     readonly string[],
   ][]) {

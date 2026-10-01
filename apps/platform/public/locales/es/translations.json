@@ -162,6 +162,7 @@
     "skillQueryParams": "Ajustando la IU",
     "skillRoutes": "Eligiendo las secciones correctas",
     "thinking": "Pensando",
+    "toolAlternatives": "Other views",
     "toolBash": "Ejecutando comando",
     "toolLoadSkill": "Cargando habilidad",
     "toolNavigate": "Navigated to view",
@@ -1641,6 +1642,7 @@
   },
   "workspace": {
     "addLayer": "Agregar al área de trabajo",
+    "archiveTitle": "Archived workspaces",
     "categories": {
       "fishing-activity": "Áreas de trabajo destacadas",
       "marine-manager": "Áreas de trabajo del Marine Manager",
@@ -1674,6 +1676,8 @@
     "passwordRequired": "La contraseña es obligatoria",
     "privateEditAcessInfo": "Sus permisos de acceso a la vista actual no permiten a otros editar este espacio de trabajo",
     "privateTitle": "Espacios de trabajo privados",
+    "readOnlyDisclaimer": "This workspace is for comparison between data layers",
+    "readOnlyDisclaimerNote": "Pipe 4 data is for viewing/comparison only, not analysis",
     "remove": "Eliminar el espacio de trabajo",
     "save": "Guardar el mapa actual",
     "saveAs": "Guardar como nueva área de trabajo",
