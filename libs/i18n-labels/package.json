@@ -28,7 +28,7 @@
     "tslib": "2.x"
   },
   "devDependencies": {
-    "prettier": "3.9.6",
+    "prettier": "3.9.9",
     "rimraf": "6.1.3"
   }
 }
