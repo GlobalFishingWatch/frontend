@@ -118,14 +118,14 @@ const LONGLINE_SETS_CSV_CONFIG: CsvConfig[] = [
   { label: 'end', accessor: 'end', transform: parseCSVDate },
   { label: 'latitude', accessor: 'position.lat' },
   { label: 'longitude', accessor: 'position.lon' },
-  { label: 'dayNightCategory', accessor: 'fishing.dayNightCategory' },
-  { label: 'fractionAtNight', accessor: 'fishing.fractionAtNight' },
+  { label: 'localStartHours', accessor: 'fishing.localStartHours' },
+  { label: 'localEndHours', accessor: 'fishing.localEndHours' },
+  { label: 'dayNightSummary', accessor: 'fishing.dayNightSummary' },
   { label: 'eez', accessor: 'regions.eez', transform: parseCSVList },
   { label: 'rfmo', accessor: 'regions.rfmo', transform: parseCSVList },
 ]
 
 export const parseLonglineSetsToCSV = (events: ApiEvents['entries']) => {
-  // the untranslated category key keeps the export stable across locales
   const sets = events.map((event) => ({ ...event, category: getLonglineCategory(event) }))
   return objectArrayToCSV(sets, LONGLINE_SETS_CSV_CONFIG)
 }
