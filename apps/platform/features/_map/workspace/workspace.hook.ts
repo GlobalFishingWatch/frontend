@@ -1,18 +1,31 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useRouter } from '@tanstack/react-router'
+import { uniq } from 'es-toolkit'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { LAYERS_LIBRARY_ACTIVITY } from 'data/map/layer-library/layers-activity'
 import { LAYERS_LIBRARY_DETECTIONS } from 'data/map/layer-library/layers-detections'
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
+import {
+  fetchDatasetsByIdsThunk,
+  selectIds as selectDatasetIds,
+} from 'features/_map/datasets/datasets.slice'
+import { getDatasetsInDataviews } from 'features/_map/datasets/datasets.utils'
+import {
+  fetchDataviewsByIdsThunk,
+  selectAllDataviews,
+} from 'features/_map/dataviews/dataviews.slice'
 import { selectDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectUrlDataviewInstances } from 'router/routes.selectors'
 import type { QueryParams } from 'types'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
-import { selectWorkspaceDataviewInstances } from './workspace.selectors'
+import { selectWorkspaceDataviewInstances, selectWorkspaceStatus } from './workspace.selectors'
 import { getNextColor } from './workspace.utils'
 
 const createDataviewsInstances = (
@@ -160,4 +173,43 @@ export const useDataviewInstancesConnect = () => {
       upsertDataviewInstance,
     ]
   )
+}
+
+export const useEnsureUrlDataviewsLoad = () => {
+  const dispatch = useAppDispatch()
+  const workspaceLoaded = useSelector(selectWorkspaceStatus) === AsyncReducerStatus.Finished
+  const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
+  const dataviews = useSelector(selectAllDataviews)
+  const datasetIds = useSelector(selectDatasetIds) as string[]
+  const guestUser = useSelector(selectIsGuestUser)
+
+  const urlDataviewIds = uniq(
+    (urlDataviewInstances || []).flatMap(({ dataviewId }) => (dataviewId ? String(dataviewId) : []))
+  )
+  const urlDataviews = dataviews.filter(
+    (dataview) =>
+      urlDataviewIds.includes(dataview.slug) || urlDataviewIds.includes(String(dataview.id))
+  )
+  const missingDataviewIds = urlDataviewIds
+    .filter(
+      (id) => !urlDataviews.some((dataview) => dataview.slug === id || String(dataview.id) === id)
+    )
+    .join(',')
+  const missingDatasetIds = getDatasetsInDataviews(urlDataviews, urlDataviewInstances, guestUser)
+    .filter((id) => !datasetIds.includes(id))
+    .join(',')
+
+  useEffect(() => {
+    if (workspaceLoaded && missingDataviewIds) {
+      dispatch(fetchDataviewsByIdsThunk(missingDataviewIds.split(',')))
+    }
+  }, [dispatch, workspaceLoaded, missingDataviewIds])
+
+  useEffect(() => {
+    if (workspaceLoaded && missingDatasetIds) {
+      dispatch(
+        fetchDatasetsByIdsThunk({ ids: missingDatasetIds.split(','), includeRelated: false })
+      )
+    }
+  }, [dispatch, workspaceLoaded, missingDatasetIds])
 }
