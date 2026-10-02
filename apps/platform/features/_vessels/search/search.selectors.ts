@@ -7,7 +7,6 @@ import {
   removeDatasetVersion,
   replaceDatasetPrivateToPublic,
 } from '@globalfishingwatch/datasets-client'
-import { DEFAULT_WORKSPACE_ID, PIPE_4_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import { PRIVATE_SUFIX, PUBLIC_SUFIX } from 'data/map/config'
 import { selectVesselsDatasets } from 'features/_map/datasets/datasets.selectors'
@@ -19,6 +18,7 @@ import {
 } from 'features/_map/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectAllDataviewsInWorkspace } from 'features/_map/dataviews/selectors/dataviews.selectors'
+import { getIsWorkspaceArchived } from 'features/_map/workspace/workspace.utils'
 import { selectPrivateSearchDatasetIds } from 'features/_user/selectors/user.groups.selectors'
 import { selectIsGuestUser, selectUserData } from 'features/_user/selectors/user.selectors'
 import { isDatasetSearchFieldNeededSupported } from 'features/_vessels/search/advanced/advanced-search.utils'
@@ -53,37 +53,37 @@ const selectSearchDatasetsInWorkspace = createSelector(
     deprecatedDatasets,
     workspaceId
   ) => {
-    const isDefaultWorkspace = !workspaceId || workspaceId === DEFAULT_WORKSPACE_ID
-    // The default workspace searches every dataset available: the default dataviews plus the
-    // private datasets granted by permissions. Any other workspace searches only its own layers
-    const datasetsIds = isDefaultWorkspace
-      ? [...getDatasetsInDataviews(dataviews), ...privateSearchDatasetIds]
-      : getDatasetsInDataviews(dataviewInstances)
+    const isArchivedWorkspace = !!workspaceId && getIsWorkspaceArchived({ id: workspaceId })
+    // Archived (pipe 4) workspaces search only their own layers, as the default dataviews are
+    // built for the current pipe. Any other workspace searches every dataset available: the
+    // default dataviews plus the private datasets granted by permissions
+    const datasetsIds = isArchivedWorkspace
+      ? getDatasetsInDataviews(dataviewInstances)
+      : [...getDatasetsInDataviews(dataviews), ...privateSearchDatasetIds]
     const datasets = allDatasets.flatMap(({ id, relatedDatasets }) => {
       if (!datasetsIds.includes(id)) return EMPTY_ARRAY
       return [id, ...(relatedDatasets || []).map((d) => d.id)]
     })
     // Private datasets granted by permissions replace their public version when it is in the workspace
-    const workspaceDatasets = isDefaultWorkspace
-      ? datasets
-      : [
+    const workspaceDatasets = isArchivedWorkspace
+      ? [
           ...datasets,
           ...privateSearchDatasetIds.filter((id) =>
             datasets.includes(replaceDatasetPrivateToPublic(id))
           ),
         ]
-    // The pipe 4 workspace searches only v4 datasets. Its instances can inherit datasets from
+      : datasets
+    // Archived workspaces search only v4 datasets. Their instances can inherit datasets from
     // dataviews built for the current pipe and would mix v5 identities into the request.
     // Anywhere else the global identity is searched only in the current pipe version, as v4
     // layers still list the v4 identity as a related dataset
-    const searchDatasetsIds =
-      workspaceId === PIPE_4_WORKSPACE_ID
-        ? workspaceDatasets.filter((id) => getDatasetVersion(id)?.startsWith('v4.'))
-        : workspaceDatasets.filter(
-            (id) =>
-              removeDatasetVersion(id) !== DEFAULT_VESSEL_IDENTITY_DATASET ||
-              id === DEFAULT_VESSEL_IDENTITY_ID
-          )
+    const searchDatasetsIds = isArchivedWorkspace
+      ? workspaceDatasets.filter((id) => getDatasetVersion(id)?.startsWith('v4.'))
+      : workspaceDatasets.filter(
+          (id) =>
+            removeDatasetVersion(id) !== DEFAULT_VESSEL_IDENTITY_DATASET ||
+            id === DEFAULT_VESSEL_IDENTITY_ID
+        )
     const filteredDatasets = vesselsDatasets.filter((dataset) =>
       searchDatasetsIds.includes(dataset.id)
     )
