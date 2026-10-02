@@ -1,8 +1,7 @@
 import { useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
-import { Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
+import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 
 import { getHighlightedText, getSearchPreview } from 'utils/text'
 
@@ -37,7 +36,6 @@ type TableOfContentsProps = {
   className?: string
   onClick?: (id: string) => void
   onSubItemClick?: (sectionId: string, subId: string) => void
-  /** pass it to render the search input elsewhere (e.g. a header); omit to use the built-in one */
   searchQuery?: string
 }
 
@@ -47,12 +45,9 @@ function TableOfContents({
   className,
   onClick,
   onSubItemClick,
-  searchQuery: controlledSearchQuery,
+  searchQuery,
 }: TableOfContentsProps) {
-  const { t } = useTranslation()
-  const [localSearchQuery, setSearchQuery] = useState('')
-  const isSearchControlled = controlledSearchQuery !== undefined
-  const searchQuery = isSearchControlled ? controlledSearchQuery : localSearchQuery
+  const query = searchQuery?.trim() ?? ''
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
 
   const toggleCollapsed = (id: string) => {
@@ -88,7 +83,7 @@ function TableOfContents({
   )
 
   const listItems = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase()
+    const q = query.toLowerCase()
     const matches = (text: string) => text.toLowerCase().includes(q)
     return searchableSections
       .filter((s) => !q || matches(s.title) || matches(s.text))
@@ -109,21 +104,12 @@ function TableOfContents({
                   .map((sub) => ({ id: sub.slug || sub.id, label: sub.title }))[0],
         }),
       }))
-  }, [searchableSections, searchQuery])
+  }, [searchableSections, query])
   return (
     <div
       className={cx(styles.tableOfContentsContainer, styles.notranslate, className)}
       translate="no"
     >
-      {!isSearchControlled && (
-        <InputText
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onCleanButtonClick={() => setSearchQuery('')}
-          value={searchQuery}
-          type="search"
-          placeholder={t((t) => t.search.title)}
-        />
-      )}
       <ul>
         {listItems.map((item) => {
           const isCollapsed = !expandedIds.has(item.id)
@@ -137,7 +123,7 @@ function TableOfContents({
                   className={cx(styles.listItem, { [styles.listItemActive]: activeId == item.id })}
                 >
                   <h3 className={styles.listItemLabel}>
-                    {getHighlightedText(item.label, searchQuery, styles)}
+                    {getHighlightedText(item.label, query, styles)}
                   </h3>
                 </button>
                 {item.matchedSubTopic && (
@@ -149,12 +135,12 @@ function TableOfContents({
                       className={styles.listItem}
                     >
                       <h3 className={styles.listItemLabel}>
-                        {getHighlightedText(item.matchedSubTopic.label, searchQuery, styles)}
+                        {getHighlightedText(item.matchedSubTopic.label, query, styles)}
                       </h3>
                     </button>
                   </>
                 )}
-                {hasSubTopics && !searchQuery && (
+                {hasSubTopics && !query && (
                   <IconButton
                     icon={isCollapsed ? 'arrow-down' : 'arrow-top'}
                     className={styles.listItemToggle}
@@ -163,7 +149,7 @@ function TableOfContents({
                   />
                 )}
               </div>
-              {hasSubTopics && !isCollapsed && !searchQuery && (
+              {hasSubTopics && !isCollapsed && !query && (
                 <ul>
                   {item.subTopics!.map((sub) => (
                     <li key={sub.id}>
@@ -180,7 +166,7 @@ function TableOfContents({
               )}
               {item.searchPreview &&
                 (() => {
-                  const searchPreview = getSearchPreview(item.searchPreview, searchQuery)
+                  const searchPreview = getSearchPreview(item.searchPreview, query)
                   return (
                     <button
                       type="button"
@@ -191,7 +177,7 @@ function TableOfContents({
                       }
                       className={styles.searchPreview}
                     >
-                      {getHighlightedText(searchPreview, searchQuery, styles)}
+                      {getHighlightedText(searchPreview, query, styles)}
                     </button>
                   )
                 })()}
