@@ -9,6 +9,7 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 import { selectDataviewInstancesMergedOrdered } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import DetectionsSection from 'features/_map/workspace/detections/DetectionsSection'
 import { useHideLegacyActivityCategoryDataviews } from 'features/_map/workspace/legacy-activity-category.hook'
+import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import UserSection from 'features/_map/workspace/user/UserSection/UserSection'
 import {
   selectIsWorkspacePasswordRequired,
@@ -56,6 +57,7 @@ function Workspace() {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
   const workspaceVesselGroupsIds = useSelector(selectWorkspaceVessselGroupsIds)
+  const readOnly = useSelector(selectReadOnly)
 
   useFetchDataviewResources()
 
@@ -110,8 +112,8 @@ function Workspace() {
         <ActivitySection />
         {timeMode === 'historical' && <DetectionsSection />}
         {timeMode === 'historical' && <EventsSection />}
-        <VesselsSection />
-        {timeMode === 'historical' && <VesselGroupSection />}
+        {!readOnly && <VesselsSection />}
+        {timeMode === 'historical' && !readOnly && <VesselGroupSection />}
         {timeMode === 'historical' && <EnvironmentalSection />}
         <ContextAreaSection />
         <UserSection />

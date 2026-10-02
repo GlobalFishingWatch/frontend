@@ -85,8 +85,8 @@ function MapLayout() {
 
   if (screenshotMode) {
     fixedAsideWidth = '0'
-  } else if (readOnly) {
-    fixedAsideWidth = isAreaReportLocation ? '45%' : `calc(34rem - ${RAIL})`
+    // } else if (readOnly) {
+    //   fixedAsideWidth = isAreaReportLocation ? '45%' : `calc(34rem - ${RAIL})`
   } else if (isWorkspaceSearchLocation) {
     fixedAsideWidth = '100%'
   } else if (isWorkspaceLocation) {
