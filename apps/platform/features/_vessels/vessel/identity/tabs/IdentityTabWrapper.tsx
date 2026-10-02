@@ -9,6 +9,7 @@ import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import VesselInfoCorrection from 'features/_map/workspace/vessels/VesselInfoCorrection'
 import { selectIsGFWUser, selectIsJACUser } from 'features/_user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/_user/UserLoggedIconButton'
@@ -46,6 +47,7 @@ const IdentityTabWrapper = ({ children }: { children: ReactNode }) => {
   const identitySource = useSelector(selectVesselIdentitySource)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
   const { setTimerange } = useTimerangeConnect()
+  const readOnly = useSelector(selectReadOnly)
 
   const isGFWUser = useSelector(selectIsGFWUser)
   const isJACUser = useSelector(selectIsJACUser)
@@ -148,7 +150,9 @@ const IdentityTabWrapper = ({ children }: { children: ReactNode }) => {
         </div>
         <div className={styles.actionsContainer}>
           {/* selectIsGFWUser / selectIsJACUser are already expiry aware, and a guest has no groups */}
-          {(isJACUser || isGFWUser) && !source?.[0]?.includes('VMS') && <VesselInfoCorrection />}
+          {(isJACUser || isGFWUser) && !source?.[0]?.includes('VMS') && !readOnly && (
+            <VesselInfoCorrection />
+          )}
           <UserLoggedIconButton
             loginSource="vessel-download"
             type="border"
