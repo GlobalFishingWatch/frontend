@@ -77,7 +77,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
         eventsStatsStatus === undefined
       : featuresLoading
   const fitAreaInViewport = useFitAreaInViewport()
-  const { closeSidePanel } = useSidePanel()
+  const { closeAllSidePanels } = useSidePanel()
   const isGlobalReport = useSelector(selectIsGlobalReport)
   const report = useSelector(selectCurrentReport)
   const reportArea = useSelector(selectReportArea)
@@ -137,7 +137,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   }, [dispatch])
 
   const onPrintClick = () => {
-    closeSidePanel()
+    closeAllSidePanels()
     fitAreaInViewport()
     trackEvent({
       category: TrackCategory.Analysis,

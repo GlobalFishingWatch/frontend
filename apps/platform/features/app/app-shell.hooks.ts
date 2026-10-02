@@ -1,4 +1,5 @@
 import { useActivityDownloadTimeoutRefresh } from 'features/_map/download/downloadActivity.hooks'
+import { useEnsureUrlDataviewsLoad } from 'features/_map/workspace/workspace.hook'
 import { useEnsureWorkspaceLoad } from 'features/_map/workspace/workspace-load.hook'
 import { useLoginPopupListener, useSettingsMessageListener } from 'features/_user/user.hooks'
 import { useFetchTrackCorrections } from 'features/_vessels/track-correction/track-correction.hooks'
@@ -18,4 +19,5 @@ export function useAppShell() {
   useEnsureWorkspaceLoad()
   useLoginPopupListener()
   useSettingsMessageListener()
+  useEnsureUrlDataviewsLoad()
 }

@@ -6,7 +6,6 @@ import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { IconButton, Popover, Spinner } from '@globalfishingwatch/ui-components'
 
 import { useChatThreads } from 'features/_map/content-panel/chat/chat-threads.hooks'
-import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import { getTimeAgo } from 'utils/dates'
 
 import styles from './Chat.module.css'
@@ -60,7 +59,6 @@ function ChatHistoryItem({
 function ChatHeader() {
   const { t } = useTranslation()
   const [historyOpen, setHistoryOpen] = useState(false)
-  const { closeSidePanel } = useSidePanel()
 
   const {
     threads,
@@ -72,10 +70,13 @@ function ChatHeader() {
     deleteThread,
     newThread,
   } = useChatThreads()
+  const activeThreadTitle = threads.find((thread) => thread.id === activeThreadId)?.title
 
   return (
     <div className={styles.header}>
-      <label className={styles.title}>{t((t) => t.common.assistant)}</label>
+      <span className={styles.title}>
+        {activeThreadTitle || t((t) => t.common.newConversation)}
+      </span>
       <Fragment>
         <Popover
           open={historyOpen}
@@ -123,12 +124,6 @@ function ChatHeader() {
           size="medium"
         />
       </Fragment>
-      <IconButton
-        type="border"
-        icon="close"
-        tooltip={t((t) => t.common.close)}
-        onClick={closeSidePanel}
-      />
     </div>
   )
 }

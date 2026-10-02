@@ -11,7 +11,7 @@ import {
   newActiveThread,
   pendingPromptAtom,
 } from 'features/_map/content-panel/chat/chat.atoms'
-import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
+import { useSidePanel, withSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import { mergeDataviewIntancesToUpsert } from 'features/_map/workspace/workspace.hook'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { cleanReportPayload } from 'features/_map/workspace/workspace.utils'
@@ -59,9 +59,7 @@ export function useOnboardingCardActions() {
       params: workspaceParams,
       search: (prev) => ({
         ...prev,
-        sidePanelContent: 'userGuide',
-        sidePanelId: id,
-        sidePanelSubcontentId: subcontentId,
+        ...withSidePanel(prev, { type: 'userGuide', id, subcontentId }),
       }),
     })
     track('search for a vessel')
