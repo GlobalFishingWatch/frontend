@@ -1,8 +1,8 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useReplaceQueryParams } from 'router/routes.hook'
-import type { QueryParams, SidePanelContent, SidePanelState } from 'types'
+import type { QueryParams, SidePanelContent } from 'types'
 
 export type SidePanelTarget =
   | { type: 'userGuide'; id?: string; subcontentId?: string }
@@ -76,15 +76,6 @@ export function useSidePanel() {
     }),
     [openSidePanel, closeSidePanel, closeAllSidePanels, setActiveSidePanel]
   )
-}
-
-export const SidePanelContext = createContext<SidePanelState | null>(null)
-
-/** The panel currently being rendered: its type, id and subcontentId */
-export function useSidePanelItem() {
-  const item = useContext(SidePanelContext)
-  if (!item) throw new Error('useSidePanelItem must be used inside a SidePanelContext provider')
-  return item
 }
 
 export function useSidePanelLabel() {

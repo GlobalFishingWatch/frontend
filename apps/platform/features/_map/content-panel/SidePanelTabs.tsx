@@ -5,11 +5,7 @@ import cx from 'classnames'
 import { Icon, Tabs } from '@globalfishingwatch/ui-components'
 
 import { IS_CHATBOT_ENABLED } from 'data/map/config'
-import {
-  SidePanelContext,
-  useSidePanel,
-  useSidePanelLabel,
-} from 'features/_map/content-panel/contentPanel.hooks'
+import { useSidePanel, useSidePanelLabel } from 'features/_map/content-panel/contentPanel.hooks'
 import { useAppSearch } from 'router/routes.hook'
 import type { SidePanelContent, SidePanelState } from 'types'
 
@@ -31,15 +27,17 @@ const UserGuideContent = lazy(
 
 function SidePanelView({ item }: { item: SidePanelState }) {
   return (
-    <SidePanelContext.Provider value={item}>
-      <Suspense fallback={null}>
-        {item.type === 'userGuide' && <UserGuideContent />}
-        {item.type === 'datasets' && <DatasetInfoContainer />}
-        {item.type === 'userDataset' && <UserDatasetInfoContainer />}
-        {item.type === 'dataTerminology' && <DataTerminologyContent />}
-        {item.type === 'chat' && IS_CHATBOT_ENABLED && <ChatContainer />}
-      </Suspense>
-    </SidePanelContext.Provider>
+    <Suspense fallback={null}>
+      {item.type === 'userGuide' && (
+        <UserGuideContent id={item.id} subcontentId={item.subcontentId} />
+      )}
+      {item.type === 'datasets' && (
+        <DatasetInfoContainer id={item.id} subcontentId={item.subcontentId} />
+      )}
+      {item.type === 'userDataset' && <UserDatasetInfoContainer id={item.id} />}
+      {item.type === 'dataTerminology' && <DataTerminologyContent id={item.id} />}
+      {item.type === 'chat' && IS_CHATBOT_ENABLED && <ChatContainer />}
+    </Suspense>
   )
 }
 

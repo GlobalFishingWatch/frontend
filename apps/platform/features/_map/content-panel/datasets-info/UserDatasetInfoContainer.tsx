@@ -3,17 +3,14 @@ import cx from 'classnames'
 
 import ContentHeader from 'features/_map/content-panel/ContentHeader'
 import ContentMarkdown from 'features/_map/content-panel/ContentMarkdown'
-import {
-  useScrollToTopOnChange,
-  useSidePanelItem,
-} from 'features/_map/content-panel/contentPanel.hooks'
+import { useScrollToTopOnChange } from 'features/_map/content-panel/contentPanel.hooks'
 import EmptyContent from 'features/_map/content-panel/EmptyContent'
 import { selectDatasetById } from 'features/_map/datasets/datasets.slice'
+import type { SidePanelState } from 'types'
 
 import styles from '../ContentPanel.module.css'
 
-const UserDatasetInfoContainer = () => {
-  const { id: sidePanelId } = useSidePanelItem()
+const UserDatasetInfoContainer = ({ id: sidePanelId }: Pick<SidePanelState, 'id'>) => {
   const dataset = useSelector(selectDatasetById(sidePanelId as string))
   const scrollContainerRef = useScrollToTopOnChange<HTMLDivElement>(sidePanelId)
 

@@ -6,17 +6,14 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 
 import ContentHeader from 'features/_map/content-panel/ContentHeader'
 import ContentMarkdown from 'features/_map/content-panel/ContentMarkdown'
-import {
-  useScrollToTopOnChange,
-  useSidePanelItem,
-} from 'features/_map/content-panel/contentPanel.hooks'
+import { useScrollToTopOnChange } from 'features/_map/content-panel/contentPanel.hooks'
 import EmptyContent from 'features/_map/content-panel/EmptyContent'
 import { toContentLocale } from 'features/i18n/i18n.config'
+import type { SidePanelState } from 'types'
 
 import styles from '../ContentPanel.module.css'
 
-const DataTerminologyContent = () => {
-  const { id: sidePanelId } = useSidePanelItem()
+const DataTerminologyContent = ({ id: sidePanelId }: Pick<SidePanelState, 'id'>) => {
   const { i18n, t } = useTranslation()
   const scrollContainerRef = useScrollToTopOnChange<HTMLDivElement>(sidePanelId)
 

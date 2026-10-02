@@ -7,15 +7,18 @@ import { Button, Icon, IconButton, InputText, Spinner } from '@globalfishingwatc
 
 import ContentHeader from 'features/_map/content-panel/ContentHeader'
 import ContentMarkdown from 'features/_map/content-panel/ContentMarkdown'
-import { useSidePanel, useSidePanelItem } from 'features/_map/content-panel/contentPanel.hooks'
+import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import EmptyContent from 'features/_map/content-panel/EmptyContent'
 import TableOfContents from 'features/_map/content-panel/user-guide/TableOfContents'
 import { toContentLocale } from 'features/i18n/i18n.config'
+import type { SidePanelState } from 'types'
 
 import styles from '../ContentPanel.module.css'
 
-export const UserGuideContentComponent = () => {
-  const { id: sidePanelId, subcontentId: sidePanelSubcontentId } = useSidePanelItem()
+export const UserGuideContentComponent = ({
+  id: sidePanelId,
+  subcontentId: sidePanelSubcontentId,
+}: Omit<SidePanelState, 'type'>) => {
   const { i18n, t } = useTranslation()
 
   const {
