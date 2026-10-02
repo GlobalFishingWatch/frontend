@@ -8,7 +8,7 @@ import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import type { ApiEvents } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { LonglineCategory } from '@globalfishingwatch/deck-loaders'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { LONGLINE_FISHING_EVENTS_DATASET } from '@platform/config/map/datasets'
 
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
@@ -23,6 +23,7 @@ import { parseLonglineSetsToCSV } from 'features/_vessels/vessel/vessel.download
 import type { VesselEvent } from 'features/_vessels/vessel/vessel.types'
 import VesselLink from 'features/_vessels/vessel/VesselLink'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import DataTerminology from 'features/cms/data-terminology/DataTerminology'
 import { selectReportVesselGroupId } from 'router/routes.selectors'
 import { formatInfoField } from 'utils/info'
 
@@ -159,7 +160,10 @@ const VesselGroupReportInsightLongline = ({ skip }: { skip?: boolean }) => {
   return (
     <div id="vessel-group-longline" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t((t) => t.vessel.insights.longline)}</label>
+        <Tooltip content={t((t) => t.common.experimentalTooltip)}>
+          <label className="experimental">{t((t) => t.vessel.insights.longline)}</label>
+        </Tooltip>
+        <DataTerminology terminologyKey="insightsLongline" />
         <div className={insightStyles.insightTitleActions}>
           <LonglineTimeChoice localTime={localTime} onChange={setLocalTime} />
           <UserLoggedIconButton

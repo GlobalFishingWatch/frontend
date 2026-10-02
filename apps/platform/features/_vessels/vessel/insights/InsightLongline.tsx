@@ -5,7 +5,7 @@ import { useGetVesselEventsQuery } from 'queries/map/vessel-events-api'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { EventTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { LONGLINE_FISHING_EVENTS_DATASET } from '@platform/config/map/datasets'
 
 import { fetchDatasetsByIdsThunk } from 'features/_map/datasets/datasets.slice'
@@ -26,6 +26,7 @@ import type { VesselEvent } from 'features/_vessels/vessel/vessel.types'
 import { getVesselIdentities, getVesselProperty } from 'features/_vessels/vessel/vessel.utils'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import DataTerminology from 'features/cms/data-terminology/DataTerminology'
 import { useReplaceQueryParams } from 'router/routes.hook'
 
 import InsightError from './InsightErrorMessage'
@@ -107,7 +108,10 @@ const InsightLongline = () => {
   return (
     <div id="longline" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t((t) => t.vessel.insights.longline)}</label>
+        <Tooltip content={t((t) => t.common.experimentalTooltip)}>
+          <label className="experimental">{t((t) => t.vessel.insights.longline)}</label>
+        </Tooltip>
+        <DataTerminology terminologyKey="insightsLongline" />
         <div className={styles.insightTitleActions}>
           <LonglineTimeChoice localTime={localTime} onChange={setLocalTime} />
           <UserLoggedIconButton
