@@ -1,9 +1,12 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type { IconButtonSize } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
+
+import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 
 import {
   usePinVessel,
@@ -46,6 +49,7 @@ export function VesselPin({
     config,
     dataviewTemplateId,
   })
+  const readOnly = useSelector(selectReadOnly)
 
   const vesselName = useMemo(
     () => vessel?.selfReportedInfo?.[0]?.shipname?.toLowerCase()?.replace(/\s/g, '-') || '',
@@ -53,24 +57,26 @@ export function VesselPin({
   )
 
   return (
-    <IconButton
-      data-testid={`vessel-pin-button-${vesselName}`}
-      icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
-      loading={loading}
-      disabled={disabled}
-      className={cx(className, 'print-hidden')}
-      style={{
-        color: vesselInWorkspace ? vesselInWorkspace.config?.color : '',
-        ...(style || {}),
-      }}
-      tooltip={
-        vesselInWorkspace
-          ? t((t) => t.search.vesselAlreadyInWorkspace)
-          : t((t) => t.vessel.addToWorkspace)
-      }
-      onClick={onPinClick}
-      size={size}
-    />
+    !readOnly && (
+      <IconButton
+        data-testid={`vessel-pin-button-${vesselName}`}
+        icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
+        loading={loading}
+        disabled={disabled}
+        className={cx(className, 'print-hidden')}
+        style={{
+          color: vesselInWorkspace ? vesselInWorkspace.config?.color : '',
+          ...(style || {}),
+        }}
+        tooltip={
+          vesselInWorkspace
+            ? t((t) => t.search.vesselAlreadyInWorkspace)
+            : t((t) => t.vessel.addToWorkspace)
+        }
+        onClick={onPinClick}
+        size={size}
+      />
+    )
   )
 }
 
