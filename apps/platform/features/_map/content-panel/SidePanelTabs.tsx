@@ -2,7 +2,8 @@ import { lazy, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
-import { Icon, Tabs } from '@globalfishingwatch/ui-components'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
+import { Tabs } from '@globalfishingwatch/ui-components/tabs'
 
 import { IS_CHATBOT_ENABLED } from 'data/map/config'
 import { useSidePanel, useSidePanelLabel } from 'features/_map/content-panel/contentPanel.hooks'
