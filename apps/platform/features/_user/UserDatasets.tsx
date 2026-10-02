@@ -60,6 +60,7 @@ function UserDatasets() {
   const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
   const [searchQuery, setSearchQuery] = useState('')
   const [geometryTypeFilter, setGeometryTypeFilter] = useState(ALL_TYPES_OPTION_ID)
+  const [fetchStatus, setFetchStatus] = useState<AsyncReducerStatus>(AsyncReducerStatus.Loading)
 
   const datasetsByGeometryType = useMemo(() => groupDatasetsByGeometryType(datasets), [datasets])
 
@@ -67,10 +68,14 @@ function UserDatasets() {
     () => [
       { id: ALL_TYPES_OPTION_ID, label: t((t) => t.selects.allSelected) },
       ...Object.entries(datasetsByGeometryType)
-        .filter(([, geometryDatasets]) => geometryDatasets.length > 0)
+        .filter(([type, geometryDatasets]) =>
+          fetchStatus === AsyncReducerStatus.Loading
+            ? type !== 'bigQuery'
+            : geometryDatasets.length > 0
+        )
         .map(([geometryType]) => ({ id: geometryType, label: getGeometryTypeLabel(geometryType) })),
     ],
-    [datasetsByGeometryType, t]
+    [datasetsByGeometryType, fetchStatus, t]
   )
 
   const filteredDatasets = useMemo(
@@ -80,10 +85,6 @@ function UserDatasets() {
         : datasetsByGeometryType[geometryTypeFilter] || [],
     [datasets, datasetsByGeometryType, geometryTypeFilter]
   )
-
-  // The slice status is global, so on mount it reads Idle/Finished from whatever fetched datasets
-  // last and the empty state flashes before this component's own request even starts
-  const [fetchStatus, setFetchStatus] = useState<AsyncReducerStatus>(AsyncReducerStatus.Loading)
 
   const fetchDatasets = useCallback(() => {
     dispatch(fetchAllDatasetsThunk({ fetchUserDatasetsMode: 'user-only' })).then((action) => {

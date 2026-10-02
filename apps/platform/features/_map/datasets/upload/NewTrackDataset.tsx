@@ -52,6 +52,7 @@ function NewTrackDataset({
   dataset,
   onFileUpdate,
   onDatasetParseError,
+  onClose,
 }: NewDatasetProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const [error, setError] = useState<string>('')
@@ -436,7 +437,7 @@ function NewTrackDataset({
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
-          <UserGuideLink slug="uploading-data" />
+          <UserGuideLink slug="uploading-data" onClick={onClose} />
         </div>
         <Button
           className={styles.saveBtn}

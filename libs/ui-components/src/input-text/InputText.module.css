@@ -24,6 +24,14 @@
   height: var(--size-S);
 }
 
+.container:has(.icon, .spinner) input {
+  padding-right: calc(var(--space-S) * 2 + var(--size-XS));
+}
+
+.container:has(.delete) input {
+  padding-right: calc(3rem + var(--size-SM));
+}
+
 .spinner {
   position: absolute;
   bottom: 0;

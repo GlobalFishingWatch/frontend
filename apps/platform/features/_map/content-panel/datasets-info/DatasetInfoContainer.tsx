@@ -27,14 +27,16 @@ import { selectDataviewInstancesResolved } from 'features/_map/dataviews/selecto
 import { selectWorkspaceStatus } from 'features/_map/workspace/workspace.selectors'
 import type { UserGuideSlug } from 'features/cms/loaders/user-guide.types'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { useAppSearch } from 'router/routes.hook'
+import type { SidePanelState } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from '../ContentPanel.module.css'
 
-const DatasetInfoContainer = () => {
+const DatasetInfoContainer = ({
+  id: sidePanelId,
+  subcontentId: sidePanelSubcontentId,
+}: Omit<SidePanelState, 'type'>) => {
   const { ready: i18nReady } = useTranslation()
-  const { sidePanelId, sidePanelSubcontentId } = useAppSearch()
   const { openSidePanel } = useSidePanel()
   const scrollContainerRef = useScrollToTopOnChange<HTMLDivElement>(sidePanelId)
   const workspaceStatus = useSelector(selectWorkspaceStatus)

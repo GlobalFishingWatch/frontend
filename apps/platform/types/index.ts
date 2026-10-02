@@ -159,6 +159,16 @@ export type SidePanelContent =
   /** Conversational assistant backed by gfw-agent */
   | 'chat'
 
+export type SidePanelState = {
+  type: SidePanelContent
+  /** Id of the content type like:
+   * Dataset['id'] (libs/api-types/src/datasets.ts)
+   * UserGuideSlug (apps/platform/features/cms/loaders/user-guide.types.ts)
+   * */
+  id?: string
+  subcontentId?: string
+}
+
 /**
  * Track correction identifier
  * @remarks 'new' represents a new track correction
@@ -177,14 +187,10 @@ export type AppState = {
   /** Used when editing a drawn feature */
   mapDrawingEditId?: string
   trackCorrectionId?: TrackCorrectionId
-  /** Id of the content type like:
-   * Dataset['id'] (libs/api-types/src/datasets.ts)
-   * UserGuideSlug (apps/platform/features/cms/loaders/user-guide.types.ts)
-   * */
-  sidePanelId?: string
-  sidePanelSubcontentId?: string
-  /** Sidebar panel with aditional documentation */
-  sidePanelContent?: SidePanelContent
+  /** Open documentation panels, one per type, in tab order */
+  sidePanels?: SidePanelState[]
+  /** Tab shown in the side panel */
+  sidePanelActive?: SidePanelContent
 }
 
 export type QueryParams = Partial<WorkspaceViewport> &

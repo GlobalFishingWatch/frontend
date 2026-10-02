@@ -34,7 +34,7 @@ import {
   VESSEL_RELATED_SUBSECTIONS,
   VESSEL_SECTIONS,
 } from 'features/_vessels/vessel/vessel.types'
-import type { QueryParams } from 'types'
+import type { QueryParams, SidePanelContent } from 'types'
 import {
   BUFFER_OPERATIONS,
   BUFFER_UNITS,
@@ -55,6 +55,14 @@ const optionalEnum = <T extends string>(enumObj: Record<string, T>) =>
   fallback(z.enum(Object.values(enumObj) as [T, ...T[]]).optional(), undefined)
 const optionalLiteralUnion = <T extends string>(values: readonly [T, ...T[]]) =>
   fallback(z.enum(values).optional(), undefined)
+
+const SIDE_PANEL_TYPES = [
+  'userGuide',
+  'datasets',
+  'userDataset',
+  'dataTerminology',
+  'chat',
+] as const satisfies readonly SidePanelContent[]
 
 // ── Root search params schema ─────────────────────────────────────────────────
 // Shared across all routes: viewport, time, workspace state, app state, auth.
@@ -136,6 +144,21 @@ export const rootSearchSchema = z
       .transform((v) => (v === true ? 'polygons' : v)),
     mapDrawingEditId: optionalString(),
     trackCorrectionId: optionalString(), // 'new' | arbitrary ID string
+    sidePanels: fallback(
+      z
+        .array(
+          z
+            .object({
+              type: z.enum(SIDE_PANEL_TYPES),
+              id: z.string().optional().catch(undefined),
+              subcontentId: z.string().optional().catch(undefined),
+            })
+            .passthrough()
+        )
+        .optional(),
+      undefined
+    ),
+    sidePanelActive: optionalLiteralUnion(SIDE_PANEL_TYPES),
 
     // ── RedirectParam ─────────────────────────────────────────────────────
     'access-token': optionalString(),
