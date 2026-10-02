@@ -15,5 +15,4 @@ export const DEFAULT_IDENTITY_DATASET_ID =
 
 // Longline sets insight: Prototype dataset that doesn't follow the dataviews -> dataset workflow versioning and loading
 // it's hardcoded here for simplicity, but at some point the content should be included in the fishing events dataset and removed from here
-export const LONGLINE_FISHING_EVENTS_DATASET =
-  `public-global-longline-fishing-events${DATASET_VERSION_SEPARATOR}${PIPE_DATASET_ID}` as const
+export const LONGLINE_FISHING_EVENTS_DATASET = `public-global-longline-fishing-events:v5.0` as const

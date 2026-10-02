@@ -132,10 +132,7 @@ describe('withLonglineSetsEvents', () => {
     expect(eventsConfig?.datasetId).toBe(LONGLINE_FISHING_EVENTS_DATASET)
     expect(eventsConfig?.query).toEqual([
       { id: 'vessels', value: ['vessel-1'] },
-      {
-        id: 'includes',
-        value: ['fishing.dayNightCategory', 'fishing.fractionAtNight'],
-      },
+      { id: 'includes', value: ['fishing.dayNightSummary'] },
     ])
   })
 
@@ -158,8 +155,7 @@ describe('withLonglineSetsEvents', () => {
     )
     expect(eventsConfig?.query?.find((query) => query.id === 'includes')?.value).toEqual([
       'existing',
-      'fishing.dayNightCategory',
-      'fishing.fractionAtNight',
+      'fishing.dayNightSummary',
     ])
   })
 

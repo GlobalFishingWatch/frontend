@@ -1,4 +1,8 @@
-import type { ApiEvent, EventTypes } from '@globalfishingwatch/api-types'
+import type {
+  ApiEvent,
+  EventTypes,
+  FishingEventDayNightSummary,
+} from '@globalfishingwatch/api-types'
 
 export const EVENTS_COLORS: Record<`${EventTypes}` | 'partially' | 'unmatched' | 'port', string> = {
   partially: '#F59E84',
@@ -12,22 +16,29 @@ export const EVENTS_COLORS: Record<`${EventTypes}` | 'partially' | 'unmatched' |
   gaps: '#f95e5e',
 }
 
-export type LonglineCategory = 'entirelyDay' | 'mostlyDay' | 'mostlyNight' | 'entirelyNight'
+// dayAndNight groups every set that overlaps nautical dawn or dusk
+export type LonglineCategory = 'entirelyDay' | 'dayAndNight' | 'entirelyNight'
 
 export const LONGLINE_CATEGORY_COLORS: Record<LonglineCategory, string> = {
-  entirelyDay: '#ffbd52',
-  mostlyDay: '#da8902',
-  mostlyNight: '#0673b3',
+  entirelyDay: '#da8902',
+  dayAndNight: '#0673b3',
   entirelyNight: '#39394a',
 }
 
-export const isLonglineSetEvent = (event?: Partial<ApiEvent>) => !!event?.fishing?.dayNightCategory
+const LONGLINE_CATEGORY_BY_SUMMARY: Record<FishingEventDayNightSummary, LonglineCategory> = {
+  entirely_day: 'entirelyDay',
+  mostly_day: 'dayAndNight',
+  day_and_night: 'dayAndNight',
+  mostly_night: 'dayAndNight',
+  entirely_night: 'entirelyNight',
+}
 
+export const isLonglineSetEvent = (event?: Partial<ApiEvent>) => !!event?.fishing?.dayNightSummary
+
+// ponytail: an unknown summary from the API falls back to dayAndNight instead of crashing the grouping
 export const getLonglineCategory = (event: Partial<ApiEvent>): LonglineCategory => {
-  const category = event.fishing?.dayNightCategory
-  if (category === 'day') return 'entirelyDay'
-  if (category === 'night') return 'entirelyNight'
-  return (event.fishing?.fractionAtNight ?? 0) < 0.5 ? 'mostlyDay' : 'mostlyNight'
+  const summary = event.fishing?.dayNightSummary
+  return (summary && LONGLINE_CATEGORY_BY_SUMMARY[summary]) || 'dayAndNight'
 }
 
 export type VesselTrackGraphExtent = [number, number]

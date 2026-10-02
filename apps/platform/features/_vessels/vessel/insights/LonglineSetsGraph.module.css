@@ -37,12 +37,8 @@
   background-color: var(--longline-entirely-night);
 }
 
-.mostlyNight {
-  background-color: var(--longline-mostly-night);
-}
-
-.mostlyDay {
-  background-color: var(--longline-mostly-day);
+.dayAndNight {
+  background-color: var(--longline-day-and-night);
 }
 
 .entirelyDay {
