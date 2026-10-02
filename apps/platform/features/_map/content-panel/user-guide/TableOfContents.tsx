@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
-import { IconButton, InputText } from '@globalfishingwatch/ui-components'
+import { Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
 
 import { getHighlightedText, getSearchPreview } from 'utils/text'
 
@@ -70,37 +70,46 @@ function TableOfContents({
   // match and preview against plain text so urls and html attributes don't count as hits
   const searchableSections = useMemo(
     () =>
-      data.map((s) => ({
-        ...s,
-        // most articles keep their content in subsections, not in the section body
-        body: markdownToText(
-          [s.body, ...(s.subsections ?? []).flatMap((sub) => [sub.title, sub.body])].join('\n')
-        ),
-      })),
+      data.map((s) => {
+        const subsections = (s.subsections ?? []).map((sub) => ({
+          ...sub,
+          text: `${sub.title} ${markdownToText(sub.body)}`,
+        }))
+        const ownText = markdownToText(s.body)
+        return {
+          ...s,
+          subsections,
+          ownText,
+          // most articles keep their content in subsections, not in the section body
+          text: [ownText, ...subsections.map((sub) => sub.text)].join(' '),
+        }
+      }),
     [data]
   )
 
-  const filteredSections = useMemo(() => {
-    if (!searchQuery.trim()) return searchableSections
-    const q = searchQuery.toLowerCase()
-    return searchableSections.filter(
-      (s) => s.title.toLowerCase().includes(q) || s.body.toLowerCase().includes(q)
-    )
-  }, [searchableSections, searchQuery])
-
-  const listItems = useMemo(
-    () =>
-      filteredSections.map((s) => ({
+  const listItems = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase()
+    const matches = (text: string) => text.toLowerCase().includes(q)
+    return searchableSections
+      .filter((s) => !q || matches(s.title) || matches(s.text))
+      .map((s) => ({
         id: s.slug || s.id.toString(),
         label: s.title,
-        subTopics: s.subsections?.map((sub) => ({
+        subTopics: s.subsections.map((sub) => ({
           id: sub.slug || sub.id,
           label: sub.title,
         })),
-        ...(searchQuery && { searchPreview: s.body }),
-      })) || [],
-    [filteredSections, searchQuery]
-  )
+        ...(q && {
+          searchPreview: s.text,
+          matchedSubTopic:
+            matches(s.title) || matches(s.ownText)
+              ? undefined
+              : s.subsections
+                  .filter((sub) => matches(sub.text))
+                  .map((sub) => ({ id: sub.slug || sub.id, label: sub.title }))[0],
+        }),
+      }))
+  }, [searchableSections, searchQuery])
   return (
     <div
       className={cx(styles.tableOfContentsContainer, styles.notranslate, className)}
@@ -109,6 +118,7 @@ function TableOfContents({
       {!isSearchControlled && (
         <InputText
           onChange={(e) => setSearchQuery(e.target.value)}
+          onCleanButtonClick={() => setSearchQuery('')}
           value={searchQuery}
           type="search"
           placeholder={t((t) => t.search.title)}
@@ -130,9 +140,24 @@ function TableOfContents({
                     {getHighlightedText(item.label, searchQuery, styles)}
                   </h3>
                 </button>
+                {item.matchedSubTopic && (
+                  <>
+                    <Icon icon="arrow-right" className={styles.secondary} />
+                    <button
+                      type="button"
+                      onClick={() => onSubItemClick?.(item.id, item.matchedSubTopic!.id)}
+                      className={styles.listItem}
+                    >
+                      <h3 className={styles.listItemLabel}>
+                        {getHighlightedText(item.matchedSubTopic.label, searchQuery, styles)}
+                      </h3>
+                    </button>
+                  </>
+                )}
                 {hasSubTopics && !searchQuery && (
                   <IconButton
                     icon={isCollapsed ? 'arrow-down' : 'arrow-top'}
+                    className={styles.listItemToggle}
                     size="small"
                     onClick={() => toggleCollapsed(item.id)}
                   />
@@ -155,11 +180,19 @@ function TableOfContents({
               )}
               {item.searchPreview &&
                 (() => {
-                  const searchPreview = getSearchPreview(item.searchPreview as string, searchQuery)
+                  const searchPreview = getSearchPreview(item.searchPreview, searchQuery)
                   return (
-                    <p className={styles.searchPreview}>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        item.matchedSubTopic
+                          ? onSubItemClick?.(item.id, item.matchedSubTopic.id)
+                          : onClick?.(item.id)
+                      }
+                      className={styles.searchPreview}
+                    >
                       {getHighlightedText(searchPreview, searchQuery, styles)}
-                    </p>
+                    </button>
                   )
                 })()}
             </li>

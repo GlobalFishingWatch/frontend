@@ -129,6 +129,7 @@ export const UserGuideContentComponent = () => {
                 className={styles.headerSearch}
                 inputSize="medium"
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onCleanButtonClick={() => setSearchQuery('')}
                 value={searchQuery}
                 type="search"
                 placeholder={t((t) => t.search.title)}

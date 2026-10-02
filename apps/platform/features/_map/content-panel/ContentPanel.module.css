@@ -117,7 +117,7 @@
   gap: var(--space-XS);
 }
 
-.listItemRow > :not(.listItem) {
+.listItemToggle {
   margin-left: auto;
 }
 
@@ -145,6 +145,7 @@
 .searchPreview {
   padding-bottom: var(--space-S);
   font: var(--font-S);
+  text-align: left;
 }
 
 .listItem:hover,
