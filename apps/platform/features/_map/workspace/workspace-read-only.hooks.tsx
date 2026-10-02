@@ -11,7 +11,7 @@ import { selectWorkspace } from './workspace.selectors'
 
 import styles from './Workspace.module.css'
 
-// Shown once per workspace per session, so returning from a vessel profile doesn't re-open it
+const READ_ONLY_TOAST_ID = 'readOnlyWorkspace'
 const readOnlyToastShownWorkspaceIds = new Set<string>()
 export const useReadOnlyWorkspaceToast = () => {
   const { t } = useTranslation()
@@ -20,7 +20,8 @@ export const useReadOnlyWorkspaceToast = () => {
   const workspaceId = workspace?.id || ''
 
   useEffect(() => {
-    if (readOnly && workspaceId && !readOnlyToastShownWorkspaceIds.has(workspaceId)) {
+    if (!readOnly || !workspaceId) return
+    if (!readOnlyToastShownWorkspaceIds.has(workspaceId)) {
       readOnlyToastShownWorkspaceIds.add(workspaceId)
       toast(
         <div className={styles.disclaimer}>
@@ -31,11 +32,17 @@ export const useReadOnlyWorkspaceToast = () => {
           </div>
         </div>,
         {
-          toastId: 'readOnlyWorkspace',
+          toastId: READ_ONLY_TOAST_ID,
           autoClose: false,
-          closeButton: true,
+          closeButton: false,
         }
       )
+    }
+    return () => {
+      if (toast.isActive(READ_ONLY_TOAST_ID)) {
+        toast.dismiss(READ_ONLY_TOAST_ID)
+        readOnlyToastShownWorkspaceIds.delete(workspaceId)
+      }
     }
   }, [readOnly, workspaceId, t])
 }
