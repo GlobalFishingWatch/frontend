@@ -15,5 +15,5 @@
     "$comment": "The libs emit extensionless relative imports (./url-workspace), which node ESM cannot resolve on its own.",
     "experimentalSpecifierResolution": "node"
   },
-  "include": ["screenshots.ts"]
+  "include": ["screenshots.ts", "screenshots-ports.ts"]
 }
