@@ -94,11 +94,12 @@ const PlatformContentUserRoute = PlatformContentUserRouteImport.update({
   path: '/user',
   getParentRoute: () => PlatformContentRoute,
 } as any)
-const PlatformContentVesselSearchRoute = PlatformContentVesselSearchRouteImport.update({
-  id: '/vessel-search',
-  path: '/vessel-search',
-  getParentRoute: () => PlatformContentRoute,
-} as any)
+const PlatformContentVesselSearchRoute =
+  PlatformContentVesselSearchRouteImport.update({
+    id: '/vessel-search',
+    path: '/vessel-search',
+    getParentRoute: () => PlatformContentRoute,
+  } as any)
 const PlatformMapMapRoute = PlatformMapMapRouteImport.update({
   id: '/map',
   path: '/map',
@@ -155,21 +156,24 @@ const PlatformMapMapUserRoute = PlatformMapMapUserRouteImport.update({
   path: '/user',
   getParentRoute: () => PlatformMapMapRoute,
 } as any)
-const PlatformMapMapVesselSearchRoute = PlatformMapMapVesselSearchRouteImport.update({
-  id: '/vessel-search',
-  path: '/vessel-search',
-  getParentRoute: () => PlatformMapMapRoute,
-} as any)
-const PlatformMapReportReportIdRoute = PlatformMapReportReportIdRouteImport.update({
-  id: '/report/$reportId',
-  path: '/report/$reportId',
-  getParentRoute: () => PlatformMapRoute,
-} as any)
-const PlatformMapVesselVesselIdRoute = PlatformMapVesselVesselIdRouteImport.update({
-  id: '/vessel/$vesselId',
-  path: '/vessel/$vesselId',
-  getParentRoute: () => PlatformMapRoute,
-} as any)
+const PlatformMapMapVesselSearchRoute =
+  PlatformMapMapVesselSearchRouteImport.update({
+    id: '/vessel-search',
+    path: '/vessel-search',
+    getParentRoute: () => PlatformMapMapRoute,
+  } as any)
+const PlatformMapReportReportIdRoute =
+  PlatformMapReportReportIdRouteImport.update({
+    id: '/report/$reportId',
+    path: '/report/$reportId',
+    getParentRoute: () => PlatformMapRoute,
+  } as any)
+const PlatformMapVesselVesselIdRoute =
+  PlatformMapVesselVesselIdRouteImport.update({
+    id: '/vessel/$vesselId',
+    path: '/vessel/$vesselId',
+    getParentRoute: () => PlatformMapRoute,
+  } as any)
 const ApiTrackCorrectionsWorkspaceIdIndexRoute =
   ApiTrackCorrectionsWorkspaceIdIndexRouteImport.update({
     id: '/api/track-corrections/$workspaceId/',
@@ -183,31 +187,37 @@ const ApiTrackCorrectionsWorkspaceIdIssueIdRoute =
     getParentRoute: () => rootRouteImport,
   } as any)
 const PlatformContentHelpAndResourcesSectionSlugChar123ItemSlugChar125Route =
-  PlatformContentHelpAndResourcesSectionSlugChar123ItemSlugChar125RouteImport.update({
-    id: '/help-and-resources/$sectionSlug/{-$itemSlug}',
-    path: '/help-and-resources/$sectionSlug/{-$itemSlug}',
-    getParentRoute: () => PlatformContentRoute,
+  PlatformContentHelpAndResourcesSectionSlugChar123ItemSlugChar125RouteImport.update(
+    {
+      id: '/help-and-resources/$sectionSlug/{-$itemSlug}',
+      path: '/help-and-resources/$sectionSlug/{-$itemSlug}',
+      getParentRoute: () => PlatformContentRoute,
+    } as any,
+  )
+const PlatformMapMapCategoryIndexRoute =
+  PlatformMapMapCategoryIndexRouteImport.update({
+    id: '/$category/',
+    path: '/$category/',
+    getParentRoute: () => PlatformMapMapRoute,
   } as any)
-const PlatformMapMapCategoryIndexRoute = PlatformMapMapCategoryIndexRouteImport.update({
-  id: '/$category/',
-  path: '/$category/',
-  getParentRoute: () => PlatformMapMapRoute,
-} as any)
-const PlatformMapMapCategoryWorkspaceIdRoute = PlatformMapMapCategoryWorkspaceIdRouteImport.update({
-  id: '/$category/$workspaceId',
-  path: '/$category/$workspaceId',
-  getParentRoute: () => PlatformMapMapRoute,
-} as any)
-const PlatformMapMapReportReportIdRoute = PlatformMapMapReportReportIdRouteImport.update({
-  id: '/report/$reportId',
-  path: '/report/$reportId',
-  getParentRoute: () => PlatformMapMapRoute,
-} as any)
-const PlatformMapMapVesselVesselIdRoute = PlatformMapMapVesselVesselIdRouteImport.update({
-  id: '/vessel/$vesselId',
-  path: '/vessel/$vesselId',
-  getParentRoute: () => PlatformMapMapRoute,
-} as any)
+const PlatformMapMapCategoryWorkspaceIdRoute =
+  PlatformMapMapCategoryWorkspaceIdRouteImport.update({
+    id: '/$category/$workspaceId',
+    path: '/$category/$workspaceId',
+    getParentRoute: () => PlatformMapMapRoute,
+  } as any)
+const PlatformMapMapReportReportIdRoute =
+  PlatformMapMapReportReportIdRouteImport.update({
+    id: '/report/$reportId',
+    path: '/report/$reportId',
+    getParentRoute: () => PlatformMapMapRoute,
+  } as any)
+const PlatformMapMapVesselVesselIdRoute =
+  PlatformMapMapVesselVesselIdRouteImport.update({
+    id: '/vessel/$vesselId',
+    path: '/vessel/$vesselId',
+    getParentRoute: () => PlatformMapMapRoute,
+  } as any)
 const PlatformMapMapCategoryWorkspaceIdIndexRoute =
   PlatformMapMapCategoryWorkspaceIdIndexRouteImport.update({
     id: '/',
@@ -227,11 +237,13 @@ const PlatformMapMapCategoryWorkspaceIdPortsReportPortIdRoute =
     getParentRoute: () => PlatformMapMapCategoryWorkspaceIdRoute,
   } as any)
 const PlatformMapMapCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute =
-  PlatformMapMapCategoryWorkspaceIdVesselGroupReportVesselGroupIdRouteImport.update({
-    id: '/vessel-group-report/$vesselGroupId',
-    path: '/vessel-group-report/$vesselGroupId',
-    getParentRoute: () => PlatformMapMapCategoryWorkspaceIdRoute,
-  } as any)
+  PlatformMapMapCategoryWorkspaceIdVesselGroupReportVesselGroupIdRouteImport.update(
+    {
+      id: '/vessel-group-report/$vesselGroupId',
+      path: '/vessel-group-report/$vesselGroupId',
+      getParentRoute: () => PlatformMapMapCategoryWorkspaceIdRoute,
+    } as any,
+  )
 const PlatformMapMapCategoryWorkspaceIdVesselVesselIdRoute =
   PlatformMapMapCategoryWorkspaceIdVesselVesselIdRouteImport.update({
     id: '/vessel/$vesselId',
@@ -244,7 +256,7 @@ const PlatformMapMapCategoryWorkspaceIdReportChar123DatasetIdChar125Char123AreaI
       id: '/report/{-$datasetId}/{-$areaId}',
       path: '/report/{-$datasetId}/{-$areaId}',
       getParentRoute: () => PlatformMapMapCategoryWorkspaceIdRoute,
-    } as any
+    } as any,
   )
 
 export interface FileRoutesByFullPath {
@@ -767,13 +779,14 @@ interface PlatformContentRouteChildren {
 const PlatformContentRouteChildren: PlatformContentRouteChildren = {
   PlatformContentUserRoute: PlatformContentUserRoute,
   PlatformContentVesselSearchRoute: PlatformContentVesselSearchRoute,
-  PlatformContentHelpAndResourcesIndexRoute: PlatformContentHelpAndResourcesIndexRoute,
+  PlatformContentHelpAndResourcesIndexRoute:
+    PlatformContentHelpAndResourcesIndexRoute,
   PlatformContentHelpAndResourcesSectionSlugChar123ItemSlugChar125Route:
     PlatformContentHelpAndResourcesSectionSlugChar123ItemSlugChar125Route,
 }
 
 const PlatformContentRouteWithChildren = PlatformContentRoute._addFileChildren(
-  PlatformContentRouteChildren
+  PlatformContentRouteChildren,
 )
 
 interface PlatformMapMapCategoryWorkspaceIdRouteChildren {
@@ -789,7 +802,8 @@ const PlatformMapMapCategoryWorkspaceIdRouteChildren: PlatformMapMapCategoryWork
   {
     PlatformMapMapCategoryWorkspaceIdVesselSearchRoute:
       PlatformMapMapCategoryWorkspaceIdVesselSearchRoute,
-    PlatformMapMapCategoryWorkspaceIdIndexRoute: PlatformMapMapCategoryWorkspaceIdIndexRoute,
+    PlatformMapMapCategoryWorkspaceIdIndexRoute:
+      PlatformMapMapCategoryWorkspaceIdIndexRoute,
     PlatformMapMapCategoryWorkspaceIdPortsReportPortIdRoute:
       PlatformMapMapCategoryWorkspaceIdPortsReportPortIdRoute,
     PlatformMapMapCategoryWorkspaceIdVesselGroupReportVesselGroupIdRoute:
@@ -802,7 +816,7 @@ const PlatformMapMapCategoryWorkspaceIdRouteChildren: PlatformMapMapCategoryWork
 
 const PlatformMapMapCategoryWorkspaceIdRouteWithChildren =
   PlatformMapMapCategoryWorkspaceIdRoute._addFileChildren(
-    PlatformMapMapCategoryWorkspaceIdRouteChildren
+    PlatformMapMapCategoryWorkspaceIdRouteChildren,
   )
 
 interface PlatformMapMapRouteChildren {
@@ -819,14 +833,15 @@ const PlatformMapMapRouteChildren: PlatformMapMapRouteChildren = {
   PlatformMapMapUserRoute: PlatformMapMapUserRoute,
   PlatformMapMapVesselSearchRoute: PlatformMapMapVesselSearchRoute,
   PlatformMapMapIndexRoute: PlatformMapMapIndexRoute,
-  PlatformMapMapCategoryWorkspaceIdRoute: PlatformMapMapCategoryWorkspaceIdRouteWithChildren,
+  PlatformMapMapCategoryWorkspaceIdRoute:
+    PlatformMapMapCategoryWorkspaceIdRouteWithChildren,
   PlatformMapMapReportReportIdRoute: PlatformMapMapReportReportIdRoute,
   PlatformMapMapVesselVesselIdRoute: PlatformMapMapVesselVesselIdRoute,
   PlatformMapMapCategoryIndexRoute: PlatformMapMapCategoryIndexRoute,
 }
 
 const PlatformMapMapRouteWithChildren = PlatformMapMapRoute._addFileChildren(
-  PlatformMapMapRouteChildren
+  PlatformMapMapRouteChildren,
 )
 
 interface PlatformMapRouteChildren {
@@ -841,7 +856,9 @@ const PlatformMapRouteChildren: PlatformMapRouteChildren = {
   PlatformMapVesselVesselIdRoute: PlatformMapVesselVesselIdRoute,
 }
 
-const PlatformMapRouteWithChildren = PlatformMapRoute._addFileChildren(PlatformMapRouteChildren)
+const PlatformMapRouteWithChildren = PlatformMapRoute._addFileChildren(
+  PlatformMapRouteChildren,
+)
 
 interface PlatformPlacesRouteChildren {
   PlatformPlacesAreasRoute: typeof PlatformPlacesAreasRoute
@@ -854,7 +871,7 @@ const PlatformPlacesRouteChildren: PlatformPlacesRouteChildren = {
 }
 
 const PlatformPlacesRouteWithChildren = PlatformPlacesRoute._addFileChildren(
-  PlatformPlacesRouteChildren
+  PlatformPlacesRouteChildren,
 )
 
 interface PlatformRouteChildren {
@@ -871,7 +888,9 @@ const PlatformRouteChildren: PlatformRouteChildren = {
   PlatformIndexRoute: PlatformIndexRoute,
 }
 
-const PlatformRouteWithChildren = PlatformRoute._addFileChildren(PlatformRouteChildren)
+const PlatformRouteWithChildren = PlatformRoute._addFileChildren(
+  PlatformRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   PlatformRoute: PlatformRouteWithChildren,
@@ -884,8 +903,10 @@ const rootRouteChildren: RootRouteChildren = {
   ApiOceanAreasNameRoute: ApiOceanAreasNameRoute,
   ApiOceanAreasSearchRoute: ApiOceanAreasSearchRoute,
   ApiOceanAreasIndexRoute: ApiOceanAreasIndexRoute,
-  ApiTrackCorrectionsWorkspaceIdIssueIdRoute: ApiTrackCorrectionsWorkspaceIdIssueIdRoute,
-  ApiTrackCorrectionsWorkspaceIdIndexRoute: ApiTrackCorrectionsWorkspaceIdIndexRoute,
+  ApiTrackCorrectionsWorkspaceIdIssueIdRoute:
+    ApiTrackCorrectionsWorkspaceIdIssueIdRoute,
+  ApiTrackCorrectionsWorkspaceIdIndexRoute:
+    ApiTrackCorrectionsWorkspaceIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

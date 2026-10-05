@@ -86,12 +86,13 @@ function PlacesMap({
     const label = getHoverLabel(object)
     setHoverTooltip(label ? { x, y, label } : undefined)
 
-    const rootLayer = object ? getRootLayer(layer) : undefined
+    const highlighted = object?.geometry ? object : undefined
+    const rootLayer = highlighted ? getRootLayer(layer) : undefined
     const previous = highlightedRef.current
-    if (previous.layer === rootLayer && previous.id === object?.id) return
+    if (previous.layer === rootLayer && previous.id === highlighted?.id) return
     if (previous.layer && previous.layer !== rootLayer) previous.layer.setHighlightedFeatures?.([])
-    rootLayer?.setHighlightedFeatures?.(object ? [object] : [])
-    highlightedRef.current = { layer: rootLayer, id: object?.id }
+    rootLayer?.setHighlightedFeatures?.(highlighted ? [highlighted] : [])
+    highlightedRef.current = { layer: rootLayer, id: highlighted?.id }
   }
 
   const canLocate = typeof navigator !== 'undefined' && 'geolocation' in navigator
