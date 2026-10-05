@@ -30,7 +30,10 @@ import VesselAreas from 'features/_vessels/vessel/areas/VesselAreas'
 import Insights from 'features/_vessels/vessel/insights/Insights'
 import { MIN_INSIGHTS_YEAR } from 'features/_vessels/vessel/insights/insights.config'
 import RelatedVessels from 'features/_vessels/vessel/related-vessels/RelatedVessels'
-import { selectVesselHasEventsDatasets } from 'features/_vessels/vessel/selectors/vessel.resources.selectors'
+import {
+  selectVesselEventsDatasetsLoading,
+  selectVesselHasEventsDatasets,
+} from 'features/_vessels/vessel/selectors/vessel.resources.selectors'
 import {
   selectIsVesselRefreshing,
   selectVesselInfoData,
@@ -69,6 +72,8 @@ import type { VesselSection } from './vessel.types'
 
 import styles from './Vessel.module.css'
 
+const TabSpinner = () => <Spinner className={styles.tabLoading} />
+
 const Vessel = () => {
   useMigrateWorkspaceToast()
   const { t } = useTranslation()
@@ -86,6 +91,7 @@ const Vessel = () => {
   const infoStatus = useSelector(selectVesselInfoStatus)
   const isVesselRefreshing = useSelector(selectIsVesselRefreshing)
   const hasEventsDataset = useSelector(selectVesselHasEventsDatasets)
+  const eventsDatasetsLoading = useSelector(selectVesselEventsDatasetsLoading)
   const infoError = useSelector(selectVesselInfoError)
   const guestUser = useSelector(selectIsGuestUser)
   const vesselData = useSelector(selectVesselInfoData)
@@ -159,29 +165,42 @@ const Vessel = () => {
       {
         id: 'areas',
         title: t((t) => t.vessel.sectionAreas),
-        content: <VesselAreas updateAreaLayersVisibility={updateAreaLayersVisibility} />,
-        disabled: !hasEventsDataset,
+        content: eventsDatasetsLoading ? (
+          <TabSpinner />
+        ) : (
+          <VesselAreas updateAreaLayersVisibility={updateAreaLayersVisibility} />
+        ),
+        disabled: !hasEventsDataset && !eventsDatasetsLoading,
         testId: 'vv-areas-tab',
-        tooltip: hasEventsDataset ? undefined : t((t) => t.vessel.sectionEventsTooltip),
+        tooltip:
+          hasEventsDataset || eventsDatasetsLoading
+            ? undefined
+            : t((t) => t.vessel.sectionEventsTooltip),
       },
       {
         id: 'related_vessels',
         title: t((t) => t.vessel.sectionRelatedVessels),
-        content: <RelatedVessels />,
-        disabled: !hasEventsDataset,
+        content: eventsDatasetsLoading ? <TabSpinner /> : <RelatedVessels />,
+        disabled: !hasEventsDataset && !eventsDatasetsLoading,
         testId: 'vv-related-tab',
-        tooltip: hasEventsDataset ? undefined : t((t) => t.vessel.sectionEventsTooltip),
+        tooltip:
+          hasEventsDataset || eventsDatasetsLoading
+            ? undefined
+            : t((t) => t.vessel.sectionEventsTooltip),
       },
       {
         id: 'insights' as VesselSection,
         title: t((t) => t.vessel.sectionInsights),
-        content: <Insights />,
-        disabled: !hasEventsDataset || isOnlyVMS,
+        content: eventsDatasetsLoading ? <TabSpinner /> : <Insights />,
+        disabled: (!hasEventsDataset && !eventsDatasetsLoading) || isOnlyVMS,
         testId: 'vv-insights-tab',
-        tooltip: isOnlyVMS ? t((t) => t.vessel.sectionInsightsTooltip) : undefined,
+        tooltip:
+          !eventsDatasetsLoading && isOnlyVMS
+            ? t((t) => t.vessel.sectionInsightsTooltip)
+            : undefined,
       },
     ],
-    [t, updateAreaLayersVisibility, hasEventsDataset, isOnlyVMS]
+    [t, updateAreaLayersVisibility, hasEventsDataset, eventsDatasetsLoading, isOnlyVMS]
   )
 
   useEffect(() => {
