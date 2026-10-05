@@ -67,12 +67,6 @@
   overflow: hidden auto;
 }
 
-.placesTitle {
-  font: var(--font-XL);
-  color: var(--color-primary-blue);
-  padding: 0 var(--space-M);
-}
-
 .appLayout {
   display: flex;
   height: 100%;

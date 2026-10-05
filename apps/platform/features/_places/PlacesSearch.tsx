@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDebounce } from 'use-debounce'
 
-import type { OceanAreaLocale, OceanAreaType } from '@globalfishingwatch/ocean-areas'
+import type { OceanAreaBBox, OceanAreaLocale, OceanAreaType } from '@globalfishingwatch/ocean-areas'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components/choice'
@@ -27,6 +27,7 @@ const THUMBNAIL_URL = `${PATH_BASENAME}/images/thumbnail-test@2x.webp`
 
 type PlacesSearchProps = {
   category: PlaceCategory
+  title: string
   /** Server-loaded list for an empty query and the first type option. */
   initialPlaces: Place[]
   /** Used when there is no type selector. */
@@ -39,6 +40,7 @@ type PlacesSearchProps = {
 
 function PlacesSearch({
   category,
+  title,
   initialPlaces,
   placeholder,
   typeOptions,
@@ -49,20 +51,30 @@ function PlacesSearch({
   const [debouncedQuery] = useDebounce(query.trim(), 300)
   const [type, setType] = useState(typeOptions?.[0]?.id)
   const [results, setResults] = useState<Place[]>([])
-  const showInitialPlaces = !debouncedQuery && type === typeOptions?.[0]?.id
+  const [filterByMap, setFilterByMap] = useState(false)
+  const [mapBounds, setMapBounds] = useState<OceanAreaBBox>()
+  const [debouncedMapBounds] = useDebounce(mapBounds, 300)
+  const bounds = filterByMap ? debouncedMapBounds : undefined
+  const showInitialPlaces = !debouncedQuery && !bounds && type === typeOptions?.[0]?.id
 
   useEffect(() => {
     if (showInitialPlaces) return
     let cancelled = false
     searchPlaces({
-      data: { category, type, query: debouncedQuery, locale: i18n.language as OceanAreaLocale },
+      data: {
+        category,
+        type,
+        query: debouncedQuery,
+        locale: i18n.language as OceanAreaLocale,
+        bounds,
+      },
     }).then((places) => {
       if (!cancelled) setResults(places)
     })
     return () => {
       cancelled = true
     }
-  }, [category, type, debouncedQuery, i18n.language, showInitialPlaces])
+  }, [category, type, debouncedQuery, i18n.language, showInitialPlaces, bounds])
 
   const places = showInitialPlaces ? initialPlaces : results
   const typeLabel = typeOptions?.find((option) => option.id === type)?.label
@@ -73,6 +85,7 @@ function PlacesSearch({
   return (
     <div className={styles.layout}>
       <div className={styles.container}>
+        <h1 className={styles.title}>{title}</h1>
         <div className={styles.header}>
           <InputText
             type="search"
@@ -123,12 +136,21 @@ function PlacesSearch({
         </ul>
       </div>
       {mapDataviews && (
-        <div className={styles.map}>
-          {showDeck && (
-            <Suspense fallback={null}>
-              <PlacesMap dataviewsByType={mapDataviews} type={type ?? PLACE_TYPES[category][0]} />
-            </Suspense>
-          )}
+        <div className={styles.mapColumn}>
+          <div className={styles.mapSpacer} />
+          <div className={styles.map}>
+            {showDeck && (
+              <Suspense fallback={null}>
+                <PlacesMap
+                  dataviewsByType={mapDataviews}
+                  type={type ?? PLACE_TYPES[category][0]}
+                  filterByMap={filterByMap}
+                  onFilterByMapChange={setFilterByMap}
+                  onBoundsChange={setMapBounds}
+                />
+              </Suspense>
+            )}
+          </div>
         </div>
       )}
     </div>

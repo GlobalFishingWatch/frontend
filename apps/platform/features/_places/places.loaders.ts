@@ -1,6 +1,6 @@
 import { createServerFn } from '@tanstack/react-start'
 
-import type { OceanAreaLocale, OceanAreaType } from '@globalfishingwatch/ocean-areas'
+import type { OceanAreaBBox, OceanAreaLocale, OceanAreaType } from '@globalfishingwatch/ocean-areas'
 
 import { getActiveI18nLanguage } from 'features/i18n/i18n'
 
@@ -50,6 +50,8 @@ export const searchPlaces = createServerFn({ method: 'GET' })
       type?: OceanAreaType
       query?: string
       locale?: OceanAreaLocale
+      /** `[west, south, east, north]` of the map view; only places inside it. */
+      bounds?: OceanAreaBBox
     }) => {
       if (!Object.hasOwn(PLACE_TYPES, params.category)) {
         throw new Error(`Unknown place category: ${params.category}`)
@@ -57,16 +59,27 @@ export const searchPlaces = createServerFn({ method: 'GET' })
       if (params.type && !PLACE_TYPES[params.category].includes(params.type)) {
         throw new Error(`Type ${params.type} is not in category ${params.category}`)
       }
+      if (
+        params.bounds &&
+        !(
+          Array.isArray(params.bounds) &&
+          params.bounds.length === 4 &&
+          params.bounds.every((value) => Number.isFinite(value))
+        )
+      ) {
+        throw new Error('bounds must be [west, south, east, north] numbers')
+      }
       return params
     }
   )
-  .handler(async ({ data: { category, type, query = '', locale } }): Promise<Place[]> => {
+  .handler(async ({ data: { category, type, query = '', locale, bounds } }): Promise<Place[]> => {
     const { searchOceanAreas } = await import('@globalfishingwatch/ocean-areas')
     const flagLabels = category === 'ports' ? await getFlagLabels(locale) : undefined
     const areas = await searchOceanAreas(query, {
       types: type ? [type] : PLACE_TYPES[category],
       locale,
       limit: PLACES_LIMIT,
+      bounds,
       // Ports also match by country: ISO3 code, English name and name in the request language
       getExtraSearchValues: flagLabels
         ? ({ properties: { flag } }) => (flag ? [flag, ...(flagLabels.get(flag) ?? [])] : [])

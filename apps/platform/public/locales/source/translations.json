@@ -1005,6 +1005,8 @@
     }
   },
   "places": {
+    "centerOnMyLocation": "Center on my location",
+    "filterByMap": "Search as I move the map",
     "searchPorts": "Search ports",
     "searchType": "Search {{type}}",
     "types": {

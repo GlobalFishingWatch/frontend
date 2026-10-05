@@ -1,4 +1,6 @@
 .layout {
+  --places-title-height: 4rem;
+
   display: flex;
   align-items: flex-start;
 }
@@ -10,6 +12,14 @@
   flex-direction: column;
   gap: var(--space-M);
   padding: var(--space-M);
+}
+
+.title {
+  height: var(--places-title-height);
+  margin: 0;
+  font: var(--font-XL);
+  line-height: var(--places-title-height);
+  color: var(--color-primary-blue);
 }
 
 .header {
@@ -57,19 +67,67 @@
   box-decoration-break: clone;
 }
 
-.map {
+.mapColumn {
   position: sticky;
-  top: var(--space-M);
+  top: 0;
   flex: 1;
-  height: calc(100dvh - var(--header-height) - 2 * var(--space-M));
-  margin: var(--space-M) var(--space-M) var(--space-M) 0;
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - var(--header-height));
+  padding: var(--space-M) var(--space-M) var(--space-M) 0;
+}
+
+.mapSpacer {
+  flex-shrink: 0;
+  height: calc(var(--places-title-height) + var(--space-M));
+}
+
+.map {
+  position: relative;
+  flex: 1;
   border-radius: var(--border-radius-0);
   overflow: hidden;
   background-color: var(--color-map-background);
 }
 
+.mapControls {
+  position: absolute;
+  top: var(--space-S);
+  left: var(--space-S);
+  right: var(--space-S);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-S);
+  pointer-events: none;
+}
+
+.mapControls > * {
+  pointer-events: auto;
+}
+
+.mapToggle {
+  width: auto;
+  padding: var(--space-S);
+  border-radius: var(--border-radius-0);
+  background-color: var(--color-white);
+}
+
+.mapTooltip {
+  position: absolute;
+  transform: translate(var(--space-S), var(--space-S));
+  max-width: 30rem;
+  padding: var(--space-XS) var(--space-S);
+  border-radius: var(--border-radius-0);
+  background-color: var(--color-white);
+  box-shadow: var(--box-shadow-1);
+  color: var(--color-primary-blue);
+  font: var(--font-S);
+  pointer-events: none;
+}
+
 @media (width <= 1280px) {
-  .map {
+  .mapColumn {
     display: none;
   }
 }

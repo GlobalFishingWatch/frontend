@@ -1,5 +1,7 @@
 import {
   bbox,
+  bboxPolygon,
+  booleanIntersects,
   booleanPointInPolygon,
   distance,
   explode,
@@ -97,7 +99,43 @@ type SearchOceanAreaParams = GetOceanAreaNameLocaleParam & {
   limit?: number
   /** Values matched against the query besides the area name, e.g. a port's country */
   getExtraSearchValues?: (area: OceanArea) => string[]
+  /** Only areas whose bbox intersects these `[west, south, east, north]` bounds */
+  bounds?: OceanAreaBBox
 }
+
+const getFeaturePartBBoxes = ({ geometry }: OceanArea): OceanAreaBBox[] =>
+  geometry.type === 'MultiPolygon'
+    ? geometry.coordinates.map(
+        (coordinates) => bbox({ type: 'Polygon', coordinates }) as OceanAreaBBox
+      )
+    : [bbox(geometry) as OceanAreaBBox]
+
+const getBoundsFilter = ([west, south, east, north]: OceanAreaBBox) => {
+  const wrap = (lon: number) => ((((lon + 180) % 360) + 360) % 360) - 180
+  const w = wrap(west)
+  const e = wrap(east)
+  const boxes: OceanAreaBBox[] =
+    east - west >= 360
+      ? [[-180, south, 180, north]]
+      : w <= e
+        ? [[w, south, e, north]]
+        : [
+            [w, south, 180, north],
+            [-180, south, e, north],
+          ]
+  const boxPolygons = boxes.map((box) => bboxPolygon(box))
+  const bboxIntersects = ([minX, minY, maxX, maxY]: OceanAreaBBox) =>
+    boxes.some(
+      ([boxWest, boxSouth, boxEast, boxNorth]) =>
+        minX <= boxEast && maxX >= boxWest && minY <= boxNorth && maxY >= boxSouth
+    )
+  return (feature: OceanArea) => {
+    if (!getFeaturePartBBoxes(feature).some(bboxIntersects)) return false
+    if (feature.geometry.type === 'Point') return true
+    return boxPolygons.some((boxPolygon) => booleanIntersects(feature as any, boxPolygon))
+  }
+}
+
 export const searchOceanAreas = async (
   query: string,
   {
@@ -105,6 +143,7 @@ export const searchOceanAreas = async (
     types,
     limit = MAX_RESULTS_NUMBER,
     getExtraSearchValues,
+    bounds,
   } = {} as SearchOceanAreaParams
 ): Promise<OceanArea[]> => {
   await importOceanAreasData()
@@ -121,6 +160,9 @@ export const searchOceanAreas = async (
   })
   if (types?.length) {
     matchingFeatures = matchingFeatures.filter((feature) => types.includes(feature.properties.type))
+  }
+  if (bounds) {
+    matchingFeatures = matchingFeatures.filter(getBoundsFilter(bounds))
   }
   const areas = matchingFeatures.slice(0, limit).map((feature) => ({
     ...feature,

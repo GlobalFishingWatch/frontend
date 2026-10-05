@@ -10,6 +10,7 @@ function Ports() {
   return (
     <PlacesSearch
       category="ports"
+      title={t((t) => t.nav.ports)}
       initialPlaces={route.useLoaderData()}
       mapDataviews={route.useMatch({ select: (match) => match.staticData.placesMapDataviews })}
       placeholder={t((t) => t.places.searchPorts)}
