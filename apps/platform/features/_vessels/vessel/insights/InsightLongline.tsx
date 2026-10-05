@@ -93,7 +93,7 @@ const InsightLongline = () => {
   }
 
   const onDownloadClick = async () => {
-    const csv = parseLonglineSetsToCSV(data!.map(removeNonTunaRFMO))
+    const csv = parseLonglineSetsToCSV(data!.map(removeNonTunaRFMO), identities)
     const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
     const { saveAs } = await import('file-saver')
     const shipname = getVesselProperty(vessel, 'shipname', { identityId, identitySource })
