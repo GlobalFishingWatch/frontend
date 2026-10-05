@@ -1,4 +1,11 @@
+.layout {
+  display: flex;
+  align-items: flex-start;
+}
+
 .container {
+  flex: 2;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-M);
@@ -48,4 +55,21 @@
 .highlighted {
   background: var(--color-highlight-blue);
   box-decoration-break: clone;
+}
+
+.map {
+  position: sticky;
+  top: var(--space-M);
+  flex: 1;
+  height: calc(100dvh - var(--header-height) - 2 * var(--space-M));
+  margin: var(--space-M) var(--space-M) var(--space-M) 0;
+  border-radius: var(--border-radius-0);
+  overflow: hidden;
+  background-color: var(--color-map-background);
+}
+
+@media (width <= 1280px) {
+  .map {
+    display: none;
+  }
 }

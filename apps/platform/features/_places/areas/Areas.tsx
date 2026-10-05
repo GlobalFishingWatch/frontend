@@ -20,6 +20,7 @@ function Areas() {
     <PlacesSearch
       category="areas"
       initialPlaces={route.useLoaderData()}
+      mapDataviews={route.useMatch({ select: (match) => match.staticData.placesMapDataviews })}
       typeOptions={PLACE_TYPES.areas.map((id) => ({ id, label: typeLabels[id] ?? id }))}
     />
   )
