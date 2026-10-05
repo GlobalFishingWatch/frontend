@@ -1,7 +1,9 @@
 {
-  "$comment": "src/scripts and src/source are ts-node data-prep scripts that import with explicit .ts extensions, so they cannot be checked under this config. Excluded here rather than in tsconfig.lib.json so typecheck skips them too.",
+  "$comment": "src/scripts and src/source are ts-node scripts that import with explicit .ts extensions, so they cannot be checked under this config. Excluded here rather than in tsconfig.lib.json so typecheck skips them too. src/scripts/screenshots.ts has its own tsconfig.screenshots.json.",
   "extends": "../tsconfig.lib.base.json",
-  "compilerOptions": { "outDir": "./dist" },
+  "compilerOptions": {
+    "outDir": "./dist"
+  },
   "ts-node": {
     "esm": true,
     "experimentalEsm": true,

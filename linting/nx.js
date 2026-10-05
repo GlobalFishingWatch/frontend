@@ -11,6 +11,12 @@ export const dependencyChecksOptions = {
     '{projectRoot}/esbuild.*.ts',
     '{projectRoot}/**/*.{spec,test}.{ts,tsx}',
     '{projectRoot}/scripts/**',
+    // playwright/sharp/dataviews-client are devDependencies of ocean-areas: local screenshot
+    // scripts, not part of the published surface. Named exactly so the sibling data-prep scripts
+    // (and their dotenv/turf imports) still count towards the manifest.
+    '{projectRoot}/src/scripts/screenshots.ts',
+    '{projectRoot}/src/scripts/screenshots-ports.ts',
+    '{projectRoot}/src/scripts/lib/capture.ts',
   ],
   // - protobufjs / long: only imported from the generated `*.gen.js` / `*.gen.d.ts` decoders,
   // - @platform/config: it *is* an Nx project (inferred from its package.json) but without a build target
