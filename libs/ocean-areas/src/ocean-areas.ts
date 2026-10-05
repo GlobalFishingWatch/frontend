@@ -35,6 +35,8 @@ export interface OceanAreaProperties {
   area?: number | string
   mrgid?: string
   bounds?: OceanAreaBBox
+  /** Ports only: ISO3 country code */
+  flag?: string
   /** Ports only: comma-separated `OceanAreaSource` list, e.g. `'ais'` or `'ais,vms'` */
   // sources?: string
 }
@@ -90,15 +92,25 @@ const localizeArea = (area: typeof oceanAreas, locale = OceanAreaLocale.en) => {
   }
 }
 
-type SearchOceanAreaParams = GetOceanAreaNameLocaleParam & { types?: OceanAreaType[] }
+type SearchOceanAreaParams = GetOceanAreaNameLocaleParam & {
+  types?: OceanAreaType[]
+  limit?: number
+  /** Values matched against the query besides the area name, e.g. a port's country */
+  getExtraSearchValues?: (area: OceanArea) => string[]
+}
 export const searchOceanAreas = async (
   query: string,
-  { locale = OceanAreaLocale.en, types } = {} as SearchOceanAreaParams
+  {
+    locale = OceanAreaLocale.en,
+    types,
+    limit = MAX_RESULTS_NUMBER,
+    getExtraSearchValues,
+  } = {} as SearchOceanAreaParams
 ): Promise<OceanArea[]> => {
   await importOceanAreasData()
   const localizedAreas = localizeArea(oceanAreas, locale)
   let matchingFeatures = matchSorter(localizedAreas.features, query, {
-    keys: ['properties.name'],
+    keys: getExtraSearchValues ? ['properties.name', getExtraSearchValues] : ['properties.name'],
     baseSort: (a, b) => {
       const priorityDiff =
         SEARCH_TYPE_PRIORITY[a.item.properties.type] - SEARCH_TYPE_PRIORITY[b.item.properties.type]
@@ -110,7 +122,7 @@ export const searchOceanAreas = async (
   if (types?.length) {
     matchingFeatures = matchingFeatures.filter((feature) => types.includes(feature.properties.type))
   }
-  const areas = matchingFeatures.slice(0, MAX_RESULTS_NUMBER).map((feature) => ({
+  const areas = matchingFeatures.slice(0, limit).map((feature) => ({
     ...feature,
     properties: {
       ...feature.properties,

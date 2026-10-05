@@ -25,6 +25,8 @@ export const ROUTE_PATHS = {
   WORKSPACE_VESSEL: '/map/$category/$workspaceId/vessel/$vesselId' as const,
   WORKSPACE_REPORT: '/map/$category/$workspaceId/report/{-$datasetId}/{-$areaId}' as const,
   VESSEL_GROUP_REPORT: '/map/$category/$workspaceId/vessel-group-report/$vesselGroupId' as const,
+  PORTS: '/ports' as const,
+  AREAS: '/areas' as const,
   PORT_REPORT: '/map/$category/$workspaceId/ports-report/$portId' as const,
 } as const
 

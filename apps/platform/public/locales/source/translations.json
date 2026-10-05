@@ -1004,6 +1004,16 @@
       "title": "Learn how to use the tools"
     }
   },
+  "places": {
+    "searchPorts": "Search ports",
+    "searchType": "Search {{type}}",
+    "types": {
+      "eez": "EEZs",
+      "fao": "FAO areas",
+      "mpa": "MPAs",
+      "rfmo": "RFMOs"
+    }
+  },
   "portsReport": {
     "seePortReport": "See all entry events to this port",
     "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>",

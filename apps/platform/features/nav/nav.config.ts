@@ -82,7 +82,7 @@ export const getPlatformNavSections = (
     id: 'areas',
     icon: 'areas',
     label: t((s) => s.nav.areas),
-    plannedTo: '/areas',
+    to: ROUTE_PATHS.AREAS,
   },
   {
     id: 'vessels',
@@ -96,7 +96,7 @@ export const getPlatformNavSections = (
     id: 'ports',
     icon: 'ports',
     label: t((s) => s.nav.ports),
-    plannedTo: '/ports',
+    to: ROUTE_PATHS.PORTS,
   },
   {
     id: 'datasets-and-api',
