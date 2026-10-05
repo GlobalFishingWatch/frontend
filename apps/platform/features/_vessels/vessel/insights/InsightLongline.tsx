@@ -112,30 +112,30 @@ const InsightLongline = () => {
           <label className="experimental">{t((t) => t.vessel.insights.longline)}</label>
         </Tooltip>
         <DataTerminology terminologyKey="insightsLongline" />
-        <div className={styles.insightTitleActions}>
-          <LonglineTimeChoice localTime={localTime} onChange={setLocalTime} />
-          <UserLoggedIconButton
-            loginSource="vessel-download"
-            size="medium"
-            icon="download"
-            className="print-hidden"
-            disabled={isFetching || !data?.length}
-            onClick={onDownloadClick}
-            tooltip={t((t) => t.vessel.insights.longlineDownload)}
-            loginTooltip={t((t) => t.download.eventsDownloadLogin)}
-          />
-          <IconButton
-            size="medium"
-            disabled={isFetching || !data?.length}
-            icon={longlineSetsOnMap ? 'remove-from-map' : 'view-on-map'}
-            onClick={onShowOnMapClick}
-            tooltip={
-              longlineSetsOnMap
-                ? t((t) => t.vessel.insights.longlineHideFromMap)
-                : t((t) => t.vessel.insights.longlineShowOnMap)
-            }
-          />
-        </div>
+        {!isFetching && !!data?.length && (
+          <div className={styles.insightTitleActions}>
+            <LonglineTimeChoice localTime={localTime} onChange={setLocalTime} />
+            <UserLoggedIconButton
+              loginSource="vessel-download"
+              size="medium"
+              icon="download"
+              className="print-hidden"
+              onClick={onDownloadClick}
+              tooltip={t((t) => t.vessel.insights.longlineDownload)}
+              loginTooltip={t((t) => t.download.eventsDownloadLogin)}
+            />
+            <IconButton
+              size="medium"
+              icon={longlineSetsOnMap ? 'remove-from-map' : 'view-on-map'}
+              onClick={onShowOnMapClick}
+              tooltip={
+                longlineSetsOnMap
+                  ? t((t) => t.vessel.insights.longlineHideFromMap)
+                  : t((t) => t.vessel.insights.longlineShowOnMap)
+              }
+            />
+          </div>
+        )}
       </div>
       {error ? (
         <InsightError error={error as ParsedAPIError} />
