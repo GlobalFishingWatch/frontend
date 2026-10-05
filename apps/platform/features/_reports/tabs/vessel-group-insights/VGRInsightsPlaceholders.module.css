@@ -1,4 +1,5 @@
 .loadingPlaceholder {
+  max-width: 100%;
   height: 1.2rem;
   border-radius: 0.8rem;
   background: linear-gradient(
