@@ -11,6 +11,11 @@
       "development": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./url-workspace": {
+      "development": "./src/url-workspace/index.ts",
+      "types": "./dist/url-workspace/index.d.ts",
+      "default": "./dist/url-workspace/index.js"
     }
   },
   "main": "./dist/index.js",
