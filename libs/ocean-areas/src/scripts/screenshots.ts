@@ -26,6 +26,7 @@ import {
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   EEZ_DATAVIEW_INSTANCE_ID,
   FAO_AREAS_DATAVIEW_INSTANCE_ID,
+  FAO_AREAS_DATAVIEW_SLUG,
   MPA_DATAVIEW_INSTANCE_ID,
   RFMO_DATAVIEW_INSTANCE_ID,
   VMS_DATAVIEW_INSTANCE_ID,
@@ -48,6 +49,8 @@ type AreaType = {
   datasetId: string
   /** context layer that must be visible for the highlight to draw */
   dataviewInstanceId: string
+  /** needed when the default workspace lacks the instance, else the URL instance resolves to nothing */
+  dataviewId?: string
 }
 
 const AREA_TYPES = {
@@ -65,6 +68,8 @@ const AREA_TYPES = {
     features: fao as OceanAreaFeature[],
     datasetId: 'public-fao-major',
     dataviewInstanceId: FAO_AREAS_DATAVIEW_INSTANCE_ID,
+    // FAO is not in BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES, so default-public has no instance to merge into
+    dataviewId: FAO_AREAS_DATAVIEW_SLUG,
   },
   rfmo: {
     features: rfmos as OceanAreaFeature[],
@@ -139,11 +144,11 @@ type ScreenshotWorkspace = BaseUrlWorkspace & {
   sidebarOpen: boolean
   reportLoadVessels: boolean
   skipColorDomainSampling?: boolean
-  dataviewInstances: { id: string; config: Record<string, unknown> }[]
+  dataviewInstances: { id: string; dataviewId?: string; config: Record<string, unknown> }[]
 }
 
 export function getAreaUrl(
-  { datasetId, dataviewInstanceId }: AreaType,
+  { datasetId, dataviewInstanceId, dataviewId }: AreaType,
   feature: OceanAreaFeature
 ): string {
   const areaId = String(feature.properties.area)
@@ -162,7 +167,7 @@ export function getAreaUrl(
     // skipColorDomainSampling: true,
     dataviewInstances: [
       { id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, config: { basemap: 'satellite' } },
-      { id: dataviewInstanceId, config: { visible: true } },
+      { id: dataviewInstanceId, ...(dataviewId && { dataviewId }), config: { visible: true } },
       { id: AIS_DATAVIEW_INSTANCE_ID, config: { visible: opts.heatmaps } },
       { id: VMS_DATAVIEW_INSTANCE_ID, config: { visible: opts.heatmaps } },
     ],
