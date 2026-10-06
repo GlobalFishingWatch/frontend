@@ -1,3 +1,5 @@
+import { linkOptions } from '@tanstack/react-router'
+
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
 import type { OceanAreaType } from '@globalfishingwatch/ocean-areas'
@@ -10,10 +12,12 @@ import {
   PORT_VISITS_EVENTS_SOURCE_ID,
   RFMO_DATAVIEW_INSTANCE_ID,
 } from '@platform/config/map/dataviews'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import type { Place } from 'features/_places/places.loaders'
 import { getPortClusterDataviewForReport } from 'features/_reports/report-port/ports-report.utils'
 import { ReportCategory } from 'features/_reports/reports.types'
+import { ROUTE_PATHS } from 'router/routes.utils'
 import type { QueryParams } from 'types'
 
 export type AreaPlaceType = Exclude<OceanAreaType, 'port'>
@@ -61,3 +65,21 @@ export const getPortReportSearch = ({ id, name, flag }: Place): QueryParams => (
     }),
   ],
 })
+
+export const getPlaceLinkOptions = (place: Place) =>
+  place.type === 'port'
+    ? linkOptions({
+        to: ROUTE_PATHS.PORT,
+        params: { portId: String(place.id) },
+        search: getPortReportSearch(place),
+      })
+    : linkOptions({
+        to: ROUTE_PATHS.WORKSPACE_REPORT,
+        params: {
+          category: DEFAULT_WORKSPACE_CATEGORY,
+          workspaceId: DEFAULT_WORKSPACE_ID,
+          datasetId: AREA_DATASET_IDS[place.type],
+          areaId: String(place.id),
+        },
+        search: getAreaReportSearch(place.type),
+      })
