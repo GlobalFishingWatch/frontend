@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSetAtom } from 'jotai'
 import { useDebounce } from 'use-debounce'
 
 import type { OceanAreaType } from '@globalfishingwatch/ocean-areas'
@@ -8,7 +9,7 @@ import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components/choice'
 import { InputText } from '@globalfishingwatch/ui-components/input-text'
 
-import { PATH_BASENAME } from 'data/map/config'
+import { hoveredPlaceAtom } from 'features/_places/places.atoms'
 import type { Place, PlaceCategory } from 'features/_places/places.loaders'
 import { PLACE_TYPES } from 'features/_places/places.loaders'
 import type { PlacesMapDataviews } from 'features/_places/places-map.config'
@@ -23,8 +24,21 @@ const PlacesMap = lazy(() => import('features/_places/PlacesMap'))
 
 const PLACES_MAP_BREAKPOINT = 1280
 
-// PLATFORM TODO: per-place thumbnails
-const THUMBNAIL_URL = `${PATH_BASENAME}/images/thumbnail-test@2x.webp`
+const THUMBNAILS_BASE_URL = 'https://storage.googleapis.com/gfw-public-place-thumbnails-us-central1'
+
+/** Folder per type, as written by the `ocean-areas:screenshots` / `screenshots-ports` scripts. */
+const THUMBNAIL_FOLDERS: Record<OceanAreaType, string> = {
+  port: 'ports',
+  eez: 'public-eez-areas',
+  mpa: 'public-mpa-all',
+  fao: 'public-fao-major',
+  rfmo: 'public-rfmo',
+}
+
+const getThumbnailUrl = ({ type, id }: Place) =>
+  `${THUMBNAILS_BASE_URL}/${THUMBNAIL_FOLDERS[type]}/${encodeURIComponent(
+    `${String(id).replace(/[^\w.-]/g, '_')}@2x.webp`
+  )}`
 
 type PlacesSearchProps = {
   category: PlaceCategory
@@ -50,6 +64,7 @@ function PlacesSearch({
   const { t } = useTranslation()
   const { replaceQueryParams } = useReplaceQueryParams()
   const search = useAppSearch()
+  const setHoveredPlace = useSetAtom(hoveredPlaceAtom)
   const urlQuery = search.query ?? ''
   const type = search.placeType ?? typeOptions?.[0]?.id
   const [query, setQuery] = useState(urlQuery)
@@ -92,7 +107,12 @@ function PlacesSearch({
         </div>
         <ul className={styles.list}>
           {initialPlaces.map((place) => (
-            <li key={`${place.type}-${place.id}`} className={styles.item}>
+            <li
+              key={`${place.type}-${place.id}`}
+              className={styles.item}
+              onMouseEnter={() => setHoveredPlace(place)}
+              onMouseLeave={() => setHoveredPlace(undefined)}
+            >
               <img
                 className={styles.thumbnail}
                 src={getThumbnailUrl(place)}

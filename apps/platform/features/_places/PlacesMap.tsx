@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { Layer, PickingInfo } from '@deck.gl/core'
 import { MapView, WebMercatorViewport } from '@deck.gl/core'
 import DeckGL from '@deck.gl/react'
+import { useAtomValue } from 'jotai'
 import { useDebounce } from 'use-debounce'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
@@ -20,6 +21,7 @@ import { DEFAULT_VIEWPORT } from '@platform/config/map/app'
 import basemapDefaultImage from 'assets/images/basemap-default.jpg'
 import basemapSatelliteImage from 'assets/images/basemap-satellite.jpg'
 import { getContextValue } from 'features/_map/map/popups/map-popups.utils'
+import { hoveredPlaceAtom } from 'features/_places/places.atoms'
 import { formatPlacesBounds, parsePlacesBounds } from 'features/_places/places.types'
 import type { PlacesMapDataviews } from 'features/_places/places-map.config'
 import { usePlacesMapDataviews } from 'features/_places/places-map.hooks'
@@ -100,6 +102,20 @@ function PlacesMap({ dataviewsByType, type }: PlacesMapProps) {
     dataviews: dataviews as DataviewInstance[],
     globalConfig: { token: GFWAPI.token } as ResolverGlobalConfig,
   })
+
+  const hoveredPlace = useAtomValue(hoveredPlaceAtom)
+  useEffect(() => {
+    if (!hoveredPlace) return
+    const layer = (layers as HighlightableLayer[]).find((l) => l.setHighlightedFeatures)
+    const { id, coordinates } = hoveredPlace
+    layer?.setHighlightedFeatures?.([
+      {
+        id,
+        ...(coordinates && { geometry: { type: 'Point', coordinates } }),
+      } as unknown as ContextPickingObject,
+    ])
+    return () => layer?.setHighlightedFeatures?.([])
+  }, [hoveredPlace, layers])
 
   const [settledViewState] = useDebounce(viewState, 500)
   useEffect(() => {

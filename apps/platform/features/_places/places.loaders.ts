@@ -15,10 +15,13 @@ export const PLACE_TYPES: Record<PlaceCategory, OceanAreaType[]> = {
 }
 
 export type Place = {
-  id: string
+  /** The area's raw id, typed as in the map tiles (EEZ ids are numbers) so highlights match */
+  id: string | number
   name: string
   type: OceanAreaType
   flag?: string
+  /** Ports only: the map's point highlight is drawn at this position */
+  coordinates?: [number, number]
 }
 
 // ponytail: first 100 matches only, paginate once the list must reach every item
@@ -88,11 +91,14 @@ export const searchPlaces = createServerFn({ method: 'GET' })
         : undefined,
     })
     // Geometries stay on the server — MPAs alone are ~4MB
-    return areas.map(({ properties: { area, name, type, flag } }) => ({
-      id: String(area ?? name),
+    return areas.map(({ properties: { area, name, type, flag }, geometry }) => ({
+      id: area ?? name,
       name,
       type,
       flag,
+      ...(geometry.type === 'Point' && {
+        coordinates: geometry.coordinates as [number, number],
+      }),
     }))
   })
 
