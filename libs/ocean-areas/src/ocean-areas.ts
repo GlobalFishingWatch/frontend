@@ -174,6 +174,21 @@ export const searchOceanAreas = async (
   return uniqBy(areas, (a) => a.properties?.name)
 }
 
+/** Exact lookup by type and id (`properties.area`), e.g. for a port page reached by its URL. */
+export const getOceanAreaById = async (
+  type: OceanAreaType,
+  id: string | number,
+  { locale = OceanAreaLocale.en } = {} as GetOceanAreaNameLocaleParam
+): Promise<OceanAreaProperties | undefined> => {
+  await importOceanAreasData()
+  const feature = oceanAreas.features.find(
+    ({ properties }) => properties.type === type && String(properties.area) === String(id)
+  )
+  return feature
+    ? { ...feature.properties, name: localizeName(feature.properties.name, locale) }
+    : undefined
+}
+
 interface LatLon {
   latitude: number
   longitude: number

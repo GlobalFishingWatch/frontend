@@ -9,7 +9,9 @@ import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components/choice'
 import { InputText } from '@globalfishingwatch/ui-components/input-text'
 
+import PlaceLink from 'features/_places/PlaceLink'
 import { hoveredPlaceAtom } from 'features/_places/places.atoms'
+import { AREA_DATASET_IDS } from 'features/_places/places.links'
 import type { Place, PlaceCategory } from 'features/_places/places.loaders'
 import { PLACE_TYPES } from 'features/_places/places.loaders'
 import type { PlacesMapDataviews } from 'features/_places/places-map.config'
@@ -27,13 +29,7 @@ const PLACES_MAP_BREAKPOINT = 1280
 const THUMBNAILS_BASE_URL = 'https://storage.googleapis.com/gfw-public-place-thumbnails-us-central1'
 
 /** Folder per type, as written by the `ocean-areas:screenshots` / `screenshots-ports` scripts. */
-const THUMBNAIL_FOLDERS: Record<OceanAreaType, string> = {
-  port: 'ports',
-  eez: 'public-eez-areas',
-  mpa: 'public-mpa-all',
-  fao: 'public-fao-major',
-  rfmo: 'public-rfmo',
-}
+const THUMBNAIL_FOLDERS: Record<OceanAreaType, string> = { port: 'ports', ...AREA_DATASET_IDS }
 
 const getThumbnailUrl = ({ type, id }: Place) =>
   `${THUMBNAILS_BASE_URL}/${THUMBNAIL_FOLDERS[type]}/${encodeURIComponent(
@@ -109,36 +105,37 @@ function PlacesSearch({
           {initialPlaces.map((place) => (
             <li
               key={`${place.type}-${place.id}`}
-              className={styles.item}
               onMouseEnter={() => setHoveredPlace(place)}
               onMouseLeave={() => setHoveredPlace(undefined)}
             >
-              <img
-                className={styles.thumbnail}
-                src={getThumbnailUrl(place)}
-                alt=""
-                loading="lazy"
-              />
-              <span className={styles.name}>
-                {getHighlightedText(
-                  place.type === 'port'
-                    ? (formatInfoField(place.name, 'port') as string)
-                    : place.name,
-                  urlQuery,
-                  styles
-                )}
-                {place.flag && (
-                  <>
-                    {' ('}
-                    {getHighlightedText(
-                      formatInfoField(place.flag, 'flag') as string,
-                      urlQuery,
-                      styles
-                    )}
-                    {')'}
-                  </>
-                )}
-              </span>
+              <PlaceLink place={place} className={styles.item}>
+                <img
+                  className={styles.thumbnail}
+                  src={getThumbnailUrl(place)}
+                  alt=""
+                  loading="lazy"
+                />
+                <span className={styles.name}>
+                  {getHighlightedText(
+                    place.type === 'port'
+                      ? (formatInfoField(place.name, 'port') as string)
+                      : place.name,
+                    urlQuery,
+                    styles
+                  )}
+                  {place.flag && (
+                    <>
+                      {' ('}
+                      {getHighlightedText(
+                        formatInfoField(place.flag, 'flag') as string,
+                        urlQuery,
+                        styles
+                      )}
+                      {')'}
+                    </>
+                  )}
+                </span>
+              </PlaceLink>
             </li>
           ))}
         </ul>

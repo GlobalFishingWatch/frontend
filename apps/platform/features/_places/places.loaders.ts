@@ -120,3 +120,15 @@ export const loadPlaces = (
   const type = placeType && types.includes(placeType) ? placeType : types[0]
   return searchPlaces({ data: { category, type, query, locale, bounds } })
 }
+
+/** One port by id, for the standalone /port/$portId page. */
+export const getPort = createServerFn({ method: 'GET' })
+  .validator((params: { id: string; locale?: OceanAreaLocale }) => ({
+    id: String(params.id),
+    locale: params.locale,
+  }))
+  .handler(async ({ data: { id, locale } }): Promise<Place | null> => {
+    const { getOceanAreaById } = await import('@globalfishingwatch/ocean-areas')
+    const port = await getOceanAreaById('port', id, { locale })
+    return port ? { id: port.area ?? id, name: port.name, type: 'port', flag: port.flag } : null
+  })
