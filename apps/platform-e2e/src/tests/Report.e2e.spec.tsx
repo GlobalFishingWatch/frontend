@@ -1,6 +1,7 @@
-import { expect, test } from '../fixtures'
+import { test } from '../fixtures'
 import { waitForHydration } from '../helpers/hydration'
-import { searchMapArea } from '../helpers/map'
+import { REFERENCE_LAYERS, toggleOnLayer } from '../helpers/sidebar'
+import { CANARY_ISLANDS_EEZ } from '../pages/ReportPage'
 import { MAP_PATH } from '../paths'
 import { TAGS } from '../tags'
 
@@ -10,61 +11,28 @@ test.beforeEach(async ({ page }) => {
 })
 
 test(
-  'Report - A guest should create an area report from map',
+  'Report - create an area report from map',
   { tag: [TAGS.SMOKE] },
-  async ({ page, reportPage }) => {
-    await reportPage.toggleEezLayer()
-    await searchMapArea(page, 'Canary Islands')
+  async ({ page, mapPage, reportPage }) => {
+    await toggleOnLayer(page, REFERENCE_LAYERS.EEZ)
+    await mapPage.applyViewportAndClick(CANARY_ISLANDS_EEZ.viewport)
     await reportPage.openAnalysisFromMap()
-
     await reportPage.expectReportTitleVisible(/km²/)
     await reportPage.expectSourceTagVisible()
     reportPage.expectReportUrl()
   }
 )
-
-test.skip('Report02 - View full report area', async ({ page }) => {
-  // Set a fixed time for the test
-  await page.clock.setFixedTime(new Date('2026-01-07T12:00:00'))
-
-  await page.goto(MAP_PATH)
-
-  await page.waitForLoadState('networkidle')
-
-  await page.locator('[data-testid="context-layer-context-layer-eez"]').scrollIntoViewIfNeeded()
-  await page.locator('[data-testid="context-layer-context-layer-eez"]').click()
-
-  await page.waitForLoadState('networkidle')
-
-  await page.waitForTimeout(3000)
-
-  await page.click('#view-mapViewport', { position: { x: 8, y: 385 } })
-
-  await page.waitForTimeout(3000)
-
-  await expect(page.getByText('Ecuadorian Exclusive Economic Zone')).toBeVisible()
-
-  await page.locator('[data-testid="open-analysis"]').click()
-
-  await expect(page.getByText('Ecuadorian EEZ 251,938 km²')).toBeVisible()
-
-  await page.waitForTimeout(3000)
-
-  const [popup] = await Promise.all([
-    page.waitForEvent('popup'),
-    page.locator('[data-testid="login-link"]').first().click(),
-  ])
-  await popup.waitForLoadState()
-  await popup.locator('#email').fill(process.env.TEST_USER_EMAIL || '')
-  await popup.locator('#password').fill(process.env.TEST_USER_PASSWORD || '')
-
-  await popup.getByRole('button', { name: 'Login' }).click()
-
-  await page.getByTestId('see-vessel-table-activity-report').click()
-
-  await page.waitForTimeout(5000)
-
-  await expect(page.getByText('Florida')).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Ecuador' }).first()).toBeVisible()
-  await expect(page.getByText('369.61')).toBeVisible()
-})
+test(
+  'Report - a logged-in user loads the vessel table for an area report',
+  { tag: [TAGS.EXTENDED] },
+  async ({ page, mapPage, loginPage, reportPage }) => {
+    await toggleOnLayer(page, REFERENCE_LAYERS.EEZ)
+    await mapPage.applyViewportAndClick(CANARY_ISLANDS_EEZ.viewport)
+    await reportPage.openAnalysisFromMap()
+    await reportPage.expectReportTitleVisible(CANARY_ISLANDS_EEZ.title)
+    await reportPage.expectVesselsLoginGate()
+    await loginPage.login()
+    await reportPage.loadVesselTable()
+    await reportPage.expectVesselTableVisible()
+  }
+)
