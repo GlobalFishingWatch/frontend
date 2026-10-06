@@ -7,11 +7,12 @@ import {
 } from '@platform/config/map/dataviews'
 
 import { PORTS_LAYER_ID } from 'features/_map/map/map.config'
-import { getPlacesLocale, searchPlaces } from 'features/_places/places.loaders'
+import { getPlacesLoaderDeps, loadPlaces } from 'features/_places/places.loaders'
 import { SATELLITE_BASEMAP_DATAVIEW_INSTANCE } from 'features/_places/places-map.config'
 import Ports from 'features/_places/ports/Ports'
 import { t } from 'features/i18n/i18n'
 import { getRouteHead } from 'router/router.meta'
+import { validatePlacesSearchParams } from 'router/routes.search'
 
 export const Route = createFileRoute('/_platform/_places/ports')({
   component: Ports,
@@ -24,7 +25,8 @@ export const Route = createFileRoute('/_platform/_places/ports')({
       ],
     },
   },
-  loaderDeps: () => ({ locale: getPlacesLocale() }),
-  loader: ({ deps }) => searchPlaces({ data: { category: 'ports', locale: deps.locale } }),
+  validateSearch: validatePlacesSearchParams,
+  loaderDeps: getPlacesLoaderDeps,
+  loader: ({ deps }) => loadPlaces('ports', deps),
   head: () => getRouteHead({ category: t((s) => s.nav.ports) }),
 })

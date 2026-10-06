@@ -1,32 +1,51 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Layer, PickingInfo } from '@deck.gl/core'
 import { MapView, WebMercatorViewport } from '@deck.gl/core'
 import DeckGL from '@deck.gl/react'
+import { useDebounce } from 'use-debounce'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { DataviewInstance } from '@globalfishingwatch/api-types'
+import { type DataviewInstance, DataviewType } from '@globalfishingwatch/api-types'
 import type { ResolverGlobalConfig } from '@globalfishingwatch/deck-layer-composer'
 import { useDeckLayerInstances } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextPickingObject } from '@globalfishingwatch/deck-layers'
+import { BasemapType } from '@globalfishingwatch/deck-layers'
 import type { OceanAreaBBox, OceanAreaType } from '@globalfishingwatch/ocean-areas'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { SwitchRow } from '@globalfishingwatch/ui-components/switch-row'
+import { Tooltip } from '@globalfishingwatch/ui-components/tooltip'
 import { DEFAULT_VIEWPORT } from '@platform/config/map/app'
 
+import basemapDefaultImage from 'assets/images/basemap-default.jpg'
+import basemapSatelliteImage from 'assets/images/basemap-satellite.jpg'
 import { getContextValue } from 'features/_map/map/popups/map-popups.utils'
+import { formatPlacesBounds, parsePlacesBounds } from 'features/_places/places.types'
 import type { PlacesMapDataviews } from 'features/_places/places-map.config'
 import { usePlacesMapDataviews } from 'features/_places/places-map.hooks'
+import { useAppSearch, useReplaceQueryParams } from 'router/routes.hook'
 import { htmlSafeParse } from 'utils/html-parser'
 import { formatInfoField } from 'utils/info'
 
 import styles from './places.module.css'
+import mapControlsStyles from 'features/_map/map/controls/MapControls.module.css'
 
 const PLACES_MAP_VIEW = new MapView({ id: 'places-map', repeat: true })
+
+const PLACES_MAP_CONTROLLER = {
+  dragRotate: false,
+  touchRotate: false,
+  keyboard: { rotateSpeedX: 0, rotateSpeedY: 0 },
+}
 
 const USER_LOCATION_MIN_ZOOM = 8
 
 type ViewState = typeof DEFAULT_VIEWPORT
+
+type Size = { width: number; height: number }
+
+const getBounds = (viewState: ViewState, size: Size) =>
+  new WebMercatorViewport({ ...viewState, ...size }).getBounds() as OceanAreaBBox
 
 type HoverTooltip = { x: number; y: number; label: string }
 
@@ -52,35 +71,54 @@ const getHoverLabel = (object?: ContextPickingObject): string | undefined => {
 type PlacesMapProps = {
   dataviewsByType: PlacesMapDataviews
   type: OceanAreaType
-  filterByMap: boolean
-  onFilterByMapChange: (filterByMap: boolean) => void
-  onBoundsChange: (bounds: OceanAreaBBox) => void
 }
 
-function PlacesMap({
-  dataviewsByType,
-  type,
-  filterByMap,
-  onFilterByMapChange,
-  onBoundsChange,
-}: PlacesMapProps) {
+function PlacesMap({ dataviewsByType, type }: PlacesMapProps) {
   const { t } = useTranslation()
+  const search = useAppSearch()
+  const { replaceQueryParams } = useReplaceQueryParams()
+  const basemap = search.basemap ?? BasemapType.Default
+  const filterByMap = !!search.filterByMap
+  const initialBounds = parsePlacesBounds(search.bounds)
   const [viewState, setViewState] = useState<ViewState>(DEFAULT_VIEWPORT)
-  const [size, setSize] = useState<{ width: number; height: number }>()
+  const [size, setSize] = useState<Size>()
+  const userMovedRef = useRef(false)
   const [isLocating, setIsLocating] = useState(false)
   const [hoverTooltip, setHoverTooltip] = useState<HoverTooltip>()
   const highlightedRef = useRef<{ layer?: HighlightableLayer; id?: string | number }>({})
-  const dataviews = usePlacesMapDataviews(dataviewsByType, type)
+  const resolvedDataviews = usePlacesMapDataviews(dataviewsByType, type)
+  const dataviews = useMemo(
+    () =>
+      resolvedDataviews.map((dataview) =>
+        dataview.config?.type === DataviewType.Basemap
+          ? { ...dataview, config: { ...dataview.config, basemap } }
+          : dataview
+      ),
+    [resolvedDataviews, basemap]
+  )
   const layers = useDeckLayerInstances({
     dataviews: dataviews as DataviewInstance[],
     globalConfig: { token: GFWAPI.token } as ResolverGlobalConfig,
   })
 
+  const [settledViewState] = useDebounce(viewState, 500)
   useEffect(() => {
-    if (!size?.width || !size.height) return
-    const viewport = new WebMercatorViewport({ ...viewState, ...size })
-    onBoundsChange(viewport.getBounds() as OceanAreaBBox)
-  }, [viewState, size, onBoundsChange])
+    if (userMovedRef.current && size) {
+      replaceQueryParams({ bounds: formatPlacesBounds(getBounds(settledViewState, size)) })
+    }
+  }, [settledViewState, size, replaceQueryParams])
+
+  const onResize = (newSize: Size) => {
+    setSize(newSize)
+    if (initialBounds && !userMovedRef.current && newSize.width && newSize.height) {
+      const [west, south, east, north] = initialBounds
+      const { longitude, latitude, zoom } = new WebMercatorViewport(newSize).fitBounds([
+        [west, south],
+        [east, north],
+      ])
+      setViewState({ longitude, latitude, zoom })
+    }
+  }
 
   const onHover = ({ x, y, object, layer }: PickingInfo<ContextPickingObject>) => {
     const label = getHoverLabel(object)
@@ -95,11 +133,17 @@ function PlacesMap({
     highlightedRef.current = { layer: rootLayer, id: highlighted?.id }
   }
 
+  const isDefaultBasemap = basemap === BasemapType.Default
+  const basemapLabel = isDefaultBasemap
+    ? t((t) => t.map.change_basemap_satellite)
+    : t((t) => t.map.change_basemap_default)
+
   const canLocate = typeof navigator !== 'undefined' && 'geolocation' in navigator
   const onLocateClick = () => {
     setIsLocating(true)
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
+        userMovedRef.current = true
         setViewState((current) => ({
           ...current,
           longitude: coords.longitude,
@@ -116,13 +160,22 @@ function PlacesMap({
   }
 
   return (
-    <>
+    <Fragment>
       <DeckGL
         views={PLACES_MAP_VIEW}
         viewState={viewState}
-        onViewStateChange={({ viewState }) => setViewState(viewState as ViewState)}
-        onResize={setSize}
-        controller
+        onViewStateChange={({ viewState, interactionState }) => {
+          const isUserMove =
+            interactionState.isDragging ||
+            interactionState.isPanning ||
+            interactionState.isZooming ||
+            interactionState.inTransition
+          if (!isUserMove) return
+          userMovedRef.current = true
+          setViewState(viewState as ViewState)
+        }}
+        onResize={onResize}
+        controller={PLACES_MAP_CONTROLLER}
         layers={layers}
         onHover={onHover}
         getCursor={({ isDragging }) =>
@@ -139,19 +192,41 @@ function PlacesMap({
           className={styles.mapToggle}
           label={t((t) => t.places.filterByMap)}
           active={filterByMap}
-          onClick={() => onFilterByMapChange(!filterByMap)}
+          onClick={() =>
+            size &&
+            replaceQueryParams({
+              filterByMap: !filterByMap || undefined,
+              bounds: formatPlacesBounds(getBounds(viewState, size)),
+            })
+          }
         />
-        {canLocate && (
-          <IconButton
-            icon="target"
-            type="map-tool"
-            loading={isLocating}
-            tooltip={t((t) => t.places.centerOnMyLocation)}
-            onClick={onLocateClick}
-          />
-        )}
+        <div className={styles.mapButtons}>
+          {canLocate && (
+            <IconButton
+              icon="target"
+              type="map-tool"
+              loading={isLocating}
+              tooltip={t((t) => t.places.centerOnMyLocation)}
+              onClick={onLocateClick}
+            />
+          )}
+          <Tooltip content={basemapLabel} placement="left">
+            <button
+              aria-label={basemapLabel}
+              className={mapControlsStyles.basemapSwitcher}
+              style={{
+                backgroundImage: `url(${isDefaultBasemap ? basemapSatelliteImage : basemapDefaultImage})`,
+              }}
+              onClick={() =>
+                replaceQueryParams({
+                  basemap: isDefaultBasemap ? BasemapType.Satellite : BasemapType.Default,
+                })
+              }
+            />
+          </Tooltip>
+        </div>
       </div>
-    </>
+    </Fragment>
   )
 }
 

@@ -2,7 +2,9 @@ import { createServerFn } from '@tanstack/react-start'
 
 import type { OceanAreaBBox, OceanAreaLocale, OceanAreaType } from '@globalfishingwatch/ocean-areas'
 
+import { parsePlacesBounds } from 'features/_places/places.types'
 import { getActiveI18nLanguage } from 'features/i18n/i18n'
+import type { QueryParams } from 'types'
 
 export type PlaceCategory = 'ports' | 'areas'
 
@@ -93,3 +95,22 @@ export const searchPlaces = createServerFn({ method: 'GET' })
       flag,
     }))
   })
+
+/** Route loader deps: the list is server-rendered for whatever query and type the URL holds. */
+export const getPlacesLoaderDeps = ({ search }: { search: QueryParams }) => ({
+  locale: getPlacesLocale(),
+  query: search.query,
+  placeType: search.placeType,
+  // Only while filtering, so panning with the toggle off does not reload the list
+  bounds: search.filterByMap ? parsePlacesBounds(search.bounds) : undefined,
+})
+
+export const loadPlaces = (
+  category: PlaceCategory,
+  { locale, query, placeType, bounds }: ReturnType<typeof getPlacesLoaderDeps>
+) => {
+  const types = PLACE_TYPES[category]
+  // A type from another category (`/ports?placeType=eez`) would make the validator throw
+  const type = placeType && types.includes(placeType) ? placeType : types[0]
+  return searchPlaces({ data: { category, type, query, locale, bounds } })
+}

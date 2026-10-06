@@ -12,6 +12,7 @@ import type {
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
 
 import type { MapAnnotation } from 'features/_map/map/overlays/annotations/annotations.types'
+import type { PlacesSearchState } from 'features/_places/places.types'
 import type { ReportState, ReportStateProperty } from 'features/_reports/reports.types'
 import type {
   VesselSearchState,
@@ -200,7 +201,8 @@ export type QueryParams = Partial<WorkspaceViewport> &
   Partial<ReportState> &
   AppState &
   RedirectParam &
-  VesselSearchState
+  VesselSearchState &
+  PlacesSearchState
 
 export type QueryParam = keyof QueryParams
 

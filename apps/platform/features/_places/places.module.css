@@ -40,7 +40,7 @@
 
 .list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(24rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
   gap: var(--space-M);
 }
 
@@ -58,7 +58,7 @@
 }
 
 .name {
-  font: var(--font-L);
+  font: var(--font-M);
   color: var(--color-primary-blue);
 }
 
@@ -104,6 +104,12 @@
 
 .mapControls > * {
   pointer-events: auto;
+}
+
+.mapButtons {
+  display: flex;
+  align-items: center;
+  gap: var(--space-S);
 }
 
 .mapToggle {

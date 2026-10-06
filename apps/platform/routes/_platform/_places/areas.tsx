@@ -12,10 +12,11 @@ import {
 } from '@platform/config/map/dataviews'
 
 import Areas from 'features/_places/areas/Areas'
-import { getPlacesLocale, PLACE_TYPES, searchPlaces } from 'features/_places/places.loaders'
+import { getPlacesLoaderDeps, loadPlaces } from 'features/_places/places.loaders'
 import { SATELLITE_BASEMAP_DATAVIEW_INSTANCE } from 'features/_places/places-map.config'
 import { t } from 'features/i18n/i18n'
 import { getRouteHead } from 'router/router.meta'
+import { validatePlacesSearchParams } from 'router/routes.search'
 
 export const Route = createFileRoute('/_platform/_places/areas')({
   component: Areas,
@@ -39,8 +40,8 @@ export const Route = createFileRoute('/_platform/_places/areas')({
       ],
     },
   },
-  loaderDeps: () => ({ locale: getPlacesLocale() }),
-  loader: ({ deps }) =>
-    searchPlaces({ data: { category: 'areas', type: PLACE_TYPES.areas[0], locale: deps.locale } }),
+  validateSearch: validatePlacesSearchParams,
+  loaderDeps: getPlacesLoaderDeps,
+  loader: ({ deps }) => loadPlaces('areas', deps),
   head: () => getRouteHead({ category: t((s) => s.nav.areas) }),
 })
