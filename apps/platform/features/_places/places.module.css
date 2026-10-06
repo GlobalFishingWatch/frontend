@@ -27,15 +27,17 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-M);
+  justify-content: space-between;
 }
 
 .search {
   flex: 1;
-  min-width: 24rem;
+  max-width: 50%;
 }
 
 .typeChoice {
   flex: 1;
+  max-width: 50%;
 }
 
 .list {
@@ -65,6 +67,9 @@
 .name {
   font: var(--font-M);
   color: var(--color-primary-blue);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .item:hover .thumbnail {
@@ -89,11 +94,6 @@
   flex-direction: column;
   height: calc(100dvh - var(--header-height));
   padding: var(--space-M) var(--space-M) var(--space-M) 0;
-}
-
-.mapSpacer {
-  flex-shrink: 0;
-  height: calc(var(--places-title-height) + var(--space-M));
 }
 
 .map {

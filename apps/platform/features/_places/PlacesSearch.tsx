@@ -81,8 +81,8 @@ function PlacesSearch({
   return (
     <div className={styles.layout}>
       <div className={styles.container}>
-        <h1 className={styles.title}>{title}</h1>
         <div className={styles.header}>
+          <h1 className={styles.title}>{title}</h1>
           <InputText
             type="search"
             value={query}
@@ -145,7 +145,6 @@ function PlacesSearch({
       </div>
       {mapDataviews && (
         <div className={styles.mapColumn}>
-          <div className={styles.mapSpacer} />
           <div className={styles.map}>
             {showDeck && (
               <Suspense fallback={null}>
