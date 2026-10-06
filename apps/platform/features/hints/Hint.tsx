@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -14,11 +14,18 @@ import {
 } from 'features/_map/workspace/selectors/app.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { findSectionForSlug } from 'features/help/userGuide.utils'
 import UserGuideLink from 'features/help/UserGuideLink'
+import { selectSidePanelActive, selectSidePanels } from 'router/routes.selectors'
 
 import type { HintId } from './hints.content'
 import hintsConfig from './hints.content'
-import { selectHintsDismissed, setHintDismissed } from './hints.slice'
+import {
+  selectHintsDismissed,
+  selectHintToOpen,
+  setHintDismissed,
+  setHintToOpen,
+} from './hints.slice'
 
 import styles from './Hint.module.css'
 
@@ -33,8 +40,26 @@ function Hint({ id, className }: HintProps) {
   const isReadOnly = useSelector(selectReadOnly)
   const screenshotMode = useSelector(selectScreenshotMode)
   const dispatch = useAppDispatch()
-  const [visible, setVisible] = useState(openedByDefault || false)
+  const hintToOpen = useSelector(selectHintToOpen)
+  const [visible, setVisible] = useState(() => openedByDefault || hintToOpen === id)
   const hintsDismissed = useSelector(selectHintsDismissed)
+  const sidePanels = useSelector(selectSidePanels)
+  const sidePanelActive = useSelector(selectSidePanelActive)
+  // only counts as open when the guide tab is the visible one, resolved like SidePanelTabs does
+  const activeSidePanel = sidePanels?.some((panel) => panel.type === sidePanelActive)
+    ? sidePanelActive
+    : sidePanels?.[0]?.type
+  const isGuideSectionOpen =
+    userGuideSlug !== undefined &&
+    activeSidePanel === 'userGuide' &&
+    sidePanels?.find((panel) => panel.type === 'userGuide')?.id ===
+      findSectionForSlug(userGuideSlug)?.section
+
+  useEffect(() => {
+    if (hintToOpen === id) {
+      dispatch(setHintToOpen(undefined))
+    }
+  }, [dispatch, hintToOpen, id])
 
   const onDismiss = useCallback(() => {
     setVisible(false)
@@ -103,13 +128,8 @@ function Hint({ id, className }: HintProps) {
               {t((t) => t[id], {
                 ns: 'help-hints',
               })}
-              {userGuideSlug && (
-                <UserGuideLink
-                  slug={userGuideSlug}
-                  mode="link"
-                  className={styles.userGuideLink}
-                  onClick={onDismiss}
-                >
+              {userGuideSlug && !isGuideSectionOpen && (
+                <UserGuideLink slug={userGuideSlug} mode="link" className={styles.userGuideLink}>
                   {t((t) => t.common.seeMore, {
                     ns: 'translations',
                   })}

@@ -7,6 +7,7 @@ import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataview
 import type { RoutePathValues } from '@platform/config/routes'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
+import { withSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import { useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
 import { timerangeState } from 'features/_map/timebar/timebar.hooks'
 import { setHasChangedSettings } from 'features/_map/timebar/timebar.slice'
@@ -15,32 +16,55 @@ import type { QueryParams } from 'types'
 
 const allowedTos = new Set<string>(Object.values(ROUTE_PATHS))
 
-/** Client-side validation for the agent's `navigate` tool input. */
-export const navigateToolInputSchema = z.object({
-  navigation: z.object({
-    to: z.string().refine((to): to is RoutePathValues => allowedTos.has(to), {
-      message: 'Unknown route path',
-    }),
-    params: z.record(z.string(), z.unknown()).optional(),
-    search: z.record(z.string(), z.unknown()).optional(),
+const navigationSchema = z.object({
+  to: z.string().refine((to): to is RoutePathValues => allowedTos.has(to), {
+    message: 'Unknown route path',
   }),
+  params: z.record(z.string(), z.unknown()).optional(),
+  search: z.record(z.string(), z.unknown()).optional(),
+})
+
+export const navigateToolOutputSchema = z.object({
+  ok: z.literal(true),
+  navigation: navigationSchema,
+  path: z.string().optional(),
+  alternatives: z.array(z.unknown()).optional(),
+})
+
+export const navigateToolAlternativeSchema = z.object({
+  label: z.string(),
+  ok: z.literal(true),
+  navigation: navigationSchema,
   path: z.string().optional(),
 })
 
-export type NavigateToolInput = z.infer<typeof navigateToolInputSchema>
-export type NavigateToolNavigation = NavigateToolInput['navigation']
+export type NavigateToolOutput = z.infer<typeof navigateToolOutputSchema>
+export type NavigateToolNavigation = z.infer<typeof navigationSchema>
+
+export function getNavigateToolAlternatives(output: NavigateToolOutput) {
+  return (output.alternatives ?? []).flatMap((alternative) => {
+    const parsed = navigateToolAlternativeSchema.safeParse(alternative)
+    return parsed.success ? [parsed.data] : []
+  })
+}
 
 export function getNavigateToolLinkProps(navigation: NavigateToolNavigation) {
-  const search = { ...navigation.search, sidePanelContent: 'chat' }
-  const normalizedSearch = parseWorkspace(stringifyWorkspace(search as QueryParams)) as Record<
-    string,
-    unknown
-  >
+  const normalizedSearch = parseWorkspace(
+    stringifyWorkspace((navigation.search ?? {}) as QueryParams)
+  ) as Record<string, unknown>
   delete normalizedSearch.tk
+  // panels belong to the viewer, not to the agent's view: keep every open one and the chat
+  delete normalizedSearch.sidePanels
+  delete normalizedSearch.sidePanelActive
   return {
     to: navigation.to,
     params: navigation.params ?? {},
-    search: normalizedSearch,
+    search: (prev: QueryParams) => ({
+      ...normalizedSearch,
+      ...withSidePanel(prev, { type: 'chat' }),
+    }),
+    /** Target search without panels, to compare against the current location */
+    viewSearch: normalizedSearch,
   }
 }
 

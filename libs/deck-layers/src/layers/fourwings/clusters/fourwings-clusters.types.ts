@@ -44,6 +44,7 @@ export type FourwingsClusterProperties = {
    * Timestamp of the start of the cluster in seconds
    */
   stime: number
+  cellBounds?: number[]
 }
 export type FourwingsClusterFeature = ClusterFeature<FourwingsClusterProperties>
 

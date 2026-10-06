@@ -236,7 +236,7 @@ const TimebarWrapper = () => {
 
   const realTimeTimerangeOptions = useMemo(
     (): LastXOption[] =>
-      [24, 48, 72].map((count) => ({
+      [72, 24, 12, 4].map((count) => ({
         id: `last${count}Hours`,
         label: t((t) => t.common.latestHours, { count }),
         num: count,

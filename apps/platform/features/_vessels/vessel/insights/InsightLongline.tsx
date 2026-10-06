@@ -1,11 +1,11 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useGetVesselEventsQuery } from 'queries/map/vessel-events-api'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { EventTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { LONGLINE_FISHING_EVENTS_DATASET } from '@platform/config/map/datasets'
 
 import { fetchDatasetsByIdsThunk } from 'features/_map/datasets/datasets.slice'
@@ -26,11 +26,12 @@ import type { VesselEvent } from 'features/_vessels/vessel/vessel.types'
 import { getVesselIdentities, getVesselProperty } from 'features/_vessels/vessel/vessel.utils'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import DataTerminology from 'features/cms/data-terminology/DataTerminology'
 import { useReplaceQueryParams } from 'router/routes.hook'
 
 import InsightError from './InsightErrorMessage'
 import { removeNonTunaRFMO } from './insights.utils'
-import LonglineSetsGraph from './LonglineSetsGraph'
+import LonglineSetsGraph, { LonglineTimeChoice } from './LonglineSetsGraph'
 
 import styles from './Insights.module.css'
 
@@ -38,6 +39,7 @@ const InsightLongline = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { start, end } = useSelector(selectTimeRange)
+  const [localTime, setLocalTime] = useState(false)
   const vessel = useSelector(selectVesselInfoData)
   const longlineSetsOnMap = useSelector(selectLonglineSetsOnMap)
   const identityId = useSelector(selectVesselIdentityId)
@@ -91,7 +93,7 @@ const InsightLongline = () => {
   }
 
   const onDownloadClick = async () => {
-    const csv = parseLonglineSetsToCSV(data!.map(removeNonTunaRFMO))
+    const csv = parseLonglineSetsToCSV(data!.map(removeNonTunaRFMO), identities)
     const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
     const { saveAs } = await import('file-saver')
     const shipname = getVesselProperty(vessel, 'shipname', { identityId, identitySource })
@@ -106,30 +108,34 @@ const InsightLongline = () => {
   return (
     <div id="longline" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t((t) => t.vessel.insights.longline)}</label>
-        <div className={styles.insightTitleActions}>
-          <UserLoggedIconButton
-            loginSource="vessel-download"
-            size="medium"
-            icon="download"
-            className="print-hidden"
-            disabled={isFetching || !data?.length}
-            onClick={onDownloadClick}
-            tooltip={t((t) => t.vessel.insights.longlineDownload)}
-            loginTooltip={t((t) => t.download.eventsDownloadLogin)}
-          />
-          <IconButton
-            size="medium"
-            disabled={isFetching || !data?.length}
-            icon={longlineSetsOnMap ? 'remove-from-map' : 'view-on-map'}
-            onClick={onShowOnMapClick}
-            tooltip={
-              longlineSetsOnMap
-                ? t((t) => t.vessel.insights.longlineHideFromMap)
-                : t((t) => t.vessel.insights.longlineShowOnMap)
-            }
-          />
-        </div>
+        <Tooltip content={t((t) => t.common.experimentalTooltip)}>
+          <label className="experimental">{t((t) => t.vessel.insights.longline)}</label>
+        </Tooltip>
+        <DataTerminology terminologyKey="insightsLongline" />
+        {!isFetching && !!data?.length && (
+          <div className={styles.insightTitleActions}>
+            <LonglineTimeChoice localTime={localTime} onChange={setLocalTime} />
+            <UserLoggedIconButton
+              loginSource="vessel-download"
+              size="medium"
+              icon="download"
+              className="print-hidden"
+              onClick={onDownloadClick}
+              tooltip={t((t) => t.vessel.insights.longlineDownload)}
+              loginTooltip={t((t) => t.download.eventsDownloadLogin)}
+            />
+            <IconButton
+              size="medium"
+              icon={longlineSetsOnMap ? 'remove-from-map' : 'view-on-map'}
+              onClick={onShowOnMapClick}
+              tooltip={
+                longlineSetsOnMap
+                  ? t((t) => t.vessel.insights.longlineHideFromMap)
+                  : t((t) => t.vessel.insights.longlineShowOnMap)
+              }
+            />
+          </div>
+        )}
       </div>
       {error ? (
         <InsightError error={error as ParsedAPIError} />
@@ -140,6 +146,7 @@ const InsightLongline = () => {
       ) : (
         <LonglineSetsGraph
           data={data.map(removeNonTunaRFMO)}
+          localTime={localTime}
           onEventHover={longlineSetsOnMap ? onEventHover : undefined}
           onEventMapClick={longlineSetsOnMap ? onEventMapClick : undefined}
         />

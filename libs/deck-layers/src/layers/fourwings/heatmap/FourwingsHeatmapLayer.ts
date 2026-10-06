@@ -108,6 +108,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       aggregationOperation,
     })
     feature.aggregatedValues = aggregatedCellValues
+    feature.aggregatedValuesKey = undefined
     if (!aggregatedCellValues.length) {
       target = EMPTY_CELL_COLOR
       return target
@@ -155,6 +156,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     let chosenValue: number | undefined
 
     feature.aggregatedValues = aggregatedCellValues
+    feature.aggregatedValuesKey = this.timeRangeKey
     aggregatedCellValues.forEach((value, index) => {
       if (!isSublayerValueVisible(value, sublayers?.[index])) {
         return
@@ -204,6 +206,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
         cellStartOffsets: feature.properties.startOffsets,
       })
     feature.aggregatedValues = aggregatedCellValues
+    feature.aggregatedValuesKey = this.timeRangeKey
 
     if (!scales.length) {
       target = EMPTY_CELL_COLOR
@@ -227,6 +230,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
       startTime,
       colorDomain,
       colorRanges,
+      scales,
       highlightedFeatures,
       availableIntervals,
       comparisonMode,
@@ -278,6 +282,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
               endTime,
               colorDomain,
               colorRanges,
+              scales,
               comparisonMode,
               compareStart,
               compareEnd,

@@ -38,7 +38,17 @@
   position: relative;
 }
 
-.inputContainer:focus-within {
+.helpHint {
+  top: 50%;
+  left: 0;
+  z-index: 1;
+}
+
+.inputContainer:has(input:focus) .helpHint {
+  display: none;
+}
+
+.inputContainer:has(input:focus) {
   z-index: 1;
   background-color: var(--color-background);
   position: absolute;
@@ -46,10 +56,10 @@
   display: block;
 }
 
-.inputContainer:focus-within .comboContainer,
-.inputContainer:focus-within .comboContainer div,
-.inputContainer:focus-within .comboContainer div input,
-.inputContainer:focus-within .comboContainer div input:focus-visible {
+.inputContainer:has(input:focus) .comboContainer,
+.inputContainer:has(input:focus) .comboContainer div,
+.inputContainer:has(input:focus) .comboContainer div input,
+.inputContainer:has(input:focus) .comboContainer div input:focus-visible {
   height: 100%;
   border-radius: 0;
   border-left: none;
@@ -57,7 +67,7 @@
   box-shadow: none;
 }
 
-.inputContainer:focus-within .comboContainer div svg {
+.inputContainer:has(input:focus) .comboContainer div svg {
   margin-bottom: 0;
   bottom: 50%;
   transform: translateY(50%);

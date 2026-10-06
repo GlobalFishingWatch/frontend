@@ -26,6 +26,7 @@ import {
 import { selectDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/_map/dataviews/selectors/dataviews.selectors'
 import { useMapBoundsLive, useMapFitBounds } from 'features/_map/map/map-bounds.hooks'
+import { MAX_MERCATOR_LATITUDE } from 'features/_map/map/map-view-state.hooks'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
 import { getSimplificationByDataview } from 'features/_reports/report-area/area-reports.hooks'
 import { useFilterCellsByPolygonWorker } from 'features/_reports/reports-geo.utils.workers.hooks'
@@ -35,6 +36,7 @@ import { getTimeseries } from 'features/_reports/reports-timeseries.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
   fetchAreaDetailThunk,
+  parseFeatureBbox,
   selectDatasetAreaDetail,
   selectDatasetAreaStatus,
 } from 'features/data/areas/areas.slice'
@@ -114,6 +116,8 @@ export function useAreaRowExpansion(ids: string[], showFeaturesDetails: boolean)
   return { canExpand, expandedId, toggleExpanded }
 }
 
+const LAT_TOLERANCE = 1e-3
+
 function isLonRangeContained(westV: number, eastV: number, westA: number, eastA: number): boolean {
   let vWidth = eastV - westV
   if (vWidth <= 0) vWidth += 360
@@ -158,8 +162,8 @@ export function useAreaInViewport(
   const b = areaDetail?.bounds
   const contained =
     b && bounds
-      ? b[1] >= bounds.south &&
-        b[3] <= bounds.north &&
+      ? Math.max(b[1], -MAX_MERCATOR_LATITUDE) >= bounds.south - LAT_TOLERANCE &&
+        Math.min(b[3], MAX_MERCATOR_LATITUDE) <= bounds.north + LAT_TOLERANCE &&
         isLonRangeContained(bounds.west, bounds.east, b[0], b[2])
       : undefined
 
@@ -194,7 +198,7 @@ export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickin
       }
       return
     }
-    let bounds: Bbox | undefined = areaDetail?.bounds
+    let bounds: Bbox | undefined = parseFeatureBbox(feature.properties?.bbox) || areaDetail?.bounds
     if (!bounds) {
       const area = await dispatch(
         fetchAreaDetailThunk({ datasetId, areaId, areaName, simplify })
@@ -206,7 +210,8 @@ export function useFitAreaBounds(feature: ContextPickingObject | UserLayerPickin
     }
   }, [
     trackLayer,
-    areaDetail?.bounds,
+    areaDetail,
+    feature.properties?.bbox,
     start,
     end,
     fitBounds,

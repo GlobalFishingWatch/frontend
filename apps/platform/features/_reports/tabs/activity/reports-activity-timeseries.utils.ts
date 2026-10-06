@@ -3,23 +3,29 @@ import { DateTime } from 'luxon'
 import { max, mean, min } from 'simple-statistics'
 
 import { formatDateForInterval, getUTCDateTime } from '@globalfishingwatch/data-transforms'
-import type {
-  FourwingsDeckSublayer,
-  FourwingsLayer,
-  FourwingsLayerProps,
-} from '@globalfishingwatch/deck-layers'
+import type { FourwingsDeckSublayer, FourwingsLayerProps } from '@globalfishingwatch/deck-layers'
 import {
   aggregateCell,
   FourwingsAggregationOperation,
+  FourwingsLayer,
+  getFourwingsChunk,
   getIntervalFrames,
   isSublayerValueVisible,
+  POSITIONS_ID,
   sliceCellValues,
 } from '@globalfishingwatch/deck-layers'
-import type { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import type {
+  FourwingsFeature,
+  FourwingsInterval,
+  FourwingsPositionFeature,
+} from '@globalfishingwatch/deck-loaders'
 
 import { PRIMARY_BLUE_COLOR } from 'data/map/config'
 import type { TimeRange } from 'features/_map/timebar/timebar.slice'
-import { getGraphDataFromFourwingsHeatmap } from 'features/_map/timebar/timebar.utils'
+import {
+  getGraphDataFromFourwingsHeatmap,
+  getGraphDataFromFourwingsPositions,
+} from 'features/_map/timebar/timebar.utils'
 import type { FilteredPolygons } from 'features/_reports/reports-geo.utils'
 import type {
   EvolutionGraphData,
@@ -141,7 +147,43 @@ export type GetFourwingsTimeseriesParams = {
   features: FilteredPolygons[]
   instance: ReportFourwingsDeckLayer
 }
+
+const getFourwingsPositionsTimeseries = ({
+  features,
+  instance,
+}: {
+  features: FilteredPolygons[]
+  instance: FourwingsLayer
+}): ReportGraphProps => {
+  const { startTime, endTime, availableIntervals } = instance.props
+  const { interval, bufferedStart, bufferedEnd } = getFourwingsChunk({
+    start: startTime,
+    end: endTime,
+    availableIntervals,
+  })
+  const sublayers = instance.getFourwingsLayers()
+  const values = getGraphDataFromFourwingsPositions(
+    (features[0]?.contained || []) as FourwingsPositionFeature[],
+    { start: bufferedStart, end: bufferedEnd, interval, sublayersLength: sublayers.length }
+  )
+  return {
+    interval,
+    sublayers: sublayers.map((sublayer) => ({
+      id: sublayer?.id,
+      legend: { color: sublayer?.color || PRIMARY_BLUE_COLOR, unit: sublayer?.unit },
+    })),
+    timeseries: frameTimeseriesToDateTimeseries(values as any).map(({ values, date }) => ({
+      date,
+      min: values,
+      max: values,
+    })) as EvolutionGraphData[],
+  }
+}
+
 export const getFourwingsTimeseries = ({ features, instance }: GetFourwingsTimeseriesParams) => {
+  if (instance instanceof FourwingsLayer && instance.getMode() === POSITIONS_ID) {
+    return getFourwingsPositionsTimeseries({ features, instance })
+  }
   if ((instance as FourwingsLayer).props.static || !features || !instance.getChunk) {
     // need to add empty timeseries because they are then used by their index
     return {

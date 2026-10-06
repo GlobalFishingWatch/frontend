@@ -7,7 +7,7 @@ import { kebabCase } from 'es-toolkit'
 import type { ApiEvents } from '@globalfishingwatch/api-types'
 import type { LonglineCategory } from '@globalfishingwatch/deck-loaders'
 import { getLonglineCategory, LONGLINE_CATEGORY_COLORS } from '@globalfishingwatch/deck-loaders'
-import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
+import { Choice, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
 import type { VesselEvent } from 'features/_vessels/vessel/vessel.types'
 import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
@@ -17,21 +17,39 @@ import Event from '../activity/event/Event'
 import insightStyles from './Insights.module.css'
 import styles from './LonglineSetsGraph.module.css'
 
-const CATEGORY_ORDER: LonglineCategory[] = [
-  'entirelyDay',
-  'mostlyDay',
-  'mostlyNight',
-  'entirelyNight',
-]
+const CATEGORY_ORDER: LonglineCategory[] = ['entirelyDay', 'dayAndNight', 'entirelyNight']
 
 const CATEGORY_COLOR_VARS = Object.fromEntries(
   CATEGORY_ORDER.map((key) => [`--longline-${kebabCase(key)}`, LONGLINE_CATEGORY_COLORS[key]])
 ) as CSSProperties
 
+export const LonglineTimeChoice = ({
+  localTime,
+  onChange,
+}: {
+  localTime: boolean
+  onChange: (localTime: boolean) => void
+}) => {
+  const { t } = useTranslation()
+  return (
+    <Choice
+      size="small"
+      className="print-hidden"
+      activeOption={localTime ? 'local' : 'utc'}
+      onSelect={({ id }) => onChange(id === 'local')}
+      options={[
+        { id: 'utc', label: t((t) => t.vessel.insights.longlineTimeUTC) },
+        { id: 'local', label: t((t) => t.vessel.insights.longlineTimeLocal) },
+      ]}
+    />
+  )
+}
+
 const LonglineSetsGraph = ({
   data,
   loading,
   showEvents = true,
+  localTime,
   renderCategoryContent,
   onCategoryToggle,
   onEventHover,
@@ -40,6 +58,7 @@ const LonglineSetsGraph = ({
   data?: ApiEvents['entries']
   loading?: boolean
   showEvents?: boolean
+  localTime?: boolean
   /** Replaces the default flat event list shown when a category is expanded.
    * Only one category is open at a time, so the content can key its own state on the vessel alone */
   renderCategoryContent?: (events: ApiEvents['entries']) => ReactNode
@@ -53,8 +72,7 @@ const LonglineSetsGraph = ({
   const sets = useMemo(() => {
     const groups: Record<LonglineCategory, ApiEvents['entries']> = {
       entirelyDay: [],
-      mostlyDay: [],
-      mostlyNight: [],
+      dayAndNight: [],
       entirelyNight: [],
     }
     ;(data || []).forEach((event) => {
@@ -62,16 +80,8 @@ const LonglineSetsGraph = ({
     })
     const labels: Record<LonglineCategory, (count: number) => string> = {
       entirelyDay: (count) => t((t) => t.vessel.insights.longlineEntirelyDaySets, { count }),
-      mostlyDay: (count) => t((t) => t.vessel.insights.longlineMostlyDaySets, { count }),
-      mostlyNight: (count) => t((t) => t.vessel.insights.longlineMostlyNightSets, { count }),
+      dayAndNight: (count) => t((t) => t.vessel.insights.longlineDayAndNightSets, { count }),
       entirelyNight: (count) => t((t) => t.vessel.insights.longlineEntirelyNightSets, { count }),
-    }
-    // Same sentences without the count, for while the events are still loading
-    const labelsWithoutCount: Record<LonglineCategory, string> = {
-      entirelyDay: t((t) => t.vessel.insights.longlineEntirelyDaySetsLabel),
-      mostlyDay: t((t) => t.vessel.insights.longlineMostlyDaySetsLabel),
-      mostlyNight: t((t) => t.vessel.insights.longlineMostlyNightSetsLabel),
-      entirelyNight: t((t) => t.vessel.insights.longlineEntirelyNightSetsLabel),
     }
     const total = data?.length || 0
     return CATEGORY_ORDER.map((key) => ({
@@ -79,7 +89,6 @@ const LonglineSetsGraph = ({
       events: groups[key],
       count: groups[key].length,
       label: labels[key](groups[key].length),
-      labelWithoutCount: labelsWithoutCount[key],
       percentage: total ? (groups[key].length / total) * 100 : 0,
     }))
   }, [data, t])
@@ -105,51 +114,53 @@ const LonglineSetsGraph = ({
           )}
         </div>
       )}
-      <ul>
-        {sets.map(({ key, label, labelWithoutCount, count, events }) => (
-          <Fragment key={key}>
-            <li className={styles.legend}>
-              <span className={cx(styles.legendDot, styles[key])} />
-              {/* every count is still 0 while loading, and rendering them reads as real data */}
-              {loading ? labelWithoutCount : label}
-              {showEvents && count > 0 && (
-                <IconButton
-                  size="small"
-                  onClick={() => {
-                    // computed outside the updater so StrictMode's double invoke can't double fire
-                    const next = openCategory === key ? null : key
-                    setOpenCategory(next)
-                    onCategoryToggle?.(next)
-                  }}
-                  icon={openCategory === key ? 'arrow-top' : 'arrow-down'}
-                  tooltip={
-                    openCategory === key
-                      ? t((t) => t.vessel.insights.gapsSeeLess)
-                      : t((t) => t.vessel.insights.gapsSeeMore)
-                  }
-                />
-              )}
-            </li>
-            {showEvents &&
-              openCategory === key &&
-              (renderCategoryContent ? (
-                renderCategoryContent(events)
-              ) : (
-                <ul className={insightStyles.eventDetailsList}>
-                  {events.map((event) => (
-                    <Event
-                      key={event.id}
-                      event={event as VesselEvent}
-                      className={insightStyles.event}
-                      onMapHover={onEventHover}
-                      onMapClick={onEventMapClick}
-                    />
-                  ))}
-                </ul>
-              ))}
-          </Fragment>
-        ))}
-      </ul>
+      {!loading && (
+        <ul>
+          {sets.map(({ key, label, count, events }) => (
+            <Fragment key={key}>
+              <li className={styles.legend}>
+                <span className={cx(styles.legendDot, styles[key])} />
+                {label}
+                {showEvents && count > 0 && (
+                  <IconButton
+                    size="small"
+                    onClick={() => {
+                      // computed outside the updater so StrictMode's double invoke can't double fire
+                      const next = openCategory === key ? null : key
+                      setOpenCategory(next)
+                      onCategoryToggle?.(next)
+                    }}
+                    icon={openCategory === key ? 'arrow-top' : 'arrow-down'}
+                    tooltip={
+                      openCategory === key
+                        ? t((t) => t.vessel.insights.gapsSeeLess)
+                        : t((t) => t.vessel.insights.gapsSeeMore)
+                    }
+                  />
+                )}
+              </li>
+              {showEvents &&
+                openCategory === key &&
+                (renderCategoryContent ? (
+                  renderCategoryContent(events)
+                ) : (
+                  <ul className={insightStyles.eventDetailsList}>
+                    {events.map((event) => (
+                      <Event
+                        key={event.id}
+                        event={event as VesselEvent}
+                        className={insightStyles.event}
+                        localTime={localTime}
+                        onMapHover={onEventHover}
+                        onMapClick={onEventMapClick}
+                      />
+                    ))}
+                  </ul>
+                ))}
+            </Fragment>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }

@@ -24,32 +24,6 @@ export type GetCellCoordinatesParams = {
   flat?: boolean
 }
 
-export const getCellCoordinates = ({
-  tileBBox,
-  cellIndex,
-  cols,
-  rows,
-}: GetCellCoordinatesParams): number[] => {
-  const { col, row, width, height } = getCellProperties(tileBBox, cellIndex, cols)
-  const [minX, minY] = tileBBox
-  const squareMinX = minX + (col / cols) * width
-  const squareMinY = minY + (row / rows) * height
-  const squareMaxX = minX + ((col + 1) / cols) * width
-  const squareMaxY = minY + ((row + 1) / rows) * height
-  return [
-    squareMinX,
-    squareMinY,
-    squareMaxX,
-    squareMinY,
-    squareMaxX,
-    squareMaxY,
-    squareMinX,
-    squareMaxY,
-    squareMinX,
-    squareMinY,
-  ]
-}
-
 export const getCellBounds = ({
   tileBBox,
   cellIndex,
@@ -65,17 +39,25 @@ export const getCellBounds = ({
   return [squareMinX, squareMinY, squareMaxX, squareMaxY]
 }
 
-export const getCellPointCoordinates = ({
-  tileBBox,
-  cellIndex,
-  cols,
-  rows,
-}: GetCellCoordinatesParams): Position => {
-  const { col, row, width, height } = getCellProperties(tileBBox, cellIndex, cols)
-  const [minX, minY] = tileBBox
-  const squareMinX = minX + (col / cols) * width
-  const squareMinY = minY + (row / rows) * height
-  return [squareMinX, squareMinY]
+export const getCellCoordinates = (params: GetCellCoordinatesParams): number[] => {
+  const [squareMinX, squareMinY, squareMaxX, squareMaxY] = getCellBounds(params)
+  return [
+    squareMinX,
+    squareMinY,
+    squareMaxX,
+    squareMinY,
+    squareMaxX,
+    squareMaxY,
+    squareMinX,
+    squareMaxY,
+    squareMinX,
+    squareMinY,
+  ]
+}
+
+export const getCellPointCoordinates = (params: GetCellCoordinatesParams): Position => {
+  const [squareMinX, squareMinY, squareMaxX, squareMaxY] = getCellBounds(params)
+  return [squareMinX + (squareMaxX - squareMinX) / 2, squareMinY + (squareMaxY - squareMinY) / 2]
 }
 
 const getLastDigit = (num: number) => parseInt(num.toString().slice(-1))

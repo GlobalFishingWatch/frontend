@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { InputText } from '@globalfishingwatch/ui-components'
 
+import UserWorkspacesArchive from 'features/_user/UserWorkspacesArchive'
 import UserWorkspacesPrivate from 'features/_user/UserWorkspacesPrivate'
 import UserWorkspacesPublic from 'features/_user/UserWorkspacesPublic'
 
@@ -18,6 +19,7 @@ function UserWorkspaces() {
     <div className={styles.userWorkspaces}>
       <div className={styles.search}>
         <InputText
+          className={styles.searchInput}
           type="search"
           value={searchQuery}
           onChange={onSearchQueryChange}
@@ -26,6 +28,7 @@ function UserWorkspaces() {
       </div>
       <UserWorkspacesPrivate searchQuery={searchQuery} />
       <UserWorkspacesPublic searchQuery={searchQuery} />
+      <UserWorkspacesArchive searchQuery={searchQuery} />
     </div>
   )
 }

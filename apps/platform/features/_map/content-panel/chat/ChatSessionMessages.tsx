@@ -17,9 +17,11 @@ import {
 } from 'features/_map/content-panel/chat/chat-session.hooks'
 import { useSetThreadLoading } from 'features/_map/content-panel/chat/chat-threads.hooks'
 import {
+  getNavigateToolAlternatives,
   getNavigateToolLinkProps,
   isNavigateToolViewActive,
-  navigateToolInputSchema,
+  type NavigateToolNavigation,
+  navigateToolOutputSchema,
   useNavigateToolMapState,
 } from 'features/_map/content-panel/chat/navigate-tool'
 import ContentMarkdown from 'features/_map/content-panel/ContentMarkdown'
@@ -96,20 +98,24 @@ function toolDetail(t: TFunction, input: unknown): string | undefined {
   return match ? skillResourceLabel(t, match) : undefined
 }
 
-function NavigateToolLink({ input }: { input: unknown }) {
+function NavigateToolLink({
+  navigation,
+  label,
+}: {
+  navigation: NavigateToolNavigation
+  label?: string
+}) {
   const { t } = useTranslation()
   const { markExplicitSettings, applyNavigateMapState } = useNavigateToolMapState()
-  const parsed = navigateToolInputSchema.safeParse(input)
-  const linkProps = parsed.success ? getNavigateToolLinkProps(parsed.data.navigation) : undefined
+  const linkProps = getNavigateToolLinkProps(navigation)
   const isSameViewSearch = useRouterState({
-    select: (s) =>
-      !!linkProps && isNavigateToolViewActive(s.location.search, linkProps.search),
+    select: (s) => isNavigateToolViewActive(s.location.search, linkProps.viewSearch),
   })
-  if (!parsed.success || !linkProps) return null
-  const { navigation } = parsed.data
   return (
     <Link
-      {...(linkProps as any)}
+      to={linkProps.to as any}
+      params={linkProps.params as any}
+      search={linkProps.search as any}
       activeOptions={{ includeSearch: false }}
       onClick={() => {
         markExplicitSettings(navigation.search)
@@ -118,13 +124,45 @@ function NavigateToolLink({ input }: { input: unknown }) {
     >
       {({ isActive }) => {
         const isCurrentView = isActive && isSameViewSearch
+        const text =
+          label ??
+          (isCurrentView ? t((t) => t.chat.toolNavigation) : t((t) => t.chat.toolNavigateBack))
         return (
-          <span className={cx(styles.toolLink, { [styles.toolLinkBtn]: !isCurrentView })}>
-            {isCurrentView ? t((t) => t.chat.toolNavigation) : t((t) => t.chat.toolNavigateBack)}
+          <span
+            className={cx(styles.toolLink, {
+              [styles.toolLinkBtn]: !label && !isCurrentView,
+              [styles.toolLinkAlternative]: label,
+            })}
+          >
+            {text}
           </span>
         )
       }}
     </Link>
+  )
+}
+
+function NavigateToolLinks({ output }: { output: unknown }) {
+  const { t } = useTranslation()
+  const parsed = navigateToolOutputSchema.safeParse(output)
+  if (!parsed.success) return null
+  const alternatives = getNavigateToolAlternatives(parsed.data)
+  return (
+    <Fragment>
+      <NavigateToolLink navigation={parsed.data.navigation} />
+      {alternatives.length > 0 && (
+        <div className={styles.toolAlternatives}>
+          <span className={styles.toolAlternativesTitle}>{t((t) => t.chat.toolAlternatives)}</span>
+          {alternatives.map((alternative, i) => (
+            <NavigateToolLink
+              key={i}
+              navigation={alternative.navigation}
+              label={alternative.label}
+            />
+          ))}
+        </div>
+      )}
+    </Fragment>
   )
 }
 
@@ -183,7 +221,7 @@ function MessageParts({ message }: { message: UIMessage }) {
         if (isToolUIPart(part)) {
           const name = getToolName(part)
           if (name === 'navigate') {
-            return <NavigateToolLink key={idx} input={part.input} />
+            return <NavigateToolLinks key={idx} output={part.output} />
           }
           if (idx !== lastToolIdx) return null
           const detail = toolDetail(t, part.input)

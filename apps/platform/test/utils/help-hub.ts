@@ -47,7 +47,7 @@ const thumbnail = (id: number, alternativeText: string): StrapiImage => ({
 })
 
 /**
- * Slugs are the real `CATEGORIES_CONFIG` keys so the fixture typechecks against
+ * Slugs are the real `USER_GUIDE_SECTIONS` keys so the fixture typechecks against
  * `UserGuideSectionSlug` / `UserGuideSubSectionSlug`.
  *
  * Shape that the specs depend on:

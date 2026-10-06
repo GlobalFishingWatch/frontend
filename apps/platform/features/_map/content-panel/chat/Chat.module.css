@@ -16,6 +16,10 @@
 
 .title {
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font: var(--font-M);
   color: var(--color-primary-blue);
 }
@@ -148,7 +152,7 @@
 
 .agent {
   align-self: flex-start;
-  background-color: var(--color-off-white-0);
+  background-color: var(--color-off-white-1);
   border-end-start-radius: 0;
   border: none;
 }
@@ -190,6 +194,24 @@
 .toolLink {
   margin-top: var(--space-S);
   display: inline-block;
+}
+
+.toolAlternatives {
+  margin-top: var(--space-S);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-XS);
+}
+
+.toolAlternativesTitle {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+}
+
+.toolLink.toolLinkAlternative {
+  margin-top: 0;
+  text-decoration: underline;
 }
 
 .toolLinkBtn {

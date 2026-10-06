@@ -27,6 +27,7 @@ import type {
 } from 'features/_map/download/downloadActivity.slice'
 import {
   downloadActivityThunk,
+  resetDownloadActivityStateKeepPolling,
   selectDownloadActivityAreaKey,
   selectIsDownloadActivityConcurrentError,
   selectIsDownloadActivityError,
@@ -286,7 +287,10 @@ function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: 
             onSelect={(option) => setSpatialResolution(option.id as SpatialResolution)}
           />
         </div>
-        <UserGuideLink slug="downloading-data" />
+        <UserGuideLink
+          slug="downloading-data"
+          onClick={() => dispatch(resetDownloadActivityStateKeepPolling())}
+        />
         <div className={styles.footer}>
           {!isDownloadReportSupported ? (
             <p className={cx(styles.footerLabel, styles.error)}>

@@ -27,14 +27,18 @@
   ],
   "dependencies": {
     "@turf/turf": "7.x",
-    "dotenv": "17.x",
+    "dotenv": "18.x",
     "es-toolkit": "1.x",
     "geojson": "0.x",
     "match-sorter": "8.x",
     "tslib": "2.x"
   },
   "devDependencies": {
+    "@globalfishingwatch/dataviews-client": "workspace:^",
+    "@platform/config": "workspace:^",
     "@types/node": "26.x",
+    "playwright": "1.x",
+    "sharp": "0.x",
     "ts-node": "10.x"
   }
 }

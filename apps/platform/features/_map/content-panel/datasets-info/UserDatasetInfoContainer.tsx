@@ -6,12 +6,11 @@ import ContentMarkdown from 'features/_map/content-panel/ContentMarkdown'
 import { useScrollToTopOnChange } from 'features/_map/content-panel/contentPanel.hooks'
 import EmptyContent from 'features/_map/content-panel/EmptyContent'
 import { selectDatasetById } from 'features/_map/datasets/datasets.slice'
-import { useAppSearch } from 'router/routes.hook'
+import type { SidePanelState } from 'types'
 
 import styles from '../ContentPanel.module.css'
 
-const UserDatasetInfoContainer = () => {
-  const { sidePanelId } = useAppSearch()
+const UserDatasetInfoContainer = ({ id: sidePanelId }: Pick<SidePanelState, 'id'>) => {
   const dataset = useSelector(selectDatasetById(sidePanelId as string))
   const scrollContainerRef = useScrollToTopOnChange<HTMLDivElement>(sidePanelId)
 

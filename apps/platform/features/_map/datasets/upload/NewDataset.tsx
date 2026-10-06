@@ -48,6 +48,7 @@ export type NewDatasetProps = {
   onFileUpdate: (file: File) => void
   onConfirm: (datasetMetadata: DatasetMetadata, { isEditing, file }: OnConfirmParams) => void
   onDatasetParseError: (error: any) => void
+  onClose: () => void
 }
 
 export type DatasetMetadata = Partial<
@@ -182,10 +183,11 @@ function NewDataset() {
           onConfirm={onConfirmClick}
           onFileUpdate={onFileLoaded}
           onDatasetParseError={onDatasetParseError}
+          onClose={onClose}
         />
       )
     },
-    [dataset, onConfirmClick, onDatasetParseError, onFileLoaded, rawFile]
+    [dataset, onClose, onConfirmClick, onDatasetParseError, onFileLoaded, rawFile]
   )
 
   return (
@@ -241,7 +243,7 @@ function NewDataset() {
               </div>
               <div className={styles.modalFooter}>
                 <div className={styles.footerMsg}>
-                  <UserGuideLink slug="uploading-data" />
+                  <UserGuideLink slug="uploading-data" onClick={onClose} />
                 </div>
               </div>
             </div>
@@ -260,7 +262,11 @@ function NewDataset() {
             <DatasetTypeSelect style={style} onFileLoaded={onFileLoaded} />
           </div>
           {style !== 'transparent' && (
-            <UserGuideLink slug="uploading-data" className={styles.userGuideLink} />
+            <UserGuideLink
+              slug="uploading-data"
+              className={styles.userGuideLink}
+              onClick={onClose}
+            />
           )}
           {style === 'transparent' && fileRejected && (
             <Button onClick={onClose} className={styles.dismiss}>

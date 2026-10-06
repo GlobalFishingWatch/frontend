@@ -188,3 +188,6 @@ local.globalfishingwatch.org.pem
 
 .nx/migrate-runs
 apps/platform-e2e/specs/
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/

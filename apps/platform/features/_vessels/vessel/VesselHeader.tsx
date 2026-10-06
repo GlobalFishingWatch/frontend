@@ -15,6 +15,7 @@ import {
   selectVesselProfileDataview,
   selectVesselProfileDataviewIntanceResolved,
 } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
+import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import VesselDownload from 'features/_map/workspace/vessels/VesselDownload'
 import { selectIsWorkspaceOwnerOrDefault } from 'features/_map/workspace/workspace.selectors'
 import VesselGroupAddButton, {
@@ -59,13 +60,14 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const vesselProfileDataview = useSelector(selectVesselProfileDataview)
   const { boundsReady, setVesselBounds } = useVesselProfileBounds()
   const isClientHydrated = useIsClientHydrated()
-  const { closeSidePanel } = useSidePanel()
+  const { closeAllSidePanels } = useSidePanel()
   const vesselPrintCallback = useCallback(() => {
     window.print()
   }, [])
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [isHovering, setIsHovering] = useState(false)
+  const readOnly = useSelector(selectReadOnly)
 
   const trackAction = useCallback((label: 'center_map' | 'print' | 'share') => {
     trackEvent({
@@ -86,7 +88,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
 
   useEffect(() => {
     const enableVesselPrintMode = () => {
-      closeSidePanel()
+      closeAllSidePanels()
       dispatch(setVesselPrintMode(true))
     }
     const disableVesselPrintMode = () => {
@@ -98,7 +100,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
       window.removeEventListener('beforeprint', enableVesselPrintMode)
       window.removeEventListener('afterprint', disableVesselPrintMode)
     }
-  }, [closeSidePanel])
+  }, [closeAllSidePanels])
 
   useCallbackAfterPaint({
     callback: vesselPrintCallback,
@@ -130,7 +132,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
 
   const onPrintClick = () => {
     dispatch(setVesselPrintMode(true))
-    closeSidePanel()
+    closeAllSidePanels()
     trackAction('print')
   }
 
@@ -265,12 +267,14 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
             tooltipPlacement="bottom"
             onClick={onPrintClick}
           />
-          <VesselGroupAddButton
-            vessels={vessel ? [vessel] : []}
-            onAddToVesselGroup={onAddToVesselGroup}
-          >
-            <VesselGroupAddActionButton buttonSize="medium" buttonType="border-secondary" />
-          </VesselGroupAddButton>
+          {!readOnly && (
+            <VesselGroupAddButton
+              vessels={vessel ? [vessel] : []}
+              onAddToVesselGroup={onAddToVesselGroup}
+            >
+              <VesselGroupAddActionButton buttonSize="medium" buttonType="border-secondary" />
+            </VesselGroupAddButton>
+          )}
         </div>
       </div>
     </div>

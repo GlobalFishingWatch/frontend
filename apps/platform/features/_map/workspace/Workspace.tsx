@@ -9,6 +9,7 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 import { selectDataviewInstancesMergedOrdered } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import DetectionsSection from 'features/_map/workspace/detections/DetectionsSection'
 import { useHideLegacyActivityCategoryDataviews } from 'features/_map/workspace/legacy-activity-category.hook'
+import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import UserSection from 'features/_map/workspace/user/UserSection/UserSection'
 import {
   selectIsWorkspacePasswordRequired,
@@ -18,6 +19,7 @@ import {
 } from 'features/_map/workspace/workspace.selectors'
 import { isPrivateWorkspaceNotAllowed } from 'features/_map/workspace/workspace.utils'
 import { useMigrateWorkspaceToast } from 'features/_map/workspace/workspace-migration.hooks'
+import { useReadOnlyWorkspaceToast } from 'features/_map/workspace/workspace-read-only.hooks'
 import WorkspaceError from 'features/_map/workspace/WorkspaceError'
 import WorkspacePassword from 'features/_map/workspace/WorkspacePassword'
 import WorkspaceTitle from 'features/_map/workspace/WorkspaceTitle'
@@ -45,6 +47,7 @@ function Workspace() {
   useHideLegacyActivityCategoryDataviews()
   useUserExpiredToast()
   useMigrateWorkspaceToast()
+  useReadOnlyWorkspaceToast()
   const dispatch = useAppDispatch()
   const { replaceQueryParams } = useReplaceQueryParams()
   const isWorkspacePasswordRequired = useSelector(selectIsWorkspacePasswordRequired)
@@ -54,6 +57,7 @@ function Workspace() {
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
   const workspaceVesselGroupsIds = useSelector(selectWorkspaceVessselGroupsIds)
+  const readOnly = useSelector(selectReadOnly)
 
   useFetchDataviewResources()
 
@@ -108,8 +112,8 @@ function Workspace() {
         <ActivitySection />
         {timeMode === 'historical' && <DetectionsSection />}
         {timeMode === 'historical' && <EventsSection />}
-        <VesselsSection />
-        {timeMode === 'historical' && <VesselGroupSection />}
+        {!readOnly && <VesselsSection />}
+        {timeMode === 'historical' && !readOnly && <VesselGroupSection />}
         {timeMode === 'historical' && <EnvironmentalSection />}
         <ContextAreaSection />
         <UserSection />

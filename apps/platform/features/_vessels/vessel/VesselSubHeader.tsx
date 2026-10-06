@@ -4,11 +4,12 @@ import { useRouter } from '@tanstack/react-router'
 
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 
+import { getIsWorkspaceArchived } from 'features/_map/workspace/workspace.utils'
 import GFWOnly from 'features/_user/GFWOnly'
 import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
 import { selectVesselInfoStatus } from 'features/_vessels/vessel/selectors/vessel.selectors'
 import {
-  DEFAULT_VESSEL_IDENTITY_ID,
+  VESSEL_IDENTITY_ID_V4,
   VESSEL_IDENTITY_ID_V5,
 } from 'features/_vessels/vessel/vessel.config'
 import {
@@ -22,8 +23,6 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './Vessel.module.css'
 
-const PIPE_5_WORKSPACE_ID = 'pipe_v_5-public'
-
 const VesselSubHeader = () => {
   const router = useRouter()
   const { replaceQueryParams } = useReplaceQueryParams()
@@ -33,7 +32,7 @@ const VesselSubHeader = () => {
   const includeRelatedIdentities = useSelector(selectIncludeRelatedIdentities)
   const infoStatus = useSelector(selectVesselInfoStatus)
   const datasetId = useSelector(selectVesselDatasetId)
-  const isPipe5Workspace = workspaceId === PIPE_5_WORKSPACE_ID
+  const isPipe4Workspace = !!workspaceId && getIsWorkspaceArchived({ id: workspaceId })
 
   const handleFullProfileClick = useCallback(() => {
     replaceQueryParams({
@@ -81,7 +80,7 @@ const VesselSubHeader = () => {
           </Button>
         </div>
       )}
-      {infoStatus === AsyncReducerStatus.Finished && isPipe5Workspace && (
+      {infoStatus === AsyncReducerStatus.Finished && isPipe4Workspace && (
         <div className={styles.fullProfileMessage}>
           <div>
             <GFWOnly className={styles.pipe4Disclaimer}>
@@ -90,7 +89,7 @@ const VesselSubHeader = () => {
               <a
                 href={getSwitchVersionHref(
                   datasetId === VESSEL_IDENTITY_ID_V5
-                    ? DEFAULT_VESSEL_IDENTITY_ID
+                    ? VESSEL_IDENTITY_ID_V4
                     : VESSEL_IDENTITY_ID_V5
                 )}
                 className={styles.pipe4DisclaimerLink}

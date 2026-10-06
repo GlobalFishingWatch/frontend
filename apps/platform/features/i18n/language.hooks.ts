@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
+import { useSelector, useStore } from 'react-redux'
 import { useRouter } from '@tanstack/react-router'
 
 import { ROUTE_PATHS } from '@platform/config/routes'
@@ -11,6 +11,7 @@ import { selectHasEditTranslationsPermissions } from 'features/_user/selectors/u
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { CROWDIN_IN_CONTEXT_LANG } from 'features/i18n/i18n.config'
+import type { RootState } from 'store'
 import { Locale } from 'types'
 
 const LocaleLabels = [
@@ -31,8 +32,10 @@ export type LanguageOption = {
 export function useLanguageOptions() {
   const { i18n } = useTranslation()
   const dispatch = useAppDispatch()
+  const store = useStore<RootState>()
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const datasetsRefreshRef = useRef<{ abort: () => void } | null>(null)
   const hasEditTranslationsPermissions = useSelector(selectHasEditTranslationsPermissions)
 
   const toggleLanguage = useCallback(
@@ -48,14 +51,27 @@ export function useLanguageOptions() {
 
       setIsLoading(true)
       const locale = lang === 'source' ? Locale.en : (lang as Locale)
-      await dispatch(refreshDatasetsLocaleThunk(locale))
-      i18n.changeLanguage(lang)
+      // Read at click time instead of useSelector so the nav doesn't re-render on dataview changes.
+      // Lazy import keeps the dataview selector graph out of the platform shell (check-store-graph).
+      const { selectAllDataviewInstancesResolved } =
+        await import('features/_map/dataviews/selectors/dataviews.resolvers.selectors')
+      datasetsRefreshRef.current?.abort()
+      const priorityIds = (selectAllDataviewInstancesResolved(store.getState()) || []).flatMap(
+        (dataview) => dataview.datasets?.map(({ id }) => id) || []
+      )
+      const datasetsRefresh = dispatch(refreshDatasetsLocaleThunk({ locale, priorityIds }))
+      datasetsRefreshRef.current = datasetsRefresh
+      await Promise.all([i18n.loadLanguages(lang), datasetsRefresh])
+      if (datasetsRefreshRef.current !== datasetsRefresh) {
+        return
+      }
+      await i18n.changeLanguage(lang)
       await router.invalidate({
         filter: (match) => match.fullPath.startsWith(ROUTE_PATHS.HELP_HUB),
       })
       setIsLoading(false)
     },
-    [dispatch, i18n, router]
+    [dispatch, i18n, router, store]
   )
 
   const options: LanguageOption[] = useMemo(

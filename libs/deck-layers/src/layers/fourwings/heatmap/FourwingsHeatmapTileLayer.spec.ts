@@ -226,7 +226,7 @@ describe('FourwingsHeatmapTileLayer', () => {
       const layer = makeLayer()
       layer.state.colorDomain = [1, 2, 3]
       vi.spyOn(layer, 'getData').mockReturnValue([])
-      expect(layer._calculateColorDomain()).toEqual({ domain: [1, 2, 3], max: undefined })
+      expect(layer._calculateColorDomain()).toEqual({ domain: [1, 2, 3] })
     })
 
     it('returns ascending steps in compare mode', () => {
@@ -240,37 +240,26 @@ describe('FourwingsHeatmapTileLayer', () => {
       expect(domain).toEqual(sorted)
     })
 
-    it('returns the data max, which the outlier-clipped steps never reach', () => {
-      const layer = makeLayer()
-      vi.spyOn(layer, 'getData').mockReturnValue(
-        Array.from({ length: 30 }, (_, i) => feature([[i + 1], [i * 2 + 1]]))
-      )
-      const { domain, max } = layer._calculateColorDomain()
-      // highest fixture value is the last sublayer cell, 29 * 2 + 1
-      expect(max).toBe(59)
-      expect(max).toBeGreaterThan((domain as number[])[domain.length - 1] as number)
-    })
-
-    it('fits the steps inside the visible range only when a single sublayer is visible', () => {
+    it('fits a ramp to each filtered sublayer and leaves the shared domain alone', () => {
       const data = Array.from({ length: 30 }, (_, i) => feature([[i + 1], [i * 2 + 1]]))
       const fitSublayer = {
         ...baseProps.sublayers[0],
         minVisibleValue: 10,
         maxVisibleValue: 20,
-        colorRampFitToRange: true,
       }
 
-      const fitted = makeLayer({ sublayers: [fitSublayer] })
-      vi.spyOn(fitted, 'getData').mockReturnValue(data)
-      const fittedDomain = fitted._calculateColorDomain().domain as number[]
-      expect(Math.min(...fittedDomain)).toBeGreaterThanOrEqual(10)
-      // the steps already end at the selection, so no max is handed to the legend
-      expect(fitted._calculateColorDomain().max).toBeUndefined()
+      // a second visible sublayer no longer prevents the fit, it just keeps the shared domain
+      const layer = makeLayer({ sublayers: [fitSublayer, baseProps.sublayers[1]] })
+      vi.spyOn(layer, 'getData').mockReturnValue(data)
+      const { domain, fits } = layer._calculateColorDomain()
+      expect(Math.min(...(domain as number[]))).toBeLessThan(10)
 
-      // a second visible sublayer shares the domain, so the fit has to be ignored
-      const merged = makeLayer({ sublayers: [fitSublayer, baseProps.sublayers[1]] })
-      vi.spyOn(merged, 'getData').mockReturnValue(data)
-      expect(merged._calculateColorDomain().max).toBe(59)
+      const fit = fits?.[0]
+      expect(Math.min(...(fit?.domain as number[]))).toBeGreaterThanOrEqual(10)
+      expect(Math.max(...(fit?.domain as number[]))).toBeLessThanOrEqual(20)
+      // the extent is the sublayer own data before the filter, 1..30
+      expect(fit?.extent).toEqual([1, 30])
+      expect(fits?.[1]).toBeUndefined()
     })
 
     it('returns negative and positive steps around 0 in time compare mode', () => {

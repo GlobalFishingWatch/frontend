@@ -136,9 +136,10 @@ export const useDataviewInstancesConnect = () => {
           dataviewInstances.push({ id, deleted: true })
         })
       }
-      const { sidePanelId } = router.latestLocation.search as QueryParams
-      if (sidePanelId && ids.includes(sidePanelId)) {
-        closeSidePanel()
+      const { sidePanels } = router.latestLocation.search as QueryParams
+      const datasetPanelId = sidePanels?.find((panel) => panel.type === 'datasets')?.id
+      if (datasetPanelId && ids.includes(datasetPanelId)) {
+        closeSidePanel('datasets')
       }
 
       replaceQueryParams({ dataviewInstances })

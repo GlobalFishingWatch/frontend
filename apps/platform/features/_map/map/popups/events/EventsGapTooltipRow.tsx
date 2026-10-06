@@ -193,7 +193,7 @@ function EventsGapTooltipRow({
                             className={cx(styles.btnLarge, 'print-hidden')}
                             onClick={() => seeGapEventClick(event.dataset)}
                           >
-                            {t((t) => t.common.seeMore)}
+                            <span className={styles.btnLabel}>{t((t) => t.common.seeMore)}</span>
                           </Button>
                         </VesselLink>
                       </div>

@@ -5,6 +5,7 @@ import {
   FillColorBarOptions,
   LineColorBarOptions,
 } from '@globalfishingwatch/ui-components/color-bar-options'
+import { ARCHIVED_WORKSPACE_SUFFIX } from '@platform/config/map/workspaces'
 
 import { PRIVATE_ICON, PRIVATE_PASSWORD_ICON, PUBLIC_SUFIX } from 'data/map/config'
 import type { AppWorkspace } from 'features/_map/workspaces-list/workspaces-list.slice'
@@ -18,6 +19,9 @@ import type { LinkToPayload } from 'router/routes.types'
 import type { QueryParams, WorkspaceState } from 'types'
 
 export const MIN_WORKSPACE_PASSWORD_LENGTH = 5
+
+export const getIsWorkspaceArchived = (workspace: Pick<Workspace, 'id'>) =>
+  workspace?.id?.includes(ARCHIVED_WORKSPACE_SUFFIX) ?? false
 
 export const parseUpsertWorkspace = (
   workspace: AppWorkspace | Partial<AppWorkspace>

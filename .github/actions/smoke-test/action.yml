@@ -23,9 +23,20 @@ inputs:
       Host port to publish the container on. Nitro listens on 3000 inside — this is
       the host-side mapping only. Must stay 3003: that's the exact localhost callback
       staging's SSO app has allowlisted (matching local dev's `vite --port=3003`); any
-      other host port makes login fail with "Callback ... not registered".
+      other host port makes login fail with "Callback ... not registered". Ignored
+      when use-local-domain-proxy is true — the proxy's target port is what matters then.
     required: false
     default: '3003'
+  use-local-domain-proxy:
+    description: |
+      Production's SSO app allows no plain-localhost callback at all — only
+      https://local.globalfishingwatch.org, the same hostname apps/platform/README.md
+      documents for local HTTPS dev (`nx run platform:start-proxy`). Set true to stand
+      up that same setup — a hosts-file entry, a throwaway self-signed cert, and
+      local-ssl-proxy terminating TLS on :443 in front of the container — and run the
+      suite against https://local.globalfishingwatch.org instead of plain localhost.
+    required: false
+    default: 'false'
 
 runs:
   using: composite
@@ -60,6 +71,29 @@ runs:
         docker run -d --name smoke-target \
           -p ${{ inputs.port }}:3000 \
           "${{ inputs.image }}"
+        # Wait until Nitro accepts connections. No -f: any HTTP status means it is listening.
+        curl -s -o /dev/null --retry 60 --retry-delay 1 --retry-all-errors \
+          "http://localhost:${{ inputs.port }}/"
+
+    - name: Set up local.globalfishingwatch.org proxy
+      if: inputs.use-local-domain-proxy == 'true'
+      shell: bash
+      run: |
+        set -euo pipefail
+        if ! grep -q local.globalfishingwatch.org /etc/hosts; then
+          echo "127.0.0.1 local.globalfishingwatch.org" | sudo tee -a /etc/hosts > /dev/null
+          echo "::1 local.globalfishingwatch.org" | sudo tee -a /etc/hosts > /dev/null
+        fi
+        openssl req -x509 -newkey rsa:2048 \
+          -keyout /tmp/local.globalfishingwatch.org-key.pem \
+          -out /tmp/local.globalfishingwatch.org.pem \
+          -days 1 -nodes \
+          -subj "/CN=local.globalfishingwatch.org" \
+          -addext "subjectAltName=DNS:local.globalfishingwatch.org"
+        sudo "$(pnpm bin)/local-ssl-proxy" \
+          --key /tmp/local.globalfishingwatch.org-key.pem \
+          --cert /tmp/local.globalfishingwatch.org.pem \
+          --source 443 --target ${{ inputs.port }} &
 
     - name: Run smoke tests
       shell: bash
@@ -67,7 +101,8 @@ runs:
       env:
         NX_DAEMON: 'false'
         NX_CLOUD_ACCESS_TOKEN: ${{ inputs.nx-cloud-access-token }}
-        PLAYWRIGHT_BASE_URL: http://localhost:${{ inputs.port }}
+        PLAYWRIGHT_BASE_URL: ${{ inputs.use-local-domain-proxy == 'true' && 'https://local.globalfishingwatch.org' || format('http://localhost:{0}', inputs.port) }}
+        PLAYWRIGHT_IGNORE_HTTPS_ERRORS: ${{ inputs.use-local-domain-proxy }}
         TEST_USER_EMAIL: ${{ inputs.test-user-email }}
         TEST_USER_PASSWORD: ${{ inputs.test-user-password }}
         TEST_USER_NAME: ${{ inputs.test-user-name }}
@@ -88,4 +123,8 @@ runs:
     - name: Stop the container
       if: always()
       shell: bash
-      run: docker rm -f smoke-target || true
+      run: |
+        docker rm -f smoke-target || true
+        if [ "${{ inputs.use-local-domain-proxy }}" = "true" ]; then
+          sudo pkill -f local-ssl-proxy || true
+        fi

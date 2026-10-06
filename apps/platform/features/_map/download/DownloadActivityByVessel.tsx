@@ -22,6 +22,7 @@ import type {
 } from 'features/_map/download/downloadActivity.slice'
 import {
   downloadActivityThunk,
+  resetDownloadActivityStateKeepPolling,
   selectDownloadActivityAreaKey,
   selectHadDownloadActivityTimeoutError,
   selectIsDownloadActivityFinished,
@@ -215,7 +216,10 @@ function DownloadActivityByVessel({ onDownloadCallback }: { onDownloadCallback?:
             onSelect={(option) => setTemporalResolution(option.id as TemporalResolution)}
           />
         </div>
-        <UserGuideLink slug="downloading-data" />
+        <UserGuideLink
+          slug="downloading-data"
+          onClick={() => dispatch(resetDownloadActivityStateKeepPolling())}
+        />
         <div className={styles.footer}>
           {!isDownloadReportSupported ? (
             <p className={cx(styles.footerLabel, styles.error)}>

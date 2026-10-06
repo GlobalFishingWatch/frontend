@@ -43,6 +43,7 @@ type ModalsOpenState = {
   layerLibrary: {
     open: LayerLibraryMode
     singleCategory: boolean
+    userGeometries?: DatasetGeometryType[]
   }
   editWorkspace: boolean
   createWorkspace: boolean
@@ -85,12 +86,14 @@ const modals = createSlice({
         id: ModalId
         open: boolean | LayerLibraryMode
         singleCategory?: boolean
+        userGeometries?: DatasetGeometryType[]
       }>
     ) => {
-      const { id, open, singleCategory } = action.payload
+      const { id, open, singleCategory, userGeometries } = action.payload
       if (id === 'layerLibrary') {
         state[id].open = open as LayerLibraryMode
         state[id].singleCategory = singleCategory ?? false
+        state[id].userGeometries = userGeometries
       } else if (id === 'datasetUpload') {
         state[id].open = open as boolean
       } else {
@@ -135,6 +138,8 @@ export const selectLayerLibraryModalOpen = (state: RootState) =>
   state.modals.layerLibrary.open !== false
 export const selectLayerLibraryUniqueCategory = (state: RootState) =>
   state.modals.layerLibrary.singleCategory
+export const selectLayerLibraryUserGeometries = (state: RootState) =>
+  state.modals.layerLibrary.userGeometries
 export const selectDatasetUploadModalConfig = (state: RootState) => state.modals.datasetUpload
 export const selectDatasetUploadModalOpen = (state: RootState) => state.modals.datasetUpload?.open
 export const selectEditWorkspaceModalOpen = (state: RootState) => state.modals.editWorkspace

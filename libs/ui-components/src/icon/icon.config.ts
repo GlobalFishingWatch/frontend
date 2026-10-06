@@ -88,6 +88,7 @@ const icons = [
   'layers-off',
   'layers-on',
   'layers',
+  'lightning',
   'list',
   'logout',
   'loop',

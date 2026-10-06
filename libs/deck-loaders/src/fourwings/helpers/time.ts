@@ -109,3 +109,6 @@ export const CONFIG_BY_INTERVAL: Record<
 export const getTimeRangeKey = (start: number, end: number) => {
   return `${start}-${end}`
 }
+
+/** A temporal-aggregated tile has a single frame, so its only time range is frame 0 to 1 */
+export const TEMPORAL_AGGREGATED_TIME_RANGE_KEY = getTimeRangeKey(0, 1)

@@ -138,15 +138,15 @@ function SidebarHeader() {
               !isTrackCorrectionOpen && <ShareWorkspaceButton />}
             {isSmallScreen && <LanguageToggle className={styles.lngToggle} position="rightDown" />}
             {isSmallScreen && <UserButton className={styles.userButton} />}
-            {isSearchLocation && !readOnly && !isSmallScreen && (
+            {isSearchLocation && !isSmallScreen && (
               <SearchTypeChoice className={styles.searchOption} />
             )}
-            {isClientHydrated && workspaceHistoryNavigation?.length ? (
-              <NavigationHistoryButton />
-            ) : (
-              <NavigationWorkspaceButton />
-            )}
           </Fragment>
+        )}
+        {isClientHydrated && workspaceHistoryNavigation?.length ? (
+          <NavigationHistoryButton />
+        ) : (
+          <NavigationWorkspaceButton />
         )}
       </div>
       <SidebarHeaderSections isSticky={isSticky} />

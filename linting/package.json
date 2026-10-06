@@ -39,7 +39,7 @@
     "@eslint/js": "10.x",
     "eslint": "10.x",
     "eslint-config-prettier": "10.x",
-    "eslint-package-json": "0.x",
+    "eslint-package-json": "1.x",
     "eslint-plugin-import": "2.x",
     "eslint-plugin-jsx-a11y": "6.x",
     "eslint-plugin-react": "7.x",

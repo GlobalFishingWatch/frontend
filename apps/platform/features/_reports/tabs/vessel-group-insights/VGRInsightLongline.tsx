@@ -8,7 +8,7 @@ import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import type { ApiEvents } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { LonglineCategory } from '@globalfishingwatch/deck-loaders'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { LONGLINE_FISHING_EVENTS_DATASET } from '@platform/config/map/datasets'
 
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
@@ -16,11 +16,15 @@ import UserLoggedIconButton from 'features/_user/UserLoggedIconButton'
 import Event from 'features/_vessels/vessel/activity/event/Event'
 import InsightError from 'features/_vessels/vessel/insights/InsightErrorMessage'
 import { removeNonTunaRFMO } from 'features/_vessels/vessel/insights/insights.utils'
-import LonglineSetsGraph from 'features/_vessels/vessel/insights/LonglineSetsGraph'
+import LonglineSetsGraph, {
+  LonglineTimeChoice,
+} from 'features/_vessels/vessel/insights/LonglineSetsGraph'
 import { parseLonglineSetsToCSV } from 'features/_vessels/vessel/vessel.download'
 import type { VesselEvent } from 'features/_vessels/vessel/vessel.types'
+import { getVesselIdentities } from 'features/_vessels/vessel/vessel.utils'
 import VesselLink from 'features/_vessels/vessel/VesselLink'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import DataTerminology from 'features/cms/data-terminology/DataTerminology'
 import { selectReportVesselGroupId } from 'router/routes.selectors'
 import { formatInfoField } from 'utils/info'
 
@@ -53,6 +57,7 @@ const getVesselsWithEvents = (events: ApiEvents['entries']): VesselWithEvents[] 
 const VesselGroupReportInsightLongline = ({ skip }: { skip?: boolean }) => {
   const { t } = useTranslation()
   const [openVesselId, setOpenVesselId] = useState<string | null>(null)
+  const [localTime, setLocalTime] = useState(false)
   const vesselGroup = useSelector(selectVGRData)
   const vesselGroupId = useSelector(selectReportVesselGroupId)
   const { start, end } = useSelector(selectTimeRange)
@@ -76,7 +81,14 @@ const VesselGroupReportInsightLongline = ({ skip }: { skip?: boolean }) => {
   }, [vesselGroup])
 
   const onDownloadClick = async () => {
-    const csv = parseLonglineSetsToCSV(events)
+    const identities = (vesselGroup?.vessels || []).flatMap((vessel) =>
+      vessel.identity
+        ? getVesselIdentities(vessel.identity, {
+            identitySource: VesselIdentitySourceEnum.SelfReported,
+          })
+        : []
+    )
+    const csv = parseLonglineSetsToCSV(events, identities)
     const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
     const { saveAs } = await import('file-saver')
     saveAs(blob, `${vesselGroup?.name}-longline-sets-${start}-${end}.csv`)
@@ -142,6 +154,7 @@ const VesselGroupReportInsightLongline = ({ skip }: { skip?: boolean }) => {
                     key={event.id}
                     event={event as VesselEvent}
                     className={insightStyles.event}
+                    localTime={localTime}
                   />
                 ))}
               </ul>
@@ -155,19 +168,25 @@ const VesselGroupReportInsightLongline = ({ skip }: { skip?: boolean }) => {
   return (
     <div id="vessel-group-longline" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t((t) => t.vessel.insights.longline)}</label>
-        <div className={insightStyles.insightTitleActions}>
-          <UserLoggedIconButton
-            loginSource="vessel-download"
-            size="medium"
-            icon="download"
-            className="print-hidden"
-            disabled={skip || isFetching || !events.length}
-            onClick={onDownloadClick}
-            tooltip={t((t) => t.vessel.insights.longlineDownload)}
-            loginTooltip={t((t) => t.download.eventsDownloadLogin)}
-          />
-        </div>
+        <Tooltip content={t((t) => t.common.experimentalTooltip)}>
+          <label className="experimental">{t((t) => t.vessel.insights.longline)}</label>
+        </Tooltip>
+        <DataTerminology terminologyKey="insightsLongline" />
+        {/* tools act on the sets, so they only show once there are some */}
+        {!skip && !isFetching && !!events.length && (
+          <div className={insightStyles.insightTitleActions}>
+            <LonglineTimeChoice localTime={localTime} onChange={setLocalTime} />
+            <UserLoggedIconButton
+              loginSource="vessel-download"
+              size="medium"
+              icon="download"
+              className="print-hidden"
+              onClick={onDownloadClick}
+              tooltip={t((t) => t.vessel.insights.longlineDownload)}
+              loginTooltip={t((t) => t.download.eventsDownloadLogin)}
+            />
+          </div>
+        )}
       </div>
       {skip || isFetching || !data ? (
         <LonglineSetsGraph loading showEvents={false} />
@@ -181,6 +200,7 @@ const VesselGroupReportInsightLongline = ({ skip }: { skip?: boolean }) => {
         <div className={cx(styles.nested, styles.row)}>
           <LonglineSetsGraph
             data={events}
+            localTime={localTime}
             renderCategoryContent={renderCategoryVessels}
             onCategoryToggle={onCategoryToggle}
           />

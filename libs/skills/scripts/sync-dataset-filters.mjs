@@ -4,13 +4,16 @@
 // the filters each of those datasets supports. The encoder uses it to keep URL filters
 // compatible with every dataset of a layer (same rule the app's filter UI applies).
 //
-// Run after any dataset/dataview release: GFW_API_TOKEN=<token> pnpm nx sync-dataset-filters skills
+// Runs before every `pnpm nx build skills`; without GFW_API_TOKEN it keeps the committed file.
+// Run it alone after any dataset/dataview release: GFW_API_TOKEN=<token> pnpm nx sync-dataset-filters skills
 // Optional env: API_GATEWAY (default production gateway), PIPE_DATASET_VERSION (default 4).
-import { writeFileSync } from 'node:fs'
+import { createJiti } from 'jiti'
+import { readFileSync, writeFileSync } from 'node:fs'
 
-import '../src/encode-url/scripts/register-gfw-resolver.mjs'
-
-const { LAYERS_DICTIONARY } = await import('@globalfishingwatch/skills/encode-url')
+// Loads the dictionary from source (jiti handles the TS), so this can run before skills:build
+const { LAYERS_DICTIONARY } = await createJiti(import.meta.url).import(
+  '../src/encode-url/dictionary.ts'
+)
 
 const API_GATEWAY = process.env.API_GATEWAY || 'https://gateway.api.globalfishingwatch.org'
 const TOKEN = process.env.GFW_API_TOKEN
@@ -21,8 +24,8 @@ const FILTER_TYPES = ['fourwings', 'events']
 const FILTER_FIELDS = ['id', 'type', 'enabled', 'array', 'enum', 'operation', 'unit']
 
 if (!TOKEN) {
-  console.error('GFW_API_TOKEN is required')
-  process.exit(1)
+  console.warn('GFW_API_TOKEN not set, keeping the committed dataset-filters.json')
+  process.exit(0)
 }
 
 const fetchEntries = async (path, ids) => {
@@ -83,7 +86,13 @@ const datasets = Object.fromEntries(
     .sort(([a], [b]) => a.localeCompare(b))
 )
 
-const data = { generatedAt: new Date().toISOString(), source: API_GATEWAY, dataviews, datasets }
+// Keep the old generatedAt when nothing else changed, so a build doesn't dirty the file
+const previous = JSON.parse(readFileSync(OUTPUT, 'utf8'))
+const unchanged =
+  JSON.stringify({ ...previous, generatedAt: undefined }) ===
+  JSON.stringify({ generatedAt: undefined, source: API_GATEWAY, dataviews, datasets })
+const generatedAt = unchanged ? previous.generatedAt : new Date().toISOString()
+const data = { generatedAt, source: API_GATEWAY, dataviews, datasets }
 // One line per primitive array so enums stay greppable next to their filter id
 const json = JSON.stringify(data, null, 2).replace(
   /\[\s+([^[\]{}]*?)\s+\]/g,

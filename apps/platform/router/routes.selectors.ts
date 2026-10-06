@@ -209,8 +209,8 @@ export const selectIsIndexLocation = createSelector(
 export const selectUserTab = selectQueryParam('userTab')
 export const selectUrlMapZoomQuery = selectQueryParam('zoom')
 export const selectTrackCorrectionId = selectQueryParam('trackCorrectionId')
-export const selectSidePanelId = selectQueryParam('sidePanelId')
-export const selectSidePanelContent = selectQueryParam('sidePanelContent')
+export const selectSidePanels = selectQueryParam('sidePanels')
+export const selectSidePanelActive = selectQueryParam('sidePanelActive')
 
 // Map state
 const selectUrlMapLatitudeQuery = selectQueryParam('latitude')

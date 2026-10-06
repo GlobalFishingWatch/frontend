@@ -15,14 +15,14 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
 import { getHighlightedText } from 'utils/text'
 
-import { selectUserWorkspacesPrivate } from './selectors/user.permissions.selectors'
+import { selectUserWorkspacesPrivateActive } from './selectors/user.permissions.selectors'
 
 import styles from './User.module.css'
 
 function UserWorkspacesPrivate({ searchQuery }: { searchQuery: string }) {
   const { t } = useTranslation()
   const { replaceQueryParams } = useReplaceQueryParams()
-  const workspaces = useSelector(selectUserWorkspacesPrivate)
+  const workspaces = useSelector(selectUserWorkspacesPrivateActive)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
   const setMapCoordinates = useSetMapCoordinates()
 

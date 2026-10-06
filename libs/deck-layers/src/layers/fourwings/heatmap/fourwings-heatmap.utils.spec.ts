@@ -7,6 +7,7 @@ import {
   HEATMAP_HIGH_RES_ID,
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
+  MAX_RAMP_VALUES,
   POSITIONS_ID,
 } from '#layers/fourwings/fourwings.config'
 
@@ -20,6 +21,7 @@ import {
   getCellValuesFrameRange,
   getDataUrl,
   getFourwingsChunk,
+  getFourwingsColorDomain,
   getIntervalFrames,
   getResolutionByVisualizationMode,
   getURLFromTemplate,
@@ -366,5 +368,66 @@ describe('isSublayerValueVisible', () => {
     expect(isSublayerValueVisible(0, { minVisibleValue: 1 })).toBe(false)
     expect(isSublayerValueVisible(15, { maxVisibleValue: 10 })).toBe(false)
     expect(isSublayerValueVisible(-3)).toBe(true)
+  })
+})
+
+describe('getFourwingsColorDomain', () => {
+  const KEY = '0-1'
+  const cell = (values: number[], initialValues?: number[]) =>
+    ({
+      coordinates: [],
+      properties: {
+        values: values.map((value) => [value]),
+        startOffsets: values.map(() => 0),
+        initialValues: initialValues ? { [KEY]: initialValues } : {},
+      },
+    }) as any
+  // above MAX_RAMP_VALUES, so only every 20th cell (index % 20 === 1) is in the sample
+  const sampledCells = () =>
+    Array.from({ length: MAX_RAMP_VALUES + 1 }, (_, i) => cell([(i % 50) + 1]))
+  const params = { startFrame: 0, endFrame: 1, timeRangeKey: KEY }
+
+  // index 0 is never in the sample, which is where the max outlier used to go missing
+  it('takes the extent from a cached cell outside the sample', () => {
+    const cells = sampledCells()
+    const { domain } = getFourwingsColorDomain({ features: cells, ...params })
+    cells[0] = cell([1e6], [1e6])
+    const result = getFourwingsColorDomain({ features: cells, ...params })
+    expect(result.extent?.[1]).toBe(1e6)
+    expect(result.domain).toEqual(domain)
+  })
+
+  it('ignores an uncached cell outside the sample instead of aggregating it', () => {
+    const cells = sampledCells()
+    cells[0] = cell([1e6])
+    expect(getFourwingsColorDomain({ features: cells, ...params }).extent?.[1]).toBeLessThan(1e6)
+  })
+
+  it('reads the render cache only for the same time range', () => {
+    const cells = sampledCells()
+    cells[0] = { ...cell([1]), aggregatedValues: [1e6], aggregatedValuesKey: 'other' }
+    expect(getFourwingsColorDomain({ features: cells, ...params }).extent?.[1]).toBeLessThan(1e6)
+    cells[0].aggregatedValuesKey = KEY
+    expect(getFourwingsColorDomain({ features: cells, ...params }).extent?.[1]).toBe(1e6)
+  })
+
+  it('fits each filtered sublayer from its own values in the same pass', () => {
+    const cells = Array.from({ length: 30 }, (_, i) => cell([i + 1, (i + 1) * 10]))
+    const { fits, extents } = getFourwingsColorDomain({
+      features: cells,
+      ...params,
+      sublayers: [
+        { visible: true, minVisibleValue: 10, maxVisibleValue: 20 },
+        { visible: true },
+      ] as any,
+    })
+    expect(extents).toEqual([
+      [1, 30],
+      [10, 300],
+    ])
+    expect(fits?.[0]?.extent).toEqual([1, 30])
+    expect(Math.min(...(fits?.[0]?.domain as number[]))).toBeGreaterThanOrEqual(10)
+    expect(Math.max(...(fits?.[0]?.domain as number[]))).toBeLessThanOrEqual(20)
+    expect(fits?.[1]).toBeUndefined()
   })
 })
