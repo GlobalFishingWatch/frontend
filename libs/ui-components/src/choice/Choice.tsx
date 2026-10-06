@@ -106,7 +106,7 @@ export function Choice({
           )}
         </label>
       )}
-      <div ref={choiceRef} className={cx(styles.Choice, className)}>
+      <div ref={choiceRef} className={cx(styles.Choice, styles[`size-${size}`], className)}>
         {/* Always-hidden overflow measurement list — flex: none on items via CSS */}
         <ul ref={measureRef} className={cx(styles.list, styles.listHidden)} aria-hidden="true">
           {options.map((option) => (
@@ -127,11 +127,7 @@ export function Choice({
             testId={testId}
           />
         ) : (
-          <ul
-            className={styles.list}
-            role="radiogroup"
-            {...(testId && { 'data-testid': testId })}
-          >
+          <ul className={styles.list} role="radiogroup" {...(testId && { 'data-testid': testId })}>
             {pill && (
               <span
                 className={cx(styles.activePill, { [styles.animated]: animated })}

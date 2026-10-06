@@ -20,3 +20,7 @@
 .labelDisabled {
   pointer-events: none;
 }
+
+.labelInverted {
+  color: rgba(var(--white-rgb), 0.8);
+}

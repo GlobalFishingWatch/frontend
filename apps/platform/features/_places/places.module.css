@@ -20,24 +20,24 @@
   font: var(--font-XL);
   line-height: var(--places-title-height);
   color: var(--color-primary-blue);
+  flex: 1;
 }
 
 .header {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-M);
-  justify-content: space-between;
+  gap: var(--space-S);
 }
 
 .search {
   flex: 1;
-  max-width: 50%;
+  max-width: 30rem;
 }
 
 .typeChoice {
   flex: 1;
-  max-width: 50%;
+  max-width: 30rem;
 }
 
 .list {
@@ -113,7 +113,7 @@
   right: var(--space-S);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: var(--space-S);
   pointer-events: none;
 }
@@ -122,17 +122,12 @@
   pointer-events: auto;
 }
 
-.mapButtons {
-  display: flex;
-  align-items: center;
-  gap: var(--space-S);
-}
-
 .mapToggle {
   width: auto;
-  padding: var(--space-S);
+  padding: 1.1rem var(--space-S);
+  border: 1px solid rgba(var(--white-rgb), var(--opacity-border));
   border-radius: var(--border-radius-0);
-  background-color: var(--color-white);
+  background-color: var(--color-primary-blue);
 }
 
 .mapTooltip {
@@ -148,7 +143,7 @@
   pointer-events: none;
 }
 
-@media (width <= 1280px) {
+@media (width <= 1200px) {
   .mapColumn {
     display: none;
   }

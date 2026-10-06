@@ -26,6 +26,8 @@ export interface SwitchProps {
   className?: string
   size?: SwitchSize
   testId?: string
+  /** Render for dark backgrounds */
+  inverted?: boolean
 }
 
 export function Switch(props: SwitchProps) {
@@ -40,6 +42,7 @@ export function Switch(props: SwitchProps) {
     tooltipPlacement = 'top',
     className,
     testId,
+    inverted = false,
   } = props
 
   const onClickCallback = (event: React.MouseEvent) => {
@@ -64,7 +67,7 @@ export function Switch(props: SwitchProps) {
         className={cx(
           styles.switch,
           styles[size],
-          { [styles.disabled]: disabled, [styles.customColor]: color },
+          { [styles.disabled]: disabled, [styles.customColor]: color, [styles.inverted]: inverted },
           className
         )}
         {...(color && { style: { color } })}
