@@ -35,4 +35,8 @@ export class SearchPage {
     await expect(this.loadingSearchText).toHaveCSS('opacity', '1')
     await expect(this.loadingSearchText).toBeHidden({ timeout: TIMEOUTS.MEDIUM })
   }
+
+  async expectResultWithIdentifier(identifier: string) {
+    await expect(this.resultRows.filter({ hasText: identifier }).first()).toBeVisible()
+  }
 }
