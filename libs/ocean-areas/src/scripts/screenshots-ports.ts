@@ -8,6 +8,7 @@
  *   pnpm nx run ocean-areas:screenshots-ports --args="--limit 5"
  *   pnpm nx run ocean-areas:screenshots-ports --args="--flag CHN --concurrency 4"
  *   pnpm nx run ocean-areas:screenshots-ports --args="--id chn-binhai --force"
+ *   pnpm nx run ocean-areas:screenshots-ports --args="--busiest --limit 1000 --concurrency 6"
  *
  * Always through the nx target, for the same reasons as `screenshots.ts`.
  */
@@ -24,6 +25,7 @@ import {
 } from '@platform/config/map/dataviews'
 import { getPlaceThumbnailPath } from '@platform/config/map/thumbnails'
 
+import activity from '../data/activity.json' with { type: 'json' }
 import ports from '../data/ports.json' with { type: 'json' }
 import type { OceanAreaProperties } from '../ocean-areas'
 
@@ -44,6 +46,8 @@ const { values: opts } = parseArgs({
     // Above 8 the basemap switches to the Google satellite tileset, which is what makes a port
     // legible at all. ~14-15 frames the harbour the way the app's own port links do.
     zoom: { type: 'string', default: '14' },
+    /** most port visits first (`data/activity.json`), so `--limit` keeps the busiest ports */
+    busiest: { type: 'boolean', default: false },
   },
 })
 
@@ -94,7 +98,12 @@ export function getPortUrl({ geometry, properties }: PortFeature, zoom = Number(
 function loadQueue(): CaptureJob[] {
   const flags = list(opts.flag)
   const ids = list(opts.id)
-  return (ports as PortFeature[])
+  const visits = activity.visits as Record<string, number>
+  const portVisits = ({ properties }: PortFeature) => visits[String(properties.area)] ?? 0
+  const sorted = opts.busiest
+    ? (ports as PortFeature[]).toSorted((a, b) => portVisits(b) - portVisits(a))
+    : (ports as PortFeature[])
+  return sorted
     .filter(({ properties }) => !flags || flags.includes(properties.flag.toLowerCase()))
     .filter(({ properties }) => !ids || ids.includes(String(properties.area)))
     .slice(0, opts.limit ? Number(opts.limit) : Infinity)
