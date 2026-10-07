@@ -17,7 +17,7 @@ export const PLACE_TYPES: Record<PlaceCategory, OceanAreaType[]> = {
 
 /** List order when the URL has no `placesSort`. Ports have no size, so they stay by name */
 export const DEFAULT_PLACES_SORT: Record<PlaceCategory, PlacesSort> = {
-  areas: 'activity',
+  areas: 'area',
   ports: 'activity',
 }
 
