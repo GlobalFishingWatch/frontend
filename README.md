@@ -59,7 +59,7 @@ Node is pinned in [.nvmrc](.nvmrc) — use `nvm use` (or any version manager tha
 
 #### Getting pnpm
 
-The exact pnpm version is pinned in `package.json` `"packageManager"` (currently **12.3.1**).
+The exact pnpm version is pinned in `package.json` `"packageManager"` (currently **12.10.1**).
 pnpm 12 ships as a **native executable**, so Corepack and Homebrew cannot provide it.
 Install it once with the official installer, which downloads the signed platform binary and puts it on your `PATH`:
 
