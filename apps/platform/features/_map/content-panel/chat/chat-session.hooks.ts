@@ -2,16 +2,29 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useChat } from '@ai-sdk/react'
 import { useNavigate } from '@tanstack/react-router'
 import { DefaultChatTransport, getToolName, isToolUIPart, type UIMessage } from 'ai'
+import { isNil, omitBy } from 'es-toolkit'
+import { useStore as useJotaiStore } from 'jotai'
 import { AGENT_BASE_URL } from 'queries/map/chat-api'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { deckLayersAtom } from '@globalfishingwatch/deck-layer-composer'
+import { OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 
+import { getMapView } from 'features/_map/content-panel/chat/chat-map-view'
 import {
   getNavigateToolLinkProps,
   navigateToolOutputSchema,
   useNavigateToolMapState,
 } from 'features/_map/content-panel/chat/navigate-tool'
+import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
+import { mapInstanceAtom } from 'features/_map/map/map.atoms'
+import { selectClickedEvent } from 'features/_map/map/map.slice'
+import { selectViewport } from 'features/_map/workspace/selectors/app.viewport.selectors'
+import { selectWorkspaceWithCurrentState } from 'features/_map/workspace/selectors/app.workspace.selectors'
+import { useAppStore } from 'features/app/app.hooks'
+import { useOceanAreas } from 'hooks/ocean-areas'
 
+// Messages sent before the url moved to the request context still carry it in the text
 export const MAP_URL_CONTEXT_PREFIX = '\n\n[current map url:'
 
 export const FEEDBACK_PREFIX = '[feedback]'
@@ -78,15 +91,20 @@ type ChatSessionArgs = {
 
 export function useChatSession({ threadId, userId, initialMessages, onFinished }: ChatSessionArgs) {
   const routerNavigate = useNavigate()
+  const store = useAppStore()
+  const jotaiStore = useJotaiStore()
+  const { getOceanAreaName } = useOceanAreas()
   const { markExplicitSettings, applyNavigateMapState } = useNavigateToolMapState()
 
   const transport = useMemo(() => {
     return new DefaultChatTransport({
       api: `${AGENT_BASE_URL}/chat`,
       fetch: chatFetchWithAuth,
-      prepareSendMessagesRequest({ messages }) {
+      prepareSendMessagesRequest({ messages, body }) {
+        console.log('🚀 ~ useChatSession ~ body:', body)
         return {
           body: {
+            ...body,
             messages: [messages[messages.length - 1]],
             memory: {
               resource: String(userId),
@@ -138,16 +156,57 @@ export function useChatSession({ threadId, userId, initialMessages, onFinished }
 
   const loading = status === 'submitted' || status === 'streaming'
 
-  // Inject the current map url as context so the agent knows the map state.
+  const getCurrentMapView = useCallback(async () => {
+    try {
+      const deckViewport = jotaiStore.get(mapInstanceAtom)?.getViewports()?.[0]
+      const state = store.getState()
+      const viewport = selectViewport(state)
+      if (!deckViewport || !viewport) {
+        return undefined
+      }
+      const [west, north] = deckViewport.unproject([0, 0])
+      const [east, south] = deckViewport.unproject([deckViewport.width, deckViewport.height])
+      const areaName = await getOceanAreaName({
+        viewport,
+        locale: OceanAreaLocale.en,
+        combineWithEEZ: true,
+      }).catch(() => undefined)
+      return getMapView({
+        deckLayers: jotaiStore.get(deckLayersAtom),
+        bounds: { west, north, east, south },
+        viewport,
+        datasets: selectAllDatasets(state),
+        areaName,
+        clicked: selectClickedEvent(state),
+      })
+    } catch (e) {
+      console.warn('chat: could not read the map view', e)
+      return undefined
+    }
+  }, [jotaiStore, store, getOceanAreaName])
+
   const sendMessage = useCallback(
     async (text: string) => {
       const trimmed = text.trim()
       if (!trimmed || loading) return false
-      const content = `${trimmed}${MAP_URL_CONTEXT_PREFIX} ${window.location.href}]`
-      await sendMessageToSession({ text: content })
+      const { state, dataviewInstances, ...rest } = selectWorkspaceWithCurrentState(
+        store.getState()
+      )
+      const workspace = {
+        ...rest,
+        state: omitBy(state || {}, isNil),
+        dataviewInstances: dataviewInstances?.filter((d) => d.config?.visible !== false),
+      }
+      const mapView = await getCurrentMapView()
+      // Not in the message text: the agent adds the request context to the prompt
+      // without storing it, so the thread history does not repeat the url.
+      await sendMessageToSession(
+        { text: trimmed },
+        { body: { requestContext: { url: window.location.href, workspace, mapView } } }
+      )
       return true
     },
-    [loading, sendMessageToSession]
+    [loading, sendMessageToSession, store, getCurrentMapView]
   )
 
   const sendFeedback = useCallback(

@@ -63,7 +63,13 @@ function PopupWrapper({
         if (!point || !viewport || !container) {
           return OFF_MAP_RECT()
         }
-        const [x, y] = viewport.project(point)
+        let [x, y] = viewport.project(point)
+        if (x < 0 || x > viewport.width) {
+          // the map repeats the world, so after a fitBounds wider than 360° the clicked longitude
+          // can sit on a copy that is off-screen while another copy is visible: use the one nearest the center
+          const lon = point[0] + 360 * Math.round((viewport.longitude - point[0]) / 360)
+          ;[x, y] = viewport.project([lon, point[1]])
+        }
         return new DOMRect(container.left + x, container.top + y, 0, 0)
       },
     }

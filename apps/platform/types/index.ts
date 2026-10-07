@@ -125,7 +125,6 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   skipColorDomainSampling?: boolean
   // Feature flags (internal only, don't even expose to users externally)
   migramarLayer?: boolean
-  longlineSetsInsight?: boolean
 }
 
 export type AnyWorkspaceState = Partial<WorkspaceState & ReportState & VesselProfileState>

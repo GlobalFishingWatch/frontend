@@ -21,6 +21,7 @@ import LonglineSetsGraph, {
 } from 'features/_vessels/vessel/insights/LonglineSetsGraph'
 import { parseLonglineSetsToCSV } from 'features/_vessels/vessel/vessel.download'
 import type { VesselEvent } from 'features/_vessels/vessel/vessel.types'
+import { getVesselIdentities } from 'features/_vessels/vessel/vessel.utils'
 import VesselLink from 'features/_vessels/vessel/VesselLink'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import DataTerminology from 'features/cms/data-terminology/DataTerminology'
@@ -80,7 +81,14 @@ const VesselGroupReportInsightLongline = ({ skip }: { skip?: boolean }) => {
   }, [vesselGroup])
 
   const onDownloadClick = async () => {
-    const csv = parseLonglineSetsToCSV(events)
+    const identities = (vesselGroup?.vessels || []).flatMap((vessel) =>
+      vessel.identity
+        ? getVesselIdentities(vessel.identity, {
+            identitySource: VesselIdentitySourceEnum.SelfReported,
+          })
+        : []
+    )
+    const csv = parseLonglineSetsToCSV(events, identities)
     const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
     const { saveAs } = await import('file-saver')
     saveAs(blob, `${vesselGroup?.name}-longline-sets-${start}-${end}.csv`)
@@ -164,19 +172,21 @@ const VesselGroupReportInsightLongline = ({ skip }: { skip?: boolean }) => {
           <label className="experimental">{t((t) => t.vessel.insights.longline)}</label>
         </Tooltip>
         <DataTerminology terminologyKey="insightsLongline" />
-        <div className={insightStyles.insightTitleActions}>
-          <LonglineTimeChoice localTime={localTime} onChange={setLocalTime} />
-          <UserLoggedIconButton
-            loginSource="vessel-download"
-            size="medium"
-            icon="download"
-            className="print-hidden"
-            disabled={skip || isFetching || !events.length}
-            onClick={onDownloadClick}
-            tooltip={t((t) => t.vessel.insights.longlineDownload)}
-            loginTooltip={t((t) => t.download.eventsDownloadLogin)}
-          />
-        </div>
+        {/* tools act on the sets, so they only show once there are some */}
+        {!skip && !isFetching && !!events.length && (
+          <div className={insightStyles.insightTitleActions}>
+            <LonglineTimeChoice localTime={localTime} onChange={setLocalTime} />
+            <UserLoggedIconButton
+              loginSource="vessel-download"
+              size="medium"
+              icon="download"
+              className="print-hidden"
+              onClick={onDownloadClick}
+              tooltip={t((t) => t.vessel.insights.longlineDownload)}
+              loginTooltip={t((t) => t.download.eventsDownloadLogin)}
+            />
+          </div>
+        )}
       </div>
       {skip || isFetching || !data ? (
         <LonglineSetsGraph loading showEvents={false} />

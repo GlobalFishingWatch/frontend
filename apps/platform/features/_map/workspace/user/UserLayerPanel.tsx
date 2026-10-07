@@ -327,11 +327,15 @@ function UserPanel({
                 )}
             </>
           )}
-          {datasetError && (
+          {(datasetError || layerImporting) && (
             <InfoError
               error={datasetError}
               loading={layerImporting}
-              tooltip={error || datasetImportLogs || t((t) => t.layer.seeDescription)}
+              tooltip={
+                layerImporting
+                  ? t((t) => t.dataset.importing)
+                  : error || datasetImportLogs || t((t) => t.layer.seeDescription)
+              }
               size="small"
               // onClick={() =>
               //   !datasetError &&

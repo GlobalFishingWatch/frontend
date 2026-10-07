@@ -229,7 +229,6 @@ export const selectCollapsedSections = selectWorkspaceStateProperty('collapsedSe
 export const selectTimeMode = selectWorkspaceStateProperty('timeMode')
 
 export const selectMigramarLayer = selectWorkspaceStateProperty('migramarLayer')
-export const selectLonglineSetsInsight = selectWorkspaceStateProperty('longlineSetsInsight')
 
 export const selectIsRealTimeMode = createSelector([selectTimeMode], (timeMode) => {
   return timeMode === 'realTime'

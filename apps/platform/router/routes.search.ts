@@ -135,7 +135,6 @@ export const rootSearchSchema = z
 
     // ── Feature flags ──────────────────────────────────────────────────────
     migramarLayer: optionalBoolean(),
-    longlineSetsInsight: optionalBoolean(),
 
     // ── AppState ──────────────────────────────────────────────────────────
     userTab: optionalEnum(UserTab),
