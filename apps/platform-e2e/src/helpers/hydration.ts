@@ -13,7 +13,12 @@ const SIDEBAR_CONTAINER = '[data-testid="sidebar-container"]'
 // hydration effect, and BroadcastChannel messages are not buffered. A receiving tab must be
 // hydrated before another tab broadcasts, or the message is lost and the assertion times out.
 // Pages without a sidebar (e.g. /vessel-search) should pass their own interactive selector.
-export async function waitForHydration(page: Page, selector = SIDEBAR_CONTAINER) {
+
+export async function waitForHydration(
+  page: Page,
+  selector = SIDEBAR_CONTAINER,
+  { timeout = TIMEOUTS.MEDIUM }: { timeout?: number } = {}
+) {
   await page.waitForFunction(
     (sel) => {
       const el = document.querySelector(sel)
@@ -25,6 +30,6 @@ export async function waitForHydration(page: Page, selector = SIDEBAR_CONTAINER)
       )
     },
     selector,
-    { timeout: TIMEOUTS.MEDIUM }
+    { timeout }
   )
 }
