@@ -53,8 +53,10 @@ export type CaptureJob = { url: string; file: string }
 const TIMEOUTS = {
   /** how long the map may keep requesting tiles before we give up and shoot anyway */
   TILES: 90_000,
+  /** same, after an in-app navigation; past it the job falls back to a full page load */
+  TILES_NAVIGATED: 20_000,
   /** no tile request for this long counts as "the map has finished drawing" */
-  TILES_QUIET: 2_500,
+  TILES_QUIET: 1_000,
   NAVIGATION: 120_000,
   CANVAS: 60_000,
 } as const
@@ -64,6 +66,15 @@ const TIMEOUTS = {
 // against the canvas it measures, so a layout change here costs one extra capture, not wrong sizes.
 const RAIL_WIDTH = 48
 const TIMEBAR_HEIGHT = 176
+
+// Booting the app costs ~3.5s of every ~10s capture, so later jobs in a session navigate inside the
+// already-loaded app instead. ponytail: a full reload every N jobs caps whatever state a long-lived
+// SPA accumulates (tile caches, report data); lower it if memory grows during long runs.
+const RELOAD_EVERY = 100
+
+/** Analytics and error reporting would otherwise log every capture as a real production visit. */
+const BLOCKED_URLS =
+  /analytics\.google\.com|googletagmanager\.com|google\.com\/ccm|sentry\.io|cdn-cgi\/rum/
 
 type CanvasBox = { x: number; y: number; width: number; height: number }
 
@@ -120,8 +131,10 @@ type SettleResult = { settled: boolean; satelliteTiles: number }
 type Session = {
   page: Page
   context: BrowserContext
-  settle: () => Promise<SettleResult>
+  /** runs `go` and waits for the tiles it triggers */
+  settle: (go: () => Promise<unknown>, timeout?: number) => Promise<SettleResult>
   calibrated: boolean
+  jobs: number
 }
 
 async function createSession(browser: Browser, settings: CaptureSettings): Promise<Session> {
@@ -129,6 +142,7 @@ async function createSession(browser: Browser, settings: CaptureSettings): Promi
     viewport: { width: settings.width + RAIL_WIDTH, height: settings.height + TIMEBAR_HEIGHT },
   })
   await disableWelcomePopups(context)
+  await context.route(BLOCKED_URLS, (route) => route.abort())
   const page = await context.newPage()
 
   // Waiting on "nothing in flight" rather than "nothing started recently": the satellite layers
@@ -154,15 +168,19 @@ async function createSession(browser: Browser, settings: CaptureSettings): Promi
     if (response.ok() && matches(response.url(), SATELLITE_URL_PATTERNS)) tiles.satellite++
   })
 
-  async function settle(): Promise<SettleResult> {
+  async function settle(
+    go: () => Promise<unknown>,
+    timeout: number = TIMEOUTS.TILES
+  ): Promise<SettleResult> {
     const start = Date.now()
     tiles.inFlight = 0
     tiles.started = 0
     tiles.satellite = 0
     tiles.lastChange = 0
+    await go()
     await page.waitForSelector('#map-container canvas', { timeout: TIMEOUTS.CANVAS })
-    while (Date.now() - start < TIMEOUTS.TILES) {
-      await page.waitForTimeout(250)
+    while (Date.now() - start < timeout) {
+      await page.waitForTimeout(100)
       const quiet = tiles.started > 0 && tiles.inFlight <= 0
       if (quiet && Date.now() - tiles.lastChange > TIMEOUTS.TILES_QUIET && tiles.satellite > 0) {
         return { settled: true, satelliteTiles: tiles.satellite }
@@ -171,7 +189,7 @@ async function createSession(browser: Browser, settings: CaptureSettings): Promi
     return { settled: false, satelliteTiles: tiles.satellite }
   }
 
-  return { page, context, settle, calibrated: false }
+  return { page, context, settle, calibrated: false, jobs: 0 }
 }
 
 async function capture(
@@ -180,8 +198,25 @@ async function capture(
   settings: CaptureSettings
 ): Promise<SettleResult> {
   const { page, settle } = session
-  await page.goto(url, { waitUntil: 'domcontentloaded', timeout: TIMEOUTS.NAVIGATION })
-  let result = await settle()
+  const load = () => page.goto(url, { waitUntil: 'domcontentloaded', timeout: TIMEOUTS.NAVIGATION })
+  // TanStack Router follows popstate, so this is an in-app route change: no reload, no re-boot.
+  const navigate = () =>
+    page.evaluate(
+      (path) => {
+        window.history.pushState(window.history.state, '', path)
+        window.dispatchEvent(new PopStateEvent('popstate', { state: window.history.state }))
+      },
+      new URL(url).pathname + new URL(url).search
+    )
+  // Some areas never let the tiles go quiet after an in-app navigation (seen on MPA 166) although a
+  // fresh load of the same URL settles, so a slow navigation is retried as a full load.
+  let result: SettleResult
+  if (session.jobs++ % RELOAD_EVERY === 0) {
+    result = await settle(load)
+  } else {
+    result = await settle(navigate, TIMEOUTS.TILES_NAVIGATED)
+    if (!result.settled) result = await settle(load)
+  }
   let box = await page.evaluate(hideOverlaysAndMeasure)
 
   // The chrome around the canvas is measured, not assumed: pad the viewport by whatever it turned
@@ -193,8 +228,7 @@ async function capture(
     if (dx !== 0 || dy !== 0) {
       const { width, height } = page.viewportSize()!
       await page.setViewportSize({ width: width + dx, height: height + dy })
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: TIMEOUTS.NAVIGATION })
-      result = await settle()
+      result = await settle(load)
       box = await page.evaluate(hideOverlaysAndMeasure)
     }
   }
@@ -202,8 +236,7 @@ async function capture(
   // A shot with no satellite response behind it is the default blue basemap, not a map of the area.
   // One reload usually fixes it; a second failure is reported rather than silently written.
   if (result.satelliteTiles === 0) {
-    await page.reload({ waitUntil: 'domcontentloaded', timeout: TIMEOUTS.NAVIGATION })
-    result = await settle()
+    result = await settle(load)
     box = await page.evaluate(hideOverlaysAndMeasure)
   }
 

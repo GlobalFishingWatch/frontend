@@ -7,6 +7,7 @@
  *
  *   pnpm nx run ocean-areas:screenshots --args="--type eez --limit 5"
  *   pnpm nx run ocean-areas:screenshots --args="--type mpa --concurrency 6"
+ *   pnpm nx run ocean-areas:screenshots --args="--type mpa --largest --limit 1000 --concurrency 6"
  *   pnpm nx run ocean-areas:screenshots --args="--type eez --upload gs://my-bucket/area-screenshots"
  *
  * Always through the nx target: it installs the ts-node hooks and builds the dataviews-client dist
@@ -41,6 +42,8 @@ const { values: opts, positionals: extraTypes } = parseArgs({
     ...CAPTURE_OPTIONS,
     type: { type: 'string', default: 'eez,fao,rfmo,mpa' },
     heatmaps: { type: 'boolean', default: true },
+    /** biggest `areaSize` first, so `--limit` keeps the largest areas */
+    largest: { type: 'boolean', default: false },
   },
 })
 
@@ -139,7 +142,12 @@ function loadQueue(): CaptureJob[] {
     if (!areaType) {
       throw new Error(`Unknown area type "${type}". Use one of ${Object.keys(AREA_TYPES)}`)
     }
-    return areaType.features.slice(0, limit).map((feature) => {
+    const features = opts.largest
+      ? areaType.features.toSorted(
+          (a, b) => (b.properties.areaSize ?? 0) - (a.properties.areaSize ?? 0)
+        )
+      : areaType.features
+    return features.slice(0, limit).map((feature) => {
       return {
         url: getAreaUrl(areaType, feature),
         file: `${opts.out}/${getPlaceThumbnailPath(areaType.datasetId, feature.properties.area!)}`,
