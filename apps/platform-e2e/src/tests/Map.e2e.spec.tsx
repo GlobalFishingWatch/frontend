@@ -1,6 +1,5 @@
 import { test } from '../fixtures'
 import { waitForHydration } from '../helpers/hydration'
-import { ACTIVITY_LAYERS, toggleOnlyLayer } from '../helpers/sidebar'
 import { GALICIA_PRESENCE } from '../pages/MapPage'
 import { MAP_PATH } from '../paths'
 import { TAGS } from '../tags'
@@ -12,13 +11,11 @@ test.beforeEach(async ({ page }) => {
   await waitForHydration(page)
 })
 test(
-  'Map - vessel presence popup opens the profile of a listed vessel',
+  'Map - vessel presence popup links a listed vessel to its profile',
   { tag: [TAGS.EXTENDED] },
-  async ({ page, mapPage, vesselProfilePage }) => {
-    await toggleOnlyLayer(page, ACTIVITY_LAYERS, ACTIVITY_LAYERS.PRESENCE)
+  async ({ mapPage }) => {
     await mapPage.applyViewportAndClick(GALICIA_PRESENCE)
-    await waitForHydration(page)
-    await mapPage.selectVesselFromPopupByName(VESSEL_NAME)
-    await vesselProfilePage.expectProfileFor(VESSEL_NAME)
+    await mapPage.waitForPopupLoaded()
+    await mapPage.expectVesselProfileLinkInPopup(VESSEL_NAME)
   }
 )

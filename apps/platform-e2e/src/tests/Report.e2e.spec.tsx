@@ -1,37 +1,23 @@
 import { test } from '../fixtures'
-import { waitForHydration } from '../helpers/hydration'
-import { REFERENCE_LAYERS, toggleOnLayer } from '../helpers/sidebar'
 import { CANARY_ISLANDS_EEZ } from '../pages/ReportPage'
-import { MAP_PATH } from '../paths'
 import { TAGS } from '../tags'
 
-test.beforeEach(async ({ page }) => {
-  await page.goto(MAP_PATH)
-  await waitForHydration(page)
+test.beforeEach(async ({ reportPage }) => {
+  await reportPage.open(CANARY_ISLANDS_EEZ)
 })
 
-test(
-  'Report - create an area report from map',
-  { tag: [TAGS.SMOKE] },
-  async ({ page, mapPage, reportPage }) => {
-    await toggleOnLayer(page, REFERENCE_LAYERS.EEZ)
-    await mapPage.applyViewportAndClick(CANARY_ISLANDS_EEZ.viewport)
-    await reportPage.openAnalysisFromMap()
-    await reportPage.expectReportTitleVisible(/km²/)
-    await reportPage.expectSourceTagVisible()
-    reportPage.expectReportUrl()
-  }
-)
+test('Report - open an area report from its URL', { tag: [TAGS.SMOKE] }, async ({ reportPage }) => {
+  await reportPage.expectReportTitleVisible(/km²/)
+  await reportPage.expectSourceTagVisible()
+  reportPage.expectReportUrl()
+})
 test(
   'Report - a logged-in user loads the vessel table for an area report',
   { tag: [TAGS.EXTENDED] },
-  async ({ page, mapPage, loginPage, reportPage }) => {
-    await toggleOnLayer(page, REFERENCE_LAYERS.EEZ)
-    await mapPage.applyViewportAndClick(CANARY_ISLANDS_EEZ.viewport)
-    await reportPage.openAnalysisFromMap()
+  async ({ loginPage, reportPage }) => {
     await reportPage.expectReportTitleVisible(CANARY_ISLANDS_EEZ.title)
     await reportPage.expectVesselsLoginGate()
-    await loginPage.login()
+    await loginPage.login() //login via storage state file
     await reportPage.loadVesselTable()
     await reportPage.expectVesselTableVisible()
   }

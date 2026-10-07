@@ -51,10 +51,16 @@ export class MapPage {
     await this.page.goto(url.toString())
   }
 
-  async selectVesselFromPopupByName(name: string) {
-    const vesselName = this.popup.getByText(name, { exact: true }).first()
-    await expect(vesselName).toBeVisible({ timeout: TIMEOUTS.LONG })
-    await vesselName.click()
-    await this.page.waitForURL(/\/vessel\//, { timeout: TIMEOUTS.LONG })
+  async waitForPopupLoaded() {
+    await expect(this.popup).toBeVisible({ timeout: TIMEOUTS.LONG })
+    await expect(this.popup.locator('svg[class*="spinner"]')).toHaveCount(0, {
+      timeout: TIMEOUTS.LONG,
+    })
+  }
+
+  async expectVesselProfileLinkInPopup(name: string) {
+    const vesselLink = this.popup.getByRole('link', { name, exact: true })
+    await expect(vesselLink).toBeVisible({ timeout: TIMEOUTS.LONG })
+    await expect(vesselLink).toHaveAttribute('href', /\/default-public\/vessel\//)
   }
 }

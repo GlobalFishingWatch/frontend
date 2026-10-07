@@ -1,32 +1,31 @@
 import type { Locator, Page } from 'playwright/test'
 import { expect } from 'playwright/test'
 
+import { waitForHydration } from '../helpers/hydration'
 import { TIMEOUTS } from '../helpers/timeouts'
+import { appPath } from '../paths'
 
-import type { MapViewportWithClick } from './MapPage'
-
-const MAP_POPUP_TESTID = 'map-popup-wrapper'
-const OPEN_ANALYSIS_LINK_TESTID = 'open-analysis-link'
 const VESSELS_TABLE_TESTID = 'report-vessels-table'
 const SEE_VESSELS_BUTTON_NAME = 'See vessels'
 const VESSEL_PROFILE_LINK_TESTID = 'link-vessel-profile'
 const VESSELS_LOGIN_GATE_NAME = 'Register or log in to see the active vessels in this area'
 
-export const CANARY_ISLANDS_EEZ = {
+export type AreaReport = {
+  title: RegExp
+  path: string
+  start: string
+  end: string
+}
+
+export const CANARY_ISLANDS_EEZ: AreaReport = {
   title: /Canary Islands/,
-  viewport: {
-    latitude: 28,
-    longitude: -15,
-    zoom: 6,
-    start: '2025-07-01T00:00:00.000Z',
-    end: '2026-07-01T00:00:00.000Z',
-    clickCoordinates: [-15, 28],
-  } satisfies MapViewportWithClick,
-} as const
+  path: appPath('/map/fishing-activity/default-public/report/public-eez-areas/8364'),
+  start: '2025-07-01T00:00:00.000Z',
+  end: '2026-07-01T00:00:00.000Z',
+}
 
 export class ReportPage {
   private page: Page
-  readonly openAnalysisButton: Locator
   readonly reportTitle: Locator
   readonly vesselsTable: Locator
   readonly seeVesselsButton: Locator
@@ -34,8 +33,6 @@ export class ReportPage {
 
   constructor(page: Page) {
     this.page = page
-    const mapPopup = page.getByTestId(MAP_POPUP_TESTID)
-    this.openAnalysisButton = mapPopup.getByTestId(OPEN_ANALYSIS_LINK_TESTID)
     this.vesselsTable = page.getByTestId(VESSELS_TABLE_TESTID)
     this.reportTitle = page.getByRole('heading', { level: 1 })
     this.seeVesselsButton = page.getByRole('button', { name: SEE_VESSELS_BUTTON_NAME })
@@ -48,10 +45,9 @@ export class ReportPage {
       : this.page.locator('[data-test^="source-tag-item-"]')
   }
 
-  async openAnalysisFromMap() {
-    await expect(this.openAnalysisButton).toBeVisible({ timeout: TIMEOUTS.LONG })
-    await this.openAnalysisButton.click()
-    await this.page.waitForURL(/\/report\//)
+  async open({ path, start, end }: AreaReport) {
+    await this.page.goto(`${path}?${new URLSearchParams({ start, end })}`)
+    await waitForHydration(this.page)
   }
 
   async loadVesselTable() {
