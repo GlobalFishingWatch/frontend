@@ -3,9 +3,19 @@ import { expect } from 'playwright/test'
 
 import { TIMEOUTS } from './timeouts'
 
-const MAP_VIEWPORT = '#view-mapViewport'
+export const MAP_VIEWPORT = '#view-mapViewport'
 const MAP_LOADING_SPINNER = 'map-loading-spinner'
 const MAP_SEARCH_LABEL = 'Search an area of interest e.g. ocean, sea, port, MPA, EEZ, RFMO'
+
+export async function setLowResActivityTiles(page: Page) {
+  await page.addInitScript(() => {
+    const settings = JSON.parse(window.localStorage.getItem('userSettings') || '{}')
+    if (!settings.preferredFourwingsVisualisationMode) {
+      settings.preferredFourwingsVisualisationMode = 'heatmap-low-res'
+      window.localStorage.setItem('userSettings', JSON.stringify(settings))
+    }
+  })
+}
 
 export async function waitForMapIdle(
   page: Page,
