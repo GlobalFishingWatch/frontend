@@ -40,6 +40,8 @@ export function Switch(props: SwitchProps) {
     tooltipPlacement = 'top',
     className,
     testId,
+    // data-* attributes
+    ...rest
   } = props
 
   const onClickCallback = (event: React.MouseEvent) => {
@@ -68,6 +70,7 @@ export function Switch(props: SwitchProps) {
           className
         )}
         {...(color && { style: { color } })}
+        {...rest}
       >
         <span className={styles.nib}></span>
       </button>

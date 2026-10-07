@@ -6,6 +6,7 @@ Sources: `apps/platform/data/map/layer-library`, `apps/platform/config/map/works
 
 Already in the default workspace — reference by `id` alone, NO `dataviewId` needed.
 `ais` and `vms` start VISIBLE: hide them explicitly (`"config": {"visible": false}`) when not wanted.
+FAO areas and high seas are NOT default instances (`context-layer-fao-areas` renders nothing on `default-public`): add them as library instances `fao-major__<ts>` / `high-seas__<ts>` (see Context below).
 
 | Instance id                 | Layer                                               | Category    | Default |
 | --------------------------- | --------------------------------------------------- | ----------- | ------- |
@@ -21,7 +22,6 @@ Already in the default workspace — reference by `id` alone, NO `dataviewId` ne
 | `context-layer-eez`         | EEZs                                                | context     | hidden  |
 | `context-layer-mpa`         | MPAs                                                | context     | hidden  |
 | `context-layer-rfmo`        | RFMOs                                               | context     | hidden  |
-| `context-layer-fao-areas`   | FAO major fishing areas                             | context     | hidden  |
 | `context-layer-graticules`  | Lat/lon grids                                       | context     | hidden  |
 | `bathymetry`                | Bathymetry                                          | environment | hidden  |
 | `basemap`, `basemap-labels` | Basemap                                             | context     | visible |
@@ -74,12 +74,12 @@ Known national dataset ids (source: `gfw-terraform-api-resources/resources/datas
 
 ### Detections
 
-| Library id       | dataviewId                                          |
-| ---------------- | --------------------------------------------------- |
-| `viirs`          | `viirs-match-v-4` (not migrated to pipe 5)          |
-| `viirs-skylight` | `viirs-match-skylight-v-4` (not migrated to pipe 5) |
-| `sar`            | `sar-v-{PIPE_DATASET_VERSION}`                      |
-| `sentinel2`      | `sentinel-2-v-{PIPE_DATASET_VERSION}`               |
+| Library id       | dataviewId                                      |
+| ---------------- | ----------------------------------------------- |
+| `viirs`          | `viirs-match-v-{PIPE_DATASET_VERSION}`          |
+| `viirs-skylight` | `viirs-match-skylight-v-{PIPE_DATASET_VERSION}` |
+| `sar`            | `sar-v-{PIPE_DATASET_VERSION}`                  |
+| `sentinel2`      | `sentinel-2-v-{PIPE_DATASET_VERSION}`           |
 
 ### Events
 
@@ -111,30 +111,65 @@ Known national dataset ids (source: `gfw-terraform-api-resources/resources/datas
 
 ### Environment
 
-| Library id                                                                 | dataviewId                    | Layer                   |
-| -------------------------------------------------------------------------- | ----------------------------- | ----------------------- |
-| `currents`                                                                 | `currents`                    | Currents                |
-| `winds`                                                                    | `winds`                       | Winds                   |
-| `bathymetry`                                                               | `heatmap-static-layer`        | Bathymetry              |
-| `chlorophyl`                                                               | `heatmap-environmental-layer` | Chlorophyll-a           |
-| `sst`                                                                      | `heatmap-environmental-layer` | Sea surface temperature |
-| `sst-anomalies` / `-min` / `-max`                                          | `heatmap-environmental-layer` | SST anomalies           |
-| `salinity`, `oxygen`, `nitrate`, `phosphate`, `ph`, `thgt` (wave height)   | `heatmap-environmental-layer` |                         |
-| `marine-ecoregions`, `mangroves`, `seamounts`, `coral-reefs`, `seagrasses` | `gfw-environmental-layer`     |                         |
+Template dataviews: several library layers share one `dataviewId`, so each instance carries its own dataset in `datasetsConfig`. Copy the row EXACTLY — dataset ids, endpoint and params are not guessable. Instance shape (note `datasetsConfig` and `category` at the TOP level, never inside `config`):
 
-These are **template** dataviews: several library layers share one `dataviewId`, so the instance must carry the dataset itself in `datasetsConfig`. Also give the instance a unique id `<libraryId>__<timestamp>` and `category: environment`:
-
-```js
+```json
 {
-  id: 'sst__1783953707644',
-  dataviewId: 'heatmap-environmental-layer',
-  category: 'environment',
-  config: { color: '#FF6854', colorRamp: 'red' },
-  datasetsConfig: [
-    { datasetId: 'public-global-sst:v20231213', endpoint: '4wings-tiles', params: [{ id: 'type', value: 'heatmap' }] },
-  ],
+  "id": "sst__1783953707644",
+  "dataviewId": "heatmap-environmental-layer",
+  "category": "environment",
+  "config": { "color": "#FF6854", "colorRamp": "red" },
+  "datasetsConfig": [
+    {
+      "datasetId": "public-global-sst:v20231213",
+      "endpoint": "4wings-tiles",
+      "params": [{ "id": "type", "value": "heatmap" }]
+    }
+  ]
 }
 ```
+
+`id` = `<library id>__<timestamp>`. Use `timebarVisualisation: "environment"` when an environment layer is the subject.
+
+Heatmap layers — `dataviewId: heatmap-environmental-layer`, `endpoint: 4wings-tiles`, `params: [{ "id": "type", "value": "heatmap" }]`:
+
+| Library id          | Layer                                    | datasetId                                   | color     | colorRamp |
+| ------------------- | ---------------------------------------- | ------------------------------------------- | --------- | --------- |
+| `sst`               | Sea surface temperature                  | `public-global-sst:v20231213`               | `#FF6854` | `red`     |
+| `sst-anomalies`     | SST anomalies (warmer/colder than usual) | `public-global-sst-anomalies:v20231213`     | `#FFAA0D` | `orange`  |
+| `sst-anomalies-min` | SST anomalies min (colder than normal)   | `public-global-sst-anomalies-min:v20231213` | `#FFEA00` | `yellow`  |
+| `sst-anomalies-max` | SST anomalies max (warmer than normal)   | `public-global-sst-anomalies-max:v20231213` | `#FF6854` | `red`     |
+| `chlorophyl`        | Chlorophyll-a (productivity)             | `public-global-chlorophyl:v20231213`        | `#FFEA00` | `yellow`  |
+| `salinity`          | Salinity                                 | `public-global-salinity:v20231213`          | `#9CA4FF` | `lilac`   |
+| `oxygen`            | Oxygen                                   | `public-global-oxygen:v20231213`            | `#00EEFF` | `sky`     |
+| `nitrate`           | Nitrate                                  | `public-global-nitrate:v20231213`           | `#FF6854` | `red`     |
+| `phosphate`         | Phosphate                                | `public-global-phosphate:v20231213`         | `#A6FF59` | `green`   |
+| `ph`                | pH                                       | `public-global-ph:v20231213`                | `#9CA4FF` | `lilac`   |
+| `thgt`              | Wave height                              | `public-global-thgt:v20231213`              | `#FFAE9B` | `salmon`  |
+
+Polygon layers — `dataviewId: gfw-environmental-layer`, `endpoint: context-tiles`, `params: []`, `color` only (no `colorRamp`):
+
+| Library id          | datasetId                  | color     |
+| ------------------- | -------------------------- | --------- |
+| `seamounts`         | `public-seamounts`         | `#00EEFF` |
+| `coral-reefs`       | `public-coral-reefs`       | `#FFAE9B` |
+| `seagrasses`        | `public-seagrasses`        | `#FFEA00` |
+| `mangroves`         | `public-mangroves`         | `#A6FF59` |
+| `marine-ecoregions` | `public-marine-ecoregions` | `#4184F4` |
+
+```json
+{
+  "id": "seamounts__1783953707644",
+  "dataviewId": "gfw-environmental-layer",
+  "category": "environment",
+  "config": { "color": "#00EEFF" },
+  "datasetsConfig": [{ "datasetId": "public-seamounts", "endpoint": "context-tiles", "params": [] }]
+}
+```
+
+Own dataview (no `datasetsConfig`, only `id` + `dataviewId`): `currents` → `currents` (`#00EEFF`/`sky`), `winds` → `winds` (`#9CA4FF`/`lilac`). `bathymetry` is a default instance: `{ "id": "bathymetry", "config": { "visible": true } }`.
+
+Value range on a heatmap environment layer ("water between 20 and 25 degrees", the layer's histogram filter) → `config.minVisibleValue` / `config.maxVisibleValue` (numbers, layer units: °C for `sst`). Omit the bound the user did not give.
 
 ## Vessel track layers
 

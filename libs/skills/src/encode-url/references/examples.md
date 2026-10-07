@@ -158,13 +158,19 @@ Report over EEZ area with a 50nm buffer; loitering visible, events timebar. (EEZ
   "route": { "type": "ports-report", "portId": "arg-camarones" },
   "state": {
     "dataviewInstances": [
+      { "id": "basemap", "config": { "basemap": "satellite" } },
       {
         "id": "port-visits",
-        "config": { "visible": true, "filters": { "port_id": "arg-camarones" } }
+        "config": {
+          "visible": true,
+          "clusterMaxZoomLevels": { "default": 20 },
+          "filters": { "port_id": "arg-camarones" }
+        }
       },
       { "id": "ais", "config": { "visible": false } },
       { "id": "vms", "config": { "visible": false } }
     ],
+    "reportCategory": "events",
     "timebarVisualisation": "events",
     "portsReportName": "CAMARONES",
     "portsReportCountry": "ARG",
@@ -204,7 +210,7 @@ First find the vessel id via vessel-search, then:
 { "route": { "type": "vessel-search" }, "state": { "query": "lake aurora" } }
 ```
 
-Advanced (owner + flag + active before date):
+Advanced (owner + flag + active before date — `transmissionDateFrom` is "Active before", see query-params.md):
 
 ```json
 {
@@ -213,7 +219,7 @@ Advanced (owner + flag + active before date):
     "searchOption": "advanced",
     "owner": "andres",
     "flag": ["PAN"],
-    "transmissionDateTo": "2026-06-01"
+    "transmissionDateFrom": "2026-06-01"
   }
 }
 ```
