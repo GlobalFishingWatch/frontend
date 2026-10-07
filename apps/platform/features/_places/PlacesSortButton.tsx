@@ -5,9 +5,8 @@ import cx from 'classnames'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { Popover } from '@globalfishingwatch/ui-components/popover'
 
-import type { PlaceCategory } from 'features/_places/places.loaders'
-import { DEFAULT_PLACES_SORT } from 'features/_places/places.loaders'
-import type { PlacesSort } from 'features/_places/places.types'
+import type { PlaceCategory, PlacesSort } from 'features/_places/places.types'
+import { DEFAULT_PLACES_SORT } from 'features/_places/places.types'
 import { useAppSearch, useReplaceQueryParams } from 'router/routes.hook'
 
 import styles from './PlacesSortButton.module.css'

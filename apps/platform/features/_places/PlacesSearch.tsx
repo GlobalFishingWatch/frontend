@@ -13,14 +13,15 @@ import { getPlaceThumbnailPath, PLACE_THUMBNAILS_BASE_URL } from '@platform/conf
 
 import PlaceLink from 'features/_places/PlaceLink'
 import { hoveredPlaceAtom } from 'features/_places/places.atoms'
-import type { Place, PlaceCategory, PlacesResult } from 'features/_places/places.loaders'
-import { PLACE_TYPES } from 'features/_places/places.loaders'
+import type { Place, PlacesResult } from 'features/_places/places.loaders'
+import type { PlaceCategory } from 'features/_places/places.types'
+import { PLACE_TYPES } from 'features/_places/places.types'
+import { getPlaceLabel } from 'features/_places/places.utils'
 import type { PlacesMapDataviews } from 'features/_places/places-map.config'
 import PlacesSortButton from 'features/_places/PlacesSortButton'
 import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { useIsClientHydrated } from 'hooks/ssr.hooks'
 import { useAppSearch, useReplaceQueryParams } from 'router/routes.hook'
-import { formatInfoField } from 'utils/info'
 import { getHighlightedText } from 'utils/text'
 
 import styles from './PlacesSearch.module.css'
@@ -121,24 +122,7 @@ function PlacesSearch({
                   loading="lazy"
                 />
                 <span className={styles.name}>
-                  {getHighlightedText(
-                    place.type === 'port'
-                      ? (formatInfoField(place.name, 'port') as string)
-                      : place.name,
-                    urlQuery,
-                    styles
-                  )}
-                  {place.flag && (
-                    <>
-                      {' ('}
-                      {getHighlightedText(
-                        formatInfoField(place.flag, 'flag') as string,
-                        urlQuery,
-                        styles
-                      )}
-                      {')'}
-                    </>
-                  )}
+                  {getHighlightedText(getPlaceLabel(place), urlQuery, styles)}
                 </span>
               </PlaceLink>
             </li>

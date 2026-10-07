@@ -99,33 +99,26 @@ const localizeName = (name: OceanAreaLocaleKey, locale = OceanAreaLocale.en) => 
   return (oceanAreasLocales?.[locale]?.[name] as OceanAreaLocaleKey) || name
 }
 
-const localizeArea = (area: typeof oceanAreas, locale = OceanAreaLocale.en) => {
+const localizeFeatures = (features: OceanArea[], locale = OceanAreaLocale.en) => {
   if (!oceanAreasLocales?.[locale]) {
-    return area
+    return features
   }
-
-  return {
-    ...area,
-    features: area?.features?.map((feature) => {
-      return {
-        ...feature,
-        properties: {
-          ...feature.properties,
-          name: localizeName(feature.properties.name as OceanAreaLocaleKey, locale),
-        },
-      }
-    }),
-  }
+  return features.map((feature) => ({
+    ...feature,
+    properties: {
+      ...feature.properties,
+      name: localizeName(feature.properties.name as OceanAreaLocaleKey, locale),
+    },
+  }))
 }
 
 type SearchOceanAreaParams = GetOceanAreaNameLocaleParam & {
-  types?: OceanAreaType[]
+  types?: readonly OceanAreaType[]
   limit?: number
   /** Values matched against the query besides the area name, e.g. a port's country */
   getExtraSearchValues?: (area: OceanArea) => string[]
   /** Only areas whose bbox intersects these `[west, south, east, north]` bounds */
   bounds?: OceanAreaBBox
-  /** `name` keeps the search ranking; `area` lists the largest first */
   /** `area` and `activity` list the largest first; areas without the value go last */
   sortBy?: 'name' | 'area' | 'activity'
 }
@@ -178,10 +171,12 @@ export const matchOceanAreas = async (
   } = {} as Omit<SearchOceanAreaParams, 'limit'>
 ): Promise<OceanArea[]> => {
   await importOceanAreasData()
-  const localizedAreas = localizeArea(oceanAreas, locale)
-  const features = types?.length
-    ? localizedAreas.features.filter((feature) => types.includes(feature.properties.type))
-    : localizedAreas.features
+  const features = localizeFeatures(
+    types?.length
+      ? oceanAreas.features.filter((feature) => types.includes(feature.properties.type))
+      : oceanAreas.features,
+    locale
+  )
   const matchOptions: MatchSorterOptions<OceanArea> = {
     keys: getExtraSearchValues ? ['properties.name', getExtraSearchValues] : ['properties.name'],
     baseSort: (a, b) => {
@@ -235,7 +230,7 @@ export const searchOceanAreas = async (
 }
 
 /** How many areas the data holds of `types`, e.g. the unfiltered total next to a search count. */
-export const countOceanAreas = async (types: OceanAreaType[]): Promise<number> => {
+export const countOceanAreas = async (types: readonly OceanAreaType[]): Promise<number> => {
   await importOceanAreasData()
   return oceanAreas.features.filter(({ properties }) => types.includes(properties.type)).length
 }

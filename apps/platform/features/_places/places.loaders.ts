@@ -2,24 +2,10 @@ import { createServerFn } from '@tanstack/react-start'
 
 import type { OceanAreaBBox, OceanAreaLocale, OceanAreaType } from '@globalfishingwatch/ocean-areas'
 
-import type { PlacesSort } from 'features/_places/places.types'
-import { parsePlacesBounds } from 'features/_places/places.types'
+import type { PlaceCategory, PlacesSort } from 'features/_places/places.types'
+import { DEFAULT_PLACES_SORT, parsePlacesBounds, PLACE_TYPES } from 'features/_places/places.types'
 import { getActiveI18nLanguage } from 'features/i18n/i18n'
 import type { QueryParams } from 'types'
-
-export type PlaceCategory = 'ports' | 'areas'
-
-/** The first type of each category is the one its page loads by default. */
-export const PLACE_TYPES: Record<PlaceCategory, OceanAreaType[]> = {
-  ports: ['port'],
-  areas: ['eez', 'fao', 'mpa', 'rfmo'],
-}
-
-/** List order when the URL has no `placesSort`. Ports have no size, so they stay by name */
-export const DEFAULT_PLACES_SORT: Record<PlaceCategory, PlacesSort> = {
-  areas: 'area',
-  ports: 'activity',
-}
 
 export type Place = {
   /** The area's raw id, typed as in the map tiles (EEZ ids are numbers) so highlights match */

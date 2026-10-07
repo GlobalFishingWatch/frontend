@@ -17,8 +17,8 @@ import {
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
 } from '@globalfishingwatch/deck-layers/config'
-import type { OceanAreaType } from '@globalfishingwatch/ocean-areas'
 
+import { ALL_PLACE_TYPES, PLACE_SORTS } from 'features/_places/places.types'
 import {
   REPORT_ACTIVITY_GRAPHS,
   REPORT_EVENTS_GRAPHS,
@@ -284,13 +284,6 @@ export const vesselSearchQuerySchema = z
   .passthrough()
 
 // ── Places (/ports, /areas) search params ─────────────────────────────────────
-const PLACE_TYPES = [
-  'eez',
-  'mpa',
-  'fao',
-  'rfmo',
-  'port',
-] as const satisfies readonly OceanAreaType[]
 const PLACES_BASEMAPS = [
   'satellite',
   'basemap_default',
@@ -299,10 +292,10 @@ const PLACES_BASEMAPS = [
 export const placesSearchSchema = z
   .object({
     query: optionalString(),
-    placeType: optionalLiteralUnion(PLACE_TYPES),
+    placeType: optionalLiteralUnion(ALL_PLACE_TYPES),
     basemap: optionalLiteralUnion(PLACES_BASEMAPS),
     filterByMap: optionalBoolean(),
-    placesSort: optionalLiteralUnion(['name', 'area', 'activity']),
+    placesSort: optionalLiteralUnion(PLACE_SORTS),
     bounds: optionalString(), // `west,south,east,north`, parsed by parsePlacesBounds
   })
   .partial()

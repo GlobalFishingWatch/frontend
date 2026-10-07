@@ -23,11 +23,11 @@ import { getContextValue } from 'features/_map/map/popups/map-popups.utils'
 import { hoveredPlaceAtom } from 'features/_places/places.atoms'
 import { getPlaceLinkOptions } from 'features/_places/places.links'
 import { formatPlacesBounds, parsePlacesBounds } from 'features/_places/places.types'
+import { getPlaceLabel } from 'features/_places/places.utils'
 import type { PlacesMapDataviews } from 'features/_places/places-map.config'
 import { usePlacesMapDataviews } from 'features/_places/places-map.hooks'
 import { useAppSearch, useReplaceQueryParams } from 'router/routes.hook'
 import { htmlSafeParse } from 'utils/html-parser'
-import { formatInfoField } from 'utils/info'
 
 import styles from './PlacesMap.module.css'
 
@@ -60,13 +60,10 @@ const getRootLayer = (layer?: Layer | null) => {
   return root as HighlightableLayer | undefined
 }
 
-const getHoverLabel = (object?: ContextPickingObject): string | undefined => {
+const getHoverLabel = (type: OceanAreaType, object?: ContextPickingObject) => {
   if (!object) return undefined
   const { name, flag } = object.properties ?? {}
-  if (name && flag) {
-    return `${formatInfoField(name, 'port')} (${formatInfoField(flag, 'flag')})`
-  }
-  return getContextValue(object) || undefined
+  return name && flag ? getPlaceLabel({ name, flag, type }) : getContextValue(object) || undefined
 }
 
 type PlacesMapProps = {
@@ -137,7 +134,7 @@ function PlacesMap({ dataviewsByType, type }: PlacesMapProps) {
   }
 
   const onHover = ({ x, y, object, layer }: PickingInfo<ContextPickingObject>) => {
-    const label = getHoverLabel(object)
+    const label = getHoverLabel(type, object)
     setHoverTooltip(label ? { x, y, label } : undefined)
 
     const highlighted = object?.geometry ? object : undefined
