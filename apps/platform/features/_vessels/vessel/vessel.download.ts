@@ -7,6 +7,7 @@ import type {
   VesselRegistryOperator,
   VesselRegistryOwner,
 } from '@globalfishingwatch/api-types'
+import type { LonglineCategory } from '@globalfishingwatch/deck-loaders'
 import { getLonglineCategory } from '@globalfishingwatch/deck-loaders'
 
 import type { VesselLastIdentity } from 'features/_vessels/search/search.slice'
@@ -113,24 +114,29 @@ export const parseEventsToCSV = (events: ActivityEvent[]) => {
   return objectArrayToCSV(events, EVENTS_CSV_CONFIG)
 }
 
+const LONGLINE_CATEGORY_LABELS: Record<LonglineCategory, string> = {
+  entirelyDay: 'Entirely day',
+  dayAndNight: 'Outside or overlapping with dawn and dusk',
+  entirelyNight: 'Entirely night',
+}
+
 const LONGLINE_SETS_CSV_CONFIG: CsvConfig[] = [
-  { label: 'vesselId', accessor: 'vessel.id' },
-  { label: 'vesselName', accessor: 'vessel.name' },
-  { label: 'vesselFlag', accessor: 'vessel.flag' },
-  { label: 'mmsi', accessor: 'vessel.ssvid' },
-  { label: 'imo', accessor: 'imo' },
-  { label: 'callsign', accessor: 'callsign' },
-  { label: 'category', accessor: 'category' },
+  { label: 'Vessel id', accessor: 'vessel.id' },
+  { label: 'Vessel name', accessor: 'vessel.name' },
+  { label: 'Vessel flag', accessor: 'vessel.flag' },
+  { label: 'MMSI', accessor: 'vessel.ssvid' },
+  { label: 'IMO', accessor: 'imo' },
+  { label: 'Callsign', accessor: 'callsign' },
+  { label: 'Longline set type category', accessor: 'category' },
   { label: 'Start date/time UTC', accessor: 'start', transform: parseCSVDate },
   { label: 'End date/time UTC', accessor: 'end', transform: parseCSVDate },
   { label: 'Start date/time local solar', accessor: 'localStart' },
   { label: 'End date/time local solar', accessor: 'localEnd' },
-  { label: 'durationHours', accessor: 'durationHours' },
-  { label: 'latitude', accessor: 'position.lat' },
-  { label: 'longitude', accessor: 'position.lon' },
-  { label: 'dayNightSummary', accessor: 'fishing.dayNightSummary' },
-  { label: 'eez', accessor: 'regions.eez', transform: parseCSVList },
-  { label: 'rfmo', accessor: 'regions.rfmo', transform: parseCSVList },
+  { label: 'Duration hours', accessor: 'durationHours' },
+  { label: 'Latitude', accessor: 'position.lat' },
+  { label: 'Longitude', accessor: 'position.lon' },
+  { label: 'EEZ', accessor: 'regions.eez', transform: parseCSVList },
+  { label: 'RFMO', accessor: 'regions.rfmo', transform: parseCSVList },
 ]
 
 export const parseLonglineSetsToCSV = (
@@ -151,7 +157,7 @@ export const parseLonglineSetsToCSV = (
     const identity = identitiesById[event.vessel?.id]
     return {
       ...event,
-      category: getLonglineCategory(event),
+      category: LONGLINE_CATEGORY_LABELS[getLonglineCategory(event)],
       imo: identity?.imo,
       callsign: identity?.callsign,
       durationHours: Math.round(end.diff(start, 'hours').hours * 100) / 100,

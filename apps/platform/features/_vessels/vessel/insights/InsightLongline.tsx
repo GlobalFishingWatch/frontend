@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { useGetVesselEventsQuery } from 'queries/map/vessel-events-api'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
-import { EventTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { EventTypes, RegionType, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { LONGLINE_FISHING_EVENTS_DATASET } from '@platform/config/map/datasets'
 
@@ -14,6 +14,7 @@ import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.s
 import { useVisibleVesselEvents } from 'features/_map/workspace/vessels/vessel-events.hooks'
 import UserLoggedIconButton from 'features/_user/UserLoggedIconButton'
 import { useVesselEventBounds } from 'features/_vessels/vessel/activity/event/event.bounds'
+import { useFetchRegionsData } from 'features/_vessels/vessel/activity/event/event.hook'
 import { selectVesselInfoData } from 'features/_vessels/vessel/selectors/vessel.selectors'
 import {
   selectLonglineSetsOnMap,
@@ -27,6 +28,7 @@ import { getVesselIdentities, getVesselProperty } from 'features/_vessels/vessel
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import DataTerminology from 'features/cms/data-terminology/DataTerminology'
+import { useRegionNamesByType } from 'features/data/regions/regions.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 
 import InsightError from './InsightErrorMessage'
@@ -36,6 +38,7 @@ import LonglineSetsGraph, { LonglineTimeChoice } from './LonglineSetsGraph'
 import styles from './Insights.module.css'
 
 const InsightLongline = () => {
+  useFetchRegionsData()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { start, end } = useSelector(selectTimeRange)
@@ -49,6 +52,7 @@ const InsightLongline = () => {
   const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const vesselLayer = useVesselProfileLayer()
   const fitEventBounds = useVesselEventBounds(vesselLayer)
+  const { getRegionNamesByType } = useRegionNamesByType()
   const identities = getVesselIdentities(vessel, {
     identitySource: VesselIdentitySourceEnum.SelfReported,
   })
@@ -93,7 +97,17 @@ const InsightLongline = () => {
   }
 
   const onDownloadClick = async () => {
-    const csv = parseLonglineSetsToCSV(data!.map(removeNonTunaRFMO), identities)
+    const sets = data!.map((event) => {
+      const tunaEvent = removeNonTunaRFMO(event)
+      return {
+        ...tunaEvent,
+        regions: {
+          ...tunaEvent.regions,
+          eez: getRegionNamesByType(RegionType.eez, tunaEvent.regions?.eez ?? []),
+        },
+      } as typeof event
+    })
+    const csv = parseLonglineSetsToCSV(sets, identities)
     const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
     const { saveAs } = await import('file-saver')
     const shipname = getVesselProperty(vessel, 'shipname', { identityId, identitySource })
