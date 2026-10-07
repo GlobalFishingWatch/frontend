@@ -100,7 +100,7 @@ export const searchPlaces = createServerFn({ method: 'GET' })
     async ({
       data: { category, type, query = '', locale, bounds, sortBy },
     }): Promise<PlacesResult> => {
-      const { matchOceanAreas } = await import('@globalfishingwatch/ocean-areas')
+      const { matchOceanAreas, countOceanAreas } = await import('@globalfishingwatch/ocean-areas')
       const flagLabels = await getFlagLabels(locale)
       const types = type ? [type] : PLACE_TYPES[category]
       const areas = await matchOceanAreas(query, {
@@ -116,7 +116,7 @@ export const searchPlaces = createServerFn({ method: 'GET' })
       const isFiltered = Boolean(query || bounds)
       return {
         count: areas.length,
-        total: isFiltered ? (await matchOceanAreas('', { types, locale })).length : areas.length,
+        total: isFiltered ? await countOceanAreas(types) : areas.length,
         // Geometries stay on the server — MPAs alone are ~4MB
         places: areas
           .slice(0, PLACES_LIMIT)

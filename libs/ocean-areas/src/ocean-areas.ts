@@ -163,7 +163,10 @@ const getBoundsFilter = ([west, south, east, north]: OceanAreaBBox) => {
   }
 }
 
-/** Every match, sorted and deduped by name, without `limit` or computed `bounds` — for counting. */
+/**
+ * Every match, sorted, without `limit` or computed `bounds` — for listing and counting. Not deduped
+ * by name: distinct places share names (113 ports, ~2.4k MPAs), and ids are unique per type.
+ */
 export const matchOceanAreas = async (
   query: string,
   {
@@ -211,7 +214,7 @@ export const matchOceanAreas = async (
         : (properties.activityHours ?? properties.portVisits)) ?? -1
     matchingFeatures = [...matchingFeatures].sort((a, b) => getValue(b) - getValue(a))
   }
-  return uniqBy(matchingFeatures, (a) => a.properties?.name)
+  return matchingFeatures
 }
 
 export const searchOceanAreas = async (
@@ -219,13 +222,22 @@ export const searchOceanAreas = async (
   { limit = MAX_RESULTS_NUMBER, ...params } = {} as SearchOceanAreaParams
 ): Promise<OceanArea[]> => {
   const matches = await matchOceanAreas(query, params)
-  return matches.slice(0, limit).map((feature) => ({
-    ...feature,
-    properties: {
-      ...feature.properties,
-      bounds: bbox(feature as any) as OceanAreaBBox,
-    },
-  }))
+  // The search dropdowns show names only, so same-name results would look like duplicates
+  return uniqBy(matches, (a) => a.properties?.name)
+    .slice(0, limit)
+    .map((feature) => ({
+      ...feature,
+      properties: {
+        ...feature.properties,
+        bounds: bbox(feature as any) as OceanAreaBBox,
+      },
+    }))
+}
+
+/** How many areas the data holds of `types`, e.g. the unfiltered total next to a search count. */
+export const countOceanAreas = async (types: OceanAreaType[]): Promise<number> => {
+  await importOceanAreasData()
+  return oceanAreas.features.filter(({ properties }) => types.includes(properties.type)).length
 }
 
 /** Exact lookup by type and id (`properties.area`), e.g. for a port page reached by its URL. */
