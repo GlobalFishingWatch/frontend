@@ -11,8 +11,7 @@ import {
   MPA_DATAVIEW_SLUG,
   MPATLAS_DATAVIEW_SLUG,
   PAA_DUKE_DATAVIEW_SLUG,
-  PORTS_AIS_DATAVIEW_SLUG,
-  PORTS_VMS_DATAVIEW_SLUG,
+  PORTS_GLOBAL_DATAVIEW_SLUG,
   PROTECTED_SEAS_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
@@ -151,15 +150,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   },
   {
     id: `${PORTS_LAYER_ID}`,
-    dataviewId: PORTS_AIS_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/ports.jpg`,
-    config: {
-      color: '#9AEEFF',
-    },
-  },
-  {
-    id: `${PORTS_LAYER_ID}-vms`,
-    dataviewId: PORTS_VMS_DATAVIEW_SLUG,
+    dataviewId: PORTS_GLOBAL_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/ports.jpg`,
     config: {
       color: '#9AEEFF',
