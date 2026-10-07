@@ -22,14 +22,22 @@ import {
 } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { parseLegacyDataviewInstanceConfig } from '@globalfishingwatch/dataviews-client'
-import { TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
-import { DEFAULT_WORKSPACE_ID, GAPS_EVENTS_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import {
+  getDataviewSlugForPipeVersion,
+  TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG,
+} from '@platform/config/map/dataviews'
+import {
+  DEFAULT_WORKSPACE_ID,
+  GAPS_EVENTS_WORKSPACE_ID,
+  getWorkspacePipeVersion,
+} from '@platform/config/map/workspaces'
 
 import type { VALID_PASSWORD } from 'data/map/config'
 import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX, WORKSPACE_HISTORY_NAVIGATION } from 'data/map/config'
 import {
   DEFAULT_DATAVIEW_SLUGS,
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
+  VESSEL_TEMPLATE_DATAVIEW_SLUGS,
   VMS_VESSEL_DATAVIEW_SLUGS,
 } from 'data/map/dataviews'
 import { MARINE_MANAGER_WORKSPACES } from 'data/map/highlighted-workspaces/marine-manager'
@@ -301,10 +309,19 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         // Inject dataviews for gfw staff only
         dataviewIds.push(...ONLY_GFW_STAFF_DATAVIEW_SLUGS)
       }
+      const workspacePipeVersion = getWorkspacePipeVersion(workspaceId)
+      if (workspacePipeVersion) {
+        // Vessel templates matching the workspace pipe, see selectVesselTemplateDataviews
+        dataviewIds.push(
+          ...VESSEL_TEMPLATE_DATAVIEW_SLUGS.map((slug) =>
+            getDataviewSlugForPipeVersion(slug, workspacePipeVersion)
+          )
+        )
+      }
       if (privateUserGroupsWithDatasetPermission.length) {
         const vmsDataviewSlugs = privateUserGroupsWithDatasetPermission
-          .map((group) => VMS_VESSEL_DATAVIEW_SLUGS[group])
-          .filter(Boolean) as string[]
+          .flatMap((group) => VMS_VESSEL_DATAVIEW_SLUGS[group] || [])
+          .map((slug) => getDataviewSlugForPipeVersion(slug, workspacePipeVersion))
         if (vmsDataviewSlugs.length) {
           dataviewIds.push(...vmsDataviewSlugs)
         }
