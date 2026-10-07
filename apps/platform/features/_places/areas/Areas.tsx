@@ -1,28 +1,45 @@
 import { useTranslation } from 'react-i18next'
-import { getRouteApi } from '@tanstack/react-router'
+import { getRouteApi, Link } from '@tanstack/react-router'
 
 import type { OceanAreaType } from '@globalfishingwatch/ocean-areas'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { PLACE_TYPES } from 'features/_places/places.types'
+import { getAreaTypeTexts } from 'features/_places/places.utils'
 import PlacesSearch from 'features/_places/PlacesSearch'
 
-const route = getRouteApi('/_platform/_content/areas')
+const route = getRouteApi('/_platform/_content/areas/$placeType')
 
 function Areas() {
   const { t } = useTranslation()
-  const typeLabels: Partial<Record<OceanAreaType, string>> = {
-    eez: t((t) => t.places.types.eez),
-    fao: t((t) => t.places.types.fao),
-    mpa: t((t) => t.places.types.mpa),
-    rfmo: t((t) => t.places.types.rfmo),
-  }
+  const navigate = route.useNavigate()
+  const type = route.useParams({ select: (params) => params.placeType as OceanAreaType })
+  const texts = getAreaTypeTexts(t)
   return (
     <PlacesSearch
       category="areas"
       title={t((t) => t.nav.areas)}
       result={route.useLoaderData()}
       mapDataviews={route.useMatch({ select: (match) => match.staticData.placesMapDataviews })}
-      typeOptions={PLACE_TYPES.areas.map((id) => ({ id, label: typeLabels[id] ?? id }))}
+      type={type}
+      typeOptions={PLACE_TYPES.areas.map((id) => ({
+        id,
+        label: texts[id]?.label ?? id,
+        link: (
+          <Link
+            to={ROUTE_PATHS.AREAS_TYPE}
+            params={{ placeType: id }}
+            search={(prev) => ({ ...prev, placesLimit: undefined })}
+          />
+        ),
+      }))}
+      onTypeSelect={(placeType) =>
+        navigate({
+          to: ROUTE_PATHS.AREAS_TYPE,
+          params: { placeType },
+          search: (prev) => ({ ...prev, placesLimit: undefined }),
+        })
+      }
     />
   )
 }

@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRouterState } from '@tanstack/react-router'
+import cx from 'classnames'
 import { useSetAtom } from 'jotai'
 import { useDebounce } from 'use-debounce'
 
@@ -9,6 +10,7 @@ import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Button } from '@globalfishingwatch/ui-components/button'
 import { Choice } from '@globalfishingwatch/ui-components/choice'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
 import { InputText } from '@globalfishingwatch/ui-components/input-text'
 import { AREA_REPORT_LAYERS } from '@platform/config/map/dataviews'
 import { getPlaceThumbnailPath, PLACE_THUMBNAILS_BASE_URL } from '@platform/config/map/thumbnails'
@@ -39,6 +41,29 @@ const getThumbnailUrl = ({ type, id }: Place) =>
     id
   )}`
 
+function PlaceThumbnail({ place, alt }: { place: Place; alt: string }) {
+  const [failed, setFailed] = useState(false)
+  if (failed) {
+    return (
+      <span className={cx(styles.thumbnail, styles.thumbnailFallback)}>
+        <Icon icon={place.type === 'port' ? 'ports' : 'areas'} />
+      </span>
+    )
+  }
+  return (
+    <img
+      ref={(img) => {
+        if (img?.complete && !img.naturalWidth) setFailed(true)
+      }}
+      className={styles.thumbnail}
+      src={getThumbnailUrl(place)}
+      alt={alt}
+      loading="lazy"
+      onError={() => setFailed(true)}
+    />
+  )
+}
+
 type PlacesSearchProps = {
   category: PlaceCategory
   title: string
@@ -46,8 +71,11 @@ type PlacesSearchProps = {
   result: PlacesResult
   /** Used when there is no type selector. */
   placeholder?: string
-  /** Renders a type selector; the first option is the default when the URL has no `placeType`. */
+  /** Active type; defaults to the category's first one. */
+  type?: OceanAreaType
+  /** Renders a type selector, switched through `onTypeSelect`. */
   typeOptions?: ChoiceOption<OceanAreaType>[]
+  onTypeSelect?: (type: OceanAreaType) => void
   /** Static dataviews from the route; shows a map next to the list on wide screens. */
   mapDataviews?: PlacesMapDataviews
 }
@@ -57,7 +85,9 @@ function PlacesSearch({
   title,
   result: { places, count, total },
   placeholder,
+  type = PLACE_TYPES[category][0],
   typeOptions,
+  onTypeSelect,
   mapDataviews,
 }: PlacesSearchProps) {
   const { t } = useTranslation()
@@ -65,7 +95,6 @@ function PlacesSearch({
   const search = useAppSearch()
   const setHoveredPlace = useSetAtom(hoveredPlaceAtom)
   const urlQuery = search.query ?? ''
-  const type = search.placeType ?? typeOptions?.[0]?.id
   const [query, setQuery] = useState(urlQuery)
   const [debouncedQuery] = useDebounce(query.trim(), 300)
   useEffect(() => {
@@ -98,6 +127,7 @@ function PlacesSearch({
                 : placeholder
             }
             onChange={(e) => setQuery(e.target.value)}
+            onCleanButtonClick={() => setQuery('')}
             className={styles.search}
           />
           {typeOptions && (
@@ -105,13 +135,25 @@ function PlacesSearch({
               containerClassName={styles.typeChoice}
               options={typeOptions}
               activeOption={type}
-              onSelect={(option: ChoiceOption<OceanAreaType>) =>
-                replaceQueryParams({ placeType: option.id, placesLimit: undefined })
-              }
+              onSelect={(option: ChoiceOption<OceanAreaType>) => onTypeSelect?.(option.id)}
             />
           )}
           <PlacesSortButton category={category} />
         </div>
+        {places.length === 0 && (
+          <div className={styles.empty}>
+            <p>
+              {urlQuery
+                ? t((t) => t.places.noResultsQuery, { query: urlQuery })
+                : t((t) => t.places.noResultsInView)}
+            </p>
+            {urlQuery && (
+              <Button type="secondary" onClick={() => setQuery('')}>
+                {t((t) => t.places.clearSearch)}
+              </Button>
+            )}
+          </div>
+        )}
         <ul className={styles.list}>
           {places.map((place) => {
             const label = getPlaceLabel(place)
@@ -122,12 +164,7 @@ function PlacesSearch({
                 onMouseLeave={() => setHoveredPlace(undefined)}
               >
                 <PlaceLink place={place} className={styles.item}>
-                  <img
-                    className={styles.thumbnail}
-                    src={getThumbnailUrl(place)}
-                    alt={label}
-                    loading="lazy"
-                  />
+                  <PlaceThumbnail place={place} alt={label} />
                   <span
                     className={styles.name}
                     title={label.length > PLACE_LABEL_TITLE_MIN_LENGTH ? label : undefined}
@@ -155,7 +192,7 @@ function PlacesSearch({
           <div className={styles.map}>
             {showDeck && (
               <Suspense fallback={null}>
-                <PlacesMap dataviewsByType={mapDataviews} type={type ?? PLACE_TYPES[category][0]} />
+                <PlacesMap dataviewsByType={mapDataviews} type={type} />
               </Suspense>
             )}
           </div>

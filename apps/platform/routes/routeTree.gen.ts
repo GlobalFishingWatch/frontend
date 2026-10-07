@@ -17,7 +17,6 @@ import { Route as PlatformMapRouteImport } from './_platform/_map'
 import { Route as ApiCorrectionsRouteImport } from './api/corrections'
 import { Route as ApiDownloadSurveyRouteImport } from './api/downloadSurvey'
 import { Route as ApiFeedbackRouteImport } from './api/feedback'
-import { Route as PlatformContentAreasRouteImport } from './_platform/_content/areas'
 import { Route as PlatformContentPortsRouteImport } from './_platform/_content/ports'
 import { Route as PlatformContentUserRouteImport } from './_platform/_content/user'
 import { Route as PlatformContentVesselSearchRouteImport } from './_platform/_content/vessel-search'
@@ -27,6 +26,8 @@ import { Route as ApiMigramarOptionsRouteImport } from './api/migramar/options'
 import { Route as ApiOceanAreasIndexRouteImport } from './api/ocean-areas/index'
 import { Route as ApiOceanAreasNameRouteImport } from './api/ocean-areas/name'
 import { Route as ApiOceanAreasSearchRouteImport } from './api/ocean-areas/search'
+import { Route as PlatformContentAreasIndexRouteImport } from './_platform/_content/areas/index'
+import { Route as PlatformContentAreasPlaceTypeRouteImport } from './_platform/_content/areas/$placeType'
 import { Route as PlatformContentHelpAndResourcesIndexRouteImport } from './_platform/_content/help-and-resources/index'
 import { Route as PlatformMapMapIndexRouteImport } from './_platform/_map/map/index'
 import { Route as PlatformMapMapUserRouteImport } from './_platform/_map/map/user'
@@ -85,11 +86,6 @@ const ApiFeedbackRoute = ApiFeedbackRouteImport.update({
   path: '/api/feedback',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PlatformContentAreasRoute = PlatformContentAreasRouteImport.update({
-  id: '/areas',
-  path: '/areas',
-  getParentRoute: () => PlatformContentRoute,
-} as any)
 const PlatformContentPortsRoute = PlatformContentPortsRouteImport.update({
   id: '/ports',
   path: '/ports',
@@ -136,6 +132,18 @@ const ApiOceanAreasSearchRoute = ApiOceanAreasSearchRouteImport.update({
   path: '/api/ocean-areas/search',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlatformContentAreasIndexRoute =
+  PlatformContentAreasIndexRouteImport.update({
+    id: '/areas/',
+    path: '/areas/',
+    getParentRoute: () => PlatformContentRoute,
+  } as any)
+const PlatformContentAreasPlaceTypeRoute =
+  PlatformContentAreasPlaceTypeRouteImport.update({
+    id: '/areas/$placeType',
+    path: '/areas/$placeType',
+    getParentRoute: () => PlatformContentRoute,
+  } as any)
 const PlatformContentHelpAndResourcesIndexRoute =
   PlatformContentHelpAndResourcesIndexRouteImport.update({
     id: '/help-and-resources/',
@@ -266,7 +274,6 @@ export interface FileRoutesByFullPath {
   '/api/corrections': typeof ApiCorrectionsRoute
   '/api/downloadSurvey': typeof ApiDownloadSurveyRoute
   '/api/feedback': typeof ApiFeedbackRoute
-  '/areas': typeof PlatformContentAreasRoute
   '/ports': typeof PlatformContentPortsRoute
   '/user': typeof PlatformContentUserRoute
   '/vessel-search': typeof PlatformContentVesselSearchRoute
@@ -276,12 +283,14 @@ export interface FileRoutesByFullPath {
   '/api/ocean-areas/name': typeof ApiOceanAreasNameRoute
   '/api/ocean-areas/search': typeof ApiOceanAreasSearchRoute
   '/api/ocean-areas/': typeof ApiOceanAreasIndexRoute
+  '/areas/$placeType': typeof PlatformContentAreasPlaceTypeRoute
   '/map/user': typeof PlatformMapMapUserRoute
   '/map/vessel-search': typeof PlatformMapMapVesselSearchRoute
   '/port/$portId': typeof PlatformMapPortPortIdRoute
   '/report/$reportId': typeof PlatformMapReportReportIdRoute
   '/vessel/$vesselId': typeof PlatformMapVesselVesselIdRoute
   '/api/track-corrections/$workspaceId/$issueId': typeof ApiTrackCorrectionsWorkspaceIdIssueIdRoute
+  '/areas/': typeof PlatformContentAreasIndexRoute
   '/help-and-resources/': typeof PlatformContentHelpAndResourcesIndexRoute
   '/map/': typeof PlatformMapMapIndexRoute
   '/api/track-corrections/$workspaceId/': typeof ApiTrackCorrectionsWorkspaceIdIndexRoute
@@ -303,7 +312,6 @@ export interface FileRoutesByTo {
   '/api/corrections': typeof ApiCorrectionsRoute
   '/api/downloadSurvey': typeof ApiDownloadSurveyRoute
   '/api/feedback': typeof ApiFeedbackRoute
-  '/areas': typeof PlatformContentAreasRoute
   '/ports': typeof PlatformContentPortsRoute
   '/user': typeof PlatformContentUserRoute
   '/vessel-search': typeof PlatformContentVesselSearchRoute
@@ -312,12 +320,14 @@ export interface FileRoutesByTo {
   '/api/ocean-areas/name': typeof ApiOceanAreasNameRoute
   '/api/ocean-areas/search': typeof ApiOceanAreasSearchRoute
   '/api/ocean-areas': typeof ApiOceanAreasIndexRoute
+  '/areas/$placeType': typeof PlatformContentAreasPlaceTypeRoute
   '/map/user': typeof PlatformMapMapUserRoute
   '/map/vessel-search': typeof PlatformMapMapVesselSearchRoute
   '/port/$portId': typeof PlatformMapPortPortIdRoute
   '/report/$reportId': typeof PlatformMapReportReportIdRoute
   '/vessel/$vesselId': typeof PlatformMapVesselVesselIdRoute
   '/api/track-corrections/$workspaceId/$issueId': typeof ApiTrackCorrectionsWorkspaceIdIssueIdRoute
+  '/areas': typeof PlatformContentAreasIndexRoute
   '/help-and-resources': typeof PlatformContentHelpAndResourcesIndexRoute
   '/map': typeof PlatformMapMapIndexRoute
   '/api/track-corrections/$workspaceId': typeof ApiTrackCorrectionsWorkspaceIdIndexRoute
@@ -342,7 +352,6 @@ export interface FileRoutesById {
   '/api/downloadSurvey': typeof ApiDownloadSurveyRoute
   '/api/feedback': typeof ApiFeedbackRoute
   '/_platform/': typeof PlatformIndexRoute
-  '/_platform/_content/areas': typeof PlatformContentAreasRoute
   '/_platform/_content/ports': typeof PlatformContentPortsRoute
   '/_platform/_content/user': typeof PlatformContentUserRoute
   '/_platform/_content/vessel-search': typeof PlatformContentVesselSearchRoute
@@ -352,12 +361,14 @@ export interface FileRoutesById {
   '/api/ocean-areas/name': typeof ApiOceanAreasNameRoute
   '/api/ocean-areas/search': typeof ApiOceanAreasSearchRoute
   '/api/ocean-areas/': typeof ApiOceanAreasIndexRoute
+  '/_platform/_content/areas/$placeType': typeof PlatformContentAreasPlaceTypeRoute
   '/_platform/_map/map/user': typeof PlatformMapMapUserRoute
   '/_platform/_map/map/vessel-search': typeof PlatformMapMapVesselSearchRoute
   '/_platform/_map/port/$portId': typeof PlatformMapPortPortIdRoute
   '/_platform/_map/report/$reportId': typeof PlatformMapReportReportIdRoute
   '/_platform/_map/vessel/$vesselId': typeof PlatformMapVesselVesselIdRoute
   '/api/track-corrections/$workspaceId/$issueId': typeof ApiTrackCorrectionsWorkspaceIdIssueIdRoute
+  '/_platform/_content/areas/': typeof PlatformContentAreasIndexRoute
   '/_platform/_content/help-and-resources/': typeof PlatformContentHelpAndResourcesIndexRoute
   '/_platform/_map/map/': typeof PlatformMapMapIndexRoute
   '/api/track-corrections/$workspaceId/': typeof ApiTrackCorrectionsWorkspaceIdIndexRoute
@@ -381,7 +392,6 @@ export interface FileRouteTypes {
     | '/api/corrections'
     | '/api/downloadSurvey'
     | '/api/feedback'
-    | '/areas'
     | '/ports'
     | '/user'
     | '/vessel-search'
@@ -391,12 +401,14 @@ export interface FileRouteTypes {
     | '/api/ocean-areas/name'
     | '/api/ocean-areas/search'
     | '/api/ocean-areas/'
+    | '/areas/$placeType'
     | '/map/user'
     | '/map/vessel-search'
     | '/port/$portId'
     | '/report/$reportId'
     | '/vessel/$vesselId'
     | '/api/track-corrections/$workspaceId/$issueId'
+    | '/areas/'
     | '/help-and-resources/'
     | '/map/'
     | '/api/track-corrections/$workspaceId/'
@@ -418,7 +430,6 @@ export interface FileRouteTypes {
     | '/api/corrections'
     | '/api/downloadSurvey'
     | '/api/feedback'
-    | '/areas'
     | '/ports'
     | '/user'
     | '/vessel-search'
@@ -427,12 +438,14 @@ export interface FileRouteTypes {
     | '/api/ocean-areas/name'
     | '/api/ocean-areas/search'
     | '/api/ocean-areas'
+    | '/areas/$placeType'
     | '/map/user'
     | '/map/vessel-search'
     | '/port/$portId'
     | '/report/$reportId'
     | '/vessel/$vesselId'
     | '/api/track-corrections/$workspaceId/$issueId'
+    | '/areas'
     | '/help-and-resources'
     | '/map'
     | '/api/track-corrections/$workspaceId'
@@ -456,7 +469,6 @@ export interface FileRouteTypes {
     | '/api/downloadSurvey'
     | '/api/feedback'
     | '/_platform/'
-    | '/_platform/_content/areas'
     | '/_platform/_content/ports'
     | '/_platform/_content/user'
     | '/_platform/_content/vessel-search'
@@ -466,12 +478,14 @@ export interface FileRouteTypes {
     | '/api/ocean-areas/name'
     | '/api/ocean-areas/search'
     | '/api/ocean-areas/'
+    | '/_platform/_content/areas/$placeType'
     | '/_platform/_map/map/user'
     | '/_platform/_map/map/vessel-search'
     | '/_platform/_map/port/$portId'
     | '/_platform/_map/report/$reportId'
     | '/_platform/_map/vessel/$vesselId'
     | '/api/track-corrections/$workspaceId/$issueId'
+    | '/_platform/_content/areas/'
     | '/_platform/_content/help-and-resources/'
     | '/_platform/_map/map/'
     | '/api/track-corrections/$workspaceId/'
@@ -561,13 +575,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiFeedbackRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_platform/_content/areas': {
-      id: '/_platform/_content/areas'
-      path: '/areas'
-      fullPath: '/areas'
-      preLoaderRoute: typeof PlatformContentAreasRouteImport
-      parentRoute: typeof PlatformContentRoute
-    }
     '/_platform/_content/ports': {
       id: '/_platform/_content/ports'
       path: '/ports'
@@ -630,6 +637,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/ocean-areas/search'
       preLoaderRoute: typeof ApiOceanAreasSearchRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_platform/_content/areas/': {
+      id: '/_platform/_content/areas/'
+      path: '/areas'
+      fullPath: '/areas/'
+      preLoaderRoute: typeof PlatformContentAreasIndexRouteImport
+      parentRoute: typeof PlatformContentRoute
+    }
+    '/_platform/_content/areas/$placeType': {
+      id: '/_platform/_content/areas/$placeType'
+      path: '/areas/$placeType'
+      fullPath: '/areas/$placeType'
+      preLoaderRoute: typeof PlatformContentAreasPlaceTypeRouteImport
+      parentRoute: typeof PlatformContentRoute
     }
     '/_platform/_content/help-and-resources/': {
       id: '/_platform/_content/help-and-resources/'
@@ -775,19 +796,21 @@ declare module '@tanstack/react-router' {
 }
 
 interface PlatformContentRouteChildren {
-  PlatformContentAreasRoute: typeof PlatformContentAreasRoute
   PlatformContentPortsRoute: typeof PlatformContentPortsRoute
   PlatformContentUserRoute: typeof PlatformContentUserRoute
   PlatformContentVesselSearchRoute: typeof PlatformContentVesselSearchRoute
+  PlatformContentAreasPlaceTypeRoute: typeof PlatformContentAreasPlaceTypeRoute
+  PlatformContentAreasIndexRoute: typeof PlatformContentAreasIndexRoute
   PlatformContentHelpAndResourcesIndexRoute: typeof PlatformContentHelpAndResourcesIndexRoute
   PlatformContentHelpAndResourcesSectionSlugChar123ItemSlugChar125Route: typeof PlatformContentHelpAndResourcesSectionSlugChar123ItemSlugChar125Route
 }
 
 const PlatformContentRouteChildren: PlatformContentRouteChildren = {
-  PlatformContentAreasRoute: PlatformContentAreasRoute,
   PlatformContentPortsRoute: PlatformContentPortsRoute,
   PlatformContentUserRoute: PlatformContentUserRoute,
   PlatformContentVesselSearchRoute: PlatformContentVesselSearchRoute,
+  PlatformContentAreasPlaceTypeRoute: PlatformContentAreasPlaceTypeRoute,
+  PlatformContentAreasIndexRoute: PlatformContentAreasIndexRoute,
   PlatformContentHelpAndResourcesIndexRoute:
     PlatformContentHelpAndResourcesIndexRoute,
   PlatformContentHelpAndResourcesSectionSlugChar123ItemSlugChar125Route:

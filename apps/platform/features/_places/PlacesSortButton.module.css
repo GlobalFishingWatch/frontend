@@ -14,3 +14,12 @@
 li:not(:last-of-type) > .sortOption {
   border-bottom: var(--border);
 }
+
+.popover {
+  border-radius: var(--border-radius-0);
+}
+
+.sortOptions {
+  border-radius: inherit;
+  overflow: hidden;
+}

@@ -45,9 +45,9 @@ function PlacesSortButton({ category }: { category: PlaceCategory }) {
       open={open}
       onOpenChange={setOpen}
       placement="bottom-end"
-      showArrow={false}
+      className={styles.popover}
       content={
-        <ul>
+        <ul className={styles.sortOptions}>
           {options.map(({ id, label }) => (
             <li key={id}>
               <button

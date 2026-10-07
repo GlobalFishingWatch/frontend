@@ -1006,10 +1006,21 @@
   },
   "places": {
     "centerOnMyLocation": "Center on my location",
+    "clearSearch": "Clear search",
     "filterByMap": "Search as I move the map",
     "loadMore": "Load more",
+    "noResultsInView": "Nothing in this map view. Try moving or zooming out the map.",
+    "noResultsQuery": "No results for \"{{query}}\"",
     "searchPorts": "Search ports",
     "searchType": "Search {{type}}",
+    "siteDescription": {
+      "areas": "Browse and report on fishing and vessel activity in Exclusive Economic Zones, FAO major fishing areas, Marine Protected Areas and RFMO convention areas worldwide.",
+      "eez": "Explore vessel activity in every Exclusive Economic Zone (EEZ), the waters where coastal states hold rights over marine resources.",
+      "fao": "Explore vessel activity in the FAO major fishing areas used for global fisheries statistics.",
+      "mpa": "Explore vessel activity inside Marine Protected Areas (MPAs) worldwide.",
+      "ports": "Browse ports worldwide and explore vessel port visits, flags and activity.",
+      "rfmo": "Explore vessel activity in the convention areas of Regional Fisheries Management Organizations (RFMOs)."
+    },
     "sortByActivity": "Sort by activity",
     "sortByArea": "Sort by area",
     "sortByName": "Sort by name",

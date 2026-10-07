@@ -18,7 +18,7 @@ import {
   HEATMAP_LOW_RES_ID,
 } from '@globalfishingwatch/deck-layers/config'
 
-import { ALL_PLACE_TYPES, PLACE_SORTS } from 'features/_places/places.types'
+import { PLACE_SORTS } from 'features/_places/places.types'
 import {
   REPORT_ACTIVITY_GRAPHS,
   REPORT_EVENTS_GRAPHS,
@@ -292,7 +292,6 @@ const PLACES_BASEMAPS = [
 export const placesSearchSchema = z
   .object({
     query: optionalString(),
-    placeType: optionalLiteralUnion(ALL_PLACE_TYPES),
     basemap: optionalLiteralUnion(PLACES_BASEMAPS),
     filterByMap: optionalBoolean(),
     placesSort: optionalLiteralUnion(PLACE_SORTS),

@@ -9,11 +9,6 @@ export const PLACE_TYPES: Record<PlaceCategory, readonly [OceanAreaType, ...Ocea
   areas: ['eez', 'fao', 'mpa', 'rfmo'],
 }
 
-export const ALL_PLACE_TYPES = [...PLACE_TYPES.ports, ...PLACE_TYPES.areas] as [
-  OceanAreaType,
-  ...OceanAreaType[],
-]
-
 export const PLACES_PAGE_SIZE = 100
 
 export const PLACE_SORTS = ['activity', 'area', 'name'] as const
@@ -28,7 +23,6 @@ export const DEFAULT_PLACES_SORT: Record<PlaceCategory, PlacesSort> = {
 export type PlacesSearchState = {
   placesSort?: PlacesSort
   placesLimit?: number
-  placeType?: OceanAreaType
   basemap?: BasemapType
   filterByMap?: boolean
   /**  Map view as `west,south,east,north` */

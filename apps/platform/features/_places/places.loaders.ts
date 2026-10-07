@@ -129,7 +129,6 @@ export const searchPlaces = createServerFn({ method: 'GET' })
 export const getPlacesLoaderDeps = ({ search }: { search: QueryParams }) => ({
   locale: getPlacesLocale(),
   query: search.query,
-  placeType: search.placeType,
   sortBy: search.placesSort,
   limit:
     Number.isInteger(search.placesLimit) && search.placesLimit! > 0
@@ -140,7 +139,14 @@ export const getPlacesLoaderDeps = ({ search }: { search: QueryParams }) => ({
 
 export const loadPlaces = (
   category: PlaceCategory,
-  { locale, query, placeType, bounds, sortBy, limit }: ReturnType<typeof getPlacesLoaderDeps>
+  {
+    locale,
+    query,
+    placeType,
+    bounds,
+    sortBy,
+    limit,
+  }: ReturnType<typeof getPlacesLoaderDeps> & { placeType?: OceanAreaType }
 ) => {
   const types = PLACE_TYPES[category]
   const type = placeType && types.includes(placeType) ? placeType : types[0]
