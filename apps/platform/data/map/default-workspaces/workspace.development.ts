@@ -26,8 +26,7 @@ import {
   GRATICULES_DATAVIEW_SLUG,
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
-  PORTS_AIS_DATAVIEW_SLUG,
-  PORTS_VMS_DATAVIEW_SLUG,
+  PORTS_GLOBAL_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_INSTANCE_ID,
   PRESENCE_DATAVIEW_SLUG,
   PRESENCE_REALTIME_DATAVIEW_SLUG,
@@ -184,20 +183,12 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: FIXED_INFRASTRUCTURE_DATAVIEW_SLUG,
     },
     {
-      id: `${PORTS_LAYER_ID}-ais`,
+      id: PORTS_LAYER_ID,
       config: {
         visible: false,
         color: '#9AEEFF',
       },
-      dataviewId: PORTS_AIS_DATAVIEW_SLUG,
-    },
-    {
-      id: `${PORTS_LAYER_ID}-vms`,
-      config: {
-        visible: false,
-        color: '#9AEEFF',
-      },
-      dataviewId: PORTS_VMS_DATAVIEW_SLUG,
+      dataviewId: PORTS_GLOBAL_DATAVIEW_SLUG,
     },
     {
       id: BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
