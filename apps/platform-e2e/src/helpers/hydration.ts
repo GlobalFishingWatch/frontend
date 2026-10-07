@@ -1,5 +1,7 @@
 import type { Page } from 'playwright/test'
 
+import { TIMEOUTS } from './timeouts'
+
 const SIDEBAR_CONTAINER = '[data-testid="sidebar-container"]'
 
 // Resolves once React has hydrated the given node on the client. The app is server-rendered, so
@@ -23,6 +25,6 @@ export async function waitForHydration(page: Page, selector = SIDEBAR_CONTAINER)
       )
     },
     selector,
-    { timeout: 30000 }
+    { timeout: TIMEOUTS.MEDIUM }
   )
 }
