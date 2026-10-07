@@ -4,6 +4,7 @@ import type { Layer, PickingInfo } from '@deck.gl/core'
 import { MapView, WebMercatorViewport } from '@deck.gl/core'
 import DeckGL from '@deck.gl/react'
 import { useNavigate } from '@tanstack/react-router'
+import cx from 'classnames'
 import { useAtomValue } from 'jotai'
 import { useDebounce } from 'use-debounce'
 
@@ -62,8 +63,10 @@ const getRootLayer = (layer?: Layer | null) => {
 
 const getHoverLabel = (type: OceanAreaType, object?: ContextPickingObject) => {
   if (!object) return undefined
-  const { name, flag } = object.properties ?? {}
-  return name && flag ? getPlaceLabel({ name, flag, type }) : getContextValue(object) || undefined
+  const { name, flag, NAME } = object.properties ?? {}
+  if (name && flag) return getPlaceLabel({ name, flag, type })
+  if (type === 'mpa' && NAME) return NAME as string
+  return getContextValue(object) || undefined
 }
 
 type PlacesMapProps = {
@@ -173,6 +176,8 @@ function PlacesMap({ dataviewsByType, type }: PlacesMapProps) {
     )
   }
 
+  const opensLeft = !!size && !!hoverTooltip && hoverTooltip.x > size.width / 2
+
   return (
     <Fragment>
       <DeckGL
@@ -198,7 +203,14 @@ function PlacesMap({ dataviewsByType, type }: PlacesMapProps) {
         }
       />
       {hoverTooltip && (
-        <div className={styles.mapTooltip} style={{ left: hoverTooltip.x, top: hoverTooltip.y }}>
+        <div
+          className={cx(styles.mapTooltip, { [styles.mapTooltipLeft]: opensLeft })}
+          style={
+            opensLeft
+              ? { right: size.width - hoverTooltip.x, top: hoverTooltip.y }
+              : { left: hoverTooltip.x, top: hoverTooltip.y }
+          }
+        >
           {htmlSafeParse(hoverTooltip.label)}
         </div>
       )}

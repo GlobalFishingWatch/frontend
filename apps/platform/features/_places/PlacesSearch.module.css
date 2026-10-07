@@ -52,6 +52,10 @@
   gap: var(--space-M);
 }
 
+.loadMore {
+  align-self: center;
+}
+
 .item {
   display: flex;
   flex-direction: column;
@@ -73,11 +77,15 @@
 }
 
 .name {
+  /* Always two lines tall, so cards in a row line up; longer names end in an ellipsis */
+  display: -webkit-box;
+  min-height: 2lh;
+  overflow: hidden;
   font: var(--font-M);
   color: var(--color-primary-blue);
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 .item:hover .thumbnail {

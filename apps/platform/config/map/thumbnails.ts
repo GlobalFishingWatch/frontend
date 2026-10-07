@@ -1,4 +1,3 @@
-/** Bucket the `ocean-areas:screenshots` and `screenshots-ports` scripts upload thumbnails to */
 export const PLACE_THUMBNAILS_BASE_URL =
   'https://storage.googleapis.com/gfw-public-place-thumbnails-us-central1'
 

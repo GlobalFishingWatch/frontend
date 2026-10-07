@@ -27,6 +27,7 @@ export async function prepare(
     propertiesMapping,
     limitBy,
     filter,
+    getName,
     getFlag,
     getAreaSize,
     skipDownload,
@@ -86,7 +87,7 @@ export async function prepare(
           console.error(`\r[${type}] Area not found ${propertiesMapping.area}`, areaData.properties)
           continue
         }
-        const name = areaData.properties?.[propertiesMapping.name]
+        const name = getName?.(areaData) ?? areaData.properties?.[propertiesMapping.name]
         if (!name) {
           console.error(`\r[${type}] Name not found ${propertiesMapping.name}`, areaData.properties)
           continue

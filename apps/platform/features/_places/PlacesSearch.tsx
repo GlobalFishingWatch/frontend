@@ -1,11 +1,13 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useRouterState } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
 import { useDebounce } from 'use-debounce'
 
 import type { OceanAreaType } from '@globalfishingwatch/ocean-areas'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+import { Button } from '@globalfishingwatch/ui-components/button'
 import { Choice } from '@globalfishingwatch/ui-components/choice'
 import { InputText } from '@globalfishingwatch/ui-components/input-text'
 import { AREA_REPORT_LAYERS } from '@platform/config/map/dataviews'
@@ -15,7 +17,7 @@ import PlaceLink from 'features/_places/PlaceLink'
 import { hoveredPlaceAtom } from 'features/_places/places.atoms'
 import type { Place, PlacesResult } from 'features/_places/places.loaders'
 import type { PlaceCategory } from 'features/_places/places.types'
-import { PLACE_TYPES } from 'features/_places/places.types'
+import { PLACE_TYPES, PLACES_PAGE_SIZE } from 'features/_places/places.types'
 import { getPlaceLabel } from 'features/_places/places.utils'
 import type { PlacesMapDataviews } from 'features/_places/places-map.config'
 import PlacesSortButton from 'features/_places/PlacesSortButton'
@@ -29,6 +31,7 @@ import styles from './PlacesSearch.module.css'
 const PlacesMap = lazy(() => import('features/_places/PlacesMap'))
 
 const PLACES_MAP_BREAKPOINT = 1200
+const PLACE_LABEL_TITLE_MIN_LENGTH = 50
 
 const getThumbnailUrl = ({ type, id }: Place) =>
   `${PLACE_THUMBNAILS_BASE_URL}/${getPlaceThumbnailPath(
@@ -66,10 +69,12 @@ function PlacesSearch({
   const [query, setQuery] = useState(urlQuery)
   const [debouncedQuery] = useDebounce(query.trim(), 300)
   useEffect(() => {
-    if (debouncedQuery !== urlQuery) replaceQueryParams({ query: debouncedQuery || undefined })
+    if (debouncedQuery !== urlQuery)
+      replaceQueryParams({ query: debouncedQuery || undefined, placesLimit: undefined })
   }, [debouncedQuery, urlQuery, replaceQueryParams])
 
   const typeLabel = typeOptions?.find((option) => option.id === type)?.label
+  const isLoadingMore = useRouterState({ select: (state) => state.status === 'pending' })
   const isClientHydrated = useIsClientHydrated()
   const isSmallScreen = useSmallScreen(PLACES_MAP_BREAKPOINT)
   const showDeck = isClientHydrated && !isSmallScreen
@@ -101,33 +106,49 @@ function PlacesSearch({
               options={typeOptions}
               activeOption={type}
               onSelect={(option: ChoiceOption<OceanAreaType>) =>
-                replaceQueryParams({ placeType: option.id })
+                replaceQueryParams({ placeType: option.id, placesLimit: undefined })
               }
             />
           )}
           <PlacesSortButton category={category} />
         </div>
         <ul className={styles.list}>
-          {places.map((place) => (
-            <li
-              key={`${place.type}-${place.id}`}
-              onMouseEnter={() => setHoveredPlace(place)}
-              onMouseLeave={() => setHoveredPlace(undefined)}
-            >
-              <PlaceLink place={place} className={styles.item}>
-                <img
-                  className={styles.thumbnail}
-                  src={getThumbnailUrl(place)}
-                  alt=""
-                  loading="lazy"
-                />
-                <span className={styles.name}>
-                  {getHighlightedText(getPlaceLabel(place), urlQuery, styles)}
-                </span>
-              </PlaceLink>
-            </li>
-          ))}
+          {places.map((place) => {
+            const label = getPlaceLabel(place)
+            return (
+              <li
+                key={`${place.type}-${place.id}`}
+                onMouseEnter={() => setHoveredPlace(place)}
+                onMouseLeave={() => setHoveredPlace(undefined)}
+              >
+                <PlaceLink place={place} className={styles.item}>
+                  <img
+                    className={styles.thumbnail}
+                    src={getThumbnailUrl(place)}
+                    alt={label}
+                    loading="lazy"
+                  />
+                  <span
+                    className={styles.name}
+                    title={label.length > PLACE_LABEL_TITLE_MIN_LENGTH ? label : undefined}
+                  >
+                    {getHighlightedText(label, urlQuery, styles)}
+                  </span>
+                </PlaceLink>
+              </li>
+            )
+          })}
         </ul>
+        {places.length < count && (
+          <Button
+            type="secondary"
+            className={styles.loadMore}
+            loading={isLoadingMore}
+            onClick={() => replaceQueryParams({ placesLimit: places.length + PLACES_PAGE_SIZE })}
+          >
+            {t((t) => t.places.loadMore)}
+          </Button>
+        )}
       </div>
       {mapDataviews && (
         <div className={styles.mapColumn}>

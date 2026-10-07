@@ -296,6 +296,7 @@ export const placesSearchSchema = z
     basemap: optionalLiteralUnion(PLACES_BASEMAPS),
     filterByMap: optionalBoolean(),
     placesSort: optionalLiteralUnion(PLACE_SORTS),
+    placesLimit: optionalNumber(),
     bounds: optionalString(), // `west,south,east,north`, parsed by parsePlacesBounds
   })
   .partial()

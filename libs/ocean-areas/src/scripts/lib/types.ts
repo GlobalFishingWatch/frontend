@@ -15,6 +15,8 @@ export type AreaConfig = {
     flag?: string
   }
   geometryMode?: AreaGeometryMode
+  /** Computed `name`, for when it is not a plain property copy (wins over `propertiesMapping.name`) */
+  getName?: (area: Feature) => string | undefined
   /** Computed `flag`, for when it is not a plain property copy (wins over `propertiesMapping.flag`) */
   getFlag?: (area: Feature) => string | undefined
   /** Surface in m² from the source data; defaults to turf's area of the full-resolution geometry */

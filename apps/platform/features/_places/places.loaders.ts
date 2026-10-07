@@ -3,7 +3,12 @@ import { createServerFn } from '@tanstack/react-start'
 import type { OceanAreaBBox, OceanAreaLocale, OceanAreaType } from '@globalfishingwatch/ocean-areas'
 
 import type { PlaceCategory, PlacesSort } from 'features/_places/places.types'
-import { DEFAULT_PLACES_SORT, parsePlacesBounds, PLACE_TYPES } from 'features/_places/places.types'
+import {
+  DEFAULT_PLACES_SORT,
+  parsePlacesBounds,
+  PLACE_TYPES,
+  PLACES_PAGE_SIZE,
+} from 'features/_places/places.types'
 import { getActiveI18nLanguage } from 'features/i18n/i18n'
 import type { QueryParams } from 'types'
 
@@ -20,16 +25,13 @@ export type Place = {
 }
 
 export type PlacesResult = {
-  /** First `PLACES_LIMIT` matches */
+  /** First `limit` matches */
   places: Place[]
   /** All matches for the query and bounds */
   count: number
   /** All places of the type, unfiltered */
   total: number
 }
-
-// ponytail: first 100 matches only, paginate once the list must reach every item
-const PLACES_LIMIT = 100
 
 export const getPlacesLocale = () => getActiveI18nLanguage() as OceanAreaLocale
 
@@ -62,6 +64,8 @@ export const searchPlaces = createServerFn({ method: 'GET' })
       /** `[west, south, east, north]` of the map view; only places inside it. */
       bounds?: OceanAreaBBox
       sortBy?: PlacesSort
+      /** How many matches to return; defaults to `PLACES_PAGE_SIZE` */
+      limit?: number
     }) => {
       if (!Object.hasOwn(PLACE_TYPES, params.category)) {
         throw new Error(`Unknown place category: ${params.category}`)
@@ -79,12 +83,15 @@ export const searchPlaces = createServerFn({ method: 'GET' })
       ) {
         throw new Error('bounds must be [west, south, east, north] numbers')
       }
+      if (params.limit !== undefined && !(Number.isInteger(params.limit) && params.limit > 0)) {
+        throw new Error('limit must be a positive integer')
+      }
       return params
     }
   )
   .handler(
     async ({
-      data: { category, type, query = '', locale, bounds, sortBy },
+      data: { category, type, query = '', locale, bounds, sortBy, limit = PLACES_PAGE_SIZE },
     }): Promise<PlacesResult> => {
       const { matchOceanAreas, countOceanAreas } = await import('@globalfishingwatch/ocean-areas')
       const flagLabels = await getFlagLabels(locale)
@@ -94,8 +101,6 @@ export const searchPlaces = createServerFn({ method: 'GET' })
         locale,
         bounds,
         sortBy: sortBy ?? DEFAULT_PLACES_SORT[category],
-        // Places with a country (ports, territory EEZs) also match by it: ISO3 code, English name and
-        // name in the request language
         getExtraSearchValues: ({ properties: { flag } }) =>
           flag ? [flag, ...(flagLabels.get(flag) ?? [])] : [],
       })
@@ -105,7 +110,7 @@ export const searchPlaces = createServerFn({ method: 'GET' })
         total: isFiltered ? await countOceanAreas(types) : areas.length,
         // Geometries stay on the server — MPAs alone are ~4MB
         places: areas
-          .slice(0, PLACES_LIMIT)
+          .slice(0, limit)
           .map(({ properties: { area, name, type, flag, areaSize }, geometry }) => ({
             id: area ?? name,
             name,
@@ -126,21 +131,22 @@ export const getPlacesLoaderDeps = ({ search }: { search: QueryParams }) => ({
   query: search.query,
   placeType: search.placeType,
   sortBy: search.placesSort,
-  // Only while filtering, so panning with the toggle off does not reload the list
+  limit:
+    Number.isInteger(search.placesLimit) && search.placesLimit! > 0
+      ? search.placesLimit
+      : undefined,
   bounds: search.filterByMap ? parsePlacesBounds(search.bounds) : undefined,
 })
 
 export const loadPlaces = (
   category: PlaceCategory,
-  { locale, query, placeType, bounds, sortBy }: ReturnType<typeof getPlacesLoaderDeps>
+  { locale, query, placeType, bounds, sortBy, limit }: ReturnType<typeof getPlacesLoaderDeps>
 ) => {
   const types = PLACE_TYPES[category]
-  // A type from another category (`/ports?placeType=eez`) would make the validator throw
   const type = placeType && types.includes(placeType) ? placeType : types[0]
-  return searchPlaces({ data: { category, type, query, locale, bounds, sortBy } })
+  return searchPlaces({ data: { category, type, query, locale, bounds, sortBy, limit } })
 }
 
-/** One port by id, for the standalone /port/$portId page. */
 export const getPort = createServerFn({ method: 'GET' })
   .validator((params: { id: string; locale?: OceanAreaLocale }) => ({
     id: String(params.id),

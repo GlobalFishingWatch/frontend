@@ -28,7 +28,6 @@ export const ROUTE_PATHS = {
   PORTS: '/ports' as const,
   AREAS: '/areas' as const,
   PORT_REPORT: '/map/$category/$workspaceId/ports-report/$portId' as const,
-  // Standalone port report on the default workspace — no /map segment, like /vessel/$vesselId
   PORT: '/port/$portId' as const,
 } as const
 

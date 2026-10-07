@@ -1007,6 +1007,7 @@
   "places": {
     "centerOnMyLocation": "Center on my location",
     "filterByMap": "Search as I move the map",
+    "loadMore": "Load more",
     "searchPorts": "Search ports",
     "searchType": "Search {{type}}",
     "sortByActivity": "Sort by activity",

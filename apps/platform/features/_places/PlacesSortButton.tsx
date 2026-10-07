@@ -33,7 +33,10 @@ function PlacesSortButton({ category }: { category: PlaceCategory }) {
 
   const onSelect = (id: PlacesSort) => {
     // The default stays out of the URL
-    replaceQueryParams({ placesSort: id === DEFAULT_PLACES_SORT[category] ? undefined : id })
+    replaceQueryParams({
+      placesSort: id === DEFAULT_PLACES_SORT[category] ? undefined : id,
+      placesLimit: undefined,
+    })
     setOpen(false)
   }
 

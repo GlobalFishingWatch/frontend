@@ -10,6 +10,10 @@
   pointer-events: none;
 }
 
+.mapTooltipLeft {
+  transform: translate(calc(var(--space-S) * -1), var(--space-S));
+}
+
 .mapControls > * {
   pointer-events: auto;
 }
@@ -28,9 +32,9 @@
   max-width: 30rem;
   padding: var(--space-XS) var(--space-S);
   border-radius: var(--border-radius-0);
-  background-color: var(--color-white);
-  box-shadow: var(--box-shadow-1);
-  color: var(--color-primary-blue);
+  background-color: var(--color-primary-blue);
+  filter: var(--filter-drop-shadow-1);
+  color: var(--color-white);
   font: var(--font-S);
   pointer-events: none;
 }
