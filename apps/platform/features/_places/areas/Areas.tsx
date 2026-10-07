@@ -6,7 +6,7 @@ import type { OceanAreaType } from '@globalfishingwatch/ocean-areas'
 import { PLACE_TYPES } from 'features/_places/places.loaders'
 import PlacesSearch from 'features/_places/PlacesSearch'
 
-const route = getRouteApi('/_platform/_places/areas')
+const route = getRouteApi('/_platform/_content/areas')
 
 function Areas() {
   const { t } = useTranslation()

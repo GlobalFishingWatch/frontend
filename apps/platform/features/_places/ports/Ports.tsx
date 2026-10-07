@@ -3,7 +3,7 @@ import { getRouteApi } from '@tanstack/react-router'
 
 import PlacesSearch from 'features/_places/PlacesSearch'
 
-const route = getRouteApi('/_platform/_places/ports')
+const route = getRouteApi('/_platform/_content/ports')
 
 function Ports() {
   const { t } = useTranslation()

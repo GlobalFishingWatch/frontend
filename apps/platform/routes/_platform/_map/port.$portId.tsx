@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
-import { getPortReportSearch } from 'features/_places/places.links'
+import { getPlacePortReportSearch } from 'features/_places/places.links'
 import { getPlacesLocale, getPort } from 'features/_places/places.loaders'
 import PortsReport from 'features/_reports/report-port/PortsReport'
 import { t } from 'features/i18n/i18n'
@@ -20,7 +20,7 @@ export const Route = createFileRoute('/_platform/_map/port/$portId')({
     throw redirect({
       to: ROUTE_PATHS.PORT,
       params,
-      search: { ...search, ...getPortReportSearch(port) },
+      search: { ...search, ...getPlacePortReportSearch(port) },
       replace: true,
     })
   },

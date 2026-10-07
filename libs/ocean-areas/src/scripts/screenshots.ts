@@ -12,7 +12,7 @@
  * Always through the nx target: it installs the ts-node hooks and builds the dataviews-client dist
  * this imports. Plain `node screenshots.ts` cannot resolve the workspace libs.
  */
-import type { Feature, Geometry, Position } from 'geojson'
+import type { Geometry, Position } from 'geojson'
 import { parseArgs } from 'node:util'
 
 // Leaf subpath, not the root barrel: this pulls in the URL codec alone instead of the whole
@@ -24,6 +24,7 @@ import {
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   VMS_DATAVIEW_INSTANCE_ID,
 } from '@platform/config/map/dataviews'
+import { getPlaceThumbnailPath } from '@platform/config/map/thumbnails'
 
 import type { OceanAreaBBox } from '../ocean-areas'
 
@@ -100,7 +101,7 @@ type ScreenshotWorkspace = BaseUrlWorkspace & {
 }
 
 export function getAreaUrl(
-  { datasetId, dataviewInstanceId, dataviewId }: AreaType,
+  { datasetId, dataviewInstance }: AreaType,
   feature: OceanAreaFeature
 ): string {
   const areaId = String(feature.properties.area)
@@ -119,7 +120,7 @@ export function getAreaUrl(
     // skipColorDomainSampling: true,
     dataviewInstances: [
       { id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, config: { basemap: 'satellite' } },
-      { id: dataviewInstanceId, ...(dataviewId && { dataviewId }), config: { visible: true } },
+      dataviewInstance,
       { id: AIS_DATAVIEW_INSTANCE_ID, config: { visible: opts.heatmaps } },
       { id: VMS_DATAVIEW_INSTANCE_ID, config: { visible: opts.heatmaps } },
     ],
@@ -139,10 +140,9 @@ function loadQueue(): CaptureJob[] {
       throw new Error(`Unknown area type "${type}". Use one of ${Object.keys(AREA_TYPES)}`)
     }
     return areaType.features.slice(0, limit).map((feature) => {
-      const areaId = String(feature.properties.area).replace(/[^\w.-]/g, '_')
       return {
         url: getAreaUrl(areaType, feature),
-        file: `${opts.out}/${areaType.datasetId}/${areaId}@2x.webp`,
+        file: `${opts.out}/${getPlaceThumbnailPath(areaType.datasetId, feature.properties.area!)}`,
       }
     })
   })

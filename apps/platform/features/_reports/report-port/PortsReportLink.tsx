@@ -3,11 +3,7 @@ import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
 
-import { DataviewType } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { BasemapType } from '@globalfishingwatch/deck-layers'
 import { Tooltip } from '@globalfishingwatch/ui-components'
-import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID } from '@platform/config/map/dataviews'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import type { ExtendedFeatureByVesselEventPort } from 'features/_map/map/map.slice'
@@ -17,9 +13,7 @@ import { selectLocationQuery } from 'router/routes.selectors'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import type { QueryParams } from 'types'
 
-import { ReportCategory } from '../reports.types'
-
-import { getPortClusterDataviewForReport } from './ports-report.utils'
+import { getPortReportSearch } from './ports-report.utils'
 
 import styles from './PortsReport.module.css'
 
@@ -43,28 +37,6 @@ function PortsReportLink({ children, port, tooltip }: PortsReportLinkProps) {
     return children
   }
 
-  const basemapDataviewInstance = (query.dataviewInstances as UrlDataviewInstance[])?.find(
-    (d: UrlDataviewInstance) => d.config?.type === DataviewType.Basemap
-  )
-  const dataviewInstances = basemapDataviewInstance
-    ? [
-        {
-          ...basemapDataviewInstance,
-          config: { ...(basemapDataviewInstance.config || {}), basemap: BasemapType.Satellite },
-        },
-      ]
-    : [{ id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, config: { basemap: BasemapType.Satellite } }]
-  if (query.dataviewInstances?.length) {
-    const parsedInstances = query.dataviewInstances.map((instance: UrlDataviewInstance) => {
-      return getPortClusterDataviewForReport(instance, {
-        portId: port.id,
-        clusterMaxZoomLevels: { default: 20 },
-        visible: true,
-      })
-    })
-    dataviewInstances.push(...(parsedInstances as typeof dataviewInstances))
-  }
-
   return (
     <Link
       className={cx(styles.link)}
@@ -76,11 +48,13 @@ function PortsReportLink({ children, port, tooltip }: PortsReportLinkProps) {
       }}
       search={(prev: QueryParams) => ({
         ...prev,
-        reportCategory: ReportCategory.Events,
-        portsReportName: port.name,
-        portsReportCountry: port.country || port.flag,
-        portsReportDatasetId: port.datasetId,
-        dataviewInstances,
+        ...getPortReportSearch({
+          portId: port.id!,
+          name: port.name,
+          country: port.country || port.flag,
+          datasetId: port.datasetId,
+          dataviewInstances: query.dataviewInstances,
+        }),
       })}
       onClick={handleOnClick}
     >

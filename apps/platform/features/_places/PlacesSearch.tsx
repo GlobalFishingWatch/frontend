@@ -8,10 +8,11 @@ import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components/choice'
 import { InputText } from '@globalfishingwatch/ui-components/input-text'
+import { AREA_REPORT_LAYERS } from '@platform/config/map/dataviews'
+import { getPlaceThumbnailPath, PLACE_THUMBNAILS_BASE_URL } from '@platform/config/map/thumbnails'
 
 import PlaceLink from 'features/_places/PlaceLink'
 import { hoveredPlaceAtom } from 'features/_places/places.atoms'
-import { AREA_DATASET_IDS } from 'features/_places/places.links'
 import type { Place, PlaceCategory, PlacesResult } from 'features/_places/places.loaders'
 import { PLACE_TYPES } from 'features/_places/places.loaders'
 import type { PlacesMapDataviews } from 'features/_places/places-map.config'
@@ -28,14 +29,10 @@ const PlacesMap = lazy(() => import('features/_places/PlacesMap'))
 
 const PLACES_MAP_BREAKPOINT = 1200
 
-const THUMBNAILS_BASE_URL = 'https://storage.googleapis.com/gfw-public-place-thumbnails-us-central1'
-
-/** Folder per type, as written by the `ocean-areas:screenshots` / `screenshots-ports` scripts. */
-const THUMBNAIL_FOLDERS: Record<OceanAreaType, string> = { port: 'ports', ...AREA_DATASET_IDS }
-
 const getThumbnailUrl = ({ type, id }: Place) =>
-  `${THUMBNAILS_BASE_URL}/${THUMBNAIL_FOLDERS[type]}/${encodeURIComponent(
-    `${String(id).replace(/[^\w.-]/g, '_')}@2x.webp`
+  `${PLACE_THUMBNAILS_BASE_URL}/${getPlaceThumbnailPath(
+    type === 'port' ? 'ports' : AREA_REPORT_LAYERS[type].datasetId,
+    id
   )}`
 
 type PlacesSearchProps = {

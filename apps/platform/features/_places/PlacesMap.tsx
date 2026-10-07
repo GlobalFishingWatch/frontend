@@ -16,11 +16,9 @@ import { BasemapType } from '@globalfishingwatch/deck-layers'
 import type { OceanAreaBBox, OceanAreaType } from '@globalfishingwatch/ocean-areas'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { SwitchRow } from '@globalfishingwatch/ui-components/switch-row'
-import { Tooltip } from '@globalfishingwatch/ui-components/tooltip'
 import { DEFAULT_VIEWPORT } from '@platform/config/map/app'
 
-import basemapDefaultImage from 'assets/images/basemap-default.jpg'
-import basemapSatelliteImage from 'assets/images/basemap-satellite.jpg'
+import BasemapSwitcher from 'features/_map/map/controls/BasemapSwitcher'
 import { getContextValue } from 'features/_map/map/popups/map-popups.utils'
 import { hoveredPlaceAtom } from 'features/_places/places.atoms'
 import { getPlaceLinkOptions } from 'features/_places/places.links'
@@ -32,7 +30,6 @@ import { htmlSafeParse } from 'utils/html-parser'
 import { formatInfoField } from 'utils/info'
 
 import styles from './PlacesMap.module.css'
-import mapControlsStyles from 'features/_map/map/controls/MapControls.module.css'
 
 const PLACES_MAP_VIEW = new MapView({ id: 'places-map', repeat: true })
 
@@ -158,11 +155,6 @@ function PlacesMap({ dataviewsByType, type }: PlacesMapProps) {
     navigate(getPlaceLinkOptions({ id: object.id, name, flag, type }))
   }
 
-  const isDefaultBasemap = basemap === BasemapType.Default
-  const basemapLabel = isDefaultBasemap
-    ? t((t) => t.map.change_basemap_satellite)
-    : t((t) => t.map.change_basemap_default)
-
   const canLocate = typeof navigator !== 'undefined' && 'geolocation' in navigator
   const onLocateClick = () => {
     setIsLocating(true)
@@ -236,20 +228,10 @@ function PlacesMap({ dataviewsByType, type }: PlacesMapProps) {
             onClick={onLocateClick}
           />
         )}
-        <Tooltip content={basemapLabel} placement="left">
-          <button
-            aria-label={basemapLabel}
-            className={mapControlsStyles.basemapSwitcher}
-            style={{
-              backgroundImage: `url(${isDefaultBasemap ? basemapSatelliteImage : basemapDefaultImage})`,
-            }}
-            onClick={() =>
-              replaceQueryParams({
-                basemap: isDefaultBasemap ? BasemapType.Satellite : BasemapType.Default,
-              })
-            }
-          />
-        </Tooltip>
+        <BasemapSwitcher
+          basemap={basemap}
+          onChange={(basemap) => replaceQueryParams({ basemap })}
+        />
       </div>
     </Fragment>
   )

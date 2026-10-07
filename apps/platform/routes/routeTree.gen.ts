@@ -14,15 +14,14 @@ import { Route as LoginRouteImport } from './login'
 import { Route as PlatformIndexRouteImport } from './_platform/index'
 import { Route as PlatformContentRouteImport } from './_platform/_content'
 import { Route as PlatformMapRouteImport } from './_platform/_map'
-import { Route as PlatformPlacesRouteImport } from './_platform/_places'
 import { Route as ApiCorrectionsRouteImport } from './api/corrections'
 import { Route as ApiDownloadSurveyRouteImport } from './api/downloadSurvey'
 import { Route as ApiFeedbackRouteImport } from './api/feedback'
+import { Route as PlatformContentAreasRouteImport } from './_platform/_content/areas'
+import { Route as PlatformContentPortsRouteImport } from './_platform/_content/ports'
 import { Route as PlatformContentUserRouteImport } from './_platform/_content/user'
 import { Route as PlatformContentVesselSearchRouteImport } from './_platform/_content/vessel-search'
 import { Route as PlatformMapMapRouteImport } from './_platform/_map/map'
-import { Route as PlatformPlacesAreasRouteImport } from './_platform/_places/areas'
-import { Route as PlatformPlacesPortsRouteImport } from './_platform/_places/ports'
 import { Route as ApiMigramarAreaIdRouteImport } from './api/migramar/$areaId'
 import { Route as ApiMigramarOptionsRouteImport } from './api/migramar/options'
 import { Route as ApiOceanAreasIndexRouteImport } from './api/ocean-areas/index'
@@ -71,10 +70,6 @@ const PlatformMapRoute = PlatformMapRouteImport.update({
   id: '/_map',
   getParentRoute: () => PlatformRoute,
 } as any)
-const PlatformPlacesRoute = PlatformPlacesRouteImport.update({
-  id: '/_places',
-  getParentRoute: () => PlatformRoute,
-} as any)
 const ApiCorrectionsRoute = ApiCorrectionsRouteImport.update({
   id: '/api/corrections',
   path: '/api/corrections',
@@ -89,6 +84,16 @@ const ApiFeedbackRoute = ApiFeedbackRouteImport.update({
   id: '/api/feedback',
   path: '/api/feedback',
   getParentRoute: () => rootRouteImport,
+} as any)
+const PlatformContentAreasRoute = PlatformContentAreasRouteImport.update({
+  id: '/areas',
+  path: '/areas',
+  getParentRoute: () => PlatformContentRoute,
+} as any)
+const PlatformContentPortsRoute = PlatformContentPortsRouteImport.update({
+  id: '/ports',
+  path: '/ports',
+  getParentRoute: () => PlatformContentRoute,
 } as any)
 const PlatformContentUserRoute = PlatformContentUserRouteImport.update({
   id: '/user',
@@ -105,16 +110,6 @@ const PlatformMapMapRoute = PlatformMapMapRouteImport.update({
   id: '/map',
   path: '/map',
   getParentRoute: () => PlatformMapRoute,
-} as any)
-const PlatformPlacesAreasRoute = PlatformPlacesAreasRouteImport.update({
-  id: '/areas',
-  path: '/areas',
-  getParentRoute: () => PlatformPlacesRoute,
-} as any)
-const PlatformPlacesPortsRoute = PlatformPlacesPortsRouteImport.update({
-  id: '/ports',
-  path: '/ports',
-  getParentRoute: () => PlatformPlacesRoute,
 } as any)
 const ApiMigramarAreaIdRoute = ApiMigramarAreaIdRouteImport.update({
   id: '/api/migramar/$areaId',
@@ -271,11 +266,11 @@ export interface FileRoutesByFullPath {
   '/api/corrections': typeof ApiCorrectionsRoute
   '/api/downloadSurvey': typeof ApiDownloadSurveyRoute
   '/api/feedback': typeof ApiFeedbackRoute
+  '/areas': typeof PlatformContentAreasRoute
+  '/ports': typeof PlatformContentPortsRoute
   '/user': typeof PlatformContentUserRoute
   '/vessel-search': typeof PlatformContentVesselSearchRoute
   '/map': typeof PlatformMapMapRouteWithChildren
-  '/areas': typeof PlatformPlacesAreasRoute
-  '/ports': typeof PlatformPlacesPortsRoute
   '/api/migramar/$areaId': typeof ApiMigramarAreaIdRoute
   '/api/migramar/options': typeof ApiMigramarOptionsRoute
   '/api/ocean-areas/name': typeof ApiOceanAreasNameRoute
@@ -308,10 +303,10 @@ export interface FileRoutesByTo {
   '/api/corrections': typeof ApiCorrectionsRoute
   '/api/downloadSurvey': typeof ApiDownloadSurveyRoute
   '/api/feedback': typeof ApiFeedbackRoute
+  '/areas': typeof PlatformContentAreasRoute
+  '/ports': typeof PlatformContentPortsRoute
   '/user': typeof PlatformContentUserRoute
   '/vessel-search': typeof PlatformContentVesselSearchRoute
-  '/areas': typeof PlatformPlacesAreasRoute
-  '/ports': typeof PlatformPlacesPortsRoute
   '/api/migramar/$areaId': typeof ApiMigramarAreaIdRoute
   '/api/migramar/options': typeof ApiMigramarOptionsRoute
   '/api/ocean-areas/name': typeof ApiOceanAreasNameRoute
@@ -343,16 +338,15 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/_platform/_content': typeof PlatformContentRouteWithChildren
   '/_platform/_map': typeof PlatformMapRouteWithChildren
-  '/_platform/_places': typeof PlatformPlacesRouteWithChildren
   '/api/corrections': typeof ApiCorrectionsRoute
   '/api/downloadSurvey': typeof ApiDownloadSurveyRoute
   '/api/feedback': typeof ApiFeedbackRoute
   '/_platform/': typeof PlatformIndexRoute
+  '/_platform/_content/areas': typeof PlatformContentAreasRoute
+  '/_platform/_content/ports': typeof PlatformContentPortsRoute
   '/_platform/_content/user': typeof PlatformContentUserRoute
   '/_platform/_content/vessel-search': typeof PlatformContentVesselSearchRoute
   '/_platform/_map/map': typeof PlatformMapMapRouteWithChildren
-  '/_platform/_places/areas': typeof PlatformPlacesAreasRoute
-  '/_platform/_places/ports': typeof PlatformPlacesPortsRoute
   '/api/migramar/$areaId': typeof ApiMigramarAreaIdRoute
   '/api/migramar/options': typeof ApiMigramarOptionsRoute
   '/api/ocean-areas/name': typeof ApiOceanAreasNameRoute
@@ -387,11 +381,11 @@ export interface FileRouteTypes {
     | '/api/corrections'
     | '/api/downloadSurvey'
     | '/api/feedback'
+    | '/areas'
+    | '/ports'
     | '/user'
     | '/vessel-search'
     | '/map'
-    | '/areas'
-    | '/ports'
     | '/api/migramar/$areaId'
     | '/api/migramar/options'
     | '/api/ocean-areas/name'
@@ -424,10 +418,10 @@ export interface FileRouteTypes {
     | '/api/corrections'
     | '/api/downloadSurvey'
     | '/api/feedback'
-    | '/user'
-    | '/vessel-search'
     | '/areas'
     | '/ports'
+    | '/user'
+    | '/vessel-search'
     | '/api/migramar/$areaId'
     | '/api/migramar/options'
     | '/api/ocean-areas/name'
@@ -458,16 +452,15 @@ export interface FileRouteTypes {
     | '/login'
     | '/_platform/_content'
     | '/_platform/_map'
-    | '/_platform/_places'
     | '/api/corrections'
     | '/api/downloadSurvey'
     | '/api/feedback'
     | '/_platform/'
+    | '/_platform/_content/areas'
+    | '/_platform/_content/ports'
     | '/_platform/_content/user'
     | '/_platform/_content/vessel-search'
     | '/_platform/_map/map'
-    | '/_platform/_places/areas'
-    | '/_platform/_places/ports'
     | '/api/migramar/$areaId'
     | '/api/migramar/options'
     | '/api/ocean-areas/name'
@@ -547,13 +540,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlatformMapRouteImport
       parentRoute: typeof PlatformRoute
     }
-    '/_platform/_places': {
-      id: '/_platform/_places'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof PlatformPlacesRouteImport
-      parentRoute: typeof PlatformRoute
-    }
     '/api/corrections': {
       id: '/api/corrections'
       path: '/api/corrections'
@@ -575,6 +561,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiFeedbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_platform/_content/areas': {
+      id: '/_platform/_content/areas'
+      path: '/areas'
+      fullPath: '/areas'
+      preLoaderRoute: typeof PlatformContentAreasRouteImport
+      parentRoute: typeof PlatformContentRoute
+    }
+    '/_platform/_content/ports': {
+      id: '/_platform/_content/ports'
+      path: '/ports'
+      fullPath: '/ports'
+      preLoaderRoute: typeof PlatformContentPortsRouteImport
+      parentRoute: typeof PlatformContentRoute
+    }
     '/_platform/_content/user': {
       id: '/_platform/_content/user'
       path: '/user'
@@ -595,20 +595,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/map'
       preLoaderRoute: typeof PlatformMapMapRouteImport
       parentRoute: typeof PlatformMapRoute
-    }
-    '/_platform/_places/areas': {
-      id: '/_platform/_places/areas'
-      path: '/areas'
-      fullPath: '/areas'
-      preLoaderRoute: typeof PlatformPlacesAreasRouteImport
-      parentRoute: typeof PlatformPlacesRoute
-    }
-    '/_platform/_places/ports': {
-      id: '/_platform/_places/ports'
-      path: '/ports'
-      fullPath: '/ports'
-      preLoaderRoute: typeof PlatformPlacesPortsRouteImport
-      parentRoute: typeof PlatformPlacesRoute
     }
     '/api/migramar/$areaId': {
       id: '/api/migramar/$areaId'
@@ -789,6 +775,8 @@ declare module '@tanstack/react-router' {
 }
 
 interface PlatformContentRouteChildren {
+  PlatformContentAreasRoute: typeof PlatformContentAreasRoute
+  PlatformContentPortsRoute: typeof PlatformContentPortsRoute
   PlatformContentUserRoute: typeof PlatformContentUserRoute
   PlatformContentVesselSearchRoute: typeof PlatformContentVesselSearchRoute
   PlatformContentHelpAndResourcesIndexRoute: typeof PlatformContentHelpAndResourcesIndexRoute
@@ -796,6 +784,8 @@ interface PlatformContentRouteChildren {
 }
 
 const PlatformContentRouteChildren: PlatformContentRouteChildren = {
+  PlatformContentAreasRoute: PlatformContentAreasRoute,
+  PlatformContentPortsRoute: PlatformContentPortsRoute,
   PlatformContentUserRoute: PlatformContentUserRoute,
   PlatformContentVesselSearchRoute: PlatformContentVesselSearchRoute,
   PlatformContentHelpAndResourcesIndexRoute:
@@ -881,31 +871,15 @@ const PlatformMapRouteWithChildren = PlatformMapRoute._addFileChildren(
   PlatformMapRouteChildren,
 )
 
-interface PlatformPlacesRouteChildren {
-  PlatformPlacesAreasRoute: typeof PlatformPlacesAreasRoute
-  PlatformPlacesPortsRoute: typeof PlatformPlacesPortsRoute
-}
-
-const PlatformPlacesRouteChildren: PlatformPlacesRouteChildren = {
-  PlatformPlacesAreasRoute: PlatformPlacesAreasRoute,
-  PlatformPlacesPortsRoute: PlatformPlacesPortsRoute,
-}
-
-const PlatformPlacesRouteWithChildren = PlatformPlacesRoute._addFileChildren(
-  PlatformPlacesRouteChildren,
-)
-
 interface PlatformRouteChildren {
   PlatformContentRoute: typeof PlatformContentRouteWithChildren
   PlatformMapRoute: typeof PlatformMapRouteWithChildren
-  PlatformPlacesRoute: typeof PlatformPlacesRouteWithChildren
   PlatformIndexRoute: typeof PlatformIndexRoute
 }
 
 const PlatformRouteChildren: PlatformRouteChildren = {
   PlatformContentRoute: PlatformContentRouteWithChildren,
   PlatformMapRoute: PlatformMapRouteWithChildren,
-  PlatformPlacesRoute: PlatformPlacesRouteWithChildren,
   PlatformIndexRoute: PlatformIndexRoute,
 }
 

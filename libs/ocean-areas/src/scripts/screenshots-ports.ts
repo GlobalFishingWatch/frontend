@@ -22,6 +22,7 @@ import {
   PORT_VISITS_EVENTS_SOURCE_ID,
   VMS_DATAVIEW_INSTANCE_ID,
 } from '@platform/config/map/dataviews'
+import { getPlaceThumbnailPath } from '@platform/config/map/thumbnails'
 
 import ports from '../data/ports.json' with { type: 'json' }
 import type { OceanAreaProperties } from '../ocean-areas'
@@ -98,8 +99,10 @@ function loadQueue(): CaptureJob[] {
     .filter(({ properties }) => !ids || ids.includes(String(properties.area)))
     .slice(0, opts.limit ? Number(opts.limit) : Infinity)
     .map((port) => {
-      const portId = String(port.properties.area).replace(/[^\w.-]/g, '_')
-      return { url: getPortUrl(port), file: `${opts.out}/ports/${portId}@2x.webp` }
+      return {
+        url: getPortUrl(port),
+        file: `${opts.out}/${getPlaceThumbnailPath('ports', port.properties.area!)}`,
+      }
     })
 }
 

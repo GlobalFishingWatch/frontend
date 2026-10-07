@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import { DatasetTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton, Switch } from '@globalfishingwatch/ui-components'
 
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/map/default-workspaces/context-layers'
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
+import { getContextDataviewDataset } from 'features/_map/dataviews/dataviews.utils'
 import { selectContextAreasDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import InfoButton from 'features/_map/workspace/shared/InfoButton'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
@@ -37,7 +37,7 @@ const ReferenceLayersControl = () => {
       VESSEL_PROFILE_DATAVIEWS_INSTANCES.flatMap((layer) => {
         const dataview = contextAreasDataviews.find((d) => d.dataviewId === layer.dataviewId)
         if (!dataview) return []
-        const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Context)
+        const dataset = getContextDataviewDataset(dataview)
         const label = dataset ? getDatasetLabel(dataset) : layer.id
         return {
           id: dataview.id,

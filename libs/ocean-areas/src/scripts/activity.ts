@@ -73,7 +73,7 @@ export function parseHours(summary: string): number | undefined {
 }
 
 export function getActivityUrl(
-  { datasetId, dataviewInstanceId, dataviewId }: AreaType,
+  { datasetId, dataviewInstance }: AreaType,
   feature: OceanAreaFeature,
   { start, end }: { start: string; end: string }
 ): string {
@@ -86,9 +86,7 @@ export function getActivityUrl(
     end,
     // only the summary is needed, not the vessels table
     reportLoadVessels: false,
-    dataviewInstances: [
-      { id: dataviewInstanceId, ...(dataviewId && { dataviewId }), config: { visible: true } },
-    ],
+    dataviewInstances: [dataviewInstance],
   }
   const path = `${PATH_BASENAME}/map/fishing-activity/default-public/report/${datasetId}/${encodeURIComponent(areaId)}`
   return `${BASE_URL}${path}?${stringifyWorkspace(workspace)}`

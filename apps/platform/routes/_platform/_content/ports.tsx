@@ -14,7 +14,7 @@ import { t } from 'features/i18n/i18n'
 import { getRouteHead } from 'router/router.meta'
 import { validatePlacesSearchParams } from 'router/routes.search'
 
-export const Route = createFileRoute('/_platform/_places/ports')({
+export const Route = createFileRoute('/_platform/_content/ports')({
   component: Ports,
   staticData: {
     placesMapDataviews: {

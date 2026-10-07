@@ -3,10 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
 
-import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { getMergedDataviewId, type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
+import { getContextDataviewDataset } from 'features/_map/dataviews/dataviews.utils'
 import { selectContextAreasDataviewsGrouped } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import { selectUserContextDatasets } from 'features/_user/selectors/user.permissions.selectors'
@@ -47,9 +48,7 @@ function ContextAreaSection(): React.ReactElement<any> {
   const onToggleLayer = useCallback(
     (dataview: UrlDataviewInstance) => () => {
       const isVisible = dataview?.config?.visible ?? false
-      const dataset = dataview.datasets?.find(
-        (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext
-      )
+      const dataset = getContextDataviewDataset(dataview)
       const layerTitle = dataset?.name ?? dataset?.id ?? 'Unknown layer'
       const action = isVisible ? 'disable' : 'enable'
       trackEvent({
