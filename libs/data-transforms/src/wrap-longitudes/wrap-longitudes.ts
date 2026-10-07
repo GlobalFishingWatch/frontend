@@ -170,22 +170,29 @@ export function getTurfBbox(geometry: Polygon | MultiPolygon): Bbox {
 }
 
 export function wrapGeometryBbox(geometry: Polygon | MultiPolygon): Bbox {
-  const fullBbox = bbox(geometry)
-  let minX = fullBbox[0]
-  const minY = fullBbox[1]
-  let maxX = fullBbox[2]
-  const maxY = fullBbox[3]
-  if (minX === -180 && maxX === 180) {
-    geometry.coordinates.forEach((polygon) => {
-      const polygonBbox = bbox({ type: 'Polygon', coordinates: polygon as Position[][] })
-      if (polygonBbox[2] === 180 && (minX === -180 || polygonBbox[0] < minX)) {
-        minX = polygonBbox[0]
-      } else if (polygonBbox[0] === -180 && (maxX === 180 || polygonBbox[2] + 360 > maxX)) {
-        maxX = polygonBbox[2] + 360
+  let minX = Infinity
+  let minY = Infinity
+  let maxX = -Infinity
+  let maxY = -Infinity
+  let shiftedMinX = Infinity
+  let shiftedMaxX = -Infinity
+  const polygons = geometry.type === 'Polygon' ? [geometry.coordinates] : geometry.coordinates
+  for (const rings of polygons) {
+    for (const ring of rings) {
+      for (const [lon, lat] of ring) {
+        minX = Math.min(minX, lon)
+        maxX = Math.max(maxX, lon)
+        minY = Math.min(minY, lat)
+        maxY = Math.max(maxY, lat)
+        const shifted = lon < 0 ? lon + 360 : lon
+        shiftedMinX = Math.min(shiftedMinX, shifted)
+        shiftedMaxX = Math.max(shiftedMaxX, shifted)
       }
-    })
+    }
   }
-  return [minX, minY, maxX, maxY]
+  return shiftedMaxX - shiftedMinX < maxX - minX
+    ? [shiftedMinX, minY, shiftedMaxX, maxY]
+    : [minX, minY, maxX, maxY]
 }
 
 export const wrapFeaturesLongitudes = (features: Feature<LineString | Polygon>[]) => {

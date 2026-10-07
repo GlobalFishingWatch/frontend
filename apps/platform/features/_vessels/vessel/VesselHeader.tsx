@@ -60,7 +60,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const vesselProfileDataview = useSelector(selectVesselProfileDataview)
   const { boundsReady, setVesselBounds } = useVesselProfileBounds()
   const isClientHydrated = useIsClientHydrated()
-  const { closeSidePanel } = useSidePanel()
+  const { closeAllSidePanels } = useSidePanel()
   const vesselPrintCallback = useCallback(() => {
     window.print()
   }, [])
@@ -88,7 +88,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
 
   useEffect(() => {
     const enableVesselPrintMode = () => {
-      closeSidePanel()
+      closeAllSidePanels()
       dispatch(setVesselPrintMode(true))
     }
     const disableVesselPrintMode = () => {
@@ -100,7 +100,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
       window.removeEventListener('beforeprint', enableVesselPrintMode)
       window.removeEventListener('afterprint', disableVesselPrintMode)
     }
-  }, [closeSidePanel])
+  }, [closeAllSidePanels])
 
   useCallbackAfterPaint({
     callback: vesselPrintCallback,
@@ -132,7 +132,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
 
   const onPrintClick = () => {
     dispatch(setVesselPrintMode(true))
-    closeSidePanel()
+    closeAllSidePanels()
     trackAction('print')
   }
 

@@ -44,8 +44,7 @@
 
 .content-markdown-prose a,
 .content-markdown-prose a:visited {
-  color: var(--color-highlight-orange-rgb);
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 .content-markdown-prose b,

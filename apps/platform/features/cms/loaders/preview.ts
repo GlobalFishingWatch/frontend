@@ -31,5 +31,6 @@ export const resolveCmsRequestMode = (
       status: searchParams.get('status') === 'published' ? 'published' : 'draft',
     }
   }
-  return { useCache: !isAuthorized(searchParams, 'nocache', secret, isDev) }
+  // dev never caches, so CMS edits show up on the next request
+  return { useCache: !isDev && !isAuthorized(searchParams, 'nocache', secret, isDev) }
 }

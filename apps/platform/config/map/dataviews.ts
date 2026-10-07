@@ -75,8 +75,7 @@ export const FISHING_AIS_DATAVIEW_SLUG =
 export const FISHING_VMS_DATAVIEW_SLUG =
   `${FISHING_DATAVIEW_SLUG_PREFIX}-vms-v-${PIPE_DATASET_VERSION}` as const
 export const PRESENCE_DATAVIEW_SLUG = `presence-activity-v-${PIPE_DATASET_VERSION}` as const
-export const PRESENCE_REALTIME_DATAVIEW_SLUG =
-  `presence-realtime-v-${PIPE_DATASET_VERSION}` as const
+export const PRESENCE_REALTIME_DATAVIEW_SLUG = `presence-realtime-v-1` as const
 
 // Detections dataview slugs
 // VIIRS was not migrated to pipe 5

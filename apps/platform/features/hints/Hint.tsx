@@ -16,7 +16,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { findSectionForSlug } from 'features/help/userGuide.utils'
 import UserGuideLink from 'features/help/UserGuideLink'
-import { selectSidePanelContent, selectSidePanelId } from 'router/routes.selectors'
+import { selectSidePanelActive, selectSidePanels } from 'router/routes.selectors'
 
 import type { HintId } from './hints.content'
 import hintsConfig from './hints.content'
@@ -43,12 +43,17 @@ function Hint({ id, className }: HintProps) {
   const hintToOpen = useSelector(selectHintToOpen)
   const [visible, setVisible] = useState(() => openedByDefault || hintToOpen === id)
   const hintsDismissed = useSelector(selectHintsDismissed)
-  const sidePanelContent = useSelector(selectSidePanelContent)
-  const sidePanelId = useSelector(selectSidePanelId)
+  const sidePanels = useSelector(selectSidePanels)
+  const sidePanelActive = useSelector(selectSidePanelActive)
+  // only counts as open when the guide tab is the visible one, resolved like SidePanelTabs does
+  const activeSidePanel = sidePanels?.some((panel) => panel.type === sidePanelActive)
+    ? sidePanelActive
+    : sidePanels?.[0]?.type
   const isGuideSectionOpen =
     userGuideSlug !== undefined &&
-    sidePanelContent === 'userGuide' &&
-    sidePanelId === findSectionForSlug(userGuideSlug)?.section
+    activeSidePanel === 'userGuide' &&
+    sidePanels?.find((panel) => panel.type === 'userGuide')?.id ===
+      findSectionForSlug(userGuideSlug)?.section
 
   useEffect(() => {
     if (hintToOpen === id) {

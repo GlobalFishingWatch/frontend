@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import type { DateTimeFormatOptions } from 'luxon'
+import type { DateTimeFormatOptions, Zone } from 'luxon'
 import { DateTime } from 'luxon'
 
 import type { SupportedDateType } from '@globalfishingwatch/data-transforms'
@@ -14,6 +14,7 @@ type formatI18DateParams = {
   format?: DateTimeFormatOptions | object
   locale?: Locale
   showUTCLabel?: boolean
+  timeZone?: string | Zone
 }
 
 const UTC_SUFFIX = 'UTC'
@@ -24,14 +25,16 @@ export const formatI18nDate = (
     format = DateTime.DATE_MED,
     locale = i18n.language as Locale,
     showUTCLabel,
+    timeZone,
   }: formatI18DateParams = {}
 ) => {
-  const dateTimeDate = getUTCDateTime(date)
+  const utcDate = getUTCDateTime(date)
+  const dateTimeDate = timeZone ? utcDate?.setZone(timeZone) : utcDate
   let utcSuffix = ''
   const isDateTimeFormat =
     format === DateTime.DATETIME_MED || format === DateTime.DATETIME_MED_WITH_SECONDS
   if ((isDateTimeFormat && showUTCLabel === undefined) || showUTCLabel) {
-    utcSuffix = ` ${UTC_SUFFIX}`
+    utcSuffix = ` ${timeZone ? dateTimeDate?.zoneName : UTC_SUFFIX}`
   }
   // toContentLocale: dev-only codes (source, val) are not Intl locales, so server and browser
   // would each fall back to their own default locale and break hydration
@@ -41,8 +44,9 @@ export const formatI18nDate = (
 export const useI18nDate = (
   date: SupportedDateType,
   format = DateTime.DATE_MED,
-  showUTCLabel?: boolean
+  showUTCLabel?: boolean,
+  timeZone?: string | Zone
 ) => {
   const { i18n } = useTranslation()
-  return formatI18nDate(date, { format, locale: i18n.language as Locale, showUTCLabel })
+  return formatI18nDate(date, { format, locale: i18n.language as Locale, showUTCLabel, timeZone })
 }

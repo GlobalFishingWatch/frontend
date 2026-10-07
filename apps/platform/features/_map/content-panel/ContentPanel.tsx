@@ -1,27 +1,14 @@
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
 import { IS_CHATBOT_ENABLED } from 'data/map/config'
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
+import SidePanelTabs from 'features/_map/content-panel/SidePanelTabs'
 import { useAppSearch } from 'router/routes.hook'
 
 import styles from './ContentPanel.module.css'
-
-const ChatContainer = lazy(() => import('features/_map/content-panel/chat/ChatContainer'))
-const DataTerminologyContent = lazy(
-  () => import('features/_map/content-panel/data-terminology/DataTerminologyContent')
-)
-const DatasetInfoContainer = lazy(
-  () => import('features/_map/content-panel/datasets-info/DatasetInfoContainer')
-)
-const UserDatasetInfoContainer = lazy(
-  () => import('features/_map/content-panel/datasets-info/UserDatasetInfoContainer')
-)
-const UserGuideContent = lazy(
-  () => import('features/_map/content-panel/user-guide/UserGuideContent')
-)
 
 const MIN_PANEL_WIDTH = 320
 const MAX_PANEL_WIDTH = 800
@@ -39,23 +26,25 @@ function ContentPanel({
   initialScreenWidth?: number
   onPanelWidthChange?: (width: number) => void
 }) {
-  const { sidePanelContent } = useAppSearch()
+  const { sidePanels } = useAppSearch()
   const { closeSidePanel } = useSidePanel()
   const isSmallScreen = useSmallScreen(undefined, { initialScreenWidth })
+  const isOpen = Boolean(sidePanels?.length)
 
   const [isDragging, setIsDragging] = useState(false)
   const [panelWidth, setPanelWidth] = useState(
     clampPanelWidth(initialPanelWidth ?? DEFAULT_PANEL_WIDTH)
   )
 
+  const hasChat = sidePanels?.some((panel) => panel.type === 'chat')
   const startCursorX = useRef<number | null>(null)
   const startWidth = useRef<number | null>(null)
 
   useEffect(() => {
-    if (sidePanelContent === 'chat' && !IS_CHATBOT_ENABLED) {
-      closeSidePanel()
+    if (hasChat && !IS_CHATBOT_ENABLED) {
+      closeSidePanel('chat')
     }
-  }, [sidePanelContent, closeSidePanel])
+  }, [hasChat, closeSidePanel])
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
@@ -95,7 +84,7 @@ function ContentPanel({
 
   return (
     <div
-      className={cx(styles.panel, { [styles.hidden]: !sidePanelContent })}
+      className={cx(styles.panel, { [styles.hidden]: !isOpen })}
       style={
         (isSmallScreen
           ? {
@@ -116,13 +105,7 @@ function ContentPanel({
           onMouseDown={handleMouseDown}
         />
       )}
-      <Suspense fallback={null}>
-        {sidePanelContent === 'userGuide' && <UserGuideContent />}
-        {sidePanelContent === 'datasets' && <DatasetInfoContainer />}
-        {sidePanelContent === 'userDataset' && <UserDatasetInfoContainer />}
-        {sidePanelContent === 'dataTerminology' && <DataTerminologyContent />}
-        {sidePanelContent === 'chat' && IS_CHATBOT_ENABLED && <ChatContainer />}
-      </Suspense>
+      {isOpen && <SidePanelTabs />}
     </div>
   )
 }

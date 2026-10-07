@@ -27,7 +27,7 @@ Defaults live in `DEFAULT_WORKSPACE` (`apps/platform/data/map/config.ts`) and `D
 | `vesselGroupsVisualizationMode` | string                          | `footprint` (default) \| `footprint-high-res`                                                                                   |
 | `vesselsColorBy`                | string                          | Property coloring vessel tracks/points: `track` \| `speed` \| `elevation`                                                       |
 
-Internal/auto-generated params — never set them: `reportAreaBounds`, `skipColorDomainSampling`, `migramarLayer`, `includeRelatedIdentities`, `trackCorrectionId`, `sidePanelId`/`sidePanelSubcontentId`/`sidePanelContent`.
+Internal/auto-generated params — never set them: `reportAreaBounds`, `skipColorDomainSampling`, `migramarLayer`, `includeRelatedIdentities`, `trackCorrectionId`, `sidePanels`/`sidePanelActive` (and legacy `sidePanelId`/`sidePanelSubcontentId`/`sidePanelContent`).
 
 ## dataviewInstances item
 

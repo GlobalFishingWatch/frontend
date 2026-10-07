@@ -75,10 +75,8 @@ const getLonglineCategoryLabel = (category: LonglineCategory) => {
   switch (category) {
     case 'entirelyDay':
       return t((t) => t.event.longlineCategoryEntirelyDay)
-    case 'mostlyDay':
-      return t((t) => t.event.longlineCategoryMostlyDay)
-    case 'mostlyNight':
-      return t((t) => t.event.longlineCategoryMostlyNight)
+    case 'dayAndNight':
+      return t((t) => t.event.longlineCategoryDayAndNight)
     case 'entirelyNight':
       return t((t) => t.event.longlineCategoryEntirelyNight)
   }

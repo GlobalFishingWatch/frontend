@@ -51,6 +51,7 @@ function NewPolygonDataset({
   dataset,
   onFileUpdate,
   onDatasetParseError,
+  onClose,
 }: NewDatasetProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const isGFWDeveloper = useSelector(selectIsGFWDeveloper)
@@ -303,7 +304,7 @@ function NewPolygonDataset({
       <div className={styles.modalFooter}>
         <div className={styles.footerMsg}>
           {error && <span className={styles.errorMsg}>{error}</span>}
-          <UserGuideLink slug="uploading-data" />
+          <UserGuideLink slug="uploading-data" onClick={onClose} />
         </div>
         <Button
           className={styles.saveBtn}

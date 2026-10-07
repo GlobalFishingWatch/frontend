@@ -7,6 +7,10 @@
   padding-block: var(--space-XL);
 }
 
+.tabLoading {
+  min-height: 30rem;
+}
+
 .tabsContainer {
   margin: var(--space-S);
 }

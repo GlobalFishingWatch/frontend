@@ -33,8 +33,9 @@ export function useOnboardingAutoOpen() {
   const screenshotMode = useSelector(selectScreenshotMode)
   const workspaceId = useSelector(selectWorkspaceId)
   const isDefaultWorkspace = !workspaceId || workspaceId === DEFAULT_WORKSPACE_ID
-  const { sidePanelContent, dataviewInstances, dataviewInstancesOrder } = useAppSearch()
+  const { sidePanels, dataviewInstances, dataviewInstancesOrder } = useAppSearch()
   const hasDataviewInstances = Boolean(dataviewInstances?.length || dataviewInstancesOrder?.length)
+  const hasSidePanels = Boolean(sidePanels?.length)
   const autoOpened = useRef(false)
 
   useEffect(() => {
@@ -47,7 +48,7 @@ export function useOnboardingAutoOpen() {
       !isWorkspaceLocation ||
       !isDefaultWorkspace ||
       hasDataviewInstances ||
-      sidePanelContent
+      hasSidePanels
     ) {
       return
     }
@@ -62,6 +63,6 @@ export function useOnboardingAutoOpen() {
     isWorkspaceLocation,
     isDefaultWorkspace,
     hasDataviewInstances,
-    sidePanelContent,
+    hasSidePanels,
   ])
 }

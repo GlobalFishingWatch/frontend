@@ -3,9 +3,8 @@
   z-index: 3;
   display: flex;
   align-items: center;
-  padding: 0 var(--space-S) 0 var(--space-M);
+  padding: 0 var(--space-S) 0 var(--space-SM);
   height: var(--header-height);
-  text-transform: uppercase;
   border-bottom: var(--border);
 }
 
@@ -18,4 +17,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.labelContainer:has(input) {
+  overflow: visible;
 }

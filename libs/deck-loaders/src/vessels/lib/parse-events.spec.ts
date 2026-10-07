@@ -97,11 +97,12 @@ describe('parseEvents', () => {
       fishing,
     })
     const events = [
-      longlineSet({ dayNightCategory: 'day', fractionAtNight: 0 }),
-      longlineSet({ dayNightCategory: 'night', fractionAtNight: 1 }),
-      longlineSet({ dayNightCategory: 'over_dawn', fractionAtNight: 0.2 }),
-      longlineSet({ dayNightCategory: 'over_dusk', fractionAtNight: 0.8 }),
-      // a regular fishing event has no dayNightCategory and keeps the generic color
+      longlineSet({ dayNightSummary: 'entirely_day' }),
+      longlineSet({ dayNightSummary: 'entirely_night' }),
+      longlineSet({ dayNightSummary: 'mostly_day' }),
+      longlineSet({ dayNightSummary: 'mostly_night' }),
+      longlineSet({ dayNightSummary: 'day_and_night' }),
+      // a regular fishing event has no dayNightSummary and keeps the generic color
       longlineSet({ averageSpeedKnots: 7 }),
     ]
     const arrayBuffer = toArrayBuffer(JSON.stringify({ entries: events }))
@@ -109,9 +110,10 @@ describe('parseEvents', () => {
     const result = parseEvents(arrayBuffer)
 
     expect(result.map((event) => event.props?.color)).toEqual([
-      '#ffbd52',
-      '#39394a',
       '#da8902',
+      '#39394a',
+      '#0673b3',
+      '#0673b3',
       '#0673b3',
       '#ffffff',
     ])

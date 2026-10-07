@@ -11,7 +11,7 @@ type MarkdownLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement>
 const MarkdownLink = ({ href, children, ...props }: MarkdownLinkProps) => {
   const { replaceQueryParams } = useReplaceQueryParams()
   const { openSidePanel } = useSidePanel()
-  const { sidePanelContent, sidePanelId, sidePanelSubcontentId } = useAppSearch()
+  const { sidePanels, sidePanelActive } = useAppSearch()
 
   const sameRouteUrl = useMemo(() => {
     if (!href) return null
@@ -64,9 +64,8 @@ const MarkdownLink = ({ href, children, ...props }: MarkdownLinkProps) => {
     }) as Partial<QueryParams>
     replaceQueryParams({
       ...newParams,
-      sidePanelContent,
-      sidePanelId,
-      sidePanelSubcontentId,
+      sidePanels,
+      sidePanelActive,
     })
   }
 

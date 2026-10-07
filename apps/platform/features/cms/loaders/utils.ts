@@ -73,7 +73,7 @@ const getCmsRequestMode = (): ReturnType<typeof resolveCmsRequestMode> => {
       IS_DEVELOPMENT_ENV
     )
   } catch {
-    return { useCache: true }
+    return { useCache: !IS_DEVELOPMENT_ENV }
   }
 }
 

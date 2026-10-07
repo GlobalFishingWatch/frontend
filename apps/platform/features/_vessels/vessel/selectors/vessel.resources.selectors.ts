@@ -4,12 +4,13 @@ import { DateTime } from 'luxon'
 import { DatasetTypes, EventTypes } from '@globalfishingwatch/api-types'
 import { getRelatedDatasetsByType } from '@globalfishingwatch/datasets-client'
 
-import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
+import { selectAllDatasets, selectDatasetsStatus } from 'features/_map/datasets/datasets.slice'
 import { selectVisibleEvents } from 'features/_map/workspace/selectors/app.selectors'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
 import type { ActivityEvent } from 'features/_vessels/vessel/activity/vessels-activity.selectors'
 import { selectVesselEventsData } from 'features/_vessels/vessel/selectors/vessel.selectors'
 import { selectVesselDatasetId } from 'features/_vessels/vessel/vessel.config.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 export const selectVesselDataset = createSelector(
   [selectVesselDatasetId, selectAllDatasets],
@@ -32,6 +33,14 @@ export const selectVesselHasEventsDatasets = createSelector(
   (datasets) => {
     return datasets ? datasets.length > 0 : false
   }
+)
+
+export const selectVesselEventsDatasetsLoading = createSelector(
+  [selectVesselDataset, selectVesselHasEventsDatasets, selectDatasetsStatus],
+  (vesselDataset, hasEventsDatasets, datasetsStatus) =>
+    !hasEventsDatasets &&
+    datasetsStatus === AsyncReducerStatus.Loading &&
+    !!getRelatedDatasetsByType(vesselDataset, DatasetTypes.Events)?.length
 )
 
 const selectVesselEventsDataSorted = createSelector([selectVesselEventsData], (events) => {

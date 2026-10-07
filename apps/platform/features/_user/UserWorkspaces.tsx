@@ -19,6 +19,7 @@ function UserWorkspaces() {
     <div className={styles.userWorkspaces}>
       <div className={styles.search}>
         <InputText
+          className={styles.searchInput}
           type="search"
           value={searchQuery}
           onChange={onSearchQueryChange}

@@ -1,6 +1,6 @@
 import type { TFunction } from 'i18next'
 import type { DateTimeFormatOptions } from 'luxon'
-import { DateTime } from 'luxon'
+import { DateTime, FixedOffsetZone } from 'luxon'
 
 import type { Dataset, Report, VesselGroup } from '@globalfishingwatch/api-types'
 import { LIMITS_BY_INTERVAL } from '@globalfishingwatch/deck-loaders/fourwings/helpers'
@@ -9,6 +9,9 @@ import { REAL_TIME_DATA_UPDATE_INTERVAL_MINUTES } from 'data/map/config'
 import type { AppWorkspace } from 'features/_map/workspaces-list/workspaces-list.slice'
 
 export { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
+
+// Local solar time from the longitude (lon / 15 hours), same as the pipeline's fishing.localStartHours
+export const getSolarTimeZone = (lon: number) => FixedOffsetZone.instance(Math.round(lon * 4))
 
 function getFlooredMinute(now: DateTime): number {
   const utcNow = now.toUTC()

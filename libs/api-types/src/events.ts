@@ -173,11 +173,12 @@ export type GapsEvent = {
   lonMin: number
 }
 
-export type FishingEventDayNightCategory = 'day' | 'night' | 'over_dawn' | 'over_dusk'
+export type FishingEventDayNightSummary =
+  'entirely_day' | 'mostly_day' | 'day_and_night' | 'mostly_night' | 'entirely_night'
 
 // Only available in longline fishing events datasets
 export type LonglineFishingFields = {
-  dayNightCategory: FishingEventDayNightCategory
+  dayNightSummary: FishingEventDayNightSummary
   fractionAtNight: number
   localStartHours: number
   localEndHours: number

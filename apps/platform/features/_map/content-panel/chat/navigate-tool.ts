@@ -7,6 +7,7 @@ import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataview
 import type { RoutePathValues } from '@platform/config/routes'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
+import { withSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import { useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
 import { timerangeState } from 'features/_map/timebar/timebar.hooks'
 import { setHasChangedSettings } from 'features/_map/timebar/timebar.slice'
@@ -48,16 +49,22 @@ export function getNavigateToolAlternatives(output: NavigateToolOutput) {
 }
 
 export function getNavigateToolLinkProps(navigation: NavigateToolNavigation) {
-  const search = { ...navigation.search, sidePanelContent: 'chat' }
-  const normalizedSearch = parseWorkspace(stringifyWorkspace(search as QueryParams)) as Record<
-    string,
-    unknown
-  >
+  const normalizedSearch = parseWorkspace(
+    stringifyWorkspace((navigation.search ?? {}) as QueryParams)
+  ) as Record<string, unknown>
   delete normalizedSearch.tk
+  // panels belong to the viewer, not to the agent's view: keep every open one and the chat
+  delete normalizedSearch.sidePanels
+  delete normalizedSearch.sidePanelActive
   return {
     to: navigation.to,
     params: navigation.params ?? {},
-    search: normalizedSearch,
+    search: (prev: QueryParams) => ({
+      ...normalizedSearch,
+      ...withSidePanel(prev, { type: 'chat' }),
+    }),
+    /** Target search without panels, to compare against the current location */
+    viewSearch: normalizedSearch,
   }
 }
 

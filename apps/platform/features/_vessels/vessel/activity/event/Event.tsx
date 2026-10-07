@@ -27,6 +27,7 @@ interface EventProps {
   testId?: string
   expanded?: boolean
   source?: DatasetEventSource
+  localTime?: boolean
 }
 
 export const EVENT_HEIGHT = 126
@@ -43,6 +44,7 @@ const Event = (props: EventProps) => {
     eventsRef,
     expanded,
     source,
+    localTime,
   } = props
   const { getEventDescription } = useActivityEventTranslations()
   const hasInteraction =
@@ -87,7 +89,7 @@ const Event = (props: EventProps) => {
       <div className={cx(styles.header)}>
         <EventIcon type={event.type} />
         <div className={styles.eventData}>
-          <ActivityDate event={event as ActivityEvent} />
+          <ActivityDate event={event as ActivityEvent} localTime={localTime} />
           <p className={cx(styles.description, { [styles.interactive]: expanded })}>
             {getEventDescription(event as ActivityEvent, { source, regionsPriority })}
           </p>

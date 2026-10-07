@@ -9,7 +9,7 @@
   "engines": {
     "node": ">=24"
   },
-  "packageManager": "pnpm@12.3.1+sha512.3c14c15408d1489d350f8ed7f93361d26cc707054f6849a4eea3bb7407ff4fe4564b413a1c421a773a176ab1168a8df1c7d548f2cd0dc7d344f58c4e680a5b18",
+  "packageManager": "pnpm@12.10.1",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "release:platform": "nx release --projects='platform' --skip-publish",
@@ -61,8 +61,8 @@
     "@sentry/tanstackstart-react": "11.0.0",
     "@strapi/client": "1.6.2",
     "@svgr/webpack": "8.1.0",
-    "@tanstack/highlight": "0.1.0",
-    "@tanstack/markdown": "0.0.15",
+    "@tanstack/highlight": "1.0.0",
+    "@tanstack/markdown": "1.0.0",
     "@tanstack/react-devtools": "0.10.13",
     "@tanstack/react-router": "1.170.40",
     "@tanstack/react-router-devtools": "1.167.2",

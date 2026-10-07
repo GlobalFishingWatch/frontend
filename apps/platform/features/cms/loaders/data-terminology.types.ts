@@ -14,6 +14,7 @@ export type DataTerminologySlugs =
   | 'insightsFlagsChanges'
   | 'insightsGaps'
   | 'insightsIUU'
+  | 'insightsLongline'
   | 'insightsMOUList'
   | 'insightsVesselGroups'
   | 'loitering'

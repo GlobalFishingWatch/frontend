@@ -109,11 +109,13 @@ function NavigateToolLink({
   const { markExplicitSettings, applyNavigateMapState } = useNavigateToolMapState()
   const linkProps = getNavigateToolLinkProps(navigation)
   const isSameViewSearch = useRouterState({
-    select: (s) => isNavigateToolViewActive(s.location.search, linkProps.search),
+    select: (s) => isNavigateToolViewActive(s.location.search, linkProps.viewSearch),
   })
   return (
     <Link
-      {...(linkProps as any)}
+      to={linkProps.to as any}
+      params={linkProps.params as any}
+      search={linkProps.search as any}
       activeOptions={{ includeSearch: false }}
       onClick={() => {
         markExplicitSettings(navigation.search)

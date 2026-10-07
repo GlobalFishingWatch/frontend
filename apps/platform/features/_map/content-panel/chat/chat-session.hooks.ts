@@ -129,9 +129,8 @@ export function useChatSession({ threadId, userId, initialMessages, onFinished }
       if (!parsed.success) continue
       const { navigation } = parsed.data
       markExplicitSettings(navigation.search)
-      routerNavigate(
-        getNavigateToolLinkProps(navigation) as unknown as Parameters<typeof routerNavigate>[0]
-      )
+      const { to, params, search } = getNavigateToolLinkProps(navigation)
+      routerNavigate({ to, params, search } as unknown as Parameters<typeof routerNavigate>[0])
         .then(() => applyNavigateMapState(navigation.search))
         .catch((err) => console.warn('navigate tool: router navigation failed', err))
     }
