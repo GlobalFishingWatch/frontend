@@ -35,6 +35,12 @@
   max-width: 30rem;
 }
 
+.count {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  white-space: nowrap;
+}
+
 .typeChoice {
   flex: 1;
   max-width: 30rem;
@@ -104,43 +110,6 @@
   border-radius: var(--border-radius-0);
   overflow: hidden;
   background-color: var(--color-map-background);
-}
-
-.mapControls {
-  position: absolute;
-  top: var(--space-S);
-  left: var(--space-S);
-  right: var(--space-S);
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--space-S);
-  pointer-events: none;
-}
-
-.mapControls > * {
-  pointer-events: auto;
-}
-
-.mapToggle {
-  width: auto;
-  padding: 1.1rem var(--space-S);
-  border: 1px solid rgba(var(--white-rgb), var(--opacity-border));
-  border-radius: var(--border-radius-0);
-  background-color: var(--color-primary-blue);
-}
-
-.mapTooltip {
-  position: absolute;
-  transform: translate(var(--space-S), var(--space-S));
-  max-width: 30rem;
-  padding: var(--space-XS) var(--space-S);
-  border-radius: var(--border-radius-0);
-  background-color: var(--color-white);
-  box-shadow: var(--box-shadow-1);
-  color: var(--color-primary-blue);
-  font: var(--font-S);
-  pointer-events: none;
 }
 
 @media (width <= 1200px) {

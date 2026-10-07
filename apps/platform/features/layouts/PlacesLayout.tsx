@@ -1,4 +1,4 @@
-import { Suspense } from 'react'
+import { Suspense, useState } from 'react'
 import { Outlet } from '@tanstack/react-router'
 import cx from 'classnames'
 
@@ -9,9 +9,15 @@ import { SCROLL_CONTAINER_DOM_ID } from 'features/_map/sidebar/sidebar.utils'
 import styles from './layouts.module.css'
 
 function PlacesLayout() {
+  const [isScrolled, setIsScrolled] = useState(false)
+
   return (
     <div className={styles.contentLayout}>
-      <div className={styles.contentHeader}>
+      <div
+        className={cx(styles.contentHeader, {
+          [styles.contentHeaderScrolled]: isScrolled,
+        })}
+      >
         <a href="https://globalfishingwatch.org" className={styles.logoLink}>
           <Logo className={styles.logo} />
         </a>
@@ -19,6 +25,7 @@ function PlacesLayout() {
       <div
         id={SCROLL_CONTAINER_DOM_ID}
         className={cx('scrollContainer', styles.contentScrollContainer)}
+        onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 0)}
       >
         <Suspense fallback={null}>
           <Outlet />

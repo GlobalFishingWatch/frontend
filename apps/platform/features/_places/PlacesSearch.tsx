@@ -12,19 +12,21 @@ import { InputText } from '@globalfishingwatch/ui-components/input-text'
 import PlaceLink from 'features/_places/PlaceLink'
 import { hoveredPlaceAtom } from 'features/_places/places.atoms'
 import { AREA_DATASET_IDS } from 'features/_places/places.links'
-import type { Place, PlaceCategory } from 'features/_places/places.loaders'
+import type { Place, PlaceCategory, PlacesResult } from 'features/_places/places.loaders'
 import { PLACE_TYPES } from 'features/_places/places.loaders'
 import type { PlacesMapDataviews } from 'features/_places/places-map.config'
+import PlacesSortButton from 'features/_places/PlacesSortButton'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { useIsClientHydrated } from 'hooks/ssr.hooks'
 import { useAppSearch, useReplaceQueryParams } from 'router/routes.hook'
 import { formatInfoField } from 'utils/info'
 import { getHighlightedText } from 'utils/text'
 
-import styles from './places.module.css'
+import styles from './PlacesSearch.module.css'
 
 const PlacesMap = lazy(() => import('features/_places/PlacesMap'))
 
-const PLACES_MAP_BREAKPOINT = 1280
+const PLACES_MAP_BREAKPOINT = 1200
 
 const THUMBNAILS_BASE_URL = 'https://storage.googleapis.com/gfw-public-place-thumbnails-us-central1'
 
@@ -39,8 +41,8 @@ const getThumbnailUrl = ({ type, id }: Place) =>
 type PlacesSearchProps = {
   category: PlaceCategory
   title: string
-  /** Server-loaded list for the URL's query, type and — while filtering — bounds (`loadPlaces`). */
-  initialPlaces: Place[]
+  /** Server-loaded list and counts for the URL's query, type and — while filtering — bounds (`loadPlaces`). */
+  result: PlacesResult
   /** Used when there is no type selector. */
   placeholder?: string
   /** Renders a type selector; the first option is the default when the URL has no `placeType`. */
@@ -52,7 +54,7 @@ type PlacesSearchProps = {
 function PlacesSearch({
   category,
   title,
-  initialPlaces,
+  result: { places, count, total },
   placeholder,
   typeOptions,
   mapDataviews,
@@ -79,6 +81,11 @@ function PlacesSearch({
       <div className={styles.container}>
         <div className={styles.header}>
           <h1 className={styles.title}>{title}</h1>
+          <span className={styles.count}>
+            {count < total
+              ? `${formatI18nNumber(count)} / ${formatI18nNumber(total)}`
+              : formatI18nNumber(total)}
+          </span>
           <InputText
             type="search"
             value={query}
@@ -100,9 +107,10 @@ function PlacesSearch({
               }
             />
           )}
+          <PlacesSortButton category={category} />
         </div>
         <ul className={styles.list}>
-          {initialPlaces.map((place) => (
+          {places.map((place) => (
             <li
               key={`${place.type}-${place.id}`}
               onMouseEnter={() => setHoveredPlace(place)}

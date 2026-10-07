@@ -1,0 +1,16 @@
+.sortOption {
+  width: 100%;
+  padding: var(--space-S) var(--space-M);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.sortOption:hover,
+.sortOptionActive {
+  background-color: var(--color-terthiary-blue);
+}
+
+li:not(:last-of-type) > .sortOption {
+  border-bottom: var(--border);
+}

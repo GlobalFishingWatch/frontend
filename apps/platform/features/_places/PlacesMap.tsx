@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { Layer, PickingInfo } from '@deck.gl/core'
 import { MapView, WebMercatorViewport } from '@deck.gl/core'
 import DeckGL from '@deck.gl/react'
+import { useNavigate } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 import { useDebounce } from 'use-debounce'
 
@@ -22,6 +23,7 @@ import basemapDefaultImage from 'assets/images/basemap-default.jpg'
 import basemapSatelliteImage from 'assets/images/basemap-satellite.jpg'
 import { getContextValue } from 'features/_map/map/popups/map-popups.utils'
 import { hoveredPlaceAtom } from 'features/_places/places.atoms'
+import { getPlaceLinkOptions } from 'features/_places/places.links'
 import { formatPlacesBounds, parsePlacesBounds } from 'features/_places/places.types'
 import type { PlacesMapDataviews } from 'features/_places/places-map.config'
 import { usePlacesMapDataviews } from 'features/_places/places-map.hooks'
@@ -29,7 +31,7 @@ import { useAppSearch, useReplaceQueryParams } from 'router/routes.hook'
 import { htmlSafeParse } from 'utils/html-parser'
 import { formatInfoField } from 'utils/info'
 
-import styles from './places.module.css'
+import styles from './PlacesMap.module.css'
 import mapControlsStyles from 'features/_map/map/controls/MapControls.module.css'
 
 const PLACES_MAP_VIEW = new MapView({ id: 'places-map', repeat: true })
@@ -79,6 +81,7 @@ function PlacesMap({ dataviewsByType, type }: PlacesMapProps) {
   const { t } = useTranslation()
   const search = useAppSearch()
   const { replaceQueryParams } = useReplaceQueryParams()
+  const navigate = useNavigate()
   const basemap = search.basemap ?? BasemapType.Default
   const filterByMap = !!search.filterByMap
   const initialBounds = parsePlacesBounds(search.bounds)
@@ -149,6 +152,12 @@ function PlacesMap({ dataviewsByType, type }: PlacesMapProps) {
     highlightedRef.current = { layer: rootLayer, id: highlighted?.id }
   }
 
+  const onClick = ({ object }: PickingInfo<ContextPickingObject>) => {
+    if (object?.id === undefined) return
+    const { name, flag } = object.properties ?? {}
+    navigate(getPlaceLinkOptions({ id: object.id, name, flag, type }))
+  }
+
   const isDefaultBasemap = basemap === BasemapType.Default
   const basemapLabel = isDefaultBasemap
     ? t((t) => t.map.change_basemap_satellite)
@@ -194,6 +203,7 @@ function PlacesMap({ dataviewsByType, type }: PlacesMapProps) {
         controller={PLACES_MAP_CONTROLLER}
         layers={layers}
         onHover={onHover}
+        onClick={onClick}
         getCursor={({ isDragging }) =>
           isDragging ? 'grabbing' : hoverTooltip ? 'pointer' : 'grab'
         }
@@ -208,6 +218,7 @@ function PlacesMap({ dataviewsByType, type }: PlacesMapProps) {
           className={styles.mapToggle}
           label={t((t) => t.places.filterByMap)}
           active={filterByMap}
+          inverted
           onClick={() =>
             size &&
             replaceQueryParams({
@@ -216,31 +227,29 @@ function PlacesMap({ dataviewsByType, type }: PlacesMapProps) {
             })
           }
         />
-        <div className={styles.mapButtons}>
-          {canLocate && (
-            <IconButton
-              icon="target"
-              type="map-tool"
-              loading={isLocating}
-              tooltip={t((t) => t.places.centerOnMyLocation)}
-              onClick={onLocateClick}
-            />
-          )}
-          <Tooltip content={basemapLabel} placement="left">
-            <button
-              aria-label={basemapLabel}
-              className={mapControlsStyles.basemapSwitcher}
-              style={{
-                backgroundImage: `url(${isDefaultBasemap ? basemapSatelliteImage : basemapDefaultImage})`,
-              }}
-              onClick={() =>
-                replaceQueryParams({
-                  basemap: isDefaultBasemap ? BasemapType.Satellite : BasemapType.Default,
-                })
-              }
-            />
-          </Tooltip>
-        </div>
+        {canLocate && (
+          <IconButton
+            icon="target"
+            type="map-tool"
+            loading={isLocating}
+            tooltip={t((t) => t.places.centerOnMyLocation)}
+            onClick={onLocateClick}
+          />
+        )}
+        <Tooltip content={basemapLabel} placement="left">
+          <button
+            aria-label={basemapLabel}
+            className={mapControlsStyles.basemapSwitcher}
+            style={{
+              backgroundImage: `url(${isDefaultBasemap ? basemapSatelliteImage : basemapDefaultImage})`,
+            }}
+            onClick={() =>
+              replaceQueryParams({
+                basemap: isDefaultBasemap ? BasemapType.Satellite : BasemapType.Default,
+              })
+            }
+          />
+        </Tooltip>
       </div>
     </Fragment>
   )
