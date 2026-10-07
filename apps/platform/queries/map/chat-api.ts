@@ -9,8 +9,8 @@ export const AGENT_ID = 'main-agent'
 export const AGENT_BASE_URL = `${API_GATEWAY}/${API_VERSION}/agent/workspace-navigator-agent`
 // export const AGENT_BASE_URL = `http://localhost:4111`
 
-// Local Mastra serves threads under /api/memory; the gateway maps `${AGENT_BASE_URL}/threads` there
 const AGENT_THREADS_URL = `${AGENT_BASE_URL}/threads`
+// Local Mastra serves threads under /api/memory; the gateway maps `${AGENT_BASE_URL}/threads` there
 // const AGENT_THREADS_URL = `${AGENT_BASE_URL}/api/memory/threads`
 
 const threadsQuery = gfwBaseQuery({ baseUrl: AGENT_THREADS_URL })
