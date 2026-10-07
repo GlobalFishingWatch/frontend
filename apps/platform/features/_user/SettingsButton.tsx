@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
+import { SETTINGS_BUTTON_TESTID } from '@platform/config/selectors/user'
 
 import { getIsBrowser } from 'utils/dom'
 
@@ -23,7 +24,7 @@ function SettingsButton() {
   const redirectToSettingsPage = useRedirectToSettingsPage()
 
   return (
-    <Button type="secondary" onClick={redirectToSettingsPage} testId="settings-button">
+    <Button type="secondary" onClick={redirectToSettingsPage} testId={SETTINGS_BUTTON_TESTID}>
       <Icon icon="settings" />
       <span>{t((t) => t.common.settings)}</span>
     </Button>
