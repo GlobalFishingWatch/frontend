@@ -10,7 +10,8 @@ import {
 } from '@turf/turf'
 import { uniqBy } from 'es-toolkit'
 import type { Feature, FeatureCollection, Geometry } from 'geojson'
-import { matchSorter } from 'match-sorter'
+import type { MatchSorterOptions } from 'match-sorter'
+import { matchSorter, rankings } from 'match-sorter'
 
 let oceanAreas: FeatureCollection<Geometry, OceanAreaProperties> = {
   type: 'FeatureCollection',
@@ -18,10 +19,27 @@ let oceanAreas: FeatureCollection<Geometry, OceanAreaProperties> = {
 }
 let oceanAreasLocales = {} as Record<OceanAreaLocale, Record<string, string>>
 
+/** src/data/activity.json, written by scripts/activity.ts */
+type OceanAreasActivity = {
+  start: string
+  end: string
+  hours: Partial<Record<OceanAreaType, Record<string, number>>>
+  visits?: Record<string, number>
+}
+
 const importOceanAreasData = async () => {
   if (!oceanAreas.features.length) {
     oceanAreas = (await import('./data')).default
     oceanAreasLocales = (await import('./locales')).default
+    // Kept apart from the area data: it is refreshed on its own cadence, for a fixed time range
+    const activity = (await import('./data/activity.json')).default as OceanAreasActivity
+    oceanAreas.features.forEach(({ properties }) => {
+      const id = String(properties.area)
+      const hours = activity.hours[properties.type]?.[id]
+      if (hours !== undefined) properties.activityHours = hours
+      const visits = properties.type === 'port' ? activity.visits?.[id] : undefined
+      if (visits !== undefined) properties.portVisits = visits
+    })
   }
 }
 
@@ -37,7 +55,13 @@ export interface OceanAreaProperties {
   area?: number | string
   mrgid?: string
   bounds?: OceanAreaBBox
-  /** Ports only: ISO3 country code */
+  /** Surface in m², precomputed from the full-resolution source geometry; polygons only */
+  areaSize?: number
+  /** Activity hours in the report over a fixed time range (data/activity.json); not all areas */
+  activityHours?: number
+  /** Ports only: port visits over the same time range (data/activity.json) */
+  portVisits?: number
+  /** ISO3 country code: the port's country, or the sovereign country of a territory's EEZ */
   flag?: string
   /** Ports only: comma-separated `OceanAreaSource` list, e.g. `'ais'` or `'ais,vms'` */
   // sources?: string
@@ -101,6 +125,9 @@ type SearchOceanAreaParams = GetOceanAreaNameLocaleParam & {
   getExtraSearchValues?: (area: OceanArea) => string[]
   /** Only areas whose bbox intersects these `[west, south, east, north]` bounds */
   bounds?: OceanAreaBBox
+  /** `name` keeps the search ranking; `area` lists the largest first */
+  /** `area` and `activity` list the largest first; areas without the value go last */
+  sortBy?: 'name' | 'area' | 'activity'
 }
 
 const getFeaturePartBBoxes = ({ geometry }: OceanArea): OceanAreaBBox[] =>
@@ -136,19 +163,23 @@ const getBoundsFilter = ([west, south, east, north]: OceanAreaBBox) => {
   }
 }
 
-export const searchOceanAreas = async (
+/** Every match, sorted and deduped by name, without `limit` or computed `bounds` — for counting. */
+export const matchOceanAreas = async (
   query: string,
   {
     locale = OceanAreaLocale.en,
     types,
-    limit = MAX_RESULTS_NUMBER,
     getExtraSearchValues,
     bounds,
-  } = {} as SearchOceanAreaParams
+    sortBy = 'name',
+  } = {} as Omit<SearchOceanAreaParams, 'limit'>
 ): Promise<OceanArea[]> => {
   await importOceanAreasData()
   const localizedAreas = localizeArea(oceanAreas, locale)
-  let matchingFeatures = matchSorter(localizedAreas.features, query, {
+  const features = types?.length
+    ? localizedAreas.features.filter((feature) => types.includes(feature.properties.type))
+    : localizedAreas.features
+  const matchOptions: MatchSorterOptions<OceanArea> = {
     keys: getExtraSearchValues ? ['properties.name', getExtraSearchValues] : ['properties.name'],
     baseSort: (a, b) => {
       const priorityDiff =
@@ -157,21 +188,44 @@ export const searchOceanAreas = async (
         ? priorityDiff
         : String(a.rankedValue).localeCompare(String(b.rankedValue))
     },
+  }
+  // Substring matches only; the default `MATCHES` also takes the query's letters in order anywhere
+  // ("spain" → "Saint-Pierre and Miquelon"), so it is just the fallback for typos
+  let matchingFeatures = matchSorter(features, query, {
+    ...matchOptions,
+    threshold: rankings.CONTAINS,
   })
-  if (types?.length) {
-    matchingFeatures = matchingFeatures.filter((feature) => types.includes(feature.properties.type))
+  if (!matchingFeatures.length) {
+    matchingFeatures = matchSorter(features, query, matchOptions)
   }
   if (bounds) {
     matchingFeatures = matchingFeatures.filter(getBoundsFilter(bounds))
   }
-  const areas = matchingFeatures.slice(0, limit).map((feature) => ({
+  // Before the limit, so "largest" means largest of all matches, not of the first page.
+  // `areaSize` is precomputed by the data scripts (scripts/lib/prepare.ts)
+  if (sortBy !== 'name') {
+    // Activity is hours for areas and visits for ports
+    const getValue = ({ properties }: OceanArea) =>
+      (sortBy === 'area'
+        ? properties.areaSize
+        : (properties.activityHours ?? properties.portVisits)) ?? -1
+    matchingFeatures = [...matchingFeatures].sort((a, b) => getValue(b) - getValue(a))
+  }
+  return uniqBy(matchingFeatures, (a) => a.properties?.name)
+}
+
+export const searchOceanAreas = async (
+  query: string,
+  { limit = MAX_RESULTS_NUMBER, ...params } = {} as SearchOceanAreaParams
+): Promise<OceanArea[]> => {
+  const matches = await matchOceanAreas(query, params)
+  return matches.slice(0, limit).map((feature) => ({
     ...feature,
     properties: {
       ...feature.properties,
       bounds: bbox(feature as any) as OceanAreaBBox,
     },
   }))
-  return uniqBy(areas, (a) => a.properties?.name)
 }
 
 /** Exact lookup by type and id (`properties.area`), e.g. for a port page reached by its URL. */

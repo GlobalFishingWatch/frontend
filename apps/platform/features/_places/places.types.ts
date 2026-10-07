@@ -1,7 +1,10 @@
 import type { BasemapType } from '@globalfishingwatch/deck-layers'
 import type { OceanAreaBBox, OceanAreaType } from '@globalfishingwatch/ocean-areas'
 
+export type PlacesSort = 'name' | 'area' | 'activity'
+
 export type PlacesSearchState = {
+  placesSort?: PlacesSort
   placeType?: OceanAreaType
   basemap?: BasemapType
   filterByMap?: boolean

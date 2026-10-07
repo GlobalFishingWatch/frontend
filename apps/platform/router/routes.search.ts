@@ -302,6 +302,7 @@ export const placesSearchSchema = z
     placeType: optionalLiteralUnion(PLACE_TYPES),
     basemap: optionalLiteralUnion(PLACES_BASEMAPS),
     filterByMap: optionalBoolean(),
+    placesSort: optionalLiteralUnion(['name', 'area', 'activity']),
     bounds: optionalString(), // `west,south,east,north`, parsed by parsePlacesBounds
   })
   .partial()

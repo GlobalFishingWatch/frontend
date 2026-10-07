@@ -83,7 +83,7 @@ const hideOverlaysAndMeasure = (): CanvasBox => {
 }
 
 /** Same seed as `apps/platform-e2e/src/helpers/modals.ts`, so both start from the same app state. */
-async function disableWelcomePopups(context: BrowserContext) {
+export async function disableWelcomePopups(context: BrowserContext) {
   await context.addInitScript(() => {
     const hidden = JSON.stringify({ visible: false, showAgain: false })
     const hints = JSON.stringify({

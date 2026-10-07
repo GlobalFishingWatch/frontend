@@ -1009,6 +1009,10 @@
     "filterByMap": "Search as I move the map",
     "searchPorts": "Search ports",
     "searchType": "Search {{type}}",
+    "sortByActivity": "Sort by activity",
+    "sortByArea": "Sort by area",
+    "sortByName": "Sort by name",
+    "sortByPortVisits": "Sort by port visits",
     "types": {
       "eez": "EEZs",
       "fao": "FAO areas",

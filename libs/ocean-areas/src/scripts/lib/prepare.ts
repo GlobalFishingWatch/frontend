@@ -1,5 +1,6 @@
 import fs from 'fs/promises'
 
+import { area as turfArea } from '@turf/turf'
 import type { Feature } from 'geojson'
 
 import { simplifyArea } from './simplify.ts'
@@ -26,6 +27,8 @@ export async function prepare(
     propertiesMapping,
     limitBy,
     filter,
+    getFlag,
+    getAreaSize,
     skipDownload,
     geometryMode = 'simplify',
   } = {} as AreaConfig
@@ -88,7 +91,7 @@ export async function prepare(
           console.error(`\r[${type}] Name not found ${propertiesMapping.name}`, areaData.properties)
           continue
         }
-        const flag = areaData.properties?.[propertiesMapping.flag!]
+        const flag = getFlag ? getFlag(areaData) : areaData.properties?.[propertiesMapping.flag!]
         // Parked with the AIS/VMS ports work: tag each port with which pipelines observed it
         // const extraProperties: Record<string, unknown> = {}
         // if (type === 'port') {
@@ -97,9 +100,16 @@ export async function prepare(
         //     extraProperties.sources = sources.join(',')
         //   }
         // }
+        // From the source geometry, before simplification, so the size stays exact (m², rounded)
+        const rawAreaSize = getAreaSize
+          ? getAreaSize(areaData)
+          : areaData.geometry?.type === 'Point'
+            ? undefined
+            : turfArea(areaData)
+        const areaSize = rawAreaSize ? Math.round(rawAreaSize) : undefined
         const finalArea = {
           ...simplifiedArea,
-          properties: { type, area, name, ...(flag && { flag }) },
+          properties: { type, area, name, ...(flag && { flag }), ...(areaSize && { areaSize }) },
           // properties: { type, area, name, ...(flag && { flag }), ...extraProperties },
         }
         const jsonLine = JSON.stringify(finalArea)

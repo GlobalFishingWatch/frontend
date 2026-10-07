@@ -19,66 +19,18 @@ import { parseArgs } from 'node:util'
 // dataviews-client graph (api-client, redux toolkit, resolvers).
 import type { BaseUrlWorkspace } from '@globalfishingwatch/dataviews-client/url-workspace'
 import { stringifyWorkspace } from '@globalfishingwatch/dataviews-client/url-workspace'
-// The app owns these ids — the workspace the report route loads declares its instances with them,
-// so a literal here would silently stop matching if the app ever renamed one.
 import {
   AIS_DATAVIEW_INSTANCE_ID,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
-  EEZ_DATAVIEW_INSTANCE_ID,
-  FAO_AREAS_DATAVIEW_INSTANCE_ID,
-  FAO_AREAS_DATAVIEW_SLUG,
-  MPA_DATAVIEW_INSTANCE_ID,
-  RFMO_DATAVIEW_INSTANCE_ID,
   VMS_DATAVIEW_INSTANCE_ID,
 } from '@platform/config/map/dataviews'
 
-import eezs from '../data/eezs.json' with { type: 'json' }
-import fao from '../data/fao.json' with { type: 'json' }
-import mpas from '../data/mpas.json' with { type: 'json' }
-import rfmos from '../data/rfmos.json' with { type: 'json' }
-import type { OceanAreaBBox, OceanAreaProperties } from '../ocean-areas'
+import type { OceanAreaBBox } from '../ocean-areas'
 
+import type { AreaType, AreaTypeId, OceanAreaFeature } from './lib/area-types.ts'
+import { AREA_TYPES } from './lib/area-types.ts'
 import type { CaptureJob } from './lib/capture.ts'
 import { BASE_URL, CAPTURE_OPTIONS, captureAll, PATH_BASENAME } from './lib/capture.ts'
-
-type OceanAreaFeature = Feature<Geometry, OceanAreaProperties>
-
-type AreaType = {
-  features: OceanAreaFeature[]
-  /** dataset the report route resolves the area against */
-  datasetId: string
-  /** context layer that must be visible for the highlight to draw */
-  dataviewInstanceId: string
-  /** needed when the default workspace lacks the instance, else the URL instance resolves to nothing */
-  dataviewId?: string
-}
-
-const AREA_TYPES = {
-  eez: {
-    features: eezs as OceanAreaFeature[],
-    datasetId: 'public-eez-areas',
-    dataviewInstanceId: EEZ_DATAVIEW_INSTANCE_ID,
-  },
-  mpa: {
-    features: mpas as OceanAreaFeature[],
-    datasetId: 'public-mpa-all',
-    dataviewInstanceId: MPA_DATAVIEW_INSTANCE_ID,
-  },
-  fao: {
-    features: fao as OceanAreaFeature[],
-    datasetId: 'public-fao-major',
-    dataviewInstanceId: FAO_AREAS_DATAVIEW_INSTANCE_ID,
-    // FAO is not in BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES, so default-public has no instance to merge into
-    dataviewId: FAO_AREAS_DATAVIEW_SLUG,
-  },
-  rfmo: {
-    features: rfmos as OceanAreaFeature[],
-    datasetId: 'public-rfmo',
-    dataviewInstanceId: RFMO_DATAVIEW_INSTANCE_ID,
-  },
-} satisfies Record<string, AreaType>
-
-type AreaTypeId = keyof typeof AREA_TYPES
 
 // `nx run ... --args="--type eez,fao"` splits the comma list into positionals before the script
 // ever sees it, so positionals are accepted as extra `--type` values.
