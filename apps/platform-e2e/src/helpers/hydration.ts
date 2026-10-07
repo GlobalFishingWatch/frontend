@@ -1,8 +1,10 @@
 import type { Page } from 'playwright/test'
 
+import { SIDEBAR_CONTAINER_TESTID } from '@platform/config/selectors/map'
+
 import { TIMEOUTS } from './timeouts'
 
-const SIDEBAR_CONTAINER = '[data-testid="sidebar-container"]'
+const SIDEBAR_CONTAINER = `[data-testid="${SIDEBAR_CONTAINER_TESTID}"]`
 
 // Resolves once React has hydrated the given node on the client. The app is server-rendered, so
 // markup (and getByTestId locators) are visible before the client takes over. React 18 tags a

@@ -1,13 +1,15 @@
 import type { Locator, Page } from 'playwright/test'
 import { expect } from 'playwright/test'
 
+import { REPORT_VESSELS_TABLE_TESTID } from '@platform/config/selectors/report'
+import { VESSEL_PROFILE_LINK_TESTID } from '@platform/config/selectors/vessels'
+import { SOURCE_TAG_TESTID } from '@platform/config/selectors/workspace'
+
 import { waitForHydration } from '../helpers/hydration'
 import { TIMEOUTS } from '../helpers/timeouts'
 import { appPath } from '../paths'
 
-const VESSELS_TABLE_TESTID = 'report-vessels-table'
 const SEE_VESSELS_BUTTON_NAME = 'See vessels'
-const VESSEL_PROFILE_LINK_TESTID = 'link-vessel-profile'
 const VESSELS_LOGIN_GATE_NAME = 'Register or log in to see the active vessels in this area'
 
 export type AreaReport = {
@@ -33,7 +35,7 @@ export class ReportPage {
 
   constructor(page: Page) {
     this.page = page
-    this.vesselsTable = page.getByTestId(VESSELS_TABLE_TESTID)
+    this.vesselsTable = page.getByTestId(REPORT_VESSELS_TABLE_TESTID)
     this.reportTitle = page.getByRole('heading', { level: 1 })
     this.seeVesselsButton = page.getByRole('button', { name: SEE_VESSELS_BUTTON_NAME })
     this.vesselsLoginGate = page.getByRole('heading', { name: VESSELS_LOGIN_GATE_NAME })
@@ -41,8 +43,8 @@ export class ReportPage {
 
   private sourceTag(datasetId?: string) {
     return datasetId
-      ? this.page.locator(`[data-test="source-tag-item-${datasetId}"]`)
-      : this.page.locator('[data-test^="source-tag-item-"]')
+      ? this.page.locator(`[data-test="${SOURCE_TAG_TESTID}-${datasetId}"]`)
+      : this.page.locator(`[data-test^="${SOURCE_TAG_TESTID}-"]`)
   }
 
   async open({ path, start, end }: AreaReport) {
