@@ -13,6 +13,7 @@ export const DEFAULT_WORKSPACE_ID = `${DEFAULT_WORKSPACE_KEY}-${DATASET_PUBLIC_P
 export const DEFAULT_WORKSPACE_CATEGORY = WorkspaceCategory.FishingActivity
 
 export const DEEP_SEA_MINING_WORKSPACE_ID = 'deep-sea-mining-public' as const
+export const LONGLINE_SETS_WORKSPACE_ID = 'seabird_safe_longline_sets-public' as const
 export const GAPS_EVENTS_WORKSPACE_ID = 'private_gap_events-public' as const
 
 export const ARCHIVED_WORKSPACE_SUFFIX = '_archive'
