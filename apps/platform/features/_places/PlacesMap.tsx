@@ -16,6 +16,7 @@ import type { ContextPickingObject } from '@globalfishingwatch/deck-layers'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
 import type { OceanAreaBBox, OceanAreaType } from '@globalfishingwatch/ocean-areas'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { SwitchRow } from '@globalfishingwatch/ui-components/switch-row'
 import { DEFAULT_PLACES_VIEWPORT } from '@platform/config/map/app'
 
@@ -86,6 +87,7 @@ function PlacesMap({ dataviewsByType, type }: PlacesMapProps) {
   const [size, setSize] = useState<Size>()
   const userMovedRef = useRef(false)
   const [isLocating, setIsLocating] = useState(false)
+  const [isLoadingTiles, setIsLoadingTiles] = useState(false)
   const [hoverTooltip, setHoverTooltip] = useState<HoverTooltip>()
   const highlightedRef = useRef<{ layer?: HighlightableLayer; id?: string | number }>({})
   const resolvedDataviews = usePlacesMapDataviews(dataviewsByType, type)
@@ -194,6 +196,7 @@ function PlacesMap({ dataviewsByType, type }: PlacesMapProps) {
           setViewState(viewState as ViewState)
         }}
         onResize={onResize}
+        onAfterRender={() => setIsLoadingTiles(layers.some((layer) => !layer.isLoaded))}
         controller={PLACES_MAP_CONTROLLER}
         layers={layers}
         onHover={onHover}
@@ -202,6 +205,9 @@ function PlacesMap({ dataviewsByType, type }: PlacesMapProps) {
           isDragging ? 'grabbing' : hoverTooltip ? 'pointer' : 'grab'
         }
       />
+      {isLoadingTiles && (
+        <Spinner className={styles.mapLoading} color="var(--color-white)" size="small" />
+      )}
       {hoverTooltip && (
         <div
           className={cx(styles.mapTooltip, { [styles.mapTooltipLeft]: opensLeft })}
