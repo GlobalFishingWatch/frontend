@@ -5,24 +5,6 @@ import type { OceanAreaBBox, OceanAreaLocale, OceanAreaType } from '@globalfishi
 import type { Place, PlaceCategory, PlacesResult, PlacesSort } from 'features/_places/places.types'
 import { DEFAULT_PLACES_SORT, PLACE_TYPES, PLACES_PAGE_SIZE } from 'features/_places/places.types'
 
-async function getFlagLabels(locale?: string): Promise<Map<string, string[]>> {
-  const [{ default: flags }, { fetchServerPackageNamespace }, { normalizeI18nLanguage }] =
-    await Promise.all([
-      import('data/flags'),
-      import('features/i18n/i18n.server'),
-      import('features/i18n/i18n.config'),
-    ])
-  const translated = locale
-    ? await fetchServerPackageNamespace(normalizeI18nLanguage(locale), 'flags')
-    : {}
-  return new Map(
-    flags.map(({ id, label }) => {
-      const translatedLabel = translated[id]
-      return [id, typeof translatedLabel === 'string' ? [label, translatedLabel] : [label]]
-    })
-  )
-}
-
 export const searchPlaces = createServerFn({ method: 'GET' })
   .validator(
     (params: {
@@ -64,7 +46,9 @@ export const searchPlaces = createServerFn({ method: 'GET' })
       data: { category, type, query = '', locale, bounds, sortBy, limit = PLACES_PAGE_SIZE },
     }): Promise<PlacesResult> => {
       const { matchOceanAreas, countOceanAreas } = await import('@globalfishingwatch/ocean-areas')
-      const flagLabels = await getFlagLabels(locale)
+      const { FLAG_LABELS } = await import('features/_places/flags.server')
+      // English always matches, plus the user's language
+      const flagLabelSets = [FLAG_LABELS.en, (locale && FLAG_LABELS[locale]) || {}]
       const types = type ? [type] : PLACE_TYPES[category]
       const areas = await matchOceanAreas(query, {
         types,
@@ -74,7 +58,7 @@ export const searchPlaces = createServerFn({ method: 'GET' })
         // Also the "Name (Country)" label the list shows (getPlaceLabel), so pasting it back matches
         getExtraSearchValues: ({ properties: { name, flag } }) => {
           if (!flag) return []
-          const labels = flagLabels.get(flag) ?? []
+          const labels = [...new Set(flagLabelSets.map((set) => set[flag]).filter(Boolean))]
           return [flag, ...labels, ...labels.map((label) => `${name} (${label})`)]
         },
       })

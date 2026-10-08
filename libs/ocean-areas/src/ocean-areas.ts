@@ -74,6 +74,7 @@ export enum OceanAreaLocale {
   es = 'es',
   fr = 'fr',
   id = 'id',
+  pt = 'pt',
 }
 
 const MIN_ZOOM_NOT_GLOBAL = 3
