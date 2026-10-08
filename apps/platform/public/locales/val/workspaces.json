@@ -95,6 +95,11 @@
     "events-report": {
       "description": "crwdns138331:0crwdne138331:0",
       "name": "crwdns138333:0crwdne138333:0"
+    },
+    "seabird_safe_longline_sets-public": {
+      "cta": "crwdns138795:0crwdne138795:0",
+      "description": "crwdns138797:0crwdne138797:0",
+      "name": "crwdns138799:0crwdne138799:0"
     }
   }
 }
