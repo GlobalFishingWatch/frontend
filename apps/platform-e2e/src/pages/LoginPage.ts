@@ -2,6 +2,13 @@ import type { BrowserContext, Locator, Page } from 'playwright/test'
 import { expect } from 'playwright/test'
 
 import {
+  LOGOUT_BUTTON_TESTID,
+  SETTINGS_BUTTON_TESTID,
+  SIDEBAR_LOGIN_LINK_TESTID,
+  SIDEBAR_USER_LINK_TESTID,
+} from '@platform/config/selectors/user'
+
+import {
   USER_REFRESH_TOKEN_COOKIE_KEY,
   USER_TOKEN_COOKIE_KEY,
 } from '../../../platform/features/app/cookies.config'
@@ -34,10 +41,10 @@ export class LoginPage {
   constructor(page: Page, context: BrowserContext) {
     this.page = page
     this.context = context
-    this.guestLoginIcon = page.getByTestId('sidebar-login-link')
-    this.userLink = page.getByTestId('sidebar-user-link')
-    this.logoutButton = page.getByTestId('logout-button')
-    this.settingsButton = page.getByTestId('settings-button')
+    this.guestLoginIcon = page.getByTestId(SIDEBAR_LOGIN_LINK_TESTID)
+    this.userLink = page.getByTestId(SIDEBAR_USER_LINK_TESTID)
+    this.logoutButton = page.getByTestId(LOGOUT_BUTTON_TESTID)
+    this.settingsButton = page.getByTestId(SETTINGS_BUTTON_TESTID)
     this.appContainer = page.locator('#app-layout-content')
   }
 

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { SIDEBAR_CONTAINER_TESTID } from '@platform/config/selectors/map'
 
 import { selectDataviewsResources } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import { SCROLL_CONTAINER_DOM_ID } from 'features/_map/sidebar/sidebar.utils'
@@ -56,7 +57,7 @@ function Sidebar({ children }: SidebarProps) {
         className={cx('scrollContainer', styles.scrollContainer, {
           [styles.workspaceSearchScrollContainer]: isWorkspaceSearchLocation,
         })}
-        data-testid="sidebar-container"
+        data-testid={SIDEBAR_CONTAINER_TESTID}
       >
         <Suspense fallback={null}>{isTrackCorrectionOpen && <TrackCorrection />}</Suspense>
         {!isTrackCorrectionOpen && (

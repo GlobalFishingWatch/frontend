@@ -17,9 +17,9 @@ import { userEvent } from 'vitest/browser'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
+import { MAP_VIEW_ID } from '@platform/config/selectors/map'
 
 import { mapInstanceAtom } from 'features/_map/map/map.atoms'
-import { MAP_VIEW_ID } from 'features/_map/map/map-viewport.hooks'
 import { timerangeState } from 'features/_map/timebar/timebar.hooks'
 import { ReportCategory } from 'features/_reports/reports.types'
 import type { ReportGraphProps } from 'features/_reports/reports-timeseries.hooks'

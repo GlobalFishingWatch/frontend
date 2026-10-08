@@ -1022,7 +1022,11 @@ importers:
         specifier: ^2.5.3
         version: 2.5.3
 
-  apps/platform-e2e: {}
+  apps/platform-e2e:
+    dependencies:
+      '@platform/config':
+        specifier: workspace:*
+        version: link:../platform/config
 
   apps/platform/config:
     dependencies:

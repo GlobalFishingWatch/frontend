@@ -311,18 +311,88 @@ playwright-cli snapshot
 playwright-cli click e15
 ```
 
-You can also use css selectors or Playwright locators.
+You can also use Playwright locators or css selectors.
 
 ```bash
-# css selector
-playwright-cli click "#main > button.submit"
-
-# role locator
+# role locator (preferred)
 playwright-cli click "getByRole('button', { name: 'Submit' })"
 
-# test id
+# test id (only when no readable locator exists — see priority below)
 playwright-cli click "getByTestId('submit-button')"
+
+# css selector (last resort)
+playwright-cli click "#main > button.submit"
 ```
+
+### Locator priority
+
+Refs (`e15`) are only for driving the CLI session. Anything written into a spec or Page Object
+(`src/pages/*`) must be a Playwright locator, chosen in the order
+[Playwright recommends](https://playwright.dev/docs/locators#quick-guide). Take the first one
+that uniquely identifies the element:
+
+| #   | Locator                     | Use for                                                                                                                           |
+| --- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | `getByRole(role, { name })` | Anything with an ARIA role: buttons, links, headings, textboxes, checkboxes, dialogs, tabs, menu items, rows. **Default choice.** |
+| 2   | `getByText(text)`           | Non-interactive content: `div`, `span`, `p` with visible text.                                                                    |
+| 3   | `getByLabel(text)`          | Form controls with an associated `<label>` or `aria-label`.                                                                       |
+| 4   | `getByPlaceholder(text)`    | Inputs with a placeholder and no label.                                                                                           |
+| 5   | `getByAltText(text)`        | Images and `area` elements.                                                                                                       |
+| 6   | `getByTitle(text)`          | Elements identified by a `title` attribute.                                                                                       |
+| 7   | `getByTestId(id)`           | **Fallback only** — no readable option above is unique or stable.                                                                 |
+| 8   | `locator(css/xpath)`        | Last resort. Avoid; it couples the test to DOM structure and styling.                                                             |
+
+**Do not reach for `getByTestId` when a role-based locator works.** Before writing one, check the
+snapshot: if the node shows a role and an accessible name (`button "Close"`,
+`heading "Vessel report"`), use `getByRole`. `generate-locator` may return `getByTestId` even
+when a readable option exists — treat its output as a suggestion, not the answer.
+
+**Readability beats hierarchy.** The table ranks _readable_ options. A locator higher in it that
+no longer says what the element is does not count as better. Keep a descriptive test id (or
+existing locator) instead of a role locator that is generic, structural or positional:
+
+```typescript
+// Keep — the test id names the thing
+page.getByTestId('vv-vessel-name')
+vesselsTable.getByTestId('link-vessel-profile').first()
+
+// Don't "upgrade" to — higher in the table, but says nothing about what is located
+page.getByRole('heading', { level: 1 })
+vesselsTable.getByRole('link').first()
+page.getByTestId('map-popup-wrapper').getByRole('table')
+```
+
+A role locator wins only when its role + name reads like the UI: `getByRole('button', { name:
+'See vessels' })`. When reviewing existing locators, propose a change only if the new one is at
+least as readable, and ask before applying it.
+
+Making a role locator unique, before falling back to a test id:
+
+```typescript
+// Scope to a landmark / container with its own role instead of a test id on the target
+page.getByRole('dialog', { name: 'Download' }).getByRole('button', { name: 'Confirm' })
+
+// Exact match when one name is a prefix of another ("Report" vs "Report area")
+page.getByRole('button', { name: 'Report', exact: true })
+
+// Narrow a list item by its content
+page
+  .getByRole('listitem')
+  .filter({ hasText: 'Fishing effort' })
+  .getByRole('button', { name: 'Remove' })
+
+// Heading level, checked/expanded/selected state
+page.getByRole('heading', { name: 'Activity', level: 2 })
+page.getByRole('tab', { name: 'Vessels', selected: true })
+```
+
+`getByTestId` is legitimate when the element has no accessible role or name and adding one isn't
+the right fix — e.g. the deck.gl map canvas, a timebar handle, a purely visual container. If an
+interactive element (a button, a toggle) has no accessible name, that is an accessibility bug in
+the app: prefer adding an `aria-label` in `apps/platform` over adding a `data-testid`.
+
+Avoid `.first()` / `.nth()` to silence a strict-mode violation — scope or filter instead, so the
+locator still says _which_ element it means.
 
 ## Browser Sessions
 
