@@ -17,19 +17,22 @@ function PlacesSortButton({ category }: { category: PlaceCategory }) {
   const search = useAppSearch()
   const { replaceQueryParams } = useReplaceQueryParams()
   const [open, setOpen] = useState(false)
-  const sort = search.placesSort ?? DEFAULT_PLACES_SORT[category]
   // Activity is hours for areas, port visits for ports; ports have no size
   const options: { id: PlacesSort; label: string }[] =
     category === 'ports'
       ? [
-          { id: 'activity', label: t((t) => t.places.sortByPortVisits) },
-          { id: 'name', label: t((t) => t.places.sortByName) },
+          { id: 'activity' as const, label: t((t) => t.places.sortByPortVisits) },
+          { id: 'name' as const, label: t((t) => t.places.sortByName) },
         ]
       : [
-          { id: 'activity', label: t((t) => t.places.sortByActivity) },
-          { id: 'area', label: t((t) => t.places.sortByArea) },
-          { id: 'name', label: t((t) => t.places.sortByName) },
+          { id: 'activity' as const, label: t((t) => t.places.sortByActivity) },
+          { id: 'area' as const, label: t((t) => t.places.sortByArea) },
+          { id: 'name' as const, label: t((t) => t.places.sortByName) },
         ]
+  // A sort this type does not offer falls back to the default, as loadPlaces does
+  const sort = options.some(({ id }) => id === search.placesSort)
+    ? search.placesSort!
+    : DEFAULT_PLACES_SORT[category]
 
   const onSelect = (id: PlacesSort) => {
     // The default stays out of the URL

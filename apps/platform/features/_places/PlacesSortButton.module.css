@@ -19,16 +19,6 @@ li:not(:last-of-type) > .sortOption {
   border-radius: var(--border-radius-0);
 }
 
-/* The arrow sits on the first option, so it takes that option's highlight. The highlight is
-   translucent over the white popover, but the arrow sits over the page, so pre-blend with white */
-.popover:has(li:first-child > :is(.sortOption:hover, .sortOptionActive)) > svg {
-  fill: color-mix(
-    in srgb,
-    rgba(var(--primary-blue-rgb), 1) calc(var(--opacity-terthiary) * 100%),
-    var(--color-white)
-  );
-}
-
 .sortOptions {
   border-radius: inherit;
   overflow: hidden;
