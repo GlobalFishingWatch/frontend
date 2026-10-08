@@ -3,12 +3,8 @@ import { createServerFn } from '@tanstack/react-start'
 import type { OceanAreaBBox, OceanAreaLocale, OceanAreaType } from '@globalfishingwatch/ocean-areas'
 
 import type { PlaceCategory, PlacesSort } from 'features/_places/places.types'
-import {
-  DEFAULT_PLACES_SORT,
-  parsePlacesBounds,
-  PLACE_TYPES,
-  PLACES_PAGE_SIZE,
-} from 'features/_places/places.types'
+import { DEFAULT_PLACES_SORT, PLACE_TYPES, PLACES_PAGE_SIZE } from 'features/_places/places.types'
+import { parsePlacesBounds } from 'features/_places/places.utils'
 import { getActiveI18nLanguage } from 'features/i18n/i18n'
 import type { QueryParams } from 'types'
 

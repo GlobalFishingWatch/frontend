@@ -1,6 +1,6 @@
 import type { useTranslation } from 'react-i18next'
 
-import type { OceanAreaType } from '@globalfishingwatch/ocean-areas'
+import type { OceanAreaBBox, OceanAreaType } from '@globalfishingwatch/ocean-areas'
 
 import type { Place } from 'features/_places/places.loaders'
 import { formatInfoField } from 'utils/info'
@@ -34,3 +34,13 @@ export const getAreaTypeTexts = (
     description: t((t) => t.places.siteDescription.rfmo),
   },
 })
+
+export const parsePlacesBounds = (bounds?: string): OceanAreaBBox | undefined => {
+  const values = bounds?.split(',').map(Number)
+  return values?.length === 4 && values.every(Number.isFinite)
+    ? (values as OceanAreaBBox)
+    : undefined
+}
+
+export const formatPlacesBounds = (bounds: OceanAreaBBox) =>
+  bounds.map((value) => Number(value.toFixed(4))).join(',')
