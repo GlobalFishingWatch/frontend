@@ -27,21 +27,27 @@ type OceanAreasActivity = {
   visits?: Record<string, number>
 }
 
-const importOceanAreasData = async () => {
-  if (!oceanAreas.features.length) {
-    oceanAreas = (await import('./data')).default
+let oceanAreasDataPromise: Promise<void> | undefined
+// One shared promise: concurrent first calls must all wait for locales and activity, not just areas
+const importOceanAreasData = () =>
+  (oceanAreasDataPromise ??= (async () => {
+    const data = (await import('./data')).default
     oceanAreasLocales = (await import('./locales')).default
     // Kept apart from the area data: it is refreshed on its own cadence, for a fixed time range
     const activity = (await import('./data/activity.json')).default as OceanAreasActivity
-    oceanAreas.features.forEach(({ properties }) => {
+    data.features.forEach(({ properties }) => {
       const id = String(properties.area)
       const hours = activity.hours[properties.type]?.[id]
       if (hours !== undefined) properties.activityHours = hours
       const visits = properties.type === 'port' ? activity.visits?.[id] : undefined
       if (visits !== undefined) properties.portVisits = visits
     })
-  }
-}
+    oceanAreas = data
+  })().catch((error) => {
+    // Let the next call retry instead of caching the failure
+    oceanAreasDataPromise = undefined
+    throw error
+  }))
 
 export type OceanAreaLocaleKey = string
 export type OceanAreaType = 'eez' | 'mpa' | 'fao' | 'rfmo' | 'port'
@@ -100,17 +106,24 @@ const localizeName = (name: OceanAreaLocaleKey, locale = OceanAreaLocale.en) => 
   return (oceanAreasLocales?.[locale]?.[name] as OceanAreaLocaleKey) || name
 }
 
-const localizeFeatures = (features: OceanArea[], locale = OceanAreaLocale.en) => {
+const localizedFeatures = new Map<OceanAreaLocale, OceanArea[]>()
+/** Every feature with its name in `locale`; built once per locale, as the data never changes */
+const getLocalizedFeatures = (locale = OceanAreaLocale.en): OceanArea[] => {
   if (!oceanAreasLocales?.[locale]) {
-    return features
+    return oceanAreas.features
   }
-  return features.map((feature) => ({
-    ...feature,
-    properties: {
-      ...feature.properties,
-      name: localizeName(feature.properties.name as OceanAreaLocaleKey, locale),
-    },
-  }))
+  let features = localizedFeatures.get(locale)
+  if (!features) {
+    features = oceanAreas.features.map((feature) => ({
+      ...feature,
+      properties: {
+        ...feature.properties,
+        name: localizeName(feature.properties.name as OceanAreaLocaleKey, locale),
+      },
+    }))
+    localizedFeatures.set(locale, features)
+  }
+  return features
 }
 
 type SearchOceanAreaParams = GetOceanAreaNameLocaleParam & {
@@ -124,12 +137,21 @@ type SearchOceanAreaParams = GetOceanAreaNameLocaleParam & {
   sortBy?: 'name' | 'area' | 'activity'
 }
 
-const getFeaturePartBBoxes = ({ geometry }: OceanArea): OceanAreaBBox[] =>
-  geometry.type === 'MultiPolygon'
-    ? geometry.coordinates.map(
-        (coordinates) => bbox({ type: 'Polygon', coordinates }) as OceanAreaBBox
-      )
-    : [bbox(geometry) as OceanAreaBBox]
+// Keyed by geometry, which localized copies of a feature share
+const featurePartBBoxes = new WeakMap<Geometry, OceanAreaBBox[]>()
+const getFeaturePartBBoxes = ({ geometry }: OceanArea): OceanAreaBBox[] => {
+  let partBBoxes = featurePartBBoxes.get(geometry)
+  if (!partBBoxes) {
+    partBBoxes =
+      geometry.type === 'MultiPolygon'
+        ? geometry.coordinates.map(
+            (coordinates) => bbox({ type: 'Polygon', coordinates }) as OceanAreaBBox
+          )
+        : [bbox(geometry) as OceanAreaBBox]
+    featurePartBBoxes.set(geometry, partBBoxes)
+  }
+  return partBBoxes
+}
 
 const getBoundsFilter = ([west, south, east, north]: OceanAreaBBox) => {
   const wrap = (lon: number) => ((((lon + 180) % 360) + 360) % 360) - 180
@@ -172,12 +194,10 @@ export const matchOceanAreas = async (
   } = {} as Omit<SearchOceanAreaParams, 'limit'>
 ): Promise<OceanArea[]> => {
   await importOceanAreasData()
-  const features = localizeFeatures(
-    types?.length
-      ? oceanAreas.features.filter((feature) => types.includes(feature.properties.type))
-      : oceanAreas.features,
-    locale
-  )
+  const localized = getLocalizedFeatures(locale)
+  const features = types?.length
+    ? localized.filter((feature) => types.includes(feature.properties.type))
+    : localized
   const matchOptions: MatchSorterOptions<OceanArea> = {
     keys: getExtraSearchValues ? ['properties.name', getExtraSearchValues] : ['properties.name'],
     baseSort: (a, b) => {
