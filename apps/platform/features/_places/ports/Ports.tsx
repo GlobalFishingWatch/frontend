@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { getRouteApi } from '@tanstack/react-router'
 
 import { PORTS_MAP_DATAVIEWS } from 'features/_places/places-map.config'
-import PlacesSearch from 'features/_places/PlacesSearch'
+import PlacesPage from 'features/_places/PlacesPage'
 import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 
 const route = getRouteApi('/_platform/_content/ports')
@@ -11,7 +11,7 @@ function Ports() {
   const { t } = useTranslation()
   const result = route.useLoaderData()
   return (
-    <PlacesSearch
+    <PlacesPage
       category="ports"
       title={t((t) => t.nav.ports)}
       result={result}

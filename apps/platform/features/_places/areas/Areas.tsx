@@ -7,7 +7,7 @@ import { ROUTE_PATHS } from '@platform/config/routes'
 import { PLACE_TYPES } from 'features/_places/places.types'
 import { getAreaTypeTexts } from 'features/_places/places.utils'
 import { AREAS_MAP_DATAVIEWS } from 'features/_places/places-map.config'
-import PlacesSearch from 'features/_places/PlacesSearch'
+import PlacesPage from 'features/_places/PlacesPage'
 
 const route = getRouteApi('/_platform/_content/areas/$placeType')
 
@@ -17,7 +17,7 @@ function Areas() {
   const type = route.useParams({ select: (params) => params.placeType as OceanAreaType })
   const texts = getAreaTypeTexts(t)
   return (
-    <PlacesSearch
+    <PlacesPage
       category="areas"
       title={t((t) => t.nav.areas)}
       result={route.useLoaderData()}

@@ -29,7 +29,7 @@ import { useIsClientHydrated } from 'hooks/ssr.hooks'
 import { useAppSearch, useReplaceQueryParams } from 'router/routes.hook'
 import { getHighlightedText } from 'utils/text'
 
-import styles from './PlacesSearch.module.css'
+import styles from './PlacesPage.module.css'
 
 const PlacesMap = lazy(() => import('features/_places/PlacesMap'))
 
@@ -65,7 +65,7 @@ function PlaceThumbnail({ place, alt }: { place: Place; alt: string }) {
   )
 }
 
-type PlacesSearchProps = {
+type PlacesPageProps = {
   category: PlaceCategory
   title: string
   /** Server-loaded list and counts for the URL's query, type and — while filtering — bounds (`loadPlaces`). */
@@ -81,7 +81,7 @@ type PlacesSearchProps = {
   mapDataviews?: PlacesMapDataviews
 }
 
-function PlacesSearch({
+function PlacesPage({
   category,
   title,
   result: { places, count, total },
@@ -90,7 +90,7 @@ function PlacesSearch({
   typeOptions,
   onTypeSelect,
   mapDataviews,
-}: PlacesSearchProps) {
+}: PlacesPageProps) {
   const { t } = useTranslation()
   const { replaceQueryParams } = useReplaceQueryParams()
   const search = useAppSearch()
@@ -208,4 +208,4 @@ function PlacesSearch({
   )
 }
 
-export default PlacesSearch
+export default PlacesPage
