@@ -9,6 +9,7 @@
  *   pnpm nx run ocean-areas:screenshots --args="--type mpa --concurrency 6"
  *   pnpm nx run ocean-areas:screenshots --args="--type mpa --largest --limit 1000 --concurrency 6"
  *   pnpm nx run ocean-areas:screenshots --args="--type eez --upload gs://my-bucket/area-screenshots"
+ *   pnpm nx run ocean-areas:screenshots --args="--type mpa --ids 400011,555672696 --force"
  *
  * Always through the nx target: it installs the ts-node hooks and builds the dataviews-client dist
  * this imports. Plain `node screenshots.ts` cannot resolve the workspace libs.
@@ -33,10 +34,12 @@ import type { AreaType, AreaTypeId, OceanAreaFeature } from './lib/area-types.ts
 import { AREA_TYPES } from './lib/area-types.ts'
 import type { CaptureJob } from './lib/capture.ts'
 import { BASE_URL, CAPTURE_OPTIONS, captureAll, PATH_BASENAME } from './lib/capture.ts'
+import { getAntimeridianBBox } from './lib/utils.ts'
 
 // `nx run ... --args="--type eez,fao"` splits the comma list into positionals before the script
-// ever sees it, so positionals are accepted as extra `--type` values.
-const { values: opts, positionals: extraTypes } = parseArgs({
+// ever sees it, so positionals are accepted as extra `--type` values — or, with `--ids`, as extra
+// ids when they are not an area type.
+const { values: opts, positionals } = parseArgs({
   allowPositionals: true,
   options: {
     ...CAPTURE_OPTIONS,
@@ -44,6 +47,8 @@ const { values: opts, positionals: extraTypes } = parseArgs({
     heatmaps: { type: 'boolean', default: true },
     /** biggest `areaSize` first, so `--limit` keeps the largest areas */
     largest: { type: 'boolean', default: false },
+    /** Comma list of area ids (`properties.area`) to capture, e.g. after fixing their geometry */
+    ids: { type: 'string' },
   },
 })
 
@@ -52,21 +57,17 @@ const HEIGHT = Number(opts.height)
 type GeometryWithCoordinates = Exclude<Geometry, { geometries: unknown }>
 type AnyPosition = Position | Position[] | Position[][] | Position[][][]
 
+/** `east` is past 180 when the area crosses the antimeridian, see `getAntimeridianBBox` */
 export function getBBox(geometry: Geometry): OceanAreaBBox {
-  const bbox: OceanAreaBBox = [180, 90, -180, -90]
-  const walk = (coordinates: AnyPosition): void => {
-    if (typeof coordinates[0] === 'number') {
-      const [longitude, latitude] = coordinates as Position
-      bbox[0] = Math.min(bbox[0], longitude)
-      bbox[1] = Math.min(bbox[1], latitude)
-      bbox[2] = Math.max(bbox[2], longitude)
-      bbox[3] = Math.max(bbox[3], latitude)
-    } else {
-      ;(coordinates as Position[]).forEach(walk)
-    }
-  }
-  walk((geometry as GeometryWithCoordinates).coordinates)
-  return bbox
+  const collect = (coordinates: AnyPosition): Position[] =>
+    typeof coordinates[0] === 'number'
+      ? [coordinates as Position]
+      : (coordinates as Position[]).flatMap(collect)
+  const { type, coordinates } = geometry as GeometryWithCoordinates
+  // Each member of a Multi* geometry is its own part; anything else is one part
+  return getAntimeridianBBox(
+    type.startsWith('Multi') ? (coordinates as AnyPosition[]).map(collect) : [collect(coordinates)]
+  )
 }
 
 export type Viewport = { longitude: number; latitude: number; zoom: number }
@@ -88,7 +89,8 @@ export function getViewport(
     Math.log2((180 / spanY) * (height / 512))
   )
   return {
-    longitude: (minX + maxX) / 2,
+    // Back into -180..180 for a bbox whose `east` is past the antimeridian
+    longitude: (((minX + maxX) / 2 + 540) % 360) - 180,
     latitude: (minY + maxY) / 2,
     zoom: Math.max(2, Math.min(8, zoom - 0.15)),
   }
@@ -133,10 +135,19 @@ export function getAreaUrl(
 }
 
 function loadQueue(): CaptureJob[] {
+  const isType = (value: string) => Object.hasOwn(AREA_TYPES, value)
+  const extraTypes = opts.ids ? positionals.filter(isType) : positionals
   const types = [...opts.type!.split(','), ...extraTypes]
     .map((type) => type.trim())
     .filter(Boolean) as AreaTypeId[]
   const limit = opts.limit ? Number(opts.limit) : Infinity
+  const ids = opts.ids
+    ? new Set(
+        [...opts.ids.split(','), ...positionals.filter((value) => !isType(value))].map((id) =>
+          id.trim()
+        )
+      )
+    : undefined
   return types.flatMap((type) => {
     const areaType = AREA_TYPES[type]
     if (!areaType) {
@@ -147,12 +158,15 @@ function loadQueue(): CaptureJob[] {
           (a, b) => (b.properties.areaSize ?? 0) - (a.properties.areaSize ?? 0)
         )
       : areaType.features
-    return features.slice(0, limit).map((feature) => {
-      return {
-        url: getAreaUrl(areaType, feature),
-        file: `${opts.out}/${getPlaceThumbnailPath(areaType.datasetId, feature.properties.area!)}`,
-      }
-    })
+    return features
+      .filter((feature) => !ids || ids.has(String(feature.properties.area)))
+      .slice(0, limit)
+      .map((feature) => {
+        return {
+          url: getAreaUrl(areaType, feature),
+          file: `${opts.out}/${getPlaceThumbnailPath(areaType.datasetId, feature.properties.area!)}`,
+        }
+      })
   })
 }
 
@@ -174,6 +188,50 @@ function selftest(): void {
   const view = getViewport(bbox)
   console.assert(view.longitude === 0 && view.latitude === 0, 'getViewport centre', view)
   console.assert(view.zoom >= 2 && view.zoom <= 8, 'getViewport zoom clamp', view)
+  // Parts at 163° and -177° frame the 20° between them, not the 340° the other way round
+  const crossing = getBBox({
+    type: 'MultiPoint',
+    coordinates: [
+      [163, 16],
+      [-177, -1],
+    ],
+  })
+  console.assert(JSON.stringify(crossing) === '[163,-1,183,16]', 'antimeridian getBBox', crossing)
+  console.assert(getViewport(crossing).longitude === 173, 'antimeridian centre', crossing)
+  console.assert(getViewport([170, 0, 200, 10]).longitude === -175, 'centre wraps past 180')
+  // A part spanning 250° between two vertices (CCSBT) must not be cut down to its vertices
+  const longPart = getBBox({
+    type: 'MultiPolygon',
+    coordinates: [
+      [
+        [
+          [-180, 0],
+          [-170, 0],
+          [-170, 1],
+          [-180, 0],
+        ],
+      ],
+      [
+        [
+          [-70, 0],
+          [180, 0],
+          [180, 1],
+          [-70, 0],
+        ],
+      ],
+    ],
+  })
+  console.assert(JSON.stringify(longPart) === '[-70,0,190,1]', 'long part getBBox', longPart)
+  // A circumpolar ring (CCAMLR) stays the whole globe
+  const ring = getBBox({
+    type: 'LineString',
+    coordinates: [
+      [-180, -60],
+      [0, -60],
+      [180, -60],
+    ],
+  })
+  console.assert(JSON.stringify(ring) === '[-180,-60,180,-60]', 'circumpolar getBBox', ring)
   // A whole-world bbox must clamp up to the minimum satellite zoom, not down to 0
   console.assert(getViewport([-180, -90, 180, 90]).zoom === 2, 'world bbox clamps to 2')
 

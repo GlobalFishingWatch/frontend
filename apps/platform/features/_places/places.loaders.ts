@@ -101,8 +101,12 @@ export const searchPlaces = createServerFn({ method: 'GET' })
         locale,
         bounds,
         sortBy: sortBy ?? DEFAULT_PLACES_SORT[category],
-        getExtraSearchValues: ({ properties: { flag } }) =>
-          flag ? [flag, ...(flagLabels.get(flag) ?? [])] : [],
+        // Also the "Name (Country)" label the list shows (getPlaceLabel), so pasting it back matches
+        getExtraSearchValues: ({ properties: { name, flag } }) => {
+          if (!flag) return []
+          const labels = flagLabels.get(flag) ?? []
+          return [flag, ...labels, ...labels.map((label) => `${name} (${label})`)]
+        },
       })
       const isFiltered = Boolean(query || bounds)
       return {

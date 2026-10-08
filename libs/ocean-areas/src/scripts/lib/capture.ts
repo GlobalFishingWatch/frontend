@@ -140,6 +140,15 @@ type Session = {
 async function createSession(browser: Browser, settings: CaptureSettings): Promise<Session> {
   const context = await browser.newContext({
     viewport: { width: settings.width + RAIL_WIDTH, height: settings.height + TIMEBAR_HEIGHT },
+    // Basic auth for the dev/staging deploys, scoped to their origin so API requests stay
+    // uncredentialed (same as platform-e2e)
+    ...(process.env.BASIC_AUTH_USER && {
+      httpCredentials: {
+        username: process.env.BASIC_AUTH_USER,
+        password: process.env.BASIC_AUTH_PASS || '',
+        origin: BASE_URL,
+      },
+    }),
   })
   await disableWelcomePopups(context)
   await context.route(BLOCKED_URLS, (route) => route.abort())

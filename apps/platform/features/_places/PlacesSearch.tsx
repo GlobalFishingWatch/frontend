@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRouterState } from '@tanstack/react-router'
@@ -107,29 +108,13 @@ function PlacesSearch({
   const isClientHydrated = useIsClientHydrated()
   const isSmallScreen = useSmallScreen(PLACES_MAP_BREAKPOINT)
   const showDeck = isClientHydrated && !isSmallScreen
+  const countLabel = String(formatI18nNumber(count))
 
   return (
     <div className={styles.layout}>
       <div className={styles.container}>
         <div className={styles.header}>
           <h1 className={styles.title}>{title}</h1>
-          <span className={styles.count}>
-            {count < total
-              ? `${formatI18nNumber(count)} / ${formatI18nNumber(total)}`
-              : formatI18nNumber(total)}
-          </span>
-          <InputText
-            type="search"
-            value={query}
-            placeholder={
-              typeof typeLabel === 'string'
-                ? t((t) => t.places.searchType, { type: typeLabel })
-                : placeholder
-            }
-            onChange={(e) => setQuery(e.target.value)}
-            onCleanButtonClick={() => setQuery('')}
-            className={styles.search}
-          />
           {typeOptions && (
             <Choice
               containerClassName={styles.typeChoice}
@@ -138,6 +123,27 @@ function PlacesSearch({
               onSelect={(option: ChoiceOption<OceanAreaType>) => onTypeSelect?.(option.id)}
             />
           )}
+          <div
+            className={styles.search}
+            style={{ '--count-chars': countLabel.length } as CSSProperties}
+          >
+            <InputText
+              type="search"
+              value={query}
+              placeholder={
+                typeof typeLabel === 'string'
+                  ? t((t) => t.places.searchType, {
+                      type: typeLabel,
+                      total: formatI18nNumber(total),
+                    })
+                  : placeholder
+              }
+              onChange={(e) => setQuery(e.target.value)}
+              onCleanButtonClick={() => setQuery('')}
+              className={styles.searchInput}
+            />
+            {count < total && <span className={styles.count}>{countLabel}</span>}
+          </div>
           <PlacesSortButton category={category} />
         </div>
         {places.length === 0 && (

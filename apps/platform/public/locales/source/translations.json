@@ -1007,12 +1007,12 @@
   "places": {
     "centerOnMyLocation": "Center on my location",
     "clearSearch": "Clear search",
-    "filterByMap": "Search as I move the map",
+    "filterByMap": "Show only areas in view",
     "loadMore": "Load more",
     "noResultsInView": "Nothing in this map view. Try moving or zooming out the map.",
     "noResultsQuery": "No results for \"{{query}}\"",
-    "searchPorts": "Search ports",
-    "searchType": "Search {{type}}",
+    "searchPorts": "Search {{total}} ports",
+    "searchType": "Search {{total}} {{type}}",
     "siteDescription": {
       "areas": "Browse and report on fishing and vessel activity in Exclusive Economic Zones, FAO major fishing areas, Marine Protected Areas and RFMO convention areas worldwide.",
       "eez": "Explore vessel activity in every Exclusive Economic Zone (EEZ), the waters where coastal states hold rights over marine resources.",

@@ -4,8 +4,8 @@
   left: var(--space-S);
   right: var(--space-S);
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-end;
   gap: var(--space-S);
   pointer-events: none;
 }
@@ -19,11 +19,24 @@
 }
 
 .mapToggle {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
   width: auto;
   padding: 1.1rem var(--space-S);
   border: 1px solid rgba(var(--white-rgb), var(--opacity-border));
   border-radius: var(--border-radius-0);
   background-color: var(--color-primary-blue);
+  animation: map-toggle-enter 250ms ease-out;
+}
+
+@keyframes map-toggle-enter {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -1rem);
+  }
 }
 
 .mapTooltip {

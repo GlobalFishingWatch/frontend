@@ -31,14 +31,30 @@
 }
 
 .search {
+  position: relative;
   flex: 1;
   max-width: 30rem;
 }
 
 .count {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: calc(var(--space-S) * 2 + var(--size-XS));
+  display: flex;
+  align-items: center;
   font: var(--font-S);
   color: var(--color-secondary-blue);
   white-space: nowrap;
+  pointer-events: none;
+}
+
+.search:has(input:not(:placeholder-shown)) .count {
+  right: calc(3rem + var(--size-SM));
+}
+
+.search:has(.count) .searchInput input {
+  padding-right: calc(3rem + var(--size-SM) + var(--count-chars) * 1ch + var(--space-XS));
 }
 
 .typeChoice {
@@ -122,6 +138,24 @@
 @media (width <= 1200px) {
   .mapColumn {
     display: none;
+  }
+}
+
+/* Title on row 1, type tabs (areas only) on row 2, search + sort on the last row */
+@media (width <= 800px) {
+  .title,
+  .typeChoice {
+    flex-basis: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .search {
+    max-width: none;
+  }
+
+  .list {
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
   }
 }
 

@@ -17,7 +17,7 @@ import { BasemapType } from '@globalfishingwatch/deck-layers'
 import type { OceanAreaBBox, OceanAreaType } from '@globalfishingwatch/ocean-areas'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { SwitchRow } from '@globalfishingwatch/ui-components/switch-row'
-import { DEFAULT_VIEWPORT } from '@platform/config/map/app'
+import { DEFAULT_PLACES_VIEWPORT } from '@platform/config/map/app'
 
 import BasemapSwitcher from 'features/_map/map/controls/BasemapSwitcher'
 import { getContextValue } from 'features/_map/map/popups/map-popups.utils'
@@ -82,7 +82,7 @@ function PlacesMap({ dataviewsByType, type }: PlacesMapProps) {
   const basemap = search.basemap ?? BasemapType.Default
   const filterByMap = !!search.filterByMap
   const initialBounds = parsePlacesBounds(search.bounds)
-  const [viewState, setViewState] = useState<ViewState>(DEFAULT_VIEWPORT)
+  const [viewState, setViewState] = useState<ViewState>(DEFAULT_PLACES_VIEWPORT)
   const [size, setSize] = useState<Size>()
   const userMovedRef = useRef(false)
   const [isLocating, setIsLocating] = useState(false)
@@ -215,19 +215,22 @@ function PlacesMap({ dataviewsByType, type }: PlacesMapProps) {
         </div>
       )}
       <div className={styles.mapControls}>
-        <SwitchRow
-          className={styles.mapToggle}
-          label={t((t) => t.places.filterByMap)}
-          active={filterByMap}
-          inverted
-          onClick={() =>
-            size &&
-            replaceQueryParams({
-              filterByMap: !filterByMap || undefined,
-              bounds: formatPlacesBounds(getBounds(viewState, size)),
-            })
-          }
-        />
+        {/* Bounds land in the URL once the user moves the map, so the filter is offered only then */}
+        {search.bounds && (
+          <SwitchRow
+            className={styles.mapToggle}
+            label={t((t) => t.places.filterByMap)}
+            active={filterByMap}
+            inverted
+            onClick={() =>
+              size &&
+              replaceQueryParams({
+                filterByMap: !filterByMap || undefined,
+                bounds: formatPlacesBounds(getBounds(viewState, size)),
+              })
+            }
+          />
+        )}
         {canLocate && (
           <IconButton
             icon="target"
