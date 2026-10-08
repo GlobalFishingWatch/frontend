@@ -15,13 +15,12 @@ import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.s
 import UserLoggedIconButton from 'features/_user/UserLoggedIconButton'
 import Event from 'features/_vessels/vessel/activity/event/Event'
 import InsightError from 'features/_vessels/vessel/insights/InsightErrorMessage'
+import { useLonglineSetsCSV } from 'features/_vessels/vessel/insights/insights.hooks'
 import { removeNonTunaRFMO } from 'features/_vessels/vessel/insights/insights.utils'
 import LonglineSetsGraph, {
   LonglineTimeChoice,
 } from 'features/_vessels/vessel/insights/LonglineSetsGraph'
-import { parseLonglineSetsToCSV } from 'features/_vessels/vessel/vessel.download'
 import type { VesselEvent } from 'features/_vessels/vessel/vessel.types'
-import { getVesselIdentities } from 'features/_vessels/vessel/vessel.utils'
 import VesselLink from 'features/_vessels/vessel/VesselLink'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import DataTerminology from 'features/cms/data-terminology/DataTerminology'
@@ -61,6 +60,7 @@ const VesselGroupReportInsightLongline = ({ skip }: { skip?: boolean }) => {
   const vesselGroup = useSelector(selectVGRData)
   const vesselGroupId = useSelector(selectReportVesselGroupId)
   const { start, end } = useSelector(selectTimeRange)
+  const getLonglineSetsCSV = useLonglineSetsCSV()
 
   const { data, isFetching, error } = useGetVesselEventsQuery(
     {
@@ -81,14 +81,10 @@ const VesselGroupReportInsightLongline = ({ skip }: { skip?: boolean }) => {
   }, [vesselGroup])
 
   const onDownloadClick = async () => {
-    const identities = (vesselGroup?.vessels || []).flatMap((vessel) =>
-      vessel.identity
-        ? getVesselIdentities(vessel.identity, {
-            identitySource: VesselIdentitySourceEnum.SelfReported,
-          })
-        : []
+    const vessels = (vesselGroup?.vessels || []).flatMap((vessel) =>
+      vessel.identity ? [vessel.identity] : []
     )
-    const csv = parseLonglineSetsToCSV(events, identities)
+    const csv = getLonglineSetsCSV(events, vessels)
     const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
     const { saveAs } = await import('file-saver')
     saveAs(blob, `${vesselGroup?.name}-longline-sets-${start}-${end}.csv`)
