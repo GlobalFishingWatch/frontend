@@ -35,6 +35,6 @@ export const Route = createFileRoute('/_platform/_content/ports')({
       description: t((s) => s.places.siteDescription.ports),
       pathname: ROUTE_PATHS.PORTS,
       // ponytail: only ports have a stable profile URL; area reports carry workspace search params
-      items: loaderData?.places.map(({ id, name }) => ({ name, pathname: `/port/${id}` })),
+      items: loaderData?.places.map(({ id, name }) => ({ name, pathname: `/ports/${id}` })),
     }),
 })

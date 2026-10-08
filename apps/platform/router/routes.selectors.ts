@@ -73,7 +73,7 @@ export const selectIsAnyAreaReportLocation = createSelector(
     isAreaReportLocation || isWorkspaceReportLocation
 )
 
-/** Both port report routes: inside a workspace and the standalone /port/$portId */
+/** Both port report routes: inside a workspace and the standalone /ports/$portId */
 export const selectIsPortReportLocation = createSelector(
   [selectLocationType],
   (locationType) => locationType === PORT_REPORT || locationType === PORT

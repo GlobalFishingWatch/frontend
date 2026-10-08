@@ -29,7 +29,7 @@ export const ROUTE_PATHS = {
   AREAS: '/areas' as const,
   AREAS_TYPE: '/areas/$placeType' as const,
   PORT_REPORT: '/map/$category/$workspaceId/ports-report/$portId' as const,
-  PORT: '/port/$portId' as const,
+  PORT: '/ports/$portId' as const,
 } as const
 
 export type RoutePathKey = keyof typeof ROUTE_PATHS

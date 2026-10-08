@@ -286,7 +286,7 @@ export const selectWorkspaceFetchParams = createSelector(
       case VESSEL_GROUP_REPORT:
       case PORT_REPORT:
       case PORT: {
-        // Standalone /port/$portId has no workspaceId param, so it gets the default workspace
+        // Standalone /ports/$portId has no workspaceId param, so it gets the default workspace
         if (!urlWorkspaceId || urlWorkspaceId === DEFAULT_WORKSPACE_ID) {
           return getDefaultWorkspaceFetchParams(currentWorkspaceId, workspaceStatus)
         }
