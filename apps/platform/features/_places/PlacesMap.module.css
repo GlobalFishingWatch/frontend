@@ -39,13 +39,6 @@
   }
 }
 
-.mapLoading {
-  position: absolute;
-  inset: 0;
-  height: auto;
-  pointer-events: none;
-}
-
 .mapTooltip {
   position: absolute;
   transform: translate(var(--space-S), var(--space-S));
