@@ -25,10 +25,10 @@ type DeckLayersParams = {
   globalConfig: ResolverGlobalConfig
 }
 
-const EMPTY_LAYERS: AnyDeckLayer[] = []
-
-export function useDeckLayerInstances({ dataviews, globalConfig }: DeckLayersParams) {
-  const [deckLayers, setDeckLayers] = useState<AnyDeckLayer[]>(EMPTY_LAYERS)
+function useResolvedDeckLayers(
+  { dataviews, globalConfig }: DeckLayersParams,
+  onLayersChange: (layers: AnyDeckLayer[]) => void
+) {
   const memoDataviews = useMemoCompare(dataviews)
   const memoGlobalConfig = useMemoCompare(globalConfig)
 
@@ -107,24 +107,21 @@ export function useDeckLayerInstances({ dataviews, globalConfig }: DeckLayersPar
       instances.length !== prev.length || instances.some((layer, i) => layer !== prev[i])
     if (hasChanges) {
       prevInstancesRef.current = instances
-      setDeckLayers(instances)
+      onLayersChange(instances)
     }
-  }, [resolvedLayers])
+  }, [resolvedLayers, onLayersChange])
+}
 
+export function useDeckLayerInstances(params: DeckLayersParams) {
+  const [deckLayers, setDeckLayers] = useState<AnyDeckLayer[]>([])
+  useResolvedDeckLayers(params, setDeckLayers)
   return deckLayers
 }
 
 export function useDeckLayerComposer(params: DeckLayersParams) {
-  const layers = useDeckLayerInstances(params)
   const [deckLayers, setDeckLayers] = useAtom(deckLayerInstancesAtom)
   const debouncedSetDeckLayers = useMemo(() => debounce(setDeckLayers, 1), [setDeckLayers])
-
-  useEffect(() => {
-    if (layers !== EMPTY_LAYERS) {
-      debouncedSetDeckLayers(layers)
-    }
-  }, [layers, debouncedSetDeckLayers])
-
+  useResolvedDeckLayers(params, debouncedSetDeckLayers)
   return deckLayers
 }
 
