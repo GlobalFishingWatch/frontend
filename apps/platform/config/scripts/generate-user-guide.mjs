@@ -21,7 +21,7 @@ if (!STRAPI_URL) {
 
 const outFile = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../user-guide.ts')
 
-// Same sort as features/cms/user-guide.functions.ts, so the object keys follow the menu order.
+// Same sort as features/cms/user-guide.serverfn.ts, so the object keys follow the menu order.
 const query = new URLSearchParams({
   'fields[0]': 'slug',
   'populate[subsections][fields][0]': 'slug',

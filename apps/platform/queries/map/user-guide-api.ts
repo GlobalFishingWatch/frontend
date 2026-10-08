@@ -13,7 +13,7 @@ export const userGuideApi = createApi({
     try {
       // Loaded here, not statically: store.ts imports this module's middleware via the queries barrel,
       // so a static import puts @strapi/client in the entry chunk of every page.
-      const { getUserGuideContent } = await import('features/cms/user-guide.functions')
+      const { getUserGuideContent } = await import('features/cms/user-guide.serverfn')
       const response = await getUserGuideContent({ data: args })
       return { data: response?.data ?? [] }
     } catch (e) {

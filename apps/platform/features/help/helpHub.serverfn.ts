@@ -1,8 +1,8 @@
 import { createServerFn } from '@tanstack/react-start'
 
-import { getDataUpdateContent } from 'features/cms/data-update.functions'
-import { getUseCaseContent } from 'features/cms/use-case.functions'
-import { getUserGuideContent } from 'features/cms/user-guide.functions'
+import { getDataUpdateContent } from 'features/cms/data-update.serverfn'
+import { getUseCaseContent } from 'features/cms/use-case.serverfn'
+import { getUserGuideContent } from 'features/cms/user-guide.serverfn'
 import { HELP_HUB_SECTIONS } from 'features/help/helpHub.config'
 import type {
   HelpHubArticleData,

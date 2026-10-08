@@ -10,7 +10,7 @@ import type { PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/map/config'
 import { USER_SETTINGS } from 'data/map/config'
 import { broadcastLogout } from 'features/_user/auth-channel'
 import type { LoginSource } from 'features/_user/user.types'
-import { logoutServerFn } from 'server/auth.functions'
+import { logoutServerFn } from 'server/auth.serverfn'
 import { getLocalStorageItem, setLocalStorageItem } from 'utils/dom'
 
 export interface UserSettings {

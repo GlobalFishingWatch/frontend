@@ -1,6 +1,6 @@
 import type { OceanAreaLocale, OceanAreaType } from '@globalfishingwatch/ocean-areas'
 
-import { searchPlaces } from 'features/_places/places.functions'
+import { searchPlaces } from 'features/_places/places.serverfn'
 import type { PlaceCategory } from 'features/_places/places.types'
 import { PLACE_TYPES } from 'features/_places/places.types'
 import { parsePlacesBounds } from 'features/_places/places.utils'

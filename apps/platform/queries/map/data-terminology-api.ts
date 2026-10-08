@@ -13,7 +13,7 @@ export const dataTerminologyApi = createApi({
     try {
       // Loaded here, not statically: store.ts imports this module's middleware via the queries barrel,
       // so a static import puts @strapi/client in the entry chunk of every page.
-      const { getDataTerminologyContent } = await import('features/cms/data-terminology.functions')
+      const { getDataTerminologyContent } = await import('features/cms/data-terminology.serverfn')
       const response = await getDataTerminologyContent({ data: args })
       return { data: response?.data?.[0] ?? null }
     } catch (e) {

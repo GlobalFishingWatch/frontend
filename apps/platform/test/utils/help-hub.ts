@@ -7,7 +7,7 @@ import type { UserGuideContent } from 'features/cms/user-guide.types'
  * Fixtures + DOM helpers for HelpHub.spec.tsx.
  *
  * The Help Hub renders Strapi content, so every spec stubs the three CMS loaders
- * (`features/cms/{user-guide,use-case,data-update}.functions`) rather than hitting the real CMS.
+ * (`features/cms/{user-guide,use-case,data-update}.serverfn`) rather than hitting the real CMS.
  * Stubbing the loaders instead of the RTK Query hooks keeps the query lifecycle real, which is what
  * the loading and error specs assert on.
  */

@@ -32,13 +32,13 @@ const cms = vi.hoisted(() => ({
   dataUpdates: (() => Promise.resolve({ data: [] })) as () => Promise<unknown>,
 }))
 
-vi.mock('features/cms/user-guide.functions', () => ({
+vi.mock('features/cms/user-guide.serverfn', () => ({
   getUserGuideContent: () => cms.userGuide(),
 }))
-vi.mock('features/cms/use-case.functions', () => ({
+vi.mock('features/cms/use-case.serverfn', () => ({
   getUseCaseContent: () => cms.useCases(),
 }))
-vi.mock('features/cms/data-update.functions', () => ({
+vi.mock('features/cms/data-update.serverfn', () => ({
   getDataUpdateContent: () => cms.dataUpdates(),
 }))
 
