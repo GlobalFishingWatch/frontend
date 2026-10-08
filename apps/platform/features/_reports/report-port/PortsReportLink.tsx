@@ -5,12 +5,12 @@ import cx from 'classnames'
 
 import { Tooltip } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import type { ExtendedFeatureByVesselEventPort } from 'features/_map/map/map.slice'
 import { useClickedEventConnect } from 'features/_map/map/map-interactions.hooks'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { selectLocationQuery } from 'router/routes.selectors'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import type { QueryParams } from 'types'
 
 import { getPortReportSearch } from './ports-report.utils'

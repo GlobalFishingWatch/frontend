@@ -5,6 +5,7 @@ import { useRouter } from '@tanstack/react-router'
 
 import { WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { useClipboardNotification } from 'features/_map/sidebar/sidebar.hooks'
 import { selectWorkspace, selectWorkspaceStatus } from 'features/_map/workspace/workspace.selectors'
@@ -13,7 +14,7 @@ import { selectCurrentReport } from 'features/_reports/reports.selectors'
 import { selectReportsStatus } from 'features/_reports/reports.slice'
 import LoginButtonWrapper from 'features/_user/LoginButtonWrapper'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getCurrentAppUrl, ROUTE_PATHS } from 'router/routes.utils'
+import { getCurrentAppUrl } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 const NewReportModal = lazy(

@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 
 import { useSessionStorage } from '@globalfishingwatch/react-hooks'
 import { Modal } from '@globalfishingwatch/ui-components/modal'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { selectDownloadActivityAreaKey } from 'features/_map/download/downloadActivity.slice'
 import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
@@ -36,7 +37,6 @@ import { useOnboardingAutoOpen } from 'features/onboarding/onboarding.auto-open.
 import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
 import { getRouterRef } from 'router/router-ref'
 import { SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from 'router/routes'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import { getIsBrowser } from 'utils/dom'
 
 import styles from './Modals.module.css'

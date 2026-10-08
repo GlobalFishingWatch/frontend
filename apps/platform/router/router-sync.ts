@@ -1,5 +1,8 @@
 import type { AnyRouter, RouterEvents } from '@tanstack/react-router'
 
+import type { RoutePathValues } from '@platform/config/routes'
+import { ROUTE_PATHS } from '@platform/config/routes'
+
 import { PATH_BASENAME } from 'data/map/config'
 import type { LastWorkspaceVisited } from 'features/_map/workspace/workspace.slice'
 import { setWorkspaceHistoryNavigation } from 'features/_map/workspace/workspace.slice'
@@ -9,8 +12,7 @@ import type { QueryParams } from 'types'
 
 import { setLocation } from './location.slice'
 import { PAGE_TURN_ROUTES, REPORT_ROUTES, WORKSPACE_ROUTES } from './routes'
-import type { RoutePathValues } from './routes.utils'
-import { mapRoutePathToType, normalizeRoutePath, ROUTE_PATHS } from './routes.utils'
+import { mapRoutePathToType, normalizeRoutePath } from './routes.utils'
 
 export interface NavigationState {
   isHistoryNavigation?: boolean

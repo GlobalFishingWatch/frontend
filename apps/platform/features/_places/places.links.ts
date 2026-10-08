@@ -7,10 +7,10 @@ import {
   PORT_VISITS_EVENTS_SOURCE_ID,
 } from '@platform/config/map/dataviews'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import type { Place } from 'features/_places/places.types'
 import { getPortReportSearch } from 'features/_reports/report-port/ports-report.utils'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import type { QueryParams } from 'types'
 
 /** Port report search for a place: no current layers, so it adds the port visits one. */

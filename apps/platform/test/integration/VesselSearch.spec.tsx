@@ -10,7 +10,8 @@ import { defaultState } from 'test/utils/store'
 import { describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
-import { ROUTE_PATHS } from 'router/routes.utils'
+import { ROUTE_PATHS } from '@platform/config/routes'
+
 import { makeStore } from 'store'
 
 describe('Vessel search', async () => {

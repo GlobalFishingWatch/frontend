@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { useMatchRoute } from '@tanstack/react-router'
 
 import type { WorkspaceCategory } from '@platform/config/map/workspaces'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { DEFAULT_WORKSPACE_LIST_VIEWPORT } from 'data/map/config'
 import { setClickedEvent } from 'features/_map/map/map.slice'
@@ -33,7 +34,6 @@ import {
   selectIsRouteWithWorkspace,
   selectIsWorkspaceLocation,
 } from 'router/routes.selectors'
-import { ROUTE_PATHS } from 'router/routes.utils'
 
 /** Guests have nothing to submit with, so for them the feedback row is inert rather than hidden. */
 export function useOpenFeedbackModal() {
