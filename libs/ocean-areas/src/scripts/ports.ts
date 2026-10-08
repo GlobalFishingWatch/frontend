@@ -14,7 +14,7 @@ prepare({
   },
   filter: (port) => {
     const { name, flag } = port.properties ?? {}
-    // Names starting with their own flag code are placeholders (`CHL-1234`), not real ports
+    // Names starting with their own flag code are discarded for the list
     if (!name || !flag || name.startsWith(flag)) {
       return false
     }
