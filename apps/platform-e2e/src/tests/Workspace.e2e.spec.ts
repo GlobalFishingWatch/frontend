@@ -1,3 +1,9 @@
+import {
+  REMOVE_WORKSPACE_BUTTON_TESTID,
+  USER_WORKSPACES_TAB_TESTID,
+} from '@platform/config/selectors/user'
+import { CREATE_WORKSPACE_NAME_TESTID } from '@platform/config/selectors/workspace'
+
 import { expect, test } from '../fixtures'
 import { appPath } from '../paths'
 
@@ -22,7 +28,7 @@ test('WS01 - Save workspace', async ({ page, loginPage }) => {
 
   await expect(page.getByText('Save the current workspace')).toBeVisible()
 
-  await page.getByTestId('create-workspace-name').fill('E2E Test Workspace')
+  await page.getByTestId(CREATE_WORKSPACE_NAME_TESTID).fill('E2E Test Workspace')
 
   await expect(page.getByText('Dynamic')).toBeVisible()
 
@@ -37,13 +43,13 @@ test('WS01 - Save workspace', async ({ page, loginPage }) => {
 
   await loginPage.openUserPanel()
 
-  await page.getByTestId('user-workspace').click()
+  await page.getByTestId(USER_WORKSPACES_TAB_TESTID).click()
 
   page.on('dialog', async (dialog) => {
     await dialog.accept()
   })
 
-  await page.getByTestId('remove-workspace-button').first().click()
+  await page.getByTestId(REMOVE_WORKSPACE_BUTTON_TESTID).first().click()
 
   await page.waitForLoadState('networkidle')
 

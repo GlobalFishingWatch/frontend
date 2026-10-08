@@ -1,10 +1,11 @@
 import type { Locator, Page } from 'playwright/test'
 import { expect } from 'playwright/test'
 
+import { MAP_LOADING_SPINNER_TESTID, MAP_VIEW_ID } from '@platform/config/selectors/map'
+
 import { TIMEOUTS } from './timeouts'
 
-export const MAP_VIEWPORT = '#view-mapViewport'
-const MAP_LOADING_SPINNER = 'map-loading-spinner'
+export const MAP_VIEWPORT = `#view-${MAP_VIEW_ID}`
 const MAP_SEARCH_LABEL = 'Search an area of interest e.g. ocean, sea, port, MPA, EEZ, RFMO'
 
 export async function setLowResActivityTiles(page: Page) {
@@ -21,7 +22,7 @@ export async function waitForMapIdle(
   page: Page,
   { timeout = TIMEOUTS.MEDIUM }: { timeout?: number } = {}
 ) {
-  await expect(page.getByTestId(MAP_LOADING_SPINNER))
+  await expect(page.getByTestId(MAP_LOADING_SPINNER_TESTID))
     .toBeHidden({ timeout })
     .catch(() => {})
 }

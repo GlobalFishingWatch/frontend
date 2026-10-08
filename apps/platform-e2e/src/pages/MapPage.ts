@@ -1,9 +1,9 @@
 import type { Locator, Page } from 'playwright/test'
 import { expect } from 'playwright/test'
 
-import { TIMEOUTS } from '../helpers/timeouts'
+import { MAP_POPUP_TESTID } from '@platform/config/selectors/map'
 
-const MAP_POPUP_TESTID = 'map-popup-wrapper'
+import { TIMEOUTS } from '../helpers/timeouts'
 
 export type MapViewportWithClick = {
   latitude: number

@@ -7,6 +7,7 @@ import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import type { Tab } from '@globalfishingwatch/ui-components'
 import { Tabs } from '@globalfishingwatch/ui-components'
 import { PIPE_4_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import { USER_WORKSPACES_TAB_TESTID } from '@platform/config/selectors/user'
 
 import {
   // fetchDefaultWorkspaceThunk,
@@ -45,7 +46,7 @@ function User() {
       {
         id: UserTab.Workspaces,
         title: t((t) => t.workspace.titlePlural),
-        testId: 'user-workspace',
+        testId: USER_WORKSPACES_TAB_TESTID,
         content: <UserWorkspaces />,
       },
       {

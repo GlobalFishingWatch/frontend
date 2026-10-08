@@ -1,12 +1,17 @@
 import type { Locator, Page } from 'playwright/test'
 import { expect } from 'playwright/test'
 
+import {
+  SEARCH_VESSELS_BASIC_INPUT_TESTID,
+  SEARCH_VESSELS_OPTION_PREFIX,
+} from '@platform/config/selectors/vessels'
+
 import { waitForHydration } from '../helpers/hydration'
 import { TIMEOUTS } from '../helpers/timeouts'
 import { appPath } from '../paths'
 
 export const SEARCH_PATH = appPath('/vessel-search')
-export const BASIC_INPUT_SELECTOR = '[data-testid="search-vessels-basic-input"]'
+export const BASIC_INPUT_SELECTOR = `[data-testid="${SEARCH_VESSELS_BASIC_INPUT_TESTID}"]`
 const BASIC_INPUT_PLACEHOLDER = 'Type to search for vessels (Name, IMO, MMSI or call sign)'
 
 export class SearchPage {
@@ -17,7 +22,7 @@ export class SearchPage {
   constructor(page: Page) {
     this.page = page
     this.basicInput = page.getByPlaceholder(BASIC_INPUT_PLACEHOLDER)
-    this.resultRows = page.locator('[data-test^="search-vessels-option-"]')
+    this.resultRows = page.locator(`[data-test^="${SEARCH_VESSELS_OPTION_PREFIX}-"]`)
     this.loadingSearchText = page.getByText(/Searching more than .* vessels/)
   }
 

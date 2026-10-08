@@ -1,16 +1,24 @@
 import type { Page } from 'playwright/test'
 import { expect } from 'playwright/test'
 
+import {
+  AIS_DATAVIEW_INSTANCE_ID,
+  EEZ_DATAVIEW_INSTANCE_ID,
+  PRESENCE_DATAVIEW_INSTANCE_ID,
+  VMS_DATAVIEW_INSTANCE_ID,
+} from '@platform/config/map/dataviews'
+import { getActivityLayerSwitchTestId, getContextLayerTestId } from '@platform/config/selectors/map'
+
 import { TIMEOUTS } from './timeouts'
 
 export const ACTIVITY_LAYERS = {
-  AIS: 'activity-layer-panel-switch-ais',
-  VMS: 'activity-layer-panel-switch-vms',
-  PRESENCE: 'activity-layer-panel-switch-presence',
+  AIS: getActivityLayerSwitchTestId(AIS_DATAVIEW_INSTANCE_ID),
+  VMS: getActivityLayerSwitchTestId(VMS_DATAVIEW_INSTANCE_ID),
+  PRESENCE: getActivityLayerSwitchTestId(PRESENCE_DATAVIEW_INSTANCE_ID),
 }
 
 export const REFERENCE_LAYERS = {
-  EEZ: 'context-layer-context-layer-eez',
+  EEZ: getContextLayerTestId(EEZ_DATAVIEW_INSTANCE_ID),
 }
 
 async function setLayer(page: Page, layer: string, on: boolean) {

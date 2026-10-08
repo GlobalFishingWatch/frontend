@@ -1,9 +1,9 @@
 import type { Locator, Page } from 'playwright/test'
 import { expect } from 'playwright/test'
 
-import { TIMEOUTS } from '../helpers/timeouts'
+import { VESSEL_NAME_TESTID } from '@platform/config/selectors/vessels'
 
-const VESSEL_NAME_TESTID = 'vv-vessel-name'
+import { TIMEOUTS } from '../helpers/timeouts'
 
 export class VesselProfilePage {
   private page: Page
