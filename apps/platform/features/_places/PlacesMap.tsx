@@ -42,7 +42,7 @@ const PLACES_MAP_CONTROLLER = {
 
 const USER_LOCATION_MIN_ZOOM = 8
 
-type ViewState = typeof DEFAULT_VIEWPORT
+type ViewState = typeof DEFAULT_PLACES_VIEWPORT
 
 type Size = { width: number; height: number }
 
@@ -219,7 +219,9 @@ function PlacesMap({ dataviewsByType, type }: PlacesMapProps) {
         {search.bounds && (
           <SwitchRow
             className={styles.mapToggle}
-            label={t((t) => t.places.filterByMap)}
+            label={
+              type === 'port' ? t((t) => t.places.filterByMapPorts) : t((t) => t.places.filterByMap)
+            }
             active={filterByMap}
             inverted
             onClick={() =>

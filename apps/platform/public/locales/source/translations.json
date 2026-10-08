@@ -1008,6 +1008,7 @@
     "centerOnMyLocation": "Center on my location",
     "clearSearch": "Clear search",
     "filterByMap": "Show only areas in view",
+    "filterByMapPorts": "Show only ports in view",
     "loadMore": "Load more",
     "noResultsInView": "Nothing in this map view. Try moving or zooming out the map.",
     "noResultsQuery": "No results for \"{{query}}\"",
