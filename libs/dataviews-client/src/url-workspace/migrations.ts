@@ -8,10 +8,13 @@ import {
 } from '@globalfishingwatch/datasets-client'
 
 export const removeLegacyEndpointPrefix = (endpointId: string) => {
+  if (typeof endpointId !== 'string') {
+    return endpointId
+  }
   if (endpointId === 'user-context-tiles') {
     return EndpointId.ContextTiles
   }
-  return endpointId?.replace('carriers-', '')
+  return endpointId.replace('carriers-', '')
 }
 
 export const migrateLegacyVMSPublicDataset = (datasetId: string) => {
@@ -43,6 +46,7 @@ export const migrateVesselLegacyDatasets = (datasetId: string) => {
 }
 
 export const runDatasetMigrations = (datasetId: string) => {
+  if (typeof datasetId !== 'string') return datasetId
   return migrateDetectionsLegacyDatasets(
     migrateVesselLegacyDatasets(migrateLegacyVMSDatasets(datasetId))
   )
