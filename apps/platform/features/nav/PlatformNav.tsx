@@ -57,7 +57,8 @@ function PlatformNav() {
 
   const [railExpanded, setRailExpanded] = useState(false)
   const [railSettled, setRailSettled] = useState(false)
-  const [openSectionIds, setOpenSectionIds] = useState<string[] | null>(null)
+  // The user's toggles, kept only while the route stays in the section they were made from
+  const [openSections, setOpenSections] = useState<{ routeSectionId?: string; ids: string[] }>()
 
   const hoverTimeout = useRef<ReturnType<typeof setTimeout>>(undefined)
   useEffect(() => () => clearTimeout(hoverTimeout.current), [])
@@ -144,7 +145,12 @@ function PlatformNav() {
         : isItemActive(subsection)
     )
   )?.id
-  const currentOpenSectionIds = openSectionIds ?? (routeSectionId ? [routeSectionId] : [])
+  const currentOpenSectionIds =
+    openSections && openSections.routeSectionId === routeSectionId
+      ? openSections.ids
+      : routeSectionId
+        ? [routeSectionId]
+        : []
   const isSectionExpanded = (id: string) => railExpanded && currentOpenSectionIds.includes(id)
 
   const renderIconAndLabel = (item: NavItem) => (
@@ -242,11 +248,12 @@ function PlatformNav() {
         <Disclosure
           isExpanded={expanded}
           onExpandedChange={(isOpen) => {
-            setOpenSectionIds(
-              isOpen
+            setOpenSections({
+              routeSectionId,
+              ids: isOpen
                 ? [...currentOpenSectionIds, section.id]
-                : currentOpenSectionIds.filter((id) => id !== section.id)
-            )
+                : currentOpenSectionIds.filter((id) => id !== section.id),
+            })
             expandRail()
           }}
         >
