@@ -39,7 +39,7 @@
   justify-content: space-between;
   padding: 0 var(--space-S) 0 calc(var(--space-S) + var(--nav-toggle-offset));
   height: var(--header-height);
-  border-bottom: 1px transparent;
+  border-bottom: 1px solid transparent;
   flex-shrink: 0;
 }
 

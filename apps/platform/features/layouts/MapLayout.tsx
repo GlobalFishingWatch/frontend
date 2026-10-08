@@ -90,7 +90,7 @@ function MapLayout() {
   } else if (isWorkspaceSearchLocation) {
     fixedAsideWidth = '100%'
   } else if (isWorkspaceLocation) {
-    fixedAsideWidth = isPrinting ? '34rem' : `calc(40rem - ${RAIL})`
+    fixedAsideWidth = isPrinting ? '34rem' : `calc(var(--workspace-sidebar-width) - ${RAIL})`
   }
 
   const asideWidth = fixedAsideWidth ?? '50%'

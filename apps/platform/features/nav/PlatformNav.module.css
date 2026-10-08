@@ -16,10 +16,6 @@
   transition: opacity 200ms var(--ease-drawer);
 }
 
-.expanded::before {
-  opacity: 1;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .PlatformNav::before {
     transition: none;
@@ -88,7 +84,7 @@
   transition:
     background-color 120ms ease,
     color 120ms ease,
-    transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform 120ms ease;
   color: var(--color-secondary-blue);
 }
 
@@ -97,7 +93,7 @@
 }
 
 .tab:active:not(:has(:active)) {
-  transform: scale(0.86);
+  transform: scale(0.97);
   transition: var(--transition-press);
 }
 
@@ -118,7 +114,7 @@
   align-items: center;
   line-height: 0;
   overflow: hidden;
-  transition: var(--transition-spring);
+  transition: color 120ms ease;
 }
 
 .tabContent.disabled {
@@ -172,11 +168,6 @@
   opacity: 1;
 }
 
-.expanded .section [data-nav-label] {
-  white-space: normal;
-  text-overflow: clip;
-}
-
 .sectionToggle {
   display: none;
   margin-right: var(--space-XS);
@@ -212,11 +203,14 @@
   height: var(--disclosure-panel-height, 0);
   overflow: hidden;
   margin-left: calc(var(--sidebar-tabs-width) / 2);
+}
+
+.settled .subsectionsWrapper {
   transition: height 200ms var(--ease-out-strong);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .subsectionsWrapper {
+  .settled .subsectionsWrapper {
     transition: none;
   }
 }
@@ -299,6 +293,7 @@
   }
 
   .expanded::before {
+    opacity: 1;
     pointer-events: auto;
   }
 
