@@ -18,6 +18,7 @@ import {
   RFMO_DATAVIEW_SLUG,
 } from '@platform/config/map/dataviews'
 import { WorkspaceCategory } from '@platform/config/map/workspaces'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import {
   MARINE_MANAGER_DATAVIEWS,
@@ -36,7 +37,6 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { t as trans } from 'features/i18n/i18n'
 import { useOceanAreas } from 'hooks/ocean-areas'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import type { Bbox } from 'types'
 import { getEventLabel } from 'utils/analytics'
 

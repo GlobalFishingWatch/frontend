@@ -16,11 +16,9 @@ import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import { selectWorkspaceCategory } from 'features/_map/workspace/workspace.selectors'
 import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
 import UserButton from 'features/_user/UserButton'
-import { useAppDispatch } from 'features/app/app.hooks'
 import { CROWDIN_IN_CONTEXT_LANG } from 'features/i18n/i18n.config'
 import { useLanguageOptions } from 'features/i18n/language.hooks'
 import { CrowdinScripts } from 'features/i18n/LanguageToggle'
-import { setModalOpen } from 'features/modals/modals.slice'
 import type { NavItem } from 'features/nav/nav.config'
 import {
   getPlatformBottomSections,
@@ -33,29 +31,11 @@ import { selectIsUserLocation, selectIsWorkspacesListLocation } from 'router/rou
 
 import styles from './PlatformNav.module.css'
 
-const HOVER_INTENT_MS = 300
+const RAIL_OPEN_DELAY_MS = 300
+const RAIL_CLOSE_DELAY_MS = 300
 
-/**
- * The platform rail: a strip of icons that expands into a labelled flyout, with sections that hold
- * subsections. [[LegacyNav]] is the pre-platform nav — a flat icon rail with none of this.
- *
- * Two pieces of state, and only two:
- *  - `railExpanded` — is the flyout open. Owned here rather than by CSS `:hover`, so that everything
- *    derived from it (which panels are reachable, `aria-expanded`, the chevron) agrees with what is
- *    on screen. CSS reads the `.expanded` class.
- *  - `openSectionId` — which section is unfolded. `''` means the user closed everything; `null` means
- *    they have not chosen, so the section matching the current route unfolds.
- *
- * Panel visibility, focusability and height animation come from react-aria's Disclosure: it sets
- * `hidden="until-found"` when collapsed and publishes `--disclosure-panel-height` for the CSS
- * transition. Nothing here hand-rolls `inert` or `aria-expanded`.
- *
- * Below the small-screen breakpoint there is no hover to expand with, so pointer/focus expansion is
- * not wired up at all and the rail opens from an explicit toggle row instead.
- */
 function PlatformNav() {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const navLinkContext = useNavLinkContext()
   const isItemActive = useIsNavItemActive()
   const locationCategory = useSelector(selectWorkspaceCategory)
@@ -73,39 +53,36 @@ function PlatformNav() {
 
   const isSmallScreen = useSmallScreen()
 
-  const navSections = useMemo(
-    () =>
-      getPlatformNavSections(t, {
-        onGetStartedClick: () => dispatch(setModalOpen({ id: 'onboarding', open: true })),
-      }),
-    [t, dispatch]
-  )
+  const navSections = useMemo(() => getPlatformNavSections(t), [t])
 
   const [railExpanded, setRailExpanded] = useState(false)
-  const [openSectionId, setOpenSectionId] = useState<string | null>(null)
+  const [railSettled, setRailSettled] = useState(false)
+  // The user's toggles, kept only while the route stays in the section they were made from
+  const [openSections, setOpenSections] = useState<{ routeSectionId?: string; ids: string[] }>()
 
-  const hoverOpenTimeout = useRef<ReturnType<typeof setTimeout>>(undefined)
-  const cancelHoverOpen = useCallback(() => clearTimeout(hoverOpenTimeout.current), [])
-  const openSectionOnHover = useCallback(
-    (id: string) => {
-      if (isSmallScreen) return
-      clearTimeout(hoverOpenTimeout.current)
-      hoverOpenTimeout.current = setTimeout(() => setOpenSectionId(id), HOVER_INTENT_MS)
-    },
-    [isSmallScreen]
-  )
-  useEffect(() => () => clearTimeout(hoverOpenTimeout.current), [])
+  const hoverTimeout = useRef<ReturnType<typeof setTimeout>>(undefined)
+  useEffect(() => () => clearTimeout(hoverTimeout.current), [])
 
-  // ponytail: no pointerType filter, so a touch tap expands the rail and it stays expanded until the
-  // next tap outside — matching what sticky `:hover` did before. Gate on 'mouse' once touch gets a
-  // deliberate design.
-  const expandRail = useCallback(() => setRailExpanded(true), [])
+  const expandRail = useCallback(() => {
+    clearTimeout(hoverTimeout.current)
+    setRailExpanded(true)
+  }, [])
 
   const collapseRail = useCallback(() => {
-    cancelHoverOpen()
+    clearTimeout(hoverTimeout.current)
     setRailExpanded(false)
-    setOpenSectionId(null)
-  }, [cancelHoverOpen])
+    setRailSettled(false)
+  }, [])
+
+  const scheduleExpand = useCallback(() => {
+    clearTimeout(hoverTimeout.current)
+    hoverTimeout.current = setTimeout(expandRail, RAIL_OPEN_DELAY_MS)
+  }, [expandRail])
+
+  const scheduleCollapse = useCallback(() => {
+    clearTimeout(hoverTimeout.current)
+    hoverTimeout.current = setTimeout(collapseRail, RAIL_CLOSE_DELAY_MS)
+  }, [collapseRail])
 
   const toggleRail = useCallback(() => {
     if (railExpanded) {
@@ -127,14 +104,10 @@ function PlatformNav() {
 
   const hoverExpandProps = isSmallScreen
     ? {}
-    : { onPointerEnter: expandRail, onPointerLeave: collapseRail, onFocus: expandRail }
+    : { onPointerEnter: scheduleExpand, onPointerLeave: scheduleCollapse, onFocus: expandRail }
 
   /** Navigating or acting closes the flyout; toggling a section must not. */
-  const onNavigate = useCallback(() => {
-    cancelHoverOpen()
-    setRailExpanded(false)
-    setOpenSectionId('')
-  }, [cancelHoverOpen])
+  const onNavigate = collapseRail
 
   const bottomSections = useMemo(() => {
     const sections = getPlatformBottomSections(t, {
@@ -172,7 +145,13 @@ function PlatformNav() {
         : isItemActive(subsection)
     )
   )?.id
-  const isSectionExpanded = (id: string) => railExpanded && (openSectionId ?? routeSectionId) === id
+  const currentOpenSectionIds =
+    openSections && openSections.routeSectionId === routeSectionId
+      ? openSections.ids
+      : routeSectionId
+        ? [routeSectionId]
+        : []
+  const isSectionExpanded = (id: string) => railExpanded && currentOpenSectionIds.includes(id)
 
   const renderIconAndLabel = (item: NavItem) => (
     <Fragment>
@@ -265,16 +244,16 @@ function PlatformNav() {
     const expanded = isSectionExpanded(section.id)
     const chevron = <Icon icon={expanded ? 'arrow-top' : 'arrow-down'} />
     return (
-      <li
-        key={section.id}
-        className={styles.section}
-        onMouseEnter={() => openSectionOnHover(section.id)}
-        onMouseLeave={cancelHoverOpen}
-      >
+      <li key={section.id} className={styles.section}>
         <Disclosure
           isExpanded={expanded}
           onExpandedChange={(isOpen) => {
-            setOpenSectionId(isOpen ? section.id : '')
+            setOpenSections({
+              routeSectionId,
+              ids: isOpen
+                ? [...currentOpenSectionIds, section.id]
+                : currentOpenSectionIds.filter((id) => id !== section.id),
+            })
             expandRail()
           }}
         >
@@ -315,18 +294,16 @@ function PlatformNav() {
   }
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <nav
-      className={cx('print-hidden', styles.PlatformNav, { [styles.expanded]: railExpanded })}
+      className={cx('print-hidden', styles.PlatformNav, {
+        [styles.expanded]: railExpanded,
+        [styles.settled]: railSettled,
+      })}
       {...hoverExpandProps}
       onBlur={onBlur}
-      // The backdrop is this element's ::before, so a tap on it targets the nav itself.
       onClick={(event) => event.target === event.currentTarget && collapseRail()}
     >
-      {/*
-        Two separate buttons rather than one that morphs: the hamburger sits in the header band and
-        the close button rides the drawer, so nothing has to cross-fade its background or icon while
-        the drawer slides.
-      */}
       {isSmallScreen && (
         <button
           type="button"
@@ -339,7 +316,18 @@ function PlatformNav() {
           <Icon icon="menu" />
         </button>
       )}
-      <div className={styles.panel}>
+      <div
+        className={styles.panel}
+        onTransitionEnd={(event) => {
+          if (
+            railExpanded &&
+            event.target === event.currentTarget &&
+            (event.propertyName === 'width' || event.propertyName === 'transform')
+          ) {
+            setRailSettled(true)
+          }
+        }}
+      >
         {isSmallScreen && (
           <div className={styles.drawerHeader}>
             <a href="https://globalfishingwatch.org" className={styles.logoLink}>

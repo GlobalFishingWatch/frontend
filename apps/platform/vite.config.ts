@@ -2,6 +2,7 @@ import { sentryTanstackStart } from '@sentry/tanstackstart-react/vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import react from '@vitejs/plugin-react'
 import { nitro } from 'nitro/vite'
+import { readFileSync } from 'node:fs'
 import { visualizer } from 'rollup-plugin-visualizer'
 import type { Plugin } from 'vite'
 import { defineConfig, loadEnv } from 'vite'
@@ -30,6 +31,45 @@ function staticRouteRules(basePath: string, mode: string) {
     [`${basePath}/locales/**`]: { headers },
     '/images/**': { headers: imageHeaders },
     [`${basePath}/images/**`]: { headers: imageHeaders },
+  }
+}
+
+const SITEMAP_ORIGIN = 'https://globalfishingwatch.org'
+// ponytail: hand-kept list of the places pages; add a path here when one goes public
+const PLACES_SITEMAP_PATHS = ['/areas/eez', '/areas/fao', '/areas/mpa', '/areas/rfmo', '/ports']
+
+/**
+ * The places pages are only public in platform mode, so only then do they get a sitemap and an
+ * entry in the committed `public/sitemap.xml` index (which `generate-vessel-sitemap.mjs` owns).
+ */
+function placesSitemap(): Plugin {
+  return {
+    name: 'places-sitemap',
+    apply: 'build',
+    applyToEnvironment: (environment) => environment.name === 'client',
+    generateBundle() {
+      const urls = PLACES_SITEMAP_PATHS.map(
+        (path) => `  <url><loc>${SITEMAP_ORIGIN}${basePath}${path}</loc></url>`
+      ).join('\n')
+      this.emitFile({
+        type: 'asset',
+        fileName: 'sitemaps/pages.xml',
+        source: `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
+</urlset>
+`,
+      })
+      const index = readFileSync(new URL('./public/sitemap.xml', import.meta.url), 'utf8')
+      this.emitFile({
+        type: 'asset',
+        fileName: 'sitemap.xml',
+        source: index.replace(
+          '</sitemapindex>',
+          `  <sitemap><loc>${SITEMAP_ORIGIN}${basePath}/sitemaps/pages.xml</loc></sitemap>\n</sitemapindex>`
+        ),
+      })
+    },
   }
 }
 
@@ -85,6 +125,7 @@ export default defineConfig(({ command, mode }) => {
             }
           },
         } satisfies Plugin),
+      command === 'build' && env.VITE_PLATFORM_MODE === 'true' && placesSitemap(),
       command === 'build' &&
         nitro({
           baseURL: basePath,

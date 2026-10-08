@@ -1,19 +1,22 @@
 import { createServerFn } from '@tanstack/react-start'
 
-import type { DataUpdate } from 'features/cms/loaders/data-update.types'
-import { fetchStrapiCollectionCached } from 'features/cms/loaders/utils'
 import type { StrapiResponse } from 'features/cms/strapi.types'
+import { fetchStrapiCollectionCached } from 'features/cms/strapi-collection.server'
+import type { UserGuideSection } from 'features/cms/user-guide.types'
 import { toCardResponse } from 'features/help/helpHub.utils'
 import type { Locale } from 'types'
 
-// No subsections on this collection, so the index is just the fields the menu prints.
 const VARIANT_PARAMS = {
-  index: { fields: ['title', 'slug', 'publication_date'] },
-  card: { fields: ['title', 'slug', 'publication_date', 'body'], populate: '*' },
+  // Titles and slugs only: enough for the section menu and the prev/next links, no bodies.
+  index: {
+    fields: ['title', 'slug'],
+    populate: { subsections: { fields: ['title', 'slug'] } },
+  },
+  card: { fields: ['title', 'slug', 'body'], populate: '*' },
   full: { populate: '*' },
 }
 
-export const getDataUpdateContent = createServerFn({
+export const getUserGuideContent = createServerFn({
   method: 'GET',
 })
   .validator(
@@ -22,11 +25,13 @@ export const getDataUpdateContent = createServerFn({
     ) => params
   )
   .handler(
-    async ({ data: { locale, slug, variant, first } }): Promise<StrapiResponse<DataUpdate>> => {
-      const response = await fetchStrapiCollectionCached<DataUpdate>({
-        collectionName: 'data-updates',
+    async ({
+      data: { locale, slug, variant, first },
+    }): Promise<StrapiResponse<UserGuideSection>> => {
+      const response = await fetchStrapiCollectionCached<UserGuideSection>({
+        collectionName: 'user-guide-sections',
         params: {
-          sort: ['publication_date:desc'],
+          sort: ['createdAt:asc'],
           ...VARIANT_PARAMS[variant ?? 'full'],
           ...(slug && { filters: { slug: { $eq: slug } } }),
           ...(first && { pagination: { pageSize: 1 } }),

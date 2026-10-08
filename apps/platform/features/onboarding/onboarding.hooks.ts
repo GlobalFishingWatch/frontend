@@ -5,6 +5,7 @@ import { useSetAtom } from 'jotai'
 
 import { AIS_DATAVIEW_INSTANCE_ID, VMS_DATAVIEW_INSTANCE_ID } from '@platform/config/map/dataviews'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import {
   activeThreadAtom,
@@ -19,12 +20,11 @@ import { useFitAreaInViewport } from 'features/_reports/report-area/area-reports
 import { ReportCategory } from 'features/_reports/reports.types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import type { UserGuideSlug } from 'features/cms/loaders/user-guide.types'
+import type { UserGuideSlug } from 'features/cms/user-guide.types'
 import { findSectionForSlug } from 'features/help/userGuide.utils'
 import { setHintToOpen } from 'features/hints/hints.slice'
 import { setModalOpen } from 'features/modals/modals.slice'
 import type { OnboardingCardId } from 'features/onboarding/onboarding.config'
-import { ROUTE_PATHS } from 'router/routes.utils'
 
 const DEFAULT_ACTIVITY_INSTANCE_IDS = [AIS_DATAVIEW_INSTANCE_ID, VMS_DATAVIEW_INSTANCE_ID]
 

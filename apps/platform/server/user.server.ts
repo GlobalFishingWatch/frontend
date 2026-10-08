@@ -6,7 +6,7 @@ import {
   USER_REFRESH_TOKEN_COOKIE_KEY,
   USER_TOKEN_COOKIE_KEY,
 } from 'features/app/app.config'
-import { clearAuthCookies, refreshAuthTokens } from 'server-functions/auth.functions'
+import { clearAuthCookies, refreshAuthTokens } from 'server/auth.server'
 
 export async function resolveUserStateFromRequest(): Promise<{ user: UserData | null }> {
   const { getRequest, setCookie } = await import('@tanstack/react-start/server')

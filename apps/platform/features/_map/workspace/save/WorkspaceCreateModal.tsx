@@ -17,6 +17,7 @@ import type { OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, InputText, Modal, Select } from '@globalfishingwatch/ui-components'
 import { WorkspaceCategory } from '@platform/config/map/workspaces'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { selectPrivateDatasetsInWorkspace } from 'features/_map/dataviews/selectors/dataviews.selectors'
 import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
@@ -32,7 +33,6 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { useOceanAreas } from 'hooks/ocean-areas'
 import { MAP, REPORT, WORKSPACE } from 'router/routes'
 import { selectLocationCategory, selectLocationType, selectReportId } from 'router/routes.selectors'
-import { ROUTE_PATHS } from 'router/routes.utils'
 
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
 

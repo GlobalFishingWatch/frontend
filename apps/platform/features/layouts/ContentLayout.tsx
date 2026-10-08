@@ -16,8 +16,8 @@ import { selectIsHelpHubLocation, selectIsStandaloneSearchLocation } from 'route
 import styles from './layouts.module.css'
 
 /**
- * Layout for platform pages with no map and no sidebar — currently /user, /vessel-search and
- * /help-and-resources.
+ * Layout for platform pages with no map and no sidebar — currently /user, /vessel-search, /ports,
+ * /areas and /help-and-resources.
  *
  * It still provides `SCROLL_CONTAINER_DOM_ID`. That element is an app-wide contract, not a Sidebar
  * detail: 15 modules reach for it, including router/router-sync.ts (scroll reset on every

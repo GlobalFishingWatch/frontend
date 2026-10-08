@@ -22,3 +22,18 @@ export type HelpHubItem = {
   publicationDate?: string
   subsections?: HelpHubItemSubsection[]
 }
+
+export type HelpHubSectionData = {
+  items: HelpHubItem[]
+  error?: string
+}
+
+export type HelpHubSectionItems = Record<HelpHubSectionId, HelpHubSectionData>
+
+export type HelpHubFetchOptions = { slug?: string; variant?: 'index' | 'card'; first?: boolean }
+
+export type HelpHubArticleData = {
+  index: HelpHubItem[]
+  item?: HelpHubItem
+  error?: string
+}

@@ -20,6 +20,7 @@ import {
 } from '@globalfishingwatch/deck-layers'
 import { Choice, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { isRealTimeDataview } from 'features/_map/dataviews/dataviews.utils'
@@ -34,7 +35,6 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import I18nDate from 'features/i18n/i18nDate'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import { pickDateFormatByPrecision } from 'utils/dates'
 import { formatInfoField, upperFirst } from 'utils/info'
 

@@ -12,6 +12,7 @@ import TrackDepthIcon from 'assets/icons/timebar-track-depth.svg?react'
 import TrackPositionsIcon from 'assets/icons/timebar-track-positions.svg?react'
 import TrackSpeedIcon from 'assets/icons/timebar-track-speed.svg?react'
 import TracksIcon from 'assets/icons/timebar-tracks.svg?react'
+import { getContextDataviewDataset } from 'features/_map/dataviews/dataviews.utils'
 import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
@@ -353,9 +354,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               )
             })}
             {activeUserPointsDataviews.map((pointDataview) => {
-              const dataset = pointDataview.datasets?.find(
-                (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
-              )
+              const dataset = getContextDataviewDataset(pointDataview)
               const title = dataset?.name || dataset?.id || ''
               return (
                 <Radio

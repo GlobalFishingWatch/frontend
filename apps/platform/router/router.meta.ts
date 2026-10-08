@@ -1,4 +1,4 @@
-import { PATH_BASENAME } from 'data/map/config'
+import { PATH_BASENAME, PLATFORM_MODE } from 'data/map/config'
 import { WORKSPACE_ENV } from 'data/workspace-env'
 import { t } from 'features/i18n/i18n'
 import type Resources from 'features/i18n/i18n.types'
@@ -127,6 +127,55 @@ export const getRouteHead = ({
     meta: [
       { title: getHeadTitle(categoryResolved) },
       { name: 'description', content: descriptionResolved },
+    ],
+  }
+}
+
+/** Head for the places pages; `items` (the server-rendered list) becomes an `ItemList`. */
+export const getPlacesHead = ({
+  category,
+  description,
+  pathname,
+  items = [],
+}: {
+  category: string
+  description: string
+  pathname: string
+  items?: { name: string; pathname?: string }[]
+}) => {
+  const title = getHeadTitle(category)
+  const canonical = buildCanonicalUrl(pathname)
+  return {
+    meta: [
+      { title },
+      // Not public yet outside platform mode
+      ...(!PLATFORM_MODE ? [{ name: 'robots', content: 'noindex, nofollow' }] : []),
+      { name: 'description', content: description },
+      { property: 'og:title', content: title },
+      { property: 'og:description', content: description },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:url', content: canonical },
+      { name: 'twitter:title', content: title },
+      { name: 'twitter:description', content: description },
+      {
+        'script:ld+json': {
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: title,
+          description,
+          url: canonical,
+          mainEntity: {
+            '@type': 'ItemList',
+            numberOfItems: items.length,
+            itemListElement: items.map((item, index) => ({
+              '@type': 'ListItem',
+              position: index + 1,
+              name: item.name,
+              ...(item.pathname && { url: buildCanonicalUrl(item.pathname) }),
+            })),
+          },
+        },
+      },
     ],
   }
 }

@@ -6,6 +6,7 @@ import {
   EventTypes,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
+import type { BasemapType } from '@globalfishingwatch/deck-layers'
 // Leaf subpath, not the package root: this module defines the URL search schemas for every route, so it
 // is in the always-loaded graph. The root barrel would put all of deck.gl in every page's entry chunk.
 import {
@@ -17,6 +18,7 @@ import {
   HEATMAP_LOW_RES_ID,
 } from '@globalfishingwatch/deck-layers/config'
 
+import { PLACE_SORTS } from 'features/_places/places.types'
 import {
   REPORT_ACTIVITY_GRAPHS,
   REPORT_EVENTS_GRAPHS,
@@ -280,6 +282,24 @@ export const vesselSearchQuerySchema = z
   .partial()
   .passthrough()
 
+// ── Places (/ports, /areas) search params ─────────────────────────────────────
+const PLACES_BASEMAPS = [
+  'satellite',
+  'basemap_default',
+] as const satisfies readonly `${BasemapType}`[]
+
+export const placesSearchSchema = z
+  .object({
+    query: optionalString(),
+    basemap: optionalLiteralUnion(PLACES_BASEMAPS),
+    filterByMap: optionalBoolean(),
+    placesSort: optionalLiteralUnion(PLACE_SORTS),
+    placesLimit: optionalNumber(),
+    bounds: optionalString(), // `west,south,east,north`, parsed by parsePlacesBounds
+  })
+  .partial()
+  .passthrough()
+
 // ── Per-route validators ──────────────────────────────────────────────────────
 // TanStack Router merges parent + child validateSearch results, so each child
 // only validates its own params. .passthrough() on all schemas ensures params
@@ -295,6 +315,10 @@ export function validateVesselProfileParams(search: Record<string, unknown>): Qu
 
 export function validateReportSearchParams(search: Record<string, unknown>): QueryParams {
   return reportSearchSchema.parse(search) as QueryParams
+}
+
+export function validatePlacesSearchParams(search: Record<string, unknown>): QueryParams {
+  return placesSearchSchema.parse(search) as QueryParams
 }
 
 export function validateSearchQueryParams(search: Record<string, unknown>): QueryParams {

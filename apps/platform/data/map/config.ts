@@ -23,6 +23,7 @@ export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 
 export const IS_DEVELOPMENT_ENV = import.meta.env.DEV
 export const IS_PRODUCTION_BUILD = import.meta.env.PROD
+export const PLATFORM_MODE = import.meta.env.VITE_PLATFORM_MODE === 'true'
 
 export const IS_PRODUCTION_WORKSPACE_ENV =
   WORKSPACE_ENV === 'production' || WORKSPACE_ENV === 'staging'

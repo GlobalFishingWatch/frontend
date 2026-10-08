@@ -83,6 +83,7 @@ export function getUserDataviewDataset(dataview?: Dataview | UrlDataviewInstance
     (d) =>
       d.type === DatasetTypes.Context ||
       d.type === DatasetTypes.UserContext ||
+      d.type === DatasetTypes.PMTiles ||
       d.type === DatasetTypes.UserTracks ||
       d.type === DatasetTypes.UserFourwings || // User uploaded gridded rasters
       d.type === DatasetTypes.Fourwings || // This is needed for the bq custom datasets

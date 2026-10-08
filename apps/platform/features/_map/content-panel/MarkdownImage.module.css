@@ -30,6 +30,7 @@
 
 .open {
   max-width: 100%;
+  border-radius: var(--border-radius-0);
   max-height: 100%;
   cursor: zoom-out;
   object-fit: contain;

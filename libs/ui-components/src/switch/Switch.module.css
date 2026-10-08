@@ -67,6 +67,20 @@
   background-color: currentcolor;
 }
 
+/* Inverted: for dark backgrounds. Off = outlined light nib, on = white track with blue nib */
+.switch.inverted {
+  border-color: rgba(var(--white-rgb), 0.3);
+}
+
+.switch.inverted .nib {
+  border-color: transparent;
+  background-color: rgba(var(--white-rgb), 0.6);
+}
+
+.switch.inverted[aria-checked='true']:not(.customColor) {
+  background-color: var(--color-white);
+}
+
 .switch[aria-checked='true'] .nib {
   background-color: var(--color-white);
   border: var(--border);
@@ -81,6 +95,11 @@
   transform: translateX(0.75rem);
 }
 
+.switch.inverted[aria-checked='true'] .nib {
+  border-color: transparent;
+  background-color: var(--color-primary-blue);
+}
+
 .switch:not(.disabled, [aria-checked='true']):hover,
 .switch:not(.disabled, [aria-checked='true']):focus {
   border: 0.1rem solid var(--color-secondary-blue);
@@ -89,6 +108,16 @@
 .switch:not(.disabled, [aria-checked='true']):hover .nib,
 .switch:not(.disabled, [aria-checked='true']):focus .nib {
   background-color: var(--color-primary-blue);
+}
+
+.switch.inverted:not(.disabled, [aria-checked='true']):hover,
+.switch.inverted:not(.disabled, [aria-checked='true']):focus {
+  border-color: rgba(var(--white-rgb), 0.6);
+}
+
+.switch.inverted:not(.disabled, [aria-checked='true']):hover .nib,
+.switch.inverted:not(.disabled, [aria-checked='true']):focus .nib {
+  background-color: var(--color-white);
 }
 
 @media (prefers-reduced-motion: reduce) {

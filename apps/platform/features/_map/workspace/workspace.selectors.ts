@@ -18,6 +18,7 @@ import type { TurningTidesWorkspaceId } from 'features/_vessels/track-correction
 import { TURNING_TIDES_WORKSPACES_IDS } from 'features/_vessels/track-correction/track-correction.config'
 import type { RootState } from 'reducers'
 import {
+  PORT,
   PORT_REPORT,
   REPORT,
   REPORT_ROUTES,
@@ -283,7 +284,9 @@ export const selectWorkspaceFetchParams = createSelector(
       case WORKSPACE_VESSEL:
       case WORKSPACE_REPORT:
       case VESSEL_GROUP_REPORT:
-      case PORT_REPORT: {
+      case PORT_REPORT:
+      case PORT: {
+        // Standalone /ports/$portId has no workspaceId param, so it gets the default workspace
         if (!urlWorkspaceId || urlWorkspaceId === DEFAULT_WORKSPACE_ID) {
           return getDefaultWorkspaceFetchParams(currentWorkspaceId, workspaceStatus)
         }

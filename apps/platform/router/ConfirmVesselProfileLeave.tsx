@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 import { useBlocker, useRouter } from '@tanstack/react-router'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { RoutePathValues } from '@platform/config/routes'
 
 import { selectVesselProfileDataviewIntance } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import { selectHasVesselProfileInstancePinned } from 'features/_map/dataviews/selectors/dataviews.selectors'
@@ -11,7 +12,7 @@ import type { QueryParams } from 'types'
 
 import { ALL_WORKSPACE_ROUTES, VESSEL_ROUTES } from './routes'
 import { selectIsAnyVesselLocation } from './routes.selectors'
-import { mapRoutePathToType, normalizeRoutePath, type RoutePathValues } from './routes.utils'
+import { mapRoutePathToType, normalizeRoutePath } from './routes.utils'
 
 /**
  * Blocks navigation away from vessel profile when the vessel dataview instance is not pinned.

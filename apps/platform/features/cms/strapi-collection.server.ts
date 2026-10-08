@@ -2,13 +2,12 @@ import { getRequestUrl } from '@tanstack/react-start/server'
 import { defineCachedFunction } from 'nitro/cache'
 
 import { IS_DEVELOPMENT_ENV } from 'data/map/config'
-import { resolveCmsRequestMode } from 'features/cms/loaders/preview'
+import { resolveCmsRequestMode } from 'features/cms/preview'
 import type { StrapiResponse } from 'features/cms/strapi.types'
+import { sdk } from 'features/cms/strapi-sdk'
 import { CMS_MAX_CACHE_AGE_MINUTES } from 'features/help/helpHub.config'
 import { toContentLocale } from 'features/i18n/i18n.config'
 import { Locale } from 'types'
-
-import { sdk } from '../strapi-sdk'
 
 type StrapiCollection = ReturnType<typeof sdk.collection>
 type FindParams = Omit<Parameters<StrapiCollection['find']>[0], 'locale'>

@@ -6,7 +6,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import type { UserGuideSlug } from 'features/cms/loaders/user-guide.types'
+import type { UserGuideSlug } from 'features/cms/user-guide.types'
 import { findSectionForSlug } from 'features/help/userGuide.utils'
 
 import styles from './UserGuideLink.module.css'
