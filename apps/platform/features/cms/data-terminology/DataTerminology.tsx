@@ -6,7 +6,7 @@ import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import type { DataTerminologySlugs } from 'features/cms/loaders/data-terminology.types'
+import type { DataTerminologySlugs } from 'features/cms/data-terminology.types'
 
 import styles from './DataTerminology.module.css'
 

@@ -1,7 +1,8 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
+import { getPort } from 'features/_places/places.functions'
 import { getPlacePortReportSearch } from 'features/_places/places.links'
-import { getPlacesLocale, getPort } from 'features/_places/places.loaders'
+import { getPlacesLocale } from 'features/_places/places.loaders'
 import PortsReport from 'features/_reports/report-port/PortsReport'
 import { t } from 'features/i18n/i18n'
 import { getRouteHead } from 'router/router.meta'

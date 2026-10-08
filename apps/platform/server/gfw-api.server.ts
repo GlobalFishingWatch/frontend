@@ -7,8 +7,8 @@ import {
   USER_REFRESH_TOKEN_COOKIE_KEY,
   USER_TOKEN_COOKIE_KEY,
 } from 'features/app/app.config'
+import type { Tokens } from 'server/auth.server'
 
-type Tokens = { token: string; refreshToken: string }
 type AuthTokenHolder = { token: string; refreshing?: Promise<Tokens> }
 const authTokenALS = new AsyncLocalStorage<AuthTokenHolder>()
 
@@ -48,7 +48,7 @@ export function configureServerGFWAPI() {
         // loading the server runtime (or other server-only modules) at module-init breaks boot.
         const [{ getRequest, setCookie }, { refreshAuthTokens }] = await Promise.all([
           import('@tanstack/react-start/server'),
-          import('server-functions/auth.functions'),
+          import('server/auth.server'),
         ])
         const cookie = getRequest()?.headers.get('cookie') ?? ''
         const refreshToken = readCookieString(cookie, USER_REFRESH_TOKEN_COOKIE_KEY) ?? undefined

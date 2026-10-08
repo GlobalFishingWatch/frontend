@@ -1,8 +1,7 @@
-import { PATH_BASENAME } from 'data/map/config'
+import { PATH_BASENAME, PLATFORM_MODE } from 'data/map/config'
 import { WORKSPACE_ENV } from 'data/workspace-env'
 import { t } from 'features/i18n/i18n'
 import type Resources from 'features/i18n/i18n.types'
-import { PLATFORM_MODE } from 'features/nav/nav.config'
 import { getIsBrowser } from 'utils/dom'
 import { formatInfoField } from 'utils/info'
 

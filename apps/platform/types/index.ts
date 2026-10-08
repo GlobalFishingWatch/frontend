@@ -163,7 +163,7 @@ export type SidePanelState = {
   type: SidePanelContent
   /** Id of the content type like:
    * Dataset['id'] (libs/api-types/src/datasets.ts)
-   * UserGuideSlug (apps/platform/features/cms/loaders/user-guide.types.ts)
+   * UserGuideSlug (apps/platform/features/cms/user-guide.types.ts)
    * */
   id?: string
   subcontentId?: string

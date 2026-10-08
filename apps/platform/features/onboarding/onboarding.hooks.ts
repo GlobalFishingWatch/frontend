@@ -19,7 +19,7 @@ import { useFitAreaInViewport } from 'features/_reports/report-area/area-reports
 import { ReportCategory } from 'features/_reports/reports.types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import type { UserGuideSlug } from 'features/cms/loaders/user-guide.types'
+import type { UserGuideSlug } from 'features/cms/user-guide.types'
 import { findSectionForSlug } from 'features/help/userGuide.utils'
 import { setHintToOpen } from 'features/hints/hints.slice'
 import { setModalOpen } from 'features/modals/modals.slice'

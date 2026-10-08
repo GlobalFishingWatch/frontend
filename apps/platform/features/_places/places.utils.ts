@@ -2,7 +2,7 @@ import type { useTranslation } from 'react-i18next'
 
 import type { OceanAreaBBox, OceanAreaType } from '@globalfishingwatch/ocean-areas'
 
-import type { Place } from 'features/_places/places.loaders'
+import type { Place } from 'features/_places/places.types'
 import { formatInfoField } from 'utils/info'
 
 /** "Name (Country)" as the list and the map tooltip show it; port names get port casing. */

@@ -1,7 +1,7 @@
 import type { ClusterMaxZoomLevelConfig } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { BasemapType } from '@globalfishingwatch/deck-layers'
+import { BasemapType } from '@globalfishingwatch/deck-layers/config'
 import {
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,

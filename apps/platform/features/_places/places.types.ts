@@ -28,3 +28,24 @@ export type PlacesSearchState = {
   /**  Map view as `west,south,east,north` */
   bounds?: string
 }
+
+export type Place = {
+  /** The area's raw id, typed as in the map tiles (EEZ ids are numbers) so highlights match */
+  id: string | number
+  name: string
+  type: OceanAreaType
+  flag?: string
+  /** Ports only: the map's point highlight is drawn at this position */
+  coordinates?: [number, number]
+  /** Areas only: surface in m² */
+  areaSize?: number
+}
+
+export type PlacesResult = {
+  /** First `limit` matches */
+  places: Place[]
+  /** All matches for the query and bounds */
+  count: number
+  /** All places of the type, unfiltered */
+  total: number
+}

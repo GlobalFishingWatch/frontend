@@ -18,8 +18,7 @@ import { getPlaceThumbnailPath, PLACE_THUMBNAILS_BASE_URL } from '@platform/conf
 
 import PlaceLink from 'features/_places/PlaceLink'
 import { hoveredPlaceAtom } from 'features/_places/places.atoms'
-import type { Place, PlacesResult } from 'features/_places/places.loaders'
-import type { PlaceCategory } from 'features/_places/places.types'
+import type { Place, PlaceCategory, PlacesResult } from 'features/_places/places.types'
 import { PLACE_TYPES, PLACES_PAGE_SIZE } from 'features/_places/places.types'
 import { getPlaceLabel } from 'features/_places/places.utils'
 import type { PlacesMapDataviews } from 'features/_places/places-map.config'

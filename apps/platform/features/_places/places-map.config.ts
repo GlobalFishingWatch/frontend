@@ -1,5 +1,5 @@
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { BasemapType } from '@globalfishingwatch/deck-layers'
+import { BasemapType } from '@globalfishingwatch/deck-layers/config'
 import type { OceanAreaType } from '@globalfishingwatch/ocean-areas'
 import {
   AREA_REPORT_LAYERS,

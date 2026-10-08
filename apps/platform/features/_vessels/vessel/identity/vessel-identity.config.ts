@@ -1,7 +1,7 @@
 import { SelfReportedSource } from '@globalfishingwatch/api-types'
 import { DATASET_PRIVATE_PREFIX } from '@globalfishingwatch/datasets-client/constants'
 
-import type { DataTerminologySlugs } from 'features/cms/loaders/data-terminology.types'
+import type { DataTerminologySlugs } from 'features/cms/data-terminology.types'
 
 export type VesselRenderField<Key = string> = {
   key: Key

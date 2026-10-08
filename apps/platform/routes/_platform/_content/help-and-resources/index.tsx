@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { getHelpHubSectionsContent, helpHubRouteCache } from 'features/help/helpHub.loaders'
+import { getHelpHubSectionsContent } from 'features/help/helpHub.functions'
+import { helpHubRouteCache } from 'features/help/helpHub.loaders'
 import HelpHubLandingPage from 'features/help/HelpHubLandingPage'
 import { t } from 'features/i18n/i18n'
 import { getRouteHead } from 'router/router.meta'

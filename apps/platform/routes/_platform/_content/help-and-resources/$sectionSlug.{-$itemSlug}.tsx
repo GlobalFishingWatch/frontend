@@ -3,12 +3,10 @@ import { startCase } from 'es-toolkit'
 
 import { ROUTE_PATHS } from '@platform/config/routes'
 
+import { getHelpHubArticleContent } from 'features/help/helpHub.functions'
 import { getHelpHubSectionCopy } from 'features/help/helpHub.i18n'
-import {
-  getHelpHubArticleContent,
-  type HelpHubArticleData,
-  helpHubRouteCache,
-} from 'features/help/helpHub.loaders'
+import { helpHubRouteCache } from 'features/help/helpHub.loaders'
+import type { HelpHubArticleData } from 'features/help/helpHub.types'
 import { findHelpHubSection } from 'features/help/helpHub.utils'
 import HelpHubSectionPage from 'features/help/HelpHubSectionPage'
 import { getCanonicalLink, getRouteHead } from 'router/router.meta'

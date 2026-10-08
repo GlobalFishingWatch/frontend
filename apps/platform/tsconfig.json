@@ -16,7 +16,6 @@
       "router/*": ["./router/*"],
       "routes/*": ["./routes/*"],
       "server/*": ["./server/*"],
-      "server-functions/*": ["./server-functions/*"],
       "store": ["./store/store"],
       "test/*": ["./test/*"],
       "types": ["./types"],

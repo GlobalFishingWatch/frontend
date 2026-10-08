@@ -8,7 +8,7 @@ import {
 } from '@platform/config/map/dataviews'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
-import type { Place } from 'features/_places/places.loaders'
+import type { Place } from 'features/_places/places.types'
 import { getPortReportSearch } from 'features/_reports/report-port/ports-report.utils'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import type { QueryParams } from 'types'

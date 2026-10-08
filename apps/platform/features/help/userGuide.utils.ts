@@ -4,7 +4,7 @@ import type {
   UserGuideSectionSlug,
   UserGuideSlug,
   UserGuideSubSectionSlug,
-} from 'features/cms/loaders/user-guide.types'
+} from 'features/cms/user-guide.types'
 
 export function findSectionForSlug(slug: UserGuideSlug | string): {
   section: UserGuideSectionSlug

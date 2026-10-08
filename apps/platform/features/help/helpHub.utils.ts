@@ -1,9 +1,9 @@
 import type { CardProps } from '@globalfishingwatch/ui-components/card'
 
-import type { DataUpdateContent } from 'features/cms/loaders/data-update.types'
-import type { UseCaseContent } from 'features/cms/loaders/use-case.types'
-import type { UserGuideContent } from 'features/cms/loaders/user-guide.types'
+import type { DataUpdateContent } from 'features/cms/data-update.types'
 import type { StrapiBaseAttributes, StrapiResponse } from 'features/cms/strapi.types'
+import type { UseCaseContent } from 'features/cms/use-case.types'
+import type { UserGuideContent } from 'features/cms/user-guide.types'
 import { HELP_HUB_SECTIONS } from 'features/help/helpHub.config'
 import type {
   HelpHubItem,

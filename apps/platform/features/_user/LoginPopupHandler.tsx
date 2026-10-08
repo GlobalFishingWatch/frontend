@@ -7,7 +7,7 @@ import { PATH_BASENAME } from 'data/map/config'
 import { broadcastLogin } from 'features/_user/auth-channel'
 import { getIsLoginPopup, REDIRECT_KEY } from 'features/_user/user.hooks'
 import { ROUTE_PATHS } from 'router/routes.utils'
-import { loginServerFn } from 'server-functions/auth.functions'
+import { loginServerFn } from 'server/auth.functions'
 
 import styles from './LoginPopupHandler.module.css'
 

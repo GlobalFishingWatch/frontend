@@ -8,8 +8,6 @@ import { AVAILABLE_WORKSPACES_CATEGORIES } from 'features/_map/workspaces-list/w
 import type { HelpHubSectionSlug } from 'features/help/helpHub.types'
 import type { LanguageOption } from 'features/i18n/language.hooks'
 
-export const PLATFORM_MODE = import.meta.env.VITE_PLATFORM_MODE === 'true'
-
 type TFunc = ReturnType<typeof useTranslation>['t']
 
 export type NavItem = {
