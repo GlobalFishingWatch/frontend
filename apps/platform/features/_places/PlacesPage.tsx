@@ -107,6 +107,13 @@ function PlacesPage({
   const isClientHydrated = useIsClientHydrated()
   const isSmallScreen = useSmallScreen(PLACES_MAP_BREAKPOINT)
   const showDeck = isClientHydrated && !isSmallScreen
+  const hasHiddenMapFilter =
+    isClientHydrated && !(mapDataviews && showDeck) && !!(search.bounds || search.filterByMap)
+  useEffect(() => {
+    if (hasHiddenMapFilter) {
+      replaceQueryParams({ bounds: undefined, placesLimit: undefined })
+    }
+  }, [hasHiddenMapFilter, replaceQueryParams])
   const countLabel = String(formatI18nNumber(count))
 
   return (
