@@ -62,10 +62,14 @@ export const searchPlaces = createServerFn({ method: 'GET' })
           return [flag, ...labels, ...labels.map((label) => `${name} (${label})`)]
         },
       })
-      const isFiltered = Boolean(query || bounds)
+      const getTotal = async () => {
+        if (!query) return areas.length
+        if (!bounds) return countOceanAreas(types)
+        return (await matchOceanAreas('', { types, bounds })).length
+      }
       return {
         count: areas.length,
-        total: isFiltered ? await countOceanAreas(types) : areas.length,
+        total: await getTotal(),
         // Geometries stay on the server — MPAs alone are ~4MB
         places: areas
           .slice(0, limit)
