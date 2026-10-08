@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
+import { Icon } from '@globalfishingwatch/ui-components/icon'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { Popover } from '@globalfishingwatch/ui-components/popover'
 
@@ -58,6 +59,10 @@ function PlacesSortButton({ category }: { category: PlaceCategory }) {
                 onClick={() => onSelect(id)}
               >
                 {label}
+                <Icon
+                  icon="tick"
+                  className={cx(styles.tick, { [styles.tickVisible]: id === sort })}
+                />
               </button>
             </li>
           ))}

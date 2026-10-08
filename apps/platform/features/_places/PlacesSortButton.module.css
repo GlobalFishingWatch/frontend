@@ -1,6 +1,11 @@
 .sortOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-M);
   width: 100%;
   padding: var(--space-S) var(--space-M);
+  color: var(--color-secondary-blue);
   text-align: left;
   white-space: nowrap;
   cursor: pointer;
@@ -8,7 +13,15 @@
 
 .sortOption:hover,
 .sortOptionActive {
-  background-color: var(--color-terthiary-blue);
+  color: var(--color-primary-blue);
+}
+
+.tick {
+  visibility: hidden;
+}
+
+.tickVisible {
+  visibility: visible;
 }
 
 li:not(:last-of-type) > .sortOption {
