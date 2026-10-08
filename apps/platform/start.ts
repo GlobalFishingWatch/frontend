@@ -6,7 +6,7 @@ import {
 import { createCsrfMiddleware, createMiddleware, createStart } from '@tanstack/react-start'
 
 import { runRequestWithI18n } from 'features/i18n/request-i18n.server'
-import { runRequestWithAuthToken } from 'server-functions/gfw-api.server-config'
+import { runRequestWithAuthToken } from 'server/gfw-api.server'
 
 const isProduction = process.env.NODE_ENV === 'production'
 

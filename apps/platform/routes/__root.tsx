@@ -42,7 +42,7 @@ async function loadPanelWidths(): Promise<PanelWidthsState> {
   if (!import.meta.env.SSR) {
     return EMPTY_PANEL_WIDTHS
   }
-  const { getPanelWidthsFromRequest } = await import('server-functions/screen-size.functions')
+  const { getPanelWidthsFromRequest } = await import('server/screen-size.server')
   return getPanelWidthsFromRequest()
 }
 
@@ -50,7 +50,7 @@ async function loadUser(): Promise<{ user: UserData | null }> {
   if (!import.meta.env.SSR) {
     return { user: null as UserData | null }
   }
-  const { resolveUserStateFromRequest } = await import('server-functions/user.functions')
+  const { resolveUserStateFromRequest } = await import('server/user.server')
   return resolveUserStateFromRequest()
 }
 

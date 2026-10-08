@@ -1,4 +1,5 @@
-import { ROUTE_PATHS } from 'router/routes.utils'
+import { ROUTE_PATHS } from '@platform/config/routes'
+
 import type { QueryParams } from 'types'
 
 import type { NavigationConfig } from './navigation-config'

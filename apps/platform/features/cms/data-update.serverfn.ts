@@ -1,22 +1,19 @@
 import { createServerFn } from '@tanstack/react-start'
 
-import type { UserGuideSection } from 'features/cms/loaders/user-guide.types'
-import { fetchStrapiCollectionCached } from 'features/cms/loaders/utils'
+import type { DataUpdate } from 'features/cms/data-update.types'
 import type { StrapiResponse } from 'features/cms/strapi.types'
+import { fetchStrapiCollectionCached } from 'features/cms/strapi-collection.server'
 import { toCardResponse } from 'features/help/helpHub.utils'
 import type { Locale } from 'types'
 
+// No subsections on this collection, so the index is just the fields the menu prints.
 const VARIANT_PARAMS = {
-  // Titles and slugs only: enough for the section menu and the prev/next links, no bodies.
-  index: {
-    fields: ['title', 'slug'],
-    populate: { subsections: { fields: ['title', 'slug'] } },
-  },
-  card: { fields: ['title', 'slug', 'body'], populate: '*' },
+  index: { fields: ['title', 'slug', 'publication_date'] },
+  card: { fields: ['title', 'slug', 'publication_date', 'body'], populate: '*' },
   full: { populate: '*' },
 }
 
-export const getUserGuideContent = createServerFn({
+export const getDataUpdateContent = createServerFn({
   method: 'GET',
 })
   .validator(
@@ -25,13 +22,11 @@ export const getUserGuideContent = createServerFn({
     ) => params
   )
   .handler(
-    async ({
-      data: { locale, slug, variant, first },
-    }): Promise<StrapiResponse<UserGuideSection>> => {
-      const response = await fetchStrapiCollectionCached<UserGuideSection>({
-        collectionName: 'user-guide-sections',
+    async ({ data: { locale, slug, variant, first } }): Promise<StrapiResponse<DataUpdate>> => {
+      const response = await fetchStrapiCollectionCached<DataUpdate>({
+        collectionName: 'data-updates',
         params: {
-          sort: ['createdAt:asc'],
+          sort: ['publication_date:desc'],
           ...VARIANT_PARAMS[variant ?? 'full'],
           ...(slug && { filters: { slug: { $eq: slug } } }),
           ...(first && { pagination: { pageSize: 1 } }),

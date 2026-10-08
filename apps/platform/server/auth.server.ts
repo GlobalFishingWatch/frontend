@@ -1,7 +1,4 @@
-import { createServerFn } from '@tanstack/react-start'
-
-import { getIsUnauthorizedError, GFWAPI } from '@globalfishingwatch/api-client'
-import type { UserData } from '@globalfishingwatch/api-types'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 
 import {
   SSR_HEADERS,
@@ -32,21 +29,6 @@ export const clearAuthCookies = (setCookie: CookieSetter) => {
   setCookie(USER_TOKEN_COOKIE_KEY, '', { ...accessCookieOptions, maxAge: 0 })
   setCookie(USER_REFRESH_TOKEN_COOKIE_KEY, '', { ...refreshCookieOptions, maxAge: 0 })
 }
-
-export const loginServerFn = createServerFn({ method: 'POST' })
-  .validator((data: { accessToken?: string | null }) => data)
-  .handler(async ({ data }): Promise<UserData | null> => {
-    if (!data.accessToken) return null
-    const { setCookie } = await import('@tanstack/react-start/server')
-    try {
-      const tokens = await GFWAPI.exchangeAccessToken(data.accessToken, SSR_HEADERS)
-      setAuthCookies(setCookie, tokens)
-      return GFWAPI.fetchUser({ token: tokens.token, headers: SSR_HEADERS })
-    } catch (e) {
-      console.error('Failed to exchange access token', e)
-      throw e
-    }
-  })
 
 const REFRESH_DEDUP_TTL_MS = 10_000
 const refreshInFlight = new Map<string, { tokens: Promise<Tokens>; expiresAt: number }>()
@@ -80,39 +62,3 @@ export async function refreshAuthTokens(
   setAuthCookies(setCookie, tokens)
   return tokens
 }
-
-export const refreshTokenServerFn = createServerFn({ method: 'POST' }).handler(
-  async (): Promise<Tokens> => {
-    const { getCookie, setCookie } = await import('@tanstack/react-start/server')
-    return refreshAuthTokens(getCookie(USER_REFRESH_TOKEN_COOKIE_KEY), setCookie)
-  }
-)
-
-export const clearAuthCookiesServerFn = createServerFn({ method: 'POST' }).handler(
-  async (): Promise<boolean> => {
-    const { setCookie } = await import('@tanstack/react-start/server')
-    clearAuthCookies(setCookie)
-    return true
-  }
-)
-
-export const logoutServerFn = createServerFn({ method: 'POST' }).handler(
-  async (): Promise<boolean> => {
-    const { getCookie, setCookie } = await import('@tanstack/react-start/server')
-    const refreshToken = getCookie(USER_REFRESH_TOKEN_COOKIE_KEY)
-    try {
-      if (refreshToken) {
-        await GFWAPI.revokeRefreshToken(refreshToken, SSR_HEADERS)
-      }
-    } catch (e) {
-      // 401 means the refresh token is already invalid/revoked on the gateway — the
-      // local session is still cleared below. Only warn on unexpected failures.
-      if (!getIsUnauthorizedError(e as { status?: number })) {
-        console.warn('Logout gateway call failed', e)
-      }
-    } finally {
-      clearAuthCookies(setCookie)
-    }
-    return true
-  }
-)

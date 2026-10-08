@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { debounce, isEqual, uniq } from 'es-toolkit'
 import { atom, useAtom, useSetAtom } from 'jotai'
 
@@ -20,18 +20,17 @@ type ResolvedDeckLayer = {
 }
 type CachedDeckLayer = { LayerClass: unknown; props: unknown; instance: AnyDeckLayer }
 
-export function useDeckLayerComposer({
-  dataviews,
-  globalConfig,
-}: {
+type DeckLayersParams = {
   dataviews: DataviewInstance[]
   globalConfig: ResolverGlobalConfig
-}) {
-  const [deckLayers, setDeckLayers] = useAtom(deckLayerInstancesAtom)
+}
+
+function useResolvedDeckLayers(
+  { dataviews, globalConfig }: DeckLayersParams,
+  onLayersChange: (layers: AnyDeckLayer[]) => void
+) {
   const memoDataviews = useMemoCompare(dataviews)
   const memoGlobalConfig = useMemoCompare(globalConfig)
-
-  const debouncedSetDeckLayers = useMemo(() => debounce(setDeckLayers, 1), [setDeckLayers])
 
   // getDataviewsResolved only reads these fields, so the expensive dataview merge
   // is not re-run when frequently-changing config (zoom, time range, highlights) updates
@@ -108,10 +107,21 @@ export function useDeckLayerComposer({
       instances.length !== prev.length || instances.some((layer, i) => layer !== prev[i])
     if (hasChanges) {
       prevInstancesRef.current = instances
-      debouncedSetDeckLayers(instances)
+      onLayersChange(instances)
     }
-  }, [resolvedLayers, debouncedSetDeckLayers])
+  }, [resolvedLayers, onLayersChange])
+}
 
+export function useDeckLayerInstances(params: DeckLayersParams) {
+  const [deckLayers, setDeckLayers] = useState<AnyDeckLayer[]>([])
+  useResolvedDeckLayers(params, setDeckLayers)
+  return deckLayers
+}
+
+export function useDeckLayerComposer(params: DeckLayersParams) {
+  const [deckLayers, setDeckLayers] = useAtom(deckLayerInstancesAtom)
+  const debouncedSetDeckLayers = useMemo(() => debounce(setDeckLayers, 1), [setDeckLayers])
+  useResolvedDeckLayers(params, debouncedSetDeckLayers)
   return deckLayers
 }
 

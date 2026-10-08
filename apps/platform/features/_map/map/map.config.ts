@@ -14,3 +14,6 @@ export const PORTS_LAYER_ID = 'port-locations'
 export const DEFAUL_ANNOTATION_COLOR = '#ffffff'
 export const HOTSPOT_COLOR: Color = [255, 107, 53]
 export const HOTSPOT_FILL: Color = [...HOTSPOT_COLOR, 85]
+
+// Clicks inside an element with this attribute do not close the clicked map popup (MapPopups)
+export const KEEP_MAP_POPUP_ATTRIBUTE = 'data-keep-map-popup'

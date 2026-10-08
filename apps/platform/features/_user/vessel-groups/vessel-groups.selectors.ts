@@ -5,6 +5,7 @@ import type { VesselGroup } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { resolveVesselPropertyColumn } from '@globalfishingwatch/data-transforms/schema'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { selectVesselsDatasets } from 'features/_map/datasets/datasets.selectors'
 import { getVesselGroupsInDataviews } from 'features/_map/datasets/datasets.utils'
@@ -30,7 +31,6 @@ import {
 import { FLAG_LENGTH, SSVID_LENGTH, VESSEL_ID_LENGTH } from 'features/_vessels/search/search.config'
 import { isAdvancedSearchAllowed } from 'features/_vessels/search/search.selectors'
 import { selectLocationQuery, selectUrlDataviewInstances } from 'router/routes.selectors'
-import { ROUTE_PATHS } from 'router/routes.utils'
 
 import { selectAllVesselGroups } from './vessel-groups.slice'
 

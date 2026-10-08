@@ -21,7 +21,10 @@ export function SwitchRow(props: SwitchRowProps) {
       <Switch className={styles.switch} {...rest} />
       <label
         role="button"
-        className={cx(styles.label, { [styles.labelDisabled]: rest.disabled })}
+        className={cx(styles.label, {
+          [styles.labelDisabled]: rest.disabled,
+          [styles.labelInverted]: rest.inverted,
+        })}
         onClick={rest.onClick as any}
       >
         {label}

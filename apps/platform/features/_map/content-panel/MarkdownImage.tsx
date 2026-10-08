@@ -21,14 +21,16 @@ const MarkdownImage = ({ src, alt, ...props }: MarkdownImageProps) => {
       </button>
       {open &&
         createPortal(
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
           <dialog
             ref={(el) => {
               if (el && !el.open) el.showModal()
             }}
             className={styles.dialog}
             onClose={() => setOpen(false)}
+            onClick={() => setOpen(false)}
           >
-            <button className={styles.markdownImageBtn} onClick={() => setOpen(false)}>
+            <button className={styles.markdownImageBtn}>
               <img
                 src={src}
                 alt={alt}

@@ -8,6 +8,7 @@ import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getIsEncounteredVesselDataviewInstanceId } from '@globalfishingwatch/dataviews-client'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_CATEGORY } from '@platform/config/map/workspaces'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { getVesselDataviewInstance } from 'features/_map/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
@@ -34,7 +35,6 @@ import {
   selectLocationQuery,
   selectWorkspaceId as selectUrlWorkspaceId,
 } from 'router/routes.selectors'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import type { QueryParams } from 'types'
 
 import styles from './Vessel.module.css'

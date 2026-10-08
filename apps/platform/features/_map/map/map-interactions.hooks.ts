@@ -350,7 +350,7 @@ export const useClickedEventConnect = () => {
         }
       }
 
-      if (!event || !event.features) {
+      if (!event?.features?.length) {
         if (clickedEvent) {
           dispatch(setClickedEvent(null))
           replaceQueryParams({ clickedCoordinates: undefined })
@@ -522,6 +522,7 @@ export const useRefreshClickedEvent = () => {
   const mapViewport = useMapViewport()
   const getPickingInteraction = useGetPickingInteraction()
   const cancelPendingInteractionRequests = useCancelInteractionPromises()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const {
     handleHeatmapInteraction,
     handleDetectionPositionsInteraction,
@@ -538,6 +539,11 @@ export const useRefreshClickedEvent = () => {
       }
       if (!visible) {
         dispatch(removeClickedEventDataview(dataviewId))
+        // the popup hides once its last feature is gone, so drop the clicked point with it
+        if (!selectClickedEvent(reduxStore.getState() as RootState)?.features?.length) {
+          dispatch(setClickedEvent(null))
+          replaceQueryParams({ clickedCoordinates: undefined })
+        }
         return
       }
 
@@ -591,6 +597,7 @@ export const useRefreshClickedEvent = () => {
       handleTileClusterInteraction,
       mapViewport,
       reduxStore,
+      replaceQueryParams,
       store,
     ]
   )

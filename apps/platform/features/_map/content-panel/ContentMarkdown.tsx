@@ -7,7 +7,7 @@ import { highlightMarkdownCode } from 'features/_map/content-panel/markdown-high
 import MarkdownIframe from 'features/_map/content-panel/MarkdownIframe'
 import MarkdownImage from 'features/_map/content-panel/MarkdownImage'
 import MarkdownLink from 'features/_map/content-panel/MarkdownLink'
-import type { UserGuideSlug } from 'features/cms/loaders/user-guide.types'
+import type { UserGuideSlug } from 'features/cms/user-guide.types'
 import { findSectionForSlug } from 'features/help/userGuide.utils'
 import UserGuideLink from 'features/help/UserGuideLink'
 

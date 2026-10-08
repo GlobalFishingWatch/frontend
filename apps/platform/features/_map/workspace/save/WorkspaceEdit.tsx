@@ -8,6 +8,7 @@ import type { WorkspaceEditAccessType } from '@globalfishingwatch/api-types'
 import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PRIVATE_ACCESS } from '@globalfishingwatch/api-types'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, InputText, Select } from '@globalfishingwatch/ui-components'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { selectIsWorkspaceOwner } from 'features/_map/workspace/workspace.selectors'
 import type {
@@ -23,7 +24,6 @@ import { updateWorkspaceThunk } from 'features/_map/workspaces-list/workspaces-l
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectLocationCategory } from 'router/routes.selectors'
-import { ROUTE_PATHS } from 'router/routes.utils'
 
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
 

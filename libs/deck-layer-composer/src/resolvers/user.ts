@@ -242,7 +242,8 @@ export const resolveDeckUserPointsLayerProps: DeckResolverFunction<
   ResolvedContextDataviewInstance
 > = (dataview, globalConfig) => {
   const dataset = (findDatasetByType(dataview.datasets, DatasetTypes.UserContext) ||
-    findDatasetByType(dataview.datasets, DatasetTypes.Context)) as Dataset
+    findDatasetByType(dataview.datasets, DatasetTypes.Context) ||
+    findDatasetByType(dataview.datasets, DatasetTypes.PMTiles)) as Dataset
   const circleProps = getUserCircleProps({ dataset })
   return {
     ...resolveDeckUserLayerProps(dataview, globalConfig),

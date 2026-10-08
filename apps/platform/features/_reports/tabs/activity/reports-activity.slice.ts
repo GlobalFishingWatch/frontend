@@ -174,14 +174,25 @@ export function getReportRequestHash({
   filters,
   dateRange,
   areaId,
-}: {
-  datasets: string[]
-  filters: string[]
-  dateRange: DateRange
-  areaId?: string
-}) {
+  reportBufferUnit,
+  reportBufferValue,
+  reportBufferOperation,
+}: Pick<
+  FetchReportVesselsThunkParams,
+  | 'datasets'
+  | 'filters'
+  | 'dateRange'
+  | 'areaId'
+  | 'reportBufferUnit'
+  | 'reportBufferValue'
+  | 'reportBufferOperation'
+>) {
   const datasetsHash = datasets.join(',')
-  return [datasetsHash, ...filters, dateRange.start, dateRange.end, areaId || ''].join('-')
+  // buffer changes the area, so data fetched with another buffer is outdated too
+  const bufferHash = [reportBufferUnit, reportBufferValue, reportBufferOperation].join(',')
+  return [datasetsHash, ...filters, dateRange.start, dateRange.end, areaId || '', bufferHash].join(
+    '-'
+  )
 }
 
 const reportSlice = createSlice({
@@ -220,13 +231,7 @@ const reportSlice = createSlice({
     builder.addCase(fetchReportVesselsThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
       state.data = action.payload
-      const { datasets, filters, dateRange, areaId } = action.meta.arg
-      state.reportRequestHash = getReportRequestHash({
-        datasets,
-        filters,
-        dateRange,
-        areaId,
-      })
+      state.reportRequestHash = getReportRequestHash(action.meta.arg)
     })
     builder.addCase(fetchReportVesselsThunk.rejected, (state, action) => {
       state.status = AsyncReducerStatus.Error
@@ -235,12 +240,8 @@ const reportSlice = createSlice({
   },
 })
 
-export const {
-  resetReportData,
-  setReportRequestHash,
-  setPreviewBuffer,
-  setPinningVessels,
-} = reportSlice.actions
+export const { resetReportData, setReportRequestHash, setPreviewBuffer, setPinningVessels } =
+  reportSlice.actions
 
 const injectedReportSlice = rootReducer.inject(reportSlice)
 

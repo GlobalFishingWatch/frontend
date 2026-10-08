@@ -1,4 +1,4 @@
-import { interpolatePath } from '@tanstack/router-core'
+import { hasMissingPathParams, interpolatePath } from '@tanstack/router-core'
 
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 import { DEFAULT_PATH_BASENAME, ROUTE_PATHS } from '@platform/config/routes'
@@ -118,14 +118,19 @@ const parseParamSegment = (segment: string): { name: string; optional: boolean }
 
 /** Same interpolation the app's router does, so `{-$optional}` segments and param encoding match. */
 export const buildRoutePath = (navigation: RouteNavigation): string => {
-  const { interpolatedPath, isMissingParams } = interpolatePath({
-    path: navigation.to,
-    params: navigation.params,
-  })
-  if (isMissingParams) {
+  // router-core keeps its segment parser private, so compile the template here in the
+  // [kind, key, prefix, suffix] shape it expects (1 = param, 3 = optional param).
+  const segments: Parameters<typeof interpolatePath>[1] = navigation.to
+    .split('/')
+    .filter(Boolean)
+    .map((segment) => {
+      const param = parseParamSegment(segment)
+      return param ? [param.optional ? 3 : 1, param.name, '/', ''] : `/${segment}`
+    })
+  if (hasMissingPathParams(segments, navigation.params)) {
     throw new Error(`missing params for route "${navigation.to}"`)
   }
-  return interpolatedPath || '/'
+  return interpolatePath(navigation.to, segments, navigation.params)
 }
 
 // Static-segment patterns listed before parametric ones of the same length,

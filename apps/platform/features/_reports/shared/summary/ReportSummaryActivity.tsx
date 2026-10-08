@@ -10,6 +10,11 @@ import { selectActiveReportDataviews } from 'features/_map/dataviews/selectors/d
 import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
 import { getSourcesSelectedInDataview } from 'features/_map/workspace/activity/activity.utils'
 import {
+  selectReportBufferOperation,
+  selectReportBufferUnit,
+  selectReportBufferValue,
+} from 'features/_reports/report-area/area-reports.buffer.selectors'
+import {
   selectIsGlobalReport,
   selectReportDataviewsWithPermissions,
 } from 'features/_reports/report-area/area-reports.selectors'
@@ -61,6 +66,9 @@ export default function ReportSummaryActivity({
   const dataviews = useSelector(selectActiveReportDataviews)
   const reportRequestHash = useSelector(selectReportRequestHash)
   const areaId = useSelector(selectReportAreaId)
+  const reportBufferUnit = useSelector(selectReportBufferUnit)
+  const reportBufferValue = useSelector(selectReportBufferValue)
+  const reportBufferOperation = useSelector(selectReportBufferOperation)
   const isGlobalReport = useSelector(selectIsGlobalReport)
   const reportOutdated =
     reportRequestHash !==
@@ -69,6 +77,9 @@ export default function ReportSummaryActivity({
       filters: (reportDataviews as any[]).map((d) => d.filter),
       dateRange: timerange,
       areaId,
+      reportBufferUnit,
+      reportBufferValue,
+      reportBufferOperation,
     })
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
 

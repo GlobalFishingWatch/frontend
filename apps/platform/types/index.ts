@@ -12,6 +12,7 @@ import type {
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
 
 import type { MapAnnotation } from 'features/_map/map/overlays/annotations/annotations.types'
+import type { PlacesSearchState } from 'features/_places/places.types'
 import type { ReportState, ReportStateProperty } from 'features/_reports/reports.types'
 import type {
   VesselSearchState,
@@ -162,7 +163,7 @@ export type SidePanelState = {
   type: SidePanelContent
   /** Id of the content type like:
    * Dataset['id'] (libs/api-types/src/datasets.ts)
-   * UserGuideSlug (apps/platform/features/cms/loaders/user-guide.types.ts)
+   * UserGuideSlug (apps/platform/features/cms/user-guide.types.ts)
    * */
   id?: string
   subcontentId?: string
@@ -199,7 +200,8 @@ export type QueryParams = Partial<WorkspaceViewport> &
   Partial<ReportState> &
   AppState &
   RedirectParam &
-  VesselSearchState
+  VesselSearchState &
+  PlacesSearchState
 
 export type QueryParam = keyof QueryParams
 

@@ -5,7 +5,7 @@ import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { getMergedDataviewId, type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -13,6 +13,7 @@ import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
 import { useAddDataset } from 'features/_map/datasets/datasets.hook'
 import { selectDatasetsStatus } from 'features/_map/datasets/datasets.slice'
+import { getContextDataviewDataset } from 'features/_map/dataviews/dataviews.utils'
 import { selectCustomUserDataviewsGrouped } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { useMapDrawConnect } from 'features/_map/map/map-draw.hooks'
 import LayerPanelContainer from 'features/_map/workspace/shared/LayerPanelContainer'
@@ -107,9 +108,7 @@ export function UserSection(): React.ReactElement<any> {
   const onToggleLayer = useCallback(
     (dataview: UrlDataviewInstance) => () => {
       const isVisible = dataview?.config?.visible ?? false
-      const dataset = dataview.datasets?.find(
-        (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext
-      )
+      const dataset = getContextDataviewDataset(dataview)
       const layerTitle = dataset?.name ?? dataset?.id ?? 'Unknown layer'
       const action = isVisible ? 'disable' : 'enable'
       trackEvent({

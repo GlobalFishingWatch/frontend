@@ -25,6 +25,7 @@
 
 .content-markdown img {
   max-width: 100%;
+  border-radius: var(--border-radius-0);
 }
 
 .content-markdown iframe {

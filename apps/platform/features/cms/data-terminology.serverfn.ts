@@ -1,8 +1,8 @@
 import { createServerFn } from '@tanstack/react-start'
 
-import type { DataTerminology } from 'features/cms/loaders/data-terminology.types'
-import { fetchStrapiCollectionCached } from 'features/cms/loaders/utils'
+import type { DataTerminology } from 'features/cms/data-terminology.types'
 import type { StrapiResponse } from 'features/cms/strapi.types'
+import { fetchStrapiCollectionCached } from 'features/cms/strapi-collection.server'
 import type { Locale } from 'types'
 
 export const getDataTerminologyContent = createServerFn({

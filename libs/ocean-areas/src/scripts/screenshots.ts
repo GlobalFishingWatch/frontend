@@ -7,82 +7,48 @@
  *
  *   pnpm nx run ocean-areas:screenshots --args="--type eez --limit 5"
  *   pnpm nx run ocean-areas:screenshots --args="--type mpa --concurrency 6"
+ *   pnpm nx run ocean-areas:screenshots --args="--type mpa --largest --limit 1000 --concurrency 6"
  *   pnpm nx run ocean-areas:screenshots --args="--type eez --upload gs://my-bucket/area-screenshots"
+ *   pnpm nx run ocean-areas:screenshots --args="--type mpa --ids 400011,555672696 --force"
  *
  * Always through the nx target: it installs the ts-node hooks and builds the dataviews-client dist
  * this imports. Plain `node screenshots.ts` cannot resolve the workspace libs.
  */
-import type { Feature, Geometry, Position } from 'geojson'
+import type { Geometry, Position } from 'geojson'
 import { parseArgs } from 'node:util'
 
 // Leaf subpath, not the root barrel: this pulls in the URL codec alone instead of the whole
 // dataviews-client graph (api-client, redux toolkit, resolvers).
 import type { BaseUrlWorkspace } from '@globalfishingwatch/dataviews-client/url-workspace'
 import { stringifyWorkspace } from '@globalfishingwatch/dataviews-client/url-workspace'
-// The app owns these ids — the workspace the report route loads declares its instances with them,
-// so a literal here would silently stop matching if the app ever renamed one.
 import {
   AIS_DATAVIEW_INSTANCE_ID,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
-  EEZ_DATAVIEW_INSTANCE_ID,
-  FAO_AREAS_DATAVIEW_INSTANCE_ID,
-  MPA_DATAVIEW_INSTANCE_ID,
-  RFMO_DATAVIEW_INSTANCE_ID,
   VMS_DATAVIEW_INSTANCE_ID,
 } from '@platform/config/map/dataviews'
+import { getPlaceThumbnailPath } from '@platform/config/map/thumbnails'
 
-import eezs from '../data/eezs.json' with { type: 'json' }
-import fao from '../data/fao.json' with { type: 'json' }
-import mpas from '../data/mpas.json' with { type: 'json' }
-import rfmos from '../data/rfmos.json' with { type: 'json' }
-import type { OceanAreaBBox, OceanAreaProperties } from '../ocean-areas'
+import type { OceanAreaBBox } from '../ocean-areas'
 
+import type { AreaType, AreaTypeId, OceanAreaFeature } from './lib/area-types.ts'
+import { AREA_TYPES } from './lib/area-types.ts'
 import type { CaptureJob } from './lib/capture.ts'
 import { BASE_URL, CAPTURE_OPTIONS, captureAll, PATH_BASENAME } from './lib/capture.ts'
-
-type OceanAreaFeature = Feature<Geometry, OceanAreaProperties>
-
-type AreaType = {
-  features: OceanAreaFeature[]
-  /** dataset the report route resolves the area against */
-  datasetId: string
-  /** context layer that must be visible for the highlight to draw */
-  dataviewInstanceId: string
-}
-
-const AREA_TYPES = {
-  eez: {
-    features: eezs as OceanAreaFeature[],
-    datasetId: 'public-eez-areas',
-    dataviewInstanceId: EEZ_DATAVIEW_INSTANCE_ID,
-  },
-  mpa: {
-    features: mpas as OceanAreaFeature[],
-    datasetId: 'public-mpa-all',
-    dataviewInstanceId: MPA_DATAVIEW_INSTANCE_ID,
-  },
-  fao: {
-    features: fao as OceanAreaFeature[],
-    datasetId: 'public-fao-major',
-    dataviewInstanceId: FAO_AREAS_DATAVIEW_INSTANCE_ID,
-  },
-  rfmo: {
-    features: rfmos as OceanAreaFeature[],
-    datasetId: 'public-rfmo',
-    dataviewInstanceId: RFMO_DATAVIEW_INSTANCE_ID,
-  },
-} satisfies Record<string, AreaType>
-
-type AreaTypeId = keyof typeof AREA_TYPES
+import { getAntimeridianBBox } from './lib/utils.ts'
 
 // `nx run ... --args="--type eez,fao"` splits the comma list into positionals before the script
-// ever sees it, so positionals are accepted as extra `--type` values.
-const { values: opts, positionals: extraTypes } = parseArgs({
+// ever sees it, so positionals are accepted as extra `--type` values — or, with `--ids`, as extra
+// ids when they are not an area type.
+const { values: opts, positionals } = parseArgs({
   allowPositionals: true,
   options: {
     ...CAPTURE_OPTIONS,
     type: { type: 'string', default: 'eez,fao,rfmo,mpa' },
     heatmaps: { type: 'boolean', default: true },
+    /** biggest `areaSize` first, so `--limit` keeps the largest areas */
+    largest: { type: 'boolean', default: false },
+    /** Comma list of area ids (`properties.area`) to capture, e.g. after fixing their geometry */
+    ids: { type: 'string' },
   },
 })
 
@@ -91,21 +57,17 @@ const HEIGHT = Number(opts.height)
 type GeometryWithCoordinates = Exclude<Geometry, { geometries: unknown }>
 type AnyPosition = Position | Position[] | Position[][] | Position[][][]
 
+/** `east` is past 180 when the area crosses the antimeridian, see `getAntimeridianBBox` */
 export function getBBox(geometry: Geometry): OceanAreaBBox {
-  const bbox: OceanAreaBBox = [180, 90, -180, -90]
-  const walk = (coordinates: AnyPosition): void => {
-    if (typeof coordinates[0] === 'number') {
-      const [longitude, latitude] = coordinates as Position
-      bbox[0] = Math.min(bbox[0], longitude)
-      bbox[1] = Math.min(bbox[1], latitude)
-      bbox[2] = Math.max(bbox[2], longitude)
-      bbox[3] = Math.max(bbox[3], latitude)
-    } else {
-      ;(coordinates as Position[]).forEach(walk)
-    }
-  }
-  walk((geometry as GeometryWithCoordinates).coordinates)
-  return bbox
+  const collect = (coordinates: AnyPosition): Position[] =>
+    typeof coordinates[0] === 'number'
+      ? [coordinates as Position]
+      : (coordinates as Position[]).flatMap(collect)
+  const { type, coordinates } = geometry as GeometryWithCoordinates
+  // Each member of a Multi* geometry is its own part; anything else is one part
+  return getAntimeridianBBox(
+    type.startsWith('Multi') ? (coordinates as AnyPosition[]).map(collect) : [collect(coordinates)]
+  )
 }
 
 export type Viewport = { longitude: number; latitude: number; zoom: number }
@@ -127,7 +89,8 @@ export function getViewport(
     Math.log2((180 / spanY) * (height / 512))
   )
   return {
-    longitude: (minX + maxX) / 2,
+    // Back into -180..180 for a bbox whose `east` is past the antimeridian
+    longitude: (((minX + maxX) / 2 + 540) % 360) - 180,
     latitude: (minY + maxY) / 2,
     zoom: Math.max(2, Math.min(8, zoom - 0.15)),
   }
@@ -139,11 +102,11 @@ type ScreenshotWorkspace = BaseUrlWorkspace & {
   sidebarOpen: boolean
   reportLoadVessels: boolean
   skipColorDomainSampling?: boolean
-  dataviewInstances: { id: string; config: Record<string, unknown> }[]
+  dataviewInstances: { id: string; dataviewId?: string; config: Record<string, unknown> }[]
 }
 
 export function getAreaUrl(
-  { datasetId, dataviewInstanceId }: AreaType,
+  { datasetId, dataviewInstance }: AreaType,
   feature: OceanAreaFeature
 ): string {
   const areaId = String(feature.properties.area)
@@ -162,7 +125,7 @@ export function getAreaUrl(
     // skipColorDomainSampling: true,
     dataviewInstances: [
       { id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID, config: { basemap: 'satellite' } },
-      { id: dataviewInstanceId, config: { visible: true } },
+      dataviewInstance,
       { id: AIS_DATAVIEW_INSTANCE_ID, config: { visible: opts.heatmaps } },
       { id: VMS_DATAVIEW_INSTANCE_ID, config: { visible: opts.heatmaps } },
     ],
@@ -172,22 +135,38 @@ export function getAreaUrl(
 }
 
 function loadQueue(): CaptureJob[] {
+  const isType = (value: string) => Object.hasOwn(AREA_TYPES, value)
+  const extraTypes = opts.ids ? positionals.filter(isType) : positionals
   const types = [...opts.type!.split(','), ...extraTypes]
     .map((type) => type.trim())
     .filter(Boolean) as AreaTypeId[]
   const limit = opts.limit ? Number(opts.limit) : Infinity
+  const ids = opts.ids
+    ? new Set(
+        [...opts.ids.split(','), ...positionals.filter((value) => !isType(value))].map((id) =>
+          id.trim()
+        )
+      )
+    : undefined
   return types.flatMap((type) => {
     const areaType = AREA_TYPES[type]
     if (!areaType) {
       throw new Error(`Unknown area type "${type}". Use one of ${Object.keys(AREA_TYPES)}`)
     }
-    return areaType.features.slice(0, limit).map((feature) => {
-      const areaId = String(feature.properties.area).replace(/[^\w.-]/g, '_')
-      return {
-        url: getAreaUrl(areaType, feature),
-        file: `${opts.out}/${areaType.datasetId}/${areaId}@2x.webp`,
-      }
-    })
+    const features = opts.largest
+      ? areaType.features.toSorted(
+          (a, b) => (b.properties.areaSize ?? 0) - (a.properties.areaSize ?? 0)
+        )
+      : areaType.features
+    return features
+      .filter((feature) => !ids || ids.has(String(feature.properties.area)))
+      .slice(0, limit)
+      .map((feature) => {
+        return {
+          url: getAreaUrl(areaType, feature),
+          file: `${opts.out}/${getPlaceThumbnailPath(areaType.datasetId, feature.properties.area!)}`,
+        }
+      })
   })
 }
 
@@ -209,6 +188,50 @@ function selftest(): void {
   const view = getViewport(bbox)
   console.assert(view.longitude === 0 && view.latitude === 0, 'getViewport centre', view)
   console.assert(view.zoom >= 2 && view.zoom <= 8, 'getViewport zoom clamp', view)
+  // Parts at 163° and -177° frame the 20° between them, not the 340° the other way round
+  const crossing = getBBox({
+    type: 'MultiPoint',
+    coordinates: [
+      [163, 16],
+      [-177, -1],
+    ],
+  })
+  console.assert(JSON.stringify(crossing) === '[163,-1,183,16]', 'antimeridian getBBox', crossing)
+  console.assert(getViewport(crossing).longitude === 173, 'antimeridian centre', crossing)
+  console.assert(getViewport([170, 0, 200, 10]).longitude === -175, 'centre wraps past 180')
+  // A part spanning 250° between two vertices (CCSBT) must not be cut down to its vertices
+  const longPart = getBBox({
+    type: 'MultiPolygon',
+    coordinates: [
+      [
+        [
+          [-180, 0],
+          [-170, 0],
+          [-170, 1],
+          [-180, 0],
+        ],
+      ],
+      [
+        [
+          [-70, 0],
+          [180, 0],
+          [180, 1],
+          [-70, 0],
+        ],
+      ],
+    ],
+  })
+  console.assert(JSON.stringify(longPart) === '[-70,0,190,1]', 'long part getBBox', longPart)
+  // A circumpolar ring (CCAMLR) stays the whole globe
+  const ring = getBBox({
+    type: 'LineString',
+    coordinates: [
+      [-180, -60],
+      [0, -60],
+      [180, -60],
+    ],
+  })
+  console.assert(JSON.stringify(ring) === '[-180,-60,180,-60]', 'circumpolar getBBox', ring)
   // A whole-world bbox must clamp up to the minimum satellite zoom, not down to 0
   console.assert(getViewport([-180, -90, 180, 90]).zoom === 2, 'world bbox clamps to 2')
 

@@ -3,8 +3,8 @@ import { createFileRoute, Link, redirect } from '@tanstack/react-router'
 import { Logo } from '@globalfishingwatch/ui-components/logo'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
+import { PLATFORM_MODE } from 'data/map/config'
 import { t } from 'features/i18n/i18n'
-import { PLATFORM_MODE } from 'features/nav/nav.config'
 import { getDefaultMeta } from 'router/router.meta'
 
 import styles from './index.module.css'

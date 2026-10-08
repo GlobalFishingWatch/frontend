@@ -3,7 +3,7 @@ import { injectQueryApi } from 'queries/inject-api'
 
 import type { Locale } from '@globalfishingwatch/api-types'
 
-import type { UserGuideContent } from 'features/cms/loaders/user-guide.types'
+import type { UserGuideContent } from 'features/cms/user-guide.types'
 
 type UserGuideParams = { locale: Locale }
 
@@ -13,7 +13,7 @@ export const userGuideApi = createApi({
     try {
       // Loaded here, not statically: store.ts imports this module's middleware via the queries barrel,
       // so a static import puts @strapi/client in the entry chunk of every page.
-      const { getUserGuideContent } = await import('features/cms/loaders/user-guide')
+      const { getUserGuideContent } = await import('features/cms/user-guide.serverfn')
       const response = await getUserGuideContent({ data: args })
       return { data: response?.data ?? [] }
     } catch (e) {

@@ -12,10 +12,10 @@ import { describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
 import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { mapInstanceAtom } from 'features/_map/map/map.atoms'
 import { MAP_VIEW_ID } from 'features/_map/map/map-viewport.hooks'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import { makeStore } from 'store'
 import { UserTab } from 'types'
 

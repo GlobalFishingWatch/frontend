@@ -9,6 +9,7 @@ import { DatasetSubCategory, VesselIdentitySourceEnum } from '@globalfishingwatc
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { GLOBAL_VESSELS_DATASET_ID } from '@platform/config/map/datasets'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import DatasetLabel from 'features/_map/datasets/DatasetLabel'
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
@@ -31,7 +32,6 @@ import VesselPin from 'features/_vessels/vessel/VesselPin'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import I18nNumber from 'features/i18n/i18nNumber'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import { getEventLabel } from 'utils/analytics'
 import {
   EMPTY_FIELD_PLACEHOLDER,

@@ -17,6 +17,7 @@ import {
   Spinner,
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { AVAILABLE_END, AVAILABLE_START } from 'data/map/config'
 import { selectVesselGroupSearchDatasets } from 'features/_map/datasets/datasets.selectors'
@@ -51,7 +52,6 @@ import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectIsVesselGroupReportLocation, selectLocationQuery } from 'router/routes.selectors'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { listAsSentence } from 'utils/shared'

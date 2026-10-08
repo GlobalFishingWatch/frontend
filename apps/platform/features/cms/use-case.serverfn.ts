@@ -1,8 +1,8 @@
 import { createServerFn } from '@tanstack/react-start'
 
-import type { UseCaseSection } from 'features/cms/loaders/use-case.types'
-import { fetchStrapiCollectionCached } from 'features/cms/loaders/utils'
 import type { StrapiResponse } from 'features/cms/strapi.types'
+import { fetchStrapiCollectionCached } from 'features/cms/strapi-collection.server'
+import type { UseCaseSection } from 'features/cms/use-case.types'
 import { toCardResponse } from 'features/help/helpHub.utils'
 import type { Locale } from 'types'
 
