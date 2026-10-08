@@ -3,6 +3,7 @@ import { Link } from '@tanstack/react-router'
 
 import type { WorkspaceCategory } from '@platform/config/map/workspaces'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import type { RoutePathValues } from '@platform/config/routes'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
 import type {
@@ -12,7 +13,6 @@ import type {
 import { cleanReportPayload, cleanReportQuery } from 'features/_map/workspace/workspace.utils'
 import { EMPTY_SEARCH_FILTERS } from 'features/_vessels/search/search.config'
 import type { NavItem, RoutedNavItem } from 'features/nav/nav.config'
-import type { RoutePathValues } from 'router/routes.utils'
 import type { QueryParams } from 'types'
 
 /** Live state and side effects a row's link may depend on. */

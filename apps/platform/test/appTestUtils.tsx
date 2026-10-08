@@ -8,12 +8,12 @@ import { render as vitestRender } from 'vitest-browser-react'
 
 import { getGuestUser, GFWAPI } from '@globalfishingwatch/api-client'
 import { stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { PATH_BASENAME, ROOT_DOM_ELEMENT } from 'data/map/config'
 import { setLoggedUser } from 'features/_user/user.slice'
 import type { AppRouterContext } from 'router/app-router-context'
 import type { LocationState } from 'router/location.slice'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import { getIsBrowser } from 'utils/dom'
 
 import { getCreateRouterOptions } from '../router'

@@ -519,36 +519,36 @@ export const saveWorkspaceThunk = createAsyncThunk(
       password,
     } = properties
 
-    const saveWorkspace = async (tries = 0): Promise<Workspace<WorkspaceState> | undefined> => {
-      let workspaceUpdated
-      if (tries < 4) {
-        try {
-          const name = tries > 0 ? defaultName + `_${tries}` : defaultName
-          workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces`, {
-            method: 'POST',
-            body: {
-              ...workspaceUpsert,
-              name,
-              description,
-              viewAccess,
-              editAccess,
-              password,
-              public: createAsPublic,
-              state: {
-                ...workspaceUpsert.state,
-                daysFromLatest,
-              },
+    const saveWorkspace = async (tries = 0): Promise<Workspace<WorkspaceState>> => {
+      if (tries >= 4) {
+        // Reject instead of resolving undefined, which callers read as a created workspace
+        throw new Error('Workspace name already in use')
+      }
+      try {
+        const name = tries > 0 ? defaultName + `_${tries}` : defaultName
+        return await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces`, {
+          method: 'POST',
+          body: {
+            ...workspaceUpsert,
+            name,
+            description,
+            viewAccess,
+            editAccess,
+            password,
+            public: createAsPublic,
+            state: {
+              ...workspaceUpsert.state,
+              daysFromLatest,
             },
-          } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
-        } catch (e: any) {
-          // Means we already have a workspace with this name
-          if (e.status === 422 && e.message.includes('duplicated')) {
-            return await saveWorkspace(tries + 1)
-          }
-          console.warn('Error creating workspace', e)
-          throw e
+          },
+        } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
+      } catch (e: any) {
+        // Means we already have a workspace with this name
+        if (e.status === 422 && e.message.includes('duplicated')) {
+          return await saveWorkspace(tries + 1)
         }
-        return workspaceUpdated
+        console.warn('Error creating workspace', e)
+        throw e
       }
     }
 

@@ -1,11 +1,12 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 
+import type { RoutePathValues } from '@platform/config/routes'
+
 import type { QueryParams } from 'types'
 
 import type { ROUTE_TYPES } from './routes'
 import { MAP } from './routes'
 import type { LinkToPayload } from './routes.types'
-import type { RoutePathValues } from './routes.utils'
 
 export type LocationPayload = LinkToPayload & Record<string, string | undefined>
 

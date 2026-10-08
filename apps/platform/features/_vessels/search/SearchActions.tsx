@@ -11,6 +11,7 @@ import {
 } from '@globalfishingwatch/datasets-client'
 import { Button } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_CATEGORY } from '@platform/config/map/workspaces'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { getVesselDataviewInstance } from 'features/_map/dataviews/dataviews.utils'
 import { selectVesselTemplateDataviews } from 'features/_map/dataviews/selectors/dataviews.static.selectors'
@@ -29,7 +30,6 @@ import { getRelatedIdentityVesselIds } from 'features/_vessels/vessel/vessel.uti
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import { TimebarVisualisations } from 'types'
 
 import { selectSearchOption } from './search.config.selectors'

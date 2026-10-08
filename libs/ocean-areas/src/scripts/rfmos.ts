@@ -10,4 +10,6 @@ prepare({
     area: 'ID',
     name: 'ID',
   },
+  // Global bodies, not fishing areas: their bbox (and report) is the whole ocean
+  filter: (feature) => !['ACAP', 'IWC'].includes(feature.properties?.ID),
 })

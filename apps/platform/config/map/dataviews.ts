@@ -138,3 +138,41 @@ export const VESSEL_VMS_PAPUA_NEW_GUINEA_DATAVIEW_SLUG =
   `private-png-fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const
 export const VESSEL_VMS_ECUADOR_DATAVIEW_SLUG =
   `private-ecu-fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const
+
+export const AREA_REPORT_LAYERS = {
+  eez: {
+    datasetId: 'public-eez-areas',
+    dataviewInstanceId: EEZ_DATAVIEW_INSTANCE_ID,
+    dataviewSlug: EEZ_DATAVIEW_SLUG,
+    inDefaultWorkspace: true,
+  },
+  mpa: {
+    datasetId: 'public-mpa-all',
+    dataviewInstanceId: MPA_DATAVIEW_INSTANCE_ID,
+    dataviewSlug: MPA_DATAVIEW_SLUG,
+    inDefaultWorkspace: true,
+  },
+  fao: {
+    datasetId: 'public-fao-major',
+    dataviewInstanceId: FAO_AREAS_DATAVIEW_INSTANCE_ID,
+    dataviewSlug: FAO_AREAS_DATAVIEW_SLUG,
+    inDefaultWorkspace: false,
+  },
+  rfmo: {
+    datasetId: 'public-rfmo',
+    dataviewInstanceId: RFMO_DATAVIEW_INSTANCE_ID,
+    dataviewSlug: RFMO_DATAVIEW_SLUG,
+    inDefaultWorkspace: true,
+  },
+} as const
+
+export type AreaReportType = keyof typeof AREA_REPORT_LAYERS
+
+export const getAreaReportDataviewInstance = (type: AreaReportType) => {
+  const { dataviewInstanceId, dataviewSlug, inDefaultWorkspace } = AREA_REPORT_LAYERS[type]
+  return {
+    id: dataviewInstanceId,
+    ...(!inDefaultWorkspace && { dataviewId: dataviewSlug }),
+    config: { visible: true },
+  }
+}

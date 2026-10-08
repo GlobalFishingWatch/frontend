@@ -1,0 +1,38 @@
+.sortOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-M);
+  width: 100%;
+  padding: var(--space-S) var(--space-M);
+  color: var(--color-secondary-blue);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.sortOption:hover,
+.sortOptionActive {
+  color: var(--color-primary-blue);
+}
+
+.tick {
+  visibility: hidden;
+}
+
+.tickVisible {
+  visibility: visible;
+}
+
+li:not(:last-of-type) > .sortOption {
+  border-bottom: var(--border);
+}
+
+.popover {
+  border-radius: var(--border-radius-0);
+}
+
+.sortOptions {
+  border-radius: inherit;
+  overflow: hidden;
+}

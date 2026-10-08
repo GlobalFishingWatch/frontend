@@ -130,6 +130,7 @@ const icons = [
   'solar-status-dawn',
   'solar-status-dusk',
   'solar-status-night',
+  'sort',
   'sort-asc',
   'sort-desc',
   'sparks',

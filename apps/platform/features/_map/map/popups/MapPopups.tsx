@@ -7,6 +7,7 @@ import { useDebounce } from '@globalfishingwatch/react-hooks'
 
 import { getSafeElementById } from 'utils/dom'
 
+import { KEEP_MAP_POPUP_ATTRIBUTE } from '../map.config'
 import { selectClickedEvent } from '../map.slice'
 import { useClickedEventConnect } from '../map-interactions.hooks'
 import { MAP_CONTAINER_ID } from '../map-viewport.hooks'
@@ -31,11 +32,10 @@ function MapPopups() {
   const onClickOutside = useCallback(
     (e?: MouseEvent) => {
       const mapContainer = getSafeElementById(MAP_CONTAINER_ID)
-      // toggling a layer refreshes the popup content instead of closing it
-      const isLayerToggle = (e?.target as HTMLElement)?.closest?.(
-        '[role="switch"], [data-layer-toggle]'
-      )
-      if (e && !isLayerToggle && !mapContainer?.contains(e.target as Node)) {
+      // e.g. layer toggles refresh the popup content instead of closing it, and the chat
+      // assistant keeps it open so the user can ask about the clicked point
+      const keepsPopup = (e?.target as HTMLElement)?.closest?.(`[${KEEP_MAP_POPUP_ATTRIBUTE}]`)
+      if (e && !keepsPopup && !mapContainer?.contains(e.target as Node)) {
         dispatchClickedEvent(null)
         cancelPendingInteractionRequests()
       }

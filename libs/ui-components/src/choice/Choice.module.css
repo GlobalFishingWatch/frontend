@@ -3,6 +3,27 @@
   overflow-x: visible;
 
   --padding: 0.2rem;
+  --choice-height: var(--size-M);
+}
+
+.size-tiny {
+  --choice-height: var(--size-XS);
+}
+
+.size-small {
+  --choice-height: var(--size-S);
+}
+
+.size-medium {
+  --choice-height: var(--size-SM);
+}
+
+.size-big {
+  --choice-height: var(--size-L);
+}
+
+.size-verybig {
+  --choice-height: var(--size-XL);
 }
 
 .label {
@@ -63,10 +84,13 @@
   border-radius: var(--border-radius-0);
   background-color: transparent;
   color: var(--color-secondary-blue);
-  min-height: var(--size-XS);
   position: relative;
   z-index: 1;
   transition: color 180ms ease;
+}
+
+.Choice .optionButton {
+  height: calc(var(--choice-height) - var(--padding) * 2);
 }
 
 .optionActive {
@@ -97,13 +121,13 @@
 }
 
 .selectFallback {
-  height: calc(var(--size-SM) + var(--padding) * 2);
+  height: var(--choice-height);
   text-transform: uppercase;
   font: var(--font-S);
 }
 
 .selectFallback label {
-  line-height: calc(var(--size-SM) + var(--padding) * 2);
+  line-height: var(--choice-height);
 }
 
 @media print {

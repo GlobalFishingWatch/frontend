@@ -36,7 +36,7 @@ function HelpHubBreadcrumb() {
   }
 
   return (
-    <nav>
+    <nav className={styles.container}>
       <ul className={cx(styles.breadcrumb)}>
         {items.map(({ id, label: crumbLabel, link }, index) => {
           const isCurrent = index === items.length - 1

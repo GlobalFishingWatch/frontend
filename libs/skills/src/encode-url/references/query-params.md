@@ -27,7 +27,7 @@ Defaults live in `DEFAULT_WORKSPACE` (`apps/platform/data/map/config.ts`) and `D
 | `vesselGroupsVisualizationMode` | string                          | `footprint` (default) \| `footprint-high-res`                                                                                   |
 | `vesselsColorBy`                | string                          | Property coloring vessel tracks/points: `track` \| `speed` \| `elevation`                                                       |
 
-Internal/auto-generated params — never set them: `reportAreaBounds`, `skipColorDomainSampling`, `migramarLayer`, `includeRelatedIdentities`, `trackCorrectionId`, `sidePanels`/`sidePanelActive` (and legacy `sidePanelId`/`sidePanelSubcontentId`/`sidePanelContent`).
+Internal/auto-generated params — never set them: `reportAreaBounds`, `skipColorDomainSampling`, `migramarLayer`, `includeRelatedIdentities`, `trackCorrectionId`, `sidePanelId`/`sidePanelSubcontentId`/`sidePanelContent`.
 
 ## dataviewInstances item
 
@@ -56,28 +56,42 @@ To show the SAME dataset twice with different filters (e.g. Spanish vs French fi
 
 ## Area report (`report` route)
 
-| Param                                                                                 | Values                                                                                                             |
-| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `reportCategory`                                                                      | `activity` (default) \| `detections` \| `events` \| `environment` \| `others` \| `vessel-groups`                   |
-| `reportActivitySubCategory`                                                           | `fishing` \| `presence` — sub-filter within an activity report                                                     |
-| `reportDetectionsSubCategory`                                                         | `sar` \| `viirs` \| `sentinel-2` — sub-filter within a detections report                                           |
-| `reportEventsSubCategory`                                                             | event type within an events report: `encounter` (default) \| `loitering` \| `port_visit` \| `gap`                  |
-| `reportVesselsSubCategory`                                                            | vessels-tab sub-tab: `flag` (default) \| `geartype` \| `vesselType` \| `source` \| `coverage`                      |
-| `reportActivityGraph`                                                                 | `evolution` (default) \| `beforeAfter` \| `periodComparison` \| `datasetComparison`                                |
-| `reportTimeComparison`                                                                | `{ "start", "compareStart", "duration", "durationType": "days"\|"months" }` — for `beforeAfter`/`periodComparison` |
-| `reportComparisonDataviewIds`                                                         | `{ "main", "compare" }` dataview ids — for `datasetComparison`                                                     |
-| `reportVesselGraph`                                                                   | `flag` (default) \| `geartype` \| `vesselType`                                                                     |
-| `reportBufferValue` / `reportBufferUnit` / `reportBufferOperation`                    | number / `nauticalmiles`\|`kilometers` / `dissolve`\|`difference`                                                  |
-| `reportVesselFilter`                                                                  | free-text filter on the vessels list — see syntax below                                                            |
-| `reportVesselPage`, `reportResultsPerPage`                                            | pagination (page is 0-based; per-page min 10, max 50, default 10)                                                  |
-| `reportVesselOrderProperty` / `reportVesselOrderDirection`                            | sort: `shipname` (default) \| `flag` \| `shiptype` / `asc` (default) \| `desc`                                     |
-| `reportLoadVessels`                                                                   | boolean, load vessel list immediately                                                                              |
-| `reportEventsGraph`                                                                   | events-report chart: `evolution` (default) \| `byFlag` \| `byRFMO` \| `byFAO` \| `byEEZ`                           |
-| `reportEventsPortsFilter`, `reportEventsPortsPage`, `reportEventsPortsResultsPerPage` | ports list controls in an events report (same semantics as the vessel-table ones)                                  |
+| Param                                                                                 | Values                                                                                                                                                                     |
+| ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `reportCategory`                                                                      | `activity` (default) \| `detections` \| `events` \| `environment` \| `others` \| `vessel-groups`                                                                           |
+| `reportActivitySubCategory`                                                           | `fishing` \| `presence` — sub-filter within an activity report                                                                                                             |
+| `reportDetectionsSubCategory`                                                         | `sar` \| `viirs` \| `sentinel-2` — sub-filter within a detections report                                                                                                   |
+| `reportEventsSubCategory`                                                             | event type within an events report: `encounter` (default) \| `loitering` \| `port_visit` \| `gap`                                                                          |
+| `reportVesselsSubCategory`                                                            | vessels-tab sub-tab: `flag` (default) \| `geartype` \| `vesselType` \| `source` \| `coverage`                                                                              |
+| `reportActivityGraph`                                                                 | `evolution` (default) \| `beforeAfter` \| `periodComparison` \| `datasetComparison`                                                                                        |
+| `reportTimeComparison`                                                                | `{ "start", "compareStart", "duration", "durationType": "days"\|"months" }` — for `beforeAfter`/`periodComparison`                                                         |
+| `reportComparisonDataviewIds`                                                         | `{ "main", "compare" }` dataview ids — for `datasetComparison`                                                                                                             |
+| `reportVesselGraph`                                                                   | `flag` (default) \| `geartype` \| `vesselType`                                                                                                                             |
+| `reportBufferValue` / `reportBufferUnit` / `reportBufferOperation`                    | number / `nauticalmiles`\|`kilometers` / `dissolve`\|`difference`                                                                                                          |
+| `reportVesselFilter`                                                                  | free-text filter on the vessels list — see syntax below                                                                                                                    |
+| `reportVesselPage`, `reportResultsPerPage`                                            | pagination (page is 0-based; per-page min 10, max 50, default 10)                                                                                                          |
+| `reportVesselOrderProperty` / `reportVesselOrderDirection`                            | sort: `shipname` (default) \| `flag` \| `shiptype` / `asc` (default) \| `desc`                                                                                             |
+| `reportLoadVessels`                                                                   | boolean, load vessel list immediately. REQUIRED `true` with `reportVesselFilter`, `reportVesselGraph` or a grouped `reportEventsGraph` (`byFlag`/`byRFMO`/`byFAO`/`byEEZ`) |
+| `reportEventsGraph`                                                                   | events-report chart: `evolution` (default) \| `byFlag` \| `byRFMO` \| `byFAO` \| `byEEZ`                                                                                   |
+| `reportEventsPortsFilter`, `reportEventsPortsPage`, `reportEventsPortsResultsPerPage` | ports list controls in an events report (same semantics as the vessel-table ones)                                                                                          |
 
 Note: the URL param is `reportResultsPerPage` even though the app state field is named `reportVesselResultsPerPage` — always use `reportResultsPerPage` in `state`.
 
-`reportVesselFilter` syntax (also `reportEventsPortsFilter`): comma = search by multiple fields, `|` = OR, leading `-` = exclude. E.g. `flag:china, gear:trawlers`, `-spain`, `cargo|passenger`.
+`reportVesselFilter` syntax (also `reportEventsPortsFilter`): `<field>:<value>`, fields `name`, `flag`, `mmsi`, `gear` (gear type), `type` (gear or vessel type), `source`; comma = search by multiple fields, `|` = OR, leading `-` = exclude. `gear:` and `type:` match the label shown in the vessel table EXACTLY (case-insensitive), never the API id: `gear:Purse seine` (not `purse_seines`), `gear:Trawler`, `gear:Drifting longline`, `gear:Set longline`, `gear:Squid jigger`, `gear:Tuna purse seine`, `gear:Pole and line`, `gear:Pots and traps` (labels from the app's `vessel.gearTypes` translations: singular, first word capitalized). `name:`/`flag:`/`mmsi:` match by "contains". E.g. `flag:china, gear:trawler`, `-spain`, `cargo|passenger`.
+
+"Search / filter the report vessels for X" → stay on (or open) the report and set `reportVesselFilter` + `reportLoadVessels: true` (+ `reportVesselGraph: "geartype"` for gear, `"flag"` for flags). It is not a `vessel-search`.
+
+### Time comparison
+
+`reportActivityGraph: "periodComparison"` (two periods of equal length, e.g. "2023 vs 2024", "this summer vs last summer") or `"beforeAfter"` (around a pivot date, e.g. "3 months before and after June 1st 2023"), with:
+
+- `reportTimeComparison.start` = start of the EARLIER (baseline) period; `compareStart` = start of the LATER period. `compareStart` must be after `start` or the app shows "Comparison start must be after baseline start".
+- `beforeAfter`: `compareStart` = the pivot date, `start` = pivot minus `duration`.
+- `duration` + `durationType`: `months` (max 12) or `days` (max 100).
+- Top-level `start`/`end` cover both periods (from `reportTimeComparison.start` to `compareStart` + duration).
+- Every visible AIS fishing-effort layer (`ais`, `fishing-effort-ais__*`) sets `"distance_from_port_km": ""` in `config.filters`: the comparison requires the same filters on every dataset and the dataview default breaks it.
+
+"This summer vs last summer" (now 2026-10): `{ "start": "2025-06-01", "compareStart": "2026-06-01", "duration": 3, "durationType": "months" }`, `start: 2025-06-01T00:00:00.000Z`, `end: 2026-09-01T00:00:00.000Z`.
 
 ## Ports report (`ports-report` route)
 
@@ -107,8 +121,16 @@ Note: the URL param is `reportResultsPerPage` even though the app state field is
 
 `transmissionDateFrom`/`transmissionDateTo` are advanced search FIELDS (dates, `YYYY-MM-DD`) — different namespace from the `firstTransmissionDate`/`lastTransmissionDate` URL params (`fTD`/`lTD`) that always appear (often empty) in search URLs.
 
+**Their names are inverted vs the UI labels** (source: `SearchAdvancedFilters.tsx`):
+
+- `transmissionDateTo` = **"Active after"** — vessel still transmitting on/after this date.
+- `transmissionDateFrom` = **"Active before"** — vessel already transmitting on/before this date.
+- "Transmitted during 2023" → `transmissionDateTo: "2023-01-01"`, `transmissionDateFrom: "2023-12-31"`. When both are set `transmissionDateFrom` must be later than `transmissionDateTo`, else "The ACTIVE BEFORE date must come after the ACTIVE AFTER date".
+
+Search needs a real criterion: transmission dates, `sources` and `infoSource` alone never run a search. Basic search needs a `query` of 3+ characters; advanced needs a `query` or another field (`flag`, `geartypes`, `shiptypes`, `owner`, `ssvid`, `imo`, `callsign`). Without one, ask the user for it (name, flag, gear type…) before navigating.
+
 ## User page (`user` route)
 
-`userTab`: `info` | `workspaces` | `datasets` | `reports` | `vesselGroups`.
+`userTab`: `info` (profile + the user groups they belong to) | `workspaces` | `datasets` | `reports` | `vesselGroups` (see / create vessel groups).
 
 <!-- Maintainers: every enumerated value above maps to a source symbol — see "Value sources" in ../MAINTENANCE.md for update checks. -->

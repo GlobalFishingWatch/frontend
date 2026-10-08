@@ -4,6 +4,10 @@
 **/*.gen.js
 **/*.gen.d.ts
 
+# TanStack router plugin rewrites this with its own formatting on every dev/build run; letting
+# lint-staged reformat it on commit just flips it back and forth
+**/routeTree.gen.ts
+
 # pnpm rewrites this unformatted on every install; formatting it is 16k lines of permanent churn
 pnpm-lock.yaml
 

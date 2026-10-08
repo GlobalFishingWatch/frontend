@@ -77,7 +77,7 @@ const PACKAGE_NS_TTL_MS = process.env.NODE_ENV === 'production' ? 60 * 60 * 1000
 type PackageNsCacheEntry = { data: Record<string, unknown>; fetchedAt: number }
 const packageNsCache = new Map<string, PackageNsCacheEntry>()
 
-async function fetchServerPackageNamespace(
+export async function fetchServerPackageNamespace(
   language: string,
   ns: string
 ): Promise<Record<string, unknown>> {

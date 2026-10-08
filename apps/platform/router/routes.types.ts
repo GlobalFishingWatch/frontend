@@ -1,6 +1,6 @@
-import type { QueryParams } from 'types'
+import type { RoutePathValues } from '@platform/config/routes'
 
-import type { RoutePathValues } from './routes.utils'
+import type { QueryParams } from 'types'
 
 export type LinkToPayload = {
   reportId?: string

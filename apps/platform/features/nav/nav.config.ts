@@ -8,8 +8,6 @@ import { AVAILABLE_WORKSPACES_CATEGORIES } from 'features/_map/workspaces-list/w
 import type { HelpHubSectionSlug } from 'features/help/helpHub.types'
 import type { LanguageOption } from 'features/i18n/language.hooks'
 
-export const PLATFORM_MODE = import.meta.env.VITE_PLATFORM_MODE === 'true'
-
 type TFunc = ReturnType<typeof useTranslation>['t']
 
 export type NavItem = {
@@ -55,10 +53,7 @@ export const getCategoryItems = (t: TFunc, { icons = true } = {}): NavItem[] =>
 
 const helpHubSectionParams = (sectionSlug: HelpHubSectionSlug) => ({ sectionSlug })
 
-export const getPlatformNavSections = (
-  t: TFunc,
-  handlers: { onGetStartedClick: () => void }
-): NavItem[] => [
+export const getPlatformNavSections = (t: TFunc): NavItem[] => [
   {
     id: 'home',
     icon: 'home',
@@ -82,7 +77,7 @@ export const getPlatformNavSections = (
     id: 'areas',
     icon: 'areas',
     label: t((s) => s.nav.areas),
-    plannedTo: '/areas',
+    to: ROUTE_PATHS.AREAS,
   },
   {
     id: 'vessels',
@@ -96,7 +91,7 @@ export const getPlatformNavSections = (
     id: 'ports',
     icon: 'ports',
     label: t((s) => s.nav.ports),
-    plannedTo: '/ports',
+    to: ROUTE_PATHS.PORTS,
   },
   {
     id: 'datasets-and-api',
@@ -119,11 +114,6 @@ export const getPlatformNavSections = (
     label: t((s) => s.nav.helpAndResources),
     to: ROUTE_PATHS.HELP_HUB,
     subsections: [
-      {
-        id: 'get-started',
-        label: t((s) => s.onboarding.getStarted),
-        onClick: handlers.onGetStartedClick,
-      },
       {
         id: 'user-guide',
         label: t((s) => s.nav.toolsAndFeatures),
