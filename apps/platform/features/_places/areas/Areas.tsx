@@ -6,6 +6,7 @@ import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { PLACE_TYPES } from 'features/_places/places.types'
 import { getAreaTypeTexts } from 'features/_places/places.utils'
+import { AREAS_MAP_DATAVIEWS } from 'features/_places/places-map.config'
 import PlacesSearch from 'features/_places/PlacesSearch'
 
 const route = getRouteApi('/_platform/_content/areas/$placeType')
@@ -20,7 +21,7 @@ function Areas() {
       category="areas"
       title={t((t) => t.nav.areas)}
       result={route.useLoaderData()}
-      mapDataviews={route.useMatch({ select: (match) => match.staticData.placesMapDataviews })}
+      mapDataviews={AREAS_MAP_DATAVIEWS}
       type={type}
       typeOptions={PLACE_TYPES.areas.map((id) => ({
         id,
