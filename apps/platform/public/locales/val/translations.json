@@ -1004,6 +1004,35 @@
       "title": "crwdns138511:0crwdne138511:0"
     }
   },
+  "places": {
+    "centerOnMyLocation": "crwdns138637:0crwdne138637:0",
+    "clearSearch": "crwdns138639:0crwdne138639:0",
+    "filterByMap": "crwdns138641:0crwdne138641:0",
+    "filterByMapPorts": "crwdns138643:0crwdne138643:0",
+    "loadMore": "crwdns138645:0crwdne138645:0",
+    "noResultsInView": "crwdns138647:0crwdne138647:0",
+    "noResultsQuery": "crwdns138649:0{{query}}crwdne138649:0",
+    "searchPorts": "crwdns138651:0{{total}}crwdne138651:0",
+    "searchType": "crwdns138653:0{{total}}crwdnd138653:0{{type}}crwdne138653:0",
+    "siteDescription": {
+      "areas": "crwdns138655:0crwdne138655:0",
+      "eez": "crwdns138657:0crwdne138657:0",
+      "fao": "crwdns138659:0crwdne138659:0",
+      "mpa": "crwdns138661:0crwdne138661:0",
+      "ports": "crwdns138663:0crwdne138663:0",
+      "rfmo": "crwdns138665:0crwdne138665:0"
+    },
+    "sortByActivity": "crwdns138667:0crwdne138667:0",
+    "sortByArea": "crwdns138669:0crwdne138669:0",
+    "sortByName": "crwdns138671:0crwdne138671:0",
+    "sortByPortVisits": "crwdns138673:0crwdne138673:0",
+    "types": {
+      "eez": "crwdns138675:0crwdne138675:0",
+      "fao": "crwdns138677:0crwdne138677:0",
+      "mpa": "crwdns138679:0crwdne138679:0",
+      "rfmo": "crwdns138681:0crwdne138681:0"
+    }
+  },
   "portsReport": {
     "seePortReport": "crwdns133391:0crwdne133391:0",
     "summaryEvents": "crwdns133393:0{{vessels}}crwdnd133393:0{{flags}}crwdnd133393:0{{activityQuantity}}crwdnd133393:0{{start}}crwdnd133393:0{{end}}crwdne133393:0",

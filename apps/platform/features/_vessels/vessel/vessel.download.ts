@@ -7,12 +7,13 @@ import type {
   VesselRegistryOperator,
   VesselRegistryOwner,
 } from '@globalfishingwatch/api-types'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { LonglineCategory } from '@globalfishingwatch/deck-loaders'
 import { getLonglineCategory } from '@globalfishingwatch/deck-loaders'
 
 import type { VesselLastIdentity } from 'features/_vessels/search/search.slice'
 import type { ActivityEvent } from 'features/_vessels/vessel/activity/vessels-activity.selectors'
-import type { VesselDataIdentity } from 'features/_vessels/vessel/vessel.slice'
+import { getVesselIdentities } from 'features/_vessels/vessel/vessel.utils'
 import { type CsvConfig, objectArrayToCSV, parseCSVDate, parseCSVList } from 'utils/csv'
 import { getSolarTimeZone, getUTCDateTime } from 'utils/dates'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
@@ -139,11 +140,22 @@ const LONGLINE_SETS_CSV_CONFIG: CsvConfig[] = [
   { label: 'RFMO', accessor: 'regions.rfmo', transform: parseCSVList },
 ]
 
-export const parseLonglineSetsToCSV = (
-  events: ApiEvents['entries'],
-  identities: Pick<VesselDataIdentity, 'id' | 'imo' | 'callsign'>[] = []
-) => {
-  const identitiesById = Object.fromEntries(identities.map((identity) => [identity.id, identity]))
+export const parseLonglineSetsToCSV = ({
+  events,
+  vessels,
+  getEEZNames,
+}: {
+  events: ApiEvents['entries']
+  vessels: Parameters<typeof getVesselIdentities>[0][]
+  getEEZNames: (ids: string[]) => string[]
+}) => {
+  const identitiesById = Object.fromEntries(
+    vessels
+      .flatMap((vessel) =>
+        getVesselIdentities(vessel, { identitySource: VesselIdentitySourceEnum.SelfReported })
+      )
+      .map((identity) => [identity.id, identity])
+  )
   const sets = events.map((event) => {
     const start = getUTCDateTime(event.start)
     const end = getUTCDateTime(event.end)
@@ -158,6 +170,7 @@ export const parseLonglineSetsToCSV = (
     return {
       ...event,
       category: LONGLINE_CATEGORY_LABELS[getLonglineCategory(event)],
+      regions: { ...event.regions, eez: getEEZNames(event.regions?.eez ?? []) },
       imo: identity?.imo,
       callsign: identity?.callsign,
       durationHours: Math.round(end.diff(start, 'hours').hours * 100) / 100,

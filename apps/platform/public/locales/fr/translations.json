@@ -1004,6 +1004,35 @@
       "title": "Learn how to use the tools"
     }
   },
+  "places": {
+    "centerOnMyLocation": "Center on my location",
+    "clearSearch": "Clear search",
+    "filterByMap": "Show only areas in view",
+    "filterByMapPorts": "Show only ports in view",
+    "loadMore": "Load more",
+    "noResultsInView": "Nothing in this map view. Try moving or zooming out the map.",
+    "noResultsQuery": "No results for \"{{query}}\"",
+    "searchPorts": "Search {{total}} ports",
+    "searchType": "Search {{total}} {{type}}",
+    "siteDescription": {
+      "areas": "Browse and report on fishing and vessel activity in Exclusive Economic Zones, FAO major fishing areas, Marine Protected Areas and RFMO convention areas worldwide.",
+      "eez": "Explore vessel activity in every Exclusive Economic Zone (EEZ), the waters where coastal states hold rights over marine resources.",
+      "fao": "Explore vessel activity in the FAO major fishing areas used for global fisheries statistics.",
+      "mpa": "Explore vessel activity inside Marine Protected Areas (MPAs) worldwide.",
+      "ports": "Browse ports worldwide and explore vessel port visits, flags and activity.",
+      "rfmo": "Explore vessel activity in the convention areas of Regional Fisheries Management Organizations (RFMOs)."
+    },
+    "sortByActivity": "Sort by activity",
+    "sortByArea": "Sort by area",
+    "sortByName": "Sort by name",
+    "sortByPortVisits": "Sort by port visits",
+    "types": {
+      "eez": "EEZs",
+      "fao": "FAO areas",
+      "mpa": "MPAs",
+      "rfmo": "RFMOs"
+    }
+  },
   "portsReport": {
     "seePortReport": "Voir tous les événements d'entrée dans ce port",
     "summaryEvents": "<strong>{{vessels}} navires</strong> battant pavillon du/de<strong>{{flags}} </strong> sont entrés dans ce port <strong>{{activityQuantity}}</strong> fois entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
