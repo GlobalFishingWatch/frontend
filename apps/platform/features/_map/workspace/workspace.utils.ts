@@ -29,8 +29,9 @@ export const getIsWorkspaceArchived = (workspace: Pick<Workspace, 'id'>) => {
   return !!pipeVersion && Number(pipeVersion) < Number(PIPE_DATASET_VERSION)
 }
 
-export const getIsPrivateWorkspace = (workspace: Pick<Workspace, 'id'>) => {
-  return !!workspace?.id?.includes(PRIVATE_SUFIX)
+export const getIsPrivateWorkspace = (workspace?: { id?: string }) => {
+  const id = workspace?.id
+  return !!id && id.startsWith(`${PRIVATE_SUFIX}-`) && !id.endsWith(`-${PUBLIC_SUFIX}`)
 }
 
 export const parseUpsertWorkspace = (
