@@ -102,11 +102,17 @@
   overflow: hidden;
 }
 
-.thumbnailBands {
+.thumbnailActions {
   position: absolute;
   top: var(--space-S);
   right: var(--space-S);
   z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+}
+
+.thumbnailBands {
   background-color: var(--color-background);
   border-radius: var(--border-radius-0);
 }
