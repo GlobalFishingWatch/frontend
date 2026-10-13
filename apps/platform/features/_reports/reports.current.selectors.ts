@@ -12,7 +12,7 @@ import { selectReportById } from './reports.slice'
 
 // Kept apart from reports.selectors and area-reports.selectors, which pull the dataview selector graph
 // and deck.gl. NavigationHistoryButton renders outside /map and only needs these ids.
-// Guarded by apps/platform/scripts/check-store-graph.mjs.
+// Guarded by apps/platform/scripts/load-boundaries.
 
 export const selectCurrentReport = createSelector(
   [selectReportId, (state) => state.reports],

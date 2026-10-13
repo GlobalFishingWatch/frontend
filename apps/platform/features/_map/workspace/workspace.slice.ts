@@ -684,7 +684,7 @@ const workspaceSlice = createSlice({
     // Logout cleanup. Lives here rather than as actions dispatched from user.slice's logout thunk so
     // that user.slice (eagerly registered) does not import this slice, which drags deck.gl and the
     // timebar into every page's entry chunk.
-    // Guarded by apps/platform/scripts/check-store-graph.mjs.
+    // Guarded by apps/platform/scripts/load-boundaries.
     // The logout thunk also used to dispatch a staff-only-dataview filter, but it ran after the
     // workspace data was already cleared, so it was a no-op. Clearing is the whole behaviour.
     builder.addCase(logoutUserThunk.fulfilled, (state) => {

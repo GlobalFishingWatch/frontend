@@ -8,6 +8,8 @@ import type { Plugin } from 'vite'
 import { defineConfig, loadEnv } from 'vite'
 import svgr from 'vite-plugin-svgr'
 
+import { chunkGraph } from './scripts/load-boundaries/chunk-graph.plugin.ts'
+
 export const basePath =
   import.meta.env?.VITE_PUBLIC_URL || process.env.VITE_PUBLIC_URL || '/platform'
 
@@ -126,6 +128,7 @@ export default defineConfig(({ command, mode }) => {
           },
         } satisfies Plugin),
       command === 'build' && env.VITE_PLATFORM_MODE === 'true' && placesSitemap(),
+      command === 'build' && chunkGraph(),
       nitro({
         // server.ts is the Vite SSR entry (environments.ssr below), not a Nitro handler
         serverEntry: false,

@@ -27,17 +27,23 @@
         "parallel": false
       }
     },
-    "check-store-graph": {
+    "check-load-boundaries": {
       "executor": "nx:run-commands",
       "cache": true,
       "inputs": [
         "default",
         "{workspaceRoot}/libs/*/src/**/*",
-        "{workspaceRoot}/libs/*/package.json"
+        "{workspaceRoot}/libs/*/package.json",
+        "{workspaceRoot}/tsconfig.base.json",
+        "{workspaceRoot}/apps/tsconfig.apps.base.json"
       ],
       "outputs": [],
       "options": {
-        "command": "node apps/platform/scripts/check-store-graph.mjs"
+        "commands": [
+          "node apps/platform/scripts/load-boundaries/selfcheck.ts",
+          "node apps/platform/scripts/load-boundaries/load-boundaries.ts check"
+        ],
+        "parallel": false
       }
     },
     "clean-test-artifacts": {
@@ -230,9 +236,13 @@
       "executor": "nx:run-commands",
       "outputs": ["{projectRoot}/dist", "{projectRoot}/.output"],
       "defaultConfiguration": "production",
-      "dependsOn": ["^build", "i18n", "prepare-loaders", "check-store-graph"],
+      "dependsOn": ["^build", "i18n", "prepare-loaders", "check-load-boundaries"],
       "options": {
-        "commands": ["nx run platform:typecheck", "nx run platform:build:app"],
+        "commands": [
+          "nx run platform:typecheck",
+          "nx run platform:build:app",
+          "node apps/platform/scripts/load-boundaries/load-boundaries.ts check --mode build --markdown apps/platform/dist/load-boundaries.md || echo 'load-boundaries build report failed; deploy continues'"
+        ],
         "parallel": false
       }
     },
