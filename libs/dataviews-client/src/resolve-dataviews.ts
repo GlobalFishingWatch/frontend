@@ -436,21 +436,11 @@ export function getDataviewSqlFiltersResolved(dataview: DataviewInstance | UrlDa
         // User context layers requires wrapping the filter key with double quotes
         filterKey.includes('_') && isUserDataset ? `"${filterKey}"` : filterKey
       if (datasetSchema && datasetSchema.type === 'range') {
-        const minPossible = Number(datasetSchema?.enum?.[0])
         const minSelected = Number(filterValues[0])
         const minValue = isUserDataset ? `'${minSelected}'` : minSelected
-        const maxPossible = Number(datasetSchema?.enum?.[datasetSchema.enum.length - 1])
         const maxSelected = Number(filterValues[filterValues.length - 1])
         const maxValue = isUserDataset ? `'${maxSelected}'` : maxSelected
-        if (minSelected !== minPossible && maxSelected !== maxPossible) {
-          return `${queryFilterKey} >= ${minValue} AND ${queryFilterKey} <= ${maxValue}`
-        }
-        if (minSelected !== minPossible) {
-          return `${queryFilterKey} >= ${minValue}`
-        }
-        if (maxSelected !== maxPossible) {
-          return `${queryFilterKey} <= ${maxValue}`
-        }
+        return `${queryFilterKey} >= ${minValue} AND ${queryFilterKey} <= ${maxValue}`
       }
 
       const filterOperator = dataview.config?.filterOperators?.[filterKey] || INCLUDE_FILTER_ID

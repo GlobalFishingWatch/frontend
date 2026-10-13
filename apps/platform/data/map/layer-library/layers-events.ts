@@ -1,5 +1,6 @@
 import {
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_EVENTS_DURATION_FILTER,
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
   ENCOUNTER_EVENTS_SOURCE_ID,
@@ -17,6 +18,9 @@ export const LAYERS_LIBRARY_EVENTS: LibraryLayerConfig[] = [
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/encounters.jpg`,
     config: {
       color: '#FAE9A0',
+      filters: {
+        duration: CLUSTER_EVENTS_DURATION_FILTER,
+      },
     },
   },
   {
@@ -25,6 +29,9 @@ export const LAYERS_LIBRARY_EVENTS: LibraryLayerConfig[] = [
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/loitering.jpg`,
     config: {
       color: '#CEA9F9',
+      filters: {
+        duration: CLUSTER_EVENTS_DURATION_FILTER,
+      },
     },
   },
   {
@@ -33,6 +40,9 @@ export const LAYERS_LIBRARY_EVENTS: LibraryLayerConfig[] = [
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/port-visits.jpg`,
     config: {
       color: '#9AEEFF',
+      filters: {
+        duration: CLUSTER_EVENTS_DURATION_FILTER,
+      },
     },
   },
 ]
