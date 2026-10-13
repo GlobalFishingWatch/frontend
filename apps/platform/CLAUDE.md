@@ -11,3 +11,4 @@ workspace-wide facts (lib resolution, build target names, dependency layout, Typ
 @.claude/memory/deck-viewstate-url-seed.md
 @.claude/memory/server-code-file-convention.md
 @.claude/memory/ssr-preload-public-dataviews.md
+@.claude/memory/rolldown-lib-app-chunk-colocation.md

@@ -193,31 +193,34 @@ export default defineConfig(({ command, mode }) => {
               // Ensures CJS-heavy chunks (recharts → es-toolkit/compat) execute in import order.
               // Track: https://github.com/rolldown/rolldown/issues/8803
               strictExecutionOrder: true,
-              manualChunks(id) {
-                if (
-                  id.includes('/libs/timebar/src/icons/') ||
-                  id.includes('/apps/platform/assets/icons/')
-                ) {
-                  return 'icons-bundle'
-                }
-                if (
-                  id.includes('/node_modules/@reduxjs/') ||
-                  id.includes('/node_modules/redux/') ||
-                  id.includes('/node_modules/react-redux/') ||
-                  id.includes('/node_modules/immer/') ||
-                  id.includes('/node_modules/reselect/')
-                ) {
-                  return 'vendor-redux'
-                }
-                if (
-                  id.includes('/node_modules/es-toolkit/compat/') ||
-                  id.includes('/node_modules/es-toolkit/')
-                ) {
-                  return 'vendor-es-toolkit'
-                }
-                if (id.includes('/node_modules/jsts/')) {
-                  return 'vendor-jsts'
-                }
+              codeSplitting: {
+                groups: [
+                  {
+                    name: 'icons-bundle',
+                    test: /[\\/](libs[\\/]timebar[\\/]src|apps[\\/]platform[\\/]assets)[\\/]icons[\\/]/,
+                    priority: 3,
+                  },
+                  {
+                    name: 'vendor-redux',
+                    test: /[\\/]node_modules[\\/](@reduxjs|redux|react-redux|immer|reselect)[\\/]/,
+                    priority: 2,
+                  },
+                  {
+                    name: 'vendor-es-toolkit',
+                    test: /[\\/]node_modules[\\/]es-toolkit[\\/]/,
+                    priority: 2,
+                  },
+                  { name: 'vendor-jsts', test: /[\\/]node_modules[\\/]jsts[\\/]/, priority: 2 },
+                  // Keeps library code out of app chunks. Without it Rolldown co-locates a library
+                  // module with an app module that shares its importers, and every other consumer
+                  // of that library module then downloads the app chunk and its imports too: /areas
+                  // fetched the report selectors this way. entriesAware still splits by importer.
+                  {
+                    name: 'vendor',
+                    test: /[\\/](node_modules|libs)[\\/]/,
+                    entriesAware: true,
+                  },
+                ],
               },
             },
           },
