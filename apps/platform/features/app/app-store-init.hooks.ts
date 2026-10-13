@@ -31,12 +31,11 @@ const rootRoute = getRouteApi('__root__')
  * MAP location while the URL says otherwise, and that divergence (map shell vs not) is a hydration
  * mismatch. See router/router-sync.ts.
  */
-export function useAppStore() {
+export function useInitAppStore() {
   const router = useRouter()
   const { user } = rootRoute.useLoaderData()
 
   const { store, serverState } = useMemo(() => {
-    // Lets tests inject a store through the router context.
     const store = getAppRouterStore(router.options.context) ?? makeStore()
     syncInitialLocation(router, store)
     store.dispatch(setUserLanguage(getActiveI18nLanguage() as Locale))
