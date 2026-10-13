@@ -1,5 +1,5 @@
 import { SelfReportedSource } from '@globalfishingwatch/api-types'
-import { DATASET_PRIVATE_PREFIX } from '@globalfishingwatch/datasets-client/constants'
+import type { DATASET_PRIVATE_PREFIX } from '@globalfishingwatch/datasets-client/constants'
 
 import type { DataTerminologySlugs } from 'features/cms/data-terminology.types'
 
@@ -111,13 +111,6 @@ export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
   ],
   [SelfReportedSource.CostaRica]: [[{ key: 'externalId' }]],
   [SelfReportedSource.Brazil]: [
-    [{ key: 'fishingZone' }, { key: 'mainGear' }, { key: 'targetSpecies' }],
-    [{ key: 'externalId' }],
-  ],
-  [SelfReportedSource.Montenegro]: [[{ key: 'length' }]],
-  [SelfReportedSource.Chile]: [[{ key: 'sourceFleet' }]],
-  [SelfReportedSource.Panama]: [[{ key: 'sourceFleet' }]],
-  [`${SelfReportedSource.Brazil}-${DATASET_PRIVATE_PREFIX}`]: [
     [{ key: 'vesselRegistrationCode' }, { key: 'fleetCode', terminologyKey: 'fleetCode' }],
     [
       { key: 'fishingLicenseCode' },
@@ -127,6 +120,9 @@ export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
     [{ key: 'builtYear' }, { key: 'length' }],
     [{ key: 'grossTonnage' }, { key: 'horsePower' }],
   ],
+  [SelfReportedSource.Montenegro]: [[{ key: 'length' }]],
+  [SelfReportedSource.Chile]: [[{ key: 'sourceFleet' }]],
+  [SelfReportedSource.Panama]: [[{ key: 'sourceFleet' }]],
 }
 
 export const REGISTRY_SOURCES = [
