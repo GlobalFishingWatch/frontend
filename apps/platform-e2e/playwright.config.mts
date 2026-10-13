@@ -16,6 +16,10 @@ const baseURL = new URL(process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:300
 // Only the smoke-test action's local-ssl-proxy setup sets this: its cert is self-signed.
 // Everywhere else a bad cert must still fail the run.
 const ignoreHTTPSErrors = process.env.PLAYWRIGHT_IGNORE_HTTPS_ERRORS === 'true'
+// Basic auth for deployed/preview envs (e.g. staging); unset for a local dev server.
+const basicAuth = process.env.BASIC_AUTH_USER
+  ? { username: process.env.BASIC_AUTH_USER, password: process.env.BASIC_AUTH_PASS || '' }
+  : undefined
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -58,20 +62,23 @@ export default defineConfig({
     // Setting it unconditionally makes the context credentialed, which blocks the
     // app's cross-origin requests to the API gateway (whose CORS uses a wildcard
     // origin) and breaks the guest/login flow against a local dev server.
-    ...(process.env.BASIC_AUTH_USER && {
-      httpCredentials: {
-        username: process.env.BASIC_AUTH_USER,
-        password: process.env.BASIC_AUTH_PASS || '',
-        origin: baseURL,
-      },
-    }),
+    ...(basicAuth && { httpCredentials: { ...basicAuth, origin: baseURL } }),
   },
   /* Configure projects for major browsers */
   projects: (() => {
     const allProjects = [
       {
         name: 'chromium',
-        use: { ...devices['Desktop Chrome'] },
+        use: {
+          ...devices['Desktop Chrome'],
+          // Behind basic auth (staging / preview), Chromium with `httpCredentials` aborts the
+          // document request on HTTP/2 right after connecting and never retries, so `goto`
+          // hangs. Firefox, WebKit and Chromium over HTTP/1.1 load normally. Do not swap this
+          // for an `Authorization` header in `extraHTTPHeaders`: that is sent to every origin
+          // and replaces the app's `Bearer` token on API gateway requests.
+          // global-setup.ts applies the same flag to its warm-up browser.
+          ...(basicAuth && { launchOptions: { args: ['--disable-http2'] } }),
+        },
       },
       {
         name: 'firefox',
@@ -79,7 +86,12 @@ export default defineConfig({
       },
       {
         name: 'webkit',
-        use: { ...devices['Desktop Safari'] },
+        use: {
+          ...devices['Desktop Safari'],
+          // WebKit never sends `httpCredentials` that carry an `origin` (staging answers 401
+          // "Auth Required"), so it gets them unscoped. Chromium and Firefox keep the scope.
+          ...(basicAuth && { httpCredentials: basicAuth }),
+        },
       },
     ]
     const filter = process.env.PLAYWRIGHT_BROWSER?.trim()
