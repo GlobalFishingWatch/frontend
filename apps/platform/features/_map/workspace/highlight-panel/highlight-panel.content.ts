@@ -39,7 +39,6 @@ const HIGHLIGHT_POPUP_KEY = 'HighlightPopup'
 // const NEXT_YEAR = Date.now() + 1000 * 60 * 60 * 24 * 365
 const BASE_HIGHLIGHT_CONFIG = {
   localStorageKey: HIGHLIGHT_POPUP_KEY,
-  delayed: 1000,
 }
 // To display a new highlight popup, just add a HighlightPanelConfig element to this array.
 // It's important to define a unique dataviewInstanceId and the releaseDateTimestamp

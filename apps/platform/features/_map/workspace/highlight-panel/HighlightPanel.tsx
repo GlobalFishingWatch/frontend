@@ -7,8 +7,6 @@ import cx from 'classnames'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Button, Popover } from '@globalfishingwatch/ui-components'
 
-import { selectIsMapLoaded } from 'features/_map/map/map.slice'
-import { SCROLL_CONTAINER_DOM_ID } from 'features/_map/sidebar/sidebar.utils'
 import { selectScreenshotMode } from 'features/_map/workspace/selectors/app.selectors'
 import { Locale } from 'types'
 
@@ -29,7 +27,6 @@ const HighlightPanel = ({
   config = HIGHLIGHT_CONFIG,
 }: HighlightPanelProps) => {
   const { t, i18n } = useTranslation()
-  const mapReady = useSelector(selectIsMapLoaded)
   const screenshotMode = useSelector(selectScreenshotMode)
   const ref = useRef<HTMLDivElement | null>(null)
   const [visible, setVisible] = useState(false)
@@ -37,26 +34,19 @@ const HighlightPanel = ({
   const matchDataviewInstance = config.dataviewInstanceId === dataviewInstanceId
 
   const showHighlightPanel =
-    mapReady && matchDataviewInstance && dataviewIdDismissed !== config.dataviewInstanceId
+    matchDataviewInstance && dataviewIdDismissed !== config.dataviewInstanceId
 
   useEffect(() => {
-    if (showHighlightPanel) {
-      if (ref.current?.scrollIntoView) {
-        ref.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
-      }
-      if (config.delayed) {
-        const timerId = setTimeout(() => {
-          const container = document.getElementById(SCROLL_CONTAINER_DOM_ID)
-          if (container) {
-            container.scrollTop = 1
-          }
-          setVisible(true)
-        }, config.delayed)
-        return () => clearTimeout(timerId)
-      } else {
-        setVisible(true)
-      }
+    if (!showHighlightPanel) {
+      return
     }
+    if (ref.current?.scrollIntoView) {
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
+    }
+    // Opened from a timer even with no delay: a synchronous setState in an effect body causes a
+    // cascading render (react-hooks/set-state-in-effect)
+    const timerId = setTimeout(() => setVisible(true), config.delayed ?? 0)
+    return () => clearTimeout(timerId)
   }, [showHighlightPanel, config.delayed])
 
   const onDismiss = () => {
