@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Layer, PickingInfo } from '@deck.gl/core'
 import { MapView, WebMercatorViewport } from '@deck.gl/core'
@@ -9,7 +9,7 @@ import { useAtomValue } from 'jotai'
 import { useDebounce } from 'use-debounce'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { type DataviewInstance, DataviewType } from '@globalfishingwatch/api-types'
+import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import type { ResolverGlobalConfig } from '@globalfishingwatch/deck-layer-composer'
 import { useDeckLayerInstances } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextPickingObject } from '@globalfishingwatch/deck-layers'
@@ -25,7 +25,7 @@ import { hoveredPlaceAtom } from 'features/_places/places.atoms'
 import { getPlaceLinkOptions } from 'features/_places/places.links'
 import { formatPlacesBounds, getPlaceLabel, parsePlacesBounds } from 'features/_places/places.utils'
 import type { PlacesMapDataviews } from 'features/_places/places-map.config'
-import { usePlacesMapDataviews } from 'features/_places/places-map.hooks'
+import { usePlacesMapDataviewsResolved } from 'features/_places/places-map.hooks'
 import { useAppSearch, useReplaceQueryParams } from 'router/routes.hook'
 import { htmlSafeParse } from 'utils/html-parser'
 
@@ -87,16 +87,10 @@ function PlacesMap({ dataviewsByType, type }: PlacesMapProps) {
   const [isLocating, setIsLocating] = useState(false)
   const [hoverTooltip, setHoverTooltip] = useState<HoverTooltip>()
   const highlightedRef = useRef<{ layer?: HighlightableLayer; id?: string | number }>({})
-  const resolvedDataviews = usePlacesMapDataviews(dataviewsByType, type)
-  const dataviews = useMemo(
-    () =>
-      resolvedDataviews.map((dataview) =>
-        dataview.config?.type === DataviewType.Basemap
-          ? { ...dataview, config: { ...dataview.config, basemap } }
-          : dataview
-      ),
-    [resolvedDataviews, basemap]
-  )
+  const dataviews = usePlacesMapDataviewsResolved({
+    dataviewInstances: dataviewsByType[type],
+    basemap,
+  })
   const layers = useDeckLayerInstances({
     dataviews: dataviews as DataviewInstance[],
     globalConfig: { token: GFWAPI.token } as ResolverGlobalConfig,

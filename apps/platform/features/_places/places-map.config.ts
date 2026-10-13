@@ -10,6 +10,7 @@ import {
 
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE } from 'data/map/dataviews'
 import { PORTS_LAYER_ID } from 'features/_map/map/map.config'
+import type { PlaceCategory } from 'features/_places/places.types'
 
 export type PlacesMapDataviews = Partial<Record<OceanAreaType, UrlDataviewInstance[]>>
 
@@ -31,4 +32,10 @@ export const PORTS_MAP_DATAVIEWS: PlacesMapDataviews = {
     { id: PORTS_LAYER_ID, dataviewId: PORTS_GLOBAL_DATAVIEW_SLUG },
     { id: BASEMAP_LABELS_DATAVIEW_INSTANCE_ID, dataviewId: BASEMAP_LABELS_DATAVIEW_SLUG },
   ],
+}
+
+/** What the places loaders preload into the store, per category and type. */
+export const PLACES_MAP_DATAVIEWS: Record<PlaceCategory, PlacesMapDataviews> = {
+  areas: AREAS_MAP_DATAVIEWS,
+  ports: PORTS_MAP_DATAVIEWS,
 }
