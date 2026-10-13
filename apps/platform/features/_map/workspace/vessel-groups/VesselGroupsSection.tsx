@@ -74,8 +74,8 @@ function VesselGroupSection(): React.ReactElement<any> {
         </span>
       }
       headerOptions={
-        <>
-          {!readOnly && (
+        !readOnly ? (
+          <>
             <div
               className={cx(styles.sectionButtons, styles.sectionButtonsSecondary, 'print-hidden')}
             >
@@ -89,18 +89,20 @@ function VesselGroupSection(): React.ReactElement<any> {
                 onClick={onAddVesselGroupClick}
               />
             </div>
-          )}
-          <div className={styles.sectionButtons}>
-            <IconButton
-              icon="plus"
-              type="border"
-              size="medium"
-              tooltip={t((t) => t.vesselGroup.addToWorkspace)}
-              tooltipPlacement="top"
-              onClick={onAddClick}
-            />
-          </div>
-        </>
+            <div className={styles.sectionButtons}>
+              <IconButton
+                icon="plus"
+                type="border"
+                size="medium"
+                tooltip={t((t) => t.vesselGroup.addToWorkspace)}
+                tooltipPlacement="top"
+                onClick={onAddClick}
+              />
+            </div>
+          </>
+        ) : (
+          <></>
+        )
       }
     >
       <SortableContext items={dataviews}>

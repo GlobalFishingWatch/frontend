@@ -12,7 +12,7 @@ export const Route = createFileRoute('/_platform/_content/ports')({
   component: Ports,
   validateSearch: validatePlacesSearchParams,
   loaderDeps: getPlacesLoaderDeps,
-  loader: ({ deps }) => loadPlaces('ports', deps),
+  loader: ({ deps, context }) => loadPlaces('ports', deps, context),
   head: ({ loaderData }) =>
     getPlacesHead({
       category: t((s) => s.nav.ports),

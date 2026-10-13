@@ -23,7 +23,9 @@ import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
 import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
+  getDatasetVersion,
   getRelatedDatasetByType,
+  getRelatedDatasetsByType,
   removeDatasetVersion,
 } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -38,6 +40,7 @@ import {
   BATHYMETRY_DATAVIEW_PREFIX,
   ENCOUNTER_EVENTS_SOURCE_ID,
   GAPS_EVENTS_SOURCE_ID,
+  getDataviewSlugForPipeVersion,
   PORT_VISITS_EVENTS_SOURCE_ID,
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
@@ -231,6 +234,16 @@ export const resolveVesselTrackConfig = ({
       resolvedConfig.trackRealTime = trackRealTime
     }
   }
+  // Without events in the instance, resolveDataviews falls back to the template default events
+  // datasets, which may belong to another pipe or source than the vessel info dataset
+  if (!resolvedConfig.events?.length) {
+    const eventsDatasetIds = getRelatedDatasetsByType(infoDataset, DatasetTypes.Events)?.map(
+      (d) => d.id
+    )
+    if (eventsDatasetIds?.length) {
+      resolvedConfig.events = eventsDatasetIds
+    }
+  }
   return resolvedConfig
 }
 
@@ -376,10 +389,20 @@ const getBestVesselTemplateSlug = (
     dataviewTemplates.find((dataview) =>
       dataview.datasetsConfig?.some((d) => normalize(d.datasetId) === normalize(info))
     )?.slug
+  // Falling back to the current pipe template would replace the vessel events with its defaults,
+  // so prefer the global template of the info dataset pipe when it is loaded (e.g. v4 workspaces)
+  const infoPipeVersion = getDatasetVersion(info)?.match(/^v(\d+)/)?.[1]
+  const infoPipeTemplateSlug = getDataviewSlugForPipeVersion(
+    TEMPLATE_VESSEL_DATAVIEW_SLUG,
+    infoPipeVersion
+  )
+  const fallbackTemplateSlug = dataviewTemplates.some(({ slug }) => slug === infoPipeTemplateSlug)
+    ? infoPipeTemplateSlug
+    : TEMPLATE_VESSEL_DATAVIEW_SLUG
   return (
     findTemplate((datasetId) => datasetId) ??
     findTemplate(removeDatasetVersion) ??
-    TEMPLATE_VESSEL_DATAVIEW_SLUG
+    fallbackTemplateSlug
   )
 }
 

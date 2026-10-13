@@ -1,9 +1,12 @@
 import { createServerFn } from '@tanstack/react-start'
 
+import { Locale } from '@globalfishingwatch/api-types'
 import type { OceanAreaBBox, OceanAreaLocale, OceanAreaType } from '@globalfishingwatch/ocean-areas'
 
 import type { Place, PlaceCategory, PlacesResult, PlacesSort } from 'features/_places/places.types'
 import { DEFAULT_PLACES_SORT, PLACE_TYPES, PLACES_PAGE_SIZE } from 'features/_places/places.types'
+import { PLACES_MAP_DATAVIEWS } from 'features/_places/places-map.config'
+import { getPlacesMapDataviewsCached } from 'features/_places/places-map.server'
 
 export const searchPlaces = createServerFn({ method: 'GET' })
   .validator(
@@ -86,6 +89,20 @@ export const searchPlaces = createServerFn({ method: 'GET' })
       }
     }
   )
+
+export const getPlacesMapDataviews = createServerFn({ method: 'GET' })
+  .validator((params: { category: PlaceCategory; type: OceanAreaType; locale?: string }) => {
+    // Both are cache-key parts: reject anything outside the config so the key space stays bounded
+    if (
+      !Object.hasOwn(PLACES_MAP_DATAVIEWS, params.category) ||
+      !Object.hasOwn(PLACES_MAP_DATAVIEWS[params.category], params.type)
+    ) {
+      throw new Error(`No map dataviews for ${params.category}/${params.type}`)
+    }
+    const locale = Object.values(Locale).find((value) => value === params.locale) ?? Locale.en
+    return { category: params.category, type: params.type, locale }
+  })
+  .handler(({ data }) => getPlacesMapDataviewsCached(data))
 
 export const getPort = createServerFn({ method: 'GET' })
   .validator((params: { id: string; locale?: OceanAreaLocale }) => ({

@@ -7,6 +7,7 @@ import {
   removeDatasetVersion,
   replaceDatasetPrivateToPublic,
 } from '@globalfishingwatch/datasets-client'
+import { PIPE_DATASET_VERSION } from '@globalfishingwatch/datasets-client/constants'
 
 import { PRIVATE_SUFIX, PUBLIC_SUFIX } from 'data/map/config'
 import { selectVesselsDatasets } from 'features/_map/datasets/datasets.selectors'
@@ -56,10 +57,16 @@ const selectSearchDatasetsInWorkspace = createSelector(
     const isArchivedWorkspace = !!workspaceId && getIsWorkspaceArchived({ id: workspaceId })
     // Archived (pipe 4) workspaces search only their own layers, as the default dataviews are
     // built for the current pipe. Any other workspace searches every dataset available: the
-    // default dataviews plus the private datasets granted by permissions
+    // default dataviews plus the private datasets granted by permissions in the current pipe
+    // version, as the permission ids come from LATEST_DATASETS_VMS and are still v4
     const datasetsIds = isArchivedWorkspace
       ? getDatasetsInDataviews(dataviewInstances)
-      : [...getDatasetsInDataviews(dataviews), ...privateSearchDatasetIds]
+      : [
+          ...getDatasetsInDataviews(dataviews),
+          ...privateSearchDatasetIds.filter((id) =>
+            getDatasetVersion(id)?.startsWith(`v${PIPE_DATASET_VERSION}.`)
+          ),
+        ]
     const datasets = allDatasets.flatMap(({ id, relatedDatasets }) => {
       if (!datasetsIds.includes(id)) return EMPTY_ARRAY
       return [id, ...(relatedDatasets || []).map((d) => d.id)]

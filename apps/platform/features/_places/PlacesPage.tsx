@@ -30,9 +30,16 @@ import { getHighlightedText } from 'utils/text'
 
 import styles from './PlacesPage.module.css'
 
-const PlacesMap = lazy(() => import('features/_places/PlacesMap'))
-
 const PLACES_MAP_BREAKPOINT = 1200
+
+const loadPlacesMap = () => import('features/_places/PlacesMap')
+if (
+  typeof window !== 'undefined' &&
+  !window.matchMedia(`(max-width: ${PLACES_MAP_BREAKPOINT}px)`).matches
+) {
+  loadPlacesMap()
+}
+const PlacesMap = lazy(loadPlacesMap)
 const PLACE_LABEL_TITLE_MIN_LENGTH = 50
 
 const getThumbnailUrl = ({ type, id }: Place) =>

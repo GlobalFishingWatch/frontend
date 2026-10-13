@@ -26,8 +26,8 @@ export const Route = createFileRoute('/_platform/_content/areas/$placeType')({
     })
   },
   loaderDeps: getPlacesLoaderDeps,
-  loader: ({ deps, params }) =>
-    loadPlaces('areas', { ...deps, placeType: params.placeType as OceanAreaType }),
+  loader: ({ deps, params, context }) =>
+    loadPlaces('areas', { ...deps, placeType: params.placeType as OceanAreaType }, context),
   head: ({ loaderData, params }) => {
     const texts = getAreaTypeTexts(t)[params.placeType as OceanAreaType]
     return getPlacesHead({

@@ -96,6 +96,14 @@ export const CLUSTER_GAPS_EVENTS_DATAVIEW_SLUG =
 export const CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG =
   `gaps-ais-off-cluster-events-v-${PIPE_DATASET_VERSION}` as const
 
+// Swaps the `-v-<current pipe>` suffix of a versioned slug for another pipe version.
+// Slugs not tied to the current pipe (e.g. Panama's `-v-4-1`) are returned untouched.
+const CURRENT_PIPE_SLUG_SUFFIX = `-v-${PIPE_DATASET_VERSION}`
+export const getDataviewSlugForPipeVersion = (slug: string, pipeVersion?: string) =>
+  pipeVersion && slug.endsWith(CURRENT_PIPE_SLUG_SUFFIX)
+    ? `${slug.slice(0, -CURRENT_PIPE_SLUG_SUFFIX.length)}-v-${pipeVersion}`
+    : slug
+
 // Template dataview slugs
 export const TEMPLATE_USER_TRACK_DATAVIEW_SLUG = 'user-track' as const
 export const TEMPLATE_VESSEL_DATAVIEW_SLUG =

@@ -34,6 +34,26 @@ if (import.meta.hot) {
   })
 }
 
+function compressHtml(request: Request, response: Response) {
+  if (
+    !response.body ||
+    response.headers.has('content-encoding') ||
+    !response.headers.get('content-type')?.startsWith('text/html') ||
+    !request.headers.get('accept-encoding')?.includes('gzip')
+  ) {
+    return response
+  }
+  const headers = new Headers(response.headers)
+  headers.set('content-encoding', 'gzip')
+  headers.delete('content-length')
+  headers.append('vary', 'Accept-Encoding')
+  return new Response(response.body.pipeThrough(new CompressionStream('gzip')), {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  })
+}
+
 const fetchHandler = {
   async fetch(request: Request, opts?: unknown) {
     inFlightRequests++
@@ -55,4 +75,10 @@ const fetchHandler = {
 const sentryEntry =
   process.env.NODE_ENV === 'production' ? wrapFetchWithSentry(fetchHandler) : fetchHandler
 
-export default createServerEntry(sentryEntry as Parameters<typeof createServerEntry>[0])
+const compressedEntry = {
+  async fetch(request: Request, opts?: unknown) {
+    return compressHtml(request, await sentryEntry.fetch(request, opts))
+  },
+}
+
+export default createServerEntry(compressedEntry as Parameters<typeof createServerEntry>[0])
