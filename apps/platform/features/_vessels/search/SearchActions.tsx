@@ -15,6 +15,7 @@ import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { getVesselDataviewInstance } from 'features/_map/dataviews/dataviews.utils'
 import { selectVesselTemplateDataviews } from 'features/_map/dataviews/selectors/dataviews.static.selectors'
+import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import {
   selectCurrentWorkspaceId,
@@ -48,6 +49,7 @@ function SearchActions() {
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const vesselsSelected = useSelector(selectSelectedVessels)
   const activeSearchOption = useSelector(selectSearchOption)
+  const readOnly = useSelector(selectReadOnly)
 
   const onSeeVesselsInMapClick = () => {
     const instances = vesselsSelected.flatMap((vessel) => {
@@ -115,13 +117,17 @@ function SearchActions() {
 
   return (
     <Fragment>
-      <VesselGroupAddButton
-        vessels={vesselsSelected}
-        onAddToVesselGroup={onAddToVesselGroup}
-        keepOpenWhileAdding
-      >
-        <VesselGroupAddActionButton className={cx(styles.footerAction, styles.vesselGroupButton)} />
-      </VesselGroupAddButton>
+      {!readOnly && (
+        <VesselGroupAddButton
+          vessels={vesselsSelected}
+          onAddToVesselGroup={onAddToVesselGroup}
+          keepOpenWhileAdding
+        >
+          <VesselGroupAddActionButton
+            className={cx(styles.footerAction, styles.vesselGroupButton)}
+          />
+        </VesselGroupAddButton>
+      )}
       <Button
         className={styles.footerAction}
         onClick={onSeeVesselsInMapClick}
