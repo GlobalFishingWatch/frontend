@@ -14,7 +14,7 @@ import {
   selectReportsStatus,
   selectReportsStatusId,
 } from 'features/_reports/reports.slice'
-import { resetReportData } from 'features/_reports/tabs/activity/reports-activity.slice'
+import { resetReportData } from 'features/_reports/tabs/activity/reports-activity.actions'
 import { selectUserReports } from 'features/_user/selectors/user.permissions.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'

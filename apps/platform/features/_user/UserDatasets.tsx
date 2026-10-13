@@ -21,11 +21,6 @@ import {
 import { ROUTE_PATHS } from '@platform/config/routes'
 
 import {
-  getDataviewInstanceByDataset,
-  useDatasetModalConfigConnect,
-  useDatasetModalOpenConnect,
-} from 'features/_map/datasets/datasets.hook'
-import {
   deleteDatasetThunk,
   fetchAllDatasetsThunk,
   fetchDatasetsByIdsThunk,
@@ -41,6 +36,10 @@ import InfoError from 'features/_map/workspace/shared/InfoError'
 import { selectLastVisitedWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { selectUserDatasets } from 'features/_user/selectors/user.permissions.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  useDatasetModalConfigConnect,
+  useDatasetModalOpenConnect,
+} from 'features/modals/modals.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getTimeAgo, getUTCDateTime, sortByCreationDate } from 'utils/dates'
 import { getHighlightedText } from 'utils/text'
@@ -121,7 +120,9 @@ function UserDatasets() {
   }, [dispatchDatasetModalOpen])
 
   const onDatasetClick = useCallback(
-    (dataset: Dataset) => {
+    async (dataset: Dataset) => {
+      // Lazy: datasets.hook pulls deck-layers and the workspace hooks, which /user does not need.
+      const { getDataviewInstanceByDataset } = await import('features/_map/datasets/datasets.hook')
       const dataviewInstanceWithDataset = getDataviewInstanceByDataset(dataset)
       if (!dataviewInstanceWithDataset) {
         return

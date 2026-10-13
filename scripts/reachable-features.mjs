@@ -2,7 +2,7 @@
 /**
  * Which features/* dirs are reachable (runtime imports, type-only excluded) from a set of entries.
  *
- * Companion to check-store-graph.mjs: that one guards the store's graph against specific heavy
+ * Companion to apps/platform/scripts/check-store-graph.mjs: that one guards the store's graph against specific heavy
  * packages, this one answers "what does this entry actually pull in". Written to derive the
  * platform/ vs map/ load boundary from evidence, and it showed the boundary does not exist yet:
  *

@@ -11,7 +11,7 @@ import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselGearTypeLabel } from
  * Lives here rather than in `utils/info` because it needs `getLatestIdentityPrioritised`, and
  * `utils/info` is reachable from `routes/__root` via router.meta — i.e. from every page. Importing a
  * feature module from there dragged @globalfishingwatch/deck-layers into the entry chunk of the
- * landing page. Guarded by scripts/check-store-graph.mjs.
+ * landing page. Guarded by apps/platform/scripts/check-store-graph.mjs.
  */
 export const getVesselShipNameLabel = (
   vessel: ExtendedFeatureVessel | IdentityVessel,

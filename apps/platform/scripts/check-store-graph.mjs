@@ -17,20 +17,22 @@
  *   - `await import()`                      (separate chunk, that's the whole point)
  *   - `.css` / image / font specifiers      (carry no JS, so they pull no runtime graph)
  *
- * Usage:
- *   node scripts/check-store-graph.mjs                     # the CI gate: every CHECKED_ENTRIES entry
- *   node scripts/check-store-graph.mjs --report            # + externals, traversed workspace packages
- *   node scripts/check-store-graph.mjs --from <entry>      # ad-hoc, unbudgeted
- *   node scripts/check-store-graph.mjs --all               # store/reducers.ts, i.e. every slice eager
- *   node scripts/check-store-graph.mjs --importers <name>  # every in-graph edge onto a module/package
+ * Usage (from the repo root; entries are relative to apps/platform):
+ *   node apps/platform/scripts/check-store-graph.mjs                     # the CI gate: every CHECKED_ENTRIES entry
+ *   node apps/platform/scripts/check-store-graph.mjs --report            # + externals, traversed workspace packages
+ *   node apps/platform/scripts/check-store-graph.mjs --from <entry>      # ad-hoc, unbudgeted
+ *   node apps/platform/scripts/check-store-graph.mjs --from <entry> --baseline <entry>
+ *                                                     # + lists app modules <entry> adds on top of the baseline
+ *   node apps/platform/scripts/check-store-graph.mjs --all               # store/reducers.ts, i.e. every slice eager
+ *   node apps/platform/scripts/check-store-graph.mjs --importers <name>  # every in-graph edge onto a module/package
  */
 import { existsSync, globSync, readFileSync, statSync } from 'node:fs'
 import { dirname, relative, resolve } from 'node:path'
 
 import ts from 'typescript'
 
-const REPO_ROOT = resolve(import.meta.dirname, '..')
-const APP_ROOT = resolve(REPO_ROOT, 'apps/platform')
+const APP_ROOT = resolve(import.meta.dirname, '..')
+const REPO_ROOT = resolve(APP_ROOT, '../..')
 
 const ALWAYS_LOADED = ['routes/__root.tsx']
 
@@ -46,6 +48,50 @@ const EAGER_SLICES = [
   'features/_map/datasets/datasets.slice.ts',
   'features/_map/dataviews/dataviews.slice.ts',
   'features/data/resources/resources.slice.ts',
+]
+
+/**
+ * Content pages that need map code by design, so they are not checked.
+ *   vessel-search.tsx: advanced search filters by map datasets (DatasetLabel, dataview selectors).
+ */
+const MAP_DEPENDENT_ROUTES = ['routes/_platform/_content/vessel-search.tsx']
+
+/**
+ * Pages outside /map. They share the store with the map, but must not load map or report code
+ * until the user navigates there.
+ */
+const NON_MAP_ROUTES = globSync('routes/_platform/_content{.tsx,/**/*.tsx}', {
+  cwd: APP_ROOT,
+}).filter((route) => !MAP_DEPENDENT_ROUTES.includes(route))
+
+/** Map-feature folders, app-relative. */
+const MAP_ONLY_MODULES = ['features/_map/', 'features/_reports/']
+
+/**
+ * Map-folder modules that add only themselves on top of the shell (check with
+ * `--from <file> --baseline routes/_platform.tsx`), so loading them outside /map costs nothing.
+ */
+const ALLOWED_MAP_MODULES = [
+  'features/_map/sidebar/sidebar.utils.ts', // SCROLL_CONTAINER_DOM_ID, also imported by router.tsx
+  'features/_map/map/map.config.ts', // map constants, type-only deck.gl import
+  'features/_map/datasets/datasets.permissions.ts', // dataset permission checks, used by data/resources
+  'features/_map/dataviews/dataviews.utils.ts', // dataview helpers; everything it imports is in the shell
+  'features/_map/workspace/shared/InfoError.tsx', // error icon button
+  'features/_reports/report-area/title/report-title.utils.tsx', // area name formatting, no imports
+  'features/_reports/report-vessel-group/VesselGroupReportLink.tsx', // a Link to the report
+  'features/_reports/report-vessel-group/vessel-group-report.hooks.ts', // dispatches eager-slice actions
+  'features/_reports/tabs/activity/reports-activity.actions.ts', // RTK-only leaf action
+]
+
+/** Packages only the map needs. A subset of FORBIDDEN. */
+const MAP_ONLY_PACKAGES = [
+  '@deck.gl/',
+  '@luma.gl/',
+  '@loaders.gl/',
+  '@globalfishingwatch/deck-layers',
+  '@globalfishingwatch/deck-layer-composer',
+  '@globalfishingwatch/deck-loaders',
+  '@globalfishingwatch/timebar',
 ]
 
 /**
@@ -67,15 +113,36 @@ const CHECKED_ENTRIES = [
     entries: ['routes/_platform.tsx'],
     maxModules: 300,
   },
+  {
+    // Lazy in ContentLayout, but loads on every content page once the user has visited a workspace.
+    label: 'NavigationHistoryButton (content pages, after a workspace visit)',
+    entries: ['features/_map/sidebar/buttons/NavigationHistoryButton.tsx'],
+    maxModules: 240,
+  },
+  // One run per page, so a failure names the page. Each page also mounts the _content layout.
+  ...NON_MAP_ROUTES.map((route) => ({
+    label: route,
+    entries: [...new Set(['routes/_platform/_content.tsx', route])],
+    baseline: ['routes/_platform.tsx'],
+    forbidden: MAP_ONLY_PACKAGES,
+    forbiddenModules: MAP_ONLY_MODULES,
+  })),
 ]
 
 const checkAll = process.argv.includes('--all')
 const fromArg = process.argv.indexOf('--from')
+const baselineArg = process.argv.indexOf('--baseline')
 
 /** `--from` and `--all` are unbudgeted investigation modes; the default run is the CI gate. */
 const RUNS =
   fromArg !== -1
-    ? [{ label: process.argv[fromArg + 1], entries: [process.argv[fromArg + 1]] }]
+    ? [
+        {
+          label: process.argv[fromArg + 1],
+          entries: [process.argv[fromArg + 1]],
+          baseline: baselineArg === -1 ? undefined : [process.argv[baselineArg + 1]],
+        },
+      ]
     : checkAll
       ? [{ label: 'store/reducers.ts (all slices)', entries: ['store/reducers.ts'] }]
       : CHECKED_ENTRIES
@@ -85,13 +152,7 @@ const RUNS =
  * Each one costs the entry chunk of every page, including pages with no map.
  */
 const FORBIDDEN = [
-  '@deck.gl/',
-  '@luma.gl/',
-  '@loaders.gl/',
-  '@globalfishingwatch/deck-layers',
-  '@globalfishingwatch/deck-layer-composer',
-  '@globalfishingwatch/deck-loaders',
-  '@globalfishingwatch/timebar',
+  ...MAP_ONLY_PACKAGES,
   '@turf/turf',
   '@strapi/client',
   'simple-statistics',
@@ -457,6 +518,13 @@ if (importersArg !== -1) {
 
 // ---- report -------------------------------------------------------------------------------------
 
+const baselineCache = new Map()
+function baselineVisited(entries) {
+  const key = entries.join('\n')
+  if (!baselineCache.has(key)) baselineCache.set(key, walk(entries).visited)
+  return baselineCache.get(key)
+}
+
 let failed = false
 
 for (const run of RUNS) {
@@ -464,7 +532,7 @@ for (const run of RUNS) {
   untraversed.clear()
   traversedWorkspace.clear()
 
-  const { visited, externals, parent, unresolved } = walk(run.entries)
+  const { visited, externals, parent, importers, unresolved } = walk(run.entries)
   const budget = run.maxModules
 
   // Snapshot before the per-specifier sub-walks below, which reuse the same module-level collectors.
@@ -512,9 +580,45 @@ for (const run of RUNS) {
     }
   }
 
+  const forbidden = run.forbidden ?? FORBIDDEN
   const violations = [...externals.entries()].filter(([name]) =>
-    FORBIDDEN.some((bad) => name === bad || name.startsWith(bad))
+    forbidden.some((bad) => name === bad || name.startsWith(bad))
   )
+
+  // Modules the baseline already loads are its budget's problem, not this entry's.
+  const baseline = run.baseline ? baselineVisited(run.baseline) : new Set()
+  const moduleViolations = [...visited]
+    .filter((file) => !baseline.has(file))
+    .map((file) => relative(APP_ROOT, file))
+    .filter((file) => !ALLOWED_MAP_MODULES.includes(file))
+    .filter((file) => run.forbiddenModules?.some((prefix) => file.startsWith(prefix)))
+    .sort()
+
+  if (run.baseline && !run.forbiddenModules) {
+    const added = [...visited].filter((file) => !baseline.has(file))
+    console.log(`\n${added.length} app modules beyond ${run.baseline.join(', ')}:`)
+    for (const file of added.map((f) => relative(APP_ROOT, f)).sort()) console.log(`  ${file}`)
+  }
+
+  if (moduleViolations.length) {
+    failed = true
+    console.error(
+      `\n✗ ${moduleViolations.length} map-only module(s) reachable from ${run.label}:\n`
+    )
+    for (const file of moduleViolations) console.error(`  ${file}`)
+    // The edges to cut: imports into a violation from a module that is not one itself.
+    const violating = new Set(moduleViolations.map((file) => resolve(APP_ROOT, file)))
+    console.error('\n  edges to cut:')
+    for (const file of violating) {
+      for (const importer of importers.get(file) ?? []) {
+        if (violating.has(importer)) continue
+        console.error(`    ${relative(APP_ROOT, importer)} -> ${relative(APP_ROOT, file)}`)
+      }
+    }
+    console.error(
+      '\n  Move the import behind `lazy()` / `await import()`, or out of the map feature folders.'
+    )
+  }
 
   if (violations.length) {
     failed = true
@@ -532,7 +636,9 @@ for (const run of RUNS) {
       }
     }
     console.error(
-      '\nThese cost the entry chunk of every page, including pages with no map.' +
+      (run.forbiddenModules
+        ? '\nThese are map-only and must not load on this page.'
+        : '\nThese cost the entry chunk of every page, including pages with no map.') +
         (report ? '' : '\nRe-run with --report to see the full import chain.')
     )
   }
@@ -552,7 +658,9 @@ for (const run of RUNS) {
     )
     console.error('     up as `barrel` is the usual cause.\n')
     console.error('  b) The growth is intentional. Raise maxModules for this entry in')
-    console.error('     scripts/check-store-graph.mjs and explain why in the commit message.')
+    console.error(
+      '     apps/platform/scripts/check-store-graph.mjs and explain why in the commit message.'
+    )
     console.error(
       '     Budgets only ever go down; a silent bump is what this check exists to prevent.'
     )

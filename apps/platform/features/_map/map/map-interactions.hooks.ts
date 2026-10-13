@@ -43,6 +43,7 @@ import {
   interactionPromisesAtom,
   useCancelInteractionPromises,
 } from 'features/_map/map/map-interactions.atoms'
+import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
 import { useMapAnnotation } from 'features/_map/map/overlays/annotations/annotations.hooks'
 import { useMapErrorNotification } from 'features/_map/map/overlays/error-notification/error-notification.hooks'
 import { overlaysCursorAtom } from 'features/_map/map/overlays/overlays-hooks'
@@ -82,7 +83,7 @@ import {
   isTilesClusterLayerCluster,
   isTrackSegment,
 } from './map-interaction.utils'
-import { useMapViewport, useSetMapCoordinates } from './map-viewport.hooks'
+import { useMapViewport } from './map-viewport.hooks'
 
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
   DataviewCategory.Activity,

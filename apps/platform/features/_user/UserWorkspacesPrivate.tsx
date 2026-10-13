@@ -7,7 +7,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_CATEGORY } from '@platform/config/map/workspaces'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
-import { useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
+import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
 import { getWorkspaceLabel } from 'features/_map/workspace/workspace.utils'
 import { selectWorkspaceListStatus } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { useReplaceQueryParams } from 'router/routes.hook'

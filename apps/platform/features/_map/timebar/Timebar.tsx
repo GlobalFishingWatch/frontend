@@ -22,7 +22,6 @@ import {
   useHighlightedEventsConnect,
   useTimebarVisualisation,
   useTimebarVisualisationConnect,
-  useTimerangeConnect,
 } from 'features/_map/timebar/timebar.hooks'
 import {
   useOnTimebarRangeChange,
@@ -36,6 +35,7 @@ import {
   useTimebarVesselTracksGraph,
 } from 'features/_map/timebar/timebar-vessel.hooks'
 import TimebarClusterEventsGraph from 'features/_map/timebar/TimebarClusterEventsGraph'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import { selectLatestAvailableDataDate } from 'features/_map/workspace/selectors/app.data-date.selectors'
 import { selectScreenshotMode } from 'features/_map/workspace/selectors/app.selectors'
 import {

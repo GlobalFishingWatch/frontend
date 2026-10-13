@@ -13,9 +13,9 @@ import {
 } from 'features/_map/datasets/datasets.slice'
 import { useEditVesselGroupModal } from 'features/_reports/report-vessel-group/vessel-group-report.hooks'
 import VesselGroupReportLink from 'features/_reports/report-vessel-group/VesselGroupReportLink'
-import { selectUserVesselGroups } from 'features/_user/vessel-groups/vessel-groups.selectors'
 import {
   deleteVesselGroupThunk,
+  selectUserVesselGroups,
   selectVesselGroupsStatus,
   selectVesselGroupsStatusId,
 } from 'features/_user/vessel-groups/vessel-groups.slice'

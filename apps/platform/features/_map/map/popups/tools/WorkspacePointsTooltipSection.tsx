@@ -8,7 +8,7 @@ import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { PRIVATE_ICON, PRIVATE_PASSWORD_ICON } from 'data/map/config'
 import { useClickedEventConnect } from 'features/_map/map/map-interactions.hooks'
-import { useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
+import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
 import type { MapCoordinates } from 'types'
 
 import PopupSectionLayout from '../shared/PopupSectionLayout'

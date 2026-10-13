@@ -5,9 +5,9 @@ import cx from 'classnames'
 
 import { ROUTE_PATHS } from '@platform/config/routes'
 
-import TableOfContents from 'features/_map/content-panel/user-guide/TableOfContents'
 import HelpHubError from 'features/help/HelpHubError'
 import HelpHubItemContent from 'features/help/HelpHubItemContent'
+import TableOfContents from 'features/help/TableOfContents'
 
 import styles from './HelpHubSectionPage.module.css'
 

@@ -3,11 +3,11 @@ import { streamingMarkdownExtension } from '@tanstack/markdown/extensions/stream
 import { Markdown, type MarkdownComponents } from '@tanstack/markdown/react'
 import cx from 'classnames'
 
-import { highlightMarkdownCode } from 'features/_map/content-panel/markdown-highlighter'
-import MarkdownIframe from 'features/_map/content-panel/MarkdownIframe'
-import MarkdownImage from 'features/_map/content-panel/MarkdownImage'
-import MarkdownLink from 'features/_map/content-panel/MarkdownLink'
 import type { UserGuideSlug } from 'features/cms/user-guide.types'
+import { highlightMarkdownCode } from 'features/help/markdown/markdown-highlighter'
+import MarkdownIframe from 'features/help/markdown/MarkdownIframe'
+import MarkdownImage from 'features/help/markdown/MarkdownImage'
+import MarkdownLink from 'features/help/markdown/MarkdownLink'
 import { findSectionForSlug } from 'features/help/userGuide.utils'
 import UserGuideLink from 'features/help/UserGuideLink'
 

@@ -5,7 +5,7 @@ import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 
 import { getHighlightedText, getSearchPreview } from 'utils/text'
 
-import styles from '../ContentPanel.module.css'
+import styles from './TableOfContents.module.css'
 
 const markdownToText = (markdown = '') =>
   markdown
