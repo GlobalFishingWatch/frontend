@@ -10,7 +10,8 @@ export default async function globalSetup(config: FullConfig) {
   if (process.env.CI) return
 
   const { baseURL, ignoreHTTPSErrors, httpCredentials } = config.projects[0].use
-  const browser = await chromium.launch()
+  // Same HTTP/2 workaround as the chromium project in playwright.config.mts
+  const browser = await chromium.launch({ args: httpCredentials ? ['--disable-http2'] : [] })
   try {
     const page = await browser.newPage({ baseURL, ignoreHTTPSErrors, httpCredentials })
     await page.goto(MAP_PATH, { timeout: TIMEOUTS.TEST })
