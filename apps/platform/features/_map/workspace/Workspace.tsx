@@ -112,8 +112,8 @@ function Workspace() {
         <ActivitySection />
         {timeMode === 'historical' && <DetectionsSection />}
         {timeMode === 'historical' && <EventsSection />}
-        {!readOnly && <VesselsSection />}
-        {timeMode === 'historical' && !readOnly && <VesselGroupSection />}
+        <VesselsSection />
+        {timeMode === 'historical' && <VesselGroupSection />}
         {timeMode === 'historical' && <EnvironmentalSection />}
         <ContextAreaSection />
         <UserSection />
