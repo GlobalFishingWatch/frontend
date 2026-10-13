@@ -369,7 +369,7 @@ function ActivityReport() {
       )
     }
 
-    return <ReportVesselsPlaceholder animate={false} showSlowLoading className="print-hidden" />
+    return ReportVesselError
   }, [
     isRealTimeMode,
     isBQEditorDataset,
