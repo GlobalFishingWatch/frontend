@@ -56,25 +56,33 @@ sentryInit({
 })
 
 if (import.meta.env.PROD) {
-  void Promise.all([
-    // The canvas integration must be registered before replayIntegration, otherwise replay starts
-    // recording without canvas support and the deck.gl map shows up as an empty box.
-    lazyLoadSentryIntegration('replayCanvasIntegration'),
-    lazyLoadSentryIntegration('replayIntegration'),
-  ])
-    .then(([replayCanvasIntegration, replayIntegration]) => {
-      const client = getSentryClient()
-      client?.addIntegration(replayCanvasIntegration({ quality: 'low' }))
-      client?.addIntegration(
-        replayIntegration({
-          maskAllText: false,
-          blockAllMedia: false,
-        })
-      )
-    })
-    .catch(() => {
-      // Replay is best-effort telemetry; losing it must never surface to the user or to Sentry.
-    })
+  const loadSentryReplay = () => {
+    void Promise.all([
+      // The canvas integration must be registered before replayIntegration, otherwise replay starts
+      // recording without canvas support and the deck.gl map shows up as an empty box.
+      lazyLoadSentryIntegration('replayCanvasIntegration'),
+      lazyLoadSentryIntegration('replayIntegration'),
+    ])
+      .then(([replayCanvasIntegration, replayIntegration]) => {
+        const client = getSentryClient()
+        client?.addIntegration(replayCanvasIntegration({ quality: 'low' }))
+        client?.addIntegration(
+          replayIntegration({
+            maskAllText: false,
+            blockAllMedia: false,
+          })
+        )
+      })
+      .catch(() => {
+        // Replay is best-effort telemetry; losing it must never surface to the user or to Sentry.
+      })
+  }
+  if (typeof window.requestIdleCallback === 'function') {
+    window.requestIdleCallback(loadSentryReplay, { timeout: 5000 })
+  } else {
+    // No requestIdleCallback (e.g. older Safari); a plain timer is close enough for telemetry.
+    window.setTimeout(loadSentryReplay, 3000)
+  }
 }
 
 startTransition(() => {
