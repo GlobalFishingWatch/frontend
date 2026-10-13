@@ -23,4 +23,9 @@ export type BasemapLayerProperties = {
 }
 export type BasemapLayerFeature = Feature<Point, BasemapLayerProperties>
 export type _BasemapLayerProps = DeckLayerProps<{ basemap: BasemapType }>
-export type _BasemapLabelsLayerProps = DeckLayerProps<{ locale?: Locale; tilesUrl: string }>
+export type _BasemapLabelsLayerProps = DeckLayerProps<{
+  locale?: Locale
+  tilesUrl: string
+  /** Multiplies every label's pixel size, e.g. to keep labels in proportion on a shrunk map */
+  labelSizeScale?: number
+}>

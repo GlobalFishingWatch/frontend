@@ -17,11 +17,22 @@ import { useDOMElement } from 'hooks/dom.hooks'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectIsAnyReportLocation, selectIsAnyVesselLocation } from 'router/routes.selectors'
+import { getSafeElementById } from 'utils/dom'
 
 import { selectIsMapInteractionLoading } from '../map.slice'
 import type { MAP_CONTAINER_ID } from '../map-viewport.hooks'
 
-import { ScrenshotAreaIds, selectScreenshotAreaId, setScreenshotAreaId } from './screenshot.slice'
+import type { ScreenshotAspectRatio } from './screenshot.slice'
+import {
+  SCREENSHOT_ASPECT_RATIOS,
+  ScrenshotAreaIds,
+  selectScreenshotAreaId,
+  selectScreenshotAspectRatio,
+  setLabelSizeScale,
+  setScreenshotAreaId,
+  setScreenshotAspectRatio,
+} from './screenshot.slice'
+import { applyAspectRatio, resetAspectRatio } from './screenshot.utils'
 
 import styles from './MapControls.module.css'
 
@@ -42,6 +53,7 @@ const MapControlScreenshot = ({
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const showScreenshot = !isVesselLocation && !isAnyReportLocation
   const screenshotAreaId = useSelector(selectScreenshotAreaId)
+  const screenshotAspectRatio = useSelector(selectScreenshotAspectRatio)
   const interactionLoading = useSelector(selectIsMapInteractionLoading)
   const rootElement = useDOMElement()
 
@@ -56,6 +68,15 @@ const MapControlScreenshot = ({
     [t]
   )
 
+  const ASPECT_RATIO_OPTIONS: SelectOption<ScreenshotAspectRatio>[] = useMemo(
+    () => [
+      { id: 'current', label: t((t) => t.map.screenshotAspectRatio.current) },
+      { id: '4:3', label: '4:3' },
+      { id: '9:16', label: '9:16' },
+    ],
+    [t]
+  )
+
   const {
     loading,
     previewImage,
@@ -66,7 +87,7 @@ const MapControlScreenshot = ({
   } = useDownloadDomElementAsImage()
 
   const generateImage = useCallback(
-    (domId: string) => {
+    (domId: string, aspectRatio: ScreenshotAspectRatio) => {
       resetPreviewImage()
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current)
@@ -74,15 +95,21 @@ const MapControlScreenshot = ({
       timeoutRef.current = setTimeout(() => {
         if (rootElement && domId) {
           rootElement.classList.add('printing')
+          // measure the area at its natural size, not one shrunk by a previous ratio
+          resetAspectRatio()
+          const ratio = SCREENSHOT_ASPECT_RATIOS[aspectRatio]
+          const element = ratio ? getSafeElementById(domId) : null
+          dispatch(setLabelSizeScale(element && ratio ? applyAspectRatio(element, ratio) : 1))
           // leave some time to
           // 1. apply the styles + timebar to re - render
+          // 2. let deck resize to the new aspect ratio and redraw the labels
           timeoutRef.current = setTimeout(() => {
             generatePreviewImage(domId)
           }, 400)
         }
       }, 100)
     },
-    [generatePreviewImage, resetPreviewImage, rootElement]
+    [dispatch, generatePreviewImage, resetPreviewImage, rootElement]
   )
 
   const onScreenshotClick = useCallback(() => {
@@ -90,11 +117,16 @@ const MapControlScreenshot = ({
       replaceQueryParams({ sidebarOpen: true })
     }
     dispatch(setModalOpen({ id: 'screenshot', open: true }))
-    generateImage(screenshotAreaId)
-  }, [dispatch, generateImage, screenshotAreaId])
+    generateImage(screenshotAreaId, screenshotAspectRatio)
+  }, [dispatch, generateImage, screenshotAreaId, screenshotAspectRatio])
 
   const handleModalClose = useCallback(() => {
     resetPreviewImage()
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+    resetAspectRatio()
+    dispatch(setLabelSizeScale(1))
     if (rootElement) {
       rootElement.classList.remove('printing')
     }
@@ -114,9 +146,17 @@ const MapControlScreenshot = ({
       if (area === ScrenshotAreaIds.withTimebarAndLegend) {
         replaceQueryParams({ sidebarOpen: true })
       }
-      generateImage(area)
+      generateImage(area, screenshotAspectRatio)
     },
-    [dispatch, generateImage]
+    [dispatch, generateImage, screenshotAspectRatio]
+  )
+
+  const onSelectAspectRatio = useCallback(
+    (aspectRatio: ScreenshotAspectRatio) => {
+      dispatch(setScreenshotAspectRatio(aspectRatio))
+      generateImage(screenshotAreaId, aspectRatio)
+    },
+    [dispatch, generateImage, screenshotAreaId]
   )
 
   // capturing mid-fetch freezes a popup showing its spinner instead of its contents
@@ -154,6 +194,11 @@ const MapControlScreenshot = ({
             options={SCREENSHOT_AREA_OPTIONS}
             onSelect={(option) => onSelectScreenshotArea(option.id)}
             activeOption={screenshotAreaId}
+          />
+          <Choice
+            options={ASPECT_RATIO_OPTIONS}
+            onSelect={(option) => onSelectAspectRatio(option.id)}
+            activeOption={screenshotAspectRatio}
           />
           <Button
             id="image-preview-download"

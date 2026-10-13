@@ -18,24 +18,49 @@ export const ScrenshotAreaIds: Record<ScrenshotArea, ScrenshotDOMArea> = {
   withTimebarAndLegend: SPLIT_VIEW_DOM_ID,
 }
 
+export type ScreenshotAspectRatio = 'current' | '4:3' | '9:16'
+
+// width / height; null keeps the capture area at whatever size the window gives it
+export const SCREENSHOT_ASPECT_RATIOS: Record<ScreenshotAspectRatio, number | null> = {
+  current: null,
+  '4:3': 4 / 3,
+  '9:16': 9 / 16,
+}
+
 const DEFAULT_SCREENSHOT_AREA = ScrenshotAreaIds.withTimebarAndLegend
+const DEFAULT_SCREENSHOT_ASPECT_RATIO: ScreenshotAspectRatio = 'current'
 const SCREENSHOT_AREA_KEY_ID = 'screenShotAreaId'
+const SCREENSHOT_ASPECT_RATIO_KEY_ID = 'screenShotAspectRatio'
 
 interface ScreenshotState {
   screenshotAreaId: ScrenshotDOMArea
+  screenshotAspectRatio: ScreenshotAspectRatio
+  labelSizeScale: number
 }
 
-const getInitialState = (): ScreenshotState => {
+const getInitialAreaId = (): ScrenshotDOMArea => {
   const storedValue = getLocalStorageItem(SCREENSHOT_AREA_KEY_ID)
-  if (!storedValue) return { screenshotAreaId: DEFAULT_SCREENSHOT_AREA }
+  if (!storedValue) return DEFAULT_SCREENSHOT_AREA
 
   try {
-    const parsedValue = JSON.parse(storedValue) as ScrenshotDOMArea
-    return { screenshotAreaId: parsedValue }
+    return JSON.parse(storedValue) as ScrenshotDOMArea
   } catch {
-    return { screenshotAreaId: DEFAULT_SCREENSHOT_AREA }
+    return DEFAULT_SCREENSHOT_AREA
   }
 }
+
+const getInitialAspectRatio = (): ScreenshotAspectRatio => {
+  const storedValue = getLocalStorageItem(SCREENSHOT_ASPECT_RATIO_KEY_ID)
+  return storedValue && Object.hasOwn(SCREENSHOT_ASPECT_RATIOS, storedValue)
+    ? (storedValue as ScreenshotAspectRatio)
+    : DEFAULT_SCREENSHOT_ASPECT_RATIO
+}
+
+const getInitialState = (): ScreenshotState => ({
+  screenshotAreaId: getInitialAreaId(),
+  screenshotAspectRatio: getInitialAspectRatio(),
+  labelSizeScale: 1,
+})
 
 export const screenshotSlice = createSlice({
   name: 'screenshot',
@@ -45,10 +70,18 @@ export const screenshotSlice = createSlice({
       state.screenshotAreaId = action.payload
       setLocalStorageItem(SCREENSHOT_AREA_KEY_ID, JSON.stringify(action.payload))
     },
+    setScreenshotAspectRatio: (state, action: PayloadAction<ScreenshotAspectRatio>) => {
+      state.screenshotAspectRatio = action.payload
+      setLocalStorageItem(SCREENSHOT_ASPECT_RATIO_KEY_ID, action.payload)
+    },
+    setLabelSizeScale: (state, action: PayloadAction<number>) => {
+      state.labelSizeScale = action.payload
+    },
   },
 })
 
-export const { setScreenshotAreaId } = screenshotSlice.actions
+export const { setScreenshotAreaId, setScreenshotAspectRatio, setLabelSizeScale } =
+  screenshotSlice.actions
 
 /**
  * Lazily registered: this slice is only reachable from features/_map/map/Map.tsx, which lives in the map
@@ -65,6 +98,14 @@ declare module 'reducers' {
 
 export const selectScreenshotAreaId = injectedScreenshotSlice.selector(
   (state) => state.screenshot.screenshotAreaId
+)
+
+export const selectScreenshotAspectRatio = injectedScreenshotSlice.selector(
+  (state) => state.screenshot.screenshotAspectRatio
+)
+
+export const selectLabelSizeScale = injectedScreenshotSlice.selector(
+  (state) => state.screenshot.labelSizeScale
 )
 
 export default screenshotSlice.reducer

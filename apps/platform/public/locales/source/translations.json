@@ -941,6 +941,9 @@
       "withTimebar": "With timebar",
       "withTimebarAndLegend": "With timebar and legend"
     },
+    "screenshotAspectRatio": {
+      "current": "Current"
+    },
     "screenshotDownload": "Download image",
     "screenshotPreview": "Screenshot preview",
     "search": "Search ocean and sea areas, MPAs or EEZs",
