@@ -4,7 +4,11 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type { VesselGroup } from '@globalfishingwatch/api-types'
-import { Button, Icon, IconButton, InputText, Spinner } from '@globalfishingwatch/ui-components'
+import { Button } from '@globalfishingwatch/ui-components/button'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { InputText } from '@globalfishingwatch/ui-components/input-text'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 
 import {
   selectDatasetsStatus,

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 
 import type { Workspace } from '@globalfishingwatch/api-types'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { DEFAULT_WORKSPACE_CATEGORY } from '@platform/config/map/workspaces'
 import { ROUTE_PATHS } from '@platform/config/routes'
 

@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-import type { Tab } from '@globalfishingwatch/ui-components'
-import { Tabs } from '@globalfishingwatch/ui-components'
+import type { Tab } from '@globalfishingwatch/ui-components/tabs'
+import { Tabs } from '@globalfishingwatch/ui-components/tabs'
 import { PIPE_4_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
 import {

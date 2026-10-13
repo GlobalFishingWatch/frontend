@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { InputText } from '@globalfishingwatch/ui-components'
+import { InputText } from '@globalfishingwatch/ui-components/input-text'
 
 import UserWorkspacesArchive from 'features/_user/UserWorkspacesArchive'
 import UserWorkspacesPrivate from 'features/_user/UserWorkspacesPrivate'

@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 
-import { IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { Modal } from '@globalfishingwatch/ui-components/modal'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { DEFAULT_WORKSPACE_CATEGORY } from '@platform/config/map/workspaces'
 import { ROUTE_PATHS } from '@platform/config/routes'
 

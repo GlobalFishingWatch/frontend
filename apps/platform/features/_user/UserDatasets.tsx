@@ -9,15 +9,13 @@ import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
 } from '@globalfishingwatch/datasets-client'
-import type { ChoiceOption } from '@globalfishingwatch/ui-components'
-import {
-  Button,
-  Choice,
-  Icon,
-  IconButton,
-  InputText,
-  Spinner,
-} from '@globalfishingwatch/ui-components'
+import { Button } from '@globalfishingwatch/ui-components/button'
+import type { ChoiceOption } from '@globalfishingwatch/ui-components/choice'
+import { Choice } from '@globalfishingwatch/ui-components/choice'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { InputText } from '@globalfishingwatch/ui-components/input-text'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
 import {
