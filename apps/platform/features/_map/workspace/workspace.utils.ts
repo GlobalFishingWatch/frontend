@@ -8,7 +8,7 @@ import {
 } from '@globalfishingwatch/ui-components/color-bar-options'
 import { ARCHIVED_WORKSPACE_SUFFIX, getWorkspacePipeVersion } from '@platform/config/map/workspaces'
 
-import { PRIVATE_ICON, PRIVATE_PASSWORD_ICON, PUBLIC_SUFIX } from 'data/map/config'
+import { PRIVATE_ICON, PRIVATE_PASSWORD_ICON, PRIVATE_SUFIX, PUBLIC_SUFIX } from 'data/map/config'
 import type { AppWorkspace } from 'features/_map/workspaces-list/workspaces-list.slice'
 import {
   cleanAggregateByPropertyDataviewFromReport,
@@ -27,6 +27,11 @@ export const getIsWorkspaceArchived = (workspace: Pick<Workspace, 'id'>) => {
   if (id.includes(ARCHIVED_WORKSPACE_SUFFIX)) return true
   const pipeVersion = getWorkspacePipeVersion(id)
   return !!pipeVersion && Number(pipeVersion) < Number(PIPE_DATASET_VERSION)
+}
+
+export const getIsPrivateWorkspace = (workspace?: { id?: string }) => {
+  const id = workspace?.id
+  return !!id && id.startsWith(`${PRIVATE_SUFIX}-`) && !id.endsWith(`-${PUBLIC_SUFIX}`)
 }
 
 export const parseUpsertWorkspace = (

@@ -33,7 +33,7 @@ import {
 } from '@platform/config/map/workspaces'
 
 import type { VALID_PASSWORD } from 'data/map/config'
-import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX, WORKSPACE_HISTORY_NAVIGATION } from 'data/map/config'
+import { DEFAULT_TIME_RANGE, WORKSPACE_HISTORY_NAVIGATION } from 'data/map/config'
 import {
   DEFAULT_DATAVIEW_SLUGS,
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
@@ -76,7 +76,7 @@ import {
   selectWorkspaceReportId,
   selectWorkspaceStatus,
 } from './workspace.selectors'
-import { cleanReportQuery, parseUpsertWorkspace } from './workspace.utils'
+import { cleanReportQuery, getIsPrivateWorkspace, parseUpsertWorkspace } from './workspace.utils'
 
 /**
  * History navigation entry stored in TanStack Router format.
@@ -253,7 +253,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
                 } as Workspace<any>
               }
             }
-            if (workspace.id.includes(PRIVATE_SUFIX) && guestUser) {
+            if (getIsPrivateWorkspace(workspace) && guestUser) {
               return rejectWithValue({ error: { status: 401, message: 'Private workspace' } })
             }
           } else {
@@ -279,7 +279,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           workspaceId === DEFAULT_WORKSPACE_ID
         ) {
           workspace = await getDefaultWorkspace()
-          if (workspace.id.includes(PRIVATE_SUFIX) && guestUser) {
+          if (getIsPrivateWorkspace(workspace) && guestUser) {
             return rejectWithValue({ error: { status: 401, message: 'Private workspace' } })
           }
         }
