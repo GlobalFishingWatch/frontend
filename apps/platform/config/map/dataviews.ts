@@ -103,6 +103,7 @@ export const getDataviewSlugForPipeVersion = (slug: string, pipeVersion?: string
   pipeVersion && slug.endsWith(CURRENT_PIPE_SLUG_SUFFIX)
     ? `${slug.slice(0, -CURRENT_PIPE_SLUG_SUFFIX.length)}-v-${pipeVersion}`
     : slug
+export const CLUSTER_EVENTS_DURATION_FILTER: string[] = ['2', '48']
 
 // Template dataview slugs
 export const TEMPLATE_USER_TRACK_DATAVIEW_SLUG = 'user-track' as const

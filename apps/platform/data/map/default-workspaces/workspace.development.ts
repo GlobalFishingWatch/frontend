@@ -14,7 +14,7 @@ import {
   BATHYMETRY_CONTOUR_DATAVIEW_SLUG,
   BATHYMETRY_DATAVIEW_PREFIX,
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
-  CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_EVENTS_DURATION_FILTER,
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
@@ -22,7 +22,6 @@ import {
   FISHING_AIS_DATAVIEW_SLUG,
   FISHING_VMS_DATAVIEW_SLUG,
   FIXED_INFRASTRUCTURE_DATAVIEW_SLUG,
-  GAPS_EVENTS_SOURCE_ID,
   GRATICULES_DATAVIEW_SLUG,
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
@@ -126,6 +125,9 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
       config: {
         visible: false,
+        filters: {
+          duration: CLUSTER_EVENTS_DURATION_FILTER,
+        },
       },
     },
     {
@@ -133,6 +135,9 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
       config: {
         visible: false,
+        filters: {
+          duration: CLUSTER_EVENTS_DURATION_FILTER,
+        },
       },
     },
     // {
@@ -159,6 +164,9 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
       config: {
         visible: false,
+        filters: {
+          duration: CLUSTER_EVENTS_DURATION_FILTER,
+        },
       },
     },
     {
