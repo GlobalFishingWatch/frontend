@@ -29,7 +29,6 @@ import { selectVesselTemplateDataviews } from 'features/_map/dataviews/selectors
 import type { ExtendedFeatureVessel } from 'features/_map/map/map.slice'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/_map/workspace/workspace.slice'
-import { usePopulateVesselResource } from 'features/_reports/shared/vessels/report-vessels.hooks'
 import {
   getRelatedIdentityVesselIds,
   getVesselId,
@@ -82,7 +81,6 @@ export function usePinVessel({
   const [loading, setLoading] = useState(false)
   const dispatch = useAppDispatch()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
-  const populateVesselInfoResource = usePopulateVesselResource()
   const vesselsInWorkspace = useSelector(selectTrackDataviews)
   const vesselTemplateDataviews = useSelector(selectVesselTemplateDataviews)
   const infoDatasetId =
@@ -191,13 +189,11 @@ export function usePinVessel({
         })
 
         if (vesselDataviewInstance) {
+          // Don't seed the info resource with vesselWithIdentity: it usually comes from a list
+          // endpoint (map popups, search) and the profile would reuse it instead of fetching
+          // /vessels/{id}, missing fields like MMSI or gear type. The resources hook fetches it.
           upsertDataviewInstance(vesselDataviewInstance)
           dataviewInstance = vesselDataviewInstance
-          populateVesselInfoResource(
-            vesselWithIdentity,
-            vesselDataviewInstance,
-            infoDatasetResolved!
-          )
 
           trackEvent({
             category: TrackCategory.Tracks,
