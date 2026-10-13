@@ -30,6 +30,7 @@ function ContentPanel({
   const { closeSidePanel } = useSidePanel()
   const isSmallScreen = useSmallScreen(undefined, { initialScreenWidth })
   const isOpen = Boolean(sidePanels?.length)
+  const latestWidth = useRef<number | null>(null)
 
   const [isDragging, setIsDragging] = useState(false)
   const [panelWidth, setPanelWidth] = useState(
@@ -46,22 +47,21 @@ function ContentPanel({
     }
   }, [hasChat, closeSidePanel])
 
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (startCursorX.current === null || startWidth.current === null) return
-      const cursorXDelta = startCursorX.current - e.clientX
-      const newWidth = clampPanelWidth(startWidth.current + cursorXDelta)
-      setPanelWidth(newWidth)
-      onPanelWidthChange?.(newWidth)
-    },
-    [onPanelWidthChange]
-  )
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (startCursorX.current === null || startWidth.current === null) return
+    const cursorXDelta = startCursorX.current - e.clientX
+    const newWidth = clampPanelWidth(startWidth.current + cursorXDelta)
+    latestWidth.current = newWidth
+    setPanelWidth(newWidth)
+  }, [])
 
   const handleMouseUp = useCallback(() => {
+    if (latestWidth.current !== null) onPanelWidthChange?.(latestWidth.current)
     setIsDragging(false)
     startCursorX.current = null
     startWidth.current = null
-  }, [])
+    latestWidth.current = null
+  }, [onPanelWidthChange])
 
   useEffect(() => {
     if (isDragging) {
