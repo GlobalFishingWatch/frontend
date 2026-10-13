@@ -32,12 +32,12 @@ downloaded even when the caller needs only one module inside that chunk.
   Do not go back to `manualChunks`: when `codeSplitting` is set, Rolldown ignores `manualChunks`.
 - Turning off `experimental.chunkOptimization` (both passes) did **not** fix this. The placement
   comes from base chunk grouping.
-- `check-store-graph.mjs` walks source, so it cannot see this. To verify a page in production,
-  run `pnpm nx run platform:build:app`, then `node apps/platform/scripts/serve-ssr.mjs`, and
-  inspect the requests on port 3000. Restart the server after every rebuild. A server left
-  running while `.output` is rebuilt returns 500s with `ERR_MODULE_NOT_FOUND`.
-- To find which modules a chunk holds, set `sourcemap: true` temporarily in the client build and
-  read `sources` from the chunk's `.map` file.
+- Source-mode `load-boundaries` cannot see this; its `--mode build` can ([[load-boundaries-two-modes]]).
+  After `pnpm nx run platform:build:app`, `load-boundaries.ts why <module> --mode build --from <route>`
+  prints the chunk chain. To watch the real requests, run `node apps/platform/scripts/serve-ssr.mjs`
+  and inspect port 3000. Restart the server after every rebuild. A server left running while
+  `.output` is rebuilt returns 500s with `ERR_MODULE_NOT_FOUND`.
+- Which modules a chunk holds is in `apps/platform/dist/chunk-graph.json`, written by every build.
 - `libs/data-transforms` declares `"sideEffects": false`, like the `deck-*` libs. Without it,
   the barrel had to initialise every submodule for every consumer.
 
