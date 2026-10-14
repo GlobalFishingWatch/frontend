@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -19,6 +19,7 @@ import { useEditVesselGroupModal } from 'features/_reports/report-vessel-group/v
 import VesselGroupReportLink from 'features/_reports/report-vessel-group/VesselGroupReportLink'
 import {
   deleteVesselGroupThunk,
+  fetchVesselGroupsThunk,
   selectUserVesselGroups,
   selectVesselGroupsStatus,
   selectVesselGroupsStatusId,
@@ -58,6 +59,10 @@ function UserVesselGroups() {
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const deletedDatasets = useSelector(selectDeletedDatasets)
   const { loadingGroupId, migrateToLatestVesselGroup } = useMigrateToLatestVesselGroup()
+
+  useEffect(() => {
+    dispatch(fetchVesselGroupsThunk())
+  }, [dispatch])
 
   const onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
