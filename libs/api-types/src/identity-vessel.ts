@@ -248,6 +248,7 @@ export type CombinedSourceInfo = {
 }
 export type VesselCombinedSourcesInfo = {
   atomicClassSc?: CombinedSourceInfo[]
+  atomicClassScoreSc?: CombinedSourceInfo[]
   bestEnginePowerKw?: CombinedSourceInfo[]
   bestLengthM?: CombinedSourceInfo[]
   bestTonnageGt?: CombinedSourceInfo[]
@@ -262,8 +263,6 @@ export type VesselCombinedSourcesInfo = {
   prodGeartypeSource?: CombinedSourceInfo[]
   shiptypes: CombinedSourceInfo[]
   vesselClassSc?: CombinedSourceInfo[]
-  vesselClassScore?: CombinedSourceInfo[]
-  vesselClassSourceAgreement?: CombinedSourceInfo[]
   vesselId: string
 }
 
