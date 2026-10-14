@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import type { SelfReportedInfo } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import GFWOnly from 'features/_user/GFWOnly'
