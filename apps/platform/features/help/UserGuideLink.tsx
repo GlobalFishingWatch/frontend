@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'

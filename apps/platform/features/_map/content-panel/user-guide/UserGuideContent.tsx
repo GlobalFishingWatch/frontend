@@ -6,10 +6,10 @@ import { useGetUserGuideQuery } from 'queries/map/user-guide-api'
 import { Button, Icon, IconButton, InputText, Spinner } from '@globalfishingwatch/ui-components'
 
 import ContentHeader from 'features/_map/content-panel/ContentHeader'
-import ContentMarkdown from 'features/_map/content-panel/ContentMarkdown'
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import EmptyContent from 'features/_map/content-panel/EmptyContent'
-import TableOfContents from 'features/_map/content-panel/user-guide/TableOfContents'
+import ContentMarkdown from 'features/help/markdown/ContentMarkdown'
+import TableOfContents from 'features/help/TableOfContents'
 import { toContentLocale } from 'features/i18n/i18n.config'
 import type { SidePanelState } from 'types'
 

@@ -1,10 +1,14 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type { VesselGroup } from '@globalfishingwatch/api-types'
-import { Button, Icon, IconButton, InputText, Spinner } from '@globalfishingwatch/ui-components'
+import { Button } from '@globalfishingwatch/ui-components/button'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { InputText } from '@globalfishingwatch/ui-components/input-text'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 
 import {
   selectDatasetsStatus,
@@ -13,9 +17,10 @@ import {
 } from 'features/_map/datasets/datasets.slice'
 import { useEditVesselGroupModal } from 'features/_reports/report-vessel-group/vessel-group-report.hooks'
 import VesselGroupReportLink from 'features/_reports/report-vessel-group/VesselGroupReportLink'
-import { selectUserVesselGroups } from 'features/_user/vessel-groups/vessel-groups.selectors'
 import {
   deleteVesselGroupThunk,
+  fetchVesselGroupsThunk,
+  selectUserVesselGroups,
   selectVesselGroupsStatus,
   selectVesselGroupsStatusId,
 } from 'features/_user/vessel-groups/vessel-groups.slice'
@@ -54,6 +59,10 @@ function UserVesselGroups() {
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const deletedDatasets = useSelector(selectDeletedDatasets)
   const { loadingGroupId, migrateToLatestVesselGroup } = useMigrateToLatestVesselGroup()
+
+  useEffect(() => {
+    dispatch(fetchVesselGroupsThunk())
+  }, [dispatch])
 
   const onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)

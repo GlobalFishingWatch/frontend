@@ -12,7 +12,7 @@ import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { selectReportComparisonDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveReportDataviews } from 'features/_map/dataviews/selectors/dataviews.selectors'
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import { selectMigramarLayer } from 'features/_map/workspace/workspace.selectors'
 import { isPolygonsDataviewReportSupported } from 'features/_reports/report-area/area-reports.utils'
 import { REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON } from 'features/_reports/reports.config'

@@ -6,7 +6,7 @@ import { DateTime } from 'luxon'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 
 import { AVAILABLE_END, AVAILABLE_START } from 'data/map/config'
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import { useFitAreaInViewport } from 'features/_reports/report-area/area-reports.hooks'
 import {
   selectReportActivityGraph,

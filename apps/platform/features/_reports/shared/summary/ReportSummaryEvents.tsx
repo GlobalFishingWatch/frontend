@@ -9,7 +9,7 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 
 import { selectActiveReportDataviews } from 'features/_map/dataviews/selectors/dataviews.selectors'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
-import { selectReportAreaId } from 'features/_reports/reports.selectors'
+import { selectReportAreaId } from 'features/_reports/reports.current.selectors'
 import ReportSummaryPlaceholder from 'features/_reports/shared/placeholders/ReportSummaryPlaceholder'
 import { selectReportVesselsFlags } from 'features/_reports/shared/vessels/report-vessels.selectors'
 import {
