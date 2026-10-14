@@ -199,8 +199,13 @@ export default defineConfig(({ command, mode }) => {
               codeSplitting: {
                 groups: [
                   {
-                    name: 'icons-bundle',
-                    test: /[\\/](libs[\\/]timebar[\\/]src|apps[\\/]platform[\\/]assets)[\\/]icons[\\/]/,
+                    name: 'platform-icons',
+                    test: /[\\/]apps[\\/]platform[\\/]assets[\\/]icons[\\/]/,
+                    priority: 3,
+                  },
+                  {
+                    name: 'ui-components-icons',
+                    test: /[\\/]libs[\\/]ui-components[\\/]dist[\\/]icon[\\/]icons[\\/]/,
                     priority: 3,
                   },
                   {
