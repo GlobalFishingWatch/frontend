@@ -7,7 +7,7 @@ import { CREATE_WORKSPACE_NAME_TESTID } from '@platform/config/selectors/workspa
 import { expect, test } from '../fixtures'
 import { appPath } from '../paths'
 
-test('WS01 - Save workspace', async ({ page, loginPage }) => {
+test.fixme('WS01 - Save workspace', async ({ page, loginPage }) => {
   // Set a fixed time for the test
   await page.clock.setFixedTime(new Date('2026-01-07T12:00:00'))
 

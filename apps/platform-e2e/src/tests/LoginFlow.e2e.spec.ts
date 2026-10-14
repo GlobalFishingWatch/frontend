@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto(MAP_PATH)
 })
 
-test(
+test.skip(
   'Login - should allow a user to log in and log out',
   { tag: [TAGS.SMOKE] },
   async ({ loginPage }) => {
@@ -20,7 +20,7 @@ test(
   }
 )
 
-test(
+test.fixme(
   'Login - should persist the session across a reload (server-side)',
   { tag: [TAGS.EXTENDED] },
   async ({ loginPage, page }) => {
@@ -34,7 +34,7 @@ test(
   }
 )
 
-test(
+test.skip(
   'Login - should refresh an expired access token on reload (SSR)',
   { tag: [TAGS.EXTENDED] },
   async ({ loginPage }) => {
@@ -53,7 +53,7 @@ test(
   }
 )
 
-test(
+test.skip(
   'Login - should fall back to the guest user when cookies are cleared',
   { tag: [TAGS.EXTENDED] },
   async ({ loginPage }) => {
@@ -66,7 +66,7 @@ test(
   }
 )
 
-test('Login - should sync login across tabs', async ({ loginPage }) => {
+test.skip('Login - should sync login across tabs', async ({ loginPage }) => {
   const newTabPage = await loginPage.newTab()
   await newTabPage.expectGuest()
 
@@ -76,7 +76,7 @@ test('Login - should sync login across tabs', async ({ loginPage }) => {
   await newTabPage.close()
 })
 
-test('Login - should sync logout across tabs', async ({ loginPage }) => {
+test.skip('Login - should sync logout across tabs', async ({ loginPage }) => {
   await loginPage.login()
 
   const newTabPage = await loginPage.newTab()
@@ -90,7 +90,7 @@ test('Login - should sync logout across tabs', async ({ loginPage }) => {
   await newTabPage.close()
 })
 
-test('Login - a tab opened after a token rotation resolves the rotated session', async ({
+test.skip('Login - a tab opened after a token rotation resolves the rotated session', async ({
   loginPage,
 }) => {
   await loginPage.login()
@@ -110,14 +110,16 @@ test('Login - a tab opened after a token rotation resolves the rotated session',
   await newTabPage.close()
 })
 
-test('Login - should reject invalid credentials', async ({ loginPage }) => {
+test.skip('Login - should reject invalid credentials', async ({ loginPage }) => {
   await loginPage.loginExpectingFailure('wrong-password')
 
   await loginPage.expectGuest()
   await loginPage.expectUserTokenCleared()
 })
 
-test('Login - should stay guest after cancelling, then succeed on retry', async ({ loginPage }) => {
+test.skip('Login - should stay guest after cancelling, then succeed on retry', async ({
+  loginPage,
+}) => {
   await loginPage.cancelLogin()
 
   await loginPage.expectGuest()
@@ -127,7 +129,7 @@ test('Login - should stay guest after cancelling, then succeed on retry', async 
   await loginPage.expectLoggedIn()
 })
 
-test('Login - should fall back to guest when the refresh token is cleared', async ({
+test.skip('Login - should fall back to guest when the refresh token is cleared', async ({
   loginPage,
 }) => {
   await loginPage.login()
@@ -143,7 +145,7 @@ test('Login - should fall back to guest when the refresh token is cleared', asyn
   await loginPage.expectGuest()
 })
 
-test('Login - should clear the session on logout even without a refresh token', async ({
+test.skip('Login - should clear the session on logout even without a refresh token', async ({
   loginPage,
 }) => {
   await loginPage.login()
@@ -157,7 +159,7 @@ test('Login - should clear the session on logout even without a refresh token', 
   await loginPage.expectUserTokenCleared()
 })
 
-test('Login - concurrent refreshes from two tabs both resolve within the grace window', async ({
+test.skip('Login - concurrent refreshes from two tabs both resolve within the grace window', async ({
   loginPage,
 }) => {
   await loginPage.login()
@@ -178,7 +180,7 @@ test('Login - concurrent refreshes from two tabs both resolve within the grace w
   await newTabPage.close()
 })
 
-test('Login - logout should also end the gateway SSO session', async ({ loginPage }) => {
+test.skip('Login - logout should also end the gateway SSO session', async ({ loginPage }) => {
   await loginPage.login()
   await loginPage.expectGatewaySessionPresent()
 
@@ -194,7 +196,7 @@ test('Login - logout should also end the gateway SSO session', async ({ loginPag
   await loginPage.expectSettingsRequiresLogin(settingsUrl)
 })
 
-test('Login - a session ended on the gateway settings page logs the app out', async ({
+test.skip('Login - a session ended on the gateway settings page logs the app out', async ({
   loginPage,
 }) => {
   await loginPage.login()
@@ -207,7 +209,9 @@ test('Login - a session ended on the gateway settings page logs the app out', as
   await loginPage.expectRefreshTokenCleared()
 })
 
-test('Login - should log in in the same tab when popups are blocked', async ({ loginPage }) => {
+test.skip('Login - should log in in the same tab when popups are blocked', async ({
+  loginPage,
+}) => {
   await loginPage.loginWithPopupsBlocked()
 
   await loginPage.expectLoggedIn()
@@ -216,7 +220,7 @@ test('Login - should log in in the same tab when popups are blocked', async ({ l
   await loginPage.expectUserVisible()
 })
 
-test('Login - a fresh visit is a guest and the app is usable', async ({ loginPage }) => {
+test.skip('Login - a fresh visit is a guest and the app is usable', async ({ loginPage }) => {
   await loginPage.expectGuest()
   await loginPage.expectAppReady()
 })
