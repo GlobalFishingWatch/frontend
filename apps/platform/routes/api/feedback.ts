@@ -8,7 +8,7 @@ const FEEDBACK_SHEET_TITLE = 'new feedback'
 const ERRORS_SHEET_TITLE = 'errors'
 const CORRECTIONS_SHEET_TITLE = 'vessels corrections'
 
-export type FeedbackDataType = 'feedback' | 'error' | 'corrections'
+export type FeedbackDataType = 'feedback' | 'error' | 'corrections' | 'detections'
 export type FeedbackForm = {
   type: FeedbackDataType
   data: {
@@ -25,6 +25,8 @@ export type FeedbackForm = {
     feedbackType?: string
     issue?: string
     description?: string
+    datasetId?: string
+    detectionId?: string
   }
 }
 
