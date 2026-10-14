@@ -204,20 +204,22 @@ export default defineConfig(({ command, mode }) => {
                     priority: 3,
                   },
                   {
-                    name: 'vendor-redux',
-                    test: /[\\/]node_modules[\\/](@reduxjs|redux|react-redux|immer|reselect)[\\/]/,
+                    name: 'vendor-core',
+                    test: /[\\/]node_modules[\\/](react|react-dom|@sentry|zod|@tanstack[\\/](react-router|react-start[a-z-]*|zod-adapter)|luxon|i18next|i18next-http-backend|i18next-browser-languagedetector|react-i18next|qs|jotai|usehooks-ts|classnames)[\\/]/,
                     priority: 2,
                   },
                   {
-                    name: 'vendor-es-toolkit',
-                    test: /[\\/]node_modules[\\/]es-toolkit[\\/]/,
+                    name: 'vendor-redux-es-toolkit',
+                    test: /[\\/]node_modules[\\/](@reduxjs|redux|react-redux|immer|reselect|es-toolkit)[\\/]/,
                     priority: 2,
                   },
                   { name: 'vendor-jsts', test: /[\\/]node_modules[\\/]jsts[\\/]/, priority: 2 },
-                  // Keeps library code out of app chunks. Without it Rolldown co-locates a library
-                  // module with an app module that shares its importers, and every other consumer
-                  // of that library module then downloads the app chunk and its imports too: /areas
-                  // fetched the report selectors this way. entriesAware still splits by importer.
+                  {
+                    name: 'vendor-heavy',
+                    test: /[\\/](node_modules[\\/](@deck\.gl|@luma\.gl|@loaders\.gl|@turf|@strapi|simple-statistics|match-sorter|recharts|d3-[a-z-]+|topojson-client)|libs[\\/](deck-layers|deck-layer-composer|deck-loaders|timebar))[\\/]/,
+                    priority: 1,
+                    entriesAware: true,
+                  },
                   {
                     name: 'vendor',
                     test: /[\\/](node_modules|libs)[\\/]/,
