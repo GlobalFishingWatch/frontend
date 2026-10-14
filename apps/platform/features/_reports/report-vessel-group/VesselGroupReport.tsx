@@ -9,7 +9,7 @@ import { Tabs } from '@globalfishingwatch/ui-components'
 import { selectDeprecatedDatasets } from 'features/_map/datasets/datasets.slice'
 import { hasVesselGroupDatasetsDeprecated } from 'features/_map/dataviews/dataviews.utils'
 import { selectVGRFootprintDataview } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
-import { useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
+import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
 import {
   useTimebarVesselGroupConnect,
   useTimebarVisualisationConnect,

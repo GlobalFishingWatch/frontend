@@ -55,7 +55,8 @@ export const logoutUserThunk = createAsyncThunk(
       }
       // Workspace cleanup happens in workspace.slice's extraReducers, reacting to this thunk.
       // Dispatching workspace actions from here made user.slice import workspace.slice, which put
-      // deck.gl and the timebar in the entry chunk of every page — see scripts/check-store-graph.mjs.
+      // deck.gl and the timebar in the entry chunk of every page.
+      // See apps/platform/scripts/load-boundaries.
     } catch (e: any) {
       console.warn(e)
     }

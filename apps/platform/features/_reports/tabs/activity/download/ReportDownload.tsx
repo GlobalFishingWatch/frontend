@@ -4,10 +4,8 @@ import { useSelector } from 'react-redux'
 import { Button } from '@globalfishingwatch/ui-components'
 
 import { setDownloadActivityAreaKey } from 'features/_map/download/downloadActivity.slice'
-import {
-  selectReportAreaIds,
-  selectReportAreaName,
-} from 'features/_reports/report-area/area-reports.selectors'
+import { selectReportAreaName } from 'features/_reports/report-area/area-reports.selectors'
+import { selectReportAreaIds } from 'features/_reports/reports.current.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 

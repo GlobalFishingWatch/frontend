@@ -9,22 +9,15 @@ import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
 } from '@globalfishingwatch/datasets-client'
-import type { ChoiceOption } from '@globalfishingwatch/ui-components'
-import {
-  Button,
-  Choice,
-  Icon,
-  IconButton,
-  InputText,
-  Spinner,
-} from '@globalfishingwatch/ui-components'
+import { Button } from '@globalfishingwatch/ui-components/button'
+import type { ChoiceOption } from '@globalfishingwatch/ui-components/choice'
+import { Choice } from '@globalfishingwatch/ui-components/choice'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { InputText } from '@globalfishingwatch/ui-components/input-text'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
-import {
-  getDataviewInstanceByDataset,
-  useDatasetModalConfigConnect,
-  useDatasetModalOpenConnect,
-} from 'features/_map/datasets/datasets.hook'
 import {
   deleteDatasetThunk,
   fetchAllDatasetsThunk,
@@ -41,6 +34,10 @@ import InfoError from 'features/_map/workspace/shared/InfoError'
 import { selectLastVisitedWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { selectUserDatasets } from 'features/_user/selectors/user.permissions.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  useDatasetModalConfigConnect,
+  useDatasetModalOpenConnect,
+} from 'features/modals/modals.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getTimeAgo, getUTCDateTime, sortByCreationDate } from 'utils/dates'
 import { getHighlightedText } from 'utils/text'
@@ -121,7 +118,9 @@ function UserDatasets() {
   }, [dispatchDatasetModalOpen])
 
   const onDatasetClick = useCallback(
-    (dataset: Dataset) => {
+    async (dataset: Dataset) => {
+      // Lazy: datasets.hook pulls deck-layers and the workspace hooks, which /user does not need.
+      const { getDataviewInstanceByDataset } = await import('features/_map/datasets/datasets.hook')
       const dataviewInstanceWithDataset = getDataviewInstanceByDataset(dataset)
       if (!dataviewInstanceWithDataset) {
         return

@@ -11,7 +11,7 @@ import {
   selectAllOthersReportDataviewsAreReportArea,
   selectOthersActiveReportDataviewsGrouped,
 } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import ErrorPlaceholder from 'features/_map/workspace/ErrorPlaceholder'
 import { isPolygonsDataviewReportSupported } from 'features/_reports/report-area/area-reports.utils'
 import { isUserHeatmapDataviewReportSupported } from 'features/_reports/report-dataview-category.utils'

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { useRouter } from '@tanstack/react-router'
 
 import { getGuestUser, GFWAPI } from '@globalfishingwatch/api-client'
-import { Button } from '@globalfishingwatch/ui-components'
+import { Button } from '@globalfishingwatch/ui-components/button'
 import { DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 import { ROUTE_PATHS } from '@platform/config/routes'
 

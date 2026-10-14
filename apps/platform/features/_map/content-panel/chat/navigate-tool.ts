@@ -8,9 +8,9 @@ import type { RoutePathValues } from '@platform/config/routes'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { withSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
-import { useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
-import { timerangeState } from 'features/_map/timebar/timebar.hooks'
+import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
 import { setHasChangedSettings } from 'features/_map/timebar/timebar.slice'
+import { timerangeState } from 'features/_map/timebar/timerange.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import type { QueryParams } from 'types'
 

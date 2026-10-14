@@ -21,9 +21,9 @@ import {
   useMapMouseHover,
 } from 'features/_map/map/map-interactions.hooks'
 import { useMapLayers } from 'features/_map/map/map-layers.hooks'
+import { useMapSetViewState } from 'features/_map/map/map-view-state.hooks'
 import {
   MAP_VIEW,
-  useMapSetViewState,
   useMapViewState,
   useMapViewStateUrlSync,
 } from 'features/_map/map/map-viewport.hooks'

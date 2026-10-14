@@ -2,8 +2,8 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import type { IconProps } from '@globalfishingwatch/ui-components/icon'
-import { Icon } from '@globalfishingwatch/ui-components/icon'
+import type { IconLogoProps } from '@globalfishingwatch/ui-components/icon-logo'
+import { IconLogo } from '@globalfishingwatch/ui-components/icon-logo'
 
 import { selectIsGFWUser, selectIsJACUser } from 'features/_user/selectors/user.selectors'
 
@@ -11,16 +11,15 @@ import styles from './GFWOnly.module.css'
 
 type GFWOnlyProps = {
   type?: 'default' | 'only-icon'
-  style?: IconProps['style']
+  style?: IconLogoProps['style']
   className?: string
   userGroup?: 'gfw' | 'jac' | 'any'
   children?: React.ReactNode
 }
 
-const defaultIconProps: IconProps = {
+const defaultIconProps: IconLogoProps = {
   style: { transform: 'translateY(25%)' },
-  icon: 'gfw-logo',
-  type: 'original-colors',
+  icon: 'gfw',
 }
 
 function GFWOnly(props: GFWOnlyProps) {
@@ -52,7 +51,7 @@ function GFWOnly(props: GFWOnlyProps) {
     return userGroup === 'jac' ? (
       <span title={content as string}>🔓</span>
     ) : (
-      <Icon
+      <IconLogo
         {...defaultIconProps}
         style={{ ...defaultIconProps.style, ...style }}
         className={className}
@@ -62,7 +61,7 @@ function GFWOnly(props: GFWOnlyProps) {
   }
   return (
     <span className={cx(styles.GFWOnly, className)}>
-      {userGroup === 'jac' ? `🔓` : <Icon {...defaultIconProps} />}
+      {userGroup === 'jac' ? `🔓` : <IconLogo {...defaultIconProps} />}
       {content}
     </span>
   )
