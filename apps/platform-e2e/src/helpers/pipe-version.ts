@@ -1,9 +1,8 @@
 import type { BrowserContext, Request } from 'playwright/test'
 
-const API_HOST = 'gateway.api.'
 const PIPE_4_DATASET = /\b[a-z0-9-]+:v4\.\d+\b/g
 
-function getRequestText(request: Request) {
+export function getRequestUrlAndBody(request: Request) {
   const raw = `${request.url()} ${request.postData() ?? ''}`
   try {
     return decodeURIComponent(raw)
@@ -16,8 +15,8 @@ function getRequestText(request: Request) {
 export function trackPipe4Requests(context: BrowserContext) {
   const pipe4Requests = new Map<string, string>()
   context.on('request', (request) => {
-    if (!request.url().includes(API_HOST)) return
-    for (const dataset of getRequestText(request).match(PIPE_4_DATASET) ?? []) {
+    if (!request.url().includes('gateway.api.')) return
+    for (const dataset of getRequestUrlAndBody(request).match(PIPE_4_DATASET) ?? []) {
       if (!pipe4Requests.has(dataset)) pipe4Requests.set(dataset, request.url())
     }
   })
