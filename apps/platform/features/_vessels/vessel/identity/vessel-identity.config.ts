@@ -10,14 +10,7 @@ export type VesselRenderField<Key = string> = {
   renderPlain?: boolean
 }
 
-export const AIS_SELF_REPORTED_SHIPTYPE = 'onFishingListSr'
-
-const AIS_BASE_FIELDS: VesselRenderField[] = [
-  { key: 'shipname' },
-  { key: AIS_SELF_REPORTED_SHIPTYPE, label: 'vesselType' },
-  { key: 'flag' },
-]
-export const OTHER_BASE_FIELDS: VesselRenderField[] = [{ key: 'shipname' }, { key: 'flag' }]
+export const BASE_FIELDS: VesselRenderField[] = [{ key: 'shipname' }, { key: 'flag' }]
 
 const IDENTIFIER_FIELDS: VesselRenderField[] = [
   { key: 'ssvid', label: 'mmsi' },
@@ -58,7 +51,7 @@ export const GFW_PREDICTION_FIELDS: VesselRenderField[][] = [
 ]
 
 export const REGISTRY_FIELDS: VesselRenderField[][] = [
-  OTHER_BASE_FIELDS,
+  BASE_FIELDS,
   [VESSEL_GEARTYPES_FIELD, { key: 'builtYear' }],
   IDENTIFIER_FIELDS,
   VESSEL_FISICAL_FEATURES_FIELDS,
@@ -160,7 +153,7 @@ export const AIS_IDENTITY_LAYOUT: IdentitySection[] = [
     key: 'selfReportedByVessel',
     sectionLabel: 'selfReportedByVessel',
     terminologyKey: 'selfReported',
-    fields: [AIS_BASE_FIELDS, IDENTIFIER_FIELDS],
+    fields: [BASE_FIELDS, IDENTIFIER_FIELDS],
   },
   {
     type: 'fields',
@@ -175,10 +168,6 @@ export const VMS_BASE_IDENTITY_LAYOUT: IdentitySection[] = [
   {
     type: 'fields',
     key: 'selfReportedVMS',
-    fields: [
-      OTHER_BASE_FIELDS,
-      IDENTIFIER_FIELDS,
-      [VESSEL_SHIPTYPES_FIELD, VESSEL_GEARTYPES_FIELD],
-    ],
+    fields: [BASE_FIELDS, IDENTIFIER_FIELDS, [VESSEL_SHIPTYPES_FIELD, VESSEL_GEARTYPES_FIELD]],
   },
 ]
