@@ -2,14 +2,16 @@ import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
-import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getFlattenDatasetFilters } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
 
 import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
-import { dataviewHasUserTimeRange } from 'features/_map/dataviews/dataviews.utils'
+import {
+  dataviewHasUserTimeRange,
+  getContextDataviewDataset,
+} from 'features/_map/dataviews/dataviews.utils'
 import { showSchemaFilter } from 'features/_map/workspace/shared/LayerSchemaFilter.utils'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import type { ReportGraphProps } from 'features/_reports/reports-timeseries.hooks'
@@ -50,9 +52,7 @@ function ReportPointsGraph({
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const tags = dataviews ?? [dataview]
 
-  const dataset = dataview.datasets?.find(
-    (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
-  )
+  const dataset = getContextDataviewDataset(dataview)
   const title = dataset?.name
   const unit =
     dataset?.unit && dataset.unit !== 'TBD' && dataset.unit !== 'NA' ? dataset.unit : undefined

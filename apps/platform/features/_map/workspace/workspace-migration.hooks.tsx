@@ -8,6 +8,7 @@ import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { LEGACY_DATASETS_TO_LATEST_VMS } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { selectDeprecatedDatasets } from 'features/_map/datasets/datasets.slice'
 import {
@@ -18,7 +19,6 @@ import { selectDeprecatedDataviewInstances } from 'features/_map/dataviews/selec
 import { selectWorkspaceWithCurrentState } from 'features/_map/workspace/selectors/app.workspace.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectLocationCategory } from 'router/routes.selectors'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import { htmlSafeParse } from 'utils/html-parser'
 
 import { mergeDataviewIntancesToUpsert } from './workspace.hook'

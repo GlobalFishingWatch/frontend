@@ -11,9 +11,11 @@ import {
 } from '@globalfishingwatch/datasets-client'
 import { Button } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_CATEGORY } from '@platform/config/map/workspaces'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { getVesselDataviewInstance } from 'features/_map/dataviews/dataviews.utils'
 import { selectVesselTemplateDataviews } from 'features/_map/dataviews/selectors/dataviews.static.selectors'
+import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import {
   selectCurrentWorkspaceId,
@@ -29,7 +31,6 @@ import { getRelatedIdentityVesselIds } from 'features/_vessels/vessel/vessel.uti
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import { TimebarVisualisations } from 'types'
 
 import { selectSearchOption } from './search.config.selectors'
@@ -48,6 +49,7 @@ function SearchActions() {
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
   const vesselsSelected = useSelector(selectSelectedVessels)
   const activeSearchOption = useSelector(selectSearchOption)
+  const readOnly = useSelector(selectReadOnly)
 
   const onSeeVesselsInMapClick = () => {
     const instances = vesselsSelected.flatMap((vessel) => {
@@ -115,13 +117,17 @@ function SearchActions() {
 
   return (
     <Fragment>
-      <VesselGroupAddButton
-        vessels={vesselsSelected}
-        onAddToVesselGroup={onAddToVesselGroup}
-        keepOpenWhileAdding
-      >
-        <VesselGroupAddActionButton className={cx(styles.footerAction, styles.vesselGroupButton)} />
-      </VesselGroupAddButton>
+      {!readOnly && (
+        <VesselGroupAddButton
+          vessels={vesselsSelected}
+          onAddToVesselGroup={onAddToVesselGroup}
+          keepOpenWhileAdding
+        >
+          <VesselGroupAddActionButton
+            className={cx(styles.footerAction, styles.vesselGroupButton)}
+          />
+        </VesselGroupAddButton>
+      )}
       <Button
         className={styles.footerAction}
         onClick={onSeeVesselsInMapClick}

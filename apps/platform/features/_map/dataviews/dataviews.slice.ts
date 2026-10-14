@@ -154,11 +154,14 @@ const { slice: dataviewsSlice, entityAdapter } = createAsyncSlice<DataviewsState
     addDataviewEntity: (state, action: PayloadAction<Dataview>) => {
       entityAdapter.addOne(state, action.payload)
     },
+    upsertDataviews: (state, action: PayloadAction<Dataview[]>) => {
+      entityAdapter.upsertMany(state, action.payload)
+    },
   },
   selectId: (dataview) => dataview.slug || dataview.id,
 })
 
-export const { addDataviewEntity } = dataviewsSlice.actions
+export const { addDataviewEntity, upsertDataviews } = dataviewsSlice.actions
 export const {
   selectAll: selectAllDataviews,
   selectById,

@@ -43,6 +43,7 @@ import {
   interactionPromisesAtom,
   useCancelInteractionPromises,
 } from 'features/_map/map/map-interactions.atoms'
+import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
 import { useMapAnnotation } from 'features/_map/map/overlays/annotations/annotations.hooks'
 import { useMapErrorNotification } from 'features/_map/map/overlays/error-notification/error-notification.hooks'
 import { overlaysCursorAtom } from 'features/_map/map/overlays/overlays-hooks'
@@ -82,7 +83,7 @@ import {
   isTilesClusterLayerCluster,
   isTrackSegment,
 } from './map-interaction.utils'
-import { useMapViewport, useSetMapCoordinates } from './map-viewport.hooks'
+import { useMapViewport } from './map-viewport.hooks'
 
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
   DataviewCategory.Activity,
@@ -350,7 +351,7 @@ export const useClickedEventConnect = () => {
         }
       }
 
-      if (!event || !event.features) {
+      if (!event?.features?.length) {
         if (clickedEvent) {
           dispatch(setClickedEvent(null))
           replaceQueryParams({ clickedCoordinates: undefined })
@@ -522,6 +523,7 @@ export const useRefreshClickedEvent = () => {
   const mapViewport = useMapViewport()
   const getPickingInteraction = useGetPickingInteraction()
   const cancelPendingInteractionRequests = useCancelInteractionPromises()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const {
     handleHeatmapInteraction,
     handleDetectionPositionsInteraction,
@@ -538,6 +540,11 @@ export const useRefreshClickedEvent = () => {
       }
       if (!visible) {
         dispatch(removeClickedEventDataview(dataviewId))
+        // the popup hides once its last feature is gone, so drop the clicked point with it
+        if (!selectClickedEvent(reduxStore.getState() as RootState)?.features?.length) {
+          dispatch(setClickedEvent(null))
+          replaceQueryParams({ clickedCoordinates: undefined })
+        }
         return
       }
 
@@ -591,6 +598,7 @@ export const useRefreshClickedEvent = () => {
       handleTileClusterInteraction,
       mapViewport,
       reduxStore,
+      replaceQueryParams,
       store,
     ]
   )

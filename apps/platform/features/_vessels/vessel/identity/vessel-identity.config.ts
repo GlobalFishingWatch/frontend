@@ -1,7 +1,7 @@
 import { SelfReportedSource } from '@globalfishingwatch/api-types'
-import { DATASET_PRIVATE_PREFIX } from '@globalfishingwatch/datasets-client/constants'
+import type { DATASET_PRIVATE_PREFIX } from '@globalfishingwatch/datasets-client/constants'
 
-import type { DataTerminologySlugs } from 'features/cms/loaders/data-terminology.types'
+import type { DataTerminologySlugs } from 'features/cms/data-terminology.types'
 
 export type VesselRenderField<Key = string> = {
   key: Key
@@ -10,14 +10,7 @@ export type VesselRenderField<Key = string> = {
   renderPlain?: boolean
 }
 
-export const AIS_SELF_REPORTED_SHIPTYPE = 'onFishingListSr'
-
-const AIS_BASE_FIELDS: VesselRenderField[] = [
-  { key: 'shipname' },
-  { key: AIS_SELF_REPORTED_SHIPTYPE, label: 'vesselType' },
-  { key: 'flag' },
-]
-export const OTHER_BASE_FIELDS: VesselRenderField[] = [{ key: 'shipname' }, { key: 'flag' }]
+export const BASE_FIELDS: VesselRenderField[] = [{ key: 'shipname' }, { key: 'flag' }]
 
 const IDENTIFIER_FIELDS: VesselRenderField[] = [
   { key: 'ssvid', label: 'mmsi' },
@@ -41,6 +34,11 @@ const VESSEL_GEARTYPES_FIELD: VesselRenderField = {
   terminologyKey: 'geartype',
 }
 
+const GFW_PREDICTION_GEARTYPES_FIELD: VesselRenderField = {
+  ...VESSEL_GEARTYPES_FIELD,
+  terminologyKey: 'gearTypePredictions',
+}
+
 export const COMBINED_SOURCE_VALUE_FIELDS = [
   'bestLengthM',
   'bestTonnageGt',
@@ -49,7 +47,11 @@ export const COMBINED_SOURCE_VALUE_FIELDS = [
 ] as const
 
 export const GFW_PREDICTION_FIELDS: VesselRenderField[][] = [
-  [VESSEL_SHIPTYPES_FIELD, VESSEL_GEARTYPES_FIELD, { key: 'bestLengthM', label: 'lengthM' }],
+  [
+    VESSEL_SHIPTYPES_FIELD,
+    GFW_PREDICTION_GEARTYPES_FIELD,
+    { key: 'bestLengthM', label: 'lengthM' },
+  ],
   [
     { key: 'bestTonnageGt', label: 'grossTonnage' },
     { key: 'bestEnginePowerKw', label: 'enginePowerKw' },
@@ -58,7 +60,7 @@ export const GFW_PREDICTION_FIELDS: VesselRenderField[][] = [
 ]
 
 export const REGISTRY_FIELDS: VesselRenderField[][] = [
-  OTHER_BASE_FIELDS,
+  BASE_FIELDS,
   [VESSEL_GEARTYPES_FIELD, { key: 'builtYear' }],
   IDENTIFIER_FIELDS,
   VESSEL_FISICAL_FEATURES_FIELDS,
@@ -111,13 +113,6 @@ export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
   ],
   [SelfReportedSource.CostaRica]: [[{ key: 'externalId' }]],
   [SelfReportedSource.Brazil]: [
-    [{ key: 'fishingZone' }, { key: 'mainGear' }, { key: 'targetSpecies' }],
-    [{ key: 'externalId' }],
-  ],
-  [SelfReportedSource.Montenegro]: [[{ key: 'length' }]],
-  [SelfReportedSource.Chile]: [[{ key: 'sourceFleet' }]],
-  [SelfReportedSource.Panama]: [[{ key: 'sourceFleet' }]],
-  [`${SelfReportedSource.Brazil}-${DATASET_PRIVATE_PREFIX}`]: [
     [{ key: 'vesselRegistrationCode' }, { key: 'fleetCode', terminologyKey: 'fleetCode' }],
     [
       { key: 'fishingLicenseCode' },
@@ -127,6 +122,9 @@ export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
     [{ key: 'builtYear' }, { key: 'length' }],
     [{ key: 'grossTonnage' }, { key: 'horsePower' }],
   ],
+  [SelfReportedSource.Montenegro]: [[{ key: 'length' }]],
+  [SelfReportedSource.Chile]: [[{ key: 'sourceFleet' }]],
+  [SelfReportedSource.Panama]: [[{ key: 'sourceFleet' }]],
 }
 
 export const REGISTRY_SOURCES = [
@@ -164,12 +162,13 @@ export const AIS_IDENTITY_LAYOUT: IdentitySection[] = [
     key: 'selfReportedByVessel',
     sectionLabel: 'selfReportedByVessel',
     terminologyKey: 'selfReported',
-    fields: [AIS_BASE_FIELDS, IDENTIFIER_FIELDS],
+    fields: [BASE_FIELDS, IDENTIFIER_FIELDS],
   },
   {
     type: 'fields',
     key: 'gfwPredictions',
     sectionLabel: 'gfwPredictions',
+    terminologyKey: 'gfwPredictions',
     fields: GFW_PREDICTION_FIELDS,
   },
 ]
@@ -178,10 +177,6 @@ export const VMS_BASE_IDENTITY_LAYOUT: IdentitySection[] = [
   {
     type: 'fields',
     key: 'selfReportedVMS',
-    fields: [
-      OTHER_BASE_FIELDS,
-      IDENTIFIER_FIELDS,
-      [VESSEL_SHIPTYPES_FIELD, VESSEL_GEARTYPES_FIELD],
-    ],
+    fields: [BASE_FIELDS, IDENTIFIER_FIELDS, [VESSEL_SHIPTYPES_FIELD, VESSEL_GEARTYPES_FIELD]],
   },
 ]

@@ -6,6 +6,7 @@ import type { Dataview } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { OceanArea } from '@globalfishingwatch/ocean-areas'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { OCEAN_AREAS_DATAVIEWS } from 'data/map/dataviews'
 import { selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
@@ -13,7 +14,6 @@ import { getDataviewInstanceFromDataview } from 'features/_map/dataviews/datavie
 import { selectContextAreasDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { ReportCategory } from 'features/_reports/reports.types'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import type { QueryParams } from 'types'
 
 const mergeDataviewInstances = (

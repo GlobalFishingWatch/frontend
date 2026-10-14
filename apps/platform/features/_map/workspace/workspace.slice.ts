@@ -22,14 +22,22 @@ import {
 } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { parseLegacyDataviewInstanceConfig } from '@globalfishingwatch/dataviews-client'
-import { TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
-import { DEFAULT_WORKSPACE_ID, GAPS_EVENTS_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import {
+  getDataviewSlugForPipeVersion,
+  TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG,
+} from '@platform/config/map/dataviews'
+import {
+  DEFAULT_WORKSPACE_ID,
+  GAPS_EVENTS_WORKSPACE_ID,
+  getWorkspacePipeVersion,
+} from '@platform/config/map/workspaces'
 
 import type { VALID_PASSWORD } from 'data/map/config'
-import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX, WORKSPACE_HISTORY_NAVIGATION } from 'data/map/config'
+import { DEFAULT_TIME_RANGE, WORKSPACE_HISTORY_NAVIGATION } from 'data/map/config'
 import {
   DEFAULT_DATAVIEW_SLUGS,
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
+  VESSEL_TEMPLATE_DATAVIEW_SLUGS,
   VMS_VESSEL_DATAVIEW_SLUGS,
 } from 'data/map/dataviews'
 import { MARINE_MANAGER_WORKSPACES } from 'data/map/highlighted-workspaces/marine-manager'
@@ -68,7 +76,7 @@ import {
   selectWorkspaceReportId,
   selectWorkspaceStatus,
 } from './workspace.selectors'
-import { cleanReportQuery, parseUpsertWorkspace } from './workspace.utils'
+import { cleanReportQuery, getIsPrivateWorkspace, parseUpsertWorkspace } from './workspace.utils'
 
 /**
  * History navigation entry stored in TanStack Router format.
@@ -245,7 +253,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
                 } as Workspace<any>
               }
             }
-            if (workspace.id.includes(PRIVATE_SUFIX) && guestUser) {
+            if (getIsPrivateWorkspace(workspace) && guestUser) {
               return rejectWithValue({ error: { status: 401, message: 'Private workspace' } })
             }
           } else {
@@ -271,7 +279,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           workspaceId === DEFAULT_WORKSPACE_ID
         ) {
           workspace = await getDefaultWorkspace()
-          if (workspace.id.includes(PRIVATE_SUFIX) && guestUser) {
+          if (getIsPrivateWorkspace(workspace) && guestUser) {
             return rejectWithValue({ error: { status: 401, message: 'Private workspace' } })
           }
         }
@@ -301,10 +309,19 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         // Inject dataviews for gfw staff only
         dataviewIds.push(...ONLY_GFW_STAFF_DATAVIEW_SLUGS)
       }
+      const workspacePipeVersion = getWorkspacePipeVersion(workspaceId)
+      if (workspacePipeVersion) {
+        // Vessel templates matching the workspace pipe, see selectVesselTemplateDataviews
+        dataviewIds.push(
+          ...VESSEL_TEMPLATE_DATAVIEW_SLUGS.map((slug) =>
+            getDataviewSlugForPipeVersion(slug, workspacePipeVersion)
+          )
+        )
+      }
       if (privateUserGroupsWithDatasetPermission.length) {
         const vmsDataviewSlugs = privateUserGroupsWithDatasetPermission
-          .map((group) => VMS_VESSEL_DATAVIEW_SLUGS[group])
-          .filter(Boolean) as string[]
+          .flatMap((group) => VMS_VESSEL_DATAVIEW_SLUGS[group] || [])
+          .map((slug) => getDataviewSlugForPipeVersion(slug, workspacePipeVersion))
         if (vmsDataviewSlugs.length) {
           dataviewIds.push(...vmsDataviewSlugs)
         }
@@ -519,36 +536,36 @@ export const saveWorkspaceThunk = createAsyncThunk(
       password,
     } = properties
 
-    const saveWorkspace = async (tries = 0): Promise<Workspace<WorkspaceState> | undefined> => {
-      let workspaceUpdated
-      if (tries < 4) {
-        try {
-          const name = tries > 0 ? defaultName + `_${tries}` : defaultName
-          workspaceUpdated = await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces`, {
-            method: 'POST',
-            body: {
-              ...workspaceUpsert,
-              name,
-              description,
-              viewAccess,
-              editAccess,
-              password,
-              public: createAsPublic,
-              state: {
-                ...workspaceUpsert.state,
-                daysFromLatest,
-              },
+    const saveWorkspace = async (tries = 0): Promise<Workspace<WorkspaceState>> => {
+      if (tries >= 4) {
+        // Reject instead of resolving undefined, which callers read as a created workspace
+        throw new Error('Workspace name already in use')
+      }
+      try {
+        const name = tries > 0 ? defaultName + `_${tries}` : defaultName
+        return await GFWAPI.fetch<Workspace<WorkspaceState>>(`/workspaces`, {
+          method: 'POST',
+          body: {
+            ...workspaceUpsert,
+            name,
+            description,
+            viewAccess,
+            editAccess,
+            password,
+            public: createAsPublic,
+            state: {
+              ...workspaceUpsert.state,
+              daysFromLatest,
             },
-          } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
-        } catch (e: any) {
-          // Means we already have a workspace with this name
-          if (e.status === 422 && e.message.includes('duplicated')) {
-            return await saveWorkspace(tries + 1)
-          }
-          console.warn('Error creating workspace', e)
-          throw e
+          },
+        } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
+      } catch (e: any) {
+        // Means we already have a workspace with this name
+        if (e.status === 422 && e.message.includes('duplicated')) {
+          return await saveWorkspace(tries + 1)
         }
-        return workspaceUpdated
+        console.warn('Error creating workspace', e)
+        throw e
       }
     }
 
@@ -666,7 +683,8 @@ const workspaceSlice = createSlice({
   extraReducers: (builder) => {
     // Logout cleanup. Lives here rather than as actions dispatched from user.slice's logout thunk so
     // that user.slice (eagerly registered) does not import this slice, which drags deck.gl and the
-    // timebar into every page's entry chunk. Guarded by scripts/check-store-graph.mjs.
+    // timebar into every page's entry chunk.
+    // Guarded by apps/platform/scripts/load-boundaries.
     // The logout thunk also used to dispatch a staff-only-dataview filter, but it ran after the
     // workspace data was already cleared, so it was a no-op. Clearing is the whole behaviour.
     builder.addCase(logoutUserThunk.fulfilled, (state) => {

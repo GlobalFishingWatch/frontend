@@ -1,4 +1,4 @@
-import { ROUTE_PATHS } from 'router/routes.utils'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { USER_POLYGON_DATASET_ID } from '../fixtures'
 

@@ -3,10 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
-import { Button, IconButton, InputText, Modal } from '@globalfishingwatch/ui-components'
+import { Button, IconButton, InputText, Modal, Tooltip } from '@globalfishingwatch/ui-components'
 import {
   DEEP_SEA_MINING_WORKSPACE_ID,
   DEFAULT_WORKSPACE_ID,
+  LONGLINE_SETS_WORKSPACE_ID,
   WorkspaceCategory,
 } from '@platform/config/map/workspaces'
 
@@ -99,6 +100,16 @@ function WorkspaceTitle() {
                   onClick={() => setWorkspaceEditModalOpen(true)}
                 />
               )} */}
+              {workspace?.id === LONGLINE_SETS_WORKSPACE_ID && (
+                <Tooltip content={htmlSafeParse(workspace.description)}>
+                  <IconButton
+                    className={styles.subTitleBtn}
+                    icon="info"
+                    size="tiny"
+                    onClick={openDSMPopup}
+                  />
+                </Tooltip>
+              )}
             </h2>
             {workspace?.id === DEEP_SEA_MINING_WORKSPACE_ID && (
               <h3 className={styles.subTitle}>

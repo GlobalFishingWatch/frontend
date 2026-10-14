@@ -25,7 +25,6 @@ const PREFIX_ALIAS_DIRS = [
   'queries',
   'router',
   'routes',
-  'server-functions',
   'server',
   'test',
   'types',

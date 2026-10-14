@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Switch } from '@globalfishingwatch/ui-components'
 
+import { KEEP_MAP_POPUP_ATTRIBUTE } from 'features/_map/map/map.config'
 import { useRefreshClickedEvent } from 'features/_map/map/map-interactions.hooks'
 
 import { useDataviewInstancesConnect } from '../workspace.hook'
@@ -52,6 +53,7 @@ const LayerSwitch = ({
       className={className}
       testId={testId}
       color={color || dataview.config?.color}
+      {...{ [KEEP_MAP_POPUP_ATTRIBUTE]: true }}
     />
   )
 }

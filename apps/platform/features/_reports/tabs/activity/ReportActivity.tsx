@@ -25,6 +25,11 @@ import {
   selectWorkspaceStatus,
 } from 'features/_map/workspace/workspace.selectors'
 import WorkspaceLoginError from 'features/_map/workspace/WorkspaceLoginError'
+import {
+  selectReportBufferOperation,
+  selectReportBufferUnit,
+  selectReportBufferValue,
+} from 'features/_reports/report-area/area-reports.buffer.selectors'
 import type { LastReportStorage } from 'features/_reports/report-area/area-reports.config'
 import { LAST_REPORTS_STORAGE_KEY } from 'features/_reports/report-area/area-reports.config'
 import { useFetchReportVessel } from 'features/_reports/report-area/area-reports.hooks'
@@ -32,10 +37,12 @@ import { selectReportDataviewsWithPermissions } from 'features/_reports/report-a
 import { parseReportUrl } from 'features/_reports/report-area/area-reports.utils'
 import { selectReportActivityGraph } from 'features/_reports/reports.config.selectors'
 import {
-  selectActiveReportSubCategories,
   selectReportAreaId,
-  selectReportCategory,
   selectReportDatasetId,
+} from 'features/_reports/reports.current.selectors'
+import {
+  selectActiveReportSubCategories,
+  selectReportCategory,
 } from 'features/_reports/reports.selectors'
 import { ReportCategory } from 'features/_reports/reports.types'
 import ReportVesselsPlaceholder from 'features/_reports/shared/placeholders/ReportVesselsPlaceholder'
@@ -75,6 +82,9 @@ function ActivityReport() {
   const guestUser = useSelector(selectIsGuestUser)
   const datasetId = useSelector(selectReportDatasetId)
   const areaId = useSelector(selectReportAreaId)
+  const reportBufferUnit = useSelector(selectReportBufferUnit)
+  const reportBufferValue = useSelector(selectReportBufferValue)
+  const reportBufferOperation = useSelector(selectReportBufferOperation)
   const reportRequestHash = useSelector(selectReportRequestHash)
   const reportCategory = useSelector(selectReportCategory)
   const userData = useSelector(selectUserData)
@@ -107,6 +117,9 @@ function ActivityReport() {
         filters: (reportDataviews as any[]).map((d) => d.filter),
         dateRange: timerange,
         areaId,
+        reportBufferUnit,
+        reportBufferValue,
+        reportBufferOperation,
       })
   const hasAuthError = reportError && isAuthError(statusError)
 

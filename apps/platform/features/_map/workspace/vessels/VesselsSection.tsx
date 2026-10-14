@@ -12,6 +12,7 @@ import {
 } from '@globalfishingwatch/dataviews-client'
 import { IconButton, Switch } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { getDataviewsSources } from 'features/_map/datasets/datasets.utils'
 import { selectActiveVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
@@ -47,7 +48,6 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import type { ResourcesState } from 'features/data/resources/resources.slice'
 import { selectResources } from 'features/data/resources/resources.slice'
 import { useReplaceQueryParams } from 'router/routes.hook'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import Section from '../shared/Section'

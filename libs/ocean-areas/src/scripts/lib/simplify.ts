@@ -1,7 +1,8 @@
-import { bbox, bboxPolygon, simplify, truncate } from '@turf/turf'
+import { bboxPolygon, simplify, truncate } from '@turf/turf'
 import type { Feature, MultiPolygon, Polygon } from 'geojson'
 
 import type { AreaGeometryMode } from './types'
+import { getAntimeridianBBox } from './utils.ts'
 
 export function simplifyArea(
   feature: Feature,
@@ -38,13 +39,28 @@ export function simplifyArea(
     }
 
     if (geometryMode === 'bbox') {
+      const [west, south, east, north] = getAntimeridianBBox(
+        area.geometry.type === 'MultiPolygon'
+          ? area.geometry.coordinates.map((polygon) => polygon.flat())
+          : [area.geometry.coordinates.flat()]
+      )
       return {
         type: 'Feature',
         properties: area.properties,
-        geometry: {
-          type: 'Polygon',
-          coordinates: [bboxPolygon(bbox(area)).geometry.coordinates[0]],
-        },
+        // Split at 180°: one box from 163° to 183° would be read as spanning the globe instead
+        geometry:
+          east > 180
+            ? {
+                type: 'MultiPolygon',
+                coordinates: [
+                  bboxPolygon([west, south, 180, north]).geometry.coordinates,
+                  bboxPolygon([-180, south, east - 360, north]).geometry.coordinates,
+                ],
+              }
+            : {
+                type: 'Polygon',
+                coordinates: bboxPolygon([west, south, east, north]).geometry.coordinates,
+              },
       }
     }
 

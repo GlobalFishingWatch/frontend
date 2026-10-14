@@ -96,6 +96,14 @@ export const CLUSTER_GAPS_EVENTS_DATAVIEW_SLUG =
 export const CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG =
   `gaps-ais-off-cluster-events-v-${PIPE_DATASET_VERSION}` as const
 
+// Swaps the `-v-<current pipe>` suffix of a versioned slug for another pipe version.
+// Slugs not tied to the current pipe (e.g. Panama's `-v-4-1`) are returned untouched.
+const CURRENT_PIPE_SLUG_SUFFIX = `-v-${PIPE_DATASET_VERSION}`
+export const getDataviewSlugForPipeVersion = (slug: string, pipeVersion?: string) =>
+  pipeVersion && slug.endsWith(CURRENT_PIPE_SLUG_SUFFIX)
+    ? `${slug.slice(0, -CURRENT_PIPE_SLUG_SUFFIX.length)}-v-${pipeVersion}`
+    : slug
+
 // Template dataview slugs
 export const TEMPLATE_USER_TRACK_DATAVIEW_SLUG = 'user-track' as const
 export const TEMPLATE_VESSEL_DATAVIEW_SLUG =
@@ -138,3 +146,41 @@ export const VESSEL_VMS_PAPUA_NEW_GUINEA_DATAVIEW_SLUG =
   `private-png-fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const
 export const VESSEL_VMS_ECUADOR_DATAVIEW_SLUG =
   `private-ecu-fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const
+
+export const AREA_REPORT_LAYERS = {
+  eez: {
+    datasetId: 'public-eez-areas',
+    dataviewInstanceId: EEZ_DATAVIEW_INSTANCE_ID,
+    dataviewSlug: EEZ_DATAVIEW_SLUG,
+    inDefaultWorkspace: true,
+  },
+  mpa: {
+    datasetId: 'public-mpa-all',
+    dataviewInstanceId: MPA_DATAVIEW_INSTANCE_ID,
+    dataviewSlug: MPA_DATAVIEW_SLUG,
+    inDefaultWorkspace: true,
+  },
+  fao: {
+    datasetId: 'public-fao-major',
+    dataviewInstanceId: FAO_AREAS_DATAVIEW_INSTANCE_ID,
+    dataviewSlug: FAO_AREAS_DATAVIEW_SLUG,
+    inDefaultWorkspace: false,
+  },
+  rfmo: {
+    datasetId: 'public-rfmo',
+    dataviewInstanceId: RFMO_DATAVIEW_INSTANCE_ID,
+    dataviewSlug: RFMO_DATAVIEW_SLUG,
+    inDefaultWorkspace: true,
+  },
+} as const
+
+export type AreaReportType = keyof typeof AREA_REPORT_LAYERS
+
+export const getAreaReportDataviewInstance = (type: AreaReportType) => {
+  const { dataviewInstanceId, dataviewSlug, inDefaultWorkspace } = AREA_REPORT_LAYERS[type]
+  return {
+    id: dataviewInstanceId,
+    ...(!inDefaultWorkspace && { dataviewId: dataviewSlug }),
+    config: { visible: true },
+  }
+}

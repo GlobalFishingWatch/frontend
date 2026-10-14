@@ -1,6 +1,6 @@
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { SENTINEL2_DATAVIEW_INSTANCE_ID } from '@platform/config/map/dataviews'
-import { WorkspaceCategory } from '@platform/config/map/workspaces'
+import { LONGLINE_SETS_WORKSPACE_ID, WorkspaceCategory } from '@platform/config/map/workspaces'
 
 import { PATH_BASENAME } from 'data/map/config'
 import {
@@ -33,6 +33,12 @@ export type ReportWorkspace =
     }
 
 export const REPORTS_INDEX: ReportWorkspace[] = [
+  {
+    id: LONGLINE_SETS_WORKSPACE_ID,
+    category: WorkspaceCategory.FishingActivity,
+    reports: [],
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/seabird-safe-longline-sets.jpg`,
+  },
   {
     id: 'deep-sea-mining-public',
     category: WorkspaceCategory.FishingActivity,

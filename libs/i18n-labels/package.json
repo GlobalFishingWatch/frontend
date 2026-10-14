@@ -10,7 +10,8 @@
     ".": {
       "types": "./types.d.ts",
       "default": "./dist/index.js"
-    }
+    },
+    "./*.json": "./*.json"
   },
   "main": "./dist/index.js",
   "types": "./types.d.ts",

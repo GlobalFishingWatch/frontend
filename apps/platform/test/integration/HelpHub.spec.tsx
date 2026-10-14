@@ -32,13 +32,13 @@ const cms = vi.hoisted(() => ({
   dataUpdates: (() => Promise.resolve({ data: [] })) as () => Promise<unknown>,
 }))
 
-vi.mock('features/cms/loaders/user-guide', () => ({
+vi.mock('features/cms/user-guide.serverfn', () => ({
   getUserGuideContent: () => cms.userGuide(),
 }))
-vi.mock('features/cms/loaders/use-case', () => ({
+vi.mock('features/cms/use-case.serverfn', () => ({
   getUseCaseContent: () => cms.useCases(),
 }))
-vi.mock('features/cms/loaders/data-update', () => ({
+vi.mock('features/cms/data-update.serverfn', () => ({
   getDataUpdateContent: () => cms.dataUpdates(),
 }))
 
@@ -258,6 +258,8 @@ describe('Help hub', async () => {
     await expect.element(toolsAndFeatures.getByText('Strapi unavailable')).toBeVisible()
 
     const useCases = await waitForLandingSection('Use cases')
-    await expect.element(useCases.getByRole('link').filter({ hasText: 'Journalists' })).toBeVisible()
+    await expect
+      .element(useCases.getByRole('link').filter({ hasText: 'Journalists' }))
+      .toBeVisible()
   })
 })

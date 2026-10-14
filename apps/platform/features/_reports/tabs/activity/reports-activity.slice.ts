@@ -1,5 +1,5 @@
 import type { PayloadAction, WithSlice } from '@reduxjs/toolkit'
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
 import { stringify } from 'qs'
 
@@ -21,6 +21,7 @@ import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
 
+import { resetReportData } from './reports-activity.actions'
 import type { ReportTimeComparisonValues } from './reports-activity.types'
 
 type PreviewBuffer = {
@@ -174,27 +175,31 @@ export function getReportRequestHash({
   filters,
   dateRange,
   areaId,
-}: {
-  datasets: string[]
-  filters: string[]
-  dateRange: DateRange
-  areaId?: string
-}) {
+  reportBufferUnit,
+  reportBufferValue,
+  reportBufferOperation,
+}: Pick<
+  FetchReportVesselsThunkParams,
+  | 'datasets'
+  | 'filters'
+  | 'dateRange'
+  | 'areaId'
+  | 'reportBufferUnit'
+  | 'reportBufferValue'
+  | 'reportBufferOperation'
+>) {
   const datasetsHash = datasets.join(',')
-  return [datasetsHash, ...filters, dateRange.start, dateRange.end, areaId || ''].join('-')
+  // buffer changes the area, so data fetched with another buffer is outdated too
+  const bufferHash = [reportBufferUnit, reportBufferValue, reportBufferOperation].join(',')
+  return [datasetsHash, ...filters, dateRange.start, dateRange.end, areaId || '', bufferHash].join(
+    '-'
+  )
 }
 
 const reportSlice = createSlice({
   name: 'report',
   initialState,
   reducers: {
-    resetReportData: (state) => {
-      state.status = AsyncReducerStatus.Idle
-      state.data = null
-      state.error = null
-      state.reportRequestHash = ''
-      state.previewBuffer = { ...previewBufferInitialState }
-    },
     setReportRequestHash: (state, action: PayloadAction<string>) => {
       state.reportRequestHash = action.payload
     },
@@ -206,41 +211,29 @@ const reportSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // Nav inversion: MainNav dispatches one leaf action instead of importing this slice.
-    builder.addCase(workspaceTabClicked, (state) => {
-      state.status = AsyncReducerStatus.Idle
-      state.data = null
-      state.error = null
-      state.reportRequestHash = ''
-      state.previewBuffer = { ...previewBufferInitialState }
-    })
     builder.addCase(fetchReportVesselsThunk.pending, (state) => {
       state.status = AsyncReducerStatus.Loading
     })
     builder.addCase(fetchReportVesselsThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
       state.data = action.payload
-      const { datasets, filters, dateRange, areaId } = action.meta.arg
-      state.reportRequestHash = getReportRequestHash({
-        datasets,
-        filters,
-        dateRange,
-        areaId,
-      })
+      state.reportRequestHash = getReportRequestHash(action.meta.arg)
     })
     builder.addCase(fetchReportVesselsThunk.rejected, (state, action) => {
       state.status = AsyncReducerStatus.Error
       state.error = action.payload as ReportStateError
     })
+    builder.addMatcher(isAnyOf(workspaceTabClicked, resetReportData), (state) => {
+      state.status = AsyncReducerStatus.Idle
+      state.data = null
+      state.error = null
+      state.reportRequestHash = ''
+      state.previewBuffer = { ...previewBufferInitialState }
+    })
   },
 })
 
-export const {
-  resetReportData,
-  setReportRequestHash,
-  setPreviewBuffer,
-  setPinningVessels,
-} = reportSlice.actions
+export const { setReportRequestHash, setPreviewBuffer, setPinningVessels } = reportSlice.actions
 
 const injectedReportSlice = rootReducer.inject(reportSlice)
 

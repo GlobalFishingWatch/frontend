@@ -95,6 +95,11 @@
     "events-report": {
       "description": "Actividad global sobre eventos de embarcaciones basada en el sistema de identificación automática (AIS), incluidos encuentros entre dos embarcaciones, eventos a la deriva y visitas a puertos.",
       "name": "Eventos Globales de Embarcaciones"
+    },
+    "seabird_safe_longline_sets-public": {
+      "cta": "See workspace",
+      "description": "Explore global distribution of longline fleets. Examine and analyse individual longline vessel and vessel group potential setting events in key areas, environmental risk zones and times of day to assess seabird bycatch risk and monitor mitigation measures",
+      "name": "Global Seabird Safe Longline Settings"
     }
   }
 }

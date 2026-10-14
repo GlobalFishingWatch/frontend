@@ -140,17 +140,17 @@ export const parseLegacyDataviewInstanceConfig = (
     ...dataviewInstance,
     config: {
       ...dataviewInstance.config,
-      ...(dataviewInstance?.config?.datasets?.length && {
+      ...(Array.isArray(dataviewInstance?.config?.datasets) && {
         datasets: dataviewInstance.config.datasets.map(runDatasetMigrations),
       }),
       ...(dataviewInstance?.config?.info && {
         info: runDatasetMigrations(dataviewInstance?.config?.info),
       }),
-      ...(dataviewInstance?.config?.events?.length && {
+      ...(Array.isArray(dataviewInstance?.config?.events) && {
         events: dataviewInstance?.config?.events.map((d) => migrateEventsLegacyDatasets(d)),
       }),
     },
-    ...(dataviewInstance.datasetsConfig && {
+    ...(Array.isArray(dataviewInstance.datasetsConfig) && {
       datasetsConfig: dataviewInstance.datasetsConfig.map((dc) => ({
         ...dc,
         datasetId: runDatasetMigrations(dc?.datasetId),
@@ -173,7 +173,7 @@ const parseDataviewInstance = (dataview: UrlDataviewInstance) => {
   if (dataview.config?.color !== undefined) {
     config.color = safeDecodeURIComponent(dataview.config?.color)
   }
-  if (dataview.config?.datasets !== undefined && dataview.config?.datasets.length) {
+  if (Array.isArray(dataview.config?.datasets)) {
     config.datasets = dataview.config?.datasets.map((datasetId) =>
       safeDecodeURIComponent(datasetId)
     )

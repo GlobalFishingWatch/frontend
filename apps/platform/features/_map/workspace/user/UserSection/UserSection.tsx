@@ -5,7 +5,7 @@ import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { getMergedDataviewId, type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -13,8 +13,10 @@ import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
 import { useAddDataset } from 'features/_map/datasets/datasets.hook'
 import { selectDatasetsStatus } from 'features/_map/datasets/datasets.slice'
+import { getContextDataviewDataset } from 'features/_map/dataviews/dataviews.utils'
 import { selectCustomUserDataviewsGrouped } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { useMapDrawConnect } from 'features/_map/map/map-draw.hooks'
+import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import LayerPanelContainer from 'features/_map/workspace/shared/LayerPanelContainer'
 import Section from 'features/_map/workspace/shared/Section'
 import LoginLink from 'features/_user/LoginLink'
@@ -57,6 +59,7 @@ export function UserSection(): React.ReactElement<any> {
   const guestUser = useSelector(selectIsGuestUser)
   const dispatch = useAppDispatch()
   const isSmallScreen = useSmallScreen()
+  const readOnly = useSelector(selectReadOnly)
 
   const dataviewsGrouped = useSelector(selectCustomUserDataviewsGrouped)
   const datasetsStatus = useSelector(selectDatasetsStatus)
@@ -107,9 +110,7 @@ export function UserSection(): React.ReactElement<any> {
   const onToggleLayer = useCallback(
     (dataview: UrlDataviewInstance) => () => {
       const isVisible = dataview?.config?.visible ?? false
-      const dataset = dataview.datasets?.find(
-        (d) => d.type === DatasetTypes.Context || d.type === DatasetTypes.UserContext
-      )
+      const dataset = getContextDataviewDataset(dataview)
       const layerTitle = dataset?.name ?? dataset?.id ?? 'Unknown layer'
       const action = isVisible ? 'disable' : 'enable'
       trackEvent({
@@ -134,55 +135,59 @@ export function UserSection(): React.ReactElement<any> {
       }
       hasVisibleDataviews={hasVisibleDataviews}
       headerOptions={
-        <Fragment>
-          {!isSmallScreen && (
-            <div className={styles.relative}>
-              <Hint id="userContextLayers" />
-              <UserLoggedIconButton
-                loginSource="user-upload-datasets"
-                testId="upload-user-dataset"
-                icon="upload"
-                type="border"
-                size="medium"
-                onClick={onUploadClick}
-                tooltip={t((t) => t.dataset.upload)}
-                tooltipPlacement="top"
-                loginTooltip={t((t) => t.download.eventsDownloadLogin)}
-              />
-            </div>
-          )}
-          <UserLoggedIconButton
-            loginSource="draw-polygon"
-            icon="draw"
-            type="border"
-            size="medium"
-            tooltip={t((t) => t.layer.drawPolygon)}
-            tooltipPlacement="top"
-            onClick={() => onDrawClick('polygons')}
-            loginTooltip={t((t) => t.download.eventsDownloadLogin)}
-            testId="draw-polygon-button"
-          />
-          <UserLoggedIconButton
-            loginSource="draw-points"
-            icon="draw-points"
-            type="border"
-            size="medium"
-            tooltip={t((t) => t.layer.drawPoints)}
-            tooltipPlacement="top"
-            onClick={() => onDrawClick('points')}
-            loginTooltip={t((t) => t.download.eventsDownloadLogin)}
-            testId="draw-points-button"
-          />
-          <IconButton
-            icon="plus"
-            type="border"
-            size="medium"
-            tooltip={t((t) => t.dataset.addUser)}
-            tooltipPlacement="top"
-            onClick={onAddClick}
-            data-testid="user-add-layer-button"
-          />
-        </Fragment>
+        !readOnly ? (
+          <Fragment>
+            {!isSmallScreen && (
+              <div className={styles.relative}>
+                <Hint id="userContextLayers" />
+                <UserLoggedIconButton
+                  loginSource="user-upload-datasets"
+                  testId="upload-user-dataset"
+                  icon="upload"
+                  type="border"
+                  size="medium"
+                  onClick={onUploadClick}
+                  tooltip={t((t) => t.dataset.upload)}
+                  tooltipPlacement="top"
+                  loginTooltip={t((t) => t.download.eventsDownloadLogin)}
+                />
+              </div>
+            )}
+            <UserLoggedIconButton
+              loginSource="draw-polygon"
+              icon="draw"
+              type="border"
+              size="medium"
+              tooltip={t((t) => t.layer.drawPolygon)}
+              tooltipPlacement="top"
+              onClick={() => onDrawClick('polygons')}
+              loginTooltip={t((t) => t.download.eventsDownloadLogin)}
+              testId="draw-polygon-button"
+            />
+            <UserLoggedIconButton
+              loginSource="draw-points"
+              icon="draw-points"
+              type="border"
+              size="medium"
+              tooltip={t((t) => t.layer.drawPoints)}
+              tooltipPlacement="top"
+              onClick={() => onDrawClick('points')}
+              loginTooltip={t((t) => t.download.eventsDownloadLogin)}
+              testId="draw-points-button"
+            />
+            <IconButton
+              icon="plus"
+              type="border"
+              size="medium"
+              tooltip={t((t) => t.dataset.addUser)}
+              tooltipPlacement="top"
+              onClick={onAddClick}
+              data-testid="user-add-layer-button"
+            />
+          </Fragment>
+        ) : (
+          <></>
+        )
       }
     >
       {!guestUser && !hasLoadedOnce ? (

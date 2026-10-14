@@ -1,13 +1,20 @@
 import type { ColorCyclingType, Workspace, WorkspaceUpsert } from '@globalfishingwatch/api-types'
 import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PRIVATE_ACCESS } from '@globalfishingwatch/api-types'
+import { PIPE_DATASET_VERSION } from '@globalfishingwatch/datasets-client/constants'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components/color-bar-options'
 import {
   FillColorBarOptions,
   LineColorBarOptions,
 } from '@globalfishingwatch/ui-components/color-bar-options'
-import { ARCHIVED_WORKSPACE_SUFFIX } from '@platform/config/map/workspaces'
+import { ARCHIVED_WORKSPACE_SUFFIX, getWorkspacePipeVersion } from '@platform/config/map/workspaces'
 
-import { PRIVATE_ICON, PRIVATE_PASSWORD_ICON, PUBLIC_SUFIX } from 'data/map/config'
+import {
+  PRIVATE_ICON,
+  PRIVATE_PASSWORD_ICON,
+  PRIVATE_SUFIX,
+  PUBLIC_SUFIX,
+  USER_SUFIX,
+} from 'data/map/config'
 import type { AppWorkspace } from 'features/_map/workspaces-list/workspaces-list.slice'
 import {
   cleanAggregateByPropertyDataviewFromReport,
@@ -20,8 +27,21 @@ import type { QueryParams, WorkspaceState } from 'types'
 
 export const MIN_WORKSPACE_PASSWORD_LENGTH = 5
 
-export const getIsWorkspaceArchived = (workspace: Pick<Workspace, 'id'>) =>
-  workspace?.id?.includes(ARCHIVED_WORKSPACE_SUFFIX) ?? false
+export const getIsWorkspaceArchived = (workspace: Pick<Workspace, 'id'>) => {
+  const id = workspace?.id
+  if (!id) return false
+  if (id.includes(ARCHIVED_WORKSPACE_SUFFIX)) return true
+  const pipeVersion = getWorkspacePipeVersion(id)
+  return !!pipeVersion && Number(pipeVersion) < Number(PIPE_DATASET_VERSION)
+}
+
+export const getIsPrivateWorkspace = (workspace?: { id?: string }) => {
+  const id = workspace?.id
+  if (!id || !id.includes(PRIVATE_SUFIX)) return false
+  const isUserWorkspace =
+    id.endsWith(`-${USER_SUFIX}`) || id.endsWith(`-${USER_SUFIX}-${PUBLIC_SUFIX}`)
+  return !isUserWorkspace
+}
 
 export const parseUpsertWorkspace = (
   workspace: AppWorkspace | Partial<AppWorkspace>

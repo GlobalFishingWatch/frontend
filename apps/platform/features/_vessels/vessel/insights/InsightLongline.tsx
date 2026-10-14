@@ -20,7 +20,6 @@ import {
   selectVesselIdentityId,
   selectVesselIdentitySource,
 } from 'features/_vessels/vessel/vessel.config.selectors'
-import { parseLonglineSetsToCSV } from 'features/_vessels/vessel/vessel.download'
 import { useVesselProfileLayer } from 'features/_vessels/vessel/vessel.hooks'
 import type { VesselEvent } from 'features/_vessels/vessel/vessel.types'
 import { getVesselIdentities, getVesselProperty } from 'features/_vessels/vessel/vessel.utils'
@@ -30,6 +29,7 @@ import DataTerminology from 'features/cms/data-terminology/DataTerminology'
 import { useReplaceQueryParams } from 'router/routes.hook'
 
 import InsightError from './InsightErrorMessage'
+import { useLonglineSetsCSV } from './insights.hooks'
 import { removeNonTunaRFMO } from './insights.utils'
 import LonglineSetsGraph, { LonglineTimeChoice } from './LonglineSetsGraph'
 
@@ -49,6 +49,7 @@ const InsightLongline = () => {
   const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const vesselLayer = useVesselProfileLayer()
   const fitEventBounds = useVesselEventBounds(vesselLayer)
+  const getLonglineSetsCSV = useLonglineSetsCSV()
   const identities = getVesselIdentities(vessel, {
     identitySource: VesselIdentitySourceEnum.SelfReported,
   })
@@ -93,7 +94,7 @@ const InsightLongline = () => {
   }
 
   const onDownloadClick = async () => {
-    const csv = parseLonglineSetsToCSV(data!.map(removeNonTunaRFMO), identities)
+    const csv = getLonglineSetsCSV(data!, [vessel])
     const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
     const { saveAs } = await import('file-saver')
     const shipname = getVesselProperty(vessel, 'shipname', { identityId, identitySource })

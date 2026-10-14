@@ -3,13 +3,9 @@ import { useSelector } from 'react-redux'
 
 import { Switch } from '@globalfishingwatch/ui-components'
 
-import {
-  selectIsTurningTidesWorkspace,
-  selectLonglineSetsInsight,
-} from 'features/_map/workspace/workspace.selectors'
+import { selectIsTurningTidesWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { selectIsGFWDeveloper } from 'features/_user/selectors/user.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { useReplaceQueryParams } from 'router/routes.hook'
 
 import {
   DebugOption,
@@ -25,11 +21,9 @@ import styles from './DebugMenu.module.css'
 
 const DebugFeatureFlags: React.FC = () => {
   const dispatch = useAppDispatch()
-  const { replaceQueryParams } = useReplaceQueryParams()
   const isGFWDeveloper = useSelector(selectIsGFWDeveloper)
   const debugOptions = useSelector(selectDebugOptions)
   const featureFlags = useSelector(selectFeatureFlags)
-  const longlineSetsInsight = useSelector(selectLonglineSetsInsight)
   const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
 
   return (
@@ -106,17 +100,6 @@ const DebugFeatureFlags: React.FC = () => {
         <label htmlFor="option_disable_dataset_hash">Include dataset hash in IDs</label>
       </div>
       <p>Dataset IDs includes a hash suffix. Disable to use cleaner IDs without hashes.</p>
-      <div className={styles.header}>
-        <Switch
-          id="option_longline_sets_insight"
-          active={longlineSetsInsight ?? false}
-          onClick={() => replaceQueryParams({ longlineSetsInsight: !longlineSetsInsight })}
-        />
-        <label htmlFor="option_longline_sets_insight">
-          <strong>Feature flag:</strong> Longline sets insight
-        </label>
-      </div>
-      <p>Show the longline sets insight in the vessel and vessel group profiles</p>
       {isGFWDeveloper && (
         <Fragment>
           <div className={styles.header}>

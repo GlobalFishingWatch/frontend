@@ -3,7 +3,7 @@ import type { Register } from '@tanstack/react-router'
 import type { RequestOptions } from '@tanstack/react-start/server'
 import server, { createServerEntry } from '@tanstack/react-start/server-entry'
 
-import { configureServerGFWAPI } from './server-functions/gfw-api.server-config'
+import { configureServerGFWAPI } from './server/gfw-api.server'
 import { proxy } from './proxy'
 
 configureServerGFWAPI()
@@ -34,8 +34,28 @@ if (import.meta.hot) {
   })
 }
 
+function compressHtml(request: Request, response: Response) {
+  if (
+    !response.body ||
+    response.headers.has('content-encoding') ||
+    !response.headers.get('content-type')?.startsWith('text/html') ||
+    !request.headers.get('accept-encoding')?.includes('gzip')
+  ) {
+    return response
+  }
+  const headers = new Headers(response.headers)
+  headers.set('content-encoding', 'gzip')
+  headers.delete('content-length')
+  headers.append('vary', 'Accept-Encoding')
+  return new Response(response.body.pipeThrough(new CompressionStream('gzip')), {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  })
+}
+
 const fetchHandler = {
-  async fetch(request: Request, opts?: unknown) {
+  async fetch(request: Request, opts?: RequestOptions<Register>) {
     inFlightRequests++
     try {
       const result = proxy(request)
@@ -45,7 +65,7 @@ const fetchHandler = {
       }
 
       const requestToUse = result.type === 'request' ? result.request : request
-      return await server.fetch(requestToUse, opts as RequestOptions<Register> | undefined)
+      return await server.fetch(requestToUse, opts)
     } finally {
       inFlightRequests--
     }
@@ -55,4 +75,10 @@ const fetchHandler = {
 const sentryEntry =
   process.env.NODE_ENV === 'production' ? wrapFetchWithSentry(fetchHandler) : fetchHandler
 
-export default createServerEntry(sentryEntry as Parameters<typeof createServerEntry>[0])
+const compressedEntry = {
+  async fetch(request: Request, opts?: RequestOptions<Register>) {
+    return compressHtml(request, await sentryEntry.fetch(request, opts))
+  },
+}
+
+export default createServerEntry(compressedEntry)

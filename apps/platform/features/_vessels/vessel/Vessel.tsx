@@ -19,10 +19,7 @@ import { useClickedEventConnect } from 'features/_map/map/map-interactions.hooks
 import ErrorPlaceholder from 'features/_map/workspace/ErrorPlaceholder'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
-import {
-  selectIsRealTimeMode,
-  selectLonglineSetsInsight,
-} from 'features/_map/workspace/workspace.selectors'
+import { selectIsRealTimeMode } from 'features/_map/workspace/workspace.selectors'
 import { useMigrateWorkspaceToast } from 'features/_map/workspace/workspace-migration.hooks'
 import WorkspaceLoginError from 'features/_map/workspace/WorkspaceLoginError'
 import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
@@ -84,7 +81,6 @@ const Vessel = () => {
   const includeRelatedIdentities = useSelector(selectIncludeRelatedIdentities)
   const vesselSection = useSelector(selectVesselSection)
   const longlineSetsOnMap = useSelector(selectLonglineSetsOnMap)
-  const longlineSetsInsight = useSelector(selectLonglineSetsInsight)
   const { start } = useSelector(selectTimeRange)
   const vesselArea = useSelector(selectVesselAreaSubsection)
   const datasetId = useSelector(selectVesselDatasetId)
@@ -114,13 +110,11 @@ const Vessel = () => {
       return
     }
     const insightsUnavailable =
-      vesselSection !== 'insights' ||
-      !longlineSetsInsight ||
-      DateTime.fromISO(start).year < MIN_INSIGHTS_YEAR
+      vesselSection !== 'insights' || DateTime.fromISO(start).year < MIN_INSIGHTS_YEAR
     if (insightsUnavailable) {
       replaceQueryParams({ longlineSetsOnMap: undefined })
     }
-  }, [vesselSection, longlineSetsOnMap, longlineSetsInsight, start, replaceQueryParams])
+  }, [vesselSection, longlineSetsOnMap, start, replaceQueryParams])
 
   const vesselIdentity = useMemo(() => {
     if (!vesselData) {

@@ -1,4 +1,4 @@
-import { PATH_BASENAME } from 'data/map/config'
+import { PATH_BASENAME, PLATFORM_MODE } from 'data/map/config'
 import { WORKSPACE_ENV } from 'data/workspace-env'
 import { t } from 'features/i18n/i18n'
 import type Resources from 'features/i18n/i18n.types'
@@ -18,7 +18,7 @@ const SITE_ORIGIN =
 const DEFAULT_DESCRIPTION = `Through our free and open data transparency platform, Global Fishing Watch enables research and innovation in support of ocean sustainability.`
 const SHARE_IMAGE = `${SITE_ORIGIN}${PATH_BASENAME}/images/gfw.jpg`
 
-const buildCanonicalUrl = (pathname?: string) => {
+export const buildCanonicalUrl = (pathname?: string) => {
   const path = (pathname ?? '').split(/[?#]/)[0]
   const withBase = path.startsWith(PATH_BASENAME) ? path : `${PATH_BASENAME}${path}`
   return `${SITE_ORIGIN}${withBase.length > 1 ? withBase.replace(/\/+$/, '') : withBase}`
@@ -36,10 +36,39 @@ export const getCanonicalLink = (
   href: buildCanonicalUrl(getCanonicalPathname(pathname, params)),
 })
 
-export const getDefaultMeta = (
-  title: string,
-  description: string
-): { meta: Record<string, string>[]; links: Record<string, string>[] } => ({
+const ORGANIZATION_JSON_LD = {
+  '@type': 'Organization',
+  '@id': 'https://globalfishingwatch.org/#organization',
+  name: 'Global Fishing Watch',
+  url: 'https://globalfishingwatch.org',
+  logo: `${SITE_ORIGIN}${PATH_BASENAME}/icons/android-chrome-512x512.png`,
+  sameAs: [
+    'https://www.facebook.com/GlobalFishingWatch/',
+    'https://twitter.com/GlobalFishWatch',
+    'https://www.youtube.com/channel/UCFMjCB4uesIrCmO2G5II5zw',
+    'https://www.instagram.com/globalfishingwatch/',
+    'https://www.linkedin.com/company/global-fishing-watch/',
+  ],
+}
+
+/** Site-wide entities for AI and search engines */
+const SITE_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    ORGANIZATION_JSON_LD,
+    {
+      '@type': 'WebSite',
+      name: 'Global Fishing Watch Map',
+      url: buildCanonicalUrl('/'),
+      publisher: { '@id': ORGANIZATION_JSON_LD['@id'] },
+    },
+  ],
+}
+
+// The JSON-LD sits in the same array literal as the plain tags: TS only accepts
+// `script:ld+json` in a route's `meta` once the literal union is normalized.
+// Identical tags are deduped by the router, so a child calling this again does not repeat it.
+export const getDefaultMeta = (title: string, description: string) => ({
   meta: [
     { charSet: 'utf-8' },
     {
@@ -75,6 +104,7 @@ export const getDefaultMeta = (
     { name: 'msapplication-TileColor', content: '#fff' },
     { name: 'msapplication-TileImage', content: 'icons/mstile-144x144.png' },
     { name: 'msapplication-config', content: 'icons/browserconfig.xml' },
+    { 'script:ld+json': SITE_JSON_LD },
   ],
   links: [
     { rel: 'shortcut icon', href: `${PATH_BASENAME}/icons/favicon.ico` },
@@ -123,10 +153,102 @@ export const getRouteHead = ({
 }: { category?: string; description?: string } = {}) => {
   const categoryResolved = category ?? t((s) => s.common.map)
   const descriptionResolved = description ?? t((s) => s.workspace.siteDescription.default)
+  const title = getHeadTitle(categoryResolved)
   return {
     meta: [
-      { title: getHeadTitle(categoryResolved) },
+      { title },
       { name: 'description', content: descriptionResolved },
+      { property: 'og:title', content: title },
+      { property: 'og:description', content: descriptionResolved },
+      { name: 'twitter:title', content: title },
+      { name: 'twitter:description', content: descriptionResolved },
+    ],
+  }
+}
+
+/** Head for a CMS article: `getRouteHead` plus an `Article` */
+export const getArticleHead = ({
+  title,
+  description,
+  pathname,
+  datePublished,
+}: {
+  title: string
+  description?: string
+  pathname: string
+  datePublished?: string
+}) => {
+  const headTitle = getHeadTitle(title)
+  const descriptionResolved = description ?? t((s) => s.workspace.siteDescription.default)
+  return {
+    meta: [
+      { title: headTitle },
+      { name: 'description', content: descriptionResolved },
+      { property: 'og:title', content: headTitle },
+      { property: 'og:description', content: descriptionResolved },
+      { property: 'og:type', content: 'article' },
+      { name: 'twitter:title', content: headTitle },
+      { name: 'twitter:description', content: descriptionResolved },
+      {
+        'script:ld+json': {
+          '@context': 'https://schema.org',
+          '@type': 'Article',
+          headline: title,
+          ...(description && { description }),
+          ...(datePublished && { datePublished }),
+          url: buildCanonicalUrl(pathname),
+          publisher: ORGANIZATION_JSON_LD,
+        },
+      },
+    ],
+  }
+}
+
+/** Head for the places pages; `items` (the server-rendered list) becomes an `ItemList`. */
+export const getPlacesHead = ({
+  category,
+  description,
+  pathname,
+  items = [],
+}: {
+  category: string
+  description: string
+  pathname: string
+  items?: { name: string; pathname?: string }[]
+}) => {
+  const title = getHeadTitle(category)
+  const canonical = buildCanonicalUrl(pathname)
+  return {
+    meta: [
+      { title },
+      // Not public yet outside platform mode
+      ...(!PLATFORM_MODE ? [{ name: 'robots', content: 'noindex, nofollow' }] : []),
+      { name: 'description', content: description },
+      { property: 'og:title', content: title },
+      { property: 'og:description', content: description },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:url', content: canonical },
+      { name: 'twitter:title', content: title },
+      { name: 'twitter:description', content: description },
+      {
+        'script:ld+json': {
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: title,
+          description,
+          url: canonical,
+          mainEntity: {
+            '@type': 'ItemList',
+            numberOfItems: items.length,
+            itemListElement: items.map((item, index) => ({
+              '@type': 'ListItem',
+              position: index + 1,
+              name: item.name,
+              ...(item.pathname && { url: buildCanonicalUrl(item.pathname) }),
+            })),
+          },
+        },
+      },
     ],
   }
 }
@@ -180,6 +302,15 @@ export const getVesselHead = (data?: VesselHeadData) => {
           name: vesselName,
           ...(flagLabel ? { countryOfOrigin: flagLabel } : {}),
           ...(data.imo ? { vehicleIdentificationNumber: String(data.imo) } : {}),
+          ...(data.ssvid
+            ? {
+                identifier: {
+                  '@type': 'PropertyValue',
+                  propertyID: 'MMSI',
+                  value: String(data.ssvid),
+                },
+              }
+            : {}),
           url: canonical,
         },
       },

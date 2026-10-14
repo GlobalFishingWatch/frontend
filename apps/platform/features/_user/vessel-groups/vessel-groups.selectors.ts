@@ -5,6 +5,7 @@ import type { VesselGroup } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { resolveVesselPropertyColumn } from '@globalfishingwatch/data-transforms/schema'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { selectVesselsDatasets } from 'features/_map/datasets/datasets.selectors'
 import { getVesselGroupsInDataviews } from 'features/_map/datasets/datasets.utils'
@@ -17,7 +18,6 @@ import {
 } from 'features/_map/workspace/workspace.selectors'
 import type { LastWorkspaceVisited } from 'features/_map/workspace/workspace.slice'
 import { getVesselDatasetsWithoutRelated } from 'features/_reports/shared/vessels/report-vessels.selectors'
-import { selectUserId } from 'features/_user/selectors/user.permissions.selectors'
 import { selectIsGFWUser, selectIsJACUser } from 'features/_user/selectors/user.selectors'
 import { getVesselGroupVesselsCount } from 'features/_user/vessel-groups/vessel-groups.utils'
 import {
@@ -30,7 +30,6 @@ import {
 import { FLAG_LENGTH, SSVID_LENGTH, VESSEL_ID_LENGTH } from 'features/_vessels/search/search.config'
 import { isAdvancedSearchAllowed } from 'features/_vessels/search/search.selectors'
 import { selectLocationQuery, selectUrlDataviewInstances } from 'router/routes.selectors'
-import { ROUTE_PATHS } from 'router/routes.utils'
 
 import { selectAllVesselGroups } from './vessel-groups.slice'
 
@@ -119,13 +118,6 @@ export const selectVesselGroupModalDatasetsWithoutEventsRelated = createSelector
       vesselDatasets,
       relatedType: DatasetTypes.Events,
     })
-  }
-)
-
-export const selectUserVesselGroups = createSelector(
-  [selectAllVesselGroups, selectUserId],
-  (vesselGroups, userId) => {
-    return vesselGroups?.filter((d) => d.ownerId === userId)
   }
 )
 

@@ -63,13 +63,16 @@ jobs:
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
-      - name: Build and push
-        uses: ./.github/actions/build-and-push
+      - name: Build image
+        uses: ./.github/actions/build-image
         with:
           app: ${{ env.APP }}
           image: ${{ inputs.image }}
           config: ${{ inputs.config }}
           nx-cloud-access-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+
+      - name: Push image
+        run: docker push "${{ inputs.image }}"
 
       - name: Deploy
         id: deploy

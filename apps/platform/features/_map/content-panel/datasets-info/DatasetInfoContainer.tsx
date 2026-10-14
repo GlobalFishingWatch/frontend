@@ -14,7 +14,6 @@ import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice, Spinner } from '@globalfishingwatch/ui-components'
 
 import ContentHeader from 'features/_map/content-panel/ContentHeader'
-import ContentMarkdown from 'features/_map/content-panel/ContentMarkdown'
 import {
   useScrollToTopOnChange,
   useSidePanel,
@@ -25,7 +24,8 @@ import { selectDatasetsStatus } from 'features/_map/datasets/datasets.slice'
 import { getDatasetLabel } from 'features/_map/datasets/datasets.utils'
 import { selectDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectWorkspaceStatus } from 'features/_map/workspace/workspace.selectors'
-import type { UserGuideSlug } from 'features/cms/loaders/user-guide.types'
+import type { UserGuideSlug } from 'features/cms/user-guide.types'
+import ContentMarkdown from 'features/help/markdown/ContentMarkdown'
 import UserGuideLink from 'features/help/UserGuideLink'
 import type { SidePanelState } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'

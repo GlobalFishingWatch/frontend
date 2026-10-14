@@ -1,16 +1,18 @@
-import { useCallback, useState } from 'react'
+import { lazy, Suspense, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 
-import { IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { Modal } from '@globalfishingwatch/ui-components/modal'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { DEFAULT_WORKSPACE_CATEGORY } from '@platform/config/map/workspaces'
+import { ROUTE_PATHS } from '@platform/config/routes'
 import { REMOVE_WORKSPACE_BUTTON_TESTID } from '@platform/config/selectors/user'
 
 import { selectDeprecatedDatasets } from 'features/_map/datasets/datasets.slice'
 import { hasWorkspaceDataviewsDeprecated } from 'features/_map/dataviews/dataviews.utils'
-import { useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
-import EditWorkspace from 'features/_map/workspace/save/WorkspaceEdit'
+import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
 import { getWorkspaceLabel } from 'features/_map/workspace/workspace.utils'
 import type { AppWorkspace } from 'features/_map/workspaces-list/workspaces-list.slice'
 import {
@@ -19,13 +21,15 @@ import {
   selectWorkspaceListStatusId,
 } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getHighlightedText } from 'utils/text'
 
 import { selectUserWorkspacesActive } from './selectors/user.permissions.selectors'
 
 import styles from './User.module.css'
+
+// Lazy: the edit form pulls the map workspace save flow, only needed once the user clicks edit.
+const EditWorkspace = lazy(() => import('features/_map/workspace/save/WorkspaceEdit'))
 
 function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
   const { t } = useTranslation()
@@ -81,7 +85,9 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
           contentClassName={styles.modal}
           onClose={onClose}
         >
-          <EditWorkspace workspace={editWorkspace} isWorkspaceList onFinish={onClose} />
+          <Suspense fallback={null}>
+            <EditWorkspace workspace={editWorkspace} isWorkspaceList onFinish={onClose} />
+          </Suspense>
         </Modal>
       )}
       {loading ? (

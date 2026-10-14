@@ -3,6 +3,18 @@
 Valid filter ids + values per layer, from the GFW API dataset definitions.
 Filters go in each dataview instance's `config.filters`. Array filters take arrays (`"flag": ["FRA", "ESP"]`).
 
+**Include / exclude.** Filters include by default. To EXCLUDE values ("all flags except China", "all fishing except trawlers") set `config.filterOperators.<filterId>` to `"exclude"` and list only the excluded values — never enumerate the complement:
+
+```json
+{
+  "id": "ais",
+  "config": {
+    "filterOperators": { "geartype": "exclude" },
+    "filters": { "geartype": ["trawlers"] }
+  }
+}
+```
+
 ## AIS fishing effort (`ais`, `fishing-effort-ais`) — dataset `public-global-fishing-effort:v4.0`
 
 | Filter                  | Values                                                                                                                                                                                                                                                                                          |
@@ -36,7 +48,7 @@ For anything else (`geartype`, `source_fleet`, `origin`, `target_species`, `lice
 
 | Filter                          | Values                                                                                                                                                                                                                           |
 | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `matched`                       | `true` (identified vessel) / `false` (DARK VESSEL — not broadcasting AIS)                                                                                                                                                        |
+| `matched`                       | `true` (identified vessel) / `false` (DARK VESSEL — not broadcasting AIS). REQUIRED as `["true"]` whenever any filter below is set: vessel properties only exist on matched detections                                           |
 | `flag`                          | ISO3 (only matched detections have a flag)                                                                                                                                                                                       |
 | `geartype`                      | 28-value enum: fishing gears above + `cargo_or_tanker`, `passenger`, `specialized_reefer`, `carrier`, `tug`, `bunker`, `patrol_vessel`, `seismic_vessel`, `non_fishing`, `inconclusive`, `cargo`, `purse_seine_support`, `other` |
 | `shiptype`                      | `carrier`, `seismic_vessel`, `passenger`, `other`, `support`, `bunker`, `gear`, `cargo`, `fishing`, `discrepancy`                                                                                                                |
@@ -73,6 +85,7 @@ For anything else (`geartype`, `source_fleet`, `origin`, `target_species`, `lice
 
 ## Common patterns
 
+- Detections by vessel property ("Sentinel-2 detections of vessels 20-60 m", "SAR detections of Chinese vessels") → `"matched": ["true"]` + the property filter.
 - Dark vessel analysis: detections layers (`sar`, `sentinel2`, `viirs-skylight`) with `"matched": ["false"]` + `timebarVisualisation: "heatmapDetections"`.
 - Fleet analysis: `flag` + `geartype` on fishing effort; `flag` + `vessel_type` on presence.
 - Filter values are always strings in the URL, including booleans and numbers: `"matched": ["false"]`, `"distance_from_port_km": "3"`.

@@ -6,12 +6,12 @@ import type { IdentityVessel } from '@globalfishingwatch/api-types'
 import { getIsVMSDataset } from '@globalfishingwatch/datasets-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { selectDeprecatedDatasets } from 'features/_map/datasets/datasets.slice'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import type { IdentityVesselData } from 'features/_vessels/vessel/vessel.slice'
 import { getVesselProperty } from 'features/_vessels/vessel/vessel.utils'
-import { ROUTE_PATHS } from 'router/routes.utils'
 
 const VesselDeprecatedLink = ({
   vesselIdentity,

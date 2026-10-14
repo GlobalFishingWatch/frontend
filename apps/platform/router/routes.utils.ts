@@ -8,14 +8,6 @@ import type { ROUTE_TYPES } from './routes'
 import { MAP } from './routes'
 
 // ============================================================================
-// TanStack Router Type-Safe Navigation
-// ============================================================================
-
-// Route path literals for type-safe navigation (single source of truth in @platform/config)
-export { ROUTE_PATHS } from '@platform/config/routes'
-export type { RoutePathValues } from '@platform/config/routes'
-
-// ============================================================================
 // Legacy Route Type Mapping (for backward compatibility)
 // ============================================================================
 

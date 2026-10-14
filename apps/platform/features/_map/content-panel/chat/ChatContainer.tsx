@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 
 import ChatHeader from 'features/_map/content-panel/chat/ChatHeader'
 import ChatSession from 'features/_map/content-panel/chat/ChatSession'
+import { KEEP_MAP_POPUP_ATTRIBUTE } from 'features/_map/map/map.config'
 import LoginLink from 'features/_user/LoginLink'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 
@@ -29,7 +30,7 @@ function ChatContainer() {
   }
 
   return (
-    <div className={styles.chat}>
+    <div className={styles.chat} {...{ [KEEP_MAP_POPUP_ATTRIBUTE]: true }}>
       <ChatHeader />
       <ChatSession />
     </div>

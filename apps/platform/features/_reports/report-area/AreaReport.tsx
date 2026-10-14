@@ -30,10 +30,8 @@ import { getReportCategoryFromDataview } from 'features/_reports/report-area/are
 import { selectReportCategory } from 'features/_reports/reports.selectors'
 import { ReportCategory } from 'features/_reports/reports.types'
 import ReportActivity from 'features/_reports/tabs/activity/ReportActivity'
-import {
-  resetReportData,
-  selectReportVesselsStatus,
-} from 'features/_reports/tabs/activity/reports-activity.slice'
+import { resetReportData } from 'features/_reports/tabs/activity/reports-activity.actions'
+import { selectReportVesselsStatus } from 'features/_reports/tabs/activity/reports-activity.slice'
 import ReportEnvironment from 'features/_reports/tabs/environment/ReportEnvironment'
 import ReportEvents from 'features/_reports/tabs/events/EventsReport'
 import ReportOthers from 'features/_reports/tabs/others/ReportOthers'

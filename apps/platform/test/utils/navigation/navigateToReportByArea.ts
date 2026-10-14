@@ -4,8 +4,8 @@ import {
   MPA_DATAVIEW_INSTANCE_ID,
   RFMO_DATAVIEW_INSTANCE_ID,
 } from '@platform/config/map/dataviews'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
-import { ROUTE_PATHS } from 'router/routes.utils'
 import type { QueryParams } from 'types'
 
 import type { NavigationConfig } from './navigation-config'

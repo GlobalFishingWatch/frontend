@@ -5,7 +5,7 @@ import { uniq } from 'es-toolkit'
 
 import type { Dataview } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import { Button, Icon, Tooltip } from '@globalfishingwatch/ui-components'
+import { Button, Icon, IconLogo, Tooltip } from '@globalfishingwatch/ui-components'
 import { LAYER_LIBRARY_ID_SEPARATOR } from '@platform/config/map/dataviews'
 
 import type { LibraryLayer } from 'data/map/layer-library'
@@ -129,11 +129,11 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
               moreInfoLink ? (
                 <Tooltip content={t((t) => t.common.seeMore)}>
                   <a href={moreInfoLink} target="_blank" rel="noreferrer" style={{ lineHeight: 1 }}>
-                    <Icon icon={datasetSourceIcon} type="original-colors" />
+                    <IconLogo icon={datasetSourceIcon} />
                   </a>
                 </Tooltip>
               ) : (
-                <Icon icon={datasetSourceIcon} type="original-colors" />
+                <IconLogo icon={datasetSourceIcon} />
               )
             ) : null}
             {onlyGFWUser && <GFWOnly userGroup="gfw" />}

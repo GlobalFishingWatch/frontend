@@ -1,5 +1,5 @@
 .item {
-  scroll-margin-top: var(--space-M);
+  scroll-margin-top: calc(var(--help-hub-breadcrumb-height) + var(--space-M));
 }
 
 .item + .item {
@@ -27,7 +27,7 @@
 
 .subsection {
   margin-top: var(--space-M);
-  scroll-margin-top: var(--space-M);
+  scroll-margin-top: calc(var(--help-hub-breadcrumb-height) + var(--space-M));
 }
 
 .subsectionTitle {

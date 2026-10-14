@@ -7,6 +7,7 @@ import cx from 'classnames'
 import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import {
   getIsDataviewReportSupported,
@@ -17,10 +18,12 @@ import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { cleanCurrentWorkspaceReportState } from 'features/_map/workspace/workspace.slice'
 import { DEFAULT_POINT_BUFFER_VALUE } from 'features/_reports/report-area/area-reports.config'
 import { DEFAULT_BUFFER_OPERATION, DEFAULT_BUFFER_UNIT } from 'features/_reports/reports.config'
-import { selectReportAreaId, selectReportDatasetId } from 'features/_reports/reports.selectors'
-import { resetReportData } from 'features/_reports/tabs/activity/reports-activity.slice'
+import {
+  selectReportAreaId,
+  selectReportDatasetId,
+} from 'features/_reports/reports.current.selectors'
+import { resetReportData } from 'features/_reports/tabs/activity/reports-activity.actions'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import type { QueryParams } from 'types'
 
 import type { TooltipCategory } from './area-tooltip-timeseries.hooks'

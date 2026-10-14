@@ -1,5 +1,5 @@
 {
-  "$comment": "screenshots.ts is the one script here that is type-checked: the others import each other with explicit .ts extensions and are excluded from the lib configs. Scoped to that entry point (and whatever it imports) rather than the whole folder.",
+  "$comment": "The browser scripts (screenshots, activity) are the ones here that are type-checked: the others import each other with explicit .ts extensions and are excluded from the lib configs. Scoped to that entry point (and whatever it imports) rather than the whole folder.",
   "extends": "../../../tsconfig.lib.base.json",
   "compilerOptions": {
     "noEmit": true,
@@ -15,5 +15,5 @@
     "$comment": "The libs emit extensionless relative imports (./url-workspace), which node ESM cannot resolve on its own.",
     "experimentalSpecifierResolution": "node"
   },
-  "include": ["screenshots.ts", "screenshots-ports.ts"]
+  "include": ["screenshots.ts", "screenshots-ports.ts", "activity.ts"]
 }

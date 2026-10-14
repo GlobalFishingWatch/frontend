@@ -15,16 +15,16 @@ import cx from 'classnames'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { useIsDeckLayersLoading } from '@globalfishingwatch/deck-layer-composer'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
-import { IconButton, MiniGlobe, Tooltip } from '@globalfishingwatch/ui-components'
+import { IconButton, MiniGlobe } from '@globalfishingwatch/ui-components'
 import { MAP_LOADING_SPINNER_TESTID } from '@platform/config/selectors/map'
 
-import basemapDefaultImage from 'assets/images/basemap-default.jpg'
-import basemapSatelliteImage from 'assets/images/basemap-satellite.jpg'
 import { selectDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
+import BasemapSwitcher from 'features/_map/map/controls/BasemapSwitcher'
 import ReferenceLayersControl from 'features/_map/map/controls/ReferenceLayersControl'
 import ReportControls from 'features/_map/map/controls/ReportControl'
 import { useMapBoundsLive } from 'features/_map/map/map-bounds.hooks'
-import { useMapViewState, useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
+import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
+import { useMapViewState } from 'features/_map/map/map-viewport.hooks'
 import { selectScreenshotMode } from 'features/_map/workspace/selectors/app.selectors'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import { selectReportAreaStatus } from 'features/_reports/report-area/area-reports.selectors'
@@ -109,15 +109,12 @@ const MapControls = ({
     [basemapDataviewInstance?.config?.basemap]
   )
 
-  const switchBasemap = useCallback(() => {
-    upsertDataviewInstance({
-      id: basemapDataviewInstance?.id,
-      config: {
-        basemap:
-          currentBasemap === BasemapType.Default ? BasemapType.Satellite : BasemapType.Default,
-      },
-    })
-  }, [basemapDataviewInstance?.id, currentBasemap, upsertDataviewInstance])
+  const switchBasemap = useCallback(
+    (basemap: BasemapType) => {
+      upsertDataviewInstance({ id: basemapDataviewInstance?.id, config: { basemap } })
+    },
+    [basemapDataviewInstance?.id, upsertDataviewInstance]
+  )
 
   const enterMiniGlobeHandler = useCallback(() => setMiniGlobeHovered(true), [])
   const leaveMiniGlobeHandler = useCallback(() => setMiniGlobeHovered(false), [])
@@ -178,31 +175,7 @@ const MapControls = ({
                 <Suspense fallback={null}>
                   <MapControlScreenshot mapLoading={mapLoading} />
                 </Suspense>
-                <Tooltip
-                  content={
-                    currentBasemap === BasemapType.Default
-                      ? t((t) => t.map.change_basemap_satellite)
-                      : t((t) => t.map.change_basemap_default)
-                  }
-                  placement="left"
-                >
-                  <button
-                    aria-label={
-                      currentBasemap === BasemapType.Default
-                        ? t((t) => t.map.change_basemap_satellite)
-                        : t((t) => t.map.change_basemap_default)
-                    }
-                    className={styles.basemapSwitcher}
-                    style={{
-                      backgroundImage: `url(${
-                        currentBasemap === BasemapType.Default
-                          ? basemapSatelliteImage
-                          : basemapDefaultImage
-                      })`,
-                    }}
-                    onClick={switchBasemap}
-                  ></button>
-                </Tooltip>
+                <BasemapSwitcher basemap={currentBasemap as BasemapType} onChange={switchBasemap} />
               </Fragment>
             )}
             {(isAnyVesselLocation || isAnyReportLocation) && <ReferenceLayersControl />}

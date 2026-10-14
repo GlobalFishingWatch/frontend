@@ -4,12 +4,12 @@ import { Link } from '@tanstack/react-router'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { cleanReportPayload } from 'features/_map/workspace/workspace.utils'
 import { useFitAreaInViewport } from 'features/_reports/report-area/area-reports.hooks'
 import type { ReportCategory } from 'features/_reports/reports.types'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import type { QueryParams } from 'types'
 
 const GlobalReportLink = ({ reportCategory }: { reportCategory: ReportCategory }) => {

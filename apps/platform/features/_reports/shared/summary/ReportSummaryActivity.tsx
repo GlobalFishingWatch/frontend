@@ -7,13 +7,19 @@ import type { Locale } from '@globalfishingwatch/api-types'
 
 import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/_map/dataviews/selectors/dataviews.selectors'
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import { getSourcesSelectedInDataview } from 'features/_map/workspace/activity/activity.utils'
+import {
+  selectReportBufferOperation,
+  selectReportBufferUnit,
+  selectReportBufferValue,
+} from 'features/_reports/report-area/area-reports.buffer.selectors'
 import {
   selectIsGlobalReport,
   selectReportDataviewsWithPermissions,
 } from 'features/_reports/report-area/area-reports.selectors'
-import { selectReportAreaId, selectReportCategory } from 'features/_reports/reports.selectors'
+import { selectReportAreaId } from 'features/_reports/reports.current.selectors'
+import { selectReportCategory } from 'features/_reports/reports.selectors'
 import { ReportCategory } from 'features/_reports/reports.types'
 import type { ReportGraphProps } from 'features/_reports/reports-timeseries.hooks'
 import {
@@ -61,6 +67,9 @@ export default function ReportSummaryActivity({
   const dataviews = useSelector(selectActiveReportDataviews)
   const reportRequestHash = useSelector(selectReportRequestHash)
   const areaId = useSelector(selectReportAreaId)
+  const reportBufferUnit = useSelector(selectReportBufferUnit)
+  const reportBufferValue = useSelector(selectReportBufferValue)
+  const reportBufferOperation = useSelector(selectReportBufferOperation)
   const isGlobalReport = useSelector(selectIsGlobalReport)
   const reportOutdated =
     reportRequestHash !==
@@ -69,6 +78,9 @@ export default function ReportSummaryActivity({
       filters: (reportDataviews as any[]).map((d) => d.filter),
       dateRange: timerange,
       areaId,
+      reportBufferUnit,
+      reportBufferValue,
+      reportBufferOperation,
     })
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
 

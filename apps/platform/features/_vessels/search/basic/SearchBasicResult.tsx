@@ -20,7 +20,7 @@ import { SEARCH_VESSELS_OPTION_PREFIX } from '@platform/config/selectors/vessels
 
 import { selectVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/_map/map/map-bounds.hooks'
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import TrackFootprint from 'features/_vessels/search/basic/TrackFootprint'
 import { cleanVesselSearchResults, setSelectedVessels } from 'features/_vessels/search/search.slice'
 import { getSearchVesselId } from 'features/_vessels/search/search.utils'

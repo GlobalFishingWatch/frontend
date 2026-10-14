@@ -1,8 +1,16 @@
+.container {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  max-width: max-content;
+}
+
 .breadcrumb {
-  padding: var(--space-M) var(--space-M);
+  min-height: var(--help-hub-breadcrumb-height);
+  padding: 0 var(--space-M);
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   gap: var(--space-XS);
   font: var(--font-L);
 }
@@ -30,6 +38,7 @@
 
 @media (width <= 800px) {
   .breadcrumb {
-    padding: var(--space-M) var(--space-SM) 0;
+    min-height: 0;
+    padding: var(--space-S) var(--space-SM);
   }
 }

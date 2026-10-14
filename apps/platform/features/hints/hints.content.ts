@@ -5,7 +5,7 @@ import changingTheTimeRangeImg from 'assets/images/hints/changingTheTimeRange.pn
 import clickingOnAGridCellToShowVesselsImg from 'assets/images/hints/clickingOnAGridCellToShowVessels.png'
 import fishingEffortHeatmapImg from 'assets/images/hints/fishingEffortHeatmap.png'
 import howToFilterActivityLayersImg from 'assets/images/hints/howToFilterActivityLayers.png'
-import type { UserGuideSlug } from 'features/cms/loaders/user-guide.types'
+import type { UserGuideSlug } from 'features/cms/user-guide.types'
 
 // t('help-hints:areaSearch')
 // t('help-hints:changingTheTimeRange')

@@ -10,6 +10,7 @@ import {
   DEFAULT_WORKSPACE_ID,
   WorkspaceCategory,
 } from '@platform/config/map/workspaces'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { cleanVesselProfileDataviewInstances } from 'features/_map/sidebar/sidebar-header.hooks'
 import { cleanReportQuery } from 'features/_map/workspace/workspace.utils'
@@ -27,7 +28,6 @@ import {
   selectLocationCategory,
   selectWorkspaceId,
 } from 'router/routes.selectors'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import type { QueryParams } from 'types'
 
 import styles from '../SidebarHeader.module.css'

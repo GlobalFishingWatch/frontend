@@ -2,8 +2,8 @@ import fs from 'fs/promises'
 import path from 'path'
 
 // import data from '../data'
-import eezs from '../data/eezs.json'
-import fao from '../data/fao.json'
+import eezs from '../data/eezs.json' with { type: 'json' }
+import fao from '../data/fao.json' with { type: 'json' }
 
 const data = [...eezs, ...fao]
 
@@ -16,7 +16,7 @@ async function start() {
       }, {})
 
     await fs.writeFile(
-      path.resolve(__dirname, '../locales/source.json'),
+      path.resolve(import.meta.dirname, '../locales/source.json'),
       JSON.stringify(locales, null, 2)
     )
 

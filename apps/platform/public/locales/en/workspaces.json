@@ -95,6 +95,11 @@
     "events-report": {
       "description": "Global activity on vessel events based on automatic identification system (AIS) , including encounters between two vessels, loitering and port visits.",
       "name": "Global Vessel Events"
+    },
+    "seabird_safe_longline_sets-public": {
+      "cta": "See workspace",
+      "description": "Explore global distribution of longline fleets. Examine and analyse individual longline vessel and vessel group potential setting events in key areas, environmental risk zones and times of day to assess seabird bycatch risk and monitor mitigation measures",
+      "name": "Global Seabird Safe Longline Settings"
     }
   }
 }

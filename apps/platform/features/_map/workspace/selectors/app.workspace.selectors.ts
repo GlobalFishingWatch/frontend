@@ -29,7 +29,6 @@ import { selectViewport } from 'features/_map/workspace/selectors/app.viewport.s
 import {
   selectCollapsedSections,
   selectDaysFromLatest,
-  selectLonglineSetsInsight,
   selectMigramarLayer,
   selectTimeMode,
   selectWorkspace,
@@ -202,7 +201,6 @@ const selectWorkspaceAppState = createSelector(
     selectCollapsedSections,
     selectTimeMode,
     selectWorkspaceReportState,
-    selectLonglineSetsInsight,
     selectMigramarLayer,
   ],
   (
@@ -225,7 +223,6 @@ const selectWorkspaceAppState = createSelector(
     collapsedSections,
     timeMode,
     reportState,
-    longlineSetsInsight,
     migramarLayer
   ): Complete<Omit<WorkspaceState, NonPersistedWorkspaceStateKey>> & Complete<ReportState> => {
     return {
@@ -247,7 +244,6 @@ const selectWorkspaceAppState = createSelector(
       environmentVisualizationMode,
       vesselGroupsVisualizationMode,
       daysFromLatest,
-      longlineSetsInsight,
       migramarLayer,
       ...reportState,
     }

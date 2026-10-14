@@ -61,15 +61,15 @@
 }
 
 .default .icon {
-  margin-bottom: var(--space-S);
+  margin-bottom: calc((var(--size-M) - var(--size-XS)) / 2);
 }
 
 .medium .icon {
-  margin-bottom: 0.6rem;
+  margin-bottom: calc((var(--size-SM) - var(--size-XS)) / 2);
 }
 
 .small .icon {
-  margin-bottom: var(--space-XS);
+  margin-bottom: calc((var(--size-S) - var(--size-XS)) / 2);
 }
 
 .input {

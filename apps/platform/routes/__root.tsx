@@ -7,6 +7,7 @@ import robotoLatin500 from '@fontsource/roboto/files/roboto-latin-500-normal.wof
 // import { TanStackDevtools } from '@tanstack/react-devtools'
 // import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { createRootRoute, HeadContent, Outlet, redirect, Scripts } from '@tanstack/react-router'
+import { createIsomorphicFn } from '@tanstack/react-start'
 
 import type { UserData } from '@globalfishingwatch/api-types'
 import { ROUTE_PATHS } from '@platform/config/routes'
@@ -18,6 +19,8 @@ import { getActiveI18nLanguage, t } from 'features/i18n/i18n'
 import { toDocumentLang } from 'features/i18n/i18n.config'
 import { I18nSSRProvider } from 'features/i18n/I18nSSRProvider'
 import { getCanonicalLink, getDefaultMeta } from 'router/router.meta'
+import { getPanelWidthsFromRequest } from 'server/screen-size.server'
+import { resolveUserStateFromRequest } from 'server/user.server'
 
 import appCss from './styles.css?url'
 
@@ -38,21 +41,15 @@ const EMPTY_PANEL_WIDTHS: PanelWidthsState = {
   screenWidth: null,
 }
 
-async function loadPanelWidths(): Promise<PanelWidthsState> {
-  if (!import.meta.env.SSR) {
-    return EMPTY_PANEL_WIDTHS
-  }
-  const { getPanelWidthsFromRequest } = await import('server-functions/screen-size.functions')
-  return getPanelWidthsFromRequest()
-}
+// The compiler drops the .server() bodies, and with them the .server.ts imports, from the client
+// bundle — which is what keeps import protection happy.
+const loadPanelWidths = createIsomorphicFn()
+  .server((): Promise<PanelWidthsState> => getPanelWidthsFromRequest())
+  .client(async (): Promise<PanelWidthsState> => EMPTY_PANEL_WIDTHS)
 
-async function loadUser(): Promise<{ user: UserData | null }> {
-  if (!import.meta.env.SSR) {
-    return { user: null as UserData | null }
-  }
-  const { resolveUserStateFromRequest } = await import('server-functions/user.functions')
-  return resolveUserStateFromRequest()
-}
+const loadUser = createIsomorphicFn()
+  .server(() => resolveUserStateFromRequest())
+  .client(async () => ({ user: null as UserData | null }))
 
 const fontFaceCss = `
 @font-face {
