@@ -161,8 +161,6 @@ export type SelfReportedInfo = VesselInfo & {
   hull?: string
   fishingLicenseCode?: string
   vesselRegistrationCode?: string
-  onFishingListSr?: CombinedSourceInfo[]
-  shipnameIndicatesLikelyGear?: CombinedSourceInfo[]
 }
 
 export type RegistryImage = {
@@ -254,7 +252,6 @@ export type VesselCombinedSourcesInfo = {
   bestTonnageGt?: CombinedSourceInfo[]
   bestVesselClassRf?: CombinedSourceInfo[]
   coarseClass?: CombinedSourceInfo[]
-  fishingSourceAgreement?: CombinedSourceInfo[]
   geartypes: CombinedSourceInfo[]
   inferredLowActivityVesselClassAgRf?: CombinedSourceInfo[]
   inferredVesselClassAg?: CombinedSourceInfo[]
