@@ -126,28 +126,29 @@ export default defineConfig(({ command, mode }) => {
           },
         } satisfies Plugin),
       command === 'build' && env.VITE_PLATFORM_MODE === 'true' && placesSitemap(),
-      command === 'build' &&
-        nitro({
-          baseURL: basePath,
-          sourcemap: true,
-          routeRules: staticRouteRules(basePath, mode),
-          compressPublicAssets: {
-            gzip: true,
-            brotli: true,
+      nitro({
+        // server.ts is the Vite SSR entry (environments.ssr below), not a Nitro handler
+        serverEntry: false,
+        baseURL: basePath,
+        sourcemap: true,
+        routeRules: staticRouteRules(basePath, mode),
+        compressPublicAssets: {
+          gzip: true,
+          brotli: true,
+        },
+        rollupConfig: {
+          // Only Node.js built-ins — npm packages cannot be external because the
+          // production Docker image copies only .output/ with no node_modules.
+          external: ['assert', 'fsevents', 'chokidar', /^@vitejs\//, '@opentelemetry/api-logs'],
+          output: {
+            // Prevents Rolldown from reordering inlined SSR chunks in a way that places
+            // __exportAll() calls before the var declaration runs.
+            // Track: https://github.com/vitejs/vite/issues/22291
+            //        https://github.com/rolldown/rolldown/issues/9441
+            hoistTransitiveImports: false,
           },
-          rollupConfig: {
-            // Only Node.js built-ins — npm packages cannot be external because the
-            // production Docker image copies only .output/ with no node_modules.
-            external: ['assert', 'fsevents', 'chokidar', /^@vitejs\//, '@opentelemetry/api-logs'],
-            output: {
-              // Prevents Rolldown from reordering inlined SSR chunks in a way that places
-              // __exportAll() calls before the var declaration runs.
-              // Track: https://github.com/vitejs/vite/issues/22291
-              //        https://github.com/rolldown/rolldown/issues/9441
-              hoistTransitiveImports: false,
-            },
-          },
-        }),
+        },
+      }),
       process.env.ANALYZE === 'true' &&
         visualizer({
           // Written to the app root so it's easy to open after the build
