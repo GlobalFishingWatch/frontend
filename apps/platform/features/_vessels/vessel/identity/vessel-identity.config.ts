@@ -166,6 +166,7 @@ export const AIS_IDENTITY_LAYOUT: IdentitySection[] = [
     type: 'fields',
     key: 'gfwPredictions',
     sectionLabel: 'gfwPredictions',
+    terminologyKey: 'gfwPredictions',
     fields: GFW_PREDICTION_FIELDS,
   },
 ]
