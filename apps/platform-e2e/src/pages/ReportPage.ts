@@ -52,12 +52,17 @@ export class ReportPage {
     await waitForHydration(this.page)
   }
 
+  /**
+   * Right after login the app reloads the user's datasets for ~1-2s, and a "See vessels" click in
+   * that window sends no report request. The report itself answers in about a second, so each
+   * attempt waits 15s rather than LONG (60s), keeping a missed click cheap.
+   */
   async loadVesselTable() {
     await expect(async () => {
       if (await this.seeVesselsButton.isVisible()) {
         await this.seeVesselsButton.click()
       }
-      await expect(this.vesselsTable).toBeVisible({ timeout: TIMEOUTS.LONG })
+      await expect(this.vesselsTable).toBeVisible({ timeout: 15_000 })
     }).toPass({ timeout: TIMEOUTS.TEST })
   }
 
