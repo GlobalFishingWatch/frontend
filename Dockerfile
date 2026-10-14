@@ -74,6 +74,12 @@ RUN --mount=type=secret,id=NX_CLOUD_ACCESS_TOKEN \
     pnpm exec nx run ${APP_NAME}:build --output-style=stream
 
 
+# ── platform only: the load-boundaries build report, exported by CI into the job summary ──
+# Never deployed. Built after the image with the same args, so the builder stage is a cache hit.
+FROM scratch AS load-boundaries-report
+COPY --from=builder /app/apps/platform/dist/load-boundaries.md /
+
+
 # ── Production: nginx (api-portal, data-download-portal, image-labeler, track-labeler, user-groups-admin) ──
 FROM nginx:stable-alpine AS production-nginx
 

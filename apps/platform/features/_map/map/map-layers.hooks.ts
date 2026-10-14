@@ -24,8 +24,8 @@ import {
   selectDetectionsMergedDataviewId,
 } from 'features/_map/dataviews/selectors/dataviews.selectors'
 import { useTimebarTracksGraphExtent } from 'features/_map/map/timebar-graph.hooks'
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
 import { selectRealTimeTimerange } from 'features/_map/timebar/timebar.selectors'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import {
   selectActivityVisualizationMode,
   selectBivariateDataviews,

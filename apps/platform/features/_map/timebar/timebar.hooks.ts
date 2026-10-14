@@ -36,11 +36,6 @@ import {
   setHighlightedEvents,
 } from './timebar.slice'
 
-// The timerange cluster moved to timerange.hooks so always-loaded callers (workspace.hook, reached from
-// app-shell.hooks / LanguageToggle / user.hooks) do not pull @globalfishingwatch/timebar and
-// deck-layer-composer. Re-exported here for the 34 modules that already import it from this file.
-export { timerangeState, useSetTimerange, useTimerangeConnect } from './timerange.hooks'
-
 export const useDisableHighlightTimeConnect = () => {
   const dispatch = useAppDispatch()
   const appStore = useAppStore()

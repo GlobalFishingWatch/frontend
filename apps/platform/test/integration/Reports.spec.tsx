@@ -21,7 +21,7 @@ import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { mapInstanceAtom } from 'features/_map/map/map.atoms'
 import { MAP_VIEW_ID } from 'features/_map/map/map-viewport.hooks'
-import { timerangeState } from 'features/_map/timebar/timebar.hooks'
+import { timerangeState } from 'features/_map/timebar/timerange.hooks'
 import { ReportCategory } from 'features/_reports/reports.types'
 import type { ReportGraphProps } from 'features/_reports/reports-timeseries.hooks'
 import { reportStateAtom } from 'features/_reports/reports-timeseries.hooks'

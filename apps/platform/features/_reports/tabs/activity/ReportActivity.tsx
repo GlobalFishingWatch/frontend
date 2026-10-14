@@ -37,10 +37,12 @@ import { selectReportDataviewsWithPermissions } from 'features/_reports/report-a
 import { parseReportUrl } from 'features/_reports/report-area/area-reports.utils'
 import { selectReportActivityGraph } from 'features/_reports/reports.config.selectors'
 import {
-  selectActiveReportSubCategories,
   selectReportAreaId,
-  selectReportCategory,
   selectReportDatasetId,
+} from 'features/_reports/reports.current.selectors'
+import {
+  selectActiveReportSubCategories,
+  selectReportCategory,
 } from 'features/_reports/reports.selectors'
 import { ReportCategory } from 'features/_reports/reports.types'
 import ReportVesselsPlaceholder from 'features/_reports/shared/placeholders/ReportVesselsPlaceholder'

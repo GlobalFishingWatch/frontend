@@ -7,7 +7,7 @@ import type { Locale } from '@globalfishingwatch/api-types'
 
 import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/_map/dataviews/selectors/dataviews.selectors'
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import { getSourcesSelectedInDataview } from 'features/_map/workspace/activity/activity.utils'
 import {
   selectReportBufferOperation,
@@ -18,7 +18,8 @@ import {
   selectIsGlobalReport,
   selectReportDataviewsWithPermissions,
 } from 'features/_reports/report-area/area-reports.selectors'
-import { selectReportAreaId, selectReportCategory } from 'features/_reports/reports.selectors'
+import { selectReportAreaId } from 'features/_reports/reports.current.selectors'
+import { selectReportCategory } from 'features/_reports/reports.selectors'
 import { ReportCategory } from 'features/_reports/reports.types'
 import type { ReportGraphProps } from 'features/_reports/reports-timeseries.hooks'
 import {

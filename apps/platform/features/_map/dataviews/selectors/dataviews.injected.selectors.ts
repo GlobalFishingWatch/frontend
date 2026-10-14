@@ -40,7 +40,7 @@ import {
 import {
   selectVGRFishingDataview,
   selectVGRPresenceDataview,
-} from 'features/_reports/report-vessel-group/vessel-group-report.slice'
+} from 'features/_reports/report-vessel-group/vessel-group-report.dataviews.selectors'
 import { REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS } from 'features/_reports/reports.config'
 import {
   selectPortReportDatasetId,

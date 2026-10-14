@@ -1,0 +1,77 @@
+.subTopic {
+  cursor: pointer;
+  padding: var(--space-S) 0 var(--space-S) var(--space-M);
+  font-size: var(--font-size-S);
+  color: var(--color-secondary-blue);
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.listItemRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+}
+
+.listItemToggle {
+  margin-left: auto;
+}
+
+.listItem,
+.searchPreview {
+  cursor: pointer;
+  color: var(--color-secondary-blue);
+}
+
+.listItemLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.listItem {
+  padding: var(--space-S) 0;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.searchPreview {
+  padding-bottom: var(--space-S);
+  font: var(--font-S);
+  text-align: left;
+}
+
+.listItem:hover,
+.subTopic:hover,
+.listItemActive {
+  color: var(--color-primary-blue);
+}
+
+.listItem:hover .listItemLabel,
+.subTopic:hover {
+  text-decoration: underline;
+}
+
+.listItem button {
+  cursor: pointer;
+}
+
+.tableOfContentsContainer {
+  display: flex;
+  gap: var(--space-SM);
+  flex-direction: column;
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
+.secondary:hover {
+  color: var(--color-primary-blue);
+}

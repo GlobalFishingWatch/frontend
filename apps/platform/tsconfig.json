@@ -3,6 +3,8 @@
   "extends": "../tsconfig.apps.base.json",
   "compilerOptions": {
     "tsBuildInfoFile": "../../node_modules/.cache/tsbuildinfo/platform.tsbuildinfo",
+    // scripts/**/*.ts run under Node's type stripping, which needs explicit `.ts` import paths.
+    "allowImportingTsExtensions": true,
     "paths": {
       "assets/*": ["./assets/*"],
       "data/*": ["./data/*"],

@@ -1,7 +1,7 @@
 import { memo } from 'react'
 
-import ContentMarkdown from 'features/_map/content-panel/ContentMarkdown'
 import type { HelpHubItem } from 'features/help/helpHub.types'
+import ContentMarkdown from 'features/help/markdown/ContentMarkdown'
 
 import styles from './HelpHubItemContent.module.css'
 

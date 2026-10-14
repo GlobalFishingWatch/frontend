@@ -2,7 +2,8 @@ import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { Button, Icon } from '@globalfishingwatch/ui-components'
+import { Button } from '@globalfishingwatch/ui-components/button'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
 
 import { getIsBrowser } from 'utils/dom'
 

@@ -28,14 +28,15 @@ import {
 } from 'features/_reports/report-area/area-reports.selectors'
 import { getReportAreaStringByLocale } from 'features/_reports/report-area/title/report-title.utils'
 import { DEFAULT_BUFFER_OPERATION } from 'features/_reports/reports.config'
-import { selectCurrentReport, selectReportCategory } from 'features/_reports/reports.selectors'
+import { selectCurrentReport } from 'features/_reports/reports.current.selectors'
+import { selectReportCategory } from 'features/_reports/reports.selectors'
 import { ReportCategory } from 'features/_reports/reports.types'
 import { getAreaKm2 } from 'features/_reports/reports-geo.utils'
 import { useReportFeaturesLoading } from 'features/_reports/reports-timeseries.hooks'
 import AreaReportSearch from 'features/_reports/shared/area-search/AreaReportSearch'
 import ReportTitlePlaceholder from 'features/_reports/shared/placeholders/ReportTitlePlaceholder'
+import { resetReportData } from 'features/_reports/tabs/activity/reports-activity.actions'
 import {
-  resetReportData,
   selectReportPreviewBuffer,
   setPreviewBuffer,
 } from 'features/_reports/tabs/activity/reports-activity.slice'
