@@ -6,7 +6,6 @@ import cx from 'classnames'
 import type {
   CombinedSourceInfo,
   RegistryExtraFieldValue,
-  SelfReportedInfo,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 import { API_LOGIN_REQUIRED } from '@globalfishingwatch/api-types'
@@ -16,7 +15,6 @@ import { getIsCombinedSourceInTimerange } from 'features/_vessels/vessel/identit
 import VesselIdentityField from 'features/_vessels/vessel/identity/fields/VesselIdentityField'
 import VesselTypesField from 'features/_vessels/vessel/identity/fields/VesselTypesField'
 import {
-  AIS_SELF_REPORTED_SHIPTYPE,
   COMBINED_SOURCE_VALUE_FIELDS,
   type IdentitySection,
   type VesselRenderField,
@@ -47,9 +45,6 @@ const resolveFieldValue = (
 ): string | number => {
   const key = field.key as keyof VesselLastIdentity
   if (isChileanVMS && key === 'ssvid') return EMPTY_FIELD_PLACEHOLDER
-  // if (field.key === AIS_SELF_REPORTED_SHIPTYPE) {
-  //   return (vesselIdentity as SelfReportedInfo)?.onFishingListSr?.[0]?.value ? 'fishing' : 'other'
-  // }
   if (COMBINED_SOURCE_VALUE_FIELDS.includes(key as CombinedSourceValueField)) {
     const sources =
       vesselIdentity?.combinedSourcesInfo?.[key as CombinedSourceValueField] ||

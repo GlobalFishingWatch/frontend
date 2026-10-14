@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import GFWOnly from 'features/_user/GFWOnly'
-import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
+import { selectIsGFWUser, selectIsJACUser } from 'features/_user/selectors/user.selectors'
 import type { VesselLastIdentity } from 'features/_vessels/search/search.slice'
 import { getIsCombinedSourceInTimerange } from 'features/_vessels/vessel/identity/fields/vessel-identity.utils'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
@@ -19,8 +19,9 @@ const VesselIdentityGFWExtendedVesseltype = ({
   identity,
 }: VesselIdentityGFWExtendedVesseltypeProps) => {
   const isGFWUser = useSelector(selectIsGFWUser)
+  const isJACUser = useSelector(selectIsJACUser)
 
-  if (!isGFWUser || !identity.combinedSourcesInfo) {
+  if ((!isGFWUser && !isJACUser) || !identity.combinedSourcesInfo) {
     return null
   }
   const { coarseClass = [] } = identity.combinedSourcesInfo
@@ -30,7 +31,7 @@ const VesselIdentityGFWExtendedVesseltype = ({
   return (
     <ul className={styles.extendedInfo}>
       <li>
-        <GFWOnly userGroup="gfw" className={styles.gfwOnly} />
+        <GFWOnly userGroup="any" className={styles.gfwOnly} />
       </li>
       <li>
         <Tooltip content="(coarseClass)">
