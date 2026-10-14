@@ -34,6 +34,7 @@
         "default",
         "{workspaceRoot}/libs/*/src/**/*",
         "{workspaceRoot}/libs/*/package.json",
+        "{projectRoot}/config/**/*",
         "{workspaceRoot}/tsconfig.base.json",
         "{workspaceRoot}/apps/tsconfig.apps.base.json"
       ],
