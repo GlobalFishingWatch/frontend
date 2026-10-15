@@ -8,6 +8,7 @@ import { Modal } from '@globalfishingwatch/ui-components/modal'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { DEFAULT_WORKSPACE_CATEGORY } from '@platform/config/map/workspaces'
 import { ROUTE_PATHS } from '@platform/config/routes'
+import { REMOVE_WORKSPACE_BUTTON_TESTID } from '@platform/config/selectors/user'
 
 import { selectDeprecatedDatasets } from 'features/_map/datasets/datasets.slice'
 import { hasWorkspaceDataviewsDeprecated } from 'features/_map/dataviews/dataviews.utils'
@@ -144,8 +145,8 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
                     loading={workspace.id === workspacesStatusId && deleteLoading}
                     tooltip={t((t) => t.workspace.remove)}
                     onClick={() => onDeleteClick(workspace)}
-                    testId="remove-workspace-button"
-                    data-testid="remove-workspace-button"
+                    testId={REMOVE_WORKSPACE_BUTTON_TESTID}
+                    data-testid={REMOVE_WORKSPACE_BUTTON_TESTID}
                   />
                 </li>
               )

@@ -6,6 +6,7 @@ import cx from 'classnames'
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import type { Tab } from '@globalfishingwatch/ui-components/tabs'
 import { Tabs } from '@globalfishingwatch/ui-components/tabs'
+import { USER_WORKSPACES_TAB_TESTID } from '@platform/config/selectors/user'
 
 import LoginLink from 'features/_user/LoginLink'
 import { selectUserData, selectUserLogged } from 'features/_user/selectors/user.selectors'
@@ -37,7 +38,7 @@ function User() {
       {
         id: UserTab.Workspaces,
         title: t((t) => t.workspace.titlePlural),
-        testId: 'user-workspace',
+        testId: USER_WORKSPACES_TAB_TESTID,
         content: <UserWorkspaces />,
       },
       {

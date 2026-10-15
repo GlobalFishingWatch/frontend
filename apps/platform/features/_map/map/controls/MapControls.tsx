@@ -16,6 +16,7 @@ import { DataviewType } from '@globalfishingwatch/api-types'
 import { useIsDeckLayersLoading } from '@globalfishingwatch/deck-layer-composer'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
 import { IconButton, MiniGlobe } from '@globalfishingwatch/ui-components'
+import { MAP_LOADING_SPINNER_TESTID } from '@platform/config/selectors/map'
 
 import { selectDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import BasemapSwitcher from 'features/_map/map/controls/BasemapSwitcher'
@@ -179,7 +180,7 @@ const MapControls = ({
             )}
             {(isAnyVesselLocation || isAnyReportLocation) && <ReferenceLayersControl />}
             <IconButton
-              testId="map-loading-spinner"
+              testId={MAP_LOADING_SPINNER_TESTID}
               type="map-tool"
               tooltip={t((t) => t.map.loading)}
               loading={mapLoading}
