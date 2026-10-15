@@ -4,6 +4,7 @@ import type { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 
 const FEEDBACK_SPREADSHEET_ID = process.env.FEEDBACK_SPREADSHEET_ID || ''
 const ERRORS_SPREADSHEET_ID = process.env.MAP_ERRORS_SPREADSHEET_ID || ''
+const DETECTIONS_FEEDBACK_SPREADSHEET_ID = process.env.DETECTIONS_FEEDBACK_SPREADSHEET_ID || ''
 const FEEDBACK_SHEET_TITLE = 'new feedback'
 const ERRORS_SHEET_TITLE = 'errors'
 const CORRECTIONS_SHEET_TITLE = 'vessels corrections'
@@ -56,9 +57,11 @@ export const Route = createFileRoute('/api/feedback')({
 
         try {
           const spreadsheetId =
-            type === 'error' || type === 'corrections'
-              ? ERRORS_SPREADSHEET_ID
-              : FEEDBACK_SPREADSHEET_ID
+            type === 'detections'
+              ? DETECTIONS_FEEDBACK_SPREADSHEET_ID
+              : type === 'error' || type === 'corrections'
+                ? ERRORS_SPREADSHEET_ID
+                : FEEDBACK_SPREADSHEET_ID
           const spreadsheetTitle =
             type === 'error'
               ? ERRORS_SHEET_TITLE
@@ -68,7 +71,11 @@ export const Route = createFileRoute('/api/feedback')({
           const { loadSpreadsheetDoc } = await import('server/api/utils/spreadsheets')
           const { sanitizeSheetRow } = await import('server/api/utils/sanitize')
           const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(spreadsheetId)
-          const sheet = feedbackSpreadsheetDoc.sheetsByTitle[spreadsheetTitle]
+          // detections feedback is written to the first tab of its own spreadsheet
+          const sheet =
+            type === 'detections'
+              ? feedbackSpreadsheetDoc.sheetsByIndex[0]
+              : feedbackSpreadsheetDoc.sheetsByTitle[spreadsheetTitle]
 
           await sheet.addRow(sanitizeSheetRow(data))
 
