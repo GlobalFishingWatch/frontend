@@ -10,7 +10,6 @@ import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
 import { MAP_VIEW_ID } from '@platform/config/selectors/map'
 
 import { mapInstanceAtom, viewStateAtom } from 'features/_map/map/map.atoms'
-import { MAP_VIEW_ID } from 'features/_map/map/map-viewport.hooks'
 import { timerangeState } from 'features/_map/timebar/timebar.hooks'
 import { makeStore } from 'store'
 
