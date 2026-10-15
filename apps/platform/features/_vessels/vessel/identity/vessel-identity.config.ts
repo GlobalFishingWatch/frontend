@@ -31,12 +31,12 @@ const VESSEL_SHIPTYPES_FIELD: VesselRenderField = {
 
 const VESSEL_GEARTYPES_FIELD: VesselRenderField = {
   key: 'geartypes',
-  terminologyKey: 'geartype',
+  terminologyKey: 'geartypeRegistry',
 }
 
 const GFW_PREDICTION_GEARTYPES_FIELD: VesselRenderField = {
   ...VESSEL_GEARTYPES_FIELD,
-  terminologyKey: 'gearTypePredictions',
+  terminologyKey: 'geartype',
 }
 
 export const COMBINED_SOURCE_VALUE_FIELDS = [

@@ -8,7 +8,7 @@ export type DataTerminologySlugs =
   | 'fleetCode'
   | 'geartype'
   | 'geartypeBRA'
-  | 'gearTypePredictions'
+  | 'geartypeRegistry'
   | 'gfwPredictions'
   | 'insights'
   | 'insightsCoverage'
