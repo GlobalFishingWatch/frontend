@@ -8,6 +8,7 @@ import type { RegistryImage } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { VESSEL_NAME_TESTID } from '@platform/config/selectors/vessels'
 
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import {
@@ -208,7 +209,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
         </div>
       )}
       <div className={styles.titleContainer}>
-        <h1 data-testid="vv-vessel-name" className={styles.title}>
+        <h1 data-testid={VESSEL_NAME_TESTID} className={styles.title}>
           <svg className={styles.vesselIcon} width="16" height="16">
             <path
               fill={vesselColor || COLOR_PRIMARY_BLUE}

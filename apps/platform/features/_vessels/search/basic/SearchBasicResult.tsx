@@ -16,6 +16,7 @@ import {
   IconButton,
   YearlyTransmissionsTimeline,
 } from '@globalfishingwatch/ui-components'
+import { SEARCH_VESSELS_OPTION_PREFIX } from '@platform/config/selectors/vessels'
 
 import { selectVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/_map/map/map-bounds.hooks'
@@ -196,7 +197,7 @@ function SearchBasicResult({
         [styles.selected]: isSelected,
       })}
       key={`${index} - ${dataset?.id} - ${id}`}
-      data-test={`search-vessels-option-${id}-${index}`}
+      data-test={`${SEARCH_VESSELS_OPTION_PREFIX}-${id}-${index}`}
     >
       <div className={styles.container}>
         <IconButton

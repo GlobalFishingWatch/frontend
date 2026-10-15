@@ -15,6 +15,7 @@ import type { ContextLayer, ContextPickingObject } from '@globalfishingwatch/dec
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { ColorBarOption, ThicknessSelectorOption } from '@globalfishingwatch/ui-components'
 import { Collapsable, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { getContextLayerTestId } from '@platform/config/selectors/map'
 
 import { HIDDEN_DATAVIEW_FILTERS, ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/map/dataviews'
 import { OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID } from 'data/map/layer-library/layers-context'
@@ -238,7 +239,7 @@ function LayerPanel({
           className={styles.switch}
           dataview={dataview}
           onToggle={onToggle}
-          testId={`context-layer-${dataview.id}`}
+          testId={getContextLayerTestId(dataview.id)}
         />
         {ONLY_GFW_STAFF_DATAVIEW_SLUGS.includes(dataview.dataviewId as string) && (
           <GFWOnly

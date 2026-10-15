@@ -4,6 +4,7 @@ import cx from 'classnames'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { TagItem } from '@globalfishingwatch/ui-components'
 import { IconButton, TagList } from '@globalfishingwatch/ui-components'
+import { SOURCE_TAG_TESTID } from '@platform/config/selectors/workspace'
 
 import { useMigrateToLatestDataview } from 'features/_map/dataviews/dataviews.hooks'
 import { dataviewWithPrivateDatasets } from 'features/_map/dataviews/dataviews.utils'
@@ -83,7 +84,7 @@ function DatasetFilterSource({
         )}
         {/* Rendering both so the unmerged one is visible in printing */}
         <TagList
-          testId="source-tag-item"
+          testId={SOURCE_TAG_TESTID}
           tags={sourcesSelected}
           onRemove={allowDelete ? onRemoveFilterClick : undefined}
           color={hideColor ? undefined : dataview.config?.color}

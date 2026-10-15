@@ -6,6 +6,7 @@ import cx from 'classnames'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { IconButton, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 import { GLOBAL_VESSELS_DATASET_ID } from '@platform/config/map/datasets'
+import { REPORT_VESSELS_TABLE_TESTID } from '@platform/config/selectors/report'
 
 import DatasetLabel from 'features/_map/datasets/DatasetLabel'
 import { getDatasetsReportNotSupported } from 'features/_map/datasets/datasets.permissions'
@@ -99,7 +100,7 @@ export default function ReportVesselsTable({
 
   return (
     <div>
-      <div className={styles.tableContainer} data-testid="report-vessels-table">
+      <div className={styles.tableContainer} data-testid={REPORT_VESSELS_TABLE_TESTID}>
         {isAnyAreaReportLocation &&
           reportCategory === 'activity' &&
           datasetsDownloadNotSupported.length > 0 && (

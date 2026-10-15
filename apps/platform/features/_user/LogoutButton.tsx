@@ -7,6 +7,7 @@ import { getGuestUser, GFWAPI } from '@globalfishingwatch/api-client'
 import { Button } from '@globalfishingwatch/ui-components/button'
 import { DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 import { ROUTE_PATHS } from '@platform/config/routes'
+import { LOGOUT_BUTTON_TESTID } from '@platform/config/selectors/user'
 
 import { selectLastWorkspaceNavigationProps } from 'features/_map/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/_map/workspace/workspace.slice'
@@ -67,7 +68,7 @@ function LogoutButton() {
       loading={logoutLoading}
       disabled={logoutLoading}
       onClick={onLogoutClick}
-      testId="logout-button"
+      testId={LOGOUT_BUTTON_TESTID}
     >
       <span>{t((t) => t.common.logout)}</span>
     </Button>

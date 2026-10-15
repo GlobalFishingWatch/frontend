@@ -82,6 +82,12 @@
         }
       }
     },
+    "show-report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm exec playwright show-report {projectRoot}/playwright-report"
+      }
+    },
     "screenshots:report": {
       "executor": "nx:run-commands",
       "options": {

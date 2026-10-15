@@ -10,6 +10,7 @@ import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { AIS_DATAVIEW_INSTANCE_ID, SAR_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
+import { getActivityLayerSwitchTestId } from '@platform/config/selectors/map'
 
 import { TURNING_TIDES_DESCRIPTION_PREFIX } from 'features/_map/bigquery/turning-tides.config'
 import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
@@ -201,7 +202,7 @@ function ActivityLayerPanel({
             active={layerActive}
             className={styles.switch}
             dataview={dataview}
-            testId={`activity-layer-panel-switch-${dataview.id}`}
+            testId={getActivityLayerSwitchTestId(dataview.id)}
           />
           <Title
             title={datasetTitle}
