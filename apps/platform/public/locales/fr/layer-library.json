@@ -12,7 +12,7 @@
   "chlorophyl": {
     "description": "La chlorophylle-a est le pigment assimilateur de lumière que l'on retrouve dans toutes les plantes photosynthétiques. Le phytoplancton marin fixe chimiquement le carbone par photosynthèse en absorbant du dioxyde de carbone dissous et en produisant de l'oxygène. Ce jeu de données est composé de paramètres biogéochimiques, y compris la chlorophylle, affichés sur l'océan global avec une résolution horizontale de 1/4 degré. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
-    "name": "Concentration en chloriphylle a"
+    "name": "Concentration en chlorophylle a"
   },
   "coral-reefs": {
     "description": "Les récifs coralliens d’eau chaude se trouvent dans des eaux claires et peu profondes et constituent des écosystèmes très dynamiques qui abritent l’habitat marin le plus riche en biodiversité. Ce jeu de données montre la répartition mondiale des récifs coralliens dans les régions tropicales et subtropicales.",
@@ -47,7 +47,7 @@
   "encounters": {
     "description": "Identifié à partir des données AIS comme des lieux où deux navires se trouvaient à moins de 500 mètres l'un de l'autre pendant au moins 2 heures et se déplaçaient à une vitesse médiane inférieure à 2 nœuds, à au moins 10 km d'un mouillage côtier.",
     "moreInfoLink": "",
-    "name": "Événements de recontre (AIS)"
+    "name": "Événements de rencontre (AIS)"
   },
   "fao-major": {
     "description": "Les principales zones de pêche de la FAO à des fins statistiques sont des zones arbitraires, dont les limites ont été déterminées en consultation avec les agences internationales des pêches. Les principales zones de pêche, intérieures et maritimes, sont énumérées ci-dessous avec des codes à deux chiffres et leurs noms. Pour accéder aux cartes et à la description des limites de chaque zone de pêche, cliquez sur l'élément pertinent dans la liste ci-dessous ou sur la carte montrant les 19 principales zones de pêche maritimes.",
