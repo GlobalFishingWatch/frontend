@@ -45,7 +45,7 @@
     "name": "Territorial Seas (12 nautical miles)"
   },
   "encounters": {
-    "description": "Identifié à partir des données AIS comme des lieux où deux navires (un transporteur et un navire de pêche) se trouvaient à moins de 500 mètres l'un de l'autre pendant au moins 2 heures et se déplaçaient à une vitesse médiane inférieure à 2 noeuds, à au moins 10 km d'un mouillage côtier.",
+    "description": "Identifié à partir des données AIS comme des lieux où deux navires se trouvaient à moins de 500 mètres l'un de l'autre pendant au moins 2 heures et se déplaçaient à une vitesse médiane inférieure à 2 nœuds, à au moins 10 km d'un mouillage côtier.",
     "moreInfoLink": "",
     "name": "Événements de recontre (AIS)"
   },
@@ -55,14 +55,14 @@
     "name": "Principales zones de pêche de la FAO"
   },
   "fishing-effort-ais": {
-    "description": "Pour déterminer l'« effort de pêche apparent », Global Fishing Watch analyse les données du système d'identification automatique (AIS) recueillies auprès des navires que nos recherches ont identifiés comme des navires de pêche commerciaux connus ou potentiels, et applique un algorithme de détection de la pêche basé sur les changements de vitesse et de cap des navires.",
+    "description": "Pour déterminer l'« activité de pêche apparente », Global Fishing Watch analyse les données du système d'identification automatique (AIS) recueillies auprès des navires que nos recherches ont identifiés comme des navires de pêche commerciaux connus ou potentiels, et applique un modèle d'apprentissage automatique qui analyse des séquences de positions des navires et leurs caractéristiques associées, notamment la vitesse, la bathymétrie, la position relative et la distance à la côte.",
     "moreInfoLink": "",
-    "name": "Effort de pêche apparent (AIS)"
+    "name": "Activité de pêche apparente (AIS)"
   },
   "fishing-effort-vms": {
-    "description": "Pour déterminer l'« effort de pêche apparent », Global Fishing Watch analyse les données du système de surveillance des navires (VMS) recueillies auprès des navires que nos recherches ont identifiés comme des navires de pêche commerciaux connus ou potentiels, et applique un algorithme de détection de la pêche basé sur les changements de vitesse et de cap des navires",
+    "description": "Pour déterminer l'« activité de pêche apparente », Global Fishing Watch analyse les données du système de surveillance des navires (VMS) recueillies auprès des navires que nos recherches ont identifiés comme des navires de pêche commerciaux connus ou potentiels, et applique un modèle d'apprentissage automatique qui analyse des séquences de positions des navires et leurs caractéristiques associées, notamment la vitesse, la bathymétrie, la position relative et la distance à la côte.",
     "moreInfoLink": "",
-    "name": "Effort de pêche apparent (VMS)"
+    "name": "Activité de pêche apparente (VMS)"
   },
   "gfcm-fao": {
     "description": "In the Mediterranean and the Black Sea, 1,760,000 square kilometers of sea habitats are protected by ten fisheries restricted areas established by the GFCM, in which some specific fishing activities are temporarily or permanently banned or restricted.",
