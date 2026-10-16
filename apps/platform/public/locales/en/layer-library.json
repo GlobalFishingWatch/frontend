@@ -45,7 +45,7 @@
     "name": "Territorial Seas (12 nautical miles)"
   },
   "encounters": {
-    "description": "Identified from AIS data as locations where two vessels, a carrier and fishing vessel, were within 500 meters for at least 2 hours and traveling at a median speed under 2 knots, while at least 10 km from a coastal anchorage.",
+    "description": "Identified from AIS data as locations where two vessels were within 500 meters for at least 2 hours and traveling at a median speed under 2 knots, while at least 10 km from a coastal anchorage.",
     "moreInfoLink": "",
     "name": "Encounter events  (AIS)"
   },
@@ -55,14 +55,14 @@
     "name": "FAO major fishing areas"
   },
   "fishing-effort-ais": {
-    "description": "To determine “apparent fishing effort”, Global Fishing Watch analyzes automatic identification system (AIS) data collected from vessels that our research has identified as known or possible commercial fishing vessels and applies a fishing detection algorithm based on changes in vessel speed and direction.",
+    "description": "To determine “apparent fishing activity”, Global Fishing Watch analyzes automatic identification system (AIS) data collected from vessels that our research has identified as known or possible commercial fishing vessels and applies a machine learning model that analyzes sequences of vessel positions and associated features, including speed, bathymetry, relative location and distance from shore.",
     "moreInfoLink": "",
-    "name": "Apparent fishing effort (AIS)"
+    "name": "Apparent fishing activity (AIS)"
   },
   "fishing-effort-vms": {
-    "description": "To determine “apparent fishing effort”, Global Fishing Watch analyzes vessel monitoring system (VMS) data collected from vessels that our research has identified as known or possible commercial fishing vessels and applies a fishing detection algorithm based on changes in vessel speed and direction.",
+    "description": "To determine “apparent fishing activity”, Global Fishing Watch analyzes vessel monitoring system (VMS) data collected from vessels that our research has identified as known or possible commercial fishing vessels and applies a machine learning model that analyzes sequences of vessel positions and associated features, including speed, bathymetry, relative location and distance from shore.",
     "moreInfoLink": "",
-    "name": "Apparent fishing effort (VMS)"
+    "name": "Apparent fishing activity (VMS)"
   },
   "gfcm-fao": {
     "description": "In the Mediterranean and the Black Sea, 1,760,000 square kilometers of sea habitats are protected by ten fisheries restricted areas established by the GFCM, in which some specific fishing activities are temporarily or permanently banned or restricted.",
