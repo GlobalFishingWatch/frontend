@@ -90,7 +90,7 @@
     },
     "detections-report": {
       "description": "El radar de apertura sintética (SAR) puede detectar embarcaciones y estructuras en el mar en cualquier condición meteorológica. El sistema de detección de luces nocturnas (VIIRS) muestra las embarcaciones en el mar que han sido detectadas por satélites mediante la luz que emiten durante la noche.",
-      "name": "Detección Global de Embarcaciones Oscuros"
+      "name": "Detección Global de Embarcaciones Oscuras"
     },
     "events-report": {
       "description": "Actividad global sobre eventos de embarcaciones basada en el sistema de identificación automática (AIS), incluidos encuentros entre dos embarcaciones, eventos a la deriva y visitas a puertos.",
