@@ -20,12 +20,12 @@
     "name": "Recifes de coral"
   },
   "currents": {
-    "description": "Correntes oceânicas são o movimento da água do mar impulsionada pelo vento, temperatura, salinidade, marés e pela rotação da Terra. As correntes oceânicas regulam o aquecimento climático, os nutrientes e as espécies marinhas. Este conjunto de dados mostra correntes superficiais oceânicas globais, incluindo velocidade e direcção, fornecendo informações sobre padrões de circulação em grande escala.",
+    "description": "Correntes oceânicas são o movimento da água do mar impulsionada pelo vento, temperatura, salinidade, marés e pela rotação da Terra. As correntes oceânicas regulam o aquecimento climático, os nutrientes e as espécies marinhas. Este conjunto de dados mostra correntes superficiais oceânicas globais, incluindo velocidade e direção, fornecendo informações sobre padrões de circulação em grande escala.",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description",
     "name": "Correntes Marítimas"
   },
   "dsm-isa-leasing-areas": {
-    "description": "Estas representam as áreas actualmente alugadas pela Autoridade Internacional para o fundo marinho (ISA) para exploração de nodulos polimetálicos, sulfitos polimetálicos e crustas ferro-manganesas ricas em cobaltos no alto mar. Cada polígono representa um contrato de 15 anos com um contratante mineiro e um país patrocinador para a exploração de minerais. Nenhuma dessas áreas está locada atualmente para exploração (ou seja, minas comerciais), embora sejam as mesmas regiões que serão extraídas se os contratos de exploração forem alguma vez aprovados pela AIS. A ISA é o organismo intergovernamental das Nações Unidas encarregado de proteger o fundo marítimo internacional juntamente com a gestão de qualquer actividade relacionada com recursos minerais na região.",
+    "description": "Estas representam as áreas atualmente alugadas pela Autoridade Internacional para o fundo marinho (ISA) para exploração de nodulos polimetálicos, sulfitos polimetálicos e crustas ferro-manganesas ricas em cobaltos no alto mar. Cada polígono representa um contrato de 15 anos com um contratante mineiro e um país patrocinador para a exploração de minerais. Nenhuma dessas áreas está locada atualmente para exploração (ou seja, minas comerciais), embora sejam as mesmas regiões que serão extraídas se os contratos de exploração forem alguma vez aprovados pela AIS. A ISA é o organismo intergovernamental das Nações Unidas encarregado de proteger o fundo marítimo internacional juntamente com a gestão de qualquer atividade relacionada com recursos minerais na região.",
     "moreInfoLink": "https://www.isa.org.jm/",
     "name": "Áreas de Licença ISA"
   },
@@ -125,7 +125,7 @@
     "name": "Infraestrutura fixa offshore (SAR, óptica)"
   },
   "oxygen": {
-    "description": "Oxigênio dissolvido é a quantidade de oxigênio presente na água e é fundamental para o crescimento e a sobrevivência dos organismos marinhos. O aquecimento das temperaturas dos oceanos pode levar a uma expansão de zonas com baixo teor de oxigénio, o que pode impactar a distribuição e a abundância da vida marinha. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo o oxigênio dissolvido, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. ",
+    "description": "Oxigênio dissolvido é a quantidade de oxigênio presente na água e é fundamental para o crescimento e a sobrevivência dos organismos marinhos. O aquecimento das temperaturas dos oceanos pode levar a uma expansão de zonas com baixo teor de oxigênio, o que pode impactar a distribuição e a abundância da vida marinha. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo o oxigênio dissolvido, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau.",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "Concentração de oxigênio (O2)"
   },
@@ -240,7 +240,7 @@
     "name": "Detecção de luz noturna (VIIRS)"
   },
   "viirs-skylight": {
-    "description": "Esta camada mostra os navios detectados à noite usando a Suite de Radiómetro Infravermelho Visível (VIIRS) a bordo de vários satélites. Estes sensores são excepcionalmente sensíveis à luz de baixo nível. permitir que detectem navios pela luz que emitem no mar, como luzes de barco ou lâmpadas de pesca de alta intensidade.",
+    "description": "Esta camada mostra os navios detectados à noite usando a Suite de Radiômetro Infravermelho Visível (VIIRS) a bordo de vários satélites. Estes sensores são excepcionalmente sensíveis à luz de baixo nível. permitir que detectem navios pela luz que emitem no mar, como luzes de barco ou lâmpadas de pesca de alta intensidade.",
     "moreInfoLink": "",
     "name": "Detecções de luz noturna (Skylight)"
   },
