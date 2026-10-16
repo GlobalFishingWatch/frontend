@@ -248,10 +248,13 @@ export const getCommonFiltersInDataview = (
           label += ' (Experimental)'
         }
         if (label === field) {
+          const isShiptypeEventsFilter =
+            // workaround needed because events datasets are using `type` as filter inestead of vessel_type like presence
+            activeDatasets?.some((dataset) => dataset.id?.includes('events')) && filter === 'type'
           if (filter === 'geartypes' || filter === 'geartype') {
             // There is an fixed list of gearTypes independant of the dataset
             label = getVesselGearTypeLabel({ geartypes: field as string })
-          } else if (filter === 'vessel_type' || filter === 'shiptypes') {
+          } else if (isShiptypeEventsFilter || filter === 'vessel_type' || filter === 'shiptypes') {
             label = getVesselShipTypeLabel({ shiptypes: field as string })
           } else if (
             dataview.category !== DataviewCategory.Context &&
