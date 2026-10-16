@@ -45,7 +45,7 @@
     "name": "Mares territoriales (12 millas náuticas)"
   },
   "encounters": {
-    "description": "Identificados de los datos AIS como lugares donde dos buques, un transportador y uno pesquero, estuvieron a 500 metros durante al menos 2 horas y viajando a una velocidad media menor a 2 nudos mientras se encontraban a mas de 10 km de un anclaje costero.",
+    "description": "Identificados de los datos AIS como lugares donde dos buques estuvieron a 500 metros durante al menos 2 horas y viajando a una velocidad media menor a 2 nudos mientras se encontraban a más de 10 km de un anclaje costero.",
     "moreInfoLink": "",
     "name": "Eventos de encuentro (AIS)"
   },
@@ -55,14 +55,14 @@
     "name": "Zonas de pesca de la FAO"
   },
   "fishing-effort-ais": {
-    "description": "Para determinar el \"esfuerzo de pesca aparente\", Global Fishing Watch analiza los datos del sistema de identificación automática (AIS) recopilados de buques que nuestra investigación ha identificado como buques de pesca comercial conocidos o posibles y aplica un algoritmo de detección de pesca basado en los cambios de velocidad y dirección de los buques.",
+    "description": "Para determinar la \"actividad de pesca aparente\", Global Fishing Watch analiza los datos del sistema de identificación automática (AIS) recopilados de buques que nuestra investigación ha identificado como buques de pesca comercial conocidos o posibles y aplica un modelo de aprendizaje automático que analiza secuencias de posiciones de los buques y sus características asociadas, como la velocidad, la batimetría, la ubicación relativa y la distancia a la costa.",
     "moreInfoLink": "",
-    "name": "Esfuerzo de pesca aparente (AIS)"
+    "name": "Actividad de pesca aparente (AIS)"
   },
   "fishing-effort-vms": {
-    "description": "Para determinar el \"esfuerzo de pesca aparente\", Global Fishing Watch analiza los datos del sistema de monitoreo de buques (VMS) recopilados de buques que nuestra investigación ha identificado como buques de pesca comercial conocidos o posibles y aplica un algoritmo de detección de pesca basado en los cambios de velocidad y dirección de los buques.",
+    "description": "Para determinar la \"actividad de pesca aparente\", Global Fishing Watch analiza los datos del sistema de monitoreo de buques (VMS) recopilados de buques que nuestra investigación ha identificado como buques de pesca comercial conocidos o posibles y aplica un modelo de aprendizaje automático que analiza secuencias de posiciones de los buques y sus características asociadas, como la velocidad, la batimetría, la ubicación relativa y la distancia a la costa.",
     "moreInfoLink": "",
-    "name": "Esfuerzo de pesca aparente (VMS)"
+    "name": "Actividad de pesca aparente (VMS)"
   },
   "gfcm-fao": {
     "description": "En el Mediterráneo y el Mar Negro, 1.760.000 kilómetros cuadrados de hábitats marinos están protegidos por diez zonas restringidas de pesca establecidas por la CGPM, en las que algunas actividades pesqueras específicas están prohibidas o restringidas de forma temporal o permanentemente.",
