@@ -187,7 +187,7 @@
     "and": "and",
     "anyoneWithTheLink": "Anyone with the link",
     "anyoneWithThePassword": "Anyone with the password",
-    "apparentFishing": "Apparent fishing effort",
+    "apparentFishing": "Apparent fishing activity",
     "applyToAll": "Apply to all",
     "area_one": "area",
     "area_other": "areas",
@@ -978,12 +978,12 @@
     },
     "copilotExamples": {
       "carrierEncounters": "Encounters between carriers and fishing vessels in IOTC",
-      "galapagosEffort": "Fishing effort inside the Galápagos Marine Reserve last month",
+      "galapagosEffort": "Apparent fishing activity inside the Galápagos Marine Reserve last month",
       "lasPalmasVisits": "Which vessels visited the Tenerife port in December?",
       "loiteringWestAfrica": "Loitering events off the coast of West Africa",
       "nightLightYellowSea": "Night light detections in the Yellow Sea last winter",
       "northSeaTrawling": "Compare trawling hours in the North Sea between 2023 and 2024",
-      "peruEffort": "AIS and VMS apparent fishing effort in the Peruvian EEZ",
+      "peruEffort": "AIS and VMS apparent fishing activity in the Peruvian EEZ",
       "senegalPortVisits": "Port visits by Spanish-flagged vessels in Senegal",
       "squidPacific": "Chinese squid jiggers fishing in southeast Pacific in 2024",
       "trackVessel": "Track the vessel with MMSI 412331107 over the past year"
