@@ -75,7 +75,7 @@
   },
   "reports": {
     "activity-report": {
-      "description": "Monitorear el esfuerzo pesquero aparente y la presencia de embarcaciones casi en tiempo real basándose en datos del AIS global y del VMS de nuestros países socios.",
+      "description": "Monitorear la actividad de pesca aparente y la presencia de embarcaciones casi en tiempo real basándose en datos del AIS global y del VMS de nuestros países socios.",
       "name": "Actividad Global de Embarcaciones"
     },
     "carrier-portal-report": {
