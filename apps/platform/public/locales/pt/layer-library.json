@@ -25,7 +25,7 @@
     "name": "Correntes Marítimas"
   },
   "dsm-isa-leasing-areas": {
-    "description": "Estas representam as áreas atualmente alugadas pela Autoridade Internacional para o fundo marinho (ISA) para exploração de nodulos polimetálicos, sulfitos polimetálicos e crustas ferro-manganesas ricas em cobaltos no alto mar. Cada polígono representa um contrato de 15 anos com um contratante mineiro e um país patrocinador para a exploração de minerais. Nenhuma dessas áreas está locada atualmente para exploração (ou seja, minas comerciais), embora sejam as mesmas regiões que serão extraídas se os contratos de exploração forem alguma vez aprovados pela AIS. A ISA é o organismo intergovernamental das Nações Unidas encarregado de proteger o fundo marítimo internacional juntamente com a gestão de qualquer atividade relacionada com recursos minerais na região.",
+    "description": "Estas representam as áreas atualmente alugadas pela Autoridade Internacional para o fundo marinho (ISA) para exploração de nódulos polimetálicos, sulfitos polimetálicos e crustas ferro-manganesas ricas em cobaltos no alto mar. Cada polígono representa um contrato de 15 anos com um contratante mineiro e um país patrocinador para a exploração de minerais. Nenhuma dessas áreas está locada atualmente para exploração (ou seja, minas comerciais), embora sejam as mesmas regiões que serão extraídas se os contratos de exploração forem alguma vez aprovados pela ISA. A ISA é o organismo intergovernamental das Nações Unidas encarregado de proteger o fundo marítimo internacional juntamente com a gestão de qualquer atividade relacionada com recursos minerais na região.",
     "moreInfoLink": "https://www.isa.org.jm/",
     "name": "Áreas de Licença ISA"
   },
@@ -240,7 +240,7 @@
     "name": "Detecção de luz noturna (VIIRS)"
   },
   "viirs-skylight": {
-    "description": "Esta camada mostra os navios detectados à noite usando a Suite de Radiômetro Infravermelho Visível (VIIRS) a bordo de vários satélites. Estes sensores são excepcionalmente sensíveis à luz de baixo nível. permitir que detectem navios pela luz que emitem no mar, como luzes de barco ou lâmpadas de pesca de alta intensidade.",
+    "description": "Esta camada mostra os navios detectados à noite usando a Suite de Radiômetro Infravermelho Visível (VIIRS) a bordo de vários satélites. Estes sensores são excepcionalmente sensíveis à luz de baixo nível, permitindo que detectem navios pela luz que emitem no mar, como luzes de barco ou lâmpadas de pesca de alta intensidade.",
     "moreInfoLink": "",
     "name": "Detecções de luz noturna (Skylight)"
   },
