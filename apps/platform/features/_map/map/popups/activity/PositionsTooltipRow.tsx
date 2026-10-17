@@ -35,6 +35,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import I18nDate from 'features/i18n/i18nDate'
+import { openDetectionFeedbackModal } from 'features/modals/modals.slice'
 import { pickDateFormatByPrecision } from 'utils/dates'
 import { formatInfoField, upperFirst } from 'utils/info'
 
@@ -64,12 +65,16 @@ function DetectionThumbnails({
   thumbnails,
   scale,
   datasetId,
+  detectionId,
 }: {
   thumbnails: DetectionThumbnail[]
   scale?: number
   datasetId?: string
+  detectionId?: string
 }) {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+
   const [selectedName, setSelectedName] = useState<string>()
   if (!thumbnails.length) {
     return null
@@ -98,15 +103,23 @@ function DetectionThumbnails({
           datasetId={datasetId}
         />
       </Suspense>
-      {options.length > 1 && (
-        <Choice
+      <div className={popupStyles.thumbnailActions}>
+        {options.length > 1 && (
+          <Choice
+            size="small"
+            options={options}
+            activeOption={thumbnail.name}
+            onSelect={({ id }) => setSelectedName(id)}
+            containerClassName={popupStyles.thumbnailBands}
+          />
+        )}
+        <IconButton
+          icon="feedback"
           size="small"
-          options={options}
-          activeOption={thumbnail.name}
-          onSelect={({ id }) => setSelectedName(id)}
-          containerClassName={popupStyles.thumbnailBands}
+          type="invert"
+          onClick={() => dispatch(openDetectionFeedbackModal({ datasetId, detectionId }))}
         />
-      )}
+      </div>
     </div>
   )
 }
@@ -311,6 +324,7 @@ function PositionsTooltipRow({
             thumbnails={feature.properties.thumbnails}
             scale={getDatasetConfiguration(thumbnailsDataset, 'thumbnailsV1')?.scale}
             datasetId={datasetId}
+            detectionId={feature.properties.id}
           />
         )}
     </Fragment>

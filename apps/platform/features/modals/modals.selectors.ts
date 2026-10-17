@@ -6,6 +6,7 @@ import { selectDownloadActivityModalOpen } from 'features/_map/download/download
 import { selectVesselGroupModalOpen } from 'features/_user/vessel-groups/vessel-groups-modal.slice'
 import {
   selectDatasetUploadModalOpen,
+  selectDetectionFeedbackModalOpen,
   selectDownloadTrackModalOpen,
   selectFeedbackModalOpen,
   selectLayerLibraryModalOpen,
@@ -30,6 +31,7 @@ const selectAppModals = createSelector(
     selectVesselGroupModalOpen,
     selectDownloadTrackModalOpen,
     selectDownloadActivityModalOpen,
+    selectDetectionFeedbackModalOpen,
   ],
   (
     feedbackModalOpen,
@@ -39,7 +41,8 @@ const selectAppModals = createSelector(
     infoCorrectionModalOpen,
     vesselGroupsModalOpen,
     downloadTrackModalOpen,
-    downloadActivityModalOpen
+    downloadActivityModalOpen,
+    detectionFeedbackModalOpen
   ) => {
     return {
       feedback: feedbackModalOpen,
@@ -50,6 +53,7 @@ const selectAppModals = createSelector(
       vesselGroups: vesselGroupsModalOpen,
       downloadTrack: downloadTrackModalOpen,
       downloadActivity: downloadActivityModalOpen,
+      detectionFeedback: detectionFeedbackModalOpen,
     }
   }
 )
