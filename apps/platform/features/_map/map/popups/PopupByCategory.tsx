@@ -6,6 +6,7 @@ import { groupBy, uniqBy } from 'es-toolkit'
 import type { DatasetSubCategory } from '@globalfishingwatch/api-types'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { isContextDataview } from '@globalfishingwatch/dataviews-client'
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import type {
   BathymetryContourPickingObject,
@@ -224,9 +225,12 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             )
           }
           case DataviewCategory.Environment: {
-            const contextFeatures = (features as UserLayerPickingObject[]).filter(
-              (feature) => feature.subcategory === DataviewType.UserContext
-            )
+            const isContextFeature = (feature: (typeof features)[number]) => {
+              if (feature.subcategory === DataviewType.UserContext) return true
+              const dataview = dataviews.find((d) => d.id === feature.layerId)
+              return dataview ? isContextDataview(dataview) : false
+            }
+            const contextFeatures = features.filter(isContextFeature) as UserLayerPickingObject[]
             const vectorsFeatures = (features as FourwingsHeatmapPickingObject[]).filter(
               (feature) => feature.subcategory === DataviewType.FourwingsVector
             )
@@ -237,9 +241,9 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               features as SliceExtendedFourwingsPickingObject[]
             ).filter(
               (feature) =>
-                feature.subcategory !== DataviewType.UserContext &&
-                feature.subcategory !== DataviewType.FourwingsVector &&
-                !isBathymetryContour(feature)
+                !isContextFeature(feature) &&
+                !isBathymetryContour(feature) &&
+                feature.subcategory !== DataviewType.FourwingsVector
             )
             return (
               <Fragment key={featureCategory}>
