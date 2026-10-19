@@ -435,7 +435,7 @@
     "title": "Dataset",
     "typeBigQuery": "BigQuery",
     "typeGridded": "Raster em grade",
-    "typeGriddedDescription": "Exibir um conjunto de dados raster em grade a partir de um arquivo GeoTIFF ou NetCDF",
+    "typeGriddedDescription": "Exibir um conjunto de dados raster em grade a partir de um arquivo GeoTIFF ou NetCDF (EPSG:4326)",
     "typePoints": " Pontos",
     "typePointsDescription": "Exibir uma ou várias posições com rótulos no seu conjunto de dados",
     "typePolygons": " Polígonos",
