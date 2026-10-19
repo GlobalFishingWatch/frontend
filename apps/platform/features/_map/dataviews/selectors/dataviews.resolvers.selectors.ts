@@ -24,6 +24,7 @@ import { selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
 import {
   isDataviewDeprecated,
   isDataviewInTimeMode,
+  removeGuestRestrictedVesselDatasets,
   resolveVesselDataviewInstance,
   withLonglineSetsEvents,
 } from 'features/_map/dataviews/dataviews.utils'
@@ -31,11 +32,7 @@ import { selectDataviewInstancesInjected } from 'features/_map/dataviews/selecto
 import { selectWorkspaceDataviewInstancesMerged } from 'features/_map/dataviews/selectors/dataviews.merged.selectors'
 import { selectHighlightedTime } from 'features/_map/timebar/timebar.slice'
 import { selectTimeMode } from 'features/_map/workspace/workspace.selectors'
-import {
-  selectIsGuestUser,
-  selectUserLanguage,
-  selectUserLogged,
-} from 'features/_user/selectors/user.selectors'
+import { selectIsGuestUser, selectUserLanguage } from 'features/_user/selectors/user.selectors'
 import { selectAllVesselGroups } from 'features/_user/vessel-groups/vessel-groups.slice'
 import { selectTrackCorrectionVesselDataviewId } from 'features/_vessels/track-correction/track-correction.slice'
 import { selectCurrentVesselEvent } from 'features/_vessels/vessel/selectors/vessel.selectors'
@@ -97,7 +94,6 @@ export const selectAllDataviewInstancesResolved = createSelector(
     selectAllDataviews,
     selectAllDatasets,
     selectAllVesselGroups,
-    selectUserLogged,
     selectTrackThinningConfig,
     selectIsGuestUser,
     selectTrackCorrectionVesselDataviewId,
@@ -114,7 +110,6 @@ export const selectAllDataviewInstancesResolved = createSelector(
     dataviews,
     datasets,
     vesselGroups,
-    loggedUser,
     trackThinningZoomConfig,
     guestUser,
     trackCorrectionVesselDataviewId,
@@ -134,7 +129,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
         ? resolveVesselDataviewInstance(dataviewInstance, {
             datasets,
             dataviews,
-            loggedUser,
+            guestUser,
             trackThinningZoomConfig,
           })
         : dataviewInstance
@@ -183,7 +178,9 @@ export const selectAllDataviewInstancesResolved = createSelector(
       info: infoDatasetConfigsCallback(guestUser),
     }
     const dataviewInstancesResolvedExtended = extendDataviewDatasetConfig(
-      dataviewInstancesResolvedWithConfigInjected,
+      guestUser
+        ? dataviewInstancesResolvedWithConfigInjected.map(removeGuestRestrictedVesselDatasets)
+        : dataviewInstancesResolvedWithConfigInjected,
       callbacks
     )
     const dataviewInstancesResolvedExtendedUniq = uniqBy(

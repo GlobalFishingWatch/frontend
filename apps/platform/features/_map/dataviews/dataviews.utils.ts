@@ -31,6 +31,7 @@ import {
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   getEncounteredVesselDataviewInstanceId,
+  getIsVesselDataviewInstanceId,
   getVesselDataviewInstanceId,
   getVesselIdFromInstanceId,
 } from '@globalfishingwatch/dataviews-client'
@@ -210,11 +211,11 @@ export const getVesselDataviewInstanceDatasetConfig = (
 export const resolveVesselTrackConfig = ({
   config,
   datasets,
-  loggedUser,
+  guestUser,
 }: {
   config: UrlDataviewInstance['config']
   datasets: Dataset[]
-  loggedUser: boolean
+  guestUser: boolean
 }) => {
   const resolvedConfig = { ...config }
   if (!resolvedConfig.info) {
@@ -222,13 +223,13 @@ export const resolveVesselTrackConfig = ({
   }
   const infoDataset = datasets.find((d) => d.id === resolvedConfig.info)
   // Vessel pined from not logged user but is logged now and the related dataset is available
-  if (loggedUser && !resolvedConfig.track) {
+  if (!guestUser && !resolvedConfig.track) {
     const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)?.id
     if (trackDatasetId) {
       resolvedConfig.track = trackDatasetId
     }
   }
-  if (!resolvedConfig.trackRealTime && resolvedConfig.ssvid) {
+  if (!guestUser && !resolvedConfig.trackRealTime && resolvedConfig.ssvid) {
     const { trackRealTime } = getVesselTrackDatasetIds(infoDataset, datasets)
     if (trackRealTime) {
       resolvedConfig.trackRealTime = trackRealTime
@@ -252,12 +253,12 @@ export const resolveVesselDataviewInstance = (
   {
     datasets,
     dataviews,
-    loggedUser,
+    guestUser,
     trackThinningZoomConfig,
   }: {
     datasets: Dataset[]
     dataviews: Dataview[]
-    loggedUser: boolean
+    guestUser: boolean
     trackThinningZoomConfig: DataviewConfig['trackThinningZoomConfig']
   }
 ): UrlDataviewInstance => {
@@ -283,7 +284,7 @@ export const resolveVesselDataviewInstance = (
         info: dataviewInstance.config?.info || dataviewInfoDatasetId,
       },
       datasets,
-      loggedUser,
+      guestUser,
     })
     const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
       getVesselIdFromInstanceId(dataviewInstance.id),
@@ -292,6 +293,32 @@ export const resolveVesselDataviewInstance = (
     newDataviewInstance.datasetsConfig = datasetsConfig
   }
   return newDataviewInstance
+}
+
+const GUEST_RESTRICTED_VESSEL_ENDPOINTS: string[] = [
+  EndpointId.Tracks,
+  EndpointId.TracksRealTime,
+  EndpointId.Events,
+]
+// Vessel tracks and events require login. Runs after resolveDataviews because it merges
+// the template dataview datasetsConfig back into the instance
+export const removeGuestRestrictedVesselDatasets = <
+  D extends { id: string; datasetsConfig?: DataviewDatasetConfig[]; datasets?: Dataset[] },
+>(
+  dataview: D
+): D => {
+  if (!getIsVesselDataviewInstanceId(dataview.id)) {
+    return dataview
+  }
+  const datasetsConfig = dataview.datasetsConfig?.filter(
+    ({ endpoint }) => !GUEST_RESTRICTED_VESSEL_ENDPOINTS.includes(endpoint)
+  )
+  const datasetIds = new Set(datasetsConfig?.map(({ datasetId }) => datasetId))
+  return {
+    ...dataview,
+    datasetsConfig,
+    datasets: dataview.datasets?.filter(({ id }) => datasetIds.has(id)),
+  }
 }
 
 const LONGLINE_EVENTS_INCLUDES = ['fishing.dayNightSummary']
