@@ -435,7 +435,7 @@
     "title": "Jeu de données",
     "typeBigQuery": "BigQuery",
     "typeGridded": "Raster en grille",
-    "typeGriddedDescription": "Afficher un jeu de données raster en grille à partir d’un fichier GeoTIFF ou NetCDF",
+    "typeGriddedDescription": "Afficher un jeu de données raster en grille à partir d’un fichier GeoTIFF ou NetCDF (EPSG:4326)",
     "typePoints": " Points",
     "typePointsDescription": "Afficher une ou plusieurs points avec labels de votre jeu de données",
     "typePolygons": " Polygones",
