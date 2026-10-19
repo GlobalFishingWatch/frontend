@@ -5,9 +5,9 @@
     "name": "Bathymétrie"
   },
   "bathymetry-contour": {
-    "description": "Bathymetry is the measurement of water depth and provides details of the physical features of the ocean floor. This contour dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second resolution.",
-    "moreInfoLink": "https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO2022",
-    "name": "Bathymetry contour"
+    "description": "Lignes d’égale profondeur d’eau, indiquées en mètres, qui montrent la forme du fond marin. Filtrez par zone océanique, plage de profondeur ou profondeur unique. Issues du modèle de relief global ETOPO 2022.",
+    "moreInfoLink": "https://www.ncei.noaa.gov/products/etopo-global-relief-model",
+    "name": "Contours bathymétriques"
   },
   "chlorophyl": {
     "description": "La chlorophylle-a est le pigment assimilateur de lumière que l'on retrouve dans toutes les plantes photosynthétiques. Le phytoplancton marin fixe chimiquement le carbone par photosynthèse en absorbant du dioxyde de carbone dissous et en produisant de l'oxygène. Ce jeu de données est composé de paramètres biogéochimiques, y compris la chlorophylle, affichés sur l'océan global avec une résolution horizontale de 1/4 degré. ",
