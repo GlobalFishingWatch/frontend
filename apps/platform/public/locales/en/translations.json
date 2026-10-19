@@ -435,7 +435,7 @@
     "title": "Dataset",
     "typeBigQuery": "BigQuery",
     "typeGridded": "Gridded Raster",
-    "typeGriddedDescription": "Display a heatmap from a GeoTIFF or NetCDF raster (EPSG:4326)",
+    "typeGriddedDescription": "Display a gridded raster dataset from a GeoTIFF or NetCDF file (EPSG:4326)",
     "typePoints": "Points",
     "typePointsDescription": "Display one or multiple positions with labels in your dataset",
     "typePolygons": " Polygons",
