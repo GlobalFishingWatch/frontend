@@ -5,9 +5,9 @@
     "name": "Batimetría"
   },
   "bathymetry-contour": {
-    "description": "La batimetría mide la profundidad del agua y proporciona detalles sobre las características físicas del fondo marino. Este conjunto de datos de contorno es un modelo de terreno global continuo que proporciona datos de elevación del océano en metros con una resolución de 15 segundos de arco.",
-    "moreInfoLink": "https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO2022",
-    "name": "Contorno de batimetría"
+    "description": "Líneas de igual profundidad del agua, etiquetadas en metros, que muestran la forma del fondo marino. Filtre por zona oceánica, rango de profundidad o una profundidad concreta. Derivadas del modelo global de relieve ETOPO 2022.",
+    "moreInfoLink": "https://www.ncei.noaa.gov/products/etopo-global-relief-model",
+    "name": "Contornos de batimetría"
   },
   "chlorophyl": {
     "description": "La clorofila a es el pigmento cosechador de luz que se encuentra en todas las plantas fotosintéticas. El fitoplancton marino fija el carbono químicamente a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo la clorofila, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",
