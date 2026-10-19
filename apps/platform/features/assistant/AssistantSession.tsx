@@ -1,24 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { type UIMessage } from 'ai'
-import { useGetThreadMessagesQuery } from 'queries/map/chat-api'
+import { useGetThreadMessagesQuery } from 'queries/assistant-api'
 
-import { Spinner } from '@globalfishingwatch/ui-components'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 
-import { useChatThreads } from 'features/_map/content-panel/chat/chat-threads.hooks'
-import ChatSessionMessages from 'features/_map/content-panel/chat/ChatSessionMessages'
 import { selectUserId } from 'features/_user/selectors/user.permissions.selectors'
+import { useAssistantThreads } from 'features/assistant/assistant-threads.hooks'
+import AssistantMessages from 'features/assistant/AssistantMessages'
 
-import styles from './Chat.module.css'
+import styles from './Assistant.module.css'
 
 // The agent creates the thread and starts its title when the first message arrives; the title
 // usually lands a couple of seconds later, well before the reply ends.
 const TITLE_REFRESH_DELAY = 5000
 
-function ChatSession() {
+function AssistantSession() {
   const userId = useSelector(selectUserId)
   const { activeThreadId, activeThreadIsNew, markThreadStarted, threadsLoading, refreshThreads } =
-    useChatThreads()
+    useAssistantThreads()
 
   const [startedThreadId, setStartedThreadId] = useState<string | null>(null)
 
@@ -44,7 +44,7 @@ function ChatSession() {
   }
 
   return (
-    <ChatSessionMessages
+    <AssistantMessages
       key={activeThreadId}
       userId={userId}
       threadId={activeThreadId}
@@ -65,4 +65,4 @@ function ChatSession() {
   )
 }
 
-export default ChatSession
+export default AssistantSession

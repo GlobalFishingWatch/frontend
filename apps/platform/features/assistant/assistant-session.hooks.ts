@@ -1,31 +1,19 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useChat } from '@ai-sdk/react'
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, useRouter } from '@tanstack/react-router'
 import { DefaultChatTransport, getToolName, isToolUIPart, type UIMessage } from 'ai'
-import { isNil, omitBy } from 'es-toolkit'
 import { useStore as useJotaiStore } from 'jotai'
-import { AGENT_BASE_URL } from 'queries/map/chat-api'
+import { AGENT_BASE_URL } from 'queries/assistant-api'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { deckLayersAtom } from '@globalfishingwatch/deck-layer-composer'
-import { OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 
-import { getMapView } from 'features/_map/content-panel/chat/chat-map-view'
+import { useAppStore } from 'features/app/app.hooks'
+import { getAssistantRequestContext } from 'features/assistant/assistant-context'
 import {
   getNavigateToolLinkProps,
   navigateToolOutputSchema,
-  useNavigateToolMapState,
-} from 'features/_map/content-panel/chat/navigate-tool'
-import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
-import { mapInstanceAtom } from 'features/_map/map/map.atoms'
-import { selectClickedEvent } from 'features/_map/map/map.slice'
-import { selectViewport } from 'features/_map/workspace/selectors/app.viewport.selectors'
-import { selectWorkspaceWithCurrentState } from 'features/_map/workspace/selectors/app.workspace.selectors'
-import { useAppStore } from 'features/app/app.hooks'
-import { useOceanAreas } from 'hooks/ocean-areas'
-
-// Messages sent before the url moved to the request context still carry it in the text
-export const MAP_URL_CONTEXT_PREFIX = '\n\n[current map url:'
+  useNavigateToolState,
+} from 'features/assistant/navigate-tool'
 
 export const FEEDBACK_PREFIX = '[feedback]'
 export type FeedbackRating = 'up' | 'down'
@@ -62,7 +50,7 @@ export function getFeedbackState(messages: UIMessage[]) {
   return { ratings, questionIds, hiddenIds }
 }
 
-async function chatFetchWithAuth(
+async function assistantFetchWithAuth(
   input: RequestInfo | URL,
   init: RequestInit = {}
 ): Promise<Response> {
@@ -82,26 +70,30 @@ async function chatFetchWithAuth(
   }
 }
 
-type ChatSessionArgs = {
+type AssistantSessionArgs = {
   threadId: string
   userId: number | string | undefined
   initialMessages: UIMessage[]
   onFinished?: () => void
 }
 
-export function useChatSession({ threadId, userId, initialMessages, onFinished }: ChatSessionArgs) {
+export function useAssistantSession({
+  threadId,
+  userId,
+  initialMessages,
+  onFinished,
+}: AssistantSessionArgs) {
   const routerNavigate = useNavigate()
+  const router = useRouter()
   const store = useAppStore()
   const jotaiStore = useJotaiStore()
-  const { getOceanAreaName } = useOceanAreas()
-  const { markExplicitSettings, applyNavigateMapState } = useNavigateToolMapState()
+  const { markExplicitSettings, applyNavigatePageState } = useNavigateToolState()
 
   const transport = useMemo(() => {
     return new DefaultChatTransport({
       api: `${AGENT_BASE_URL}/chat`,
-      fetch: chatFetchWithAuth,
+      fetch: assistantFetchWithAuth,
       prepareSendMessagesRequest({ messages, body }) {
-        console.log('🚀 ~ useChatSession ~ body:', body)
         return {
           body: {
             ...body,
@@ -149,64 +141,28 @@ export function useChatSession({ threadId, userId, initialMessages, onFinished }
       markExplicitSettings(navigation.search)
       const { to, params, search } = getNavigateToolLinkProps(navigation)
       routerNavigate({ to, params, search } as unknown as Parameters<typeof routerNavigate>[0])
-        .then(() => applyNavigateMapState(navigation.search))
+        .then(() => applyNavigatePageState(navigation.search))
         .catch((err) => console.warn('navigate tool: router navigation failed', err))
     }
-  }, [messages, routerNavigate, markExplicitSettings, applyNavigateMapState])
+  }, [messages, routerNavigate, markExplicitSettings, applyNavigatePageState])
 
   const loading = status === 'submitted' || status === 'streaming'
-
-  const getCurrentMapView = useCallback(async () => {
-    try {
-      const deckViewport = jotaiStore.get(mapInstanceAtom)?.getViewports()?.[0]
-      const state = store.getState()
-      const viewport = selectViewport(state)
-      if (!deckViewport || !viewport) {
-        return undefined
-      }
-      const [west, north] = deckViewport.unproject([0, 0])
-      const [east, south] = deckViewport.unproject([deckViewport.width, deckViewport.height])
-      const areaName = await getOceanAreaName({
-        viewport,
-        locale: OceanAreaLocale.en,
-        combineWithEEZ: true,
-      }).catch(() => undefined)
-      return getMapView({
-        deckLayers: jotaiStore.get(deckLayersAtom),
-        bounds: { west, north, east, south },
-        viewport,
-        datasets: selectAllDatasets(state),
-        areaName,
-        clicked: selectClickedEvent(state),
-      })
-    } catch (e) {
-      console.warn('chat: could not read the map view', e)
-      return undefined
-    }
-  }, [jotaiStore, store, getOceanAreaName])
 
   const sendMessage = useCallback(
     async (text: string) => {
       const trimmed = text.trim()
       if (!trimmed || loading) return false
-      const { state, dataviewInstances, ...rest } = selectWorkspaceWithCurrentState(
-        store.getState()
-      )
-      const workspace = {
-        ...rest,
-        state: omitBy(state || {}, isNil),
-        dataviewInstances: dataviewInstances?.filter((d) => d.config?.visible !== false),
-      }
-      const mapView = await getCurrentMapView()
+      // What assistant-context.config defines for the matched routes, e.g. the map's workspace
+      const requestContext = await getAssistantRequestContext(router.state.matches, {
+        reduxStore: store,
+        jotaiStore,
+      })
       // Not in the message text: the agent adds the request context to the prompt
       // without storing it, so the thread history does not repeat the url.
-      await sendMessageToSession(
-        { text: trimmed },
-        { body: { requestContext: { url: window.location.href, workspace, mapView } } }
-      )
+      await sendMessageToSession({ text: trimmed }, { body: { requestContext } })
       return true
     },
-    [loading, sendMessageToSession, store, getCurrentMapView]
+    [loading, sendMessageToSession, router, store, jotaiStore]
   )
 
   const sendFeedback = useCallback(

@@ -1,5 +1,8 @@
+import { isNil, omitBy } from 'es-toolkit'
+
 import type { ApiEvent, Dataset, TrackSegment } from '@globalfishingwatch/api-types'
 import type { DeckLayerAtom } from '@globalfishingwatch/deck-layer-composer'
+import { deckLayersAtom } from '@globalfishingwatch/deck-layer-composer'
 import type {
   ContextFeature,
   ContextPickingObject,
@@ -21,8 +24,11 @@ import type {
   FourwingsPointFeature,
   FourwingsPositionFeature,
 } from '@globalfishingwatch/deck-loaders'
+import { OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 
+import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
+import { mapInstanceAtom } from 'features/_map/map/map.atoms'
 import type {
   ExtendedFeatureByVesselEvent,
   ExtendedFeatureEvent,
@@ -31,13 +37,20 @@ import type {
   SliceExtendedFourwingsPickingObject,
   SliceInteractionEvent,
 } from 'features/_map/map/map.slice'
+import { selectClickedEvent } from 'features/_map/map/map.slice'
+import { setMapCoordinates } from 'features/_map/map/map-view-state.hooks'
 import { getContextValue } from 'features/_map/map/popups/map-popups.utils'
+import { timerangeState } from 'features/_map/timebar/timerange.hooks'
 import { filterFeaturesByDistance } from 'features/_map/workspace/context-areas/context.utils'
-import type { MapCoordinates } from 'types'
+import { selectViewport } from 'features/_map/workspace/selectors/app.viewport.selectors'
+import { selectWorkspaceWithCurrentState } from 'features/_map/workspace/selectors/app.workspace.selectors'
+import type { AssistantContextDeps } from 'features/assistant/assistant-context'
+import { getOceanAreaNameFn } from 'hooks/ocean-areas'
+import type { MapCoordinates, QueryParams } from 'types'
 
 /**
  * Summary of what the user sees on the map right now, read from the deck layers
- * already loaded for the viewport. Sent to the agent with each chat message so it
+ * already loaded for the viewport. Sent to the agent with each assistant message so it
  * can answer "is there any vessel here?", "what areas are visible?" or "where is
  * the activity?". Only what is rendered in the viewport for the current time range:
  * tiles outside the view are not loaded, so this is never a global answer.
@@ -296,7 +309,7 @@ export function getMapView(params: GetMapViewParams) {
         return layer.loaded ? summary : { ...summary, loaded: false }
       } catch (e) {
         // a layer in a transitional state must not block the message
-        console.warn('chat map view: could not summarize layer', layer.id, e)
+        console.warn('assistant map view: could not summarize layer', layer.id, e)
         return []
       }
     }),
@@ -408,9 +421,67 @@ function getClickedSummary(clicked: SliceInteractionEvent | null, datasets: Data
       try {
         return getClickedFeatureSummary(feature, datasets)
       } catch (e) {
-        console.warn('chat map view: could not summarize clicked feature', e)
+        console.warn('assistant map view: could not summarize clicked feature', e)
         return []
       }
     }),
+  }
+}
+
+async function getCurrentMapView({ reduxStore, jotaiStore }: AssistantContextDeps) {
+  try {
+    const state = reduxStore.getState()
+    const deckViewport = jotaiStore.get(mapInstanceAtom)?.getViewports()?.[0]
+    const viewport = selectViewport(state)
+    if (!deckViewport || !viewport) {
+      return undefined
+    }
+    const [west, north] = deckViewport.unproject([0, 0])
+    const [east, south] = deckViewport.unproject([deckViewport.width, deckViewport.height])
+    const areaName = await getOceanAreaNameFn({
+      viewport,
+      locale: OceanAreaLocale.en,
+      combineWithEEZ: true,
+    }).catch(() => undefined)
+    return getMapView({
+      deckLayers: jotaiStore.get(deckLayersAtom),
+      bounds: { west, north, east, south },
+      viewport,
+      datasets: selectAllDatasets(state),
+      areaName,
+      clicked: selectClickedEvent(state),
+    })
+  } catch (e) {
+    console.warn('assistant: could not read the map view', e)
+    return undefined
+  }
+}
+
+/**
+ * Assistant context for every route under the map layout (assistant-context.config).
+ * The workspace the user has open and what the map shows.
+ */
+export async function getContext(deps: AssistantContextDeps) {
+  const { state, dataviewInstances, ...rest } = selectWorkspaceWithCurrentState(
+    deps.reduxStore.getState()
+  )
+  const workspace = {
+    ...rest,
+    state: omitBy(state || {}, isNil),
+    dataviewInstances: dataviewInstances?.filter((d) => d.config?.visible !== false),
+  }
+  return { workspace, mapView: await getCurrentMapView(deps) }
+}
+
+export type MapAssistantContext = Awaited<ReturnType<typeof getContext>>
+
+/** Once the map is mounted, the url drives neither the timebar nor the camera */
+export function onNavigate(search: QueryParams, { jotaiStore }: AssistantContextDeps) {
+  const { start, end, latitude, longitude, zoom } = search
+  if (start && end) {
+    jotaiStore.set(timerangeState, { start, end })
+  }
+  if (latitude || longitude || zoom) {
+    setMapCoordinates(jotaiStore, { latitude, longitude, zoom })
   }
 }

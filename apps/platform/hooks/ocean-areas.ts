@@ -43,7 +43,7 @@ const searchOceanAreasFn = async (params: SearchOceanAreasParams): Promise<Ocean
   return data.data || []
 }
 
-const getOceanAreaNameFn = async (params: GetOceanAreaNameParams): Promise<string> => {
+export const getOceanAreaNameFn = async (params: GetOceanAreaNameParams): Promise<string> => {
   const { viewport, locale, combineWithEEZ } = params || {}
   if (!viewport) {
     return ''

@@ -111,7 +111,7 @@ function PlatformNav() {
 
   const bottomSections = useMemo(() => {
     const sections = getPlatformBottomSections(t, {
-      onAssistantClick: () => openSidePanel({ type: 'chat' }),
+      onAssistantClick: () => openSidePanel({ type: 'assistant' }),
       onLogIssueClick: openFeedbackModal,
       language: {
         options: languageOptions,

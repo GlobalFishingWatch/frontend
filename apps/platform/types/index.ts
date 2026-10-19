@@ -157,7 +157,7 @@ export type SidePanelContent =
   /** Data terminology explaining concepts and fields */
   | 'dataTerminology'
   /** Conversational assistant backed by gfw-agent */
-  | 'chat'
+  | 'assistant'
 
 export type SidePanelState = {
   type: SidePanelContent

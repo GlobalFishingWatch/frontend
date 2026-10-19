@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { useAtom, useSetAtom } from 'jotai'
-import { useDeleteThreadMutation, useGetThreadsQuery } from 'queries/map/chat-api'
+import { useDeleteThreadMutation, useGetThreadsQuery } from 'queries/assistant-api'
 
-import { activeThreadAtom, newActiveThread } from 'features/_map/content-panel/chat/chat.atoms'
 import { selectUserId } from 'features/_user/selectors/user.permissions.selectors'
+import { activeThreadAtom, newActiveThread } from 'features/assistant/assistant.atoms'
 
 export function useSetThreadLoading(threadId: string, loading: boolean) {
   const setActiveThread = useSetAtom(activeThreadAtom)
@@ -15,7 +15,7 @@ export function useSetThreadLoading(threadId: string, loading: boolean) {
   }, [threadId, loading, setActiveThread])
 }
 
-export function useChatThreads() {
+export function useAssistantThreads() {
   const { t } = useTranslation()
   const userId = useSelector(selectUserId)
   const [activeThread, setActiveThread] = useAtom(activeThreadAtom)
@@ -49,11 +49,11 @@ export function useChatThreads() {
         .unwrap()
         .then((ok) => {
           if (!ok) {
-            toast.error(t((t) => t.chat.couldNotDeleteConversation))
+            toast.error(t((t) => t.assistant.couldNotDeleteConversation))
           }
         })
         .catch(() => {
-          toast.error(t((t) => t.chat.couldNotDeleteConversation))
+          toast.error(t((t) => t.assistant.couldNotDeleteConversation))
         })
     },
     [activeThreadId, deleteThreadMutation, userId, setActiveThread, t]

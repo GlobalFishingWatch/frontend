@@ -4,7 +4,7 @@ import { createDynamicMiddleware } from '@reduxjs/toolkit'
 import { rootReducer } from 'reducers'
 
 export const QUERY_REDUCER_PATHS = [
-  'chatApi',
+  'assistantApi',
   'dataviewStatsApi',
   'reportEventsStatsApi',
   'userGuideApi',

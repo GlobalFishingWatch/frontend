@@ -5,7 +5,7 @@ import { FourwingsLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
 
 import type { SliceInteractionEvent } from 'features/_map/map/map.slice'
 
-import { getMapView } from './chat-map-view'
+import { getMapView } from './map-assistant-context'
 
 // cell polygon ring [minX, minY, maxX, minY, maxX, maxY, minX, maxY, minX, minY]
 const cell = (x: number, y: number, aggregatedValues: (number | undefined)[]) => ({

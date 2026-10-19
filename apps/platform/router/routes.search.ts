@@ -63,7 +63,7 @@ const SIDE_PANEL_TYPES = [
   'datasets',
   'userDataset',
   'dataTerminology',
-  'chat',
+  'assistant',
 ] as const satisfies readonly SidePanelContent[]
 
 // ── Root search params schema ─────────────────────────────────────────────────

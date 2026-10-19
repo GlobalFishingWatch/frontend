@@ -1,16 +1,15 @@
-import { atom } from 'jotai'
-import { atomWithStorage, createJSONStorage } from 'jotai/utils'
+import { atom, atomWithStorage, createJSONStorage } from 'jotai'
 
-const CHAT_ACTIVE_THREAD_KEY = 'chatActiveThread'
+const ASSISTANT_ACTIVE_THREAD_KEY = 'assistantActiveThread'
 
 export type ActiveThread = { id: string; isNew: boolean; isLoading: boolean }
 
 /**
- * Lives here rather than in chat-threads.hooks so a component can start a new thread without
- * pulling the chat-api queries into its chunk.
+ * Lives here rather than in assistant-threads.hooks so a component can start a new thread without
+ * pulling the assistant-api queries into its chunk.
  */
 export const activeThreadAtom = atomWithStorage<ActiveThread>(
-  CHAT_ACTIVE_THREAD_KEY,
+  ASSISTANT_ACTIVE_THREAD_KEY,
   { id: typeof crypto !== 'undefined' ? crypto.randomUUID() : '', isNew: true, isLoading: false },
   createJSONStorage<ActiveThread>(() =>
     typeof window === 'undefined' ? (undefined as unknown as Storage) : sessionStorage
@@ -23,7 +22,7 @@ export function newActiveThread(): ActiveThread {
 }
 
 /**
- * A question asked outside the chat (the onboarding modal), sent as soon as the session mounts.
- * Not persisted: a reload must not resend it.
+ * A question asked outside the assistant (the onboarding modal), sent as soon as the session
+ * mounts. Not persisted: a reload must not resend it.
  */
 export const pendingPromptAtom = atom<string | null>(null)
