@@ -300,8 +300,7 @@ const GUEST_RESTRICTED_VESSEL_ENDPOINTS: string[] = [
   EndpointId.TracksRealTime,
   EndpointId.Events,
 ]
-// Vessel tracks and events require login. Runs after resolveDataviews because it merges
-// the template dataview datasetsConfig back into the instance
+
 export const removeGuestRestrictedVesselDatasets = <
   D extends { id: string; datasetsConfig?: DataviewDatasetConfig[]; datasets?: Dataset[] },
 >(
