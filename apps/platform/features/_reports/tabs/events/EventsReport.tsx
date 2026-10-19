@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -32,6 +32,7 @@ import {
   selectFetchEventsVesselsParams,
   selectTotalStatsEvents,
 } from 'features/_reports/tabs/events/events-report.selectors'
+import EventsReportDownload from 'features/_reports/tabs/events/EventsReportDownload'
 import EventsReportGraph from 'features/_reports/tabs/events/EventsReportGraph'
 import EventsReportGraphSelector from 'features/_reports/tabs/events/EventsReportGraphSelector'
 import EventsReportSubsectionSelector from 'features/_reports/tabs/events/EventsReportSubsectionSelector'
@@ -47,7 +48,8 @@ function EventsReport() {
   const { t } = useTranslation()
   const { replaceQueryParams } = useReplaceQueryParams()
   const activeReportSubCategories = useSelector(selectActiveReportSubCategories)
-  const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
+  const eventsDataviews = useSelector(selectActiveReportDataviews)
+  const eventsDataview = eventsDataviews?.[0]
   const { start, end } = useSelector(selectTimeRange)
   const vesselDatasets = useSelector(selectVesselsDatasets)
   const datasetsWithoutRelatedEvents = useSelector(selectVGRVesselDatasetsWithoutEventsRelated)
@@ -60,6 +62,7 @@ function EventsReport() {
   const datasetAreasId = useSelector(selectEventsGraphDatasetAreaId)
   const datasetAreas = useFetchContextDatasetAreas(datasetAreasId)
   const { updateReportHash, reportOutdated } = useReportHash()
+  const [isIndividualSupported, setIsIndividualSupported] = useState(false)
 
   const { status: vessselStatus } = useGetReportEventsVesselsQuery(
     fetchEventsVesselsParams as GetReportEventParams,
@@ -106,7 +109,7 @@ function EventsReport() {
         </div>
       )
     }
-    return <EventsReportGraph />
+    return <EventsReportGraph onIndividualSupportedChange={setIsIndividualSupported} />
   }, [datasetAreas?.status, datasetAreasId, isLoadingStats, hasEvents, statsError, t])
 
   if (!vesselDatasets.length) {
@@ -153,10 +156,15 @@ function EventsReport() {
             <div className={styles.headerContainer}>
               <label className={styles.headerContainerLabel}>{t((t) => t.common.events)}</label>
               {hasEvents && (
-                <EventsReportGraphSelector
-                  disabled={isLoadingVessels || !hasEvents}
-                  containerClassName={styles.graphSelector}
-                />
+                <Fragment>
+                  <EventsReportGraphSelector
+                    disabled={isLoadingVessels || !hasEvents}
+                    containerClassName={styles.graphSelector}
+                  />
+                  {isIndividualSupported && (
+                    <EventsReportDownload dataviews={eventsDataviews} start={start} end={end} />
+                  )}
+                </Fragment>
               )}
             </div>
             {graph}
