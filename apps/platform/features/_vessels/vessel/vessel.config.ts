@@ -32,8 +32,6 @@ export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   includeRelatedIdentities: true,
 }
 
-export const IS_PIPE_4 = PIPE_DATASET_VERSION === ('4' as const)
-
 export const REGIONS_PRIORITY: RegionType[] = [
   RegionType.mpa,
   RegionType.eez,
