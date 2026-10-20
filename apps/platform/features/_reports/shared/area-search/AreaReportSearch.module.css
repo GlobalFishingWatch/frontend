@@ -40,8 +40,12 @@
 
 .helpHint {
   top: 50%;
-  left: 0;
+  left: calc(var(--size-SM) / 2);
   z-index: 1;
+}
+
+.comboContainer:has(.helpHint) .input input {
+  padding-left: calc(var(--size-SM) + var(--space-XS));
 }
 
 .inputContainer:has(input:focus) .helpHint {
