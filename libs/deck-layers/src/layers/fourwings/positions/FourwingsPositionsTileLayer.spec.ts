@@ -69,8 +69,7 @@ describe('FourwingsPositionsTileLayer', () => {
     layer._onViewportLoad([tile] as any)
     const { positions, lastPositions, vesselTracks, colorScale } = layer.state
     expect(positions).toHaveLength(3)
-    // 0, not 1: `_onViewportLoad` hardcodes `includeTracks: false` since b5ff461032 ("disable
-    // tracks in positions for now"). Restore to 1 when that line goes back to `this.showVesselTracks`.
+    // 0, not 1: tracks are off while `VESSEL_TRACKS_ENABLED` is false. Restore to 1 once enabled.
     expect(vesselTracks).toHaveLength(0)
     expect(lastPositions).toHaveLength(2)
 

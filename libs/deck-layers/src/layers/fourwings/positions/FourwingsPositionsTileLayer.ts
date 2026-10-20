@@ -101,6 +101,8 @@ const defaultProps: DefaultProps<FourwingsPositionsTileLayerProps> = {
 }
 
 const MAX_LABEL_LENGTH = 20
+// Vessel tracks are disabled until they move behind a feature flag
+const VESSEL_TRACKS_ENABLED = false
 
 /** Same tiles, in the same order, still holding the same parsed content objects */
 function hasSameTileContents(tiles: Tile2DHeader[], contents: unknown[]): boolean {
@@ -424,8 +426,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   get showVesselTracks(): boolean {
-    return false
-    // return this.props.category === 'activity'
+    return VESSEL_TRACKS_ENABLED && this.props.category === 'activity'
   }
 
   _getLastPositionsInViewport = (
