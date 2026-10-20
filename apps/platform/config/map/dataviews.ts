@@ -114,6 +114,7 @@ export const TEMPLATE_ACTIVITY_DATAVIEW_SLUG = 'activity-template' as const
 export const TEMPLATE_CLUSTERS_DATAVIEW_SLUG = 'template-for-bigquery-cluster-events' as const
 export const TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG = 'default-environmental-layer' as const
 export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = 'default-context-layer' as const
+export const TEMPLATE_CONTEXT_PMTILES_DATAVIEW_SLUG = 'context-layer-pmtiles' as const
 export const TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG = 'gfw-environmental-layer' as const
 export const TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG = 'heatmap-environmental-layer' as const
 export const TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG = 'heatmap-static-layer' as const
