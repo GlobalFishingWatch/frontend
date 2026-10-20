@@ -60,7 +60,7 @@
     "name": "Actividad de pesca aparente (AIS)"
   },
   "fishing-effort-vms": {
-    "description": "Para determinar la \"actividad de pesca aparente\", Global Fishing Watch analiza los datos del sistema de monitoreo de buques (VMS) recopilados de buques que nuestra investigación ha identificado como buques de pesca comercial conocidos o posibles y aplica un modelo de aprendizaje automático que analiza secuencias de posiciones de los buques y sus características asociadas, como la velocidad, la batimetría, la ubicación relativa y la distancia a la costa.",
+    "description": "Para determinar la \"actividad de pesca aparente\", Global Fishing Watch analiza los datos del sistema de seguimiento de buques (VMS) recopilados de buques que nuestra investigación ha identificado como buques de pesca comercial conocidos o posibles y aplica un modelo de aprendizaje automático que analiza secuencias de posiciones de los buques y sus características asociadas, como la velocidad, la batimetría, la ubicación relativa y la distancia a la costa.",
     "moreInfoLink": "",
     "name": "Actividad de pesca aparente (VMS)"
   },
