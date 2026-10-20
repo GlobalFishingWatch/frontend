@@ -45,11 +45,14 @@ export const getContextValue = (
   if (!valueProperties || !valueProperties.length) {
     return feature.properties?.value ?? (feature.value as string)
   }
+  // Tile properties can come lowercased while the dataset config keeps the original case
+  const getProperty = (prop: string) =>
+    feature.properties?.[prop] ?? feature.properties?.[prop.toLowerCase()]
   if (valueProperties.length === 1) {
-    return feature.properties?.[valueProperties[0]] ?? (feature.value as string)
+    return getProperty(valueProperties[0]) ?? (feature.value as string)
   }
   const selectedProperties = Object.fromEntries(
-    valueProperties.map((prop) => [prop, feature.properties?.[prop]])
+    valueProperties.map((prop) => [prop, getProperty(prop)])
   )
   return parsePropertiesList(selectedProperties, dataset)
 }

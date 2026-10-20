@@ -90,13 +90,9 @@ const PortVisitedAfterField = ({ nextPort }: { nextPort: EventNextPort | undefin
     <li>
       <label className={styles.fieldLabel}>{t((t) => t.eventInfo.portVisitedAfter)}</label>
       <span>
-        {portDataset ? (
-          <PortsReportLink port={{ ...nextPort, datasetId: portDataset.id }}>
-            {portLabel}
-          </PortsReportLink>
-        ) : (
-          portLabel
-        )}
+        <PortsReportLink port={{ ...nextPort, datasetId: portDataset?.id }}>
+          {portLabel}
+        </PortsReportLink>
       </span>
     </li>
   )

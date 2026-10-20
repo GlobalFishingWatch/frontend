@@ -22,6 +22,7 @@ import {
   FourwingsComparisonMode,
   POSITIONS_ID,
 } from '@globalfishingwatch/deck-layers'
+import { PORTS_GLOBAL_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
 
 import { POPUP_CATEGORY_ORDER } from 'data/map/config'
 import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
@@ -81,6 +82,9 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
   const mapViewport = useMapViewport()
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
+  const portsDataviewIds = new Set(
+    dataviews.flatMap((d) => (d.dataviewId === PORTS_GLOBAL_DATAVIEW_SLUG ? d.id : []))
+  )
   const activityInteractionStatus = useSelector(selectActivityInteractionStatus)
   const activityInteractionError = useSelector(selectActivityInteractionError)
   const detectionPositionsInteractionStatus = useSelector(selectDetectionPositionsInteractionStatus)
@@ -275,7 +279,10 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             const contextFeatures: ContextPickingObject[] = []
             const userContextFeatures: UserLayerPickingObject[] = []
             for (const feature of features) {
-              if (feature.layerId.startsWith(PORTS_LAYER_ID)) {
+              if (
+                feature.layerId.startsWith(PORTS_LAYER_ID) ||
+                portsDataviewIds.has(feature.layerId)
+              ) {
                 portFeatures.push(feature as UserLayerPickingObject)
               } else if (
                 (feature as UserLayerPickingObject).subcategory === DataviewType.UserPoints

@@ -147,9 +147,11 @@ export const getPolygonsTimeseriesStats = ({
     const addTopArea = ({
       feature,
       geometry,
+      clipped,
     }: {
       feature: any
       geometry: Polygon | MultiPolygon
+      clipped: boolean
     }) => {
       // An aggregated feature is many areas at once, so it is not one of the top ones.
       if (getFeatureCount(feature) > 1) {
@@ -157,7 +159,7 @@ export const getPolygonsTimeseriesStats = ({
       }
       // Properties only where the polygon is counted whole: an overlapping one is measured
       // after clipping, so its own area_km2 would overstate what is inside the report area.
-      const km2 = getAreaKm2({ geometry, properties: feature.properties })
+      const km2 = getAreaKm2({ geometry, properties: clipped ? undefined : feature.properties })
       topAreaCandidates.push({ feature, km2 })
     }
 
@@ -172,7 +174,7 @@ export const getPolygonsTimeseriesStats = ({
         return
       }
       // Contained polygons are already fully inside, no clipping needed.
-      addTopArea({ feature, geometry })
+      addTopArea({ feature, geometry, clipped: false })
       polygonsToUnion.push(geometry.coordinates as PolygonGeomCoords)
     })
 
@@ -193,6 +195,7 @@ export const getPolygonsTimeseriesStats = ({
       addTopArea({
         feature: p,
         geometry: { type: 'MultiPolygon', coordinates: clipped },
+        clipped: true,
       })
       polygonsToUnion.push(clipped)
     })
