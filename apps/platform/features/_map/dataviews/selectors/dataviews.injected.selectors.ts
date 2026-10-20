@@ -23,7 +23,7 @@ import {
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/map/default-workspaces/context-layers'
 import { LIBRARY_LAYERS } from 'data/map/layer-library'
 import { selectTracksDatasets } from 'features/_map/datasets/datasets.selectors'
-import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
+import { selectAllDatasets, selectDatasetsStatus } from 'features/_map/datasets/datasets.slice'
 import { getVesselTrackDatasetIds } from 'features/_map/datasets/datasets.utils'
 import {
   dataviewHasVesselGroupId,
@@ -73,6 +73,7 @@ import {
   selectReportVesselGroupId,
   selectVesselId,
 } from 'router/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 const REPORT_EVENTS_GRAPH_AREA_DATAVIEW_ID = `report-event-graph-area`
 const COMPARISON_INJECTED_DATAVIEW_ORIGIN = 'comparison'
@@ -269,11 +270,23 @@ export const selectVGRDataviewInstancesInjected = createSelector(
   }
 )
 
-// Boolean on purpose to avoid re-runs on every dataset slice change
+// Primitive on purpose to avoid re-runs on every dataset slice change.
+// undefined while the dataset is still loading, so the port visits instance waits for it instead of
+// requesting the template's default dataset first and swapping once the real one arrives.
 const selectHasPortReportEventsDataset = createSelector(
-  [selectPortReportDatasetId, selectAllDatasets],
-  (portReportDatasetId, datasets) =>
-    datasets.find((d) => d.id === portReportDatasetId)?.type === DatasetTypes.Events
+  [selectPortReportDatasetId, selectAllDatasets, selectDatasetsStatus],
+  (portReportDatasetId, datasets, datasetsStatus): boolean | undefined => {
+    if (!portReportDatasetId) {
+      return false
+    }
+    const dataset = datasets.find((d) => d.id === portReportDatasetId)
+    if (dataset) {
+      return dataset.type === DatasetTypes.Events
+    }
+    const isLoading =
+      datasetsStatus === AsyncReducerStatus.Idle || datasetsStatus === AsyncReducerStatus.Loading
+    return isLoading ? undefined : false
+  }
 )
 
 // Inject dataviews on the fly for reports and vessel profile
@@ -331,7 +344,7 @@ export const selectPortReportDataviewInstancesInjected = createSelector(
           dataview.config?.visible &&
           dataview.dataviewId === CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG
       )
-      if (!hasPortVisitDataviewInstance) {
+      if (!hasPortVisitDataviewInstance && isPortVisitsDataset !== undefined) {
         const portVisitDataviewInstance: UrlDataviewInstance = {
           id: PORT_VISITS_REPORT_DATAVIEW_ID,
           category: DataviewCategory.Events,

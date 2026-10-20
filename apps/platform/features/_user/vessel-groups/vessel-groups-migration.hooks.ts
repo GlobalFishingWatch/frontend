@@ -84,8 +84,11 @@ export const useMigrateToLatestVesselGroup = () => {
 
   const migrateToLatestVesselGroup = useCallback(
     async (vesselGroup: VesselGroup) => {
-      if (vesselGroup?.id) {
-        setLoadingGroupId(vesselGroup.id)
+      if (!vesselGroup?.id) {
+        return
+      }
+      setLoadingGroupId(vesselGroup.id)
+      try {
         const vesselGroupVessels = await fetchVesselGroupVesselIdentities(vesselGroup?.id)
         const sources = uniq(
           vesselGroupVessels.entries?.flatMap(
@@ -107,6 +110,9 @@ export const useMigrateToLatestVesselGroup = () => {
         dispatch(setVesselGroupSearchIdField(idField))
         dispatch(setVesselGroupModalSearchText(text))
         dispatch(setVesselGroupsModalOpen(true))
+      } catch (e) {
+        console.warn('Error migrating vessel group', e)
+      } finally {
         setLoadingGroupId(null)
       }
     },
