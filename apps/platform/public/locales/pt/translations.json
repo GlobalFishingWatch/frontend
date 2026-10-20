@@ -100,7 +100,7 @@
     "polygonsOverlapping_one": "partially overlapping polygon",
     "polygonsOverlapping_other": "partially overlapping polygons",
     "polygonsTopAreas_one": "Maior polígono da área do relatório",
-    "polygonsTopAreas_other": "Os {{count}} maiores polígonos da área do relatório",
+    "polygonsTopAreas_other": "Os {{count}} maiores polígonos em área dentro da área do relatório",
     "portsAfterEvents": "Ports visited after events",
     "portsSearchPlaceholder": "Search ports",
     "print": "print",
