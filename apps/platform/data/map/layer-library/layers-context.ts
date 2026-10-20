@@ -14,7 +14,7 @@ import {
   PORTS_GLOBAL_DATAVIEW_SLUG,
   PROTECTED_SEAS_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
-  TEMPLATE_CONTEXT_DATAVIEW_SLUG,
+  TEMPLATE_CONTEXT_PMTILES_DATAVIEW_SLUG,
 } from '@platform/config/map/dataviews'
 
 import { PATH_BASENAME } from 'data/map/config'
@@ -134,7 +134,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   },
   {
     id: 'dsm-isa-leasing-areas',
-    dataviewId: TEMPLATE_CONTEXT_DATAVIEW_SLUG,
+    dataviewId: TEMPLATE_CONTEXT_PMTILES_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/deep-sea-mining.jpeg`,
     category: DataviewCategory.Context,
     config: {
@@ -158,7 +158,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   },
   {
     id: 'immas',
-    dataviewId: TEMPLATE_CONTEXT_DATAVIEW_SLUG,
+    dataviewId: TEMPLATE_CONTEXT_PMTILES_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/immas.jpg`,
     category: DataviewCategory.Context,
     config: {
@@ -174,7 +174,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
   },
   {
     id: 'ebsas',
-    dataviewId: TEMPLATE_CONTEXT_DATAVIEW_SLUG,
+    dataviewId: TEMPLATE_CONTEXT_PMTILES_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/ebsas.jpg`,
     category: DataviewCategory.Context,
     config: {

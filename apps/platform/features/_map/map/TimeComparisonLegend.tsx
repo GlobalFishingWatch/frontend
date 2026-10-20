@@ -7,6 +7,8 @@ import type { UILegend } from '@globalfishingwatch/ui-components'
 import { MapLegend, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { selectActivityMergedDataviewId } from 'features/_map/dataviews/selectors/dataviews.selectors'
+import { selectReportActivityGraph } from 'features/_reports/reports.config.selectors'
+import { isTimeComparisonGraph } from 'features/_reports/shared/utils/reports.utils'
 import { useTimeCompareTimeDescription } from 'features/_reports/tabs/activity/reports-activity-timecomparison.hooks'
 
 import styles from './MapLegends.module.css'
@@ -17,8 +19,9 @@ const TimeComparisonLegend = () => {
   const { t } = useTranslation()
   const layerId = useSelector(selectActivityMergedDataviewId)
   const legend = useGetDeckLayerLegend(layerId)
+  const reportGraph = useSelector(selectReportActivityGraph)
 
-  if (!legend || !timeCompareTimeDescription) {
+  if (!legend || !timeCompareTimeDescription || !isTimeComparisonGraph(reportGraph)) {
     return null
   }
 
