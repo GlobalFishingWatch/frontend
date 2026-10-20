@@ -3,7 +3,6 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { DataviewDatasetConfig } from '@globalfishingwatch/api-types'
 import { DataviewCategory, EndpointId, EventTypes } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
-import { VMS_DATASET_ID } from '@globalfishingwatch/datasets-client'
 import {
   getIsVesselDataviewInstanceId,
   mergeWorkspaceUrlDataviewInstances,
@@ -13,8 +12,7 @@ import type { ColorRampId } from '@globalfishingwatch/deck-layers/config'
 import {
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
   LAYER_LIBRARY_ID_SEPARATOR,
-  PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG,
-  PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG,
+  PORTS_FOOTPRINT_GLOBAL_DATAVIEW_SLUG,
 } from '@platform/config/map/dataviews'
 
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/map/default-workspaces/context-layers'
@@ -287,9 +285,7 @@ export const selectPortReportDataviewInstancesInjected = createSelector(
 
     if (isPortReportLocation) {
       let footprintDataviewInstance = workspaceDataviewInstancesMerged?.find(
-        (dataview) =>
-          dataview.id === PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG ||
-          dataview.id === PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG
+        (dataview) => dataview.id === PORTS_FOOTPRINT_GLOBAL_DATAVIEW_SLUG
       )
       if (footprintDataviewInstance) {
         footprintDataviewInstance.config = {
@@ -300,13 +296,9 @@ export const selectPortReportDataviewInstancesInjected = createSelector(
           },
         }
       } else {
-        const dataviewId = portReportDatasetId?.includes(VMS_DATASET_ID.toLowerCase())
-          ? PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG
-          : PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG
-
         footprintDataviewInstance = {
-          id: `${PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG}-${Date.now()}`,
-          dataviewId,
+          id: `${PORTS_FOOTPRINT_GLOBAL_DATAVIEW_SLUG}-${Date.now()}`,
+          dataviewId: PORTS_FOOTPRINT_GLOBAL_DATAVIEW_SLUG,
           config: {
             pickable: false,
             visible: true,

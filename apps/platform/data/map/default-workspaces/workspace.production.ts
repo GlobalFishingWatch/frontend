@@ -1,11 +1,17 @@
-import type { DataviewInstance, Workspace } from '@globalfishingwatch/api-types'
-import { WORKSPACE_PRIVATE_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
+import type { Workspace } from '@globalfishingwatch/api-types'
+import {
+  DataviewCategory,
+  WORKSPACE_PRIVATE_ACCESS,
+  WORKSPACE_PUBLIC_ACCESS,
+} from '@globalfishingwatch/api-types'
 import { DEFAULT_VIEWPORT } from '@platform/config/map/app'
 import {
   AIS_DATAVIEW_INSTANCE_ID,
   BASEMAP_DATAVIEW_SLUG,
   BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
   BASEMAP_LABELS_DATAVIEW_SLUG,
+  BATHYMETRY_CONTOUR_DATAVIEW_INSTANCE_ID,
+  BATHYMETRY_CONTOUR_DATAVIEW_SLUG,
   BATHYMETRY_DATAVIEW_PREFIX,
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
@@ -20,6 +26,8 @@ import {
   PORTS_GLOBAL_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_INSTANCE_ID,
   PRESENCE_DATAVIEW_SLUG,
+  PRESENCE_REALTIME_DATAVIEW_SLUG,
+  REAL_TIME_DATAVIEW_INSTANCE_ID,
   SAR_DATAVIEW_INSTANCE_ID,
   SAR_DATAVIEW_SLUG,
   SENTINEL2_DATAVIEW_INSTANCE_ID,
@@ -30,7 +38,7 @@ import {
 } from '@platform/config/map/dataviews'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
-import { APP_NAME, DEFAULT_TIME_RANGE } from 'data/map/config'
+import { APP_NAME, DEFAULT_TIME_RANGE, IS_REALTIME_ENABLED } from 'data/map/config'
 import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/map/default-workspaces/context-layers'
 import { BATHYMETRY_DATAVIEW_INSTANCE } from 'data/map/layer-library/layers-environment'
 import { PORTS_LAYER_ID } from 'features/_map/map/map.config'
@@ -55,6 +63,14 @@ const workspace: Workspace<WorkspaceState> = {
       id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
       dataviewId: BASEMAP_DATAVIEW_SLUG,
     },
+    ...(IS_REALTIME_ENABLED
+      ? [
+          {
+            id: REAL_TIME_DATAVIEW_INSTANCE_ID,
+            dataviewId: PRESENCE_REALTIME_DATAVIEW_SLUG,
+          },
+        ]
+      : []),
     {
       id: AIS_DATAVIEW_INSTANCE_ID,
       config: {
@@ -116,9 +132,21 @@ const workspace: Workspace<WorkspaceState> = {
     //   id: GAPS_EVENTS_SOURCE_ID,
     //   dataviewId: CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG,
     //   config: {
-    //     visible: false,
+    //     visible: true,
+    //     filters: {
+    //       start_distance_from_shore_trunc: 1,
+    //       duration: ['4', '48'],
+    //     },
     //   },
     // },
+    {
+      category: DataviewCategory.Environment,
+      dataviewId: BATHYMETRY_CONTOUR_DATAVIEW_SLUG,
+      id: BATHYMETRY_CONTOUR_DATAVIEW_INSTANCE_ID,
+      config: {
+        visible: false,
+      },
+    },
     {
       id: PORT_VISITS_EVENTS_SOURCE_ID,
       dataviewId: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
@@ -149,8 +177,11 @@ const workspace: Workspace<WorkspaceState> = {
     //   dataviewId: FIXED_INFRASTRUCTURE_DATAVIEW_SLUG,
     // },
     {
-      id: `${PORTS_LAYER_ID}`,
-      config: { visible: false, color: '#9AEEFF' },
+      id: PORTS_LAYER_ID,
+      config: {
+        visible: false,
+        color: '#9AEEFF',
+      },
       dataviewId: PORTS_GLOBAL_DATAVIEW_SLUG,
     },
     {
