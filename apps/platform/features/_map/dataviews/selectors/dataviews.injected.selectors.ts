@@ -269,6 +269,13 @@ export const selectVGRDataviewInstancesInjected = createSelector(
   }
 )
 
+// Boolean on purpose to avoid re-runs on every dataset slice change
+const selectHasPortReportEventsDataset = createSelector(
+  [selectPortReportDatasetId, selectAllDatasets],
+  (portReportDatasetId, datasets) =>
+    datasets.find((d) => d.id === portReportDatasetId)?.type === DatasetTypes.Events
+)
+
 // Inject dataviews on the fly for reports and vessel profile
 // Also for the vessel profile encounter events to see encountered vessel track
 export const selectPortReportDataviewInstancesInjected = createSelector(
@@ -277,14 +284,14 @@ export const selectPortReportDataviewInstancesInjected = createSelector(
     selectIsPortReportLocation,
     selectReportPortId,
     selectPortReportDatasetId,
-    selectAllDatasets,
+    selectHasPortReportEventsDataset,
   ],
   (
     workspaceDataviewInstancesMerged,
     isPortReportLocation,
     reportPortId,
     portReportDatasetId,
-    datasets
+    isPortVisitsDataset
   ): UrlDataviewInstance[] | undefined => {
     if (!workspaceDataviewInstancesMerged) {
       return [] as UrlDataviewInstance[]
@@ -325,8 +332,6 @@ export const selectPortReportDataviewInstancesInjected = createSelector(
           dataview.dataviewId === CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG
       )
       if (!hasPortVisitDataviewInstance) {
-        const isPortVisitsDataset =
-          datasets.find((d) => d.id === portReportDatasetId)?.type === DatasetTypes.Events
         const portVisitDataviewInstance: UrlDataviewInstance = {
           id: PORT_VISITS_REPORT_DATAVIEW_ID,
           category: DataviewCategory.Events,
