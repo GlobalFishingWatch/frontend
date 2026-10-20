@@ -1,7 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
 
 import type { DataviewDatasetConfig } from '@globalfishingwatch/api-types'
-import { DataviewCategory, EndpointId, EventTypes } from '@globalfishingwatch/api-types'
+import {
+  DatasetTypes,
+  DataviewCategory,
+  EndpointId,
+  EventTypes,
+} from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
 import {
   getIsVesselDataviewInstanceId,
@@ -18,6 +23,7 @@ import {
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/map/default-workspaces/context-layers'
 import { LIBRARY_LAYERS } from 'data/map/layer-library'
 import { selectTracksDatasets } from 'features/_map/datasets/datasets.selectors'
+import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { getVesselTrackDatasetIds } from 'features/_map/datasets/datasets.utils'
 import {
   dataviewHasVesselGroupId,
@@ -271,12 +277,14 @@ export const selectPortReportDataviewInstancesInjected = createSelector(
     selectIsPortReportLocation,
     selectReportPortId,
     selectPortReportDatasetId,
+    selectAllDatasets,
   ],
   (
     workspaceDataviewInstancesMerged,
     isPortReportLocation,
     reportPortId,
-    portReportDatasetId
+    portReportDatasetId,
+    datasets
   ): UrlDataviewInstance[] | undefined => {
     if (!workspaceDataviewInstancesMerged) {
       return [] as UrlDataviewInstance[]
@@ -316,7 +324,9 @@ export const selectPortReportDataviewInstancesInjected = createSelector(
           dataview.config?.visible &&
           dataview.dataviewId === CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG
       )
-      if (!hasPortVisitDataviewInstance && portReportDatasetId) {
+      if (!hasPortVisitDataviewInstance) {
+        const isPortVisitsDataset =
+          datasets.find((d) => d.id === portReportDatasetId)?.type === DatasetTypes.Events
         const portVisitDataviewInstance: UrlDataviewInstance = {
           id: PORT_VISITS_REPORT_DATAVIEW_ID,
           category: DataviewCategory.Events,
@@ -329,13 +339,15 @@ export const selectPortReportDataviewInstancesInjected = createSelector(
             },
           },
           dataviewId: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
-          datasetsConfig: [
-            {
-              params: [],
-              endpoint: EndpointId.ClusterTiles,
-              datasetId: portReportDatasetId,
-            },
-          ],
+          ...(isPortVisitsDataset && {
+            datasetsConfig: [
+              {
+                params: [],
+                endpoint: EndpointId.ClusterTiles,
+                datasetId: portReportDatasetId!,
+              },
+            ],
+          }),
         }
         dataviewInstancesInjected.push(portVisitDataviewInstance)
       }
