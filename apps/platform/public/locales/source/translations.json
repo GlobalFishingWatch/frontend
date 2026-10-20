@@ -837,6 +837,8 @@
     "colorSelectPredefined": "Select predefined color",
     "colorSelectSpectralDisabled": "The multicolor palette is only available when a single heatmap layer is visible",
     "depth": "Depth",
+    "depthLineGroups": "Groups of lines",
+    "depthSingleLines": "Single lines",
     "distance_from_port_km": "Port Buffer",
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
