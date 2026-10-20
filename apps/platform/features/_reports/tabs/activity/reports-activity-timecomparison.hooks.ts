@@ -15,6 +15,7 @@ import {
 import type { ReportActivityGraph } from 'features/_reports/reports.types'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { useReplaceQueryParams } from 'router/routes.hook'
+import type { QueryParams } from 'types'
 import { getUTCDateTime } from 'utils/dates'
 
 import { MAX_DAYS_TO_COMPARE, MAX_MONTHS_TO_COMPARE } from './reports-activity.config'
@@ -23,31 +24,30 @@ import { MAX_DAYS_TO_COMPARE, MAX_MONTHS_TO_COMPARE } from './reports-activity.c
 const MIN_DATE = AVAILABLE_START.slice(0, 10)
 const MAX_DATE = AVAILABLE_END.slice(0, 10)
 
-export const useSetReportTimeComparison = () => {
+export const useReportTimeComparisonParams = () => {
   const timeComparison = useSelector(selectReportTimeComparison)
-  const { replaceQueryParams } = useReplaceQueryParams()
   const durationType = timeComparison?.durationType
   const duration = timeComparison?.duration
   const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
 
-  const setReportTimecomparison = useCallback(
-    (activityType: ReportActivityGraph) => {
+  const getTimeComparisonParams = useCallback(
+    (activityType: ReportActivityGraph): Partial<QueryParams> => {
       if (timeComparison) {
         if (activityType === 'beforeAfter') {
           // make sure start is properly recalculated again in beforeAfter mode when coming from another mode
           const newStart = getUTCDateTime(timeComparison?.compareStart)
             .minus({ [durationType!]: duration })
             .toISO() as string
-          replaceQueryParams({
+          return {
             start: timebarStart,
             end: timebarEnd,
             reportTimeComparison: {
               ...timeComparison,
               start: newStart,
             },
-          })
+          }
         }
-        return
+        return {}
       }
       const baseStart = timebarStart || AVAILABLE_START
       const baseEnd = timebarEnd || AVAILABLE_END
@@ -71,25 +71,30 @@ export const useSetReportTimeComparison = () => {
       const initialStart = getUTCDateTime(baseStart).minus(baseStartMinusOffset).toISO() as string
       const initialCompareStart = baseStart
 
-      replaceQueryParams({
+      return {
         reportTimeComparison: {
           start: initialStart,
           compareStart: initialCompareStart,
           duration: initialDurationValue,
           durationType: initialDurationType,
         },
-      })
+      }
     },
-    [duration, durationType, replaceQueryParams, timeComparison, timebarEnd, timebarStart]
+    [duration, durationType, timeComparison, timebarEnd, timebarStart]
   )
 
-  const resetReportTimecomparison = useCallback(() => {
-    replaceQueryParams({ start: timebarStart, end: timebarEnd, reportTimeComparison: undefined })
-  }, [replaceQueryParams, timebarEnd, timebarStart])
+  const getResetTimeComparisonParams = useCallback(
+    (): Partial<QueryParams> => ({
+      start: timebarStart,
+      end: timebarEnd,
+      reportTimeComparison: undefined,
+    }),
+    [timebarEnd, timebarStart]
+  )
 
   return useMemo(
-    () => ({ setReportTimecomparison, resetReportTimecomparison }),
-    [resetReportTimecomparison, setReportTimecomparison]
+    () => ({ getTimeComparisonParams, getResetTimeComparisonParams }),
+    [getResetTimeComparisonParams, getTimeComparisonParams]
   )
 }
 

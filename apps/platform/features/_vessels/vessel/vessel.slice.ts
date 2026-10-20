@@ -142,7 +142,9 @@ export const fetchVesselInfoThunk = createAsyncThunk(
       const datasetsToFetch = [trackDatasetId, ...eventsDatasetsId].flatMap((id) => {
         return selectDatasetById(id)(state) ? [] : [id]
       })
-      dispatch(fetchDatasetsByIdsThunk({ ids: datasetsToFetch }))
+      // Awaited before returning: in SSR the store is dehydrated once this thunk resolves, so a
+      // fire-and-forget fetch ships without the track dataset and the client never requests it
+      const datasetsPromise = dispatch(fetchDatasetsByIdsThunk({ ids: datasetsToFetch }))
 
       const datasetConfig = getVesselInfoDataviewInstanceDatasetConfig(
         vesselId,
@@ -186,6 +188,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
       dispatch(setResource(resource))
 
       const identities = getVesselIdentities(vessel)
+      await datasetsPromise
       return {
         id: getVesselProperty(vessel, 'id'),
         dataset: dataset,

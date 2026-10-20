@@ -44,8 +44,10 @@
   z-index: 1;
 }
 
-.comboContainer:has(.helpHint) .input input {
-  padding-left: calc(var(--size-SM) + var(--space-XS));
+@media only screen and (width > 800px) {
+  .comboContainer:has(.helpHint) .input input {
+    padding-left: calc(var(--size-SM) + var(--space-XS));
+  }
 }
 
 .inputContainer:has(input:focus) .helpHint {

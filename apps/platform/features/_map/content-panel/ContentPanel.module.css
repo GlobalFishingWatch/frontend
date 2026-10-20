@@ -148,11 +148,6 @@
   flex: 1;
 }
 
-.highlighted {
-  background: var(--color-highlight-blue);
-  box-decoration-break: clone;
-}
-
 .sectionsNav {
   width: 100%;
   display: flex;
