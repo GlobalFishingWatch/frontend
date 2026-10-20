@@ -22,6 +22,7 @@ export const getContextId = (feature: ContextFeature, idProperty = DEFAULT_ID_PR
   if (!feature) return ''
   return (
     feature.properties?.[idProperty] ||
+    feature.properties?.[idProperty.toLowerCase()] ||
     feature.properties?.gfw_id ||
     feature.properties?.id ||
     // Precomputed tilesets aggregate the polygons too small to survive simplification into one
