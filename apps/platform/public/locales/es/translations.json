@@ -100,7 +100,7 @@
     "polygonsOverlapping_one": "polígono superpuesto parcialmente",
     "polygonsOverlapping_other": "polígonos superpuestos parcialmente",
     "polygonsTopAreas_one": "Polígono más grande del área del reporte",
-    "polygonsTopAreas_other": "Los {{count}} polígonos más grandes del área del reporte",
+    "polygonsTopAreas_other": "Los {{count}} polígonos de mayor superficie dentro del área del reporte",
     "portsAfterEvents": "Puertos visitados después de eventos",
     "portsSearchPlaceholder": "Buscar puertos",
     "print": "imprimir",
