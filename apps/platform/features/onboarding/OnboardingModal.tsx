@@ -66,6 +66,7 @@ function OnboardingModal() {
   const copilotExamples = useMemo(() => getCopilotExamples(t), [t])
   const copilotPlaceholder = useTypewriterPlaceholder(copilotExamples, Boolean(query))
   const copilotEnabled = IS_CHATBOT_ENABLED && Boolean(isGFWUser)
+  const hasMessages = copilotEnabled || isGuestUser
 
   const close = () => dispatch(setModalOpen({ id: 'onboarding', open: false }))
   // The video modal reopens onboarding when it closes.
@@ -124,7 +125,7 @@ function OnboardingModal() {
           </li>
         ))}
       </ul>
-      <div className={cx(styles.messages, { [styles.withVideo]: videoWatched })}>
+      <div className={cx(styles.messages, { [styles.withVideo]: videoWatched && hasMessages })}>
         {videoWatched && (
           <button type="button" className={styles.updateVideo} onClick={openUpdateVideo}>
             <span className={styles.updateVideoThumbnail}>

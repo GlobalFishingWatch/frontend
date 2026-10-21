@@ -163,8 +163,6 @@
 
 .withVideo {
   display: grid;
-
-  /* Same columns and gap as .cards, so the video link lines up under the first card. */
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--space-SM);
   align-items: stretch;
@@ -184,8 +182,6 @@
   display: flex;
   align-items: center;
   gap: var(--space-SM);
-
-  /* Same box as .loginBlock beside it. */
   padding: var(--space-S);
   cursor: pointer;
   text-align: left;
