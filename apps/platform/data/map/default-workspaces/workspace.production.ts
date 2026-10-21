@@ -75,9 +75,6 @@ const workspace: Workspace<WorkspaceState> = {
       id: AIS_DATAVIEW_INSTANCE_ID,
       config: {
         visible: true,
-        filters: {
-          distance_from_port_km: '3',
-        },
       },
       dataviewId: FISHING_AIS_DATAVIEW_SLUG,
     },
