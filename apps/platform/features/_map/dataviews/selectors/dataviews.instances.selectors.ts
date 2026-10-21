@@ -167,6 +167,10 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
           return matchesSubcategory
         }
         if (dataview.category === DataviewCategory.Environment) {
+          // Polygon environment layers (coral reefs, seagrasses…) stay visible as context
+          if (REPORT_ONLY_VISIBLE_LAYERS.includes(dataview.config?.type as DataviewType)) {
+            return true
+          }
           const matchesCategory = getReportCategoryFromDataview(dataview) === reportCategory
           return matchesCategory
         }
