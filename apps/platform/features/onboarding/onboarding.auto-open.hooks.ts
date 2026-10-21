@@ -24,9 +24,33 @@ export function useOnboardingDismissed() {
   return useLocalStorage<boolean>(ONBOARDING_DISMISSED_KEY, false)
 }
 
+export const UPDATE_VIDEO_SEEN_KEY = 'UpdateVideoSeen'
+
+export type UpdateVideoSeen = boolean | 'skipped'
+
+export function useUpdateVideoSeen() {
+  return useLocalStorage<UpdateVideoSeen>(UPDATE_VIDEO_SEEN_KEY, false)
+}
+
+const RETURNING_USER_KEYS = [
+  ONBOARDING_DISMISSED_KEY,
+  'HighlightPopup',
+  'hints',
+  'VesselProfilePopup',
+]
+
+function getIsReturningUser() {
+  try {
+    return RETURNING_USER_KEYS.some((key) => window.localStorage.getItem(key) !== null)
+  } catch {
+    return false
+  }
+}
+
 export function useOnboardingAutoOpen() {
   const dispatch = useAppDispatch()
   const [dismissed] = useOnboardingDismissed()
+  const [videoSeen, setVideoSeen] = useUpdateVideoSeen()
   const isClientHydrated = useIsClientHydrated()
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const readOnly = useSelector(selectReadOnly)
@@ -42,7 +66,6 @@ export function useOnboardingAutoOpen() {
     if (
       autoOpened.current ||
       !isClientHydrated ||
-      dismissed ||
       readOnly ||
       screenshotMode ||
       !isWorkspaceLocation ||
@@ -53,11 +76,19 @@ export function useOnboardingAutoOpen() {
       return
     }
     autoOpened.current = true
-    dispatch(setModalOpen({ id: 'onboarding', open: true }))
+    if (!videoSeen && getIsReturningUser()) {
+      dispatch(setModalOpen({ id: 'updateVideo', open: true }))
+      return
+    }
+    // New users never get the update video, not even on a later visit once they have the keys above.
+    if (!videoSeen) setVideoSeen('skipped')
+    if (!dismissed) dispatch(setModalOpen({ id: 'onboarding', open: true }))
   }, [
     dispatch,
     isClientHydrated,
     dismissed,
+    videoSeen,
+    setVideoSeen,
     readOnly,
     screenshotMode,
     isWorkspaceLocation,

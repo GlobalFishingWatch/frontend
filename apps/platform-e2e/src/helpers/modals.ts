@@ -15,6 +15,7 @@ export async function disableWelcomePopups(page: Page) {
     })
     // Map onboarding modal — auto-opens on a first visit and would cover every layout below.
     window.localStorage.setItem('OnboardingPanelDismissed', 'true')
+    window.localStorage.setItem('UpdateVideoSeen', '"skipped"')
     window.localStorage.setItem('VesselProfilePopup', hidden)
     window.localStorage.setItem('DeepSeaMiningPopup', hidden)
     window.localStorage.setItem('HighlightPopup', '"sentinel2"')

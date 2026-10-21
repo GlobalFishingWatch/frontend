@@ -118,6 +118,8 @@ const icons = [
   'sort',
   'sort-asc',
   'sort-desc',
+  'sound-off',
+  'sound-on',
   'sparks',
   'split',
   'target',

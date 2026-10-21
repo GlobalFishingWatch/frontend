@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { Button } from '@globalfishingwatch/ui-components/button'
 import { Checkbox } from '@globalfishingwatch/ui-components/checkbox'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { InputText } from '@globalfishingwatch/ui-components/input-text'
 import { Logo } from '@globalfishingwatch/ui-components/logo'
@@ -16,8 +18,15 @@ import { selectIsGFWUser, selectIsGuestUser } from 'features/_user/selectors/use
 import { useAppDispatch } from 'features/app/app.hooks'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import { setModalOpen } from 'features/modals/modals.slice'
-import { useOnboardingDismissed } from 'features/onboarding/onboarding.auto-open.hooks'
-import { getCopilotExamples, getOnboardingCards } from 'features/onboarding/onboarding.config'
+import {
+  useOnboardingDismissed,
+  useUpdateVideoSeen,
+} from 'features/onboarding/onboarding.auto-open.hooks'
+import {
+  getCopilotExamples,
+  getOnboardingCards,
+  getUpdateVideoSource,
+} from 'features/onboarding/onboarding.config'
 import {
   useOnboardingCardActions,
   useOnboardingCopilotPrompt,
@@ -48,6 +57,9 @@ function OnboardingModal() {
   const isGFWUser = useSelector(selectIsGFWUser)
   const isGuestUser = useSelector(selectIsGuestUser)
   const [dismissed, setDismissed] = useOnboardingDismissed()
+  const [videoSeen] = useUpdateVideoSeen()
+  // Only returning users who already saw the update video get it here; new users never had the old map.
+  const videoWatched = videoSeen === true
   const onCardClick = useOnboardingCardActions()
   const askCopilot = useOnboardingCopilotPrompt()
   const [query, setQuery] = useState('')
@@ -56,6 +68,11 @@ function OnboardingModal() {
   const copilotEnabled = IS_CHATBOT_ENABLED && Boolean(isGFWUser)
 
   const close = () => dispatch(setModalOpen({ id: 'onboarding', open: false }))
+  // The video modal reopens onboarding when it closes.
+  const openUpdateVideo = () => {
+    close()
+    dispatch(setModalOpen({ id: 'updateVideo', open: 'withSound' }))
+  }
 
   return (
     <Modal
@@ -107,57 +124,70 @@ function OnboardingModal() {
           </li>
         ))}
       </ul>
-      {copilotEnabled && (
-        <form
-          className={styles.copilot}
-          onSubmit={(e) => {
-            e.preventDefault()
-            askCopilot(query)
-          }}
-        >
-          <label className={styles.copilotLabel} htmlFor="onboarding-copilot-input">
-            {t((t) => t.onboarding.copilotLabel, { defaultValue: 'What do you want to see?' })}
-          </label>
-          <div className={styles.copilotInput}>
-            <InputText
-              id="onboarding-copilot-input"
-              testId="onboarding-copilot-input"
-              value={query}
-              placeholder={copilotPlaceholder}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-            {/* The only submit control: Enter, or a click on the icon inside the field. */}
-            <IconButton
-              icon="magic"
-              htmlType="submit"
-              size="small"
-              className={styles.copilotSubmit}
-              disabled={!query.trim()}
-              testId="onboarding-copilot-submit"
-            />
-          </div>
-        </form>
-      )}
-      {isGuestUser && (
-        <div className={styles.loginBlock}>
-          <p className={styles.intro}>
-            {t((t) => t.onboarding.login, {
-              defaultValue: 'Log in to get the most out of the platform (free, 2 minutes)',
-            })}
-          </p>
-          <div className={styles.loginActions}>
-            <a
-              className={styles.link}
-              href={GFWAPI.getRegisterUrl(getIsBrowser() ? window.location.toString() : '')}
+      <div className={cx(styles.messages, { [styles.withVideo]: videoWatched })}>
+        {videoWatched && (
+          <button type="button" className={styles.updateVideo} onClick={openUpdateVideo}>
+            <span className={styles.updateVideoThumbnail}>
+              <img src={getUpdateVideoSource(i18n.language).poster} alt="" />
+              <Icon icon="play" className={styles.updateVideoPlay} />
+            </span>
+            <span className={styles.intro}>{t((t) => t.updateVideo.learnMore)}</span>
+          </button>
+        )}
+        <div className={styles.messagesMain}>
+          {copilotEnabled && (
+            <form
+              className={styles.copilot}
+              onSubmit={(e) => {
+                e.preventDefault()
+                askCopilot(query)
+              }}
             >
-              {t((t) => t.onboarding.createAccount, { defaultValue: 'Create an account' })}
-            </a>
-            <Button asChild size="medium">
-              <LoginLink loginSource="assistant">{t((t) => t.common.login)}</LoginLink>
-            </Button>
-          </div>
+              <label className={styles.copilotLabel} htmlFor="onboarding-copilot-input">
+                {t((t) => t.onboarding.copilotLabel, { defaultValue: 'What do you want to see?' })}
+              </label>
+              <div className={styles.copilotInput}>
+                <InputText
+                  id="onboarding-copilot-input"
+                  testId="onboarding-copilot-input"
+                  value={query}
+                  placeholder={copilotPlaceholder}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+                {/* The only submit control: Enter, or a click on the icon inside the field. */}
+                <IconButton
+                  icon="magic"
+                  htmlType="submit"
+                  size="small"
+                  className={styles.copilotSubmit}
+                  disabled={!query.trim()}
+                  testId="onboarding-copilot-submit"
+                />
+              </div>
+            </form>
+          )}
+          {isGuestUser && (
+            <div className={styles.loginBlock}>
+              <p className={styles.intro}>
+                {t((t) => t.onboarding.login, {
+                  defaultValue: 'Log in to get the most out of the platform (free, 2 minutes)',
+                })}
+              </p>
+              <div className={styles.loginActions}>
+                <a
+                  className={styles.link}
+                  href={GFWAPI.getRegisterUrl(getIsBrowser() ? window.location.toString() : '')}
+                >
+                  {t((t) => t.onboarding.createAccount, { defaultValue: 'Create an account' })}
+                </a>
+                <Button asChild size="medium">
+                  <LoginLink loginSource="assistant">{t((t) => t.common.login)}</LoginLink>
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
       <footer className={styles.footer}>
         <ul className={styles.footerLinks}>
           <li>

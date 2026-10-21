@@ -15,6 +15,7 @@ type ModalId =
   | 'createWorkspace'
   | 'downloadTrack'
   | 'onboarding'
+  | 'updateVideo'
 
 /**
  * Which GFW-only secret menu is open.
@@ -52,6 +53,7 @@ type ModalsOpenState = {
   bigQuery: BigQueryModalMode | false
   downloadTrack: boolean
   onboarding: boolean
+  updateVideo: boolean | 'withSound'
 }
 
 const initialState: ModalsOpenState = {
@@ -74,6 +76,7 @@ const initialState: ModalsOpenState = {
   bigQuery: false,
   downloadTrack: false,
   onboarding: false,
+  updateVideo: false,
 }
 
 const modals = createSlice({
@@ -84,7 +87,7 @@ const modals = createSlice({
       state,
       action: PayloadAction<{
         id: ModalId
-        open: boolean | LayerLibraryMode
+        open: boolean | LayerLibraryMode | 'withSound'
         singleCategory?: boolean
         userGeometries?: DatasetGeometryType[]
       }>
@@ -96,6 +99,8 @@ const modals = createSlice({
         state[id].userGeometries = userGeometries
       } else if (id === 'datasetUpload') {
         state[id].open = open as boolean
+      } else if (id === 'updateVideo') {
+        state[id] = open as boolean | 'withSound'
       } else {
         state[id] = open as boolean
       }
@@ -149,6 +154,9 @@ export const selectVesselCorrectionModalOpen = (state: RootState) => state.modal
 export const selectEditorMenuOpen = (state: RootState) => state.modals.editor
 export const selectDownloadTrackModalOpen = (state: RootState) => state.modals.downloadTrack
 export const selectOnboardingModalOpen = (state: RootState) => state.modals.onboarding
+export const selectUpdateVideoModalOpen = (state: RootState) => state.modals.updateVideo !== false
+export const selectUpdateVideoWithSound = (state: RootState) =>
+  state.modals.updateVideo === 'withSound'
 export const selectBigQueryModalOpen = (state: RootState) => state.modals.bigQuery === 'default'
 export const selectTurningTidesModalOpen = (state: RootState) =>
   state.modals.bigQuery === 'turning-tides'
