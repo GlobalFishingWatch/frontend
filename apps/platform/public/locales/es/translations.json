@@ -1171,6 +1171,10 @@
     "title": "Panel de corrección",
     "version": "versión"
   },
+  "updateVideo": {
+    "learnMore": "Learn more about the latest map update",
+    "title": "What's new in the map"
+  },
   "user": {
     "badges": {
       "ambassador": {
@@ -1674,6 +1678,13 @@
       "gaps_one": "{{count}} evento de desactivación de AIS de {{vessels}} embarcación detectado",
       "gaps_other": "{{count}} eventos de desactivación de AIS de {{vessels}} embarcaciones detectados"
     }
+  },
+  "videoPlayer": {
+    "mute": "Mute",
+    "pause": "Pause",
+    "play": "Play",
+    "progress": "Video progress",
+    "unmute": "Unmute"
   },
   "workspace": {
     "addLayer": "Agregar al área de trabajo",
