@@ -1171,6 +1171,10 @@
     "title": "crwdns133615:0crwdne133615:0",
     "version": "crwdns133617:0crwdne133617:0"
   },
+  "updateVideo": {
+    "learnMore": "crwdns138819:0crwdne138819:0",
+    "title": "crwdns138821:0crwdne138821:0"
+  },
   "user": {
     "badges": {
       "ambassador": {
@@ -1674,6 +1678,13 @@
       "gaps_one": "crwdns134549:0{{count}}crwdnd134549:0{{vessels}}crwdne134549:0",
       "gaps_other": "crwdns134553:0{{count}}crwdnd134553:0{{vessels}}crwdne134553:0"
     }
+  },
+  "videoPlayer": {
+    "mute": "crwdns138823:0crwdne138823:0",
+    "pause": "crwdns138825:0crwdne138825:0",
+    "play": "crwdns138827:0crwdne138827:0",
+    "progress": "crwdns138829:0crwdne138829:0",
+    "unmute": "crwdns138831:0crwdne138831:0"
   },
   "workspace": {
     "addLayer": "crwdns134561:0crwdne134561:0",
