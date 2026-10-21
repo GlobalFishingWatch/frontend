@@ -90,7 +90,7 @@
     "periodComparisonDuration": "Duração",
     "periodComparisonRange": "no {{duration}} que se seguem {{compareStart}} comparado ao baseline nos {{duration}} seguintes {{start}}",
     "pinVessels": "Add to workspace",
-    "pinVesselsMaxAllowed": "Adding these many vessels would make your workspace surpass the recommended limit of {{maxVessels}} vessels. Please consider using the vessel groups feature to manage your vessels.",
+    "pinVesselsMaxAllowed": "Adicionar tantas embarcações faria seu espaço de trabalho ultrapassar o limite recomendado de {{maxVessels}} embarcações. Considere usar o recurso de grupos de embarcações para gerenciá-las.",
     "polygons_one": "polygon",
     "polygons_other": "polygons",
     "polygonsAreaCoverage": "covering {{areakm2}}km² ({{coverage}}%) of the report area",
@@ -559,7 +559,7 @@
     },
     "context-layer-protectedseas": {
       "dataWarning": "Esta plataforma usa camadas de referência de Áreas Marinhas Protegidas do ProtectedSeas Navigator",
-      "dataWarningDetail": "Esta plataforma usa camadas de referência (shapefiles) do ProtectedSeas Navigator para  Áreas Marinhas Protegidas. As denominações empregadas e a apresentação do material nesta plataforma não implicam a expressão de qualquer parecer do Global Fishing Watch sobre o estatuto jurídico de qualquer país, território, cidade, área ou das suas autoridades, ou ainda sobre a delimitação das suas fronteiras ou limitações. Para ver as camadas de referência originais, por favor visite  <a href='https://mpa.protectedseas.net'>https://mpa.protectedseas.net/</a>. Você deve considerar estas camadas de referência não aplicáveis para seus propósitos, esta plataforma permite que camadas de referência personalizadas sejam carregadas. Desenhe ou carregue sua própria camada de referência usando o ícone '+' na barra lateral esquerda. Saiba mais sobre nossos <a href='https://globalfishingwatch.org/tutorials/'>tutoriais</a> e <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
+      "dataWarningDetail": "Esta plataforma usa camadas de referência (shapefiles) do ProtectedSeas Navigator para Áreas Marinhas Protegidas. As denominações empregadas e a apresentação do material nesta plataforma não implicam a expressão de qualquer parecer do Global Fishing Watch sobre o estatuto jurídico de qualquer país, território, cidade, área ou das suas autoridades, ou ainda sobre a delimitação das suas fronteiras ou limitações. Para ver as camadas de referência originais, por favor visite <a href='https://mpa.protectedseas.net'>https://mpa.protectedseas.net/</a>. Caso você considere que estas camadas de referência não se aplicam aos seus propósitos, esta plataforma permite carregar camadas de referência personalizadas. Desenhe ou carregue sua própria camada de referência usando o ícone '+' na barra lateral esquerda. Saiba mais sobre nossos <a href='https://globalfishingwatch.org/tutorials/'>tutoriais</a> e <a href='https://globalfishingwatch.org/help-faqs/'>FAQs</a>."
     }
   },
   "detectionBands": {
@@ -1146,7 +1146,7 @@
     "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
     "badLink": "The issue you are trying to access was not found. Close this panel to view the list of all issues.",
     "comment": "Comment",
-    "commentPlaceholder": "Add a comment...",
+    "commentPlaceholder": "Diga-nos por que você acha que isto foi mal classificado",
     "commentRequired": "Your feedback is required to submit a correction",
     "commentResolve": "Resolve",
     "confirm": "Confirm",

@@ -98,7 +98,7 @@
     },
     "seabird_safe_longline_sets-public": {
       "cta": "See workspace",
-      "description": "Explore global distribution of longline fleets. Examine and analyse individual longline vessel and vessel group potential setting events in key areas, environmental risk zones and times of day to assess seabird bycatch risk and monitor mitigation measures",
+      "description": "Explore global distribution and operations of drifting longline fleets. The workspace examines and analyses drifting longline set events in key areas and environmental risk zones to assess seabird bycatch risks, monitor mitigation measures by longline fisheries.",
       "name": "Global seabird safe longline settings"
     }
   }
