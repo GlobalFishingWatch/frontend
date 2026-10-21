@@ -90,7 +90,7 @@
     "periodComparisonDuration": "Duración",
     "periodComparisonRange": "{{duration}} siguiente {{compareStart}} comparado con la línea de referencia {{duration}} siguiente {{start}}",
     "pinVessels": "Agregar al área de trabajo",
-    "pinVesselsMaxAllowed": "Añadir estos muchos barcos hará que tu espacio de trabajo supere el límite recomendado de {{maxVessels}} . Por favor, considere utilizar la función de grupos de buques para gestionar sus discursos.",
+    "pinVesselsMaxAllowed": "Añadir tantas embarcaciones haría que su espacio de trabajo superara el límite recomendado de {{maxVessels}} embarcaciones. Considere utilizar la función de grupos de embarcaciones para gestionarlas.",
     "polygons_one": "polígono",
     "polygons_other": "polígonos",
     "polygonsAreaCoverage": "cubriendo {{areakm2}}km2 ({{coverage}}%) del área del informe",
@@ -559,7 +559,7 @@
     },
     "context-layer-protectedseas": {
       "dataWarning": "Esta plataforma utiliza capas de referencia AMP de la fuente ProtectedSeas Navigator",
-      "dataWarningDetail": "Esta plataforma utiliza capas de referencia (shapefiles) de la fuente ProtectedSeas Navigator para áreas marinas protegidas. Las denominaciones empleadas y la presentación del material en esta plataforma no implican la expresión de opinión alguna por parte de Global Fishing Watch con respecto al estatus legal de cualquier país, territorio, ciudad o área o de sus autoridades, o con respecto a la delimitación de sus fronteras o límites. Para ver las capas de referencia originales, visite  <a href='https://mpa.protectedseas.net'>https://mpa.protectedseas.net/</a>. Si considera que estas capas de referencia no son aplicables para sus propósitos, esta plataforma permite cargar capas de referencia personalizadas. Dibuje o cargue su propia capa de referencia usando el ícono '+' en la barra lateral izquierda. Obtenga más información en nuestros <a href='https://globalfishingwatch.org/tutorials/'>tutoriales</a> and <a href='https://globalfishingwatch.org/help-faqs/'>preguntas frecuentes</a>."
+      "dataWarningDetail": "Esta plataforma utiliza capas de referencia (shapefiles) de la fuente ProtectedSeas Navigator para áreas marinas protegidas. Las denominaciones empleadas y la presentación del material en esta plataforma no implican la expresión de opinión alguna por parte de Global Fishing Watch con respecto al estatus legal de cualquier país, territorio, ciudad o área o de sus autoridades, o con respecto a la delimitación de sus fronteras o límites. Para ver las capas de referencia originales, visite <a href='https://mpa.protectedseas.net'>https://mpa.protectedseas.net/</a>. Si considera que estas capas de referencia no son aplicables para sus propósitos, esta plataforma permite cargar capas de referencia personalizadas. Dibuje o cargue su propia capa de referencia usando el ícono '+' en la barra lateral izquierda. Obtenga más información en nuestros <a href='https://globalfishingwatch.org/tutorials/'>tutoriales</a> y <a href='https://globalfishingwatch.org/help-faqs/'>preguntas frecuentes</a>."
     }
   },
   "detectionBands": {
@@ -1146,7 +1146,7 @@
     "adjustDisclaimer": "Ajuste su intervalo de tiempo para cubrir con la mayor precisión posible la actividad en la que está reportando.",
     "badLink": "La corrección a la que intentas acceder no se encontró. Cierra este panel para ver la lista de todas las correciones.",
     "comment": "Comentar",
-    "commentPlaceholder": "Add a comment...",
+    "commentPlaceholder": "Explíquenos por qué cree que esto está mal clasificado",
     "commentRequired": "El comentario es necesario para presentar una corrección",
     "commentResolve": "Resolver",
     "confirm": "Confirmar",
@@ -1442,9 +1442,9 @@
       "IUU": "Lista de embarcaciones INDNR de OROP",
       "IUUBlackListsCount": "La embarcación está presente en una lista de embarcaciones INDNR de OROP",
       "IUUBlackListsEmpty": "La embarcación no está presente en una lista de embarcaciones INDNR de OROP",
-      "longline": "Longline settings at day and night",
-      "longlineDayAndNightSets_one": "{{count}} set outside or overlapping with dawn and dusk (up to 2 hrs overlap)",
-      "longlineDayAndNightSets_other": "{{count}} sets outside or overlapping with dawn and dusk (up to 2 hrs overlap)",
+      "longline": "Longline setting events",
+      "longlineDayAndNightSets_one": "{{count}} set outside or overlapping with day and night",
+      "longlineDayAndNightSets_other": "{{count}} sets outside or overlapping with day and night",
       "longlineDownload": "Download longline sets",
       "longlineEntirelyDaySets_one": "{{count}} day set",
       "longlineEntirelyDaySets_other": "{{count}} day sets",
