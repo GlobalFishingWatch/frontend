@@ -16,6 +16,7 @@ export enum DebugOption {
   VesselsAsPositions = 'vesselsAsPositions',
   HideVesselNames = 'hideVesselNames',
   VesselGapsThresholdFilter = 'vesselGapsThresholdFilter',
+  LogClickedFeatures = 'logClickedFeatures',
 }
 
 export const FAKE_VESSEL_NAME = 'vessel:387609'
@@ -42,6 +43,7 @@ export const debugInitialState: DebugState = {
     vesselsAsPositions: false,
     hideVesselNames: false,
     vesselGapsThresholdFilter: false,
+    logClickedFeatures: false,
   },
 }
 
