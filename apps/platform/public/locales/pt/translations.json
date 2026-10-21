@@ -1171,6 +1171,10 @@
     "title": "Track correction panel",
     "version": "Version"
   },
+  "updateVideo": {
+    "learnMore": "Saiba mais sobre a atualização mais recente do mapa",
+    "title": "Novidades do mapa"
+  },
   "user": {
     "badges": {
       "ambassador": {
@@ -1674,6 +1678,13 @@
       "gaps_one": "{{count}} evento de desativação do AIS de {{vessels}} embarcações detectado",
       "gaps_other": "{{count}} evento de desativação do AIS de {{vessels}} embarcações detectado"
     }
+  },
+  "videoPlayer": {
+    "mute": "Silenciar",
+    "pause": "Pausar",
+    "play": "Reproduzir",
+    "progress": "Progresso do vídeo",
+    "unmute": "Ativar som"
   },
   "workspace": {
     "addLayer": "Adicionar ao espaço de trabalho",
