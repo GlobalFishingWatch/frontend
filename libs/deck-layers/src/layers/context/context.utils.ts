@@ -10,6 +10,7 @@ import { transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
 import type { FilterExtensionProps } from '#layers/user/user.types'
 import { getFilterExtensionSize } from '#layers/user/user.utils'
 
+import { HIDDEN_RFMO_IDS } from './context.config'
 import type {
   ContextFeature,
   ContextLayerConfigFilter,
@@ -74,6 +75,35 @@ export function supportDataFilterExtension(
     : 0
   const sublayerFilterSize = hasSublayerFilters(sublayer) ? 1 : 0
   return sublayerFilterSize + timeFilterSize <= 4
+}
+
+const HIDDEN_FEATURE_IDS: Partial<Record<string, string[]>> = {
+  [ContextLayerId.TunaRfmo]: HIDDEN_RFMO_IDS,
+}
+
+const isHiddenFeature = (feature: ContextFeature | undefined, layerId: string) =>
+  HIDDEN_FEATURE_IDS[layerId]?.includes(feature?.properties?.ID) ?? false
+
+const filteredDataCache = new WeakMap<object, unknown>()
+
+export function filterHiddenFeatures<T>(data: T, layerId: string): T {
+  if (!HIDDEN_FEATURE_IDS[layerId] || !data || typeof data !== 'object') return data
+  const cached = filteredDataCache.get(data)
+  if (cached) return cached as T
+  let filtered: T = data
+  if (Array.isArray(data)) {
+    filtered = data.filter((feature) => !isHiddenFeature(feature, layerId)) as T
+  } else {
+    const features = (data as { features?: ContextFeature[] }).features
+    if (features) {
+      filtered = {
+        ...data,
+        features: features.filter((feature) => !isHiddenFeature(feature, layerId)),
+      }
+    }
+  }
+  filteredDataCache.set(data, filtered)
+  return filtered
 }
 
 const RFMO_LINKS: Record<string, string> = {

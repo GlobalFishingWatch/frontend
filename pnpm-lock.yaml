@@ -1465,6 +1465,9 @@ importers:
       '@globalfishingwatch/dataviews-client':
         specifier: workspace:^
         version: link:../dataviews-client
+      '@globalfishingwatch/deck-layers':
+        specifier: workspace:^
+        version: link:../deck-layers
       '@platform/config':
         specifier: workspace:^
         version: link:../../apps/platform/config
