@@ -18,10 +18,7 @@ import { selectIsGFWUser, selectIsGuestUser } from 'features/_user/selectors/use
 import { useAppDispatch } from 'features/app/app.hooks'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import { setModalOpen } from 'features/modals/modals.slice'
-import {
-  useOnboardingDismissed,
-  useUpdateVideoSeen,
-} from 'features/onboarding/onboarding.auto-open.hooks'
+import { useOnboardingDismissed } from 'features/onboarding/onboarding.auto-open.hooks'
 import {
   getCopilotExamples,
   getOnboardingCards,
@@ -57,9 +54,6 @@ function OnboardingModal() {
   const isGFWUser = useSelector(selectIsGFWUser)
   const isGuestUser = useSelector(selectIsGuestUser)
   const [dismissed, setDismissed] = useOnboardingDismissed()
-  const [videoSeen] = useUpdateVideoSeen()
-  // Only returning users who already saw the update video get it here; new users never had the old map.
-  const videoWatched = videoSeen === true
   const onCardClick = useOnboardingCardActions()
   const askCopilot = useOnboardingCopilotPrompt()
   const [query, setQuery] = useState('')
@@ -125,16 +119,14 @@ function OnboardingModal() {
           </li>
         ))}
       </ul>
-      <div className={cx(styles.messages, { [styles.withVideo]: videoWatched && hasMessages })}>
-        {videoWatched && (
-          <button type="button" className={styles.updateVideo} onClick={openUpdateVideo}>
-            <span className={styles.updateVideoThumbnail}>
-              <img src={getUpdateVideoSource(i18n.language).poster} alt="" />
-              <Icon icon="play" className={styles.updateVideoPlay} />
-            </span>
-            <span className={styles.intro}>{t((t) => t.updateVideo.learnMore)}</span>
-          </button>
-        )}
+      <div className={cx(styles.messages, { [styles.withVideo]: hasMessages })}>
+        <button type="button" className={styles.updateVideo} onClick={openUpdateVideo}>
+          <span className={styles.updateVideoThumbnail}>
+            <img src={getUpdateVideoSource(i18n.language).poster} alt="" />
+            <Icon icon="play" className={styles.updateVideoPlay} />
+          </span>
+          <span className={styles.intro}>{t((t) => t.updateVideo.learnMore)}</span>
+        </button>
         <div className={styles.messagesMain}>
           {copilotEnabled && (
             <form

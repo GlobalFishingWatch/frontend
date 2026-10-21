@@ -26,10 +26,8 @@ export function useOnboardingDismissed() {
 
 export const UPDATE_VIDEO_SEEN_KEY = 'UpdateVideoSeen'
 
-export type UpdateVideoSeen = boolean | 'skipped'
-
 export function useUpdateVideoSeen() {
-  return useLocalStorage<UpdateVideoSeen>(UPDATE_VIDEO_SEEN_KEY, false)
+  return useLocalStorage<boolean>(UPDATE_VIDEO_SEEN_KEY, false)
 }
 
 const RETURNING_USER_KEYS = [
@@ -80,8 +78,9 @@ export function useOnboardingAutoOpen() {
       dispatch(setModalOpen({ id: 'updateVideo', open: true }))
       return
     }
-    // New users never get the update video, not even on a later visit once they have the keys above.
-    if (!videoSeen) setVideoSeen('skipped')
+    // New users never get the update video popup on its own, not even on a later visit once they have
+    // the keys above. They can still open it from the onboarding modal.
+    if (!videoSeen) setVideoSeen(true)
     if (!dismissed) dispatch(setModalOpen({ id: 'onboarding', open: true }))
   }, [
     dispatch,
