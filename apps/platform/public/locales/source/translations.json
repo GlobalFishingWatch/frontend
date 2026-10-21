@@ -1171,6 +1171,10 @@
     "title": "Track correction panel",
     "version": "Version"
   },
+  "updateVideo": {
+    "learnMore": "Learn more about the latest map update",
+    "title": "What's new in the map"
+  },
   "user": {
     "badges": {
       "ambassador": {
@@ -1674,6 +1678,13 @@
       "gaps_one": "{{count}} AIS Off Event from {{vessels}} vessels detected",
       "gaps_other": "{{count}} AIS Off Event from {{vessels}} vessels detected"
     }
+  },
+  "videoPlayer": {
+    "mute": "Mute",
+    "pause": "Pause",
+    "play": "Play",
+    "progress": "Video progress",
+    "unmute": "Unmute"
   },
   "workspace": {
     "addLayer": "Add to workspace",
