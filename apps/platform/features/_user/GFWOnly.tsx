@@ -13,7 +13,7 @@ type GFWOnlyProps = {
   type?: 'default' | 'only-icon'
   style?: IconLogoProps['style']
   className?: string
-  userGroup?: 'gfw' | 'jac' | 'any'
+  userGroup?: 'gfw' | 'jac' | 'both' | 'any'
   children?: React.ReactNode
 }
 
@@ -38,6 +38,8 @@ function GFWOnly(props: GFWOnlyProps) {
       content = t((t) => t.common.onlyVisibleForJAC)
     } else if (userGroup === 'gfw') {
       content = t((t) => t.common.onlyVisibleForGFW)
+    } else if (userGroup === 'both') {
+      content = t((t) => t.common.onlyVisibleForGFWAndJAC)
     } else if (userGroup === 'any') {
       if (gfwUser) {
         content = t((t) => t.common.onlyVisibleForGFW)

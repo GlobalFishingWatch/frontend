@@ -62,7 +62,7 @@ const VesselIdentityGFWExtendedGeartype = ({
   return (
     <ul className={styles.extendedInfo}>
       <li>
-        <GFWOnly userGroup="jac" className={styles.gfwOnly} />
+        <GFWOnly userGroup="both" className={styles.gfwOnly} />
       </li>
       <li>
         <Tooltip content="(vesselClassSc) Vessel class inferred by the machine learning model.">
