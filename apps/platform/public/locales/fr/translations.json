@@ -1449,7 +1449,7 @@
       "IUU": "Liste des navires INN d'une ORGP",
       "IUUBlackListsCount": "Le navire figure sur la liste des navires INN d'une ORGP",
       "IUUBlackListsEmpty": "Le navire ne figure pas sur la liste des navires INN d'une ORGP",
-      "longline": "Longline settings at day and night",
+      "longline": "Événements de pose de palangres",
       "longlineDayAndNightSets_one": "{{count}} set outside or overlapping with dawn and dusk (up to 2 hrs overlap)",
       "longlineDayAndNightSets_other": "{{count}} sets outside or overlapping with dawn and dusk (up to 2 hrs overlap)",
       "longlineDownload": "Download longline sets",
