@@ -1172,8 +1172,8 @@
     "version": "Version"
   },
   "updateVideo": {
-    "learnMore": "Learn more about the latest map update",
-    "title": "What's new in the map"
+    "learnMore": "En savoir plus sur la dernière mise à jour de la carte",
+    "title": "Nouveautés de la carte"
   },
   "user": {
     "badges": {
@@ -1680,11 +1680,11 @@
     }
   },
   "videoPlayer": {
-    "mute": "Mute",
+    "mute": "Couper le son",
     "pause": "Pause",
-    "play": "Play",
-    "progress": "Video progress",
-    "unmute": "Unmute"
+    "play": "Lire",
+    "progress": "Progression de la vidéo",
+    "unmute": "Activer le son"
   },
   "workspace": {
     "addLayer": "Ajouter à l’espace de travail",
