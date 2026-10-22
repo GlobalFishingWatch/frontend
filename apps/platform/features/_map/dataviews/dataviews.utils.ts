@@ -211,25 +211,23 @@ export const getVesselDataviewInstanceDatasetConfig = (
 export const resolveVesselTrackConfig = ({
   config,
   datasets,
-  guestUser,
 }: {
   config: UrlDataviewInstance['config']
   datasets: Dataset[]
-  guestUser: boolean
 }) => {
   const resolvedConfig = { ...config }
   if (!resolvedConfig.info) {
     return resolvedConfig
   }
   const infoDataset = datasets.find((d) => d.id === resolvedConfig.info)
-  // Vessel pined from not logged user but is logged now and the related dataset is available
-  if (!guestUser && !resolvedConfig.track) {
+  // Guest users get these track configs removed by removeGuestRestrictedVesselDatasets
+  if (!resolvedConfig.track) {
     const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)?.id
     if (trackDatasetId) {
       resolvedConfig.track = trackDatasetId
     }
   }
-  if (!guestUser && !resolvedConfig.trackRealTime && resolvedConfig.ssvid) {
+  if (!resolvedConfig.trackRealTime && resolvedConfig.ssvid) {
     const { trackRealTime } = getVesselTrackDatasetIds(infoDataset, datasets)
     if (trackRealTime) {
       resolvedConfig.trackRealTime = trackRealTime
@@ -253,12 +251,10 @@ export const resolveVesselDataviewInstance = (
   {
     datasets,
     dataviews,
-    guestUser,
     trackThinningZoomConfig,
   }: {
     datasets: Dataset[]
     dataviews: Dataview[]
-    guestUser: boolean
     trackThinningZoomConfig: DataviewConfig['trackThinningZoomConfig']
   }
 ): UrlDataviewInstance => {
@@ -284,7 +280,6 @@ export const resolveVesselDataviewInstance = (
         info: dataviewInstance.config?.info || dataviewInfoDatasetId,
       },
       datasets,
-      guestUser,
     })
     const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
       getVesselIdFromInstanceId(dataviewInstance.id),
