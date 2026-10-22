@@ -183,7 +183,7 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
           {!readOnly && layerActive && (layerError || showDeprecatedWarning) && (
             <IconButton
               icon={showDeprecatedWarning ? 'update-required' : 'warning'}
-              type={showDeprecatedWarning ? 'warning-invert' : 'warning'}
+              type={showDeprecatedWarning ? 'update-required' : 'warning'}
               loading={showDeprecatedWarning && isMigrating}
               disabled={showDeprecatedWarning && isMigrating}
               onClick={showDeprecatedWarning ? () => onMigrateDataviewClick(dataview) : undefined}
@@ -211,12 +211,16 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
         </div>
         <IconButton
           icon={
-            layerActive ? (layerError || showDeprecatedWarning ? 'warning' : 'more') : undefined
+            layerActive
+              ? layerError || showDeprecatedWarning
+                ? 'update-required'
+                : 'more'
+              : undefined
           }
           type={
             layerActive
               ? showDeprecatedWarning
-                ? 'warning-invert'
+                ? 'update-required'
                 : layerError
                   ? 'warning'
                   : 'default'

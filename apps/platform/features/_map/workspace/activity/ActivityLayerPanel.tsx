@@ -274,8 +274,8 @@ function ActivityLayerPanel({
             )}
             {!readOnly && layerActive && (layerError || showDeprecatedWarning) && (
               <IconButton
-                icon="warning"
-                type={showDeprecatedWarning ? 'warning-invert' : 'warning'}
+                icon={showDeprecatedWarning ? 'update-required' : 'warning'}
+                type={showDeprecatedWarning ? 'update-required' : 'warning'}
                 loading={showDeprecatedWarning && isMigrating}
                 disabled={showDeprecatedWarning && isMigrating}
                 onClick={showDeprecatedWarning ? () => onMigrateDataviewClick(dataview) : undefined}
@@ -308,7 +308,7 @@ function ActivityLayerPanel({
             type={
               layerActive
                 ? showDeprecatedWarning
-                  ? 'warning-invert'
+                  ? 'update-required'
                   : layerError
                     ? 'warning'
                     : 'default'

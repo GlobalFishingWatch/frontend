@@ -241,7 +241,7 @@ function VesselGroupLayerPanel({
               (hasDeletedDatasets || (layerActive && (layerError || showDeprecatedWarning))) && (
                 <IconButton
                   icon={showDeprecatedWarning ? 'update-required' : 'warning'}
-                  type={warningActive ? 'warning-invert' : 'warning'}
+                  type={warningActive ? 'update-required' : 'warning'}
                   onClick={warningActive ? onUpdateDeprecatedLayerClick : undefined}
                   loading={isLoading}
                   disabled={isLoading}
@@ -279,7 +279,7 @@ function VesselGroupLayerPanel({
               ? 'warning'
               : layerActive
                 ? layerError || showDeprecatedWarning
-                  ? 'warning'
+                  ? 'update-required'
                   : 'more'
                 : undefined
           }
@@ -288,7 +288,7 @@ function VesselGroupLayerPanel({
               ? 'warning-invert'
               : layerActive
                 ? showDeprecatedWarning
-                  ? 'warning-invert'
+                  ? 'update-required'
                   : layerError
                     ? 'warning'
                     : 'default'
