@@ -154,6 +154,7 @@ export const useMigrateWorkspaceToast = () => {
       toastId.current = toast(<ToastContent />, {
         toastId: 'migrateWorkspace',
         closeButton: true,
+        autoClose: false,
         onClose: (reason) => {
           if (reason === true || reason === 'click') {
             migrationToastDiscardedWorkspaceIds.add(workspaceId)
