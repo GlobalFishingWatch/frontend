@@ -1,5 +1,5 @@
 import { RegionType, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { getDatasetVersion } from '@globalfishingwatch/datasets-client'
+import { getDatasetVersion, removeDatasetVersion } from '@globalfishingwatch/datasets-client'
 import { PIPE_DATASET_ID } from '@globalfishingwatch/datasets-client/constants'
 
 import type { VesselProfileState } from './vessel.types'
@@ -10,11 +10,17 @@ export const DEFAULT_VESSEL_IDENTITY_ID =
 export const VESSEL_IDENTITY_ID_V4 = `${DEFAULT_VESSEL_IDENTITY_DATASET}:v4.0` as const
 export const VESSEL_IDENTITY_ID_V5 = `${DEFAULT_VESSEL_IDENTITY_DATASET}:v5.0` as const
 
+export const getIsPipe3VesselDataset = (datasetId: string) =>
+  getDatasetVersion(datasetId) === 'v3.0'
+
 export const getIsPipe4VesselDataset = (datasetId: string) =>
   getDatasetVersion(datasetId) === 'v4.0'
 
 export const getIsPipe5VesselDataset = (datasetId: string) =>
   getDatasetVersion(datasetId) === 'v5.0'
+
+export const getPipe5VesselDatasetId = (datasetId: string) =>
+  getIsPipe4VesselDataset(datasetId) ? `${removeDatasetVersion(datasetId)}:v5.0` : datasetId
 
 export const INCLUDES_RELATED_SELF_REPORTED_INFO_ID =
   'POTENTIAL_RELATED_SELF_REPORTED_INFO' as const

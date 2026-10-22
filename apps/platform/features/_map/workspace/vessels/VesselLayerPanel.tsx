@@ -291,7 +291,7 @@ function VesselLayerPanel({
             />
           )}
           {showDeprecatedWarning && vesselData && (
-            <VesselDeprecatedLink vesselIdentity={vesselData} />
+            <VesselDeprecatedLink vesselIdentity={vesselData} dataview={dataview} />
           )}
           {(infoError || trackError) && !showDeprecatedWarning && (
             <IconButton
@@ -316,15 +316,17 @@ function VesselLayerPanel({
         <IconButton
           icon={
             layerActive
-              ? infoError || trackError || showDeprecatedWarning
+              ? infoError || trackError
                 ? 'warning'
-                : 'more'
+                : showDeprecatedWarning
+                  ? 'update-required'
+                  : 'more'
               : undefined
           }
           type={
             layerActive
               ? showDeprecatedWarning
-                ? 'warning-invert'
+                ? 'update-required'
                 : infoError || trackError
                   ? 'warning'
                   : 'default'
@@ -332,7 +334,7 @@ function VesselLayerPanel({
           }
           loading={!showDeprecatedWarning && trackLoading}
           className={cx('print-hidden', styles.shownUntilHovered)}
-          size="small"
+          size="medium"
         />
       </div>
       {(hasSchemaFilterSelection || showGapSegmentThresholdFilter) && layerActive && (

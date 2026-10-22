@@ -8,7 +8,7 @@ import {
   type DataviewInstance,
   type VesselGroup,
 } from '@globalfishingwatch/api-types'
-import { getIsVMSDataset, removeDatasetVersion } from '@globalfishingwatch/datasets-client'
+import { getIsVMSDataset } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import {
@@ -30,6 +30,7 @@ import { isOutdatedVesselGroup } from 'features/_user/vessel-groups/vessel-group
 import {
   getIsPipe4VesselDataset,
   getIsPipe5VesselDataset,
+  getPipe5VesselDatasetId,
 } from 'features/_vessels/vessel/vessel.config'
 import type { IdentityVesselData } from 'features/_vessels/vessel/vessel.slice'
 import { getVesselProperty } from 'features/_vessels/vessel/vessel.utils'
@@ -117,11 +118,7 @@ export const useMigrateToLatestVesselGroup = () => {
         updateVesselGroupVesselsThunk({
           id: vesselGroup.id,
           override: true,
-          vessels: vessels.map((v) =>
-            getIsPipe4VesselDataset(v.dataset)
-              ? { ...v, dataset: `${removeDatasetVersion(v.dataset)}:v5.0` }
-              : v
-          ),
+          vessels: vessels.map((v) => ({ ...v, dataset: getPipe5VesselDatasetId(v.dataset) })),
         })
       )
       if (!updateVesselGroupVesselsThunk.fulfilled.match(updateAction)) {
