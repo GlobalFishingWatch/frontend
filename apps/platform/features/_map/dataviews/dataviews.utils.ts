@@ -793,7 +793,7 @@ export function isDataviewInTimeMode(dataview: UrlDataviewInstance, timeMode: Ti
 }
 
 export function hasWorkspaceDataviewsDeprecated(
-  workspace: Workspace<any> | undefined,
+  workspace: Pick<Workspace<any>, 'dataviewInstances'> | undefined,
   deprecatedDatasets: DatasetsMigration | undefined
 ) {
   if (!workspace?.dataviewInstances?.length || !deprecatedDatasets) {
