@@ -4,17 +4,14 @@ import { uniqBy } from 'es-toolkit'
 import type { IdentityVessel, Locale, Resource } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
-import type {
-  GetDatasetConfigsCallbacks,
-  UrlDataviewInstance,
-} from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
-  extendDataviewDatasetConfig,
   getIsVesselDataviewInstanceId,
   getResources,
   getVesselDataviewInstanceId,
   resolveDataviewDatasetResource,
   resolveDataviews,
+  resolveTrackDataviewsDatasetsConfig,
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
 import { BASEMAP_LABELS_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
@@ -24,7 +21,6 @@ import { selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
 import {
   isDataviewDeprecated,
   isDataviewInTimeMode,
-  removeGuestRestrictedVesselDatasets,
   resolveVesselDataviewInstance,
   withLonglineSetsEvents,
 } from 'features/_map/dataviews/dataviews.utils'
@@ -39,7 +35,6 @@ import { selectCurrentVesselEvent } from 'features/_vessels/vessel/selectors/ves
 import { selectLonglineSetsOnMap } from 'features/_vessels/vessel/vessel.config.selectors'
 import { getVesselProperty } from 'features/_vessels/vessel/vessel.utils'
 import { selectTrackThinningConfig } from 'features/data/resources/resources.selectors.thinning'
-import { infoDatasetConfigsCallback } from 'features/data/resources/resources.utils'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import {
   selectIsAnyVesselLocation,
@@ -129,7 +124,6 @@ export const selectAllDataviewInstancesResolved = createSelector(
         ? resolveVesselDataviewInstance(dataviewInstance, {
             datasets,
             dataviews,
-            guestUser,
             trackThinningZoomConfig,
           })
         : dataviewInstance
@@ -174,14 +168,10 @@ export const selectAllDataviewInstancesResolved = createSelector(
         return dataview
       }
     )
-    const callbacks: GetDatasetConfigsCallbacks = {
-      info: infoDatasetConfigsCallback(guestUser),
-    }
-    const dataviewInstancesResolvedExtended = extendDataviewDatasetConfig(
-      guestUser
-        ? dataviewInstancesResolvedWithConfigInjected.map(removeGuestRestrictedVesselDatasets)
-        : dataviewInstancesResolvedWithConfigInjected,
-      callbacks
+    const dataviewInstancesResolvedExtended = resolveTrackDataviewsDatasetsConfig(
+      dataviewInstancesResolvedWithConfigInjected,
+      // Guest users can't load vessel tracks or events and get a different vessel info response
+      { vesselTracksAndEventsAllowed: !guestUser, infoCache: !guestUser }
     )
     const dataviewInstancesResolvedExtendedUniq = uniqBy(
       dataviewInstancesResolvedExtended,
@@ -212,8 +202,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
 )
 
 /**
- * Calls getResources to prepare track dataviews' datasetConfigs.
- * Injects app-specific logic by using getResources's callback
+ * Calls getResources to prepare track dataviews' info resources
  */
 export const selectDataviewsResources = createSelector(
   [selectAllDataviewInstancesResolved],
