@@ -26,7 +26,7 @@ export const selectVesselDatasetId = selectVesselProfileStateProperty('vesselDat
 
 export const selectShowPipe5IdentityFields = createSelector(
   [selectVesselDatasetId],
-  (datasetId): boolean => getIsPipe5VesselDataset(datasetId) && WORKSPACE_ENV !== 'production'
+  (datasetId): boolean => getIsPipe5VesselDataset(datasetId)
 )
 
 export const selectVesselActivityMode = selectVesselProfileStateProperty('vesselActivityMode')
