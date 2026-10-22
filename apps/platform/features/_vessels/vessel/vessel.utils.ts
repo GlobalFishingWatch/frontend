@@ -13,8 +13,10 @@ import type {
   VesselType,
 } from '@globalfishingwatch/api-types'
 import { API_LOGIN_REQUIRED, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { PRIVATE_ICON } from 'data/map/config'
+import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/map/dataviews'
 import { isPrivateDataset } from 'features/_map/datasets/datasets.utils'
 import type { ExtendedFeatureVessel } from 'features/_map/map/map.slice'
 import type { TimeRange } from 'features/_map/timebar/timebar.slice'
@@ -22,6 +24,7 @@ import type { IdField } from 'features/_user/vessel-groups/vessel-groups.slice'
 import type { VesselPropertyApiSearch } from 'features/_user/vessel-groups/vessel-groups.utils'
 import type { VesselLastIdentity } from 'features/_vessels/search/search.slice'
 import type { ActivityEvent } from 'features/_vessels/vessel/activity/vessels-activity.selectors'
+import { getPipe5VesselDatasetId } from 'features/_vessels/vessel/vessel.config'
 import type { IdentityVesselData, VesselDataIdentity } from 'features/_vessels/vessel/vessel.slice'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { getUTCDateTime } from 'utils/dates'
@@ -444,4 +447,22 @@ export function isTimerangeOutsideTransmissions(
 
 export function getSkylightLink({ skylightId }: { skylightId: string }): string {
   return `https://app.skylight.earth/vesseldetails/${skylightId}`
+}
+
+export function getPipe5VesselDataviewInstance(
+  dataview: UrlDataviewInstance
+): Partial<UrlDataviewInstance> {
+  const { config, dataviewId } = dataview
+  return {
+    id: dataview.id,
+    ...(dataviewId && { dataviewId: LEGACY_TO_LATEST_DATAVIEWS[dataviewId] || dataviewId }),
+    config: {
+      ...(config?.info && { info: getPipe5VesselDatasetId(config.info) }),
+      ...(config?.track && { track: getPipe5VesselDatasetId(config.track) }),
+      ...(config?.trackRealTime && {
+        trackRealTime: getPipe5VesselDatasetId(config.trackRealTime),
+      }),
+      ...(config?.events?.length && { events: config.events.map(getPipe5VesselDatasetId) }),
+    },
+  }
 }
