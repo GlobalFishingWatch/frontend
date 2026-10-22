@@ -303,8 +303,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         (f as VesselTrackPickingObject).subcategory === DataviewType.Track
     )
 
+    // No trackUrl is a valid state, e.g. guest users can't load vessel tracks
     if (!trackUrl || !visible) {
-      if (!trackUrl) console.warn('trackUrl needed for vessel layer')
       return []
     }
     const { zoom } = this.context.viewport
