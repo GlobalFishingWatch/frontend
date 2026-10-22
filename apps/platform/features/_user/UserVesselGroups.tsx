@@ -143,7 +143,7 @@ function UserVesselGroups() {
                         <Button
                           type="border-secondary"
                           size="small"
-                          icon={<Icon icon="warning" />}
+                          icon={<Icon icon="update-required" />}
                           tooltip={
                             hasDeletedDatasets
                               ? t((t) => t.workspace.deletedVesselGroupLayer)

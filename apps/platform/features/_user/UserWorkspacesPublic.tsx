@@ -120,12 +120,13 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
                     </span>
                     {isOutdated ? (
                       <IconButton
-                        icon="warning"
-                        type={'warning-invert'}
+                        icon="update-required"
+                        type={'warning'}
                         loading={loading}
                         disabled={loading}
+                        className={styles.updateRequired}
                         tooltip={t((t) => t.workspace.updateDeprecatedDataviews)}
-                        size="small"
+                        size="medium"
                       />
                     ) : (
                       <IconButton icon="arrow-right" />

@@ -9,6 +9,8 @@ import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { InputText } from '@globalfishingwatch/ui-components/input-text'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 
+import { selectDeprecatedDatasets } from 'features/_map/datasets/datasets.slice'
+import { hasWorkspaceDataviewsDeprecated } from 'features/_map/dataviews/dataviews.utils'
 import { getReportAreaStringByLocale } from 'features/_reports/report-area/title/report-title.utils'
 import {
   deleteReportThunk,
@@ -40,6 +42,8 @@ function UserReports() {
   const reports = useSelector(selectUserReports)
   const reportsStatus = useSelector(selectReportsStatus)
   const reportsStatusId = useSelector(selectReportsStatusId)
+  const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
+
   const [searchQuery, setSearchQuery] = useState('')
 
   const onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,6 +98,11 @@ function UserReports() {
               if (!label.toLowerCase().includes(searchQuery.toLowerCase())) {
                 return null
               }
+              const isOutdated = hasWorkspaceDataviewsDeprecated(
+                report.workspace,
+                deprecatedDatasets
+              )
+
               return (
                 <li className={styles.dataset} key={report.id}>
                   <Link
@@ -106,7 +115,17 @@ function UserReports() {
                     <span className={styles.workspaceTitle}>
                       {getHighlightedText(label as string, searchQuery, styles)}
                     </span>
-                    <IconButton icon="arrow-right" />
+                    {isOutdated ? (
+                      <IconButton
+                        icon="update-required"
+                        type={'warning'}
+                        className={styles.updateRequired}
+                        tooltip={t((t) => t.workspace.updateDeprecatedDataviews)}
+                        size="medium"
+                      />
+                    ) : (
+                      <IconButton icon="arrow-right" />
+                    )}{' '}
                   </Link>
                   <div>
                     <IconButton
