@@ -85,7 +85,7 @@ export const useMigrateWorkspaceToast = () => {
     return (
       <div className={styles.disclaimerButton}>
         <div className={styles.disclaimer}>
-          <IconButton icon="warning" type="warning-invert" size="small" />
+          <IconButton icon="update-required" type="update-required" size="small" />
           <div>
             <p>{t((t) => t.workspace.migrationDisclaimer)}</p>
             <p className={styles.secondary}>

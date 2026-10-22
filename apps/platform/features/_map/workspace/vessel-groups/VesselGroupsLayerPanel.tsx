@@ -240,7 +240,7 @@ function VesselGroupLayerPanel({
             {!readOnly &&
               (hasDeletedDatasets || (layerActive && (layerError || showDeprecatedWarning))) && (
                 <IconButton
-                  icon="warning"
+                  icon={showDeprecatedWarning ? 'update-required' : 'warning'}
                   type={warningActive ? 'warning-invert' : 'warning'}
                   onClick={warningActive ? onUpdateDeprecatedLayerClick : undefined}
                   loading={isLoading}

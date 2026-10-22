@@ -121,10 +121,9 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
                     {isOutdated ? (
                       <IconButton
                         icon="update-required"
-                        type={'warning'}
+                        type="update-required"
                         loading={loading}
                         disabled={loading}
-                        className={styles.updateRequired}
                         tooltip={t((t) => t.workspace.updateDeprecatedDataviews)}
                         size="medium"
                       />

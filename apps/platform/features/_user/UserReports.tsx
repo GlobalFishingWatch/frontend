@@ -118,8 +118,7 @@ function UserReports() {
                     {isOutdated ? (
                       <IconButton
                         icon="update-required"
-                        type={'warning'}
-                        className={styles.updateRequired}
+                        type="update-required"
                         tooltip={t((t) => t.workspace.updateDeprecatedDataviews)}
                         size="medium"
                       />

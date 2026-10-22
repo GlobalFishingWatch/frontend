@@ -297,7 +297,13 @@ function ActivityLayerPanel({
           )}
           <IconButton
             icon={
-              layerActive ? (layerError || showDeprecatedWarning ? 'warning' : 'more') : undefined
+              layerActive
+                ? layerError
+                  ? 'warning'
+                  : showDeprecatedWarning
+                    ? 'update-required'
+                    : 'more'
+                : undefined
             }
             type={
               layerActive

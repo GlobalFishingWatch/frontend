@@ -46,7 +46,7 @@ const VesselDeprecatedLink = ({
       }}
     >
       <IconButton
-        icon="warning"
+        icon="update-required"
         type="warning-invert"
         size="small"
         tooltip={t((t) => t.workspace.deprecatedVesselLayer)}

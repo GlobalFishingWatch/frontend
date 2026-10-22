@@ -98,17 +98,6 @@
   flex: 1;
 }
 
-.updateRequired {
-  color: var(--color-secondary-blue);
-  background-color: var(--color-help-yellow);
-}
-
-.updateRequired:hover,
-.updateRequired:focus {
-  color: var(--color-primary-blue);
-  background-color: var(--color-help-yellow) !important;
-}
-
 .right {
   margin-left: auto;
 }
