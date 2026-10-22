@@ -10,7 +10,6 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
-import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/map/dataviews'
 import { selectDeprecatedDatasets } from 'features/_map/datasets/datasets.slice'
 import { mergeDataviewIntancesToUpsert } from 'features/_map/workspace/workspace.hook'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
@@ -21,7 +20,10 @@ import {
 import { selectIncludeRelatedIdentities } from 'features/_vessels/vessel/vessel.config.selectors'
 import type { IdentityVesselData } from 'features/_vessels/vessel/vessel.slice'
 import { fetchVesselInfoThunk } from 'features/_vessels/vessel/vessel.slice'
-import { getVesselProperty } from 'features/_vessels/vessel/vessel.utils'
+import {
+  getPipe5VesselDataviewInstance,
+  getVesselProperty,
+} from 'features/_vessels/vessel/vessel.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectVesselId } from 'router/routes.selectors'
@@ -53,23 +55,10 @@ const VesselDeprecatedLink = ({
     if (!dataview) {
       return
     }
-    const { config, dataviewId } = dataview
-    const dataviewInstance: Partial<UrlDataviewInstance> = {
-      id: dataview.id,
-      ...(dataviewId && { dataviewId: LEGACY_TO_LATEST_DATAVIEWS[dataviewId] || dataviewId }),
-      config: {
-        ...(config?.info && { info: getPipe5VesselDatasetId(config.info) }),
-        ...(config?.track && { track: getPipe5VesselDatasetId(config.track) }),
-        ...(config?.trackRealTime && {
-          trackRealTime: getPipe5VesselDatasetId(config.trackRealTime),
-        }),
-        ...(config?.events?.length && { events: config.events.map(getPipe5VesselDatasetId) }),
-      },
-    }
     const pipe5VesselDatasetId = getPipe5VesselDatasetId(vesselDatasetId)
     replaceQueryParams((prev) => ({
       dataviewInstances: mergeDataviewIntancesToUpsert(
-        dataviewInstance,
+        getPipe5VesselDataviewInstance(dataview),
         prev.dataviewInstances || []
       ),
       ...(isVesselProfile && { vesselDatasetId: pipe5VesselDatasetId }),

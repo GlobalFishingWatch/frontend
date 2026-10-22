@@ -27,6 +27,8 @@ import {
   selectDeprecatedDataviewInstances,
 } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
+import { getIsPipe4VesselDataset } from 'features/_vessels/vessel/vessel.config'
+import { getPipe5VesselDataviewInstance } from 'features/_vessels/vessel/vessel.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 
 const normalizeDataviewFilters = (filters?: DataviewConfig['filters']) =>
@@ -215,6 +217,13 @@ export function useMigrateToLatestDataview() {
         })
       )
     ).flat()
+    const pipe4VesselDataviewInstances = (deprecatedDataviewInstances || []).filter(
+      (dataviewInstance) =>
+        dataviewInstance.category === DataviewCategory.Vessels &&
+        dataviewInstance.config?.info &&
+        getIsPipe4VesselDataset(dataviewInstance.config.info)
+    )
+    dataviewInstances.push(...pipe4VesselDataviewInstances.map(getPipe5VesselDataviewInstance))
     if (dataviewInstances.length) {
       upsertDataviewInstance(dataviewInstances)
     }

@@ -184,6 +184,7 @@ export const useMigrateToLatestVesselGroup = () => {
     () => ({
       migrateToLatestVesselGroupByDataview,
       migrateToLatestVesselGroup,
+      switchPipe4VesselGroupToPipe5,
       loadingGroupId,
       migratedGroupIds,
       isLoading: loadingGroupId !== null,
@@ -191,6 +192,7 @@ export const useMigrateToLatestVesselGroup = () => {
     [
       migrateToLatestVesselGroupByDataview,
       migrateToLatestVesselGroup,
+      switchPipe4VesselGroupToPipe5,
       loadingGroupId,
       migratedGroupIds,
     ]
