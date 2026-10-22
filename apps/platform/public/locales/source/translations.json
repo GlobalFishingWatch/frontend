@@ -568,6 +568,11 @@
     "rgb": "Red, green and blue (visible light)"
   },
   "detections": "",
+  "detectionScene": {
+    "addHighlight": "Highlight other detections from the same satellite scene",
+    "highlight": "Scene",
+    "removeHighlight": "Clear scene highlight"
+  },
   "download": {
     "apiPortal": "See our APIs here",
     "area": "Area",

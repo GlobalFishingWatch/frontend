@@ -23,6 +23,13 @@ export function getIsActivityPositionMatched(feature: FourwingsPositionFeature) 
   )
 }
 
+export function getDetectionSceneId(detectionId?: string) {
+  if (!detectionId?.includes(';')) {
+    return undefined
+  }
+  return detectionId.split(';')[0].split('_AOI')[0]
+}
+
 export function getIsDetectionsPositionMatched(feature: FourwingsPositionFeature) {
   return (
     (feature.properties.shipname && feature.properties.shipname.length > 0) ||

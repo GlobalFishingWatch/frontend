@@ -15,6 +15,7 @@ import {
 } from '@globalfishingwatch/datasets-client'
 import type { FourwingsPositionsPickingObject } from '@globalfishingwatch/deck-layers'
 import {
+  getDetectionSceneId,
   getIsActivityPositionMatched,
   getIsDetectionsPositionMatched,
 } from '@globalfishingwatch/deck-layers'
@@ -28,6 +29,7 @@ import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/sele
 import type { PositionRealTimeVessel } from 'features/_map/map/map.slice'
 import { fetchDetectionThumbnailsThunk } from 'features/_map/map/map.slice'
 import { interactionPromisesAtom } from 'features/_map/map/map-interactions.atoms'
+import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import VesselLink from 'features/_vessels/vessel/VesselLink'
 import VesselPin from 'features/_vessels/vessel/VesselPin'
@@ -64,13 +66,24 @@ function DetectionThumbnails({
   thumbnails,
   scale,
   datasetId,
+  detectionId,
+  dataviewInstanceId,
 }: {
   thumbnails: DetectionThumbnail[]
   scale?: number
   datasetId?: string
+  detectionId?: string
+  dataviewInstanceId?: string
 }) {
   const { t } = useTranslation()
   const [selectedName, setSelectedName] = useState<string>()
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const dataviewInstance = useSelector(selectAllDataviewInstancesResolved)?.find(
+    (instance) => instance.id === dataviewInstanceId
+  )
+  const sceneId = getDetectionSceneId(detectionId)
+  const isSceneHighlighted =
+    sceneId !== undefined && dataviewInstance?.config?.highlightedSceneId === sceneId
   if (!thumbnails.length) {
     return null
   }
@@ -98,15 +111,35 @@ function DetectionThumbnails({
           datasetId={datasetId}
         />
       </Suspense>
-      {options.length > 1 && (
-        <Choice
-          size="small"
-          options={options}
-          activeOption={thumbnail.name}
-          onSelect={({ id }) => setSelectedName(id)}
-          containerClassName={popupStyles.thumbnailBands}
-        />
-      )}
+      <div className={popupStyles.thumbnailControls}>
+        {sceneId && dataviewInstanceId && (
+          <IconButton
+            icon={isSceneHighlighted ? 'satellite-off' : 'satellite'}
+            size="small"
+            className={popupStyles.thumbnailSceneButton}
+            tooltip={
+              isSceneHighlighted
+                ? t((t) => t.detectionScene.removeHighlight)
+                : t((t) => t.detectionScene.addHighlight)
+            }
+            onClick={() =>
+              upsertDataviewInstance({
+                id: dataviewInstanceId,
+                config: { highlightedSceneId: isSceneHighlighted ? undefined : sceneId },
+              })
+            }
+          />
+        )}
+        {options.length > 1 && (
+          <Choice
+            size="small"
+            options={options}
+            activeOption={thumbnail.name}
+            onSelect={({ id }) => setSelectedName(id)}
+            containerClassName={popupStyles.thumbnailBands}
+          />
+        )}
+      </div>
     </div>
   )
 }
@@ -126,7 +159,9 @@ function PositionsTooltipRow({
   const workspace = useSelector(selectWorkspace)
   const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
   const dataviewInstances = useSelector(selectAllDataviewInstancesResolved)
-  const featureDataview = dataviewInstances?.find((instance) => instance.id === feature.layerId)
+  // layerId is the merged id when several detections layers are on, the sublayer is the instance
+  const dataviewInstanceId = feature.sublayers?.[0]?.id ?? feature.layerId
+  const featureDataview = dataviewInstances?.find((instance) => instance.id === dataviewInstanceId)
   const thumbnailsDatasetId = getRelatedDatasetByType(
     featureDataview?.datasets?.[0],
     DatasetTypes.Thumbnails
@@ -311,6 +346,8 @@ function PositionsTooltipRow({
             thumbnails={feature.properties.thumbnails}
             scale={getDatasetConfiguration(thumbnailsDataset, 'thumbnailsV1')?.scale}
             datasetId={datasetId}
+            detectionId={feature.properties.id}
+            dataviewInstanceId={feature.sublayers?.[0]?.id}
           />
         )}
     </Fragment>

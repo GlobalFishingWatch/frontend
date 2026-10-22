@@ -46,14 +46,20 @@ function PositionsTooltipSection({
     }
   }
 
+  // layerId is the merged id when several detections layers are on, the sublayer is the instance
+  const getDataviewInstanceId = (feature: SliceExtendedFourwingsPickingObject) =>
+    feature.sublayers?.[0]?.id ?? feature.layerId
+
   if (showFeaturesDetails) {
     const getTitle = (feature: SliceExtendedFourwingsPickingObject) => {
-      const dataview = dataviewInstances?.find((instance) => instance.id === feature.layerId)
+      const dataview = dataviewInstances?.find(
+        (instance) => instance.id === getDataviewInstanceId(feature)
+      )
       return dataview
         ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
         : feature.title
     }
-    const featuresByLayer = groupBy(features, (feature) => feature.layerId)
+    const featuresByLayer = groupBy(features, getDataviewInstanceId)
     return Object.entries(featuresByLayer).map(([layerId, layerFeatures]) => (
       <PopupSectionLayout
         key={layerId}
