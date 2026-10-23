@@ -1,0 +1,33 @@
+.modalContent {
+  height: auto;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: var(--space-M);
+}
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-S);
+}
+
+.input {
+  width: 100%;
+}
+
+.footer {
+  margin-top: var(--space-S);
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cta {
+  min-width: 15rem;
+  padding: 0 5rem;
+  margin-bottom: 2rem;
+}

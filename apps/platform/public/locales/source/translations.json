@@ -567,6 +567,14 @@
     "nir": "Near-infrared",
     "rgb": "Red, green and blue (visible light)"
   },
+  "detectionFeedback": {
+    "commentPlaceholder": "Describe the issue with this detection",
+    "comments": "Comments",
+    "dataset": "Dataset",
+    "detectionId": "Detection id",
+    "send": "Send feedback",
+    "title": "Detection feedback"
+  },
   "detections": "",
   "download": {
     "apiPortal": "See our APIs here",
