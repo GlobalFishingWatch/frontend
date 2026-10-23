@@ -275,7 +275,7 @@ function ActivityReport() {
       )
     }
     if (workspaceStatus === AsyncReducerStatus.Loading || reportLoading) {
-      return <ReportVesselsPlaceholder className="print-hidden" />
+      return <ReportVesselsPlaceholder showSlowLoading className="print-hidden" />
     }
     if (timerangeTooLong) {
       return (

@@ -148,7 +148,11 @@ export default function ReportActivity() {
       )}
       {/* Dataset Comparison Selectors needs to go above the graph instead of time comparison selectors */}
       {showSelectors && SelectorsComponent && isDatasetComparison && <SelectorsComponent />}
-      {isInitialLoad || reportAreaStatus !== AsyncReducerStatus.Finished ? (
+      {reportAreaStatus === AsyncReducerStatus.Error ? (
+        <ReportActivityPlaceholder showHeader={false} animate={false}>
+          {t((t) => t.errors.areaLoad)}
+        </ReportActivityPlaceholder>
+      ) : isInitialLoad || reportAreaStatus !== AsyncReducerStatus.Finished ? (
         <ReportActivityPlaceholder showHeader={!showSelectors} loading />
       ) : isEmptyData || hasError ? (
         <ReportActivityPlaceholder showHeader={false} animate={false}>
