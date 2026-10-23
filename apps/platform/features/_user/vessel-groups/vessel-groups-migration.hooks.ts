@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
 import { uniq } from 'es-toolkit'
 
 import {
@@ -27,11 +28,7 @@ import {
   updateVesselGroupVesselsThunk,
 } from 'features/_user/vessel-groups/vessel-groups.slice'
 import { isOutdatedVesselGroup } from 'features/_user/vessel-groups/vessel-groups.utils'
-import {
-  getIsPipe4VesselDataset,
-  getIsPipe5VesselDataset,
-  getPipe5VesselDatasetId,
-} from 'features/_vessels/vessel/vessel.config'
+import { getVesselLatestDatasetId } from 'features/_vessels/vessel/vessel.config'
 import type { IdentityVesselData } from 'features/_vessels/vessel/vessel.slice'
 import { getVesselProperty } from 'features/_vessels/vessel/vessel.utils'
 // import { VesselLastIdentity } from 'features/_vessels/search/search.slice'
@@ -87,38 +84,43 @@ export type AddVesselGroupVessel =
 
 export const useMigrateToLatestVesselGroup = () => {
   const [loadingGroupId, setLoadingGroupId] = useState<VesselGroup['id'] | null>(null)
-  // Groups switched in place, the stored vesselsSummary may still list the v4 datasets until refetched
-  const [migratedGroupIds, setMigratedGroupIds] = useState<VesselGroup['id'][]>([])
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const deletedDatasets = useSelector(selectDeletedDatasets)
   const userData = useSelector(selectUserData)
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
 
-  // Pipe 4 vessel ids are the same in pipe 5, so the group only needs its datasets switched.
-  // Returns false when the group has vessels in other versions (v3) and needs the modal flow.
-  const switchPipe4VesselGroupToPipe5 = useCallback(
+  // Vessel ids are kept in the latest version (pipe 4 → 5), so the group only needs its datasets switched.
+  // Returns false when the group needs the modal flow (ie: it has v3 vessels), throws on API errors
+  const switchVesselGroupToLatest = useCallback(
     async (vesselGroup: VesselGroup) => {
       if (vesselGroup.ownerId !== userData?.id) {
         return false
       }
       const action = await dispatch(fetchVesselGroupByIdThunk(vesselGroup.id))
-      if (!fetchVesselGroupByIdThunk.fulfilled.match(action) || !action.payload?.vessels) {
+      if (!fetchVesselGroupByIdThunk.fulfilled.match(action)) {
+        throw action.payload
+      }
+      const vessels = action.payload?.vessels || []
+      const updatedVessels = vessels.map((v) => ({
+        ...v,
+        dataset: getVesselLatestDatasetId(v.dataset, deprecatedDatasets) || v.dataset,
+      }))
+      const hasOutdatedVessels = updatedVessels.some(
+        (v) => deprecatedDatasets[v.dataset] || deletedDatasets.includes(v.dataset)
+      )
+      if (!vessels.length || hasOutdatedVessels) {
         return false
       }
-      const vessels = action.payload.vessels
-      const outdatedVessels = vessels.filter((v) => !getIsPipe5VesselDataset(v.dataset))
-      const isPipe4VesselGroup =
-        outdatedVessels.length > 0 &&
-        outdatedVessels.every((v) => getIsPipe4VesselDataset(v.dataset))
-      if (!isPipe4VesselGroup) {
-        return false
+      if (updatedVessels.every((v, index) => v.dataset === vessels[index].dataset)) {
+        // Already switched, the stored vesselsSummary was stale and got updated by the fetch above
+        return !isOutdatedVesselGroup(action.payload!)
       }
       const updateAction = await dispatch(
         updateVesselGroupVesselsThunk({
           id: vesselGroup.id,
           override: true,
-          vessels: vessels.map((v) => ({ ...v, dataset: getPipe5VesselDatasetId(v.dataset) })),
+          vessels: updatedVessels,
         })
       )
       if (!updateVesselGroupVesselsThunk.fulfilled.match(updateAction)) {
@@ -126,7 +128,7 @@ export const useMigrateToLatestVesselGroup = () => {
       }
       return true
     },
-    [dispatch, userData?.id]
+    [deletedDatasets, deprecatedDatasets, dispatch, userData?.id]
   )
 
   const migrateToLatestVesselGroup = useCallback(
@@ -136,9 +138,8 @@ export const useMigrateToLatestVesselGroup = () => {
       }
       setLoadingGroupId(vesselGroup.id)
       try {
-        const switched = await switchPipe4VesselGroupToPipe5(vesselGroup)
+        const switched = await switchVesselGroupToLatest(vesselGroup)
         if (switched) {
-          setMigratedGroupIds((ids) => [...ids, vesselGroup.id])
           return
         }
         const vesselGroupVessels = await fetchVesselGroupVesselIdentities(vesselGroup?.id)
@@ -157,18 +158,24 @@ export const useMigrateToLatestVesselGroup = () => {
           .join('\n')
         dispatch(setVesselGroupModalSources(sources))
         if (vesselGroup?.name) {
-          dispatch(setVesselGroupModalName(`${vesselGroup.name} ${t((t) => t.common.updated)} `))
+          dispatch(setVesselGroupModalName(`${vesselGroup.name} ${t((t) => t.common.updated)}`))
         }
         dispatch(setVesselGroupSearchIdField(idField))
         dispatch(setVesselGroupModalSearchText(text))
         dispatch(setVesselGroupsModalOpen(true))
-      } catch (e) {
+      } catch (e: any) {
         console.warn('Error migrating vessel group', e)
+        toast.error(
+          t((t) => t.vesselGroup.updateError, {
+            name: vesselGroup.name,
+            error: e?.message || t((t) => t.errors.genericShort),
+          })
+        )
       } finally {
         setLoadingGroupId(null)
       }
     },
-    [deletedDatasets, deprecatedDatasets, dispatch, switchPipe4VesselGroupToPipe5, t]
+    [deletedDatasets, deprecatedDatasets, dispatch, switchVesselGroupToLatest, t]
   )
 
   const migrateToLatestVesselGroupByDataview = useCallback(
@@ -184,17 +191,15 @@ export const useMigrateToLatestVesselGroup = () => {
     () => ({
       migrateToLatestVesselGroupByDataview,
       migrateToLatestVesselGroup,
-      switchPipe4VesselGroupToPipe5,
+      switchVesselGroupToLatest,
       loadingGroupId,
-      migratedGroupIds,
       isLoading: loadingGroupId !== null,
     }),
     [
       migrateToLatestVesselGroupByDataview,
       migrateToLatestVesselGroup,
-      switchPipe4VesselGroupToPipe5,
+      switchVesselGroupToLatest,
       loadingGroupId,
-      migratedGroupIds,
     ]
   )
 }
