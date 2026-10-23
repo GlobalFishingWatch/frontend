@@ -18,18 +18,13 @@ import { DEFAULT_ID_PROPERTY } from '#config/layers.config'
 import { LayerGroup } from '#config/sort.config'
 import { getFetchLoadOptions, GFWMVTLoader } from '#layers/_shared/api'
 import { getPickedFeatureToHighlight } from '#layers/_shared/picking.utils'
-import {
-  getMVTSublayerProps,
-  getPMTilesSublayerProps,
-  isPMTilesUrl,
-} from '#layers/_shared/tiles.utils'
+import { getMVTSublayerProps } from '#layers/_shared/tiles.utils'
 import type { ContextSublayerCallbackParams } from '#layers/context/context.types'
 import {
   getContextFiltersHash,
   hasSublayerFilters,
   supportDataFilterExtension,
 } from '#layers/context/context.utils'
-import { PMTilesLayer } from '#layers/pm-tiles/index'
 import {
   getColorRampByOpacitySteps,
   getLayerGroupOffset,
@@ -235,21 +230,15 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
     const hasColorSteps = steps !== undefined && steps.length > 0 && stepsPickValue !== undefined
     const highlightedFeaturesHash = highlightedFeatures.map((f) => f.id).join(',')
     return layers.map((layer) => {
-      const isPMTiles = isPMTilesUrl(layer.tilesUrl)
-      const TilesLayer = (isPMTiles ? PMTilesLayer : TileLayer) as typeof TileLayer
-      const getSublayerProps = isPMTiles ? getPMTilesSublayerProps : getMVTSublayerProps
-      const loaderProps = isPMTiles
-        ? { data: layer.tilesUrl }
-        : {
-            data: this._getTilesUrl(layer.tilesUrl),
-            loaders: [GFWMVTLoader],
-            loadOptions: { ...getFetchLoadOptions() },
-          }
-      return new TilesLayer<TileLayerProps<UserLayerFeature>, { layerId: string }>({
+      return new TileLayer<TileLayerProps<UserLayerFeature>, { layerId: string }>({
         id: `${layer.id}-base-layer`,
         layerId: layer.id,
-        ...loaderProps,
+        data: this._getTilesUrl(layer.tilesUrl),
+        loaders: [GFWMVTLoader],
         maxZoom: maxZoom || DEFAULT_USER_TILES_MAX_ZOOM,
+        loadOptions: {
+          ...getFetchLoadOptions(),
+        },
         onTileError: this._onLayerError,
         onViewportLoad: this.props.onViewportLoad,
         updateTriggers: {
@@ -258,7 +247,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
         renderSubLayers: (props) => {
           const mvtSublayerProps = {
             ...props,
-            ...getSublayerProps({ tile: props.tile, extensions: props.extensions }),
+            ...getMVTSublayerProps({ tile: props.tile, extensions: props.extensions }),
           }
           return layer.sublayers.map((sublayer) => {
             const filtersHash = getContextFiltersHash(sublayer.filters)

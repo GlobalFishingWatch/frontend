@@ -8,7 +8,6 @@ import type {
   TileLayerProps,
 } from '@deck.gl/geo-layers'
 import type { GeoJsonProperties } from 'geojson'
-import { PMTiles } from 'pmtiles'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
@@ -16,7 +15,7 @@ import { unwrapFeatureLongitudes } from '@globalfishingwatch/data-transforms'
 import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
 import { DEFAULT_ID_PROPERTY } from '#config/layers.config'
-import { isPMTilesUrl, transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
+import { transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
 import {
   getContextFilterOperatorsHash,
   getContextId,
@@ -89,17 +88,7 @@ export abstract class UserBaseLayer<
     const boundsUrl = this.props.layers?.find((l) => l.boundsUrl)?.boundsUrl
 
     if (!boundsUrl) {
-      const pmTilesUrl = this.props.layers?.find((l) => isPMTilesUrl(l.tilesUrl))?.tilesUrl
-      if (!pmTilesUrl) {
-        return null
-      }
-      try {
-        const { minLon, minLat, maxLon, maxLat } = await new PMTiles(pmTilesUrl).getHeader()
-        return { bbox: [minLon, minLat, maxLon, maxLat] }
-      } catch (error) {
-        this.setState({ error: (error as Error).message })
-        return null
-      }
+      return null
     }
 
     const boundsFilter = this.props.layers?.flatMap((l) =>
@@ -183,14 +172,11 @@ export abstract class UserBaseLayer<
       ...(info.tile && {
         // TODO-ANTIMERIDIAN: Review if this is needed and why
         ...unwrapFeatureLongitudes(
-          // pm-tiles features are already parsed in wgs84
-          isPMTilesUrl(layer.tilesUrl)
-            ? (info.object as UserLayerFeature)
-            : transformTileCoordsToWGS84(
-                info.object as UserLayerFeature,
-                info.tile.bbox as GeoBoundingBox,
-                this.context.viewport
-              )
+          transformTileCoordsToWGS84(
+            info.object as UserLayerFeature,
+            info.tile.bbox as GeoBoundingBox,
+            this.context.viewport
+          )
         ),
       }),
       id: getContextId(info.object as ContextFeature, idProperty),
@@ -226,9 +212,7 @@ export abstract class UserBaseLayer<
       const layer = this.props.layers.find((l) => l.id === layerId) || this.props.layers[0]
       if (!layer) return
       const valueProperties = layer.valueProperties || []
-      const features = getSelectedTilesFeatures<UserLayerFeature>(tileLayer, viewport, {
-        wgs84: isPMTilesUrl(layer.tilesUrl),
-      })
+      const features = getSelectedTilesFeatures<UserLayerFeature>(tileLayer, viewport)
       for (const feature of features) {
         if (maxFeatures !== null && pickedFeatures.length >= maxFeatures) break
         // Tile content is not filtered by the DataFilterExtension the way picked features are,
