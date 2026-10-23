@@ -69,7 +69,8 @@ function UserReports() {
     },
     [dispatch, t]
   )
-  const loading = reportsStatus === AsyncReducerStatus.Loading
+  const loading =
+    reportsStatus === AsyncReducerStatus.Idle || reportsStatus === AsyncReducerStatus.Loading
 
   // TODO:CVP2 group reports by type when this PR https://github.com/GlobalFishingWatch/api-monorepo-node/pull/289 is merged
   return (

@@ -52,6 +52,7 @@ function UserVesselGroups() {
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const loading =
     datasetsStatus === AsyncReducerStatus.Loading ||
+    vesselGroupStatus === AsyncReducerStatus.Idle ||
     vesselGroupStatus === AsyncReducerStatus.Loading
   const editingGroupId = useSelector(selectVesselGroupEditId)
   const onEditClick = useEditVesselGroupModal()

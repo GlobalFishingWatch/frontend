@@ -42,6 +42,7 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
 
   const loading =
+    workspacesStatus === AsyncReducerStatus.Idle ||
     workspacesStatus === AsyncReducerStatus.Loading ||
     workspacesStatus === AsyncReducerStatus.LoadingItem
   const updateLoading = workspacesStatus === AsyncReducerStatus.LoadingUpdate
@@ -125,7 +126,7 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
                         loading={loading}
                         disabled={loading}
                         tooltip={t((t) => t.workspace.updateDeprecatedDataviews)}
-                        size="medium"
+                        // size="medium"
                       />
                     ) : (
                       <IconButton icon="arrow-right" />
