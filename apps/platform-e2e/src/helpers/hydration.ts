@@ -1,6 +1,10 @@
 import type { Page } from 'playwright/test'
 
-const SIDEBAR_CONTAINER = '[data-testid="sidebar-container"]'
+import { SIDEBAR_CONTAINER_TESTID } from '@platform/config/selectors/map'
+
+import { TIMEOUTS } from './timeouts'
+
+const SIDEBAR_CONTAINER = `[data-testid="${SIDEBAR_CONTAINER_TESTID}"]`
 
 // Resolves once React has hydrated the given node on the client. The app is server-rendered, so
 // markup (and getByTestId locators) are visible before the client takes over. React 18 tags a
@@ -11,7 +15,12 @@ const SIDEBAR_CONTAINER = '[data-testid="sidebar-container"]'
 // hydration effect, and BroadcastChannel messages are not buffered. A receiving tab must be
 // hydrated before another tab broadcasts, or the message is lost and the assertion times out.
 // Pages without a sidebar (e.g. /vessel-search) should pass their own interactive selector.
-export async function waitForHydration(page: Page, selector = SIDEBAR_CONTAINER) {
+
+export async function waitForHydration(
+  page: Page,
+  selector = SIDEBAR_CONTAINER,
+  { timeout = TIMEOUTS.MEDIUM }: { timeout?: number } = {}
+) {
   await page.waitForFunction(
     (sel) => {
       const el = document.querySelector(sel)
@@ -23,6 +32,6 @@ export async function waitForHydration(page: Page, selector = SIDEBAR_CONTAINER)
       )
     },
     selector,
-    { timeout: 30000 }
+    { timeout }
   )
 }

@@ -11,7 +11,7 @@ import type { QueryParams } from 'types'
 
 import { ReportCategory } from '../reports.types'
 
-import styles from './VesselGroupReport.module.css'
+import styles from './VesselGroupReportLink.module.css'
 
 type VesselGroupReportLinkProps = {
   vesselGroupId: string

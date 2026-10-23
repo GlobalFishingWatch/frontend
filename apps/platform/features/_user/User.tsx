@@ -1,21 +1,15 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-import type { Tab } from '@globalfishingwatch/ui-components'
-import { Tabs } from '@globalfishingwatch/ui-components'
-import { PIPE_4_WORKSPACE_ID } from '@platform/config/map/workspaces'
+import type { Tab } from '@globalfishingwatch/ui-components/tabs'
+import { Tabs } from '@globalfishingwatch/ui-components/tabs'
+import { USER_WORKSPACES_TAB_TESTID } from '@platform/config/selectors/user'
 
-import {
-  // fetchDefaultWorkspaceThunk,
-  fetchWorkspacesThunk,
-} from 'features/_map/workspaces-list/workspaces-list.slice'
 import LoginLink from 'features/_user/LoginLink'
 import { selectUserData, selectUserLogged } from 'features/_user/selectors/user.selectors'
-import { fetchVesselGroupsThunk } from 'features/_user/vessel-groups/vessel-groups.slice'
-import { useAppDispatch } from 'features/app/app.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectUserTab } from 'router/routes.selectors'
 import { UserTab } from 'types'
@@ -30,7 +24,6 @@ import styles from './User.module.css'
 
 function User() {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const { replaceQueryParams } = useReplaceQueryParams()
   const userLogged = useSelector(selectUserLogged)
   const userData = useSelector(selectUserData)
@@ -45,7 +38,7 @@ function User() {
       {
         id: UserTab.Workspaces,
         title: t((t) => t.workspace.titlePlural),
-        testId: 'user-workspace',
+        testId: USER_WORKSPACES_TAB_TESTID,
         content: <UserWorkspaces />,
       },
       {
@@ -73,17 +66,6 @@ function User() {
     },
     [replaceQueryParams]
   )
-
-  useEffect(() => {
-    if (userLogged && userData?.id) {
-      dispatch(fetchWorkspacesThunk({}))
-      dispatch(fetchWorkspacesThunk({ ids: [PIPE_4_WORKSPACE_ID] }))
-    }
-  }, [dispatch, userData?.id, userLogged])
-
-  useEffect(() => {
-    dispatch(fetchVesselGroupsThunk())
-  }, [dispatch])
 
   if (!userLogged || !userData || userData?.type === GUEST_USER_TYPE) {
     return (

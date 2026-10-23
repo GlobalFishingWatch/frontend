@@ -31,7 +31,7 @@ import { useDebounce } from '@globalfishingwatch/react-hooks'
 
 import { selectReportComparisonDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveReportDataviews } from 'features/_map/dataviews/selectors/dataviews.selectors'
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
 import {
   ENTIRE_WORLD_REPORT_AREA_ID,
@@ -45,11 +45,8 @@ import {
   selectTimeComparisonHash,
 } from 'features/_reports/report-area/area-reports.selectors'
 import { selectReportActivityGraph } from 'features/_reports/reports.config.selectors'
-import {
-  selectReportCategory,
-  selectReportDatasetId,
-  selectReportSubCategory,
-} from 'features/_reports/reports.selectors'
+import { selectReportDatasetId } from 'features/_reports/reports.current.selectors'
+import { selectReportCategory, selectReportSubCategory } from 'features/_reports/reports.selectors'
 import type { ReportActivityGraph } from 'features/_reports/reports.types'
 import { ReportCategory } from 'features/_reports/reports.types'
 import type {

@@ -99,8 +99,8 @@
     "polygonsOverlapping": "overlapping",
     "polygonsOverlapping_one": "overlapping polygon",
     "polygonsOverlapping_other": "overlapping polygons",
-    "polygonsTopAreas_one": "Largest polygon in the report area",
-    "polygonsTopAreas_other": "Top {{count}} largest polygons in the report area",
+    "polygonsTopAreas_one": "Largest polygon by area inside the report area",
+    "polygonsTopAreas_other": "Top {{count}} polygons by area inside the report area",
     "portsAfterEvents": "Ports visited after events",
     "portsSearchPlaceholder": "Search ports",
     "print": "print",
@@ -320,6 +320,7 @@
     "of": "of",
     "onlyMe": "Only me",
     "onlyVisibleForGFW": "Only visible for GFW users",
+    "onlyVisibleForGFWAndJAC": "Visible for GFW and JAC users",
     "onlyVisibleForGFWShort": "GFW Only",
     "onlyVisibleForJAC": "Only visible for JAC users",
     "onScreen": "on screen",
@@ -837,6 +838,8 @@
     "colorSelectPredefined": "Select predefined color",
     "colorSelectSpectralDisabled": "The multicolor palette is only available when a single heatmap layer is visible",
     "depth": "Depth",
+    "depthLineGroups": "Groups of lines",
+    "depthSingleLines": "Single lines",
     "distance_from_port_km": "Port Buffer",
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
@@ -1167,6 +1170,10 @@
     "selectAtLeastOneVessel": "Select at least one vessel",
     "title": "Track correction panel",
     "version": "Version"
+  },
+  "updateVideo": {
+    "learnMore": "Learn more about the latest map update",
+    "title": "What's new in the map"
   },
   "user": {
     "badges": {
@@ -1562,6 +1569,7 @@
       "bunker_or_tanker": "Bunker or tanker",
       "cargo": "Cargo",
       "carrier": "Carrier",
+      "discrepancy": "discrepancy",
       "fishing": "Fishing",
       "gear": "Gear",
       "inactive": "Inactive",
@@ -1670,6 +1678,13 @@
       "gaps_one": "{{count}} AIS Off Event from {{vessels}} vessels detected",
       "gaps_other": "{{count}} AIS Off Event from {{vessels}} vessels detected"
     }
+  },
+  "videoPlayer": {
+    "mute": "Mute",
+    "pause": "Pause",
+    "play": "Play",
+    "progress": "Video progress",
+    "unmute": "Unmute"
   },
   "workspace": {
     "addLayer": "Add to workspace",

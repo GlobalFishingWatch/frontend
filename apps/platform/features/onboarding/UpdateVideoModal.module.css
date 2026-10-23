@@ -1,0 +1,41 @@
+.modal {
+  max-width: min(128rem, calc((100dvh - 12rem) * 16 / 9));
+  overflow: visible;
+  background: var(--color-primary-blue);
+}
+
+.modal [data-testid='modal-close-button'] {
+  z-index: 1;
+  top: 0;
+  right: 0;
+  translate: 50% -50%;
+  color: var(--color-white);
+  background-color: var(--color-primary-blue);
+  border: 1px solid rgba(var(--white-rgb), 0.6);
+}
+
+.modal [data-testid='modal-close-button']:hover:not(:disabled),
+.modal [data-testid='modal-close-button']:focus:not(:disabled) {
+  color: var(--color-white);
+  background-color: var(--color-secondary-blue);
+  border: 1px solid rgba(var(--white-rgb), 0.6);
+}
+
+.content {
+  height: auto !important;
+  padding: 0 !important;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+@media only screen and (width <= 720px) {
+  .modal {
+    align-self: center;
+  }
+
+  .modal [data-testid='modal-close-button'] {
+    top: 0;
+    right: var(--space-S);
+    translate: 0 calc(-100% - var(--space-S));
+  }
+}

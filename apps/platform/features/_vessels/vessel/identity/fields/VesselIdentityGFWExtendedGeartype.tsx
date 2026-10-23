@@ -34,13 +34,15 @@ const VesselIdentityGFWExtendedGeartype = ({
   }
   const {
     atomicClassSc = [],
+    atomicClassScoreSc = [],
     vesselClassSc = [],
-    vesselClassScore = [],
     prodGeartypeSource = [],
-    vesselClassSourceAgreement = [],
   } = identity.combinedSourcesInfo
 
   const atomicClassInTimerange = atomicClassSc.find((source) =>
+    getIsCombinedSourceInTimerange(identity, source)
+  )
+  const atomicClassScoreInTimerange = atomicClassScoreSc.find((source) =>
     getIsCombinedSourceInTimerange(identity, source)
   )
   const vesselClassInTimerange = vesselClassSc.find(
@@ -57,20 +59,14 @@ const VesselIdentityGFWExtendedGeartype = ({
   const prodGeartypeSourceInTimerange = prodGeartypeSource.find((source) =>
     getIsCombinedSourceInTimerange(identity, source)
   )
-  const vesselClassScoreInTimerange = vesselClassScore.find((source) =>
-    getIsCombinedSourceInTimerange(identity, source)
-  )
-  const vesselClassSourceAgreementInTimerange = vesselClassSourceAgreement.find((source) =>
-    getIsCombinedSourceInTimerange(identity, source)
-  )
   return (
     <ul className={styles.extendedInfo}>
       <li>
-        <GFWOnly userGroup="gfw" className={styles.gfwOnly} />
+        <GFWOnly userGroup="both" className={styles.gfwOnly} />
       </li>
       <li>
         <Tooltip content="(vesselClassSc) Vessel class inferred by the machine learning model.">
-          <span className={cx(styles.secondary, styles.help)}>ML vessel class: </span>
+          <span className={cx(styles.secondary, styles.help)}>ML prediction: </span>
         </Tooltip>
         {vesselClassInTimerange?.value
           ? formatInfoField(vesselClassInTimerange?.value as string, 'geartypes')
@@ -84,36 +80,20 @@ const VesselIdentityGFWExtendedGeartype = ({
             : EMPTY_FIELD_PLACEHOLDER}
         </li>
       )}
-      <li>
-        <Tooltip content='(registryVesselClass) Data pulled from the vi_ssvid table — an MMSI-based aggregate from available registries. This is for comparison with the "Registry" tab gear, which aggregates at the hull level.'>
-          <span className={cx(styles.secondary, styles.help)}>Aggregated registry: </span>
-        </Tooltip>
-        {registryVesselClassInTimerange?.value
-          ? registryVesselClassInTimerange.value
-          : EMPTY_FIELD_PLACEHOLDER}
-      </li>
+      {showPipe5Fields && (
+        <li>
+          <span className={cx(styles.secondary, styles.help)}>ML atomic class score: </span>
+          {atomicClassScoreInTimerange?.value
+            ? formatInfoField(atomicClassScoreInTimerange?.value as string, 'geartypes')
+            : EMPTY_FIELD_PLACEHOLDER}
+        </li>
+      )}
       <li>
         <Tooltip content="(prodGeartypeSource) Data table and specific field the GFW gear type value is populated from">
           <span className={cx(styles.secondary, styles.help)}>BQ Source: </span>
         </Tooltip>
         {(prodGeartypeSourceInTimerange?.value as string)?.toLowerCase() || EMPTY_FIELD_PLACEHOLDER}
       </li>
-      {showPipe5Fields && (
-        <li>
-          <span className={cx(styles.secondary, styles.help)}>ML vessel class score </span>
-          {vesselClassScoreInTimerange?.value !== undefined
-            ? vesselClassScoreInTimerange.value
-            : EMPTY_FIELD_PLACEHOLDER}
-        </li>
-      )}
-      {showPipe5Fields && (
-        <li>
-          <span className={cx(styles.secondary, styles.help)}>Vessel class source agreement: </span>
-          {vesselClassSourceAgreementInTimerange?.value
-            ? vesselClassSourceAgreementInTimerange.value
-            : EMPTY_FIELD_PLACEHOLDER}
-        </li>
-      )}
     </ul>
   )
 }

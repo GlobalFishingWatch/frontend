@@ -31,7 +31,7 @@ import { Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-component
 import { FIRST_YEAR_OF_DATA, PRIVATE_ICON } from 'data/map/config'
 import { isPrivateDataset } from 'features/_map/datasets/datasets.utils'
 import { selectVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import AdvancedResultCellWithFilter from 'features/_vessels/search/advanced/AdvancedResultCellWithFilter'
 import type { SearchComponentProps } from 'features/_vessels/search/basic/SearchBasic'
 import { selectSearchQuery } from 'features/_vessels/search/search.config.selectors'

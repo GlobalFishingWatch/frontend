@@ -75,7 +75,7 @@
   },
   "reports": {
     "activity-report": {
-      "description": "Monitorear el esfuerzo pesquero aparente y la presencia de embarcaciones casi en tiempo real basándose en datos del AIS global y del VMS de nuestros países socios.",
+      "description": "Monitorear la actividad de pesca aparente y la presencia de embarcaciones casi en tiempo real basándose en datos del AIS global y del VMS de nuestros países socios.",
       "name": "Actividad Global de Embarcaciones"
     },
     "carrier-portal-report": {
@@ -90,7 +90,7 @@
     },
     "detections-report": {
       "description": "El radar de apertura sintética (SAR) puede detectar embarcaciones y estructuras en el mar en cualquier condición meteorológica. El sistema de detección de luces nocturnas (VIIRS) muestra las embarcaciones en el mar que han sido detectadas por satélites mediante la luz que emiten durante la noche.",
-      "name": "Detección Global de Embarcaciones Oscuros"
+      "name": "Detección Global de Embarcaciones Oscuras"
     },
     "events-report": {
       "description": "Actividad global sobre eventos de embarcaciones basada en el sistema de identificación automática (AIS), incluidos encuentros entre dos embarcaciones, eventos a la deriva y visitas a puertos.",
@@ -98,7 +98,7 @@
     },
     "seabird_safe_longline_sets-public": {
       "cta": "See workspace",
-      "description": "Explore global distribution of longline fleets. Examine and analyse individual longline vessel and vessel group potential setting events in key areas, environmental risk zones and times of day to assess seabird bycatch risk and monitor mitigation measures",
+      "description": "Explore global distribution and operations of drifting longline fleets. The workspace examines and analyses drifting longline set events in key areas and environmental risk zones to assess seabird bycatch risks, monitor mitigation measures by longline fisheries.",
       "name": "Global Seabird Safe Longline Settings"
     }
   }

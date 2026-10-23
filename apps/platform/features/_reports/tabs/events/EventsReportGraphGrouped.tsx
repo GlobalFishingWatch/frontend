@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import React, { Fragment, useCallback, useState } from 'react'
+import React, { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useRouter } from '@tanstack/react-router'
@@ -29,7 +29,6 @@ import {
 } from 'features/_reports/tabs/events/events-report.hooks'
 import { selectEventsGraphDatasetAreaId } from 'features/_reports/tabs/events/events-report.selectors'
 import type { EventsReportGraphProps } from 'features/_reports/tabs/events/events-report.types'
-import EventsReportDownload from 'features/_reports/tabs/events/EventsReportDownload'
 import { EventsReportIndividualGraphTooltip } from 'features/_reports/tabs/events/EventsReportGraphEvolution'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import I18nNumber from 'features/i18n/i18nNumber'
@@ -236,21 +235,19 @@ export default function EventsReportGraphGrouped({
   valueKeys,
   graphType,
   eventType,
+  onIndividualSupportedChange,
 }: EventsReportGraphProps) {
   const { t } = useTranslation()
   const containerRef = React.useRef<HTMLDivElement>(null)
   const includesMemo = useMemoCompare(includes)
   const fetchEventsData = useFetchEventReportGraphEvents()
-  const [isIndividualSupported, setIsIndividualSupported] = useState(false)
   const getAggregatedData = useCallback(async () => data, [data])
 
   const getIndividualData = useCallback(async () => {
     if (!dataviews?.length) {
-      setIsIndividualSupported(false)
       return []
     }
     const data = await fetchEventsData({ dataviews, start, end, includes: includesMemo })
-    setIsIndividualSupported(true)
     const groupedData = data.reduce(
       (acc, event) => {
         const regions = []
@@ -312,21 +309,11 @@ export default function EventsReportGraphGrouped({
   }
 
   return (
-    <div
-      ref={containerRef}
-      className={cx(styles.graph, styles.groupBy, { [styles.paddingTop]: isIndividualSupported })}
-    >
-      {isIndividualSupported && (
-        <EventsReportDownload
-          dataviews={dataviews}
-          start={start}
-          end={end}
-          className={styles.download}
-        />
-      )}
+    <div ref={containerRef} className={cx(styles.graph, styles.groupBy)}>
       <ResponsiveBarChart
         color={color}
         getIndividualData={getIndividualData}
+        onIndividualSupportedChange={onIndividualSupportedChange}
         aggregatedValueKey={valueKeys}
         getAggregatedData={getAggregatedData}
         barValueFormatter={(value: any) => {

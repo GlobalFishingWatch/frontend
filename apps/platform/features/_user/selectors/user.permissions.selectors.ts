@@ -7,13 +7,12 @@ import { checkExistPermissionInList } from '@globalfishingwatch/auth-middleware/
 import { DEFAULT_GROUP_ID } from '@globalfishingwatch/datasets-client'
 import { PIPE_4_WORKSPACE_ID } from '@platform/config/map/workspaces'
 
-import {
-  AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX,
-  PRIVATE_SUFIX,
-  USER_SUFIX,
-} from 'data/map/config'
+import { AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX, USER_SUFIX } from 'data/map/config'
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
-import { getIsWorkspaceArchived } from 'features/_map/workspace/workspace.utils'
+import {
+  getIsPrivateWorkspace,
+  getIsWorkspaceArchived,
+} from 'features/_map/workspace/workspace.utils'
 import type { AppWorkspace } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { selectWorkspaces } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { selectAllReports } from 'features/_reports/reports.slice'
@@ -120,7 +119,7 @@ export const selectUserWorkspacesPrivate = createSelector(
   (groupsWithAccess = [], workspaces) => {
     const privateWorkspaces = workspaces?.filter(
       (workspace) =>
-        workspace.id.includes(PRIVATE_SUFIX) &&
+        getIsPrivateWorkspace(workspace) &&
         !workspace.id.includes(USER_SUFIX) &&
         groupsWithAccess.some(
           (g) =>

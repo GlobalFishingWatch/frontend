@@ -9,6 +9,7 @@ import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PRIVATE_ACCESS } from '@globalfish
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, InputText, Select } from '@globalfishingwatch/ui-components'
 import { ROUTE_PATHS } from '@platform/config/routes'
+import { CREATE_WORKSPACE_NAME_TESTID } from '@platform/config/selectors/workspace'
 
 import { selectIsWorkspaceOwner } from 'features/_map/workspace/workspace.selectors'
 import type {
@@ -157,7 +158,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
         <InputText
           value={name}
           className={styles.input}
-          testId="create-workspace-name"
+          testId={CREATE_WORKSPACE_NAME_TESTID}
           label={t((t) => t.common.name)}
           onChange={(e) => setName(e.target.value)}
           autoFocus

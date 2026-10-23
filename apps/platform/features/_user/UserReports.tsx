@@ -5,7 +5,9 @@ import { Link } from '@tanstack/react-router'
 
 import type { Report } from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
-import { IconButton, InputText, Spinner } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { InputText } from '@globalfishingwatch/ui-components/input-text'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 
 import { getReportAreaStringByLocale } from 'features/_reports/report-area/title/report-title.utils'
 import {
@@ -14,7 +16,7 @@ import {
   selectReportsStatus,
   selectReportsStatusId,
 } from 'features/_reports/reports.slice'
-import { resetReportData } from 'features/_reports/tabs/activity/reports-activity.slice'
+import { resetReportData } from 'features/_reports/tabs/activity/reports-activity.actions'
 import { selectUserReports } from 'features/_user/selectors/user.permissions.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'

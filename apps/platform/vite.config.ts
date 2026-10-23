@@ -8,6 +8,8 @@ import type { Plugin } from 'vite'
 import { defineConfig, loadEnv } from 'vite'
 import svgr from 'vite-plugin-svgr'
 
+import { chunkGraph } from './scripts/load-boundaries/chunk-graph.plugin.ts'
+
 export const basePath =
   import.meta.env?.VITE_PUBLIC_URL || process.env.VITE_PUBLIC_URL || '/platform'
 
@@ -126,28 +128,30 @@ export default defineConfig(({ command, mode }) => {
           },
         } satisfies Plugin),
       command === 'build' && env.VITE_PLATFORM_MODE === 'true' && placesSitemap(),
-      command === 'build' &&
-        nitro({
-          baseURL: basePath,
-          sourcemap: true,
-          routeRules: staticRouteRules(basePath, mode),
-          compressPublicAssets: {
-            gzip: true,
-            brotli: true,
+      command === 'build' && chunkGraph(),
+      nitro({
+        // server.ts is the Vite SSR entry (environments.ssr below), not a Nitro handler
+        serverEntry: false,
+        baseURL: basePath,
+        sourcemap: true,
+        routeRules: staticRouteRules(basePath, mode),
+        compressPublicAssets: {
+          gzip: true,
+          brotli: true,
+        },
+        rollupConfig: {
+          // Only Node.js built-ins — npm packages cannot be external because the
+          // production Docker image copies only .output/ with no node_modules.
+          external: ['assert', 'fsevents', 'chokidar', /^@vitejs\//, '@opentelemetry/api-logs'],
+          output: {
+            // Prevents Rolldown from reordering inlined SSR chunks in a way that places
+            // __exportAll() calls before the var declaration runs.
+            // Track: https://github.com/vitejs/vite/issues/22291
+            //        https://github.com/rolldown/rolldown/issues/9441
+            hoistTransitiveImports: false,
           },
-          rollupConfig: {
-            // Only Node.js built-ins — npm packages cannot be external because the
-            // production Docker image copies only .output/ with no node_modules.
-            external: ['assert', 'fsevents', 'chokidar', /^@vitejs\//, '@opentelemetry/api-logs'],
-            output: {
-              // Prevents Rolldown from reordering inlined SSR chunks in a way that places
-              // __exportAll() calls before the var declaration runs.
-              // Track: https://github.com/vitejs/vite/issues/22291
-              //        https://github.com/rolldown/rolldown/issues/9441
-              hoistTransitiveImports: false,
-            },
-          },
-        }),
+        },
+      }),
       process.env.ANALYZE === 'true' &&
         visualizer({
           // Written to the app root so it's easy to open after the build
@@ -192,31 +196,41 @@ export default defineConfig(({ command, mode }) => {
               // Ensures CJS-heavy chunks (recharts → es-toolkit/compat) execute in import order.
               // Track: https://github.com/rolldown/rolldown/issues/8803
               strictExecutionOrder: true,
-              manualChunks(id) {
-                if (
-                  id.includes('/libs/timebar/src/icons/') ||
-                  id.includes('/apps/platform/assets/icons/')
-                ) {
-                  return 'icons-bundle'
-                }
-                if (
-                  id.includes('/node_modules/@reduxjs/') ||
-                  id.includes('/node_modules/redux/') ||
-                  id.includes('/node_modules/react-redux/') ||
-                  id.includes('/node_modules/immer/') ||
-                  id.includes('/node_modules/reselect/')
-                ) {
-                  return 'vendor-redux'
-                }
-                if (
-                  id.includes('/node_modules/es-toolkit/compat/') ||
-                  id.includes('/node_modules/es-toolkit/')
-                ) {
-                  return 'vendor-es-toolkit'
-                }
-                if (id.includes('/node_modules/jsts/')) {
-                  return 'vendor-jsts'
-                }
+              codeSplitting: {
+                groups: [
+                  {
+                    name: 'platform-icons',
+                    test: /[\\/]apps[\\/]platform[\\/]assets[\\/]icons[\\/]/,
+                    priority: 3,
+                  },
+                  {
+                    name: 'ui-components-icons',
+                    test: /[\\/]libs[\\/]ui-components[\\/]dist[\\/]icon[\\/]icons[\\/]/,
+                    priority: 3,
+                  },
+                  {
+                    name: 'vendor-core',
+                    test: /[\\/]node_modules[\\/](react|react-dom|@sentry|zod|@tanstack[\\/](react-router|react-start[a-z-]*|zod-adapter)|luxon|i18next|i18next-http-backend|i18next-browser-languagedetector|react-i18next|qs|jotai|usehooks-ts|classnames)[\\/]/,
+                    priority: 2,
+                  },
+                  {
+                    name: 'vendor-redux-es-toolkit',
+                    test: /[\\/]node_modules[\\/](@reduxjs|redux|react-redux|immer|reselect|es-toolkit)[\\/]/,
+                    priority: 2,
+                  },
+                  { name: 'vendor-jsts', test: /[\\/]node_modules[\\/]jsts[\\/]/, priority: 2 },
+                  {
+                    name: 'vendor-heavy',
+                    test: /[\\/](node_modules[\\/](@deck\.gl|@luma\.gl|@loaders\.gl|@turf|@strapi|simple-statistics|match-sorter|recharts|d3-[a-z-]+|topojson-client)|libs[\\/](deck-layers|deck-layer-composer|deck-loaders|timebar))[\\/]/,
+                    priority: 1,
+                    entriesAware: true,
+                  },
+                  {
+                    name: 'vendor',
+                    test: /[\\/](node_modules|libs)[\\/]/,
+                    entriesAware: true,
+                  },
+                ],
               },
             },
           },

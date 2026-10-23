@@ -80,6 +80,10 @@
   margin-top: var(--space-S);
 }
 
+.sparklineChoice {
+  contain: inline-size;
+}
+
 .subCard > .sparklineContainer {
   margin-top: 0;
 }

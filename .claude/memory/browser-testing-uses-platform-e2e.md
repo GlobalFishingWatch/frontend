@@ -40,6 +40,7 @@ Test files must match `*.e2e.spec.(ts|tsx)` under `src/` or Playwright ignores t
 | One spec                    | add `--grep "<name>"`                                        |
 | Screenshots                 | `pnpm nx screenshots platform-e2e` (`:update` to rebaseline) |
 | Screenshot report           | `pnpm nx screenshots:report platform-e2e`                    |
+| HTML report (any run)       | `pnpm nx show-report platform-e2e`                           |
 
 New browser check → add a spec under `apps/platform-e2e/src/tests/`, reuse the fixtures and
 helpers, tag it. Ad-hoc interactive poking (Playwright MCP) is fine, but point it at the dev server

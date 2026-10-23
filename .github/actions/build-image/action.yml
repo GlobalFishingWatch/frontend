@@ -22,6 +22,17 @@ inputs:
       config, so they override it. Every KEY still needs an ARG in the Dockerfile.
     required: false
     default: ''
+  export-stage:
+    description: |
+      Optional Dockerfile stage built after the image, with the same args, and
+      exported to the export-dest directory instead of loaded.
+      For build reports; failing to export never fails the build.
+    required: false
+    default: ''
+  export-dest:
+    description: Directory the export-stage files are written to
+    required: false
+    default: docker-export
 
 runs:
   using: composite
@@ -115,3 +126,17 @@ runs:
         secrets: ${{ steps.docker-secrets.outputs.value }}
         cache-from: type=gha,scope=frontend
         cache-to: type=gha,scope=frontend,mode=max
+
+    # Same context, args and secrets as above, so every builder layer is a cache hit.
+    - name: Export ${{ inputs.export-stage }}
+      if: inputs.export-stage != ''
+      continue-on-error: true
+      uses: docker/build-push-action@v7
+      with:
+        context: .
+        target: ${{ inputs.export-stage }}
+        push: false
+        outputs: type=local,dest=${{ inputs.export-dest }}
+        build-args: ${{ steps.prepare.outputs.args }}
+        secrets: ${{ steps.docker-secrets.outputs.value }}
+        cache-from: type=gha,scope=frontend

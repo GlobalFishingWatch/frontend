@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { groupBy } from 'es-toolkit'
@@ -16,7 +16,6 @@ import { ResponsiveTimeseries } from '@globalfishingwatch/responsive-visualizati
 import { formatTooltipValue } from 'features/_reports/report-area/area-reports.utils'
 import { useFetchEventReportGraphEvents } from 'features/_reports/tabs/events/events-report.hooks'
 import type { EventsReportGraphProps } from 'features/_reports/tabs/events/events-report.types'
-import EventsReportDownload from 'features/_reports/tabs/events/EventsReportDownload'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import i18n from 'features/i18n/i18n'
 import { getUTCDateTime } from 'utils/dates'
@@ -143,6 +142,7 @@ export default function EventsReportGraphEvolution({
   data,
   valueKeys,
   eventType,
+  onIndividualSupportedChange,
 }: EventsReportGraphProps) {
   const containerRef = React.useRef<HTMLDivElement>(null)
 
@@ -151,7 +151,6 @@ export default function EventsReportGraphEvolution({
   const interval = getFourwingsInterval(startMillis, endMillis)
   const includesMemo = useMemoCompare(includes)
   const fetchEventsData = useFetchEventReportGraphEvents()
-  const [isIndividualSupported, setIsIndividualSupported] = useState(false)
 
   const hasEventsDataset = dataviews?.some((dataview) =>
     dataview.datasets?.some((d) => d.type === DatasetTypes.Events)
@@ -170,12 +169,10 @@ export default function EventsReportGraphEvolution({
 
   const getIndividualData = useCallback(async () => {
     if (!hasEventsDataset) {
-      setIsIndividualSupported(false)
       return []
     }
     const data = await fetchEventsData({ dataviews, start, end, includes: includesMemo })
     const groupedData = groupBy(data, (item) => getISODateByInterval(item.start, interval))
-    setIsIndividualSupported(true)
     return Object.entries(groupedData)
       .map(([date, events]) => ({ date, values: events }))
       .sort((a, b) => a.date.localeCompare(b.date))
@@ -188,17 +185,9 @@ export default function EventsReportGraphEvolution({
   return (
     <div
       ref={containerRef}
-      className={cx(styles.graph, styles.evolution, { [styles.paddingTop]: isIndividualSupported })}
+      className={cx(styles.graph, styles.evolution)}
       data-testid="evolution-timeseries-chart"
     >
-      {isIndividualSupported && (
-        <EventsReportDownload
-          dataviews={dataviews}
-          start={start}
-          end={end}
-          className={styles.download}
-        />
-      )}
       <ResponsiveTimeseries
         start={start}
         end={end}
@@ -206,6 +195,7 @@ export default function EventsReportGraphEvolution({
         aggregatedValueKey={valueKeys}
         getAggregatedData={getAggregatedData}
         getIndividualData={getIndividualData}
+        onIndividualSupportedChange={onIndividualSupportedChange}
         tickLabelFormatter={formatDateTicks}
         aggregatedTooltip={<AggregatedGraphTooltip timeChunkInterval={interval} />}
         individualTooltip={<EventsReportIndividualGraphTooltip eventType={eventType} />}

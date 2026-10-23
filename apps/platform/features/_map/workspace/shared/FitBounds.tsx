@@ -12,10 +12,8 @@ import {
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { useMapFitBounds } from 'features/_map/map/map-bounds.hooks'
-import {
-  useTimebarUserPointsConnect,
-  useTimerangeConnect,
-} from 'features/_map/timebar/timebar.hooks'
+import { useTimebarUserPointsConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import {
   getVesselTransmissionDates,
   isTimerangeOutsideTransmissions,

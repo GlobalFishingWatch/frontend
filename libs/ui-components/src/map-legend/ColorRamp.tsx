@@ -125,6 +125,15 @@ export function ColorRampLegend({
     }
   }, [colors, type, gradient])
 
+  const brushGradientStyle = useMemo(() => {
+    if (type !== 'colorramp-discrete' || gradient || !colors?.length) return backgroundStyle
+    const stops = colors.flatMap((color, i) => [
+      `${color} ${(i * 100) / colors.length}%`,
+      `${color} ${((i + 1) * 100) / colors.length}%`,
+    ])
+    return { backgroundImage: `linear-gradient(to right, ${stops.join()})` }
+  }, [backgroundStyle, colors, type, gradient])
+
   const inset: [boolean, boolean] = [
     !!brush?.extent && brush.range[0] !== undefined,
     !!brush?.extent && brush.range[1] !== undefined,
@@ -266,7 +275,7 @@ export function ColorRampLegend({
                 formatValue={(value) => formatLegendValue({ number: value, roundValues }) as string}
                 roundValue={roundValues ? roundLegendNumber : roundLegendDecimals}
                 inset={inset}
-                gradientStyle={backgroundStyle}
+                gradientStyle={brushGradientStyle}
               />
             )}
           </div>
