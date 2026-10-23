@@ -6,7 +6,6 @@ import { useRouter } from '@tanstack/react-router'
 import { uniqBy } from 'es-toolkit'
 
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { LEGACY_DATASETS_TO_LATEST_VMS } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
@@ -17,11 +16,12 @@ import {
   MIGRATION_EXCLUDED_CATEGORIES,
   useMigrateToLatestDataview,
 } from 'features/_map/dataviews/dataviews.hooks'
+import { getIsVesselGroupDataviewOutdated } from 'features/_map/dataviews/dataviews.utils'
 import { selectDeprecatedDataviewInstances } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import { selectWorkspaceWithCurrentState } from 'features/_map/workspace/selectors/app.workspace.selectors'
 import { selectUserData } from 'features/_user/selectors/user.selectors'
 import { useMigrateToLatestVesselGroup } from 'features/_user/vessel-groups/vessel-groups-migration.hooks'
-import { getIsPipe4VesselDataset } from 'features/_vessels/vessel/vessel.config'
+import { getIsVesselDataviewOutdated } from 'features/_vessels/vessel/vessel.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectLocationCategory } from 'router/routes.selectors'
 import { htmlSafeParse } from 'utils/html-parser'
@@ -39,29 +39,30 @@ export const useMigrateWorkspaceToast = () => {
   const router = useRouter()
   const deprecatedDataviews = useSelector(selectDeprecatedDataviewInstances)
   const userData = useSelector(selectUserData)
-  const pipe4VesselGroups = (deprecatedDataviews || []).flatMap((dataview) =>
-    dataview.category === DataviewCategory.VesselGroups &&
-    dataview.vesselGroup?.ownerId === userData?.id &&
-    dataview.vesselGroup?.vesselsSummary?.datasets?.some(getIsPipe4VesselDataset)
-      ? [dataview.vesselGroup]
-      : []
+  const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
+  const outdatedVesselGroups = uniqBy(
+    (deprecatedDataviews || []).flatMap((dataview) =>
+      dataview.vesselGroup &&
+      dataview.vesselGroup.ownerId === userData?.id &&
+      getIsVesselGroupDataviewOutdated(dataview, deprecatedDatasets)
+        ? [dataview.vesselGroup]
+        : []
+    ),
+    (vesselGroup) => vesselGroup.id
   )
   const hasDeprecatedDataviewsToMigrate =
-    pipe4VesselGroups.length > 0 ||
+    outdatedVesselGroups.length > 0 ||
     (deprecatedDataviews || []).some(
       (dataview) =>
         !MIGRATION_EXCLUDED_CATEGORIES.includes(dataview.category!) ||
-        (dataview.category === DataviewCategory.Vessels &&
-          !!dataview.config?.info &&
-          getIsPipe4VesselDataset(dataview.config.info))
+        getIsVesselDataviewOutdated(dataview, deprecatedDatasets)
     )
-  const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
   const isWorkspaceOwnerOrDefault = useSelector(selectIsWorkspaceOwnerOrDefault)
   const workspace = useSelector(selectWorkspaceWithCurrentState)
   const locationCategory = useSelector(selectLocationCategory)
   const { migrateAllDataviewInstances } = useMigrateToLatestDataview()
-  const { switchPipe4VesselGroupToPipe5 } = useMigrateToLatestVesselGroup()
+  const { switchVesselGroupToLatest } = useMigrateToLatestVesselGroup()
   const workspaceId = workspace?.id || ''
   const toastId = useRef<any>(undefined)
 
@@ -70,14 +71,15 @@ export const useMigrateWorkspaceToast = () => {
   }
 
   const onMigrateAllClick = async () => {
-    const [migratedDataviewInstances] = await Promise.all([
+    const [migratedDataviewInstances, vesselGroupsResults] = await Promise.all([
       migrateAllDataviewInstances(),
-      Promise.allSettled(
-        uniqBy(pipe4VesselGroups, (vesselGroup) => vesselGroup.id).map(
-          switchPipe4VesselGroupToPipe5
-        )
-      ),
+      Promise.allSettled(outdatedVesselGroups.map(switchVesselGroupToLatest)),
     ])
+    // Rejected or needing the modal flow (ie: v3 vessels), they keep their layer panel warning
+    const failedVesselGroups = outdatedVesselGroups.filter((_, index) => {
+      const result = vesselGroupsResults[index]
+      return result.status === 'rejected' || !result.value
+    })
     if (isWorkspaceOwner && workspace?.id && migratedDataviewInstances.length) {
       const dataviewInstances = mergeDataviewIntancesToUpsert(
         migratedDataviewInstances,
@@ -98,7 +100,16 @@ export const useMigrateWorkspaceToast = () => {
         })
       }
     }
-    migrationToastDiscardedWorkspaceIds.add(workspaceId)
+    if (failedVesselGroups.length) {
+      console.warn('Vessel groups not migrated', vesselGroupsResults)
+      toast.error(
+        t((t) => t.workspace.migrationVesselGroupsError, {
+          names: failedVesselGroups.map((vesselGroup) => vesselGroup.name).join(', '),
+        })
+      )
+    } else {
+      migrationToastDiscardedWorkspaceIds.add(workspaceId)
+    }
     closeToast()
   }
 

@@ -710,6 +710,16 @@ export function hasVesselGroupDatasetsDeprecated(
   return vesselGroupDatasets.some((dataset) => deprecatedDatasets[dataset])
 }
 
+export const getIsVesselGroupDataviewOutdated = (
+  dataview: Pick<UrlDataviewInstance, 'category' | 'vesselGroup'>,
+  deprecatedDatasets: DatasetsMigration
+) =>
+  dataview.category === DataviewCategory.VesselGroups &&
+  hasVesselGroupDatasetsDeprecated(
+    dataview.vesselGroup?.vesselsSummary?.datasets,
+    deprecatedDatasets
+  )
+
 export function hasVesselGroupDatasetsDeleted(
   vesselGroupDatasets: string[] | undefined,
   deletedDatasets: string[] | undefined

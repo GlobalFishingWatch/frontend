@@ -4,6 +4,7 @@ import type { TFunction } from 'i18next'
 
 import type {
   Dataset,
+  DatasetsMigration,
   GearType,
   IdentityVessel,
   SelfReportedInfo,
@@ -12,7 +13,11 @@ import type {
   VesselRegistryProperty,
   VesselType,
 } from '@globalfishingwatch/api-types'
-import { API_LOGIN_REQUIRED, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import {
+  API_LOGIN_REQUIRED,
+  DataviewCategory,
+  VesselIdentitySourceEnum,
+} from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { PRIVATE_ICON } from 'data/map/config'
@@ -24,7 +29,7 @@ import type { IdField } from 'features/_user/vessel-groups/vessel-groups.slice'
 import type { VesselPropertyApiSearch } from 'features/_user/vessel-groups/vessel-groups.utils'
 import type { VesselLastIdentity } from 'features/_vessels/search/search.slice'
 import type { ActivityEvent } from 'features/_vessels/vessel/activity/vessels-activity.selectors'
-import { getPipe5VesselDatasetId } from 'features/_vessels/vessel/vessel.config'
+import { getVesselLatestDatasetId } from 'features/_vessels/vessel/vessel.config'
 import type { IdentityVesselData, VesselDataIdentity } from 'features/_vessels/vessel/vessel.slice'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { getUTCDateTime } from 'utils/dates'
@@ -449,20 +454,28 @@ export function getSkylightLink({ skylightId }: { skylightId: string }): string 
   return `https://app.skylight.earth/vesseldetails/${skylightId}`
 }
 
-export function getPipe5VesselDataviewInstance(
-  dataview: UrlDataviewInstance
+export const getIsVesselDataviewOutdated = (
+  dataview: Pick<UrlDataviewInstance, 'category' | 'config' | 'datasets'>,
+  deprecatedDatasets: DatasetsMigration
+) =>
+  !!dataview.config?.info &&
+  dataview.category === DataviewCategory.Vessels &&
+  !!getVesselLatestDatasetId(dataview.config.info, deprecatedDatasets, dataview.datasets)
+
+export function getLatestVesselDataviewInstance(
+  dataview: UrlDataviewInstance,
+  deprecatedDatasets: DatasetsMigration
 ): Partial<UrlDataviewInstance> {
   const { config, dataviewId } = dataview
+  const getLatest = (datasetId: string) => deprecatedDatasets[datasetId] || datasetId
   return {
     id: dataview.id,
     ...(dataviewId && { dataviewId: LEGACY_TO_LATEST_DATAVIEWS[dataviewId] || dataviewId }),
     config: {
-      ...(config?.info && { info: getPipe5VesselDatasetId(config.info) }),
-      ...(config?.track && { track: getPipe5VesselDatasetId(config.track) }),
-      ...(config?.trackRealTime && {
-        trackRealTime: getPipe5VesselDatasetId(config.trackRealTime),
-      }),
-      ...(config?.events?.length && { events: config.events.map(getPipe5VesselDatasetId) }),
+      ...(config?.info && { info: getLatest(config.info) }),
+      ...(config?.track && { track: getLatest(config.track) }),
+      ...(config?.trackRealTime && { trackRealTime: getLatest(config.trackRealTime) }),
+      ...(config?.events?.length && { events: config.events.map(getLatest) }),
     },
   }
 }

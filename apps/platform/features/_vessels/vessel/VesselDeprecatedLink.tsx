@@ -13,15 +13,12 @@ import { ROUTE_PATHS } from '@platform/config/routes'
 import { selectDeprecatedDatasets } from 'features/_map/datasets/datasets.slice'
 import { mergeDataviewIntancesToUpsert } from 'features/_map/workspace/workspace.hook'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
-import {
-  getIsPipe4VesselDataset,
-  getPipe5VesselDatasetId,
-} from 'features/_vessels/vessel/vessel.config'
+import { getVesselLatestDatasetId } from 'features/_vessels/vessel/vessel.config'
 import { selectIncludeRelatedIdentities } from 'features/_vessels/vessel/vessel.config.selectors'
 import type { IdentityVesselData } from 'features/_vessels/vessel/vessel.slice'
 import { fetchVesselInfoThunk } from 'features/_vessels/vessel/vessel.slice'
 import {
-  getPipe5VesselDataviewInstance,
+  getLatestVesselDataviewInstance,
   getVesselProperty,
 } from 'features/_vessels/vessel/vessel.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -30,7 +27,7 @@ import { selectVesselId } from 'router/routes.selectors'
 
 type VesselDeprecatedLinkProps = {
   vesselIdentity: IdentityVessel | IdentityVesselData
-  // Pipe 4 vessels are switched in place in this dataview instead of searched again
+  // Deprecated vessels are switched in place in this dataview instead of searched again
   dataview?: UrlDataviewInstance
   isVesselProfile?: boolean
 }
@@ -49,26 +46,27 @@ const VesselDeprecatedLink = ({
   const { t } = useTranslation()
   const vesselDatasetId =
     typeof vesselIdentity.dataset === 'string' ? vesselIdentity.dataset : vesselIdentity.dataset.id
-  const isPipe4Vessel = !!dataview && getIsPipe4VesselDataset(vesselDatasetId)
+  const latestVesselDatasetId = dataview
+    ? getVesselLatestDatasetId(vesselDatasetId, deprecatedDatasets, dataview.datasets)
+    : undefined
 
-  const onSwitchToPipe5Click = useCallback(() => {
-    if (!dataview) {
+  const onSwitchToLatestClick = useCallback(() => {
+    if (!dataview || !latestVesselDatasetId) {
       return
     }
-    const pipe5VesselDatasetId = getPipe5VesselDatasetId(vesselDatasetId)
     replaceQueryParams((prev) => ({
       dataviewInstances: mergeDataviewIntancesToUpsert(
-        getPipe5VesselDataviewInstance(dataview),
+        getLatestVesselDataviewInstance(dataview, deprecatedDatasets),
         prev.dataviewInstances || []
       ),
-      ...(isVesselProfile && { vesselDatasetId: pipe5VesselDatasetId }),
+      ...(isVesselProfile && latestVesselDatasetId && { vesselDatasetId: latestVesselDatasetId }),
     }))
     if (isVesselProfile) {
       // The profile only fetches the info on mount, so it needs a refresh with the new dataset
       dispatch(
         fetchVesselInfoThunk({
           vesselId: profileVesselId,
-          datasetId: pipe5VesselDatasetId,
+          datasetId: latestVesselDatasetId,
           includeRelatedIdentities,
           isRefresh: true,
         })
@@ -76,22 +74,23 @@ const VesselDeprecatedLink = ({
     }
   }, [
     dataview,
+    deprecatedDatasets,
     dispatch,
     includeRelatedIdentities,
     isVesselProfile,
+    latestVesselDatasetId,
     profileVesselId,
     replaceQueryParams,
-    vesselDatasetId,
   ])
 
-  if (isPipe4Vessel) {
+  if (latestVesselDatasetId) {
     return (
       <IconButton
         icon="update-required"
         type="update-required"
         size="medium"
         tooltip={t((t) => t.workspace.deprecatedVesselLayerSwitch)}
-        onClick={onSwitchToPipe5Click}
+        onClick={onSwitchToLatestClick}
       />
     )
   }
