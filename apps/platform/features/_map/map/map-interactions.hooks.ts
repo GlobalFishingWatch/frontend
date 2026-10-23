@@ -43,6 +43,7 @@ import {
   interactionPromisesAtom,
   useCancelInteractionPromises,
 } from 'features/_map/map/map-interactions.atoms'
+import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
 import { useMapAnnotation } from 'features/_map/map/overlays/annotations/annotations.hooks'
 import { useMapErrorNotification } from 'features/_map/map/overlays/error-notification/error-notification.hooks'
 import { overlaysCursorAtom } from 'features/_map/map/overlays/overlays-hooks'
@@ -53,6 +54,7 @@ import { useVesselProfileScrollToEvent } from 'features/_vessels/vessel/activity
 import type { ActivityEvent } from 'features/_vessels/vessel/activity/vessels-activity.selectors'
 import { trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import { setHintDismissed } from 'features/hints/hints.slice'
 import type { RootState } from 'reducers'
 import { useAppSearch, useReplaceQueryParams } from 'router/routes.hook'
@@ -82,7 +84,7 @@ import {
   isTilesClusterLayerCluster,
   isTrackSegment,
 } from './map-interaction.utils'
-import { useMapViewport, useSetMapCoordinates } from './map-viewport.hooks'
+import { useMapViewport } from './map-viewport.hooks'
 
 export const SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION = [
   DataviewCategory.Activity,
@@ -737,6 +739,7 @@ export const useMapHoverCoordinates = () => {
 
 export const useMapMouseClick = () => {
   const getPickingInteraction = useGetPickingInteraction()
+  const { logClickedFeatures } = useSelector(selectDebugOptions)
   const { isMapDrawing } = useMapDrawConnect()
   const { dispatchClickedEvent } = useClickedEventConnect()
 
@@ -751,6 +754,9 @@ export const useMapMouseClick = () => {
         return false
       }
       const clickInteraction = getPickingInteraction(info, 'click')
+      if (logClickedFeatures) {
+        console.log('[debug] clicked features:', clickInteraction?.features)
+      }
       if (clickInteraction?.features?.length === 1 && info.object?.interactionType === 'segment') {
         return
       }
@@ -758,7 +764,7 @@ export const useMapMouseClick = () => {
         dispatchClickedEvent(clickInteraction)
       }
     },
-    [dispatchClickedEvent, getPickingInteraction, isMapDrawing]
+    [dispatchClickedEvent, getPickingInteraction, isMapDrawing, logClickedFeatures]
   )
 
   return onMapClick

@@ -9,6 +9,7 @@ import { getIsEncounteredVesselDataviewInstanceId } from '@globalfishingwatch/da
 import { Tooltip } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_CATEGORY } from '@platform/config/map/workspaces'
 import { ROUTE_PATHS } from '@platform/config/routes'
+import { VESSEL_PROFILE_LINK_TESTID } from '@platform/config/selectors/vessels'
 
 import { getVesselDataviewInstance } from 'features/_map/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
@@ -71,7 +72,7 @@ const VesselLink = ({
   onClick,
   query,
   showTooltip = true,
-  testId = 'link-vessel-profile',
+  testId = VESSEL_PROFILE_LINK_TESTID,
   tooltip,
   vesselId: vesselIdProp,
 }: VesselLinkProps) => {

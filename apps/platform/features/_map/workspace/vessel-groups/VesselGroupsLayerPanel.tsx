@@ -9,7 +9,7 @@ import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
-import { useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
+import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
 import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import { useLayerPanelDataviewSort } from 'features/_map/workspace/shared/layer-panel-sort.hook'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'

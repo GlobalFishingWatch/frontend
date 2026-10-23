@@ -22,7 +22,7 @@ import type {
 } from 'features/_reports/reports.types'
 import { ReportCategory } from 'features/_reports/reports.types'
 import { useReportFeaturesLoading } from 'features/_reports/reports-timeseries.hooks'
-import { resetReportData } from 'features/_reports/tabs/activity/reports-activity.slice'
+import { resetReportData } from 'features/_reports/tabs/activity/reports-activity.actions'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'

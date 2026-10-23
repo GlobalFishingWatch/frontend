@@ -33,7 +33,6 @@ import type { VesselSearchState } from 'features/_vessels/search/search.types'
 import {
   DEFAULT_VESSEL_IDENTITY_DATASET,
   DEFAULT_VESSEL_IDENTITY_ID,
-  IS_PIPE_4,
 } from 'features/_vessels/vessel/vessel.config'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -41,13 +40,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import styles from './SearchAdvancedFilters.module.css'
 
 const FILTERS_WITH_SHARED_SELECTION_COMPATIBILITY = ['geartypes', 'shiptypes', 'flag']
-const VMS_FILTERS_WITH_STRING_SEARCH = IS_PIPE_4
-  ? [
-      'selfReportedInfo.externalId',
-      'selfReportedInfo.fishingLicenseCode',
-      'selfReportedInfo.vesselRegistrationCode',
-    ]
-  : ['codMarinha', 'nationalId']
+const VMS_FILTERS_WITH_STRING_SEARCH = ['codMarinha', 'nationalId']
 
 type ImcompatibleFilter = { id: keyof VesselSearchState; values: string[] }
 type IncompatibleFilterSelection = {

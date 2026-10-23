@@ -16,13 +16,15 @@ import { DataviewType } from '@globalfishingwatch/api-types'
 import { useIsDeckLayersLoading } from '@globalfishingwatch/deck-layer-composer'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
 import { IconButton, MiniGlobe } from '@globalfishingwatch/ui-components'
+import { MAP_LOADING_SPINNER_TESTID } from '@platform/config/selectors/map'
 
 import { selectDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import BasemapSwitcher from 'features/_map/map/controls/BasemapSwitcher'
 import ReferenceLayersControl from 'features/_map/map/controls/ReferenceLayersControl'
 import ReportControls from 'features/_map/map/controls/ReportControl'
 import { useMapBoundsLive } from 'features/_map/map/map-bounds.hooks'
-import { useMapViewState, useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
+import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
+import { useMapViewState } from 'features/_map/map/map-viewport.hooks'
 import { selectScreenshotMode } from 'features/_map/workspace/selectors/app.selectors'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import { selectReportAreaStatus } from 'features/_reports/report-area/area-reports.selectors'
@@ -178,7 +180,7 @@ const MapControls = ({
             )}
             {(isAnyVesselLocation || isAnyReportLocation) && <ReferenceLayersControl />}
             <IconButton
-              testId="map-loading-spinner"
+              testId={MAP_LOADING_SPINNER_TESTID}
               type="map-tool"
               tooltip={t((t) => t.map.loading)}
               loading={mapLoading}

@@ -47,7 +47,7 @@ Output goes to `apps/platform/dist` (client) and `apps/platform/.output` (Nitro 
 pnpm nx run platform:typecheck          # tsc --noEmit (depends on i18n:types)
 pnpm nx run platform:test               # vitest
 pnpm nx run platform:test:watch
-pnpm nx run platform:check-store-graph  # guards lazy store/slice wiring
+pnpm nx run platform:check-load-boundaries  # what each page may load (scripts/load-boundaries)
 pnpm nx run platform:i18n               # extract keys + regenerate types
 ```
 

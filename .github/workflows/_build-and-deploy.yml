@@ -148,6 +148,17 @@ jobs:
           config: ${{ inputs.config }}
           nx-cloud-access-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
           extra-build-args: ${{ inputs.build-args }}
+          export-stage: ${{ matrix.app == 'platform' && 'load-boundaries-report' || '' }}
+
+      # Report only: what each page loads in the real build. Never blocks the deploy.
+      - name: Load boundaries summary
+        if: matrix.app == 'platform'
+        run: |
+          if [ -f docker-export/load-boundaries.md ]; then
+            cat docker-export/load-boundaries.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning::No load-boundaries report was exported from the image build"
+          fi
 
       - name: Run smoke tests
         if: env.RUN_SMOKE_TESTS == 'true'

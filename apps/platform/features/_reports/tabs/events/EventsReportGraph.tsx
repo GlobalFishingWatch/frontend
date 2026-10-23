@@ -11,11 +11,14 @@ import {
   selectEventsStatsDataGrouped,
   selectEventsStatsValueKeys,
 } from 'features/_reports/tabs/events/events-report.selectors'
+import type { EventsReportGraphProps } from 'features/_reports/tabs/events/events-report.types'
 import EventsReportGraphEvolution from 'features/_reports/tabs/events/EventsReportGraphEvolution'
 import EventsReportGraphGrouped from 'features/_reports/tabs/events/EventsReportGraphGrouped'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 
-function EventsReportGraph() {
+type EventsReportGraphWrapperProps = Pick<EventsReportGraphProps, 'onIndividualSupportedChange'>
+
+function EventsReportGraph({ onIndividualSupportedChange }: EventsReportGraphWrapperProps) {
   const eventsDataviews = useSelector(selectActiveReportDataviews)
   const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
   const { start, end } = useSelector(selectTimeRange)
@@ -55,6 +58,7 @@ function EventsReportGraph() {
         end={end}
         data={eventsStatsDataGrouped || []}
         eventType={eventType}
+        onIndividualSupportedChange={onIndividualSupportedChange}
       />
     )
   }
@@ -70,6 +74,7 @@ function EventsReportGraph() {
       valueKeys={eventsStatsValueKeys}
       graphType={reportEventsGraph}
       eventType={eventType}
+      onIndividualSupportedChange={onIndividualSupportedChange}
     />
   )
 }

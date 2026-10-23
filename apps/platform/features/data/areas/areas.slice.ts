@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { kebabCase, memoize, uniqBy } from 'es-toolkit'
-import type { FeatureCollection, GeometryCollection, MultiPolygon, Polygon } from 'geojson'
+import type { FeatureCollection, GeometryCollection, MultiPolygon, Point, Polygon } from 'geojson'
 
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type { Dataset, TileContextAreaFeature } from '@globalfishingwatch/api-types'
@@ -142,6 +142,9 @@ async function fetchAreaDetail({
         : []
     )
     geometry = { type: 'MultiPolygon', coordinates: getPolygonsUnion(geoms) }
+  } else if ((area.geometry as unknown as Point)?.type === 'Point') {
+    const { circle } = await import('@turf/turf')
+    geometry = circle(area.geometry as unknown as Point, 1).geometry
   } else {
     geometry = area.geometry as AreaGeometry
   }

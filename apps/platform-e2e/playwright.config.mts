@@ -23,6 +23,8 @@ const ignoreHTTPSErrors = process.env.PLAYWRIGHT_IGNORE_HTTPS_ERRORS === 'true'
 export default defineConfig({
   testDir: './src',
   testMatch: /.*\.e2e\.spec\.(ts|tsx)$/,
+  /* Warms the cold Vite dev server before the first test (no-op on CI). */
+  globalSetup: './src/global-setup.ts',
 
   /* Run tests in files in parallel */
   fullyParallel: false,
@@ -39,8 +41,7 @@ export default defineConfig({
   snapshotPathTemplate: '{testDir}/{testFileDir}/__screenshots__/{arg}{ext}',
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: undefined,
+  workers: process.env.CI ? undefined : 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -48,8 +49,7 @@ export default defineConfig({
     /* Origin only; tests navigate to /platform/map via appPath() / MAP_PATH. */
     baseURL,
     ignoreHTTPSErrors,
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    trace: process.env.CI ? 'on-first-retry' : 'retain-on-failure',
     /* Screenshot on failure */
     screenshot: 'only-on-failure',
     /* Video on failure */

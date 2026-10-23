@@ -5,10 +5,6 @@
   position: relative;
 }
 
-.paddingTop {
-  padding-top: 2rem;
-}
-
 .graph svg {
   overflow: visible;
 }
@@ -74,11 +70,4 @@
 
 .property span {
   font: var(--font-S);
-}
-
-.download {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 1;
 }

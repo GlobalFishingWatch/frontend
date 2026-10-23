@@ -18,6 +18,7 @@ import {
   EVENTS_ORDER,
   selectActivitySummary,
   selectEventsGroupedByType,
+  selectVesselEventTypes,
   selectVoyagesNumber,
 } from 'features/_vessels/vessel/activity/vessels-activity.selectors'
 import { selectVesselEventsFilteredByTimerange } from 'features/_vessels/vessel/selectors/vessel.resources.selectors'
@@ -45,6 +46,7 @@ export const VesselActivitySummary = () => {
   const visibleEvents = useSelector(selectVisibleEvents)
   const vesselProfileSource = useSelector(selectVesselProfileSource)
   const eventsByType = useSelector(selectEventsGroupedByType)
+  const vesselEventTypes = useSelector(selectVesselEventTypes)
   const { getRegionNamesByType } = useRegionNamesByType()
   const { activityRegions, mostVisitedPortCountries, fishingHours } =
     useSelector(selectActivitySummary)
@@ -164,7 +166,8 @@ export const VesselActivitySummary = () => {
             const events = eventsByType[eventType]
             if (
               (eventType === EventTypes.Gaps || eventType === EventTypes.Gap) &&
-              !events?.length
+              !events?.length &&
+              !vesselEventTypes.includes(eventType)
             ) {
               return null
             }

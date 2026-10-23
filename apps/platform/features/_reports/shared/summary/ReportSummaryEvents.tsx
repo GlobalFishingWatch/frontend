@@ -5,11 +5,11 @@ import { lowerCase } from 'es-toolkit'
 import { DateTime } from 'luxon'
 
 import type { EventType } from '@globalfishingwatch/api-types'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes, EventTypes } from '@globalfishingwatch/api-types'
 
 import { selectActiveReportDataviews } from 'features/_map/dataviews/selectors/dataviews.selectors'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
-import { selectReportAreaId } from 'features/_reports/reports.selectors'
+import { selectReportAreaId } from 'features/_reports/reports.current.selectors'
 import ReportSummaryPlaceholder from 'features/_reports/shared/placeholders/ReportSummaryPlaceholder'
 import { selectReportVesselsFlags } from 'features/_reports/shared/vessels/report-vessels.selectors'
 import {
@@ -35,7 +35,8 @@ export default function ReportSummaryEvents() {
 
   const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
   const eventDataset = eventsDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
-  const eventType = eventDataset?.subcategory as EventType
+  const eventType = (eventDataset?.subcategory ??
+    (isPortReportLocation ? EventTypes.Port : undefined)) as EventType
 
   const summary = useMemo(() => {
     const startDate = formatI18nDate(timerange?.start, {

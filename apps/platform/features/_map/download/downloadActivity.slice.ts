@@ -145,9 +145,13 @@ export const downloadActivityThunk = createAsyncThunk<
               'region-dataset': datasetId,
             }),
         'group-by': groupBy,
-        'buffer-unit': bufferUnit?.toUpperCase(),
-        'buffer-value': bufferValue,
-        'buffer-operation': bufferOperation?.toUpperCase(),
+        ...(bufferUnit &&
+          bufferValue &&
+          bufferOperation && {
+            'buffer-unit': bufferUnit.toUpperCase(),
+            'buffer-value': bufferValue,
+            'buffer-operation': bufferOperation.toUpperCase(),
+          }),
       }
       const fileName = `${areaName} - ${downloadActivityParams['date-range']}.${
         format === HeatmapDownloadFormat.Json ? 'json' : 'zip'

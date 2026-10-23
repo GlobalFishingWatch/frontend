@@ -320,6 +320,7 @@
     "of": "crwdns132307:0crwdne132307:0",
     "onlyMe": "crwdns132309:0crwdne132309:0",
     "onlyVisibleForGFW": "crwdns132311:0crwdne132311:0",
+    "onlyVisibleForGFWAndJAC": "crwdns138813:0crwdne138813:0",
     "onlyVisibleForGFWShort": "crwdns132313:0crwdne132313:0",
     "onlyVisibleForJAC": "crwdns132315:0crwdne132315:0",
     "onScreen": "crwdns132317:0crwdne132317:0",
@@ -837,6 +838,8 @@
     "colorSelectPredefined": "crwdns133139:0crwdne133139:0",
     "colorSelectSpectralDisabled": "crwdns138337:0crwdne138337:0",
     "depth": "crwdns133141:0crwdne133141:0",
+    "depthLineGroups": "crwdns138815:0crwdne138815:0",
+    "depthSingleLines": "crwdns138817:0crwdne138817:0",
     "distance_from_port_km": "crwdns133143:0crwdne133143:0",
     "drawAddPoint": "crwdns133145:0crwdne133145:0",
     "drawAddPolygon": "crwdns133147:0crwdne133147:0",
@@ -1167,6 +1170,10 @@
     "selectAtLeastOneVessel": "crwdns133613:0crwdne133613:0",
     "title": "crwdns133615:0crwdne133615:0",
     "version": "crwdns133617:0crwdne133617:0"
+  },
+  "updateVideo": {
+    "learnMore": "crwdns138819:0crwdne138819:0",
+    "title": "crwdns138821:0crwdne138821:0"
   },
   "user": {
     "badges": {
@@ -1562,6 +1569,7 @@
       "bunker_or_tanker": "crwdns134337:0crwdne134337:0",
       "cargo": "crwdns134339:0crwdne134339:0",
       "carrier": "crwdns134341:0crwdne134341:0",
+      "discrepancy": "crwdns138811:0crwdne138811:0",
       "fishing": "crwdns134343:0crwdne134343:0",
       "gear": "crwdns134345:0crwdne134345:0",
       "inactive": "crwdns138807:0crwdne138807:0",
@@ -1670,6 +1678,13 @@
       "gaps_one": "crwdns134549:0{{count}}crwdnd134549:0{{vessels}}crwdne134549:0",
       "gaps_other": "crwdns134553:0{{count}}crwdnd134553:0{{vessels}}crwdne134553:0"
     }
+  },
+  "videoPlayer": {
+    "mute": "crwdns138823:0crwdne138823:0",
+    "pause": "crwdns138825:0crwdne138825:0",
+    "play": "crwdns138827:0crwdne138827:0",
+    "progress": "crwdns138829:0crwdne138829:0",
+    "unmute": "crwdns138831:0crwdne138831:0"
   },
   "workspace": {
     "addLayer": "crwdns134561:0crwdne134561:0",
