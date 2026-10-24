@@ -6,7 +6,10 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { APIPagination, IdentityVessel, VesselGroup } from '@globalfishingwatch/api-types'
 
 import { getDatasetByIdsThunk } from 'features/_map/datasets/datasets.slice'
-import { mergeVesselGroupVesselIdentities } from 'features/_user/vessel-groups/vessel-groups.utils'
+import {
+  getIsVMSVessel,
+  mergeVesselGroupVesselIdentities,
+} from 'features/_user/vessel-groups/vessel-groups.utils'
 import type { VesselGroupVesselIdentity } from 'features/_user/vessel-groups/vessel-groups-modal.slice'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/_vessels/vessel/vessel.config'
 import { workspaceTabClicked } from 'features/nav/nav.actions'
@@ -130,6 +133,9 @@ export const selectVGRData = (state: VesselGroupReportSliceState) =>
 
 export const selectVGRVessels = createSelector([selectVGRData], (vesselGroup) => {
   return vesselGroup?.vessels
+})
+export const selectVGRHasVMSVessels = createSelector([selectVGRVessels], (vessels) => {
+  return vessels?.some(getIsVMSVessel) ?? false
 })
 export const selectVGRDatasets = createSelector([selectVGRData], (vesselGroup) => {
   return (
