@@ -21,6 +21,7 @@ export type IconButtonType =
   | 'warning-border'
   | 'warning-invert'
   | 'solid'
+  | 'update-required'
 export type IconButtonSize = 'default' | 'medium' | 'small' | 'tiny'
 
 export interface IconButtonProps {

@@ -53,6 +53,21 @@ const initialState: DatasetsState = {
   deletedDatasets: [],
 }
 
+const parseDeprecatedDatasetsHeader = (headers: Headers): DatasetsMigration => {
+  const deprecatedDatasetsHeader = headers.get(DEPRECATED_DATASETS_HEADER)
+  if (!deprecatedDatasetsHeader) {
+    return {}
+  }
+  return deprecatedDatasetsHeader.split(',').reduce((acc, id) => {
+    const [deprecatedId, latestId] = id.split('=')
+    if (getIsDatasetVersionDowngrade(deprecatedId, latestId)) {
+      return acc
+    }
+    acc[deprecatedId] = latestId
+    return acc
+  }, {} as DatasetsMigration)
+}
+
 export const fetchDatasetByIdThunk = createAsyncThunk<
   Dataset,
   { id: string; locale?: i18nSupportedLocale; useApiCache?: boolean },
@@ -61,14 +76,25 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
   }
 >(
   'datasets/fetchById',
-  async ({ id, locale = i18n.language as Locale, useApiCache = false }, { rejectWithValue }) => {
+  async (
+    { id, locale = i18n.language as Locale, useApiCache = false },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const includesParam = stringify({
         cache: useApiCache,
         locale: getAPILocale(locale),
         includes: ['DESCRIPTION'],
       })
-      const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${id}?${includesParam}`)
+      const { data: dataset, headers } = await GFWAPI.fetch<{ data: Dataset; headers: Headers }>(
+        `/datasets/${id}?${includesParam}`,
+        { responseType: 'withHeaders' }
+      )
+      // Datasets fetched here are skipped by the batch fetch, so it would never see their migration
+      const datasetsDeprecated = parseDeprecatedDatasetsHeader(headers)
+      if (Object.keys(datasetsDeprecated).length) {
+        dispatch(setDeprecatedDatasets(datasetsDeprecated))
+      }
       return dataset
     } catch (e: any) {
       console.warn(e)
@@ -157,19 +183,7 @@ const fetchDatasetsBatch = async ({
   }
   const { data: initialDatasets, headers: responseHeaders } = response
 
-  let datasetsDeprecatedDict: DatasetsMigration = {}
-  const deprecatedDatasetsHeader = responseHeaders.get(DEPRECATED_DATASETS_HEADER)
-  if (deprecatedDatasetsHeader) {
-    datasetsDeprecatedDict = deprecatedDatasetsHeader.split(',').reduce((acc, id) => {
-      const [deprecatedId, latestId] = id.split('=')
-      // Pre-released datasets are reported as deprecated by an older version until they go live
-      if (getIsDatasetVersionDowngrade(deprecatedId, latestId)) {
-        return acc
-      }
-      acc[deprecatedId] = latestId
-      return acc
-    }, {} as DatasetsMigration)
-  }
+  const datasetsDeprecatedDict = parseDeprecatedDatasetsHeader(responseHeaders)
 
   const mockedDatasets =
     IS_DEVELOPMENT_ENV || import.meta.env.VITE_USE_LOCAL_DATASETS === 'true'

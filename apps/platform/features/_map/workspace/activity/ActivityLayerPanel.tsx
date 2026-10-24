@@ -25,6 +25,10 @@ import {
   selectReadOnly,
 } from 'features/_map/workspace/selectors/app.selectors'
 import ExpandedContainer from 'features/_map/workspace/shared/ExpandedContainer'
+import {
+  getLayerMoreIcon,
+  getLayerStatusIcon,
+} from 'features/_map/workspace/shared/layer-status-icon.utils'
 import LayerProperties from 'features/_map/workspace/shared/LayerProperties'
 import MapLegend from 'features/_map/workspace/shared/MapLegend'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
@@ -275,8 +279,7 @@ function ActivityLayerPanel({
             )}
             {!readOnly && layerActive && (layerError || showDeprecatedWarning) && (
               <IconButton
-                icon="warning"
-                type={showDeprecatedWarning ? 'warning-invert' : 'warning'}
+                {...getLayerStatusIcon({ deprecated: showDeprecatedWarning, error: !!layerError })}
                 loading={showDeprecatedWarning && isMigrating}
                 disabled={showDeprecatedWarning && isMigrating}
                 onClick={showDeprecatedWarning ? () => onMigrateDataviewClick(dataview) : undefined}
@@ -297,18 +300,11 @@ function ActivityLayerPanel({
             <Hint id="filterActivityLayers" className={styles.helpHint} />
           )}
           <IconButton
-            icon={
-              layerActive ? (layerError || showDeprecatedWarning ? 'warning' : 'more') : undefined
-            }
-            type={
-              layerActive
-                ? showDeprecatedWarning
-                  ? 'warning-invert'
-                  : layerError
-                    ? 'warning'
-                    : 'default'
-                : 'default'
-            }
+            {...getLayerMoreIcon({
+              layerActive,
+              deprecated: showDeprecatedWarning,
+              error: !!layerError,
+            })}
             loading={!showDeprecatedWarning && layerActive && !layerLoaded}
             className={cx('print-hidden', styles.shownUntilHovered)}
             size="small"

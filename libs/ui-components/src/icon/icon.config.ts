@@ -131,6 +131,7 @@ const icons = [
   'topics',
   'track',
   'upload',
+  'update-required',
   'user',
   'vector-arrow',
   'vessel-disabled',
