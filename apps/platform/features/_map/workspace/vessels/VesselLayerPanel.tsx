@@ -36,7 +36,7 @@ import VesselDownload from 'features/_map/workspace/vessels/VesselDownload'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import { selectIsWorkspaceOwnerOrDefault } from 'features/_map/workspace/workspace.selectors'
 import GFWOnly from 'features/_user/GFWOnly'
-import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
+import { selectIsGFWUser, selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { getOtherVesselNames } from 'features/_vessels/vessel/vessel.utils'
 import { getVesselShipNameLabel } from 'features/_vessels/vessel/vessel-label.utils'
 import VesselDeprecatedLink from 'features/_vessels/vessel/VesselDeprecatedLink'
@@ -75,6 +75,7 @@ function VesselLayerPanel({
   const vesselLayer = useGetDeckLayer<VesselLayer>(dataview.id)
   // const vesselInstance = useMapVesselLayer(dataview.id)
   const gfwUser = useSelector(selectIsGFWUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const trackDatasetId = dataview.datasets?.find((rld) => rld.type === DatasetTypes.Tracks)?.id
   const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
@@ -246,12 +247,14 @@ function VesselLayerPanel({
                       onToggleClick={onToggleColorOpen}
                       onClickOutside={closeExpandedContainer}
                     />
-                    <FitBounds
-                      hasError={trackError}
-                      layer={vesselLayer?.instance}
-                      infoResource={infoResource}
-                      disabled={trackLoading}
-                    />
+                    {!guestUser && (
+                      <FitBounds
+                        hasError={trackError}
+                        layer={vesselLayer?.instance}
+                        infoResource={infoResource}
+                        disabled={trackLoading}
+                      />
+                    )}
                     <ExpandedContainer
                       visible={filterOpen}
                       onClickOutside={closeExpandedContainer}

@@ -215,6 +215,9 @@ const Vessel = () => {
   }, [dispatch])
 
   useEffect(() => {
+    if (!vesselId) {
+      return
+    }
     if (
       !infoStatus ||
       infoStatus === AsyncReducerStatus.Idle ||

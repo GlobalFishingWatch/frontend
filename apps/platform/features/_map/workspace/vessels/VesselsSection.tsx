@@ -17,10 +17,6 @@ import { ROUTE_PATHS } from '@platform/config/routes'
 import { getDataviewsSources } from 'features/_map/datasets/datasets.utils'
 import { selectActiveVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { selectVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
-import {
-  hasTracksWithNoData,
-  useTimebarVesselTracksData,
-} from 'features/_map/timebar/timebar-vessel.hooks'
 import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import LayerPanelContainer from 'features/_map/workspace/shared/LayerPanelContainer'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
@@ -81,8 +77,6 @@ function VesselsSection(): React.ReactElement<any> {
   const vesselGroups = useSelector(selectAllVisibleVesselGroups)
   const getVesselGroupDataviewInstance = useVesselGroupDataviewInstance()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
-  const vesselTracksData = useTimebarVesselTracksData()
-  const hasVesselsWithNoTrack = hasTracksWithNoData(vesselTracksData)
   const visibleDataviews = dataviews?.filter((dataview) => dataview.config?.visible === true)
   const hasVisibleDataviews = visibleDataviews.length >= 1
   const sources = getDataviewsSources(dataviews)
@@ -307,22 +301,12 @@ function VesselsSection(): React.ReactElement<any> {
         </SortableContext>
         {activeDataviews.length > 0 && guestUser && (
           <p className={cx(styles.disclaimer, 'print-hidden')}>
-            {hasVesselsWithNoTrack ? (
-              <Trans i18nKey={(t) => t.vessel.trackLogin}>
-                One of your selected sources requires you to
-                <LoginLink className={styles.link} loginSource="vessel-tracks">
-                  login
-                </LoginLink>{' '}
-                to see vessel tracks and events
-              </Trans>
-            ) : (
-              <Trans i18nKey={(t) => t.vessel.trackResolution}>
-                <LoginLink className={styles.link} loginSource="vessel-tracks">
-                  Login
-                </LoginLink>{' '}
-                to see more detailed vessel tracks (free, 2 minutes)
-              </Trans>
-            )}
+            <Trans i18nKey={(t) => t.vessel.trackLoginRequired}>
+              <LoginLink className={styles.link} loginSource="vessel-tracks">
+                Log in
+              </LoginLink>{' '}
+              to see vessel tracks and events
+            </Trans>
           </p>
         )}
         <VesselEventsLegend dataviews={dataviews} />
