@@ -19,6 +19,7 @@ import { useMigrateToLatestDataview } from 'features/_map/dataviews/dataviews.ho
 import { useActivityDataviewId } from 'features/_map/map/map-layers.hooks'
 import ActivityAuxiliaryLayerPanel from 'features/_map/workspace/activity/ActivityAuxiliaryLayer'
 import TurningTidesTags from 'features/_map/workspace/activity/TurningTidesTags'
+import DetectionSceneTag from 'features/_map/workspace/detections/DetectionSceneTag'
 import {
   selectBivariateDataviews,
   selectReadOnly,
@@ -387,6 +388,7 @@ function ActivityLayerPanel({
                   />
                 )}
                 {showTurningTidesFilters && <TurningTidesTags dataview={dataview} />}
+                <DetectionSceneTag dataview={dataview} />
               </div>
             </div>
             <div className={activityStyles.legendContainer}>
