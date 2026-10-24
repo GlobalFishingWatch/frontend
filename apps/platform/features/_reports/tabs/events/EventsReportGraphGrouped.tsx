@@ -91,7 +91,7 @@ const AggregatedGraphTooltip = (props: any) => {
                     ))}
                     {restValue !== 0 && (
                       <li key="others" className={styles.tooltipValue}>
-                        {t((t) => t.analysis.others)}: {restValue}
+                        {t((t) => t.common.others)}: {restValue}
                       </li>
                     )}
                   </Fragment>
@@ -185,7 +185,7 @@ const ReportGraphTick = (props: any) => {
   }
 
   const label = isOtherCategory
-    ? t((t) => t.analysis.others)
+    ? t((t) => t.common.others)
     : getReportAreaLabel(payload.value) || ''
   const labelChunks = label.split(' ')
   const labelChunksClean = [labelChunks[0]]

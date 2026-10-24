@@ -82,7 +82,6 @@
     "noTimeComparisonAllowed": "Time comparison modes are not available when layers have different filters",
     "noVesselDataFiltered": "There are no vessels matching your filter",
     "onlyEvolutionSupported": "Select the evolution option above to see the vessels active in the area",
-    "others": "Other areas",
     "othersLayersAreReportArea": "The layers used to create this report area can't be analyzed against themselves. Turn on another polygon or point layer to see results here.",
     "periodComparison": "Period comparison",
     "periodComparison1st": "Baseline start",
