@@ -40,6 +40,8 @@ import I18nDate from 'features/i18n/i18nDate'
 import { pickDateFormatByPrecision } from 'utils/dates'
 import { formatInfoField, upperFirst } from 'utils/info'
 
+import { getPositionsDataviewInstanceId } from '../map-popups.utils'
+
 import popupStyles from '../Popup.module.css'
 
 const DetectionThumbnailImage = lazy(() => import('./DetectionThumbnail'))
@@ -68,22 +70,20 @@ function DetectionThumbnails({
   datasetId,
   detectionId,
   dataviewInstanceId,
+  highlightedSceneId,
 }: {
   thumbnails: DetectionThumbnail[]
   scale?: number
   datasetId?: string
   detectionId?: string
   dataviewInstanceId?: string
+  highlightedSceneId?: string
 }) {
   const { t } = useTranslation()
   const [selectedName, setSelectedName] = useState<string>()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const dataviewInstance = useSelector(selectAllDataviewInstancesResolved)?.find(
-    (instance) => instance.id === dataviewInstanceId
-  )
   const sceneId = getDetectionSceneId(detectionId)
-  const isSceneHighlighted =
-    sceneId !== undefined && dataviewInstance?.config?.highlightedSceneId === sceneId
+  const isSceneHighlighted = sceneId !== undefined && highlightedSceneId === sceneId
   if (!thumbnails.length) {
     return null
   }
@@ -159,8 +159,7 @@ function PositionsTooltipRow({
   const workspace = useSelector(selectWorkspace)
   const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
   const dataviewInstances = useSelector(selectAllDataviewInstancesResolved)
-  // layerId is the merged id when several detections layers are on, the sublayer is the instance
-  const dataviewInstanceId = feature.sublayers?.[0]?.id ?? feature.layerId
+  const dataviewInstanceId = getPositionsDataviewInstanceId(feature)
   const featureDataview = dataviewInstances?.find((instance) => instance.id === dataviewInstanceId)
   const thumbnailsDatasetId = getRelatedDatasetByType(
     featureDataview?.datasets?.[0],
@@ -347,7 +346,8 @@ function PositionsTooltipRow({
             scale={getDatasetConfiguration(thumbnailsDataset, 'thumbnailsV1')?.scale}
             datasetId={datasetId}
             detectionId={feature.properties.id}
-            dataviewInstanceId={feature.sublayers?.[0]?.id}
+            dataviewInstanceId={dataviewInstanceId}
+            highlightedSceneId={featureDataview?.config?.highlightedSceneId}
           />
         )}
     </Fragment>

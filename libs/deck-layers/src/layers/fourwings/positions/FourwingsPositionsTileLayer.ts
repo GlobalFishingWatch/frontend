@@ -68,8 +68,8 @@ import type { FourwingsPositionsVesselTrack } from './fourwings-positions.utils'
 import {
   cleanVesselShipname,
   filteredPositionsByViewport,
-  getDetectionSceneId,
   getIsActivityPositionMatched,
+  getIsDetectionInScene,
   getIsDetectionsPositionMatched,
   getIsFeatureInFilterIds,
   getIsIdInFilterIds,
@@ -368,7 +368,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     const highlightedSceneId = this.props.sublayers[d.properties.layer]?.highlightedSceneId
     return (
       highlightedSceneId !== undefined &&
-      getDetectionSceneId(d.properties?.id) === highlightedSceneId
+      getIsDetectionInScene(d.properties?.id, highlightedSceneId)
     )
   }
 

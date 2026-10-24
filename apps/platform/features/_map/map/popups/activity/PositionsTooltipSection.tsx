@@ -10,6 +10,7 @@ import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils
 import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 
 import type { SliceExtendedFourwingsPickingObject } from '../../map.slice'
+import { getPositionsDataviewInstanceId } from '../map-popups.utils'
 import PopupSectionLayout from '../shared/PopupSectionLayout'
 
 import PositionsTooltipRow from './PositionsTooltipRow'
@@ -46,20 +47,16 @@ function PositionsTooltipSection({
     }
   }
 
-  // layerId is the merged id when several detections layers are on, the sublayer is the instance
-  const getDataviewInstanceId = (feature: SliceExtendedFourwingsPickingObject) =>
-    feature.sublayers?.[0]?.id ?? feature.layerId
-
   if (showFeaturesDetails) {
     const getTitle = (feature: SliceExtendedFourwingsPickingObject) => {
       const dataview = dataviewInstances?.find(
-        (instance) => instance.id === getDataviewInstanceId(feature)
+        (instance) => instance.id === getPositionsDataviewInstanceId(feature)
       )
       return dataview
         ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
         : feature.title
     }
-    const featuresByLayer = groupBy(features, getDataviewInstanceId)
+    const featuresByLayer = groupBy(features, getPositionsDataviewInstanceId)
     return Object.entries(featuresByLayer).map(([layerId, layerFeatures]) => (
       <PopupSectionLayout
         key={layerId}

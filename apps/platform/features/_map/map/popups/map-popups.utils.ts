@@ -107,3 +107,11 @@ export const getIntervalDateFormat = (interval: FourwingsInterval): DateTimeForm
   if (interval === 'MONTH') return { year: 'numeric', month: 'long' }
   return DateTime.DATE_MED
 }
+
+/** layerId is the merged id when several detections layers are on, the sublayer is the instance */
+export function getPositionsDataviewInstanceId(feature: {
+  sublayers?: { id: string }[]
+  layerId: string
+}) {
+  return feature.sublayers?.[0]?.id ?? feature.layerId
+}
