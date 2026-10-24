@@ -18,6 +18,10 @@ import DatasetLoginRequired from 'features/_map/workspace/shared/DatasetLoginReq
 import DatasetSchemaField from 'features/_map/workspace/shared/DatasetSchemaField'
 import ExpandedContainer from 'features/_map/workspace/shared/ExpandedContainer'
 import { useLayerPanelDataviewSort } from 'features/_map/workspace/shared/layer-panel-sort.hook'
+import {
+  getLayerMoreIcon,
+  getLayerStatusIcon,
+} from 'features/_map/workspace/shared/layer-status-icon.utils'
 import Remove from 'features/_map/workspace/shared/Remove'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import {
@@ -182,8 +186,7 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
           />
           {!readOnly && layerActive && (layerError || showDeprecatedWarning) && (
             <IconButton
-              icon="warning"
-              type={showDeprecatedWarning ? 'warning-invert' : 'warning'}
+              {...getLayerStatusIcon({ deprecated: showDeprecatedWarning, error: !!layerError })}
               loading={showDeprecatedWarning && isMigrating}
               disabled={showDeprecatedWarning && isMigrating}
               onClick={showDeprecatedWarning ? () => onMigrateDataviewClick(dataview) : undefined}
@@ -210,18 +213,11 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
           )}
         </div>
         <IconButton
-          icon={
-            layerActive ? (layerError || showDeprecatedWarning ? 'warning' : 'more') : undefined
-          }
-          type={
-            layerActive
-              ? showDeprecatedWarning
-                ? 'warning-invert'
-                : layerError
-                  ? 'warning'
-                  : 'default'
-              : 'default'
-          }
+          {...getLayerMoreIcon({
+            layerActive,
+            deprecated: showDeprecatedWarning,
+            error: !!layerError,
+          })}
           loading={!showDeprecatedWarning && layerActive && !layerLoaded}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"

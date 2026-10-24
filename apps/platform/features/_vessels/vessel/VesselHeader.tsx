@@ -228,7 +228,13 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
         </h1>
 
         <div className={styles.actionsContainer}>
-          {showDeprecatedWarning && <VesselDeprecatedLink vesselIdentity={vessel} />}
+          {showDeprecatedWarning && (
+            <VesselDeprecatedLink
+              vesselIdentity={vessel}
+              dataview={vesselProfileDataviewIntance}
+              isVesselProfile
+            />
+          )}
           {vesselProfileDataview ? (
             <VesselDownload
               dataview={vesselProfileDataview}
