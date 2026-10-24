@@ -11,6 +11,7 @@ import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/conf
 import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { selectDeprecatedDatasets } from 'features/_map/datasets/datasets.slice'
+import { useMigrateToLatestDataview } from 'features/_map/dataviews/dataviews.hooks'
 import { mergeDataviewIntancesToUpsert } from 'features/_map/workspace/workspace.hook'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { getVesselLatestDatasetId } from 'features/_vessels/vessel/vessel.config'
@@ -18,7 +19,7 @@ import { selectIncludeRelatedIdentities } from 'features/_vessels/vessel/vessel.
 import type { IdentityVesselData } from 'features/_vessels/vessel/vessel.slice'
 import { fetchVesselInfoThunk } from 'features/_vessels/vessel/vessel.slice'
 import {
-  getLatestVesselDataviewInstance,
+  getLatestVesselDataviewInstances,
   getVesselProperty,
 } from 'features/_vessels/vessel/vessel.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -27,7 +28,7 @@ import { selectVesselId } from 'router/routes.selectors'
 
 type VesselDeprecatedLinkProps = {
   vesselIdentity: IdentityVessel | IdentityVesselData
-  // Deprecated vessels are switched in place in this dataview instead of searched again
+  // Deprecated vessels get a copy of this dataview in the latest version instead of searched again
   dataview?: UrlDataviewInstance
   isVesselProfile?: boolean
 }
@@ -43,6 +44,7 @@ const VesselDeprecatedLink = ({
   const includeRelatedIdentities = useSelector(selectIncludeRelatedIdentities)
   const profileVesselId = useSelector(selectVesselId)
   const { replaceQueryParams } = useReplaceQueryParams()
+  const { isLoading, getIsDataviewMigrated, onMigrateDataviewClick } = useMigrateToLatestDataview()
   const { t } = useTranslation()
   const vesselDatasetId =
     typeof vesselIdentity.dataset === 'string' ? vesselIdentity.dataset : vesselIdentity.dataset.id
@@ -54,24 +56,28 @@ const VesselDeprecatedLink = ({
     if (!dataview || !latestVesselDatasetId) {
       return
     }
+    if (!isVesselProfile) {
+      // Adds the copy in the latest version, or removes this one once the copy exists
+      onMigrateDataviewClick(dataview)
+      return
+    }
+    // The profile follows the copy, as it finds its dataview by the dataset version
     replaceQueryParams((prev) => ({
       dataviewInstances: mergeDataviewIntancesToUpsert(
-        getLatestVesselDataviewInstance(dataview, deprecatedDatasets),
+        getLatestVesselDataviewInstances(dataview, deprecatedDatasets),
         prev.dataviewInstances || []
       ),
-      ...(isVesselProfile && latestVesselDatasetId && { vesselDatasetId: latestVesselDatasetId }),
+      vesselDatasetId: latestVesselDatasetId,
     }))
-    if (isVesselProfile) {
-      // The profile only fetches the info on mount, so it needs a refresh with the new dataset
-      dispatch(
-        fetchVesselInfoThunk({
-          vesselId: profileVesselId,
-          datasetId: latestVesselDatasetId,
-          includeRelatedIdentities,
-          isRefresh: true,
-        })
-      )
-    }
+    // The profile only fetches the info on mount, so it needs a refresh with the new dataset
+    dispatch(
+      fetchVesselInfoThunk({
+        vesselId: profileVesselId,
+        datasetId: latestVesselDatasetId,
+        includeRelatedIdentities,
+        isRefresh: true,
+      })
+    )
   }, [
     dataview,
     deprecatedDatasets,
@@ -79,6 +85,7 @@ const VesselDeprecatedLink = ({
     includeRelatedIdentities,
     isVesselProfile,
     latestVesselDatasetId,
+    onMigrateDataviewClick,
     profileVesselId,
     replaceQueryParams,
   ])
@@ -89,7 +96,13 @@ const VesselDeprecatedLink = ({
         icon="update-required"
         type="update-required"
         size="medium"
-        tooltip={t((t) => t.workspace.deprecatedVesselLayerSwitch)}
+        tooltip={
+          !isVesselProfile && getIsDataviewMigrated(dataview!)
+            ? t((t) => t.workspace.deprecatedActivityLayerMigrated)
+            : t((t) => t.workspace.deprecatedVesselLayerSwitch)
+        }
+        loading={isLoading}
+        disabled={isLoading}
         onClick={onSwitchToLatestClick}
       />
     )

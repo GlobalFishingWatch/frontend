@@ -19,6 +19,10 @@ import {
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  getVesselDataviewInstanceId,
+  getVesselIdFromInstanceId,
+} from '@globalfishingwatch/dataviews-client'
 
 import { PRIVATE_ICON } from 'data/map/config'
 import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/map/dataviews'
@@ -462,20 +466,53 @@ export const getIsVesselDataviewOutdated = (
   dataview.category === DataviewCategory.Vessels &&
   !!getVesselLatestDatasetId(dataview.config.info, deprecatedDatasets, dataview.datasets)
 
-export function getLatestVesselDataviewInstance(
+// Deprecated vessels can already have the latest id (ie: pinned with old datasets in the url),
+// so the copy needs a different one to not overwrite the deprecated layer
+const getLatestVesselDataviewInstanceId = (dataview: Pick<UrlDataviewInstance, 'id'>) => {
+  const latestId = getVesselDataviewInstanceId(getVesselIdFromInstanceId(dataview.id))
+  return latestId === dataview.id ? `${latestId}-${Date.now()}` : latestId
+}
+
+// Same as getIsDataviewMigrated for activity: the copy is found by its content, not by its id
+export const getIsVesselDataviewMigrated = (
+  dataview: Pick<UrlDataviewInstance, 'id'>,
+  dataviewInstances: Pick<UrlDataviewInstance, 'id' | 'category' | 'config' | 'datasets'>[],
+  deprecatedDatasets: DatasetsMigration
+) => {
+  const vesselId = getVesselIdFromInstanceId(dataview.id)
+  return dataviewInstances.some(
+    (instance) =>
+      instance.id !== dataview.id &&
+      instance.category === DataviewCategory.Vessels &&
+      getVesselIdFromInstanceId(instance.id) === vesselId &&
+      !getIsVesselDataviewOutdated(instance, deprecatedDatasets)
+  )
+}
+
+// Same as the activity layers: the latest version is added as a new layer and the deprecated one
+// is hidden, so both can be compared before removing the deprecated one
+export function getLatestVesselDataviewInstances(
   dataview: UrlDataviewInstance,
   deprecatedDatasets: DatasetsMigration
-): Partial<UrlDataviewInstance> {
+): Partial<UrlDataviewInstance>[] {
   const { config, dataviewId } = dataview
   const getLatest = (datasetId: string) => deprecatedDatasets[datasetId] || datasetId
-  return {
-    id: dataview.id,
-    ...(dataviewId && { dataviewId: LEGACY_TO_LATEST_DATAVIEWS[dataviewId] || dataviewId }),
-    config: {
-      ...(config?.info && { info: getLatest(config.info) }),
-      ...(config?.track && { track: getLatest(config.track) }),
-      ...(config?.trackRealTime && { trackRealTime: getLatest(config.trackRealTime) }),
-      ...(config?.events?.length && { events: config.events.map(getLatest) }),
+  return [
+    {
+      id: getLatestVesselDataviewInstanceId(dataview),
+      ...(dataviewId && { dataviewId: LEGACY_TO_LATEST_DATAVIEWS[dataviewId] || dataviewId }),
+      config: {
+        visible: true,
+        ...(config?.color && { color: config.color }),
+        ...(config?.ssvid && { ssvid: config.ssvid }),
+        ...(config?.relatedVesselIds?.length && { relatedVesselIds: config.relatedVesselIds }),
+        ...(config?.filters && { filters: config.filters }),
+        ...(config?.info && { info: getLatest(config.info) }),
+        ...(config?.track && { track: getLatest(config.track) }),
+        ...(config?.trackRealTime && { trackRealTime: getLatest(config.trackRealTime) }),
+        ...(config?.events?.length && { events: config.events.map(getLatest) }),
+      },
     },
-  }
+    { id: dataview.id, config: { visible: false } },
+  ]
 }

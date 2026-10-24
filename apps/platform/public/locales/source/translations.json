@@ -1703,7 +1703,7 @@
     "deprecatedActivityLayerMigrated": "There is already a copy of this layer using the latest dataset. Click to remove this one",
     "deprecatedVesselGroupLayer": "This vessel group is using outdated data. Click to create it again with the latest dataset",
     "deprecatedVesselLayer": "This vessel is using outdated data. Click to search in the latest dataset.",
-    "deprecatedVesselLayerSwitch": "This vessel is using outdated data. Click to view in the latest dataset",
+    "deprecatedVesselLayerSwitch": "This vessel is using outdated data. Click to add a copy with the latest dataset",
     "edit": "Edit workspace",
     "editAccess": "Edit access",
     "editName": "Edit workspace name",
