@@ -82,7 +82,7 @@
     "noTimeComparisonAllowed": "Time comparison modes are not available when layers have different filters",
     "noVesselDataFiltered": "There are no vessels matching your filter",
     "onlyEvolutionSupported": "Select the evolution option above to see the vessels active in the area",
-    "others": "Other areas",
+    "others": "Others",
     "othersLayersAreReportArea": "The layers used to create this report area can't be analyzed against themselves. Turn on another polygon or point layer to see results here.",
     "periodComparison": "Period comparison",
     "periodComparison1st": "Baseline start",
@@ -995,7 +995,7 @@
     "createAccount": "Create an account",
     "getStarted": "Get started",
     "header": "Welcome",
-    "intro": "We use satellite signals and machine learning to make activity at sea visible. Pick a way in or <1>learn more</1>.",
+    "intro": "We use satellite signals and machine learning to make activity at sea visible. Choose how to start or <1>learn more</1>.",
     "login": "Log in to get the most out of the platform (free, 2 minutes)",
     "searchVessel": {
       "description": "Find one of 400,000+ vessels by name, MMSI, IMO, or callsign. See where it's been, when, and with whom.",
