@@ -125,7 +125,7 @@ function UserReports() {
                       />
                     ) : (
                       <IconButton icon="arrow-right" />
-                    )}{' '}
+                    )}
                   </Link>
                   <div>
                     <IconButton

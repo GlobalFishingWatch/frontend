@@ -136,7 +136,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
                       <Button
                         type="border-secondary"
                         size="small"
-                        icon={<Icon icon="update-required" className={styles.updateRequired} />}
+                        icon={<Icon icon="update-required" />}
                         tooltip={
                           hasDeletedDatasets
                             ? t((t) => t.workspace.deletedVesselGroupLayer)

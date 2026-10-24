@@ -126,7 +126,6 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
                         loading={loading}
                         disabled={loading}
                         tooltip={t((t) => t.workspace.updateDeprecatedDataviews)}
-                        // size="medium"
                       />
                     ) : (
                       <IconButton icon="arrow-right" />
