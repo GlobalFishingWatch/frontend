@@ -69,8 +69,8 @@ function DatasetFilterSource({
       <div className={styles.flex}>
         {showDeprecatedWarning && (
           <IconButton
-            icon="warning"
-            type="warning-invert"
+            icon="update-required"
+            type="update-required"
             loading={isMigrating}
             disabled={isMigrating}
             onClick={() => onMigrateDataviewClick(dataview)}

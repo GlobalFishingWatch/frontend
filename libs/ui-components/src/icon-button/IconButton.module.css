@@ -115,6 +115,16 @@
   background-color: var(--color-primary-blue);
 }
 
+.update-required {
+  color: var(--color-secondary-blue);
+  background-color: var(--color-help-yellow);
+}
+
+.update-required:hover,
+.update-required:focus {
+  color: var(--color-primary-blue);
+}
+
 .defaultSize {
   width: var(--size-M);
   height: var(--size-M);
