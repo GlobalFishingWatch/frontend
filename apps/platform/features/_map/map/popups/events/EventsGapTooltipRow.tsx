@@ -12,6 +12,7 @@ import { Button, Spinner } from '@globalfishingwatch/ui-components'
 import { TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
 
 import { getDatasetLabel, getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
+import { selectAllDataviews } from 'features/_map/dataviews/dataviews.slice'
 import { selectEventsDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import VesselLink from 'features/_vessels/vessel/VesselLink'
 import VesselPin from 'features/_vessels/vessel/VesselPin'
@@ -51,6 +52,12 @@ function EventsGapTooltipRow({
     ? (encounterDataview?.config?.filters?.duration?.[0] as number)
     : undefined
   const vesselConfig = { ...(!!gapSegmentThreshold && { gapSegmentThreshold }) }
+  const allDataviews = useSelector(selectAllDataviews)
+  const vesselDataviewTemplateId = allDataviews?.some(
+    (dataview) => dataview.slug === TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG
+  )
+    ? TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG
+    : undefined
   const encounterDataset = encounterDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
   const encounterVesselDatasetId = getRelatedDatasetByType(
     encounterDataset,
@@ -151,7 +158,7 @@ function EventsGapTooltipRow({
                                     vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
                                     vesselSelfReportedId: event.vessel.id,
                                   }}
-                                  dataviewTemplateId={TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG}
+                                  dataviewTemplateId={vesselDataviewTemplateId}
                                   dataviewConfig={vesselConfig}
                                   onClick={() => seeGapEventClick(event.dataset)}
                                 >
@@ -164,7 +171,7 @@ function EventsGapTooltipRow({
                                     ...event.vessel,
                                     datasetId: vesselDatasetId,
                                   }}
-                                  dataviewTemplateId={TEMPLATE_VESSEL_GAPS_DATAVIEW_SLUG}
+                                  dataviewTemplateId={vesselDataviewTemplateId}
                                   config={vesselConfig}
                                 />
                               )}
