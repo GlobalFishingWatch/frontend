@@ -1,0 +1,16 @@
+# Read by every Nx Cloud command, but only a run started with `nx-cloud start-workers`
+# distributes (today: .github/workflows/e2e-tests.yml). Other jobs keep running locally.
+dte:
+  distribute-on: 3 linux-large-pnpm
+lifecycle:
+  stop-after:
+    - test-ci
+workers:
+  # NX_* variables are forwarded automatically
+  with-env-vars:
+    - CI
+    - PLAYWRIGHT_BROWSER
+    - VITE_API_GATEWAY
+    - VITE_WORKSPACE_ENV
+    - TEST_USER_EMAIL
+    - TEST_USER_PASSWORD

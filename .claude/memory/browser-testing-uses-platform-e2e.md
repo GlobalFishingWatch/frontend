@@ -22,8 +22,10 @@ details wrong:
 - Browser matrix is env-driven (`PLAYWRIGHT_BROWSER=all|chromium,firefox|…`), 3-minute test
   timeout, 30s expect timeout, trace/screenshot/video on failure, `maxDiffPixelRatio: 0.01`,
   `snapshotPathTemplate` → `__screenshots__/`.
-- `test:local` has `dependsOn: platform:start` with `waitFor: "ready"` (Nx 24), so Nx boots the dev
-  server (port 3003) and holds Playwright until Vite listens (`nxReadySignal()` in `vite.config.ts`).
+- `test:local`, `screenshots` and every `test-ci--*` task depend on `platform:start` with
+  `waitFor: "ready"`, inferred from `webServer.command` (`pnpm nx run platform:start`). Nx boots the
+  dev server (port 3003) and holds Playwright until Vite listens (`nxReadySignal()` in `vite.config.ts`).
+  The smoke `test` target opts out (`dependsOn: []`). See [[split-e2e-directives]].
   Pass Playwright flags after `--`: `pnpm nx test:local platform-e2e -- --grep "<name>"` — a bare
   `--project` is read by Nx, not Playwright. Pick the browser with `PLAYWRIGHT_BROWSER=chromium`.
 - Existing helpers to reuse instead of rewriting: `src/helpers/hydration.ts` (SSR hydration wait),

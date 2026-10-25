@@ -16,12 +16,15 @@ const baseURL = new URL(process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:300
 // Only the smoke-test action's local-ssl-proxy setup sets this: its cert is self-signed.
 // Everywhere else a bad cert must still fail the run.
 const ignoreHTTPSErrors = process.env.PLAYWRIGHT_IGNORE_HTTPS_ERRORS === 'true'
+// Only the `screenshots` target sets this (project.json). Nx builds the graph without it, so the
+// per-file `test-ci--*` tasks never include the pixel comparisons, whose baselines are local.
+const screenshots = process.env.PLAYWRIGHT_SCREENSHOTS === 'true'
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './src',
+  testDir: screenshots ? './src/screenshots' : './src/tests',
   testMatch: /.*\.e2e\.spec\.(ts|tsx)$/,
   /* Warms the cold Vite dev server before the first test (no-op on CI). */
   globalSetup: './src/global-setup.ts',
@@ -38,7 +41,7 @@ export default defineConfig({
       maxDiffPixelRatio: 0.01,
     },
   },
-  snapshotPathTemplate: '{testDir}/{testFileDir}/__screenshots__/{arg}{ext}',
+  snapshotPathTemplate: '{testDir}/__screenshots__/{arg}{ext}',
   /* Retry on CI only */
   retries: process.env.CI ? 1 : 0,
   workers: process.env.CI ? undefined : 1,
@@ -96,15 +99,16 @@ export default defineConfig({
   })(),
 
   /*
-   * This config never starts a server. `test:local` gets the dev server from Nx
-   * (`dependsOn: platform:start` with `waitFor: "ready"`, so it is already listening). `test`
-   * runs against a server someone else started — the smoke-test image and its TLS proxy in CI —
-   * so the wait on `url` is what guards against a race there. `command` is a no-op that just
-   * idles: reuseExistingServer means it's only spawned if nothing is listening yet, and it must
-   * not exit before `url` responds or Playwright treats that as a startup failure.
+   * `command` is an `nx run` call, so the Nx Playwright plugin turns it into a real task
+   * dependency: every inferred target waits for `platform:start` to be ready (`nxReadySignal()`
+   * in its Vite config), and the split `test-ci--*` tasks can drop the dev server's inputs from
+   * their hash (`@nx-ignore-server-inputs`). Keep it a bare `nx run`, with no `env` or `wait`
+   * here, or the plugin stops inferring that. The smoke run (`test`, against the built image and
+   * its TLS proxy) opts out in project.json; there reuseExistingServer finds the image already
+   * listening on `url`, so the command never runs.
    */
   webServer: {
-    command: 'node -e "setInterval(() => {}, 60000)"',
+    command: 'pnpm nx run platform:start',
     url: baseURL,
     ignoreHTTPSErrors,
     reuseExistingServer: true,
