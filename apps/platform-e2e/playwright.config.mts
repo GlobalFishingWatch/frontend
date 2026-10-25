@@ -96,12 +96,12 @@ export default defineConfig({
   })(),
 
   /*
-   * The dev server is started by Nx's `dependsOn: platform:start` (project.json), not by this
-   * config — but that only guarantees the process was launched, not that it's accepting
-   * connections yet. `command` here is a no-op that just idles: reuseExistingServer means it's
-   * only spawned if Nx's server isn't already listening on the port, and it must not exit before
-   * `url` responds or Playwright treats that as a startup failure. Either way, the real wait
-   * happens on `url`.
+   * This config never starts a server. `test:local` gets the dev server from Nx
+   * (`dependsOn: platform:start` with `waitFor: "ready"`, so it is already listening). `test`
+   * runs against a server someone else started — the smoke-test image and its TLS proxy in CI —
+   * so the wait on `url` is what guards against a race there. `command` is a no-op that just
+   * idles: reuseExistingServer means it's only spawned if nothing is listening yet, and it must
+   * not exit before `url` responds or Playwright treats that as a startup failure.
    */
   webServer: {
     command: 'node -e "setInterval(() => {}, 60000)"',

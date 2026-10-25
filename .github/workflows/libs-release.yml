@@ -97,7 +97,7 @@ jobs:
             echo "Computing affected libs since $BASE"
             # --projects='libs/*' mirrors the release "libs" group in nx.json, so apps and
             # the workspace root never leak into the list
-            LIST=$(pnpm exec nx show projects --affected --base="$BASE" --head=HEAD \
+            LIST=$(pnpm exec nx show projects --affected -t build --base="$BASE" --head=HEAD \
               --projects='libs/*' --exclude=i18n-labels,linting --json | jq -r 'join(",")')
           fi
           echo "Releasing: ${LIST:-<none>}"

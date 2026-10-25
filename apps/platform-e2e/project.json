@@ -35,7 +35,8 @@
       "dependsOn": [
         {
           "projects": "platform",
-          "target": "start"
+          "target": "start",
+          "waitFor": "ready"
         }
       ],
       "options": {
@@ -92,11 +93,6 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "npx playwright show-report apps/platform-e2e/playwright-report"
-      }
-    },
-    "typecheck": {
-      "options": {
-        "command": "tsc --noEmit --project {projectRoot}/tsconfig.json"
       }
     }
   }

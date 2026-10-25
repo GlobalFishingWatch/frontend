@@ -3,44 +3,16 @@
   "tui": {
     "enabled": false
   },
-  "tasksRunnerOptions": {
-    "default": {
-      "options": {
-        "canTrackAnalytics": false,
-        "showUsageWarnings": true
-      }
-    }
-  },
   "plugins": [
-    {
-      "plugin": "@nx/js",
-      "options": {}
-    },
-    {
-      "plugin": "@nx/eslint/plugin",
-      "options": {
-        "targetName": "lint"
-      }
-    },
+    "@nx/eslint/plugin",
+    "@nx/js/typescript",
     {
       "plugin": "@nx/vite/plugin",
       "options": {
-        "buildTargetName": "build",
-        "serveTargetName": "serve",
-        "devTargetName": "start",
-        "previewTargetName": "preview",
-        "serveStaticTargetName": "serve-static",
-        "typecheckTargetName": "typecheck",
-        "buildDepsTargetName": "build-deps",
-        "watchDepsTargetName": "watch-deps"
+        "devTargetName": "start"
       }
     },
-    {
-      "plugin": "@nx/vitest",
-      "options": {
-        "testTargetName": "test"
-      }
-    },
+    "@nx/vitest",
     {
       "plugin": "@nx/playwright/plugin",
       "options": {
@@ -73,7 +45,7 @@
       "plugin": "@nx/playwright/plugin",
       "options": {
         "targetName": "test:local",
-        "ciTargetName": "test-ci"
+        "ciTargetName": false
       },
       "include": ["apps/platform-e2e/**/*"]
     },
@@ -81,7 +53,7 @@
       "plugin": "@nx/playwright/plugin",
       "options": {
         "targetName": "screenshots",
-        "ciTargetName": "test-ci"
+        "ciTargetName": false
       },
       "include": ["apps/platform-e2e/**/*"]
     }
@@ -105,11 +77,6 @@
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
     },
-    "@nx/vite:build": {
-      "cache": true,
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production", "envVars"]
-    },
     "dist:workers": {
       "dependsOn": ["^build"],
       "outputs": ["{projectRoot}/dist/workers"],
@@ -126,7 +93,8 @@
         "main": "{projectRoot}/src/index.ts",
         "tsConfig": "{projectRoot}/tsconfig.lib.json",
         "rootDir": "{projectRoot}/src"
-      }
+      },
+      "inputs": ["production", "^production"]
     },
     "prepare-loaders": {
       "cache": true,
@@ -135,7 +103,7 @@
     "build": {
       "cache": true,
       "dependsOn": ["^build"],
-      "inputs": ["production", "^production", "envVars"]
+      "inputs": ["production", "^production", "envVars", "{workspaceRoot}/Dockerfile"]
     },
     "typecheck": {
       "cache": true,
@@ -170,7 +138,6 @@
   "generators": {
     "@nx/react": {
       "application": {
-        "babel": true,
         "style": "css",
         "linter": "eslint",
         "bundler": "vite"
@@ -230,26 +197,21 @@
     ],
     "sharedGlobals": [
       "{workspaceRoot}/nx.json",
-      "{workspaceRoot}/babel.config.json",
-      "{workspaceRoot}/Dockerfile",
-      "{workspaceRoot}/package.json",
+      {
+        "json": "{workspaceRoot}/package.json",
+        "excludeFields": ["scripts"]
+      },
       "{workspaceRoot}/pnpm-lock.yaml",
       "{workspaceRoot}/pnpm-workspace.yaml",
       "{workspaceRoot}/tsconfig.base.json"
     ],
     "production": [
       "default",
-      "!{projectRoot}/**/*.cy.[jt]s?(x)",
-      "!{projectRoot}/.eslintrc.json",
       "!{projectRoot}/eslint.config.js",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
-      "!{projectRoot}/tsconfig.spec.json",
-      "!{projectRoot}/jest.config.[jt]s",
-      "!{projectRoot}/src/test-setup.[jt]s",
-      "!{projectRoot}/test-setup.[jt]s"
+      "!{projectRoot}/tsconfig.spec.json"
     ]
   },
   "defaultBase": "develop",
-  "nxCloudId": "",
   "analytics": false
 }

@@ -46,7 +46,7 @@ jobs:
       - name: Cache Nx computation
         uses: actions/cache@v6
         with:
-          path: .nx/cache
+          path: ~/.nx
           key: ${{ runner.os }}-nx-${{ hashFiles('pnpm-lock.yaml', 'nx.json') }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-nx-${{ hashFiles('pnpm-lock.yaml', 'nx.json') }}-
