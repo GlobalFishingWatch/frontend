@@ -8,6 +8,7 @@ import type { RootState } from 'reducers'
 type ModalId =
   | 'feedback'
   | 'vesselCorrection'
+  | 'detectionFeedback'
   | 'screenshot'
   | 'layerLibrary'
   | 'datasetUpload'
@@ -36,10 +37,15 @@ export type DatasetUploadConfig = {
   style?: DatasetUploadStyle
   fileRejected?: boolean
 }
+export type DetectionFeedbackConfig = {
+  datasetId?: string
+  detectionId?: string
+}
 
 type ModalsOpenState = {
   feedback: boolean
   vesselCorrection: boolean
+  detectionFeedback: { open: boolean } & DetectionFeedbackConfig
   screenshot: boolean
   layerLibrary: {
     open: LayerLibraryMode
@@ -59,6 +65,7 @@ type ModalsOpenState = {
 const initialState: ModalsOpenState = {
   feedback: false,
   vesselCorrection: false,
+  detectionFeedback: { open: false },
   screenshot: false,
   layerLibrary: {
     open: false,
@@ -99,6 +106,8 @@ const modals = createSlice({
         state[id].userGeometries = userGeometries
       } else if (id === 'datasetUpload') {
         state[id].open = open as boolean
+      } else if (id === 'detectionFeedback') {
+        state[id] = { open: open as boolean }
       } else if (id === 'updateVideo') {
         state[id] = open as boolean | 'withSound'
       } else {
@@ -107,6 +116,9 @@ const modals = createSlice({
     },
     setDatasetUploadConfig: (state, action: PayloadAction<DatasetUploadConfig>) => {
       state.datasetUpload = { ...state.datasetUpload, ...action.payload }
+    },
+    openDetectionFeedbackModal: (state, action: PayloadAction<DetectionFeedbackConfig>) => {
+      state.detectionFeedback = { open: true, ...action.payload }
     },
     toggleEditorMenu: (state) => {
       state.editor = !state.editor
@@ -130,6 +142,7 @@ const modals = createSlice({
 
 export const {
   closeBigQueryModal,
+  openDetectionFeedbackModal,
   setDatasetUploadConfig,
   setModalOpen,
   toggleBigQueryModal,
@@ -151,6 +164,9 @@ export const selectEditWorkspaceModalOpen = (state: RootState) => state.modals.e
 export const selectCreateWorkspaceModalOpen = (state: RootState) => state.modals.createWorkspace
 export const selectScreenshotModalOpen = (state: RootState) => state.modals.screenshot
 export const selectVesselCorrectionModalOpen = (state: RootState) => state.modals.vesselCorrection
+export const selectDetectionFeedbackModal = (state: RootState) => state.modals.detectionFeedback
+export const selectDetectionFeedbackModalOpen = (state: RootState) =>
+  state.modals.detectionFeedback.open
 export const selectEditorMenuOpen = (state: RootState) => state.modals.editor
 export const selectDownloadTrackModalOpen = (state: RootState) => state.modals.downloadTrack
 export const selectOnboardingModalOpen = (state: RootState) => state.modals.onboarding
