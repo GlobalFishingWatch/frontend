@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
+import { useRouter } from '@tanstack/react-router'
 
 import { getGuestUser, GFWAPI } from '@globalfishingwatch/api-client'
 import { trackEvent } from '@globalfishingwatch/react-hooks'
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { PATH_BASENAME } from 'data/map/config'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
@@ -110,6 +112,7 @@ export function useSettingsMessageListener() {
 
 export function useLoginPopupListener() {
   const dispatch = useAppDispatch()
+  const router = useRouter()
   const fetchWorkspace = useFetchWorkspace()
   const isAnyVesselProfileLocation = useSelector(selectIsAnyVesselLocation)
   const vesselId = useSelector(selectVesselId)
@@ -126,7 +129,9 @@ export function useLoginPopupListener() {
       )
     }
     fetchWorkspace({ workspaceId: workspaceId || '', isRefresh: workspace !== null })
+    router.invalidate({ filter: (match) => match.fullPath.startsWith(ROUTE_PATHS.API_TOKENS) })
   }, [
+    router,
     datasetId,
     dispatch,
     fetchWorkspace,

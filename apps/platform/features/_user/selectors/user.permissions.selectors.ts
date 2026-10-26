@@ -34,6 +34,18 @@ export const selectHasTMTPermission = hasUserPermission({
   action: 'read',
 })
 
+export const selectHasUserApplicationReadPermission = hasUserPermission({
+  type: 'entity',
+  value: 'user-application',
+  action: 'read',
+})
+
+export const selectHasUserApplicationCreatePermission = hasUserPermission({
+  type: 'entity',
+  value: 'user-application',
+  action: 'create',
+})
+
 export const selectHasDataviewEditPermissions = hasUserPermission({
   type: 'entity',
   value: 'dataview',

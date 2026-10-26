@@ -100,7 +100,12 @@ export const getPlatformNavSections = (t: TFunc): NavItem[] => [
     plannedTo: '/datasets-and-api',
     subsections: [
       { id: 'datasets', label: t((s) => s.nav.datasets), plannedTo: '/datasets-and-api/datasets' },
-      { id: 'api', label: t((s) => s.nav.api), plannedTo: '/datasets-and-api/api' },
+      {
+        id: 'api-docs',
+        label: t((s) => s.nav.apiDocs),
+        href: 'https://globalfishingwatch.org/our-apis/documentation/',
+      },
+      { id: 'api-tokens', label: t((s) => s.nav.apiTokens), to: ROUTE_PATHS.API_TOKENS },
       {
         id: 'data-availability',
         label: t((s) => s.nav.dataAvailability),

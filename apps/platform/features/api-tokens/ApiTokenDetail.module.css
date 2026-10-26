@@ -1,0 +1,68 @@
+.field {
+  margin: var(--space-XS) 0 var(--space-M);
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-M);
+}
+
+.buttonWithIcon {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+}
+
+.actions .deleteButton {
+  color: rgba(var(--danger-red-rgb), var(--opacity-secondary));
+  background-color: transparent;
+  border: 1px solid rgba(var(--danger-red-rgb), var(--opacity-secondary));
+}
+
+.actions .deleteButton:not(:disabled):hover,
+.actions .deleteButton:not(:disabled):focus {
+  color: var(--color-danger-red);
+  background-color: rgba(var(--danger-red-rgb), var(--opacity-border));
+  border: 1px solid rgba(var(--danger-red-rgb), var(--opacity-secondary));
+}
+
+.tokenHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-XS);
+  margin-bottom: var(--space-XS);
+}
+
+.label {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  text-transform: uppercase;
+  margin-right: var(--space-XS);
+}
+
+.token {
+  display: block;
+  padding: var(--space-S) var(--space-M);
+  border-radius: var(--border-radius-0);
+  border: var(--border);
+  background: var(--color-terthiary-blue);
+  word-break: break-all;
+  overflow: hidden;
+}
+
+.hidden {
+  filter: blur(0.5rem);
+  user-select: none;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.error {
+  margin-top: var(--space-S);
+  color: var(--color-danger-red);
+}

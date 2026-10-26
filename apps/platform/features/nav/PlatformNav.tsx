@@ -258,7 +258,9 @@ function PlatformNav() {
           }}
         >
           <div
-            className={cx(styles.tab, { [styles.current]: isItemActive(section) })}
+            className={cx(styles.tab, {
+              [styles.current]: isItemActive(section) || section.id === routeSectionId,
+            })}
             data-testid={`link-${section.id}`}
           >
             {isRouted(section) ? (
