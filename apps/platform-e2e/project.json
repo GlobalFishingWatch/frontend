@@ -8,9 +8,7 @@
   "targets": {
     "test": {
       "cache": false,
-      "options": {
-        "grep": "^(?!.*Screenshot comparison).*"
-      },
+      "dependsOn": [],
       "configurations": {
         "smoke": {
           "grep": "@smoke",
@@ -32,16 +30,6 @@
     "test:local": {
       "cache": false,
       "parallelism": true,
-      "dependsOn": [
-        {
-          "projects": "platform",
-          "target": "start",
-          "waitFor": "ready"
-        }
-      ],
-      "options": {
-        "grep": "^(?!.*Screenshot comparison).*"
-      },
       "configurations": {
         "ui": {
           "ui": true
@@ -69,9 +57,11 @@
     "screenshots": {
       "cache": false,
       "options": {
-        "args": "src/screenshots/",
         "project": "chromium",
-        "workers": 2
+        "workers": 2,
+        "env": {
+          "PLAYWRIGHT_SCREENSHOTS": "true"
+        }
       },
       "configurations": {
         "update": {

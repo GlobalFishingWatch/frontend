@@ -85,6 +85,13 @@ The watcher also used to retrigger itself: `--with-types` writes `features/i18n/
 which the `features/**/*.ts` input glob matched. `'**/*.d.ts'` is in `extract.ignore` for that
 reason.
 
+**Pinned to 1.80.3, not 1.80.4** (checked 2026-10-25). 1.80.4 rewrites the nested `"": "Unknown"`
+entries under `vessel.gearTypes` / `vessel.vesselTypes` as top-level flat keys
+`"vessel.gearTypes."`. Before moving past 1.80.3, run `i18next-cli extract` on a clean tree.
+`git diff public/locales/source` must be empty. 1.75+ already reads `count` passed to
+`t((t) => t.common[unit], …)`, which is why `hours_one` / `hours_other` replaced the plain `hours`
+key at that upgrade.
+
 ## Corollary for the nx targets
 
 `i18n` and `i18n:extract` declare **no** `outputs` covering `public/locales`.

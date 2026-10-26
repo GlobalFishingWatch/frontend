@@ -80,6 +80,7 @@
     "dist:workers": {
       "dependsOn": ["^build"],
       "outputs": ["{projectRoot}/dist/workers"],
+      "inputs": ["default", "^default", { "externalDependencies": ["esbuild"] }],
       "cache": true
     },
     "@nx/js:tsc": {
@@ -103,11 +104,18 @@
     "build": {
       "cache": true,
       "dependsOn": ["^build"],
-      "inputs": ["production", "^production", "envVars", "{workspaceRoot}/Dockerfile"]
+      "inputs": [
+        "production",
+        "^production",
+        "envVars",
+        "{workspaceRoot}/Dockerfile",
+        { "externalDependencies": ["vite"] }
+      ]
     },
     "typecheck": {
       "cache": true,
       "executor": "nx:run-commands",
+      "dependsOn": ["proto:generate", "^proto:generate"],
       "inputs": [
         "default",
         "^default",
@@ -199,9 +207,8 @@
       "{workspaceRoot}/nx.json",
       {
         "json": "{workspaceRoot}/package.json",
-        "excludeFields": ["scripts"]
+        "excludeFields": ["scripts", "dependencies", "devDependencies"]
       },
-      "{workspaceRoot}/pnpm-lock.yaml",
       "{workspaceRoot}/pnpm-workspace.yaml",
       "{workspaceRoot}/tsconfig.base.json"
     ],
@@ -211,6 +218,11 @@
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
       "!{projectRoot}/tsconfig.spec.json"
     ]
+  },
+  "pluginsConfig": {
+    "@nx/js": {
+      "projectsAffectedByDependencyUpdates": "auto"
+    }
   },
   "defaultBase": "develop",
   "analytics": false

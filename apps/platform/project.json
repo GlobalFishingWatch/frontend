@@ -11,22 +11,19 @@
       "!{projectRoot}/**/*.test.{js,jsx,ts,tsx}",
       "!{projectRoot}/**/*.spec.{js,jsx,ts,tsx}",
       "!{projectRoot}/**/test-results/**",
-      "!{projectRoot}/**/__traces__/**"
+      "!{projectRoot}/**/__traces__/**",
+      { "externalDependencies": ["i18next-cli"] }
     ]
   },
   "targets": {
-    "prepare-start": {
-      "executor": "nx:run-commands",
-      "dependsOn": ["prepare-loaders", "i18n-labels:serve"],
-      "continuous": true,
-      "options": {
-        "command": "nx run platform:i18n:watch"
-      }
-    },
     "prepare-loaders": {
       "executor": "nx:run-commands",
       "dependsOn": ["deck-loaders:dist:workers"],
-      "inputs": ["default", "{workspaceRoot}/libs/deck-loaders/dist/workers/*.js"],
+      "inputs": [
+        "default",
+        "{workspaceRoot}/libs/deck-loaders/dist/workers/*.js",
+        { "externalDependencies": ["shx"] }
+      ],
       "outputs": ["{projectRoot}/public/workers"],
       "ultracache": { "mode": "warn" },
       "options": {
@@ -47,7 +44,8 @@
         "{workspaceRoot}/libs/*/package.json",
         "{projectRoot}/config/**/*",
         "{workspaceRoot}/tsconfig.base.json",
-        "{workspaceRoot}/apps/tsconfig.apps.base.json"
+        "{workspaceRoot}/apps/tsconfig.apps.base.json",
+        { "externalDependencies": ["typescript"] }
       ],
       "outputs": [],
       "ultracache": { "mode": "warn" },
@@ -83,7 +81,11 @@
     "i18n:types": {
       "executor": "nx:run-commands",
       "cache": true,
-      "inputs": ["{projectRoot}/public/locales/source/*.json", "{projectRoot}/i18next.config.ts"],
+      "inputs": [
+        "{projectRoot}/public/locales/source/*.json",
+        "{projectRoot}/i18next.config.ts",
+        { "externalDependencies": ["i18next-cli"] }
+      ],
       "outputs": ["{projectRoot}/features/i18n/i18n.types.d.ts"],
       "options": {
         "command": "i18next-cli types",
@@ -118,6 +120,7 @@
     "i18n:watch": {
       "executor": "nx:run-commands",
       "continuous": true,
+      "readyWhen": { "logMatches": "Watching for changes" },
       "options": {
         "command": "i18next-cli types && i18next-cli extract --watch --with-types",
         "cwd": "apps/platform",
@@ -125,7 +128,11 @@
       }
     },
     "start": {
-      "dependsOn": ["prepare-start"],
+      "dependsOn": [
+        "prepare-loaders",
+        "i18n-labels:serve",
+        { "target": "i18n:watch", "waitFor": "ready" }
+      ],
       "defaultConfiguration": "development",
       "options": {
         "port": 3003
@@ -175,7 +182,7 @@
     "build:app": {
       "executor": "nx:run-commands",
       "cache": true,
-      "inputs": ["production", "^production", "envVars"],
+      "inputs": ["production", "^production", "envVars", { "externalDependencies": ["vite"] }],
       "outputs": ["{projectRoot}/dist", "{projectRoot}/.output"],
       "defaultConfiguration": "production",
       "dependsOn": ["^build", "prepare-loaders"],
@@ -305,7 +312,7 @@
     },
     "typecheck": {
       "executor": "nx:run-commands",
-      "dependsOn": ["i18n:types"],
+      "dependsOn": ["i18n:types", "^proto:generate"],
       "options": {
         "command": "tsc --noEmit --project  apps/platform/tsconfig.typecheck.json"
       }

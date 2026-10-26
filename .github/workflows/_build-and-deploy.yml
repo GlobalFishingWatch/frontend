@@ -69,16 +69,27 @@ jobs:
         if: inputs.apps == ''
         uses: actions/checkout@v7
         with:
-          fetch-depth: 2
+          fetch-depth: 0 # nx-set-shas walks back to the last successful run
+          filter: tree:0
 
-      # Branch pushes deploy every app the push touched
+      # Base is the last commit this workflow deployed successfully, not HEAD~1, so the
+      # changes of a failed or cancelled run (concurrency cancels in-progress pushes) are
+      # deployed by the next push instead of being skipped. Needs `actions: read`.
+      - name: Resolve affected range
+        id: shas
+        if: inputs.apps == '' && inputs.release-tag == ''
+        uses: nrwl/nx-set-shas@v5
+        with:
+          main-branch-name: ${{ github.ref_name }}
+
+      # Branch pushes deploy every app affected since the last successful deploy
       - name: Detect affected apps
         id: affected
         if: inputs.apps == '' && inputs.release-tag == ''
         uses: ./.github/actions/detect-affected
         with:
-          base: origin/${{ github.ref_name }}~1
-          head: HEAD
+          base: ${{ steps.shas.outputs.base }}
+          head: ${{ steps.shas.outputs.head }}
 
       # Releases deploy the single app named in the tag. Libs release into the
       # same @gfw/<project>@<version> namespace, so a name with no entry in the

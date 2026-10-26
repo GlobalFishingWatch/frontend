@@ -19,7 +19,7 @@ Every `libs/*/package.json` export carries three conditions:
 { "types": "./dist/index.d.ts", "development": "./src/index.ts", "default": "./dist/index.js" }
 ```
 
-Vite matches `development` in dev only; build, nitro, node and tsc still get `dist`. `watch-deps` was deleted from the app's `prepare-start`. Dev serves lib src with HMR and no lib rebuilds.
+Vite matches `development` in dev only; build, nitro, node and tsc still get `dist`. `watch-deps` was deleted from the dependencies of `platform:start` (then a `prepare-start` target, removed 2026-10-25). Dev serves lib src with HMR and no lib rebuilds.
 
 Do **not** reintroduce an `nx watch → dist` loop, and do **not** restore src `paths` overrides in the app tsconfig.
 
@@ -42,8 +42,14 @@ Runtime resolution is unchanged: build, nitro and node still get `dist` via `def
 
 Consequences:
 
-- `platform:typecheck` and `prepare-start` no longer declare `^build`. Cold `nx run platform:typecheck` went **21.2s → 6.9s** (18 tasks → 2) because 13 lib builds are no longer prerequisites.
-- The old `types-watch` (`nx watch → dist`) was removed from `prepare-start`. With `development` exports, rebuilding `dist` on every lib edit does nothing useful for Vite or the IDE; switching it to `typecheck` would only burn CPU.
+- `platform:typecheck` and the dependencies of `start` no longer declare `^build`. Cold `nx run platform:typecheck` went **21.2s → 6.9s** (18 tasks → 2) because 13 lib builds are no longer prerequisites.
+  - Since 2026-10-25 every `typecheck` also depends on `proto:generate` and `^proto:generate`
+    (5 tasks for platform: + `api-types:build`, which `proto:generate` needs). Reading lib
+    _source_ means reading the gitignored `*.gen.js` / `*.gen.d.ts` protobuf decoders in
+    `api-client` and `deck-loaders`. Without the dependency, typecheck failed on a fresh
+    clone. It also failed intermittently when `proto:generate` rewrote those files mid-read. A
+    cached pass hid both cases, because the gitignored files are not in the typecheck inputs.
+- The old `types-watch` (`nx watch → dist`) was removed from the dependencies of `start`. With `development` exports, rebuilding `dist` on every lib edit does nothing useful for Vite or the IDE; switching it to `typecheck` would only burn CPU.
 - `platform:build` **keeps** `^build` — production resolves `default` → `dist`.
 - Go-to-definition lands in lib source instead of generated `.d.ts`.
 

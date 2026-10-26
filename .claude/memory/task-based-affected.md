@@ -34,4 +34,34 @@ redeployed every dependent app and republished libs with no runtime change.
 - The Nx cache lives in `~/.nx/<workspace-hash>/cache` since Nx 23.2, not `.nx/cache`. The
   `integration-tests.yml` cache step points at `~/.nx`.
 
+## Dependency bumps select only the projects that use the package (since 2026-10-25)
+
+`nx.json` sets `pluginsConfig["@nx/js"].projectsAffectedByDependencyUpdates: "auto"`, and
+`sharedGlobals` no longer lists `pnpm-lock.yaml` or the root `dependencies` /
+`devDependencies`. Measured on 2026-10-25 against real commits: the `@reduxjs/toolkit` bump
+(`15e44937e9`) went from all 22 projects to the 11 build tasks that use it.
+
+All three parts are required. With the lockfile or the full `package.json` in `sharedGlobals`, every
+task reads the changed file and `auto` changes nothing.
+
+**`nx:run-commands` tasks hash every npm package unless their inputs name the tool.** `--explain`
+reports this as `external-dependencies` (for example, `api-portal:build` on the redux bump). So
+each such task in a deploy path carries `{ "externalDependencies": [...] }` for the binary it runs:
+the `build` target default (`vite`), `dist:workers` (`esbuild`), and platform's `build:app`,
+`prepare-loaders`, `check-load-boundaries` and `i18nSources` / `i18n:types`. Packages the project
+imports, including those in its config files, are hashed through the project graph anyway.
+
+**How to apply:** when adding a run-commands target that feeds `build`, declare its tool in
+`externalDependencies`. Without it, every lockfile change redeploys the app. Confirm with
+`nx show projects --affected -t build --base=<sha>~1 --head=<sha> --explain=stdout` on a past bump
+commit. Every reason should be `npm-package:<name>`.
+
+## The deploy base is the last successful run, not `HEAD~1`
+
+`_build-and-deploy.yml` resolves the range with `nrwl/nx-set-shas@v5`
+(`main-branch-name: ${{ github.ref_name }}`, full-history checkout). The callers grant
+`actions: read` so the action can list past runs. `concurrency.cancel-in-progress` cancels a push
+that a newer push overtakes. With the old `origin/<branch>~1` base, the cancelled push's apps
+were never deployed. The same happened to the apps of a failed run. Now the next run that succeeds covers them.
+
 See [[lib-build-target-name]] for the `build` target naming these commands rely on.

@@ -25,9 +25,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
         with:
-          fetch-depth: 100
-      - name: Fetch base branch
-        run: git fetch origin ${{ github.event.pull_request.base.ref }} --depth=100
+          # Full history so nx affected always finds the merge base with the PR's base branch
+          fetch-depth: 0
+          filter: tree:0
 
       # --- Setting up dependencies and cache ---------------------------------
 
