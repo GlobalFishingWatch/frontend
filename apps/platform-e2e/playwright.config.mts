@@ -101,11 +101,10 @@ export default defineConfig({
   /*
    * `command` is an `nx run` call, so the Nx Playwright plugin turns it into a real task
    * dependency: every inferred target waits for `platform:start` to be ready (`nxReadySignal()`
-   * in its Vite config), and the split `test-ci--*` tasks can drop the dev server's inputs from
-   * their hash (`@nx-ignore-server-inputs`). Keep it a bare `nx run`, with no `env` or `wait`
-   * here, or the plugin stops inferring that. The smoke run (`test`, against the built image and
-   * its TLS proxy) opts out in project.json; there reuseExistingServer finds the image already
-   * listening on `url`, so the command never runs.
+   * in its Vite config). Keep it a bare `nx run`, with no `env` or `wait` here, or the plugin
+   * stops inferring that. The smoke run (`test`, against the built image and its TLS proxy) opts
+   * out in project.json; there reuseExistingServer finds the image already listening on `url`, so
+   * the command never runs.
    */
   webServer: {
     command: 'pnpm nx run platform:start',
@@ -113,5 +112,13 @@ export default defineConfig({
     ignoreHTTPSErrors,
     reuseExistingServer: true,
     timeout: 120 * 1000,
+    // Playwright ignores the server's stdout by default, which hides Nx's task lines and Vite's
+    // startup: only the stderr spinners showed, then nothing until the first test.
+    stdout: 'pipe',
+    // Without this Playwright SIGKILLs the command's process group, so Nx never stops its
+    // continuous tasks: they run outside that group and Vite kept listening on 3003 (plus the
+    // i18n watcher) after the run. SIGINT is Nx's Ctrl-C path: it stops them silently, while
+    // SIGTERM also works but prints every task as failed. SIGKILL after 10s if Nx hangs.
+    gracefulShutdown: { signal: 'SIGINT', timeout: 10_000 },
   },
 })
