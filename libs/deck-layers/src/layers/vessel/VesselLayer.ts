@@ -6,7 +6,7 @@ import type { Position } from 'geojson'
 import { extent } from 'simple-statistics'
 
 import type { ThinningLevels } from '@globalfishingwatch/api-client'
-import { THINNING_LEVELS } from '@globalfishingwatch/api-client'
+import { getIsRateLimitExceeded, THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import type { EventTypes } from '@globalfishingwatch/api-types'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { type Bbox, getUTCDateTime } from '@globalfishingwatch/data-transforms'
@@ -65,6 +65,10 @@ export type VesselLayerProps = DeckLayerProps<
 type VesselLayerState = {
   errors: {
     [key in EventTypes | 'track']?: string
+  }
+  // Bumped per sublayer type by reloadErroredSublayers, part of the chunk ids so deck refetches them
+  reloads?: {
+    [key in EventTypes | 'track']?: number
   }
   highlightedFeatures: DeckLayerPickingObject[]
   highlightStartTime?: number
@@ -317,7 +321,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       // Only the on/off state is part of the identity: the gap value is applied at render time
       // (shader uniform + segment helper), so changing it must not trigger a reparse/reload.
       const computeGaps = Boolean(gapSegmentThreshold)
-      const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}-${computeGaps ? 'gaps' : ''}`
+      const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}-${computeGaps ? 'gaps' : ''}${this._getReloadSuffix('track')}`
       return new VesselTrackLayer(
         this.getSubLayerProps({
           id: chunkId,
@@ -384,7 +388,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         return []
       }
       return chunks.flatMap(({ start, end }) => {
-        const chunkId = `${this.props.id}-${EVENT_LAYER_TYPE}-${type}-${datasetId}-${start}-${end}`
+        const chunkId = `${this.props.id}-${EVENT_LAYER_TYPE}-${type}-${datasetId}-${start}-${end}${this._getReloadSuffix(type)}`
         const eventUrl = new URL(url as string)
         eventUrl.searchParams.append('start-date', start as string)
         eventUrl.searchParams.append('end-date', end as string)
@@ -673,6 +677,32 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       return Object.entries(this.state.errors).some(([key, value]) => key !== 'track' && value)
     }
     return this.state.errors?.[type] !== undefined
+  }
+
+  getVesselLayersRateLimited(): boolean {
+    return Object.values(this.state?.errors ?? {}).some((value) => {
+      const error = value as unknown as { status?: number; cause?: { status?: number } } | undefined
+      return getIsRateLimitExceeded({ status: error?.status ?? error?.cause?.status })
+    })
+  }
+
+  reloadErroredSublayers() {
+    const { errors, reloads = {} } = this.state
+    const erroredTypes = Object.keys(errors) as (EventTypes | 'track')[]
+    if (erroredTypes.length) {
+      this.setState({
+        errors: {},
+        reloads: {
+          ...reloads,
+          ...Object.fromEntries(erroredTypes.map((type) => [type, (reloads[type] ?? 0) + 1])),
+        },
+      })
+    }
+  }
+
+  private _getReloadSuffix(type: EventTypes | 'track') {
+    const reload = this.state?.reloads?.[type]
+    return reload ? `-reload-${reload}` : ''
   }
 
   getAllSublayersLoaded() {
