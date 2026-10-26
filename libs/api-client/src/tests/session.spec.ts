@@ -343,10 +343,8 @@ describe('GFW_API_CLASS', () => {
 
       await client.logout()
 
-      expect(logSpy).toHaveBeenCalledWith('GFWAPI: logout — gateway OK')
-      expect(logSpy).toHaveBeenCalledWith(
-        'GFWAPI: invalidateClientSession — clearing local session'
-      )
+      expect(logSpy).toHaveBeenCalledWith('[auth] logout — gateway OK')
+      expect(logSpy).toHaveBeenCalledWith('[auth] invalidateClientSession — clearing local session')
       logSpy.mockRestore()
       warnSpy.mockRestore()
     })

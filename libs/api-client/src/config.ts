@@ -19,8 +19,22 @@ export const API_VERSION =
   getEnv('NEXT_PUBLIC_API_VERSION') ||
   'v3'
 
-export const DEBUG_API_REQUESTS: boolean =
-  getEnv('DEBUG_API_REQUESTS') === 'true' || getEnv('VITE_DEBUG_API_REQUESTS') === 'true'
+/**
+ * true logs every scope, a scope name logs only that one:
+ * 'request' fetches, retries and errors,
+ * 'auth' tokens/refresh/login/logout/session ("[auth]"),
+ * 'rate-limit' the rate limit + Turnstile trace ("[rate-limit]")
+ */
+export type DebugMode = boolean | 'request' | 'auth' | 'rate-limit'
+
+const DEBUG_SCOPES: string[] = ['request', 'auth', 'rate-limit']
+
+const parseDebugMode = (value?: string): DebugMode =>
+  value === 'true' ? true : value && DEBUG_SCOPES.includes(value) ? (value as DebugMode) : false
+
+export const DEBUG_API_REQUESTS: DebugMode = parseDebugMode(
+  getEnv('DEBUG_API_REQUESTS') ?? getEnv('VITE_DEBUG_API_REQUESTS')
+)
 
 export const AUTH_PATH = 'auth'
 export const REGISTER_PATH = 'registration'

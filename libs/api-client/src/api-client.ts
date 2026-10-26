@@ -33,6 +33,7 @@ import {
   API_VERSION,
   AUTH_PATH,
   DEBUG_API_REQUESTS,
+  type DebugMode,
   GUEST_USER_TYPE,
   LOGOUT_SESSION_PATH,
   RATE_LIMIT_CHALLENGE_THRESHOLD,
@@ -81,8 +82,9 @@ export type SessionInvalidateStrategy = () => void | Promise<unknown>
 
 export type RequestStatus = 'idle' | 'refreshingToken' | 'logging' | 'downloading'
 export type RateLimitChallengeState = 'idle' | 'solving' | 'interactive' | 'failed'
+
 export class GFW_API_CLASS {
-  debug: boolean
+  debug: DebugMode
   apiVersion: ApiVersion
   baseUrl: string
   storageKeys: {
@@ -131,41 +133,59 @@ export class GFW_API_CLASS {
     this.refreshTokenStorage = createLocalStorageTokenStorage(refreshTokenStorageKey)
     this.logging = null
 
-    if (debug) {
+    if (this.isDebugging('request')) {
       console.log('GFWAPI: GFW API Client initialized with the following config', this.getConfig())
     }
   }
 
+  private isDebugging(scope: Exclude<DebugMode, boolean>) {
+    return this.debug === true || this.debug === scope
+  }
+
   private debugLog(...args: unknown[]) {
-    if (this.debug) {
+    if (this.isDebugging('request')) {
       console.log(...args)
     }
   }
 
   private debugWarn(...args: unknown[]) {
-    if (this.debug) {
+    if (this.isDebugging('request')) {
       console.warn(...args)
     }
   }
 
   // Arrow function so it can be handed to the Turnstile helpers; filter the console by "[rate-limit]"
+  /** Token storage, refresh, login, logout and session logs; filter the console by "[auth]" */
+  private debugAuth(message: string, data?: unknown) {
+    if (this.isDebugging('auth')) {
+      console.log(`[auth] ${message}`, ...(data !== undefined ? [data] : []))
+    }
+  }
+
+  private debugAuthWarn(message: string, data?: unknown) {
+    if (this.isDebugging('auth')) {
+      console.warn(`[auth] ${message}`, ...(data !== undefined ? [data] : []))
+    }
+  }
+
   private debugRateLimit = (message: string, data?: Record<string, unknown>) => {
-    if (this.debug) {
+    if (this.isDebugging('rate-limit')) {
       console.log(`[rate-limit] ${message}`, ...(data ? [data] : []))
     }
   }
 
   private debugAuthState(label: string) {
-    if (!this.debug) return
-    this.debugLog(`GFWAPI: ${label}`, {
-      hasAccessToken: Boolean(this.token),
-      hasLocalRefreshToken: Boolean(this.refreshToken),
-      hasRefreshStrategy: Boolean(this.refreshStrategy),
-      hasSessionInvalidateStrategy: Boolean(this.sessionInvalidateStrategy),
-      status: this.status,
-      loginInProgress: Boolean(this.logging),
-      refreshInProgress: Boolean(this.refreshingToken),
-    })
+    if (this.isDebugging('auth')) {
+      this.debugAuth(label, {
+        hasAccessToken: Boolean(this.token),
+        hasLocalRefreshToken: Boolean(this.refreshToken),
+        hasRefreshStrategy: Boolean(this.refreshStrategy),
+        hasSessionInvalidateStrategy: Boolean(this.sessionInvalidateStrategy),
+        status: this.status,
+        loginInProgress: Boolean(this.logging),
+        refreshInProgress: Boolean(this.refreshingToken),
+      })
+    }
   }
 
   configure({
@@ -181,7 +201,7 @@ export class GFW_API_CLASS {
     refreshStrategy?: RefreshStrategy
     sessionInvalidateStrategy?: SessionInvalidateStrategy
     defaultHeaders?: HeadersInit
-    debug?: boolean
+    debug?: DebugMode
   } = {}) {
     if (debug !== undefined) {
       this.debug = debug
@@ -202,7 +222,7 @@ export class GFW_API_CLASS {
     if (defaultHeaders) {
       this.defaultHeaders = defaultHeaders
     }
-    if (this.debug) {
+    if (this.isDebugging('request')) {
       this.debugLog('GFWAPI: configure()', {
         baseUrl: Boolean(baseUrl),
         tokenStorage: Boolean(tokenStorage),
@@ -212,25 +232,22 @@ export class GFW_API_CLASS {
     }
   }
 
-  /** DOM node where the Turnstile widget renders, without it rate limited requests just reject with 429 */
   setRateLimitChallengeContainer(container: HTMLElement) {
-    if (container === this.rateLimitChallengeContainer) return
-    this.rateLimitChallengeContainer = container
-    this.debugRateLimit('challenge container set', {
-      mockLimit: RATE_LIMIT_MOCK_LIMIT || 'off',
-      threshold: RATE_LIMIT_CHALLENGE_THRESHOLD,
-      resetUrl: RATE_LIMIT_RESET_URL || `/${AUTH_PATH}/${RATE_LIMIT_RESET_PATH}`,
-    })
-    // A challenge running in the previous container may never finish there, start it again here.
-    // In 'failed' nothing is running: the overlay already offers retry, which uses this container
-    if (this.rateLimitReset && this.rateLimitChallengeState !== 'failed') {
-      this.debugRateLimit('challenge moved to the new container')
-      this.invalidateRateLimitChallengeAttempt()
-      this.runRateLimitChallengeAttempt(container)
+    if (container !== this.rateLimitChallengeContainer) {
+      this.rateLimitChallengeContainer = container
+      this.debugRateLimit('challenge container set', {
+        limit: RATE_LIMIT_MOCK_LIMIT || 'off',
+        threshold: RATE_LIMIT_CHALLENGE_THRESHOLD,
+        resetUrl: RATE_LIMIT_RESET_URL || `/${AUTH_PATH}/${RATE_LIMIT_RESET_PATH}`,
+      })
+      if (this.rateLimitReset && this.rateLimitChallengeState !== 'failed') {
+        this.debugRateLimit('challenge moved to the new container')
+        this.invalidateRateLimitChallengeAttempt()
+        this.runRateLimitChallengeAttempt(container)
+      }
     }
   }
 
-  /** Only the container currently in use can be cleared, so a replaced one unmounting is a no-op */
   clearRateLimitChallengeContainer(container: HTMLElement) {
     if (container !== this.rateLimitChallengeContainer) {
       this.debugRateLimit('challenge container clear ignored, another container took over')
@@ -253,7 +270,6 @@ export class GFW_API_CLASS {
     this.rateLimitChallengeAttempt = null
   }
 
-  // Arrow functions so they can be passed unbound to React's useSyncExternalStore
   subscribeRateLimitChallenge = (listener: () => void) => {
     this.rateLimitChallengeListeners.add(listener)
     return () => {
@@ -263,7 +279,6 @@ export class GFW_API_CLASS {
 
   getRateLimitChallengeState = () => this.rateLimitChallengeState
 
-  /** Called on every successful reset, so requests that failed with 429 can be refetched */
   onRateLimitReset = (listener: () => void) => {
     this.rateLimitResetListeners.add(listener)
     return () => {
@@ -271,7 +286,6 @@ export class GFW_API_CLASS {
     }
   }
 
-  /** Starts the challenge on demand, e.g. from a layer that failed after the user cancelled */
   startRateLimitChallenge = () => {
     this.rateLimitChallengeCancelled = false
     this.debugRateLimit('challenge requested by the user')
@@ -284,7 +298,6 @@ export class GFW_API_CLASS {
     this.rateLimitChallengeListeners.forEach((listener) => listener())
   }
 
-  /** One reset shared by every caller: solve Turnstile, then send the token to the API to reset the counter */
   private ensureRateLimitChallenge(): Promise<void> {
     const container = this.rateLimitChallengeContainer
     if (!container) {
@@ -297,16 +310,18 @@ export class GFW_API_CLASS {
     }
     this.debugRateLimit('challenge started')
     this.rateLimitReset = Promise.withResolvers<void>()
-    // Nobody may be waiting on a background challenge, don't report its cancellation as unhandled
     this.rateLimitReset.promise.catch(() => {})
     this.runRateLimitChallengeAttempt(container)
     return this.rateLimitReset.promise
   }
 
   private runRateLimitChallengeAttempt(container: HTMLElement) {
-    if (this.rateLimitChallengeAttempt) return
+    if (this.rateLimitChallengeAttempt) {
+      return
+    }
     const attemptId = ++this.rateLimitChallengeAttemptId
     const isStale = () => attemptId !== this.rateLimitChallengeAttemptId
+
     this.setRateLimitChallengeState('solving')
     this.rateLimitChallengeAttempt = (async () => {
       try {
@@ -328,7 +343,10 @@ export class GFW_API_CLASS {
         if (isStale()) return
         this.rateLimitMockRemaining = RATE_LIMIT_MOCK_LIMIT
         this.rateLimitChallengeCancelled = false
-        this.debugRateLimit('reset succeeded', { status: response.status, ...parseRateLimit(response) })
+        this.debugRateLimit('reset succeeded', {
+          status: response.status,
+          ...parseRateLimit(response),
+        })
         this.rateLimitReset?.resolve()
         this.rateLimitReset = null
         this.setRateLimitChallengeState('idle')
@@ -352,21 +370,22 @@ export class GFW_API_CLASS {
     })()
   }
 
-  /** Runs the challenge again after a failure, parked requests keep waiting */
   retryRateLimitChallenge = () => {
-    if (this.rateLimitChallengeState !== 'failed' || !this.rateLimitChallengeContainer) return
-    this.debugRateLimit('challenge retried by the user')
-    this.runRateLimitChallengeAttempt(this.rateLimitChallengeContainer)
+    if (this.rateLimitChallengeState === 'failed' && this.rateLimitChallengeContainer) {
+      this.debugRateLimit('challenge retried by the user')
+      this.runRateLimitChallengeAttempt(this.rateLimitChallengeContainer)
+    }
   }
 
   /** Gives up after a failure: parked requests reject with their original 429 */
   cancelRateLimitChallenge = () => {
-    if (this.rateLimitChallengeState !== 'failed') return
-    this.debugRateLimit('challenge cancelled by the user')
-    this.rateLimitChallengeCancelled = true
-    this.rateLimitReset?.reject(new Error('GFWAPI: rate limit challenge cancelled'))
-    this.rateLimitReset = null
-    this.setRateLimitChallengeState('idle')
+    if (this.rateLimitChallengeState === 'failed') {
+      this.debugRateLimit('challenge cancelled by the user')
+      this.rateLimitChallengeCancelled = true
+      this.rateLimitReset?.reject(new Error('GFWAPI: rate limit challenge cancelled'))
+      this.rateLimitReset = null
+      this.setRateLimitChallengeState('idle')
+    }
   }
 
   private trackRateLimit(url: string, response: Response) {
@@ -429,8 +448,8 @@ export class GFW_API_CLASS {
   }
 
   private invalidateClientSession() {
-    if (this.debug) {
-      this.debugLog('GFWAPI: invalidateClientSession — clearing local session')
+    if (this.isDebugging('auth')) {
+      this.debugAuth('invalidateClientSession — clearing local session')
     }
     this.token = ''
     this.refreshToken = ''
@@ -443,8 +462,8 @@ export class GFW_API_CLASS {
 
   private set token(token: string) {
     this.accessTokenStorage.set(token)
-    if (this.debug) {
-      this.debugLog('GFWAPI: updated token with', token)
+    if (this.isDebugging('auth')) {
+      this.debugAuth('updated token with', token)
     }
   }
 
@@ -459,8 +478,8 @@ export class GFW_API_CLASS {
     if (!this.refreshStrategy) {
       this.refreshTokenStorage.set(refreshToken)
     }
-    if (this.debug) {
-      this.debugLog('GFWAPI: updated refreshToken with', refreshToken)
+    if (this.isDebugging('auth')) {
+      this.debugAuth('updated refreshToken with', refreshToken)
     }
   }
 
@@ -539,8 +558,8 @@ export class GFW_API_CLASS {
   }
 
   exchangeAccessToken(accessToken: string, headers: HeadersInit = {}): Promise<UserTokens> {
-    if (this.debug) {
-      this.debugLog('GFWAPI: exchangeAccessToken')
+    if (this.isDebugging('auth')) {
+      this.debugAuth('exchangeAccessToken')
     }
     return fetch(
       this.generateUrl(`/${AUTH_PATH}/tokens?access-token=${accessToken}`, { absolute: true }),
@@ -553,8 +572,8 @@ export class GFW_API_CLASS {
   }
 
   reloadTokens(refreshToken: string, headers: HeadersInit = {}): Promise<UserTokens> {
-    if (this.debug) {
-      this.debugLog('GFWAPI: reloadTokens', { hasRefreshToken: Boolean(refreshToken) })
+    if (this.isDebugging('auth')) {
+      this.debugAuth('reloadTokens', { hasRefreshToken: Boolean(refreshToken) })
     }
     return fetch(this.generateUrl(`/${AUTH_PATH}/tokens/reload`, { absolute: true }), {
       headers: { ...headers, 'refresh-token': refreshToken },
@@ -564,8 +583,8 @@ export class GFW_API_CLASS {
   }
 
   revokeRefreshToken(refreshToken: string, headers: HeadersInit = {}): Promise<Response> {
-    if (this.debug) {
-      this.debugLog('GFWAPI: revokeRefreshToken', { hasRefreshToken: Boolean(refreshToken) })
+    if (this.isDebugging('auth')) {
+      this.debugAuth('revokeRefreshToken', { hasRefreshToken: Boolean(refreshToken) })
     }
     return fetch(this.generateUrl(`/${AUTH_PATH}/logout`, { absolute: true }), {
       headers: { ...headers, 'refresh-token': refreshToken },
@@ -581,11 +600,11 @@ export class GFW_API_CLASS {
       return refreshResponse
     } catch (e: any) {
       if (isTransientError(e) && reloadRetries < this.maxReloadRetries) {
-        this.debugLog(`GFWAPI: Transient reload failure, retry attempt ${reloadRetries + 1}`)
+        this.debugAuth(`Transient reload failure, retry attempt ${reloadRetries + 1}`)
         await new Promise((resolve) => setTimeout(resolve, 500 * (reloadRetries + 1)))
         return this.reloadAPIToken(refreshToken, reloadRetries + 1)
       }
-      this.debugWarn('GFWAPI: reloadAPIToken failed', e)
+      this.debugAuthWarn('reloadAPIToken failed', e)
       throw e
     }
   }
@@ -606,9 +625,7 @@ export class GFW_API_CLASS {
     return this.withTokenRefreshLock(async () => {
       const rotatedBefore = this.getRotatedRefreshToken(startRefreshToken)
       if (rotatedBefore) {
-        this.debugLog(
-          'GFWAPI: refreshTokens — reusing token rotated by another tab (before reload)'
-        )
+        this.debugAuth('refreshTokens — reusing token rotated by another tab (before reload)')
         return { token: this.token, refreshToken: rotatedBefore }
       }
       try {
@@ -616,7 +633,7 @@ export class GFW_API_CLASS {
       } catch (e: any) {
         const rotatedDuring = this.getRotatedRefreshToken(startRefreshToken)
         if (rotatedDuring) {
-          this.debugLog('GFWAPI: refreshTokens — retrying with token rotated during reload')
+          this.debugAuth('refreshTokens — retrying with token rotated during reload')
           return await this.reloadAPIToken(rotatedDuring)
         }
         throw e
@@ -626,7 +643,7 @@ export class GFW_API_CLASS {
 
   async refreshAPIToken() {
     if (this.refreshingToken) {
-      this.debugLog('GFWAPI: refreshAPIToken — joining in-flight refresh')
+      this.debugAuth('refreshAPIToken — joining in-flight refresh')
       return this.refreshingToken
     }
 
@@ -643,7 +660,7 @@ export class GFW_API_CLASS {
 
     const refreshToken = this.refreshToken
     if (!refreshToken) {
-      this.debugWarn('GFWAPI: refreshAPIToken — no local refresh token')
+      this.debugAuthWarn('refreshAPIToken — no local refresh token')
       const error: any = new Error('No refresh token')
       error.status = 401
       throw error
@@ -714,18 +731,18 @@ export class GFW_API_CLASS {
     waitLogin = true,
   }: InternalFetchOptions<Body>): Promise<T> {
     if (this.logging && waitLogin && options.token == null) {
-      this.debugLog('GFWAPI: waiting for login before fetch', { url })
+      this.debugAuth('waiting for login before fetch', { url })
       try {
         await this.logging
-        this.debugLog('GFWAPI: login settled, continuing fetch', { url })
+        this.debugAuth('login settled, continuing fetch', { url })
       } catch {
-        this.debugLog('GFWAPI: login failed — fetch continues without session', { url })
+        this.debugAuth('login failed — fetch continues without session', { url })
       }
     }
     try {
       return await this._fetchAttempt<T, Body>({ url, options, refreshRetries, waitLogin })
     } catch (e: any) {
-      if (this.debug) {
+      if (this.isDebugging('request')) {
         this.debugWarn(`GFWAPI: Error fetching ${url}`, e)
       }
       throw this.normalizeError(e, options.responseType ?? 'json')
@@ -752,7 +769,7 @@ export class GFW_API_CLASS {
       token,
     } = options
     try {
-      if (this.debug) {
+      if (this.isDebugging('request')) {
         logDebugUrl('GFWAPI: Fetching URL: ', url)
         if (token != null) {
           this.debugLog('GFWAPI: stateless fetch (per-request token, no refresh/retry)')
@@ -845,7 +862,9 @@ export class GFW_API_CLASS {
           )
           throw e
         }
-        this.debugRateLimit('429: limit reset, retrying parked request', { url: getRateLimitLogUrl(url) })
+        this.debugRateLimit('429: limit reset, retrying parked request', {
+          url: getRateLimitLogUrl(url),
+        })
         return this._fetchAttempt<T, Body>({
           url,
           options,
@@ -863,39 +882,37 @@ export class GFW_API_CLASS {
       const authError = isAuthError(e)
       const stateless = token != null
       if (authError && skipAuthRefresh) {
-        this.debugLog('GFWAPI: auth error — skipAuthRefresh, not retrying', {
+        this.debugAuth('auth error — skipAuthRefresh, not retrying', {
           url,
           status: e.status,
         })
       }
       if (authError && stateless) {
-        this.debugLog('GFWAPI: auth error — stateless request, not refreshing', {
+        this.debugAuth('auth error — stateless request, not refreshing', {
           url,
           status: e.status,
         })
       }
       if (authError && !skipAuthRefresh && !stateless) {
-        this.debugLog(`GFWAPI: auth error — refreshing token (attempt ${refreshRetries})`, {
+        this.debugAuth(`auth error — refreshing token (attempt ${refreshRetries})`, {
           url,
           status: e.status,
         })
         try {
           await this.refreshAPIToken()
-          if (this.debug) {
-            logDebugUrl('GFWAPI: Token refresh worked! trying to fetch again ', url)
-          }
+          this.debugAuth('token refresh worked, trying to fetch again', { url })
         } catch (err: any) {
-          this.debugWarn(`GFWAPI: token refresh failed for ${url}`, err)
+          this.debugAuthWarn(`token refresh failed for ${url}`, err)
 
           const refreshRejected =
             isSessionError(err) && !isForbidden(err) && !getIsTimeoutError(err)
           if (getIsBrowser() && refreshRejected) {
-            this.debugLog('GFWAPI: refresh rejected — invalidating client session')
+            this.debugAuth('refresh rejected — invalidating client session')
             this.invalidateClientSession()
           }
           if (refreshRejected) {
             e.refreshError = true
-            this.debugLog('GFWAPI: marking original error as refreshError')
+            this.debugAuth('marking original error as refreshError')
           }
           throw e
         }
@@ -918,8 +935,8 @@ export class GFW_API_CLASS {
   }
 
   async fetchUser({ token, headers }: { token?: string; headers?: HeadersInit } = {}) {
-    if (this.debug) {
-      this.debugLog('GFWAPI: fetchUser', { stateless: token != null, hasToken: Boolean(token) })
+    if (this.isDebugging('auth')) {
+      this.debugAuth('fetchUser', { stateless: token != null, hasToken: Boolean(token) })
     }
     try {
       const user = await this._internalFetch<UserData>({
@@ -931,17 +948,17 @@ export class GFW_API_CLASS {
         refreshRetries: 0,
         waitLogin: false,
       })
-      this.debugLog('GFWAPI: fetchUser OK', { userId: user?.id, type: user?.type })
+      this.debugAuth('fetchUser OK', { userId: user?.id, type: user?.type })
       return user
     } catch (e: any) {
-      this.debugWarn('GFWAPI: fetchUser failed', e)
+      this.debugAuthWarn('fetchUser failed', e)
       throw new Error('Error trying to get user data', { cause: e })
     }
   }
 
   async fetchGuestUser({ token }: { token?: string } = {}): Promise<UserData> {
-    if (this.debug) {
-      this.debugLog('GFWAPI: fetchGuestUser', { stateless: token != null })
+    if (this.isDebugging('auth')) {
+      this.debugAuth('fetchGuestUser', { stateless: token != null })
     }
     try {
       const permissions: UserPermission[] = await this._internalFetch<
@@ -954,10 +971,10 @@ export class GFW_API_CLASS {
       })
       const user: UserData = { id: 0, type: GUEST_USER_TYPE, permissions, groups: [] }
 
-      this.debugLog('GFWAPI: fetchGuestUser OK', { permissions: permissions.length })
+      this.debugAuth('fetchGuestUser OK', { permissions: permissions.length })
       return user
     } catch (e: any) {
-      this.debugWarn('GFWAPI: fetchGuestUser failed', e)
+      this.debugAuthWarn('fetchGuestUser failed', e)
       throw new Error('Error trying to get user data', { cause: e })
     }
   }
@@ -972,37 +989,35 @@ export class GFW_API_CLASS {
     this.debugAuthState('_login start')
     try {
       if (accessToken) {
-        this.debugLog('GFWAPI: _login — exchanging SSO access token')
+        this.debugAuth('_login — exchanging SSO access token')
         try {
           const tokens = await this.exchangeAccessToken(accessToken)
           this.token = tokens.token
           this.refreshToken = tokens.refreshToken
-          this.debugLog('GFWAPI: _login — access token exchanged, tokens stored')
+          this.debugAuth('_login — access token exchanged, tokens stored')
         } catch (e: any) {
           if (!this.token && !this.refreshToken) {
             const msg = getIsUnauthorizedError(e)
               ? 'Invalid access token'
               : 'Error trying to generate tokens'
-            this.debugWarn(`GFWAPI: _login — ${msg}`, e)
+            this.debugAuthWarn(`_login — ${msg}`, e)
             throw new Error(msg, { cause: e })
           }
-          this.debugLog(
-            'GFWAPI: _login — access token exchange failed, falling back to stored tokens'
-          )
+          this.debugAuth('_login — access token exchange failed, falling back to stored tokens')
         }
       }
 
       if (this.token) {
-        this.debugLog('GFWAPI: _login — fetching user with stored access token')
+        this.debugAuth('_login — fetching user with stored access token')
         try {
           const user = await this.fetchUser()
-          this.debugLog('GFWAPI: _login — user resolved with access token', {
+          this.debugAuth('_login — user resolved with access token', {
             userId: user?.id,
             type: user?.type,
           })
           return user
         } catch (e: any) {
-          this.debugWarn('GFWAPI: _login — access token rejected, will try refresh', e)
+          this.debugAuthWarn('_login — access token rejected, will try refresh', e)
         }
       }
 
@@ -1010,15 +1025,15 @@ export class GFW_API_CLASS {
       const canRefresh = this.refreshStrategy
         ? Boolean(this.token || refreshTokenToUse)
         : Boolean(refreshTokenToUse)
-      this.debugLog('GFWAPI: _login — refresh decision', {
+      this.debugAuth('_login — refresh decision', {
         canRefresh,
         viaRefreshStrategy: Boolean(this.refreshStrategy),
         hasAccessToken: Boolean(this.token),
         hasLocalRefreshToken: Boolean(refreshTokenToUse),
       })
       if (canRefresh) {
-        this.debugLog(
-          `GFWAPI: _login — refreshing via ${this.refreshStrategy ? 'refreshStrategy' : 'localStorage'}`
+        this.debugAuth(
+          `_login — refreshing via ${this.refreshStrategy ? 'refreshStrategy' : 'localStorage'}`
         )
         try {
           if (this.refreshStrategy) {
@@ -1026,9 +1041,9 @@ export class GFW_API_CLASS {
           } else {
             await this.refreshTokens(refreshTokenToUse)
           }
-          this.debugLog('GFWAPI: _login — refresh OK, fetching user')
+          this.debugAuth('_login — refresh OK, fetching user')
           const user = await this.fetchUser()
-          this.debugLog('GFWAPI: _login — user resolved after refresh', {
+          this.debugAuth('_login — user resolved after refresh', {
             userId: user?.id,
             type: user?.type,
           })
@@ -1037,12 +1052,12 @@ export class GFW_API_CLASS {
           const msg = isSessionError(e)
             ? 'Invalid refresh token'
             : 'Error trying to refreshing the token'
-          this.debugWarn(`GFWAPI: _login — ${msg}`, e)
+          this.debugAuthWarn(`_login — ${msg}`, e)
           throw new Error(msg, { cause: e })
         }
       }
 
-      this.debugWarn('GFWAPI: _login — no session (no token and refresh not attempted)')
+      this.debugAuthWarn('_login — no session (no token and refresh not attempted)')
       // status 401 so consumers classify "no session" as an auth error (→ guest
       // fallback), not a transient/network failure to retry. Mirrors refreshAPIToken.
       const error: any = new Error('No login token provided')
@@ -1050,13 +1065,13 @@ export class GFW_API_CLASS {
       throw error
     } finally {
       this.status = 'idle'
-      this.debugLog('GFWAPI: _login finished')
+      this.debugAuth('_login finished')
     }
   }
 
   async login(params: LoginParams): Promise<UserData> {
     if (this.logging) {
-      this.debugLog('GFWAPI: login — joining in-flight login')
+      this.debugAuth('login — joining in-flight login')
       return this.logging
     }
     const { accessToken = null, refreshToken } = params
@@ -1071,7 +1086,7 @@ export class GFW_API_CLASS {
   async logout() {
     this.debugAuthState('logout start')
     try {
-      this.debugLog('GFWAPI: logout — revoking session on gateway')
+      this.debugAuth('logout — revoking session on gateway')
       await this._internalFetch<void>({
         url: this.generateUrl(`/${API_VERSION}/${AUTH_PATH}/logout`),
         options: {
@@ -1082,14 +1097,14 @@ export class GFW_API_CLASS {
           skipAuthRefresh: true,
         },
       })
-      this.debugLog('GFWAPI: logout — gateway OK')
+      this.debugAuth('logout — gateway OK')
       return true
     } catch (e: any) {
-      this.debugWarn('GFWAPI: logout — gateway call failed (local session still cleared)', e)
+      this.debugAuthWarn('logout — gateway call failed (local session still cleared)', e)
       throw new Error('Error on the logout proccess', { cause: e })
     } finally {
       this.invalidateClientSession()
-      this.debugLog('GFWAPI: logout finished')
+      this.debugAuth('logout finished')
     }
   }
 }
