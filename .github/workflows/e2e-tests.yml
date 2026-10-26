@@ -23,6 +23,7 @@ jobs:
       VITE_WORKSPACE_ENV: development
       TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
       TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+      TEST_USER_NAME: ${{ secrets.TEST_USER_NAME }}
 
     steps:
       - name: Checkout code

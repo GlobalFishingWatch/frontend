@@ -59,6 +59,11 @@
     }
   ],
   "targetDefaults": {
+    "test-ci--**/**": {
+      "options": {
+        "args": "--pass-with-no-tests"
+      }
+    },
     "lint": {
       "cache": true,
       "inputs": [

@@ -41,8 +41,16 @@ not maximal.
 - New spec → nothing to configure; it becomes a `test-ci--*` task automatically.
 - Revisit `@nx-ignore-server-inputs` only for a spec whose feature is plain TS a spec can import
   without CSS or Vite-only imports (`?react` SVGs).
-- `src/tests/Pipe5.e2e.spec.ts` ("pipe5 first draft") has no tests; its split task fails with
-  `No tests found` until tests are added or the file is removed.
+- A spec file with no tests (`src/tests/Pipe5.e2e.spec.ts`, a draft) would fail its split task
+  with `No tests found`. `nx.json` `targetDefaults["test-ci--**/**"]` passes
+  `--pass-with-no-tests` to every split task for this reason (2026-10-26).
+- An env var a spec reads must be listed in **both** the `e2e-tests.yml` job `env` and
+  `.nx/ci-config.yaml` `workers.with-env-vars`. The job env alone never reaches the Nx Cloud
+  workers. On 2026-10-26 `TEST_USER_NAME` was missing from both, which failed every spec using
+  `LoginPage` (LoginFlow, Report, Workspace) with `Missing required env var`.
+- The deploy smoke run (`nx test platform-e2e -c smoke`, `cache: false`) is a different task
+  from `test-ci--*`, so it never reuses their cache. That is intended: it checks the production
+  image and the live API at deploy time.
 - Verify a spec's inputs with `nx show target inputs 'platform-e2e:test-ci--src/tests/<file>'`.
 - The specs hit the live dev/staging API, so a replayed pass can hide an API-side break; smoke runs
   uncached against the deployed image.
