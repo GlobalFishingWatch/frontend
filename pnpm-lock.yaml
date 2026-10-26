@@ -441,8 +441,8 @@ importers:
         specifier: 1.6.1
         version: 1.6.1(supports-color@8.1.1)
       jotai:
-        specifier: 3.0.0
-        version: 3.0.0(@types/react@19.3.0)(react@19.3.0)
+        specifier: 3.0.1
+        version: 3.0.1(@types/react@19.3.0)(react@19.3.0)
       jszip:
         specifier: 3.10.2
         version: 3.10.2
@@ -1288,7 +1288,7 @@ importers:
         version: 0.5.0
       jotai:
         specifier: 3.x
-        version: 3.0.0(@types/react@19.3.0)(react@19.3.0)
+        version: 3.0.1(@types/react@19.3.0)(react@19.3.0)
       luxon:
         specifier: 3.x
         version: 3.7.2
@@ -1608,7 +1608,7 @@ importers:
         version: 1.52.0
       jotai:
         specifier: 3.x
-        version: 3.0.0(@types/react@19.3.0)(react@19.3.0)
+        version: 3.0.1(@types/react@19.3.0)(react@19.3.0)
       luxon:
         specifier: 3.x
         version: 3.7.2
@@ -1696,6 +1696,9 @@ importers:
       eslint-config-prettier:
         specifier: 10.x
         version: 10.1.8(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))
+      eslint-import-resolver-typescript:
+        specifier: 4.x
+        version: 4.4.5(eslint-plugin-import@2.32.0)(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)
       eslint-package-json:
         specifier: 1.x
         version: 1.0.0(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))
@@ -9772,8 +9775,8 @@ packages:
   jose@6.2.12:
     resolution: {integrity: sha512-9NiFmJEex0sy2Dk58j2UGBSHgUs2ypF9eZSu4L6vjOX3Dp96Sw1F3uL+H+D1sx02jZZdzUT0HgvCy59CuvXcWw==}
 
-  jotai@3.0.0:
-    resolution: {integrity: sha512-KxhbmsJUp/tmrv6aZgO+nzB3H9K8C0xmk5i3aGkwy/EANg73DVBkggv3zVHaAi5PlNlQgTgP4uiVepo+JC+wSA==}
+  jotai@3.0.1:
+    resolution: {integrity: sha512-6tS7wY9otdiNp26Wqb/1ds3OuVJVoV+tJlN4hpLrYmfFf/t9bauVt+zKBNSpS5qSl5h6GieVQ+OknVraZX+udQ==}
     engines: {node: '>=22.12.0'}
     peerDependencies:
       '@types/react': '>=18.0.0'
@@ -21471,7 +21474,6 @@ snapshots:
       eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.70.1(@typescript/typescript6@6.0.2)(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(eslint-import-resolver-typescript@4.4.5)(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)
     transitivePeerDependencies:
       - supports-color
-    optional: true
 
   eslint-import-resolver-typescript@4.4.5(eslint-plugin-import@2.32.0)(eslint@10.11.0(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
@@ -23105,7 +23107,7 @@ snapshots:
 
   jose@6.2.12: {}
 
-  jotai@3.0.0(@types/react@19.3.0)(react@19.3.0):
+  jotai@3.0.1(@types/react@19.3.0)(react@19.3.0):
     optionalDependencies:
       '@types/react': 19.3.0
       react: 19.3.0
