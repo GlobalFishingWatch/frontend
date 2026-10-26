@@ -126,7 +126,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     if (!this.state) {
       return ''
     }
-    return `${this.state?.viewportDirty}|${this.viewportLoaded}`
+    const highlightedScenesHash = this.props.sublayers.map((s) => s.highlightedSceneId).join(',')
+    return `${this.state?.viewportDirty}|${this.viewportLoaded}|${highlightedScenesHash}`
   }
 
   get positions() {
