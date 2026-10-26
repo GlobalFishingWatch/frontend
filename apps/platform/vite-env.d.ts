@@ -16,6 +16,9 @@ interface ImportMetaEnv {
   readonly VITE_PIPE_DATASET_MINOR_VERSION?: string
   readonly VITE_REPORT_DAYS_LIMIT?: string
   readonly VITE_SHOW_LEAVE_CONFIRMATION?: string
+  readonly VITE_TURNSTILE_SITE_KEY?: string
+  readonly VITE_RATE_LIMIT_RESET_URL?: string
+  readonly VITE_RATE_LIMIT_MOCK_LIMIT?: string
   readonly VITE_PUBLIC_URL?: string
   readonly VITE_USE_LOCAL_DATASETS?: string
   readonly VITE_USE_LOCAL_DATAVIEWS?: string

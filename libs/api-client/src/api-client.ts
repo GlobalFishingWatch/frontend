@@ -9,6 +9,7 @@ import type {
 import { getIsBrowser, logDebugUrl, safeLocalStorage } from './utils/browser'
 import { getEnv } from './utils/env'
 import {
+  getIsRateLimitExceeded,
   getIsTimeoutError,
   getIsUnauthorizedError,
   isAuthError,
@@ -18,8 +19,14 @@ import {
   parseAPIError,
 } from './utils/errors'
 import { parseJSON, processStatus } from './utils/parse'
+import {
+  getRateLimitLogUrl,
+  isVisualizationRateLimitedUrl,
+  parseRateLimit,
+} from './utils/rate-limit'
 import type { TokenStorage } from './utils/token-storage'
 import { createLocalStorageTokenStorage } from './utils/token-storage'
+import { renderRateLimitChallenge } from './utils/turnstile'
 import { isUrlAbsolute } from './utils/url'
 import {
   API_GATEWAY,
@@ -28,6 +35,10 @@ import {
   DEBUG_API_REQUESTS,
   GUEST_USER_TYPE,
   LOGOUT_SESSION_PATH,
+  RATE_LIMIT_CHALLENGE_THRESHOLD,
+  RATE_LIMIT_MOCK_LIMIT,
+  RATE_LIMIT_RESET_PATH,
+  RATE_LIMIT_RESET_URL,
   REGISTER_PATH,
   SETTINGS_PATH,
   USER_REFRESH_TOKEN_STORAGE_KEY,
@@ -62,12 +73,14 @@ type InternalFetchOptions<Body = unknown> = {
   options?: FetchOptions<Body> & { skipAuthRefresh?: boolean }
   refreshRetries?: number
   waitLogin?: boolean
+  rateLimitRetried?: boolean
 }
 
 export type RefreshStrategy = () => Promise<UserTokens>
 export type SessionInvalidateStrategy = () => void | Promise<unknown>
 
 export type RequestStatus = 'idle' | 'refreshingToken' | 'logging' | 'downloading'
+export type RateLimitChallengeState = 'idle' | 'solving' | 'interactive' | 'failed'
 export class GFW_API_CLASS {
   debug: boolean
   apiVersion: ApiVersion
@@ -85,6 +98,19 @@ export class GFW_API_CLASS {
   private refreshStrategy: RefreshStrategy | null = null
   private sessionInvalidateStrategy: SessionInvalidateStrategy | null = null
   private defaultHeaders: HeadersInit = {}
+  private rateLimitChallengeContainer: HTMLElement | null = null
+  // Settles once the limit is reset (resolve) or the user cancels (reject). Survives failed attempts
+  // so parked requests keep waiting while the user retries
+  private rateLimitReset: PromiseWithResolvers<void> | null = null
+  private rateLimitChallengeAttempt: Promise<void> | null = null
+  // Bumped to invalidate an attempt whose container went away, its late results are ignored
+  private rateLimitChallengeAttemptId = 0
+  // Set when the user cancels: stops background challenges until a request is rate limited again
+  private rateLimitChallengeCancelled = false
+  private rateLimitResetListeners = new Set<() => void>()
+  private rateLimitChallengeState: RateLimitChallengeState = 'idle'
+  private rateLimitChallengeListeners = new Set<() => void>()
+  private rateLimitMockRemaining = RATE_LIMIT_MOCK_LIMIT
   status: RequestStatus = 'idle'
 
   constructor({
@@ -119,6 +145,13 @@ export class GFW_API_CLASS {
   private debugWarn(...args: unknown[]) {
     if (this.debug) {
       console.warn(...args)
+    }
+  }
+
+  // Arrow function so it can be handed to the Turnstile helpers; filter the console by "[rate-limit]"
+  private debugRateLimit = (message: string, data?: Record<string, unknown>) => {
+    if (this.debug) {
+      console.log(`[rate-limit] ${message}`, ...(data ? [data] : []))
     }
   }
 
@@ -177,6 +210,222 @@ export class GFW_API_CLASS {
         sessionInvalidateStrategy: Boolean(sessionInvalidateStrategy),
       })
     }
+  }
+
+  /** DOM node where the Turnstile widget renders, without it rate limited requests just reject with 429 */
+  setRateLimitChallengeContainer(container: HTMLElement) {
+    if (container === this.rateLimitChallengeContainer) return
+    this.rateLimitChallengeContainer = container
+    this.debugRateLimit('challenge container set', {
+      mockLimit: RATE_LIMIT_MOCK_LIMIT || 'off',
+      threshold: RATE_LIMIT_CHALLENGE_THRESHOLD,
+      resetUrl: RATE_LIMIT_RESET_URL || `/${AUTH_PATH}/${RATE_LIMIT_RESET_PATH}`,
+    })
+    // A challenge running in the previous container may never finish there, start it again here.
+    // In 'failed' nothing is running: the overlay already offers retry, which uses this container
+    if (this.rateLimitReset && this.rateLimitChallengeState !== 'failed') {
+      this.debugRateLimit('challenge moved to the new container')
+      this.invalidateRateLimitChallengeAttempt()
+      this.runRateLimitChallengeAttempt(container)
+    }
+  }
+
+  /** Only the container currently in use can be cleared, so a replaced one unmounting is a no-op */
+  clearRateLimitChallengeContainer(container: HTMLElement) {
+    if (container !== this.rateLimitChallengeContainer) {
+      this.debugRateLimit('challenge container clear ignored, another container took over')
+      return
+    }
+    this.rateLimitChallengeContainer = null
+    this.debugRateLimit('challenge container removed')
+    if (this.rateLimitReset) {
+      // No UI left to solve, retry or cancel the challenge: release parked requests with their 429
+      this.debugRateLimit('challenge abandoned, parked requests rejected')
+      this.invalidateRateLimitChallengeAttempt()
+      this.rateLimitReset.reject(new Error('GFWAPI: rate limit challenge container removed'))
+      this.rateLimitReset = null
+      this.setRateLimitChallengeState('idle')
+    }
+  }
+
+  private invalidateRateLimitChallengeAttempt() {
+    this.rateLimitChallengeAttemptId++
+    this.rateLimitChallengeAttempt = null
+  }
+
+  // Arrow functions so they can be passed unbound to React's useSyncExternalStore
+  subscribeRateLimitChallenge = (listener: () => void) => {
+    this.rateLimitChallengeListeners.add(listener)
+    return () => {
+      this.rateLimitChallengeListeners.delete(listener)
+    }
+  }
+
+  getRateLimitChallengeState = () => this.rateLimitChallengeState
+
+  /** Called on every successful reset, so requests that failed with 429 can be refetched */
+  onRateLimitReset = (listener: () => void) => {
+    this.rateLimitResetListeners.add(listener)
+    return () => {
+      this.rateLimitResetListeners.delete(listener)
+    }
+  }
+
+  /** Starts the challenge on demand, e.g. from a layer that failed after the user cancelled */
+  startRateLimitChallenge = () => {
+    this.rateLimitChallengeCancelled = false
+    this.debugRateLimit('challenge requested by the user')
+    return this.ensureRateLimitChallenge()
+  }
+
+  private setRateLimitChallengeState(state: RateLimitChallengeState) {
+    this.debugRateLimit(`challenge state ${this.rateLimitChallengeState} -> ${state}`)
+    this.rateLimitChallengeState = state
+    this.rateLimitChallengeListeners.forEach((listener) => listener())
+  }
+
+  /** One reset shared by every caller: solve Turnstile, then send the token to the API to reset the counter */
+  private ensureRateLimitChallenge(): Promise<void> {
+    const container = this.rateLimitChallengeContainer
+    if (!container) {
+      this.debugRateLimit('challenge skipped: no container')
+      return Promise.reject(new Error('GFWAPI: no rate limit challenge container'))
+    }
+    if (this.rateLimitReset) {
+      this.debugRateLimit('challenge already in flight, joining it')
+      return this.rateLimitReset.promise
+    }
+    this.debugRateLimit('challenge started')
+    this.rateLimitReset = Promise.withResolvers<void>()
+    // Nobody may be waiting on a background challenge, don't report its cancellation as unhandled
+    this.rateLimitReset.promise.catch(() => {})
+    this.runRateLimitChallengeAttempt(container)
+    return this.rateLimitReset.promise
+  }
+
+  private runRateLimitChallengeAttempt(container: HTMLElement) {
+    if (this.rateLimitChallengeAttempt) return
+    const attemptId = ++this.rateLimitChallengeAttemptId
+    const isStale = () => attemptId !== this.rateLimitChallengeAttemptId
+    this.setRateLimitChallengeState('solving')
+    this.rateLimitChallengeAttempt = (async () => {
+      try {
+        const token = await renderRateLimitChallenge(container, {
+          debug: this.debugRateLimit,
+          onInteractive: () => {
+            if (!isStale()) this.setRateLimitChallengeState('interactive')
+          },
+        })
+        if (isStale()) return
+        const url = RATE_LIMIT_RESET_URL
+          ? new URL(RATE_LIMIT_RESET_URL, window.location.origin).href
+          : this.generateUrl(`/${AUTH_PATH}/${RATE_LIMIT_RESET_PATH}`, { absolute: true })
+        this.debugRateLimit('reset request sent', { url })
+        const response = await this._internalFetch<Response>({
+          url,
+          options: { method: 'POST', body: { token }, responseType: 'default' },
+        })
+        if (isStale()) return
+        this.rateLimitMockRemaining = RATE_LIMIT_MOCK_LIMIT
+        this.rateLimitChallengeCancelled = false
+        this.debugRateLimit('reset succeeded', { status: response.status, ...parseRateLimit(response) })
+        this.rateLimitReset?.resolve()
+        this.rateLimitReset = null
+        this.setRateLimitChallengeState('idle')
+        // A failing listener must not skip the others nor turn this successful reset into 'failed'
+        this.rateLimitResetListeners.forEach((listener) => {
+          try {
+            listener()
+          } catch (e) {
+            this.debugRateLimit('reset listener failed', { error: (e as Error)?.message })
+          }
+        })
+      } catch (e: any) {
+        if (isStale()) return
+        this.debugRateLimit('challenge failed, waiting for the user to retry or cancel', {
+          error: e?.message ?? e?.status ?? e,
+        })
+        this.setRateLimitChallengeState('failed')
+      } finally {
+        if (!isStale()) this.rateLimitChallengeAttempt = null
+      }
+    })()
+  }
+
+  /** Runs the challenge again after a failure, parked requests keep waiting */
+  retryRateLimitChallenge = () => {
+    if (this.rateLimitChallengeState !== 'failed' || !this.rateLimitChallengeContainer) return
+    this.debugRateLimit('challenge retried by the user')
+    this.runRateLimitChallengeAttempt(this.rateLimitChallengeContainer)
+  }
+
+  /** Gives up after a failure: parked requests reject with their original 429 */
+  cancelRateLimitChallenge = () => {
+    if (this.rateLimitChallengeState !== 'failed') return
+    this.debugRateLimit('challenge cancelled by the user')
+    this.rateLimitChallengeCancelled = true
+    this.rateLimitReset?.reject(new Error('GFWAPI: rate limit challenge cancelled'))
+    this.rateLimitReset = null
+    this.setRateLimitChallengeState('idle')
+  }
+
+  private trackRateLimit(url: string, response: Response) {
+    if (
+      !this.rateLimitChallengeContainer ||
+      !isVisualizationRateLimitedUrl(url) ||
+      !response.headers?.has('Ratelimit-Remaining')
+    ) {
+      return
+    }
+    const { remaining, limit } = parseRateLimit(response)
+    this.debugRateLimit('response', {
+      url: getRateLimitLogUrl(url),
+      status: response.status,
+      remaining,
+      limit,
+    })
+    if (remaining <= RATE_LIMIT_CHALLENGE_THRESHOLD && !this.rateLimitChallengeCancelled) {
+      this.debugRateLimit(`remaining ${remaining} <= threshold ${RATE_LIMIT_CHALLENGE_THRESHOLD}`)
+      // Failure is already logged by ensureRateLimitChallenge
+      this.ensureRateLimitChallenge().catch(() => {})
+    }
+  }
+
+  // ponytail: local stand-in for the API counter, delete once track/events responses carry Ratelimit-* headers
+  private async fetchWithRateLimitMock(url: string, init: RequestInit): Promise<Response> {
+    if (!RATE_LIMIT_MOCK_LIMIT || !isVisualizationRateLimitedUrl(url)) {
+      return fetch(url, init)
+    }
+    const exceeded = this.rateLimitMockRemaining <= 0
+    if (exceeded) {
+      this.debugRateLimit('mock: limit exceeded, faking 429 without network', {
+        url: getRateLimitLogUrl(url),
+      })
+    }
+    const response = exceeded ? new Response(null, { status: 429 }) : await fetch(url, init)
+    if (!exceeded) {
+      this.rateLimitMockRemaining--
+    }
+    const headers = new Headers(response.headers)
+    headers.set('Ratelimit-Limit', String(RATE_LIMIT_MOCK_LIMIT))
+    headers.set('Ratelimit-Remaining', String(this.rateLimitMockRemaining))
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers,
+    })
+  }
+
+  private waitForRateLimitChallenge(signal?: AbortSignal | null) {
+    const challenge = this.ensureRateLimitChallenge()
+    if (!signal) return challenge
+    return Promise.race([
+      challenge,
+      new Promise<never>((_, reject) => {
+        if (signal.aborted) reject(signal.reason)
+        signal.addEventListener('abort', () => reject(signal.reason), { once: true })
+      }),
+    ])
   }
 
   private invalidateClientSession() {
@@ -488,6 +737,7 @@ export class GFW_API_CLASS {
     options = {},
     refreshRetries = 0,
     waitLogin = true,
+    rateLimitRetried = false,
   }: InternalFetchOptions<Body>): Promise<T> {
     const {
       method = 'GET',
@@ -523,7 +773,7 @@ export class GFW_API_CLASS {
         Authorization: `Bearer ${token ?? this.token}`,
       }
       const fetchUrl = isUrlAbsolute(url) ? url : this.baseUrl + url
-      const data = await fetch(fetchUrl, {
+      const data = await this.fetchWithRateLimitMock(fetchUrl, {
         method,
         signal,
         ...(cache && { cache }),
@@ -531,7 +781,11 @@ export class GFW_API_CLASS {
           ({ body: requestType === 'json' ? JSON.stringify(body) : body } as RequestInit)),
         headers: finalHeaders,
       })
-        .then((res) => processStatus(res, responseType))
+        .then((res) => {
+          // Read the headers before processStatus, parsed errors lose them
+          this.trackRateLimit(fetchUrl, res)
+          return processStatus(res, responseType)
+        })
         .then((res) => {
           switch (responseType) {
             case 'default':
@@ -570,6 +824,36 @@ export class GFW_API_CLASS {
         })
       return data
     } catch (e: any) {
+      // 429 on a rate limited resource => park the request until the challenge resets the limit
+      if (
+        getIsRateLimitExceeded(e) &&
+        !rateLimitRetried &&
+        this.rateLimitChallengeContainer &&
+        isVisualizationRateLimitedUrl(url)
+      ) {
+        this.debugRateLimit('429: request parked until the challenge resets the limit', {
+          url: getRateLimitLogUrl(url),
+        })
+        try {
+          await this.waitForRateLimitChallenge(options.signal)
+        } catch (challengeError: any) {
+          this.debugRateLimit(
+            options.signal?.aborted
+              ? '429: parked request aborted'
+              : '429: challenge failed, rejecting with the original 429',
+            { url: getRateLimitLogUrl(url), error: challengeError?.message }
+          )
+          throw e
+        }
+        this.debugRateLimit('429: limit reset, retrying parked request', { url: getRateLimitLogUrl(url) })
+        return this._fetchAttempt<T, Body>({
+          url,
+          options,
+          refreshRetries,
+          waitLogin,
+          rateLimitRetried: true,
+        })
+      }
       // 401 = not authenticated, 403 = not authorized => try to refresh the token.
       if (refreshRetries > this.maxRefreshRetries) {
         this.debugLog(`GFWAPI: retry attempts exceeded for ${url}`)
