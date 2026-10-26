@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react'
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import type {
   DataviewDatasetConfigParam,
   IdentityVessel,
@@ -120,6 +121,14 @@ function VesselLayerPanel({
   const infoLoading = infoResource?.status === ResourceStatus.Loading
   const infoError = infoResource?.status === ResourceStatus.Error
   const trackError = vesselLayer?.instance.getVesselLayersError('track')
+  // Track and events fail independently, events usually later as they take longer to respond
+  const rateLimited = vesselLayer?.instance.getVesselLayersRateLimited()
+  // Refetch them once any rate limit reset succeeds, wherever the challenge was started from
+  useEffect(() => {
+    if (rateLimited) {
+      return GFWAPI.onRateLimitReset(() => vesselLayer?.instance.reloadErroredSublayers())
+    }
+  }, [rateLimited, vesselLayer])
   const trackLoading = trackLayerVisible && !trackLoaded && !trackError
 
   const vesselData = infoResource?.data
@@ -297,13 +306,20 @@ function VesselLayerPanel({
           {showDeprecatedWarning && vesselData && (
             <VesselDeprecatedLink vesselIdentity={vesselData} dataview={dataview} />
           )}
-          {(infoError || trackError) && !showDeprecatedWarning && (
+          {(infoError || trackError || rateLimited) && !showDeprecatedWarning && (
             <IconButton
               size="small"
               icon="warning"
               type="warning-invert"
-              disabled
-              tooltip={`${t((t) => t.errors.vesselLoading)} (${vesselId})`}
+              disabled={!rateLimited}
+              onClick={
+                rateLimited ? () => GFWAPI.startRateLimitChallenge().catch(() => {}) : undefined
+              }
+              tooltip={
+                rateLimited
+                  ? t((t) => t.rateLimit.trackLimitReached)
+                  : `${t((t) => t.errors.vesselLoading)} (${vesselId})`
+              }
               tooltipPlacement="top"
             />
           )}

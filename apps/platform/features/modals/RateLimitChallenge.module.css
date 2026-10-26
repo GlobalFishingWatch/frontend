@@ -1,0 +1,38 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.visible {
+  background: rgba(var(--primary-blue-rgb), 0.75);
+  pointer-events: auto;
+}
+
+.visible .content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-S);
+  max-width: 40rem;
+  padding: var(--space-M);
+  background: var(--color-background);
+  border-radius: var(--border-radius-1);
+  font: var(--font-M);
+}
+
+.failed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-M);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-S);
+}
