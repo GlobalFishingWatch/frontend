@@ -4,6 +4,7 @@ import type { TFunction } from 'i18next'
 
 import type {
   Dataset,
+  DatasetsMigration,
   GearType,
   IdentityVessel,
   SelfReportedInfo,
@@ -12,9 +13,19 @@ import type {
   VesselRegistryProperty,
   VesselType,
 } from '@globalfishingwatch/api-types'
-import { API_LOGIN_REQUIRED, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import {
+  API_LOGIN_REQUIRED,
+  DataviewCategory,
+  VesselIdentitySourceEnum,
+} from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  getVesselDataviewInstanceId,
+  getVesselIdFromInstanceId,
+} from '@globalfishingwatch/dataviews-client'
 
 import { PRIVATE_ICON } from 'data/map/config'
+import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/map/dataviews'
 import { isPrivateDataset } from 'features/_map/datasets/datasets.utils'
 import type { ExtendedFeatureVessel } from 'features/_map/map/map.slice'
 import type { TimeRange } from 'features/_map/timebar/timebar.slice'
@@ -22,6 +33,7 @@ import type { IdField } from 'features/_user/vessel-groups/vessel-groups.slice'
 import type { VesselPropertyApiSearch } from 'features/_user/vessel-groups/vessel-groups.utils'
 import type { VesselLastIdentity } from 'features/_vessels/search/search.slice'
 import type { ActivityEvent } from 'features/_vessels/vessel/activity/vessels-activity.selectors'
+import { getVesselLatestDatasetId } from 'features/_vessels/vessel/vessel.config'
 import type { IdentityVesselData, VesselDataIdentity } from 'features/_vessels/vessel/vessel.slice'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { getUTCDateTime } from 'utils/dates'
@@ -444,4 +456,63 @@ export function isTimerangeOutsideTransmissions(
 
 export function getSkylightLink({ skylightId }: { skylightId: string }): string {
   return `https://app.skylight.earth/vesseldetails/${skylightId}`
+}
+
+export const getIsVesselDataviewOutdated = (
+  dataview: Pick<UrlDataviewInstance, 'category' | 'config' | 'datasets'>,
+  deprecatedDatasets: DatasetsMigration
+) =>
+  !!dataview.config?.info &&
+  dataview.category === DataviewCategory.Vessels &&
+  !!getVesselLatestDatasetId(dataview.config.info, deprecatedDatasets, dataview.datasets)
+
+// Deprecated vessels can already have the latest id (ie: pinned with old datasets in the url),
+// so the copy needs a different one to not overwrite the deprecated layer
+const getLatestVesselDataviewInstanceId = (dataview: Pick<UrlDataviewInstance, 'id'>) => {
+  const latestId = getVesselDataviewInstanceId(getVesselIdFromInstanceId(dataview.id))
+  return latestId === dataview.id ? `${latestId}-${Date.now()}` : latestId
+}
+
+// Same as getIsDataviewMigrated for activity: the copy is found by its content, not by its id
+export const getIsVesselDataviewMigrated = (
+  dataview: Pick<UrlDataviewInstance, 'id'>,
+  dataviewInstances: Pick<UrlDataviewInstance, 'id' | 'category' | 'config' | 'datasets'>[],
+  deprecatedDatasets: DatasetsMigration
+) => {
+  const vesselId = getVesselIdFromInstanceId(dataview.id)
+  return dataviewInstances.some(
+    (instance) =>
+      instance.id !== dataview.id &&
+      instance.category === DataviewCategory.Vessels &&
+      getVesselIdFromInstanceId(instance.id) === vesselId &&
+      !getIsVesselDataviewOutdated(instance, deprecatedDatasets)
+  )
+}
+
+// Same as the activity layers: the latest version is added as a new layer and the deprecated one
+// is hidden, so both can be compared before removing the deprecated one
+export function getLatestVesselDataviewInstances(
+  dataview: UrlDataviewInstance,
+  deprecatedDatasets: DatasetsMigration
+): Partial<UrlDataviewInstance>[] {
+  const { config, dataviewId } = dataview
+  const getLatest = (datasetId: string) => deprecatedDatasets[datasetId] || datasetId
+  return [
+    {
+      id: getLatestVesselDataviewInstanceId(dataview),
+      ...(dataviewId && { dataviewId: LEGACY_TO_LATEST_DATAVIEWS[dataviewId] || dataviewId }),
+      config: {
+        visible: true,
+        ...(config?.color && { color: config.color }),
+        ...(config?.ssvid && { ssvid: config.ssvid }),
+        ...(config?.relatedVesselIds?.length && { relatedVesselIds: config.relatedVesselIds }),
+        ...(config?.filters && { filters: config.filters }),
+        ...(config?.info && { info: getLatest(config.info) }),
+        ...(config?.track && { track: getLatest(config.track) }),
+        ...(config?.trackRealTime && { trackRealTime: getLatest(config.trackRealTime) }),
+        ...(config?.events?.length && { events: config.events.map(getLatest) }),
+      },
+    },
+    { id: dataview.id, config: { visible: false } },
+  ]
 }

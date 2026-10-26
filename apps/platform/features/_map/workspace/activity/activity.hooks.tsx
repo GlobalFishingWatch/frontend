@@ -36,12 +36,34 @@ import { setUserSetting } from 'features/_user/user.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 
+export const useSetFourwingsVisualizationMode = () => {
+  const { replaceQueryParams } = useReplaceQueryParams()
+  return useCallback(
+    (category: `${DataviewCategory}`, visualizationMode: FourwingsVisualizationMode) => {
+      replaceQueryParams((prev) => ({
+        [`${category}VisualizationMode`]: visualizationMode,
+        ...(category === DataviewCategory.Detections &&
+          visualizationMode !== POSITIONS_ID && {
+            dataviewInstances: prev.dataviewInstances?.map((dataviewInstance) => {
+              if (dataviewInstance.config?.highlightedSceneId === undefined) {
+                return dataviewInstance
+              }
+              const { highlightedSceneId: _, ...config } = dataviewInstance.config
+              return { ...dataviewInstance, config }
+            }),
+          }),
+      }))
+    },
+    [replaceQueryParams]
+  )
+}
+
 export const useVisualizationsOptions = (
   category: DataviewCategory.Activity | DataviewCategory.Detections | DataviewCategory.Environment
 ) => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { replaceQueryParams } = useReplaceQueryParams()
+  const setFourwingsVisualizationMode = useSetFourwingsVisualizationMode()
   const dataviews = useSelector(
     category === DataviewCategory.Activity
       ? selectActiveActivityDataviews
@@ -80,13 +102,12 @@ export const useVisualizationsOptions = (
 
   const onVisualizationModeChange = useCallback(
     (visualizationMode: FourwingsVisualizationMode) => {
-      const categoryQueryParam = `${category}VisualizationMode`
-      replaceQueryParams({ [categoryQueryParam]: visualizationMode })
+      setFourwingsVisualizationMode(category, visualizationMode)
       if (visualizationMode !== 'positions') {
         dispatch(setUserSetting({ [PREFERRED_FOURWINGS_VISUALISATION_MODE]: visualizationMode }))
       }
     },
-    [category, dispatch]
+    [category, dispatch, setFourwingsVisualizationMode]
   )
 
   const visualizationOptions: ChoiceOption<FourwingsVisualizationMode>[] = useMemo(() => {
