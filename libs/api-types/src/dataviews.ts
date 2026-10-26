@@ -121,6 +121,8 @@ export type DataviewConfig<Type = DataviewType> = DataviewConfigVessel & {
   filters?: DataviewDatasetFilter
   /** Used to filter the positions by id */
   filterIds?: string[]
+  /** Satellite scene whose detections are highlighted in positions mode, see getDetectionSceneId */
+  highlightedSceneId?: string
   'vessel-groups'?: string[]
   /** Used to include or exlude options
    * eg: { "geartype": "exclude", flag: "include" }
