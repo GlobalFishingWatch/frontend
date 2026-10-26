@@ -130,11 +130,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   get positions() {
-    const filterIds = this.props.sublayers.flatMap((sublayer) => sublayer.filterIds || [])
-    return filterIds.length
-      ? this.state.positions.filter((p: FourwingsPositionFeature) =>
-          filterIds.includes(p.properties.id as string)
-        )
+    const hasFilters = this.props.sublayers.some(
+      (sublayer) => sublayer.filterIds?.length || sublayer.highlightedSceneId !== undefined
+    )
+    return hasFilters
+      ? this.state.positions.filter((p: FourwingsPositionFeature) => this._getIsVisible(p))
       : this.state.positions
   }
 
@@ -147,10 +147,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   get dimOpacity(): number {
-    return this._hasHighlightedVessels() ||
-      this.props.sublayers.some((sublayer) => sublayer.highlightedSceneId)
-      ? POSITIONS_DIMMED_OPACITY
-      : 1
+    return this._hasHighlightedVessels() ? POSITIONS_DIMMED_OPACITY : 1
   }
 
   get timestampBase(): number {
@@ -308,7 +305,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     const { colorScale } = this.state
     const { colorDomain, colorRange } = colorScale as FourwingsTileLayerColorScale
 
-    if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
+    if (!this._getIsVisible(d)) {
       return COLOR_TRANSPARENT
     }
 
@@ -334,15 +331,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return this.state.highlightedVesselIds.size > 0 || this.state.highlightedFeatureIds.size > 0
   }
 
-  /** A scene only dims its own sublayer, the rest stay at full opacity unless a vessel is highlighted */
   _getIsDimmed(d: FourwingsPositionFeature) {
-    if (this._getIsHighlightedVessel(d)) {
-      return false
-    }
-    return (
-      this._hasHighlightedVessels() ||
-      this.props.sublayers[d.properties.layer]?.highlightedSceneId !== undefined
-    )
+    return this._hasHighlightedVessels() && !this._getIsHighlightedVessel(d)
   }
 
   /** 1 keeps the position at full opacity in the shader, 0 applies dimOpacity */
@@ -354,13 +344,24 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return d.properties.stime - this.timestampBase
   }
   _getIsHighlightedVessel(d: FourwingsPositionFeature) {
-    if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
+    if (!this._getIsVisible(d)) {
       return false
     }
     return (
       this.state.highlightedVesselIds.has(d.properties?.id) ||
       this.state.highlightedFeatureIds.has(d.properties?.id) ||
       this._getIsHighlightedScene(d)
+    )
+  }
+
+  _getIsVisible(d: FourwingsPositionFeature) {
+    const sublayer = this.props.sublayers[d.properties.layer]
+    if (!getIsFeatureInFilterIds(d, sublayer?.filterIds)) {
+      return false
+    }
+    return (
+      sublayer?.highlightedSceneId === undefined ||
+      getIsDetectionInScene(d.properties?.id, sublayer.highlightedSceneId)
     )
   }
 
@@ -373,7 +374,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getHighlightColor = (d: FourwingsPositionFeature): Color => {
-    if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
+    if (!this._getIsVisible(d)) {
       return COLOR_TRANSPARENT
     }
     // constant on purpose: the layer is passed dimOpacity 0, so the shader keeps this alpha only
@@ -386,7 +387,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getIconSize = (d: FourwingsPositionFeature): number => {
-    if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
+    if (!this._getIsVisible(d)) {
       return 0
     }
     const canShowVesselIcon = this._canShowVesselIcon(d)
@@ -425,7 +426,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getLabelColor = (d: FourwingsPositionFeature): Color => {
-    if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
+    if (!this._getIsVisible(d)) {
       return COLOR_TRANSPARENT
     }
 
@@ -433,7 +434,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getVesselLabel = (d: FourwingsPositionFeature): string => {
-    if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
+    if (!this._getIsVisible(d)) {
       return ''
     }
     if (this._getIsDimmed(d)) {
@@ -466,7 +467,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   _getTrackColor = (d: FourwingsPositionsVesselTrack): Color => {
     const sublayer = this.props.sublayers[d.layer]
-    if (!getIsIdInFilterIds(d.id, sublayer?.filterIds)) {
+    if (
+      !getIsIdInFilterIds(d.id, sublayer?.filterIds) ||
+      (sublayer?.highlightedSceneId !== undefined &&
+        !getIsDetectionInScene(d.id, sublayer.highlightedSceneId))
+    ) {
       return COLOR_TRANSPARENT
     }
     const isHighlighted = this._getIsHighlightedTrack(d)
@@ -705,9 +710,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
               getIcon: (d: any) => (this._canShowVesselIcon(d) ? 'vessel' : 'circle'),
               getPosition: (d: any) => d.geometry.coordinates,
               getColor: (d: any) =>
-                getIsFeatureInFilterIds(d, sublayers[d.properties.layer]?.filterIds)
-                  ? hexToDeckColor(BLEND_BACKGROUND)
-                  : COLOR_TRANSPARENT,
+                this._getIsVisible(d) ? hexToDeckColor(BLEND_BACKGROUND) : COLOR_TRANSPARENT,
               getHighlighted: this._getIsHighlighted,
               dimOpacity: this.dimOpacity,
               ...timeHighlightProps,
@@ -758,9 +761,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
               getIcon: (d: any) => (this._canShowVesselIcon(d) ? 'vesselHighlight' : 'circle'),
               getPosition: (d: any) => d.geometry.coordinates,
               getColor: (d: any) =>
-                getIsFeatureInFilterIds(d, sublayers[d.properties.layer]?.filterIds)
-                  ? [255, 255, 255, 255]
-                  : COLOR_TRANSPARENT,
+                this._getIsVisible(d) ? [255, 255, 255, 255] : COLOR_TRANSPARENT,
               getHighlighted: this._getIsHighlighted,
               dimOpacity: this.dimOpacity,
               ...timeHighlightProps,
