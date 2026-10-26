@@ -320,6 +320,7 @@
     "of": "crwdns132307:0crwdne132307:0",
     "onlyMe": "crwdns132309:0crwdne132309:0",
     "onlyVisibleForGFW": "crwdns132311:0crwdne132311:0",
+    "onlyVisibleForGFWAndJAC": "crwdns138813:0crwdne138813:0",
     "onlyVisibleForGFWShort": "crwdns132313:0crwdne132313:0",
     "onlyVisibleForJAC": "crwdns132315:0crwdne132315:0",
     "onScreen": "crwdns132317:0crwdne132317:0",
@@ -374,6 +375,7 @@
     "unknownProperty": "crwdns132405:0crwdne132405:0",
     "unknownVessel": "crwdns132407:0crwdne132407:0",
     "update": "crwdns132409:0crwdne132409:0",
+    "updated": "crwdns138833:0crwdne138833:0",
     "user": "crwdns132411:0crwdne132411:0",
     "userGuide": "crwdns132413:0crwdne132413:0",
     "value": "crwdns132415:0crwdne132415:0",
@@ -837,6 +839,8 @@
     "colorSelectPredefined": "crwdns133139:0crwdne133139:0",
     "colorSelectSpectralDisabled": "crwdns138337:0crwdne138337:0",
     "depth": "crwdns133141:0crwdne133141:0",
+    "depthLineGroups": "crwdns138815:0crwdne138815:0",
+    "depthSingleLines": "crwdns138817:0crwdne138817:0",
     "distance_from_port_km": "crwdns133143:0crwdne133143:0",
     "drawAddPoint": "crwdns133145:0crwdne133145:0",
     "drawAddPolygon": "crwdns133147:0crwdne133147:0",
@@ -1167,6 +1171,10 @@
     "selectAtLeastOneVessel": "crwdns133613:0crwdne133613:0",
     "title": "crwdns133615:0crwdne133615:0",
     "version": "crwdns133617:0crwdne133617:0"
+  },
+  "updateVideo": {
+    "learnMore": "crwdns138819:0crwdne138819:0",
+    "title": "crwdns138821:0crwdne138821:0"
   },
   "user": {
     "badges": {
@@ -1590,7 +1598,6 @@
     "columnSelectionTooltip": "crwdns134383:0crwdne134383:0",
     "confirmAbort": "crwdns134385:0crwdne134385:0",
     "confirmRemove": "crwdns134387:0crwdne134387:0",
-    "copyOf": "crwdns134389:0crwdne134389:0",
     "createNewGroup": "crwdns134391:0crwdne134391:0",
     "csvFile": "crwdns134393:0crwdne134393:0",
     "csvLink": "crwdns134395:0crwdne134395:0",
@@ -1627,6 +1634,7 @@
     "tooManyVessels_one": "crwdns134459:0{{count}}crwdne134459:0",
     "tooManyVessels_other": "crwdns134463:0{{count}}crwdne134463:0",
     "unmatchedIDs": "crwdns134465:0{{ids}}crwdne134465:0",
+    "updateError": "crwdns138835:0{{name}}crwdnd138835:0{{error}}crwdne138835:0",
     "updateRequired": "crwdns134467:0crwdne134467:0",
     "uploadPublic": "crwdns134469:0crwdne134469:0",
     "vesselAddedToGroup": "crwdns134471:0crwdne134471:0",
@@ -1672,6 +1680,13 @@
       "gaps_other": "crwdns134553:0{{count}}crwdnd134553:0{{vessels}}crwdne134553:0"
     }
   },
+  "videoPlayer": {
+    "mute": "crwdns138823:0crwdne138823:0",
+    "pause": "crwdns138825:0crwdne138825:0",
+    "play": "crwdns138827:0crwdne138827:0",
+    "progress": "crwdns138829:0crwdne138829:0",
+    "unmute": "crwdns138831:0crwdne138831:0"
+  },
   "workspace": {
     "addLayer": "crwdns134561:0crwdne134561:0",
     "archiveTitle": "crwdns138615:0crwdne138615:0",
@@ -1688,6 +1703,7 @@
     "deprecatedActivityLayerMigrated": "crwdns134579:0crwdne134579:0",
     "deprecatedVesselGroupLayer": "crwdns134581:0crwdne134581:0",
     "deprecatedVesselLayer": "crwdns134583:0crwdne134583:0",
+    "deprecatedVesselLayerSwitch": "crwdns138837:0crwdne138837:0",
     "edit": "crwdns134585:0crwdne134585:0",
     "editAccess": "crwdns134587:0crwdne134587:0",
     "editName": "crwdns134589:0crwdne134589:0",
@@ -1701,6 +1717,7 @@
     "migrationDisclaimer": "crwdns134603:0crwdne134603:0",
     "migrationDisclaimerNote": "crwdns134605:0crwdne134605:0",
     "migrationMigrateAll": "crwdns134607:0crwdne134607:0",
+    "migrationVesselGroupsError": "crwdns138839:0{{names}}crwdne138839:0",
     "nameRequired": "crwdns134609:0crwdne134609:0",
     "passwordIncorrect": "crwdns134611:0crwdne134611:0",
     "passwordMinLength": "crwdns134613:0crwdne134613:0",

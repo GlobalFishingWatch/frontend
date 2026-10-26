@@ -82,15 +82,15 @@
     "noTimeComparisonAllowed": "Modos de comparación de tiempo no están disponibles cuando las capas tienen diferentes filtros",
     "noVesselDataFiltered": "No hay embarcaciones que coincidan con su filtro",
     "onlyEvolutionSupported": "Haga clic en el botón de evolución de arriba para ver los buques activos en el área",
-    "others": "Otros",
-    "othersLayersAreReportArea": "The layers used to create this report area can't be analysed against themselves. Turn on another polygon or point layer to see results here.",
+    "others": "Otras áreas",
+    "othersLayersAreReportArea": "Las capas usadas para crear esta área del reporte no se pueden analizar contra sí mismas. Active otra capa de polígonos o de puntos para ver resultados aquí.",
     "periodComparison": "Comparación entre periodos",
     "periodComparison1st": "Inicio de línea base",
     "periodComparison2nd": "Inicio de comparación",
     "periodComparisonDuration": "Duración",
     "periodComparisonRange": "{{duration}} siguiente {{compareStart}} comparado con la línea de referencia {{duration}} siguiente {{start}}",
     "pinVessels": "Agregar al área de trabajo",
-    "pinVesselsMaxAllowed": "Añadir estos muchos barcos hará que tu espacio de trabajo supere el límite recomendado de {{maxVessels}} . Por favor, considere utilizar la función de grupos de buques para gestionar sus discursos.",
+    "pinVesselsMaxAllowed": "Añadir tantas embarcaciones haría que su espacio de trabajo superara el límite recomendado de {{maxVessels}} embarcaciones. Considere utilizar la función de grupos de embarcaciones para gestionarlas.",
     "polygons_one": "polígono",
     "polygons_other": "polígonos",
     "polygonsAreaCoverage": "cubriendo {{areakm2}}km2 ({{coverage}}%) del área del informe",
@@ -99,8 +99,8 @@
     "polygonsOverlapping": "superposición parcial",
     "polygonsOverlapping_one": "polígono superpuesto parcialmente",
     "polygonsOverlapping_other": "polígonos superpuestos parcialmente",
-    "polygonsTopAreas_one": "Largest polygon in the report area",
-    "polygonsTopAreas_other": "Top {{count}} largest polygons in the report area",
+    "polygonsTopAreas_one": "Polígono más grande del área del reporte",
+    "polygonsTopAreas_other": "Los {{count}} polígonos de mayor superficie dentro del área del reporte",
     "portsAfterEvents": "Puertos visitados después de eventos",
     "portsSearchPlaceholder": "Buscar puertos",
     "print": "imprimir",
@@ -320,6 +320,7 @@
     "of": "de",
     "onlyMe": "Sólo yo",
     "onlyVisibleForGFW": "Solo visible para usuarios de GFW",
+    "onlyVisibleForGFWAndJAC": "Visible for GFW and JAC users",
     "onlyVisibleForGFWShort": "Sólo GFW",
     "onlyVisibleForJAC": "Solo visible para usuarios del JAC",
     "onScreen": "en pantalla",
@@ -374,6 +375,7 @@
     "unknownProperty": "Desconocido",
     "unknownVessel": "Buque desconocido",
     "update": "Actualizar",
+    "updated": "Updated",
     "user": "Usuario",
     "userGuide": "Guía de usuario",
     "value": "valor",
@@ -434,8 +436,8 @@
     "showMore_other": "Show {{count}} more",
     "title": "Datos",
     "typeBigQuery": "BigQuery",
-    "typeGridded": "Gridded / Raster",
-    "typeGriddedDescription": "Display a heatmap from a GeoTIFF raster (EPSG:4326)",
+    "typeGridded": "Ráster en cuadrícula",
+    "typeGriddedDescription": "Mostrar un conjunto de datos ráster en cuadrícula a partir de un archivo GeoTIFF o NetCDF (EPSG:4326)",
     "typePoints": " Puntos",
     "typePointsDescription": "Mostrar una o varias posiciones con etiquetas en los datos",
     "typePolygons": " Polígonos",
@@ -494,7 +496,7 @@
     "gridded": {
       "band": "Band to import",
       "unit": "Unit",
-      "unitPlaceholder": "e.g., 'detections', '°C', 'm/s",
+      "unitPlaceholder": "p. ej., 'detecciones', '°C', 'm/s'",
       "variable": "Variable to import"
     },
     "maxValuesExceededForFiltering": "Valores máximos excedidos para el filtrado ({{max}})",
@@ -559,7 +561,7 @@
     },
     "context-layer-protectedseas": {
       "dataWarning": "Esta plataforma utiliza capas de referencia AMP de la fuente ProtectedSeas Navigator",
-      "dataWarningDetail": "Esta plataforma utiliza capas de referencia (shapefiles) de la fuente ProtectedSeas Navigator para áreas marinas protegidas. Las denominaciones empleadas y la presentación del material en esta plataforma no implican la expresión de opinión alguna por parte de Global Fishing Watch con respecto al estatus legal de cualquier país, territorio, ciudad o área o de sus autoridades, o con respecto a la delimitación de sus fronteras o límites. Para ver las capas de referencia originales, visite  <a href='https://mpa.protectedseas.net'>https://mpa.protectedseas.net/</a>. Si considera que estas capas de referencia no son aplicables para sus propósitos, esta plataforma permite cargar capas de referencia personalizadas. Dibuje o cargue su propia capa de referencia usando el ícono '+' en la barra lateral izquierda. Obtenga más información en nuestros <a href='https://globalfishingwatch.org/tutorials/'>tutoriales</a> and <a href='https://globalfishingwatch.org/help-faqs/'>preguntas frecuentes</a>."
+      "dataWarningDetail": "Esta plataforma utiliza capas de referencia (shapefiles) de la fuente ProtectedSeas Navigator para áreas marinas protegidas. Las denominaciones empleadas y la presentación del material en esta plataforma no implican la expresión de opinión alguna por parte de Global Fishing Watch con respecto al estatus legal de cualquier país, territorio, ciudad o área o de sus autoridades, o con respecto a la delimitación de sus fronteras o límites. Para ver las capas de referencia originales, visite <a href='https://mpa.protectedseas.net'>https://mpa.protectedseas.net/</a>. Si considera que estas capas de referencia no son aplicables para sus propósitos, esta plataforma permite cargar capas de referencia personalizadas. Dibuje o cargue su propia capa de referencia usando el ícono '+' en la barra lateral izquierda. Obtenga más información en nuestros <a href='https://globalfishingwatch.org/tutorials/'>tutoriales</a> y <a href='https://globalfishingwatch.org/help-faqs/'>preguntas frecuentes</a>."
     }
   },
   "detectionBands": {
@@ -837,6 +839,8 @@
     "colorSelectPredefined": "Selecciona color predefinido",
     "colorSelectSpectralDisabled": "The multicolor palette is only available when a single heatmap layer is visible",
     "depth": "Depth",
+    "depthLineGroups": "Groups of lines",
+    "depthSingleLines": "Single lines",
     "distance_from_port_km": "Búfer del puerto",
     "drawAddPoint": "Añadir un punto",
     "drawAddPolygon": "Añadir una geometría",
@@ -923,7 +927,7 @@
     "highRes": "Ver mapas de calor de alta resolución",
     "highResDisabled": "Los mapas de calor de alta resolución están desactivados cuando se utiliza un filtro de grupo de embarcaciones",
     "legend_help": "Área de celda de cuadrícula aproximada en el ecuador",
-    "legendBrushHelp": "Click or drag to adjust the value",
+    "legendBrushHelp": "Arrastre los extremos de la escala o escriba un valor para mostrar solo las celdas de cuadrícula de ese rango",
     "loading": "Cargando",
     "lowRes": "Ver mapas de calor de baja resolución",
     "mapLoadingWait": "Por favor espere a que cargue el mapa",
@@ -978,12 +982,12 @@
     },
     "copilotExamples": {
       "carrierEncounters": "Encounters between carriers and fishing vessels in IOTC",
-      "galapagosEffort": "Fishing effort inside the Galápagos Marine Reserve last month",
+      "galapagosEffort": "Actividad de pesca aparente dentro de la Reserva Marina de Galápagos el mes pasado",
       "lasPalmasVisits": "Which vessels visited the Tenerife port in December?",
       "loiteringWestAfrica": "Loitering events off the coast of West Africa",
       "nightLightYellowSea": "Night light detections in the Yellow Sea last winter",
       "northSeaTrawling": "Compare trawling hours in the North Sea between 2023 and 2024",
-      "peruEffort": "AIS and VMS apparent fishing effort in the Peruvian EEZ",
+      "peruEffort": "Actividad de pesca aparente AIS y VMS en la ZEE de Perú",
       "senegalPortVisits": "Port visits by Spanish-flagged vessels in Senegal",
       "squidPacific": "Chinese squid jiggers fishing in southeast Pacific in 2024",
       "trackVessel": "Track the vessel with MMSI 412331107 over the past year"
@@ -1146,7 +1150,7 @@
     "adjustDisclaimer": "Ajuste su intervalo de tiempo para cubrir con la mayor precisión posible la actividad en la que está reportando.",
     "badLink": "La corrección a la que intentas acceder no se encontró. Cierra este panel para ver la lista de todas las correciones.",
     "comment": "Comentar",
-    "commentPlaceholder": "Add a comment...",
+    "commentPlaceholder": "Explíquenos por qué cree que esto está mal clasificado",
     "commentRequired": "El comentario es necesario para presentar una corrección",
     "commentResolve": "Resolver",
     "confirm": "Confirmar",
@@ -1167,6 +1171,10 @@
     "selectAtLeastOneVessel": "Seleccione al menos una embarcación",
     "title": "Panel de corrección",
     "version": "versión"
+  },
+  "updateVideo": {
+    "learnMore": "Más información sobre la última actualización del mapa",
+    "title": "Novedades del mapa"
   },
   "user": {
     "badges": {
@@ -1442,9 +1450,9 @@
       "IUU": "Lista de embarcaciones INDNR de OROP",
       "IUUBlackListsCount": "La embarcación está presente en una lista de embarcaciones INDNR de OROP",
       "IUUBlackListsEmpty": "La embarcación no está presente en una lista de embarcaciones INDNR de OROP",
-      "longline": "Longline settings at day and night",
-      "longlineDayAndNightSets_one": "{{count}} set outside or overlapping with dawn and dusk (up to 2 hrs overlap)",
-      "longlineDayAndNightSets_other": "{{count}} sets outside or overlapping with dawn and dusk (up to 2 hrs overlap)",
+      "longline": "Eventos de calado de palangre",
+      "longlineDayAndNightSets_one": "{{count}} calado entre el día y la noche",
+      "longlineDayAndNightSets_other": "{{count}} calado entre el día y la noche",
       "longlineDownload": "Download longline sets",
       "longlineEntirelyDaySets_one": "{{count}} day set",
       "longlineEntirelyDaySets_other": "{{count}} day sets",
@@ -1590,7 +1598,6 @@
     "columnSelectionTooltip": "Seleccione las columnas identificadoras para permitir la revisión de identidad del buque y la coincidencia con el conjunto de datos de GFW",
     "confirmAbort": "Perderá cualquier cambio realizado en este grupo de embarcaciones. ¿Está seguro?",
     "confirmRemove": "¿Está seguro de que quieres eliminar permanentemente este grupo de embarcaciones?",
-    "copyOf": "Copia de",
     "createNewGroup": "Crear nuevo grupo",
     "csvFile": "Subir un archivo",
     "csvLink": "Haga clic para ver un ejemplo de archivo CSV",
@@ -1627,6 +1634,7 @@
     "tooManyVessels_one": "El número máximo de embarcaciones es {{count}}",
     "tooManyVessels_other": "El número máximo de embarcaciones es {{count}}",
     "unmatchedIDs": "Barcos sin coincidencia: {{ids}}",
+    "updateError": "The vessel group {{name}} couldn't be updated: {{error}}",
     "updateRequired": "Actualización requerida",
     "uploadPublic": "Permitir a otros usuarios ver este grupo de embarcaciones cuando comparta un espacio de trabajo",
     "vesselAddedToGroup": "Tu grupo de buques fue actualizado",
@@ -1672,6 +1680,13 @@
       "gaps_other": "{{count}} eventos de desactivación de AIS de {{vessels}} embarcaciones detectados"
     }
   },
+  "videoPlayer": {
+    "mute": "Silenciar",
+    "pause": "Pausar",
+    "play": "Reproducir",
+    "progress": "Progreso del vídeo",
+    "unmute": "Activar sonido"
+  },
   "workspace": {
     "addLayer": "Agregar al área de trabajo",
     "archiveTitle": "Archived workspaces",
@@ -1688,6 +1703,7 @@
     "deprecatedActivityLayerMigrated": "Ya hay una copia de esta capa usando el último dataset. Haga clic para quitar esta",
     "deprecatedVesselGroupLayer": "Este grupo de embarcaciones está usando datos obsoletos. Haga clic para crearlo de nuevo con el último conjunto de datos",
     "deprecatedVesselLayer": "Esta embarcación utiliza datos obsoletos. Haga clic para buscar en el conjunto de datos más reciente.",
+    "deprecatedVesselLayerSwitch": "This vessel is using outdated data. Click to add a copy with the latest dataset",
     "edit": "Editar espacio de trabajo",
     "editAccess": "Editar acceso",
     "editName": "Modificar el nombre del espacio de trabajo",
@@ -1701,6 +1717,7 @@
     "migrationDisclaimer": "Algunas capas en este área de trabajo están usando datos desactualizados",
     "migrationDisclaimerNote": "Sigue las instrucciones de los iconos de advertencia para actualizarlos. <a target='_blank' href='https://globalfishingwatch.org/platform-update/version-4-data-pipeline-release/'>Ver más.</a>",
     "migrationMigrateAll": "Actualizar todas las capas al último conjunto de datos",
+    "migrationVesselGroupsError": "These vessel groups couldn't be updated automatically: {{names}}. Update them from their layer panel",
     "nameRequired": "Se necesita cargar el nombre del área de trabajo",
     "passwordIncorrect": "Contraseña invalida",
     "passwordMinLength": "La contraseña debe tener al menos 5 caracteres",

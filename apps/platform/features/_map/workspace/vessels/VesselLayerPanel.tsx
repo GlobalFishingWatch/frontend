@@ -31,6 +31,7 @@ import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
 import DatasetSchemaField from 'features/_map/workspace/shared/DatasetSchemaField'
 import ExpandedContainer from 'features/_map/workspace/shared/ExpandedContainer'
 import { useLayerPanelDataviewSort } from 'features/_map/workspace/shared/layer-panel-sort.hook'
+import { getLayerMoreIcon } from 'features/_map/workspace/shared/layer-status-icon.utils'
 import VesselDownload from 'features/_map/workspace/vessels/VesselDownload'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import { selectIsWorkspaceOwnerOrDefault } from 'features/_map/workspace/workspace.selectors'
@@ -294,7 +295,7 @@ function VesselLayerPanel({
             />
           )}
           {showDeprecatedWarning && vesselData && (
-            <VesselDeprecatedLink vesselIdentity={vesselData} />
+            <VesselDeprecatedLink vesselIdentity={vesselData} dataview={dataview} />
           )}
           {(infoError || trackError) && !showDeprecatedWarning && (
             <IconButton
@@ -317,22 +318,11 @@ function VesselLayerPanel({
           )}
         </div>
         <IconButton
-          icon={
-            layerActive
-              ? infoError || trackError || showDeprecatedWarning
-                ? 'warning'
-                : 'more'
-              : undefined
-          }
-          type={
-            layerActive
-              ? showDeprecatedWarning
-                ? 'warning-invert'
-                : infoError || trackError
-                  ? 'warning'
-                  : 'default'
-              : 'default'
-          }
+          {...getLayerMoreIcon({
+            layerActive,
+            deprecated: showDeprecatedWarning,
+            error: !!(infoError || trackError),
+          })}
           loading={!showDeprecatedWarning && trackLoading}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"

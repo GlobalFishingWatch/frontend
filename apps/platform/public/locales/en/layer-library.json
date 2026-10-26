@@ -5,9 +5,9 @@
     "name": "Bathymetry"
   },
   "bathymetry-contour": {
-    "description": "Bathymetry is the measurement of water depth and provides details of the physical features of the ocean floor. This contour dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second resolution.",
-    "moreInfoLink": "https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO2022",
-    "name": "Bathymetry contour"
+    "description": "Lines of equal water depth, labeled in meters, that show the shape of the seafloor. Filter by ocean zone, depth range or a single depth. Derived from the ETOPO 2022 global relief model.",
+    "moreInfoLink": "https://www.ncei.noaa.gov/products/etopo-global-relief-model",
+    "name": "Bathymetry contours"
   },
   "chlorophyl": {
     "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Marine phytoplankton chemically fix carbon through photosynthesis by taking in dissolved carbon dioxide and producing oxygen. This dataset is comprised of biogeochemical parameters, including chlorophyll, over the global ocean displayed with a 1/4 degree horizontal resolution. ",
@@ -147,12 +147,7 @@
   "port-locations": {
     "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
     "moreInfoLink": "",
-    "name": "Ports (AIS)"
-  },
-  "port-locations-vms": {
-    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
-    "moreInfoLink": "",
-    "name": "Ports (VMS)"
+    "name": "Global Ports and Anchorages"
   },
   "port-visits": {
     "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. The dataset contains over 160,000 individual anchorage locations, which are further grouped into nearly 32,000 ports. ",

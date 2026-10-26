@@ -6,6 +6,7 @@ import { groupBy, uniqBy } from 'es-toolkit'
 import type { DatasetSubCategory } from '@globalfishingwatch/api-types'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { isContextDataview } from '@globalfishingwatch/dataviews-client'
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import type {
   BathymetryContourPickingObject,
@@ -21,6 +22,7 @@ import {
   FourwingsComparisonMode,
   POSITIONS_ID,
 } from '@globalfishingwatch/deck-layers'
+import { PORTS_GLOBAL_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
 
 import { POPUP_CATEGORY_ORDER } from 'data/map/config'
 import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
@@ -80,6 +82,9 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
   const mapViewport = useMapViewport()
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
+  const portsDataviewIds = new Set(
+    dataviews.flatMap((d) => (d.dataviewId === PORTS_GLOBAL_DATAVIEW_SLUG ? d.id : []))
+  )
   const activityInteractionStatus = useSelector(selectActivityInteractionStatus)
   const activityInteractionError = useSelector(selectActivityInteractionError)
   const detectionPositionsInteractionStatus = useSelector(selectDetectionPositionsInteractionStatus)
@@ -224,9 +229,12 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             )
           }
           case DataviewCategory.Environment: {
-            const contextFeatures = (features as UserLayerPickingObject[]).filter(
-              (feature) => feature.subcategory === DataviewType.UserContext
-            )
+            const isContextFeature = (feature: (typeof features)[number]) => {
+              if (feature.subcategory === DataviewType.UserContext) return true
+              const dataview = dataviews.find((d) => d.id === feature.layerId)
+              return dataview ? isContextDataview(dataview) : false
+            }
+            const contextFeatures = features.filter(isContextFeature) as UserLayerPickingObject[]
             const vectorsFeatures = (features as FourwingsHeatmapPickingObject[]).filter(
               (feature) => feature.subcategory === DataviewType.FourwingsVector
             )
@@ -237,9 +245,9 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               features as SliceExtendedFourwingsPickingObject[]
             ).filter(
               (feature) =>
-                feature.subcategory !== DataviewType.UserContext &&
-                feature.subcategory !== DataviewType.FourwingsVector &&
-                !isBathymetryContour(feature)
+                !isContextFeature(feature) &&
+                !isBathymetryContour(feature) &&
+                feature.subcategory !== DataviewType.FourwingsVector
             )
             return (
               <Fragment key={featureCategory}>
@@ -271,7 +279,10 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             const contextFeatures: ContextPickingObject[] = []
             const userContextFeatures: UserLayerPickingObject[] = []
             for (const feature of features) {
-              if (feature.layerId.startsWith(PORTS_LAYER_ID)) {
+              if (
+                feature.layerId.startsWith(PORTS_LAYER_ID) ||
+                portsDataviewIds.has(feature.layerId)
+              ) {
                 portFeatures.push(feature as UserLayerPickingObject)
               } else if (
                 (feature as UserLayerPickingObject).subcategory === DataviewType.UserPoints

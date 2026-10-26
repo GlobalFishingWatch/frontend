@@ -75,3 +75,8 @@
 .secondary:hover {
   color: var(--color-primary-blue);
 }
+
+.highlighted {
+  background: var(--color-highlight-blue);
+  box-decoration-break: clone;
+}

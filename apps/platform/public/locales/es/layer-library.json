@@ -5,9 +5,9 @@
     "name": "Batimetría"
   },
   "bathymetry-contour": {
-    "description": "La batimetría mide la profundidad del agua y proporciona detalles sobre las características físicas del fondo marino. Este conjunto de datos de contorno es un modelo de terreno global continuo que proporciona datos de elevación del océano en metros con una resolución de 15 segundos de arco.",
-    "moreInfoLink": "https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO2022",
-    "name": "Contorno de batimetría"
+    "description": "Líneas de igual profundidad del agua, etiquetadas en metros, que muestran la forma del fondo marino. Filtre por zona oceánica, rango de profundidad o una profundidad concreta. Derivadas del modelo global de relieve ETOPO 2022.",
+    "moreInfoLink": "https://www.ncei.noaa.gov/products/etopo-global-relief-model",
+    "name": "Contornos de batimetría"
   },
   "chlorophyl": {
     "description": "La clorofila a es el pigmento cosechador de luz que se encuentra en todas las plantas fotosintéticas. El fitoplancton marino fija el carbono químicamente a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo la clorofila, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",
@@ -60,7 +60,7 @@
     "name": "Actividad de pesca aparente (AIS)"
   },
   "fishing-effort-vms": {
-    "description": "Para determinar la \"actividad de pesca aparente\", Global Fishing Watch analiza los datos del sistema de monitoreo de buques (VMS) recopilados de buques que nuestra investigación ha identificado como buques de pesca comercial conocidos o posibles y aplica un modelo de aprendizaje automático que analiza secuencias de posiciones de los buques y sus características asociadas, como la velocidad, la batimetría, la ubicación relativa y la distancia a la costa.",
+    "description": "Para determinar la \"actividad de pesca aparente\", Global Fishing Watch analiza los datos del sistema de seguimiento de buques (VMS) recopilados de buques que nuestra investigación ha identificado como buques de pesca comercial conocidos o posibles y aplica un modelo de aprendizaje automático que analiza secuencias de posiciones de los buques y sus características asociadas, como la velocidad, la batimetría, la ubicación relativa y la distancia a la costa.",
     "moreInfoLink": "",
     "name": "Actividad de pesca aparente (VMS)"
   },
@@ -147,12 +147,7 @@
   "port-locations": {
     "description": "Los puertos se basan en el conjunto de datos de fondeaderos de Global Fishing Watch, una base de datos global de lugares de fondeo donde se congregan las embarcaciones. Esta capa incluye los puertos con un nombre conocido.",
     "moreInfoLink": "",
-    "name": "Puertos"
-  },
-  "port-locations-vms": {
-    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
-    "moreInfoLink": "",
-    "name": "Ports (VMS)"
+    "name": "Puertos y fondeaderos a nivel mundial"
   },
   "port-visits": {
     "description": "Los puertos se basan en el conjunto de datos de fondeaderos de Global Fishing Watch, una base de datos global de lugares de fondeo donde se congregan las embarcaciones. Este conjunto de datos incluye más de 160.000 puntos de fondeo individuales, que se agrupan en aproximadamente 32.000 puertos. ",

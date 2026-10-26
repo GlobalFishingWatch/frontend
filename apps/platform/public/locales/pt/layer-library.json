@@ -5,9 +5,9 @@
     "name": "Batimetria"
   },
   "bathymetry-contour": {
-    "description": "Bathymetry is the measurement of water depth and provides details of the physical features of the ocean floor. This contour dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second resolution.",
-    "moreInfoLink": "https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO2022",
-    "name": "Bathymetry contour"
+    "description": "Linhas de igual profundidade da água, indicadas em metros, que mostram a forma do fundo do mar. Filtre por zona oceânica, faixa de profundidade ou uma profundidade única. Derivadas do modelo global de relevo ETOPO 2022.",
+    "moreInfoLink": "https://www.ncei.noaa.gov/products/etopo-global-relief-model",
+    "name": "Contornos batimétricos"
   },
   "chlorophyl": {
     "description": "A clorofila a é o pigmento captador de luz encontrado em todas as plantas fotossintéticas. O fitoplâncton marinho fixa quimicamente o carbono através da fotossíntese, absorvendo dióxido de carbono dissolvido e produzindo oxigênio. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo a clorofila, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. ",
@@ -148,11 +148,6 @@
     "description": "Portos são baseados no conjunto de dados de ancoragens do Global Fishing Watch, uma base de dados global de locais de ancoragem onde as embarcações se aglomeram. Esta camada inclui os portos com nome conhecido.",
     "moreInfoLink": "",
     "name": "Portos (AIS)"
-  },
-  "port-locations-vms": {
-    "description": "Portos são baseados no conjunto de dados de ancoragens do Global Fishing Watch, uma base de dados global de locais de ancoragem onde as embarcações se aglomeram. Esta camada inclui os portos com nome conhecido.",
-    "moreInfoLink": "",
-    "name": "Portos (VMS)"
   },
   "port-visits": {
     "description": "Os portos são baseados no conjunto de dados de ancoragens da Global Fishing Watch, um banco de dados global de locais de ancoragem onde as embarcações se reúnem. O conjunto de dados contém mais de 160.000 locais de ancoragem individuais, que são agrupados em cerca de 32.000 portos. ",

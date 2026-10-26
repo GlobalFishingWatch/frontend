@@ -33,6 +33,7 @@ const ContextLayerSparkline = ({
       {canSwitch ? (
         <Choice
           size="small"
+          className={styles.sparklineChoice}
           activeOption={option.id}
           options={options}
           onSelect={({ id }) => onSelectCategory(id)}

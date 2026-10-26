@@ -6,7 +6,7 @@ import cx from 'classnames'
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
-import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import { type FourwingsLayer, POSITIONS_ID } from '@globalfishingwatch/deck-layers'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 import { AIS_DATAVIEW_INSTANCE_ID, SAR_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
@@ -19,11 +19,17 @@ import { useMigrateToLatestDataview } from 'features/_map/dataviews/dataviews.ho
 import { useActivityDataviewId } from 'features/_map/map/map-layers.hooks'
 import ActivityAuxiliaryLayerPanel from 'features/_map/workspace/activity/ActivityAuxiliaryLayer'
 import TurningTidesTags from 'features/_map/workspace/activity/TurningTidesTags'
+import DetectionSceneTag from 'features/_map/workspace/detections/DetectionSceneTag'
 import {
   selectBivariateDataviews,
+  selectDetectionsVisualizationMode,
   selectReadOnly,
 } from 'features/_map/workspace/selectors/app.selectors'
 import ExpandedContainer from 'features/_map/workspace/shared/ExpandedContainer'
+import {
+  getLayerMoreIcon,
+  getLayerStatusIcon,
+} from 'features/_map/workspace/shared/layer-status-icon.utils'
 import LayerProperties from 'features/_map/workspace/shared/LayerProperties'
 import MapLegend from 'features/_map/workspace/shared/MapLegend'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
@@ -81,6 +87,7 @@ function ActivityLayerPanel({
   const hintsDismissed = useSelector(selectHintsDismissed)
   const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
   const isRealTimeMode = useSelector(selectIsRealTimeMode)
+  const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
   const readOnly = useSelector(selectReadOnly)
   const layerActive = dataview?.config?.visible ?? true
   const dataviewId = useActivityDataviewId(dataview)
@@ -185,6 +192,12 @@ function ActivityLayerPanel({
 
   const showFilters = isDefaultActivityDataview(dataview) || isDefaultDetectionsDataview(dataview)
   const { filtersAllowed } = getFiltersInDataview(dataview)
+  // Every detection position has value 1, so the legend and visible values filter are meaningless.
+  // Only hidden here, the config is kept so it applies again when switching back to heatmap
+  const isDetectionsPositions =
+    dataview.category === DataviewCategory.Detections &&
+    detectionsVisualizationMode === POSITIONS_ID
+  const isBivariateMain = bivariateDataviews?.[0] === dataview.id
 
   return (
     <div
@@ -274,8 +287,7 @@ function ActivityLayerPanel({
             )}
             {!readOnly && layerActive && (layerError || showDeprecatedWarning) && (
               <IconButton
-                icon="warning"
-                type={showDeprecatedWarning ? 'warning-invert' : 'warning'}
+                {...getLayerStatusIcon({ deprecated: showDeprecatedWarning, error: !!layerError })}
                 loading={showDeprecatedWarning && isMigrating}
                 disabled={showDeprecatedWarning && isMigrating}
                 onClick={showDeprecatedWarning ? () => onMigrateDataviewClick(dataview) : undefined}
@@ -296,18 +308,11 @@ function ActivityLayerPanel({
             <Hint id="filterActivityLayers" className={styles.helpHint} />
           )}
           <IconButton
-            icon={
-              layerActive ? (layerError || showDeprecatedWarning ? 'warning' : 'more') : undefined
-            }
-            type={
-              layerActive
-                ? showDeprecatedWarning
-                  ? 'warning-invert'
-                  : layerError
-                    ? 'warning'
-                    : 'default'
-                : 'default'
-            }
+            {...getLayerMoreIcon({
+              layerActive,
+              deprecated: showDeprecatedWarning,
+              error: !!layerError,
+            })}
             loading={!showDeprecatedWarning && layerActive && !layerLoaded}
             className={cx('print-hidden', styles.shownUntilHovered)}
             size="small"
@@ -381,38 +386,44 @@ function ActivityLayerPanel({
                 {filtersAllowed.map(({ id, label }) => (
                   <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
                 ))}
-                {(dataview.config?.minVisibleValue !== undefined ||
-                  dataview.config?.maxVisibleValue !== undefined) && (
-                  <DatasetSchemaField
-                    key="visibleValues"
-                    dataview={dataview}
-                    field="visibleValues"
-                    label={t((t) => t.common.visibleValues)}
+                {!isDetectionsPositions &&
+                  (dataview.config?.minVisibleValue !== undefined ||
+                    dataview.config?.maxVisibleValue !== undefined) && (
+                    <DatasetSchemaField
+                      key="visibleValues"
+                      dataview={dataview}
+                      field="visibleValues"
+                      label={t((t) => t.common.visibleValues)}
+                    />
+                  )}
+                {showTurningTidesFilters && <TurningTidesTags dataview={dataview} />}
+                <DetectionSceneTag dataview={dataview} />
+              </div>
+            </div>
+            {(!isDetectionsPositions || isBivariateMain) && (
+              <div className={activityStyles.legendContainer}>
+                {!isDetectionsPositions && (
+                  <div className={activityStyles.legend}>
+                    <MapLegend
+                      dataview={dataview}
+                      showPlaceholder={!bivariateDataviews?.includes(dataview.id)}
+                      brushClassName={styles.brushIdle}
+                    />
+                  </div>
+                )}
+                {isBivariateMain && (
+                  <IconButton
+                    size="medium"
+                    type="border"
+                    icon="split"
+                    tooltip={t((t) => t.layer.toggleCombinationMode.split)}
+                    tooltipPlacement="left"
+                    className={cx(activityStyles.bivariateSplit, 'print-hidden')}
+                    onClick={onSplitLayers}
                   />
                 )}
-                {showTurningTidesFilters && <TurningTidesTags dataview={dataview} />}
               </div>
-            </div>
-            <div className={activityStyles.legendContainer}>
-              <div className={activityStyles.legend}>
-                <MapLegend
-                  dataview={dataview}
-                  showPlaceholder={!bivariateDataviews?.includes(dataview.id)}
-                  brushClassName={styles.brushIdle}
-                />
-              </div>
-              {bivariateDataviews?.[0] === dataview.id && (
-                <IconButton
-                  size="medium"
-                  type="border"
-                  icon="split"
-                  tooltip={t((t) => t.layer.toggleCombinationMode.split)}
-                  tooltipPlacement="left"
-                  className={cx(activityStyles.bivariateSplit, 'print-hidden')}
-                  onClick={onSplitLayers}
-                />
-              )}
-            </div>
+            )}
           </div>
         )}
         {layerActive && <ActivityAuxiliaryLayerPanel dataview={dataview} />}

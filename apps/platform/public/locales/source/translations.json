@@ -99,8 +99,8 @@
     "polygonsOverlapping": "overlapping",
     "polygonsOverlapping_one": "overlapping polygon",
     "polygonsOverlapping_other": "overlapping polygons",
-    "polygonsTopAreas_one": "Largest polygon in the report area",
-    "polygonsTopAreas_other": "Top {{count}} largest polygons in the report area",
+    "polygonsTopAreas_one": "Largest polygon by area inside the report area",
+    "polygonsTopAreas_other": "Top {{count}} polygons by area inside the report area",
     "portsAfterEvents": "Ports visited after events",
     "portsSearchPlaceholder": "Search ports",
     "print": "print",
@@ -320,6 +320,7 @@
     "of": "of",
     "onlyMe": "Only me",
     "onlyVisibleForGFW": "Only visible for GFW users",
+    "onlyVisibleForGFWAndJAC": "Visible for GFW and JAC users",
     "onlyVisibleForGFWShort": "GFW Only",
     "onlyVisibleForJAC": "Only visible for JAC users",
     "onScreen": "on screen",
@@ -374,6 +375,7 @@
     "unknownProperty": "Unknown",
     "unknownVessel": "Unknown vessel",
     "update": "Update",
+    "updated": "Updated",
     "user": "User",
     "userGuide": "User Guide",
     "value": "value",
@@ -567,6 +569,11 @@
     "rgb": "Red, green and blue (visible light)"
   },
   "detections": "",
+  "detectionScene": {
+    "addHighlight": "Highlight other detections from the same satellite scene",
+    "highlight": "Scene",
+    "removeHighlight": "Clear scene highlight"
+  },
   "download": {
     "apiPortal": "See our APIs here",
     "area": "Area",
@@ -837,6 +844,8 @@
     "colorSelectPredefined": "Select predefined color",
     "colorSelectSpectralDisabled": "The multicolor palette is only available when a single heatmap layer is visible",
     "depth": "Depth",
+    "depthLineGroups": "Groups of lines",
+    "depthSingleLines": "Single lines",
     "distance_from_port_km": "Port Buffer",
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
@@ -1167,6 +1176,10 @@
     "selectAtLeastOneVessel": "Select at least one vessel",
     "title": "Track correction panel",
     "version": "Version"
+  },
+  "updateVideo": {
+    "learnMore": "Learn more about the latest map update",
+    "title": "What's new in the map"
   },
   "user": {
     "badges": {
@@ -1589,7 +1602,6 @@
     "columnSelectionTooltip": "Select identifier columns to enable vessel identity review and matching with the GFW dataset",
     "confirmAbort": "You will lose any changes made in this vessel group. Are you sure?",
     "confirmRemove": "Are you sure you want to permanently delete this vessel group?",
-    "copyOf": "Copy of",
     "createNewGroup": "Create new group",
     "csvFile": "Upload a file",
     "csvLink": "Click to see an example CSV file",
@@ -1626,6 +1638,7 @@
     "tooManyVessels_one": "Maximum number of vessels is {{count}}",
     "tooManyVessels_other": "Maximum number of vessels is {{count}}",
     "unmatchedIDs": "Unmatched vessels: {{ids}}",
+    "updateError": "The vessel group {{name}} couldn't be updated: {{error}}",
     "updateRequired": "Update required",
     "uploadPublic": "Allow other users to see this vessel group when you share a workspace",
     "vesselAddedToGroup": "Your vessel group was updated",
@@ -1671,6 +1684,13 @@
       "gaps_other": "{{count}} AIS Off Event from {{vessels}} vessels detected"
     }
   },
+  "videoPlayer": {
+    "mute": "Mute",
+    "pause": "Pause",
+    "play": "Play",
+    "progress": "Video progress",
+    "unmute": "Unmute"
+  },
   "workspace": {
     "addLayer": "Add to workspace",
     "archiveTitle": "Archived workspaces",
@@ -1687,6 +1707,7 @@
     "deprecatedActivityLayerMigrated": "There is already a copy of this layer using the latest dataset. Click to remove this one",
     "deprecatedVesselGroupLayer": "This vessel group is using outdated data. Click to create it again with the latest dataset",
     "deprecatedVesselLayer": "This vessel is using outdated data. Click to search in the latest dataset.",
+    "deprecatedVesselLayerSwitch": "This vessel is using outdated data. Click to add a copy with the latest dataset",
     "edit": "Edit workspace",
     "editAccess": "Edit access",
     "editName": "Edit workspace name",
@@ -1700,6 +1721,7 @@
     "migrationDisclaimer": "Some layers in this workspace are using outdated data",
     "migrationDisclaimerNote": "Follow the instructions of the warning icons to update them. <a target='_blank' href='https://globalfishingwatch.org/platform-update/version-4-data-pipeline-release/'>Learn more.</a>",
     "migrationMigrateAll": "Update all layers to the latest dataset",
+    "migrationVesselGroupsError": "These vessel groups couldn't be updated automatically: {{names}}. Update them from their layer panel",
     "nameRequired": "Workspace name is required",
     "passwordIncorrect": "Invalid password",
     "passwordMinLength": "Password must be at least 5 characters",
@@ -1724,7 +1746,7 @@
     },
     "title": "Workspace",
     "titlePlural": "Workspaces",
-    "updateDeprecatedDataviews": "This workspace contains layers that are using outdated data. Please update them from your workspace.",
+    "updateDeprecatedDataviews": "This workspace contains layers that are using outdated data. Click to update them from your workspace.",
     "uploadPublicDisabled": "This workspace can't be shared publicly because it contains private datasets",
     "user": "User workspace",
     "viewAccess": "View access",

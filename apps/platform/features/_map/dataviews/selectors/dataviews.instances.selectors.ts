@@ -54,6 +54,13 @@ export const findVesselProfileDataviewInstance = (
     if (vesselProfileDataviewInstances.length === 1) {
       return vesselProfileDataviewInstances[0]
     }
+    // A deprecated vessel and its latest copy can share the id version, but not the dataset
+    const datasetMatches = vesselProfileDataviewInstances.filter(
+      ({ config }) => config?.info === vesselDatasetId
+    )
+    if (datasetMatches.length === 1) {
+      return datasetMatches[0]
+    }
     const vesselDatasetIdVersion = vesselDatasetId.split(DATASET_VERSION_SEPARATOR)[1] as string
     const exactProfileDataviewInstanceMatch = vesselProfileDataviewInstances?.find(({ id }) => {
       return id === getVesselDataviewInstanceId(vesselId, vesselDatasetIdVersion)
@@ -167,6 +174,10 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
           return matchesSubcategory
         }
         if (dataview.category === DataviewCategory.Environment) {
+          // Polygon environment layers (coral reefs, seagrasses…) stay visible as context
+          if (REPORT_ONLY_VISIBLE_LAYERS.includes(dataview.config?.type as DataviewType)) {
+            return true
+          }
           const matchesCategory = getReportCategoryFromDataview(dataview) === reportCategory
           return matchesCategory
         }

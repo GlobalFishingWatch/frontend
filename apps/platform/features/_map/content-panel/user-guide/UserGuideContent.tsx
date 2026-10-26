@@ -29,7 +29,6 @@ export const UserGuideContentComponent = ({
     locale: toContentLocale(i18n.language),
   })
 
-  const [isTableOfContentsOpen, setIsTableOfContentsOpen] = useState(!sidePanelId)
   const [isScrolled, setIsScrolled] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [scrolledSubsectionId, setScrolledSubsectionId] = useState<string | null>(null)
@@ -59,10 +58,19 @@ export const UserGuideContentComponent = ({
         s.id.toString() === sidePanelId.toString() ||
         s.title.includes(sidePanelId.toString())
     )
-    return idx >= 0 ? idx : 0
+    return idx
   }, [data, sidePanelId])
 
-  const selectedSection = data[selectedSectionIndex]
+  const selectedSection = data[selectedSectionIndex] as (typeof data)[number] | undefined
+  const tableOfContentsOpen = !sidePanelId || !selectedSection
+  const isUnknownSection = !!sidePanelId && data.length > 0 && !selectedSection
+
+  useEffect(() => {
+    if (isUnknownSection) {
+      openSidePanel({ type: 'userGuide', id: undefined, subcontentId: undefined })
+    }
+  }, [isUnknownSection, openSidePanel])
+
   const scrolledSubsection = selectedSection?.subsections?.find(
     (sub) => (sub.slug || sub.id) === scrolledSubsectionId
   )
@@ -70,7 +78,7 @@ export const UserGuideContentComponent = ({
   const nextSection = data[selectedSectionIndex + 1] ?? null
 
   useEffect(() => {
-    if (!sidePanelSubcontentId || isTableOfContentsOpen) return
+    if (!sidePanelSubcontentId || tableOfContentsOpen) return
     let cancelled = false
 
     requestAnimationFrame(() => {
@@ -109,7 +117,7 @@ export const UserGuideContentComponent = ({
     return () => {
       cancelled = true
     }
-  }, [sidePanelSubcontentId, isTableOfContentsOpen, selectedSection])
+  }, [sidePanelSubcontentId, tableOfContentsOpen, selectedSection])
 
   if (isLoading) {
     return <Spinner />
@@ -121,13 +129,13 @@ export const UserGuideContentComponent = ({
   return (
     <div
       className={cx(styles.container, {
-        [styles.userGuideBackground]: !isTableOfContentsOpen,
+        [styles.userGuideBackground]: !tableOfContentsOpen,
       })}
     >
       <div className={cx(styles.header)}>
         <ContentHeader
           title={
-            isTableOfContentsOpen ? (
+            tableOfContentsOpen ? (
               <InputText
                 className={styles.headerSearch}
                 inputSize="medium"
@@ -145,7 +153,6 @@ export const UserGuideContentComponent = ({
                   size="medium"
                   tooltip={t((t) => t.common.userGuide)}
                   onClick={() => {
-                    setIsTableOfContentsOpen(true)
                     openSidePanel({
                       type: 'userGuide',
                       id: undefined,
@@ -153,7 +160,7 @@ export const UserGuideContentComponent = ({
                     })
                   }}
                 />
-                {isScrolled && !isTableOfContentsOpen && selectedSection && (
+                {isScrolled && !tableOfContentsOpen && selectedSection && (
                   <>
                     <Icon icon="arrow-right" className={cx(styles.separator, styles.secondary)} />
                     <span
@@ -197,17 +204,16 @@ export const UserGuideContentComponent = ({
       <div
         ref={scrollContainerRef}
         className={cx(styles.scrollContainer, {
-          [styles.tableOfContentsOpen]: isTableOfContentsOpen,
+          [styles.tableOfContentsOpen]: tableOfContentsOpen,
         })}
       >
-        {isTableOfContentsOpen ? (
+        {tableOfContentsOpen ? (
           <TableOfContents
             data={data}
             searchQuery={searchQuery}
             activeId={sidePanelId}
             onClick={(id) => {
               openSidePanel({ type: 'userGuide', id: id })
-              setIsTableOfContentsOpen(false)
             }}
             onSubItemClick={(sectionId, subId) => {
               openSidePanel({
@@ -215,7 +221,6 @@ export const UserGuideContentComponent = ({
                 id: sectionId,
                 subcontentId: subId,
               })
-              setIsTableOfContentsOpen(false)
             }}
           />
         ) : (

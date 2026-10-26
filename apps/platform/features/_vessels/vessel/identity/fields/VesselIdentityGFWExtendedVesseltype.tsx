@@ -31,7 +31,7 @@ const VesselIdentityGFWExtendedVesseltype = ({
   return (
     <ul className={styles.extendedInfo}>
       <li>
-        <GFWOnly userGroup="jac" className={styles.gfwOnly} />
+        <GFWOnly userGroup="both" className={styles.gfwOnly} />
       </li>
       <li>
         <Tooltip content="(coarseClass)">

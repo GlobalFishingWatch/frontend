@@ -52,6 +52,7 @@ function UserVesselGroups() {
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const loading =
     datasetsStatus === AsyncReducerStatus.Loading ||
+    vesselGroupStatus === AsyncReducerStatus.Idle ||
     vesselGroupStatus === AsyncReducerStatus.Loading
   const editingGroupId = useSelector(selectVesselGroupEditId)
   const onEditClick = useEditVesselGroupModal()
@@ -143,7 +144,7 @@ function UserVesselGroups() {
                         <Button
                           type="border-secondary"
                           size="small"
-                          icon={<Icon icon="warning" />}
+                          icon={<Icon icon="update-required" />}
                           tooltip={
                             hasDeletedDatasets
                               ? t((t) => t.workspace.deletedVesselGroupLayer)

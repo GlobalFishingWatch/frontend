@@ -69,6 +69,7 @@ import {
   cleanVesselShipname,
   filteredPositionsByViewport,
   getIsActivityPositionMatched,
+  getIsDetectionInScene,
   getIsDetectionsPositionMatched,
   getIsFeatureInFilterIds,
   getIsIdInFilterIds,
@@ -101,6 +102,8 @@ const defaultProps: DefaultProps<FourwingsPositionsTileLayerProps> = {
 }
 
 const MAX_LABEL_LENGTH = 20
+// Vessel tracks are disabled until they move behind a feature flag
+const VESSEL_TRACKS_ENABLED = false
 
 /** Same tiles, in the same order, still holding the same parsed content objects */
 function hasSameTileContents(tiles: Tile2DHeader[], contents: unknown[]): boolean {
@@ -123,15 +126,16 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     if (!this.state) {
       return ''
     }
-    return `${this.state?.viewportDirty}|${this.viewportLoaded}`
+    const highlightedScenesHash = this.props.sublayers.map((s) => s.highlightedSceneId).join(',')
+    return `${this.state?.viewportDirty}|${this.viewportLoaded}|${highlightedScenesHash}`
   }
 
   get positions() {
-    const filterIds = this.props.sublayers.flatMap((sublayer) => sublayer.filterIds || [])
-    return filterIds.length
-      ? this.state.positions.filter((p: FourwingsPositionFeature) =>
-          filterIds.includes(p.properties.id as string)
-        )
+    const hasFilters = this.props.sublayers.some(
+      (sublayer) => sublayer.filterIds?.length || sublayer.highlightedSceneId !== undefined
+    )
+    return hasFilters
+      ? this.state.positions.filter((p: FourwingsPositionFeature) => this._getIsVisible(p))
       : this.state.positions
   }
 
@@ -302,7 +306,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     const { colorScale } = this.state
     const { colorDomain, colorRange } = colorScale as FourwingsTileLayerColorScale
 
-    if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
+    if (!this._getIsVisible(d)) {
       return COLOR_TRANSPARENT
     }
 
@@ -328,25 +332,50 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return this.state.highlightedVesselIds.size > 0 || this.state.highlightedFeatureIds.size > 0
   }
 
+  _getIsDimmed(d: FourwingsPositionFeature) {
+    return this._hasHighlightedVessels() && !this._getIsHighlightedVessel(d)
+  }
+
+  /** 1 keeps the position at full opacity in the shader, 0 applies dimOpacity */
   _getIsHighlighted = (d: FourwingsPositionFeature): number => {
-    return this._getIsHighlightedVessel(d) ? 1 : 0
+    return this._getIsDimmed(d) ? 0 : 1
   }
 
   _getStime = (d: FourwingsPositionFeature): number => {
     return d.properties.stime - this.timestampBase
   }
   _getIsHighlightedVessel(d: FourwingsPositionFeature) {
-    if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
+    if (!this._getIsVisible(d)) {
       return false
     }
     return (
       this.state.highlightedVesselIds.has(d.properties?.id) ||
-      this.state.highlightedFeatureIds.has(d.properties?.id)
+      this.state.highlightedFeatureIds.has(d.properties?.id) ||
+      this._getIsHighlightedScene(d)
+    )
+  }
+
+  _getIsVisible(d: FourwingsPositionFeature) {
+    const sublayer = this.props.sublayers[d.properties.layer]
+    if (!getIsFeatureInFilterIds(d, sublayer?.filterIds)) {
+      return false
+    }
+    return (
+      sublayer?.highlightedSceneId === undefined ||
+      getIsDetectionInScene(d.properties?.id, sublayer.highlightedSceneId)
+    )
+  }
+
+  _getIsHighlightedScene(d: FourwingsPositionFeature) {
+    const highlightedSceneId = this.props.sublayers[d.properties.layer]?.highlightedSceneId
+    return (
+      highlightedSceneId !== undefined &&
+      getIsDetectionInScene(d.properties?.id, highlightedSceneId)
     )
   }
 
   _getHighlightColor = (d: FourwingsPositionFeature): Color => {
-    if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
+    if (!this._getIsVisible(d)) {
       return COLOR_TRANSPARENT
     }
     // constant on purpose: the layer is passed dimOpacity 0, so the shader keeps this alpha only
@@ -359,7 +388,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getIconSize = (d: FourwingsPositionFeature): number => {
-    if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
+    if (!this._getIsVisible(d)) {
       return 0
     }
     const canShowVesselIcon = this._canShowVesselIcon(d)
@@ -373,7 +402,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     if (this.state.highlightedPositionKeys.has(getPositionKey(d))) {
       return 1
     }
-    return this._isTrailPosition(d) ? 0 : this._getIsHighlighted(d)
+    return this._isTrailPosition(d) ? 0 : this._getIsHighlightedVessel(d) ? 1 : 0
   }
 
   _getHighlightScale = (d: FourwingsPositionFeature): number => {
@@ -398,7 +427,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getLabelColor = (d: FourwingsPositionFeature): Color => {
-    if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
+    if (!this._getIsVisible(d)) {
       return COLOR_TRANSPARENT
     }
 
@@ -406,10 +435,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getVesselLabel = (d: FourwingsPositionFeature): string => {
-    if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
+    if (!this._getIsVisible(d)) {
       return ''
     }
-    if (this._hasHighlightedVessels() && !this._getIsHighlightedVessel(d)) {
+    if (this._getIsDimmed(d)) {
       return ''
     }
 
@@ -424,7 +453,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   get showVesselTracks(): boolean {
-    return this.props.category === 'activity'
+    return VESSEL_TRACKS_ENABLED && this.props.category === 'activity'
   }
 
   _getLastPositionsInViewport = (
@@ -439,7 +468,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   _getTrackColor = (d: FourwingsPositionsVesselTrack): Color => {
     const sublayer = this.props.sublayers[d.layer]
-    if (!getIsIdInFilterIds(d.id, sublayer?.filterIds)) {
+    if (
+      !getIsIdInFilterIds(d.id, sublayer?.filterIds) ||
+      (sublayer?.highlightedSceneId !== undefined &&
+        !getIsDetectionInScene(d.id, sublayer.highlightedSceneId))
+    ) {
       return COLOR_TRANSPARENT
     }
     const isHighlighted = this._getIsHighlightedTrack(d)
@@ -473,8 +506,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     positions.sort((a, b) => a.properties.stime - b.properties.stime)
 
     const { tracks, lastPositions: lastPositionFeatures } = getVesselTracks(positions, {
-      includeTracks: false,
-      // includeTracks: this.showVesselTracks,
+      includeTracks: this.showVesselTracks,
     })
     const lastPositions = this._getLastPositionsInViewport(lastPositionFeatures)
     const colorScale = this._getColorRamp(positions)
@@ -584,6 +616,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList | null {
     const { sublayers } = this.props
+    const highlightedScenesHash = sublayers.map((s) => s.highlightedSceneId).join(',')
     const {
       positions,
       lastPositions,
@@ -632,7 +665,12 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
                 _pathType: 'open',
                 getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
                 updateTriggers: {
-                  getColor: [sublayers, highlightedFeatureIds, highlightedVesselIds],
+                  getColor: [
+                    sublayers,
+                    highlightedFeatureIds,
+                    highlightedVesselIds,
+                    highlightedScenesHash,
+                  ],
                 },
               })
             ),
@@ -658,7 +696,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         updateTriggers: {
           getColor: [sublayers],
           getSize: [sublayers, lastPositionFeatures],
-          getHighlighted: [highlightedFeatureIds, highlightedVesselIds],
+          getHighlighted: [highlightedFeatureIds, highlightedVesselIds, highlightedScenesHash],
           getStime: [this.timestampBase],
           getHighlightScale: [lastPositionFeatures],
         },
@@ -673,9 +711,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
               getIcon: (d: any) => (this._canShowVesselIcon(d) ? 'vessel' : 'circle'),
               getPosition: (d: any) => d.geometry.coordinates,
               getColor: (d: any) =>
-                getIsFeatureInFilterIds(d, sublayers[d.properties.layer]?.filterIds)
-                  ? hexToDeckColor(BLEND_BACKGROUND)
-                  : COLOR_TRANSPARENT,
+                this._getIsVisible(d) ? hexToDeckColor(BLEND_BACKGROUND) : COLOR_TRANSPARENT,
               getHighlighted: this._getIsHighlighted,
               dimOpacity: this.dimOpacity,
               ...timeHighlightProps,
@@ -685,7 +721,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
               updateTriggers: {
                 getColor: [sublayers],
                 getSize: [sublayers, lastPositionFeatures],
-                getHighlighted: [highlightedFeatureIds, highlightedVesselIds],
+                getHighlighted: [
+                  highlightedFeatureIds,
+                  highlightedVesselIds,
+                  highlightedScenesHash,
+                ],
                 getStime: [this.timestampBase],
               },
             }),
@@ -706,7 +746,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
               updateTriggers: {
                 getColor: [sublayers],
                 getSize: [sublayers, lastPositionFeatures],
-                getHighlighted: [highlightedFeatureIds, highlightedVesselIds],
+                getHighlighted: [
+                  highlightedFeatureIds,
+                  highlightedVesselIds,
+                  highlightedScenesHash,
+                ],
                 getStime: [this.timestampBase],
               },
             }),
@@ -718,9 +762,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
               getIcon: (d: any) => (this._canShowVesselIcon(d) ? 'vesselHighlight' : 'circle'),
               getPosition: (d: any) => d.geometry.coordinates,
               getColor: (d: any) =>
-                getIsFeatureInFilterIds(d, sublayers[d.properties.layer]?.filterIds)
-                  ? [255, 255, 255, 255]
-                  : COLOR_TRANSPARENT,
+                this._getIsVisible(d) ? [255, 255, 255, 255] : COLOR_TRANSPARENT,
               getHighlighted: this._getIsHighlighted,
               dimOpacity: this.dimOpacity,
               ...timeHighlightProps,
@@ -730,7 +772,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
               updateTriggers: {
                 getColor: [sublayers],
                 getSize: [sublayers, lastPositionFeatures],
-                getHighlighted: [highlightedFeatureIds, highlightedVesselIds],
+                getHighlighted: [
+                  highlightedFeatureIds,
+                  highlightedVesselIds,
+                  highlightedScenesHash,
+                ],
                 getStime: [this.timestampBase],
               },
             }),
@@ -757,6 +803,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           getHighlighted: [
             highlightedFeatureIds,
             highlightedVesselIds,
+            highlightedScenesHash,
             this.state.highlightedPositionKeys,
             lastPositionFeatures,
           ],
@@ -782,8 +829,13 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
               pickable: true,
               getPickingInfo: this.getPickingInfo,
               updateTriggers: {
-                getColor: [highlightedFeatureIds, highlightedVesselIds],
-                getText: [sublayers, highlightedFeatureIds, highlightedVesselIds],
+                getColor: [highlightedFeatureIds, highlightedVesselIds, highlightedScenesHash],
+                getText: [
+                  sublayers,
+                  highlightedFeatureIds,
+                  highlightedVesselIds,
+                  highlightedScenesHash,
+                ],
               },
             }),
           ]
