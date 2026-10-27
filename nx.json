@@ -225,6 +225,7 @@
       { "env": "VITE_PUBLIC_URL" },
       { "env": "VITE_REALTIME_ENABLED" },
       { "env": "VITE_REPORT_DAYS_LIMIT" },
+      { "env": "VITE_TURNSTILE_SITE_KEY" },
       { "env": "VITE_WORKSPACE_ENV" }
     ],
     "sharedGlobals": [
