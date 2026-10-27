@@ -1,4 +1,4 @@
-import { Fragment, useCallback } from 'react'
+import { Fragment, useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
@@ -6,9 +6,11 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import { useRateLimitChallengeState } from '@globalfishingwatch/api-client/hooks'
 import { Button } from '@globalfishingwatch/ui-components/button'
 
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+
 import styles from './RateLimitChallenge.module.css'
 
-// GFWAPI renders the Turnstile widget here when track/events requests approach the rate limit.
+// GFWAPI renders the Turnstile widget here when a track/events request hits the rate limit (429).
 // It stays invisible unless Cloudflare asks for an interaction, so the node must never remount:
 // moving the iframe reloads the challenge.
 function RateLimitChallenge() {
@@ -18,6 +20,20 @@ function RateLimitChallenge() {
     GFWAPI.setRateLimitChallengeContainer(container)
     return () => GFWAPI.clearRateLimitChallengeContainer(container)
   }, [])
+
+  const previousChallengeState = useRef(challengeState)
+  useEffect(() => {
+    const previous = previousChallengeState.current
+    previousChallengeState.current = challengeState
+    // From 'failed' it is a user retry and from 'interactive' the next queued dataset, same reset
+    if (challengeState === 'solving' && (previous === 'idle' || previous === 'cancelled')) {
+      trackEvent({ category: TrackCategory.Tracks, action: 'rate_limit_reset_needed' })
+    }
+    if (challengeState === 'interactive' && previous !== 'interactive') {
+      trackEvent({ category: TrackCategory.Tracks, action: 'rate_limit_challenge_interactive' })
+    }
+  }, [challengeState])
+
   const interactive = challengeState === 'interactive'
   const failed = challengeState === 'failed'
 
