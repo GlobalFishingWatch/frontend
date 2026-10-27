@@ -37,7 +37,6 @@ import {
   type DebugMode,
   GUEST_USER_TYPE,
   LOGOUT_SESSION_PATH,
-  RATE_LIMIT_CHALLENGE_THRESHOLD,
   REGISTER_PATH,
   SETTINGS_PATH,
   USER_REFRESH_TOKEN_STORAGE_KEY,
@@ -234,9 +233,7 @@ export class GFW_API_CLASS {
   setRateLimitChallengeContainer(container: HTMLElement) {
     if (container !== this.rateLimitChallengeContainer) {
       this.rateLimitChallengeContainer = container
-      this.debugRateLimit('challenge container set', {
-        threshold: RATE_LIMIT_CHALLENGE_THRESHOLD,
-      })
+      this.debugRateLimit('challenge container set')
       if (this.rateLimitResets.size && this.rateLimitChallengeState !== 'failed') {
         this.debugRateLimit('challenge moved to the new container')
         this.invalidateRateLimitChallengeAttempt()
@@ -410,7 +407,7 @@ export class GFW_API_CLASS {
     }
   }
 
-  private trackRateLimit(url: string, response: Response) {
+  private logRateLimit(url: string, response: Response) {
     if (
       !this.rateLimitChallengeContainer ||
       !isVisualizationRateLimitedUrl(url) ||
@@ -428,14 +425,6 @@ export class GFW_API_CLASS {
       remaining,
       limit,
     })
-    if (
-      remaining <= RATE_LIMIT_CHALLENGE_THRESHOLD &&
-      this.rateLimitChallengeState !== 'cancelled'
-    ) {
-      this.debugRateLimit(`remaining ${remaining} <= threshold ${RATE_LIMIT_CHALLENGE_THRESHOLD}`)
-      // Failure is already logged by ensureRateLimitChallenge
-      this.ensureRateLimitChallenge(dataset).catch(() => {})
-    }
   }
 
   private waitForRateLimitChallenge(dataset: string, signal?: AbortSignal | null) {
@@ -803,7 +792,7 @@ export class GFW_API_CLASS {
       })
         .then((res) => {
           // Read the headers before processStatus, parsed errors lose them
-          this.trackRateLimit(fetchUrl, res)
+          this.logRateLimit(fetchUrl, res)
           return processStatus(res, responseType)
         })
         .then((res) => {
