@@ -36,7 +36,6 @@ export const getVesselLatestDatasetId = (
 
 export const INCLUDES_RELATED_SELF_REPORTED_INFO_ID =
   'POTENTIAL_RELATED_SELF_REPORTED_INFO' as const
-export const CACHE_FALSE_PARAM = { id: 'cache', value: 'false' }
 
 export const DEFAULT_VESSEL_STATE: VesselProfileState = {
   vesselDatasetId: DEFAULT_VESSEL_IDENTITY_ID,

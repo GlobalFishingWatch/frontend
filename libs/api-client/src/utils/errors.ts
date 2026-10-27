@@ -15,7 +15,7 @@ export interface ResponseError {
 export const getIsUnauthorizedError = (error?: ResponseError | { status?: number }) =>
   error && error.status && error.status > 400 && error.status < 403
 
-export const getIsConcurrentError = (error?: ResponseError | { status?: number }) =>
+export const getIsRateLimitExceeded = (error?: ResponseError | { status?: number }) =>
   error?.status === CONCURRENT_ERROR_STATUS
 
 // The 524 timeout from cloudfare is not handled properly

@@ -939,6 +939,7 @@
     "nauticalMilesAbbr": "crwdns133309:0crwdne133309:0",
     "positions": "crwdns133311:0crwdne133311:0",
     "positionsDisabled": "crwdns133313:0crwdne133313:0",
+    "positionsLogin": "crwdns138847:0crwdne138847:0",
     "referenceLayersClose": "crwdns133315:0crwdne133315:0",
     "referenceLayersOpen": "crwdns133317:0crwdne133317:0",
     "rulers_add": "crwdns133319:0crwdne133319:0",
@@ -1046,6 +1047,16 @@
     "seePortReport": "crwdns133391:0crwdne133391:0",
     "summaryEvents": "crwdns133393:0{{vessels}}crwdnd133393:0{{flags}}crwdnd133393:0{{activityQuantity}}crwdnd133393:0{{start}}crwdnd133393:0{{end}}crwdne133393:0",
     "toThisPort": "crwdns138593:0crwdne138593:0"
+  },
+  "rateLimit": {
+    "challenge": "crwdns138849:0crwdne138849:0",
+    "challengeTitle": "crwdns138851:0crwdne138851:0",
+    "failed": "crwdns138853:0crwdne138853:0",
+    "failedTitle": "crwdns138855:0crwdne138855:0",
+    "notNow": "crwdns138857:0crwdne138857:0",
+    "profileActivity": "crwdns138859:0crwdne138859:0",
+    "trackLimitReached": "crwdns138863:0crwdne138863:0",
+    "verify": "crwdns138869:0crwdne138869:0"
   },
   "search": {
     "advanced": "crwdns133395:0crwdne133395:0",
@@ -1551,8 +1562,8 @@
     "title": "crwdns134295:0crwdne134295:0",
     "toggleAllVessels": "crwdns134297:0crwdne134297:0",
     "tonnageGt": "crwdns134299:0crwdne134299:0",
-    "trackLogin": "crwdns134301:0crwdne134301:0",
-    "trackResolution": "crwdns134303:0crwdne134303:0",
+    "trackLoginRequired": "crwdns138865:0crwdne138865:0",
+    "trackLoginTooltip": "crwdns138867:0crwdne138867:0",
     "transmissionDates": "crwdns134305:0crwdne134305:0",
     "transmissions": "crwdns134307:0crwdne134307:0",
     "type": "crwdns134309:0crwdne134309:0",

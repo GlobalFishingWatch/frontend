@@ -16,6 +16,7 @@ platform:
       VITE_PIPE_DATASET_VERSION: '5'
       VITE_REALTIME_ENABLED: 'false'
     secrets:
+      VITE_TURNSTILE_SITE_KEY: projects/706952489382/secrets/TURNSTILE_SITE_KEY_TRACKS_DEV/versions/latest
       SENTRY_AUTH_TOKEN: projects/706952489382/secrets/FISHING_MAP_SENTRY_AUTH_TOKEN/versions/latest
   deploy:
     env_vars:

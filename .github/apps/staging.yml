@@ -15,6 +15,7 @@ platform:
       VITE_REPORT_DAYS_LIMIT: '366'
       VITE_PIPE_DATASET_VERSION: '5'
     secrets:
+      VITE_TURNSTILE_SITE_KEY: projects/706952489382/secrets/TURNSTILE_SITE_KEY_TRACKS_STA/versions/latest
       SENTRY_AUTH_TOKEN: projects/706952489382/secrets/FISHING_MAP_SENTRY_AUTH_TOKEN/versions/latest
   deploy:
     env_vars:

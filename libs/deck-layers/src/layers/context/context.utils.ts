@@ -158,7 +158,7 @@ export const getContextLink = (feature: ContextPickingObject) => {
       return `https://www.marineregions.org/eezdetails.php?mrgid=${id}`
     }
     case ContextLayerId.ProtectedSeas: {
-      const id = feature.properties?.id || feature.id
+      const id = feature.properties?.polygon_id || feature.id
       return `https://map.navigatormap.org/site-detail?site_id=${id}`
     }
     case ContextLayerId.FAO: {

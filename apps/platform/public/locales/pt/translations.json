@@ -939,6 +939,7 @@
     "nauticalMilesAbbr": "nm",
     "positions": "Ver modo de visualização de posições",
     "positionsDisabled": "Uma visualização mais detalhada está disponível em áreas com menos atividade, amplie ou reduza seu intervalo de tempo para vê-la",
+    "positionsLogin": "Register or log in to see vessel positions (free, 2 minutes)",
     "referenceLayersClose": "Fechar camadas de referência",
     "referenceLayersOpen": "Abrir camadas de referência",
     "rulers_add": "Adicionar réguas",
@@ -1046,6 +1047,16 @@
     "seePortReport": "Ver todos os eventos de entrada neste porto",
     "summaryEvents": "<strong>{{vessels}} embarcações</strong> com as <strong>bandeiras {{flags}}</strong> entraram neste porto <strong>{{activityQuantity}}</strong> vezes entre <strong>{{start}}</strong> e <strong>{{end}}</strong>",
     "toThisPort": "to this port"
+  },
+  "rateLimit": {
+    "challenge": "This check protects vessel data from automated traffic. Complete it to keep loading vessel tracks and events.",
+    "challengeTitle": "Confirm you're human",
+    "failed": "This check protects vessel data from automated traffic. Vessel tracks and events are paused until it passes.",
+    "failedTitle": "We couldn't verify you",
+    "notNow": "Not now",
+    "profileActivity": "Vessel tracks and events are paused. Verify you're human to see this vessel's activity.",
+    "trackLimitReached": "Vessel tracks and events are paused. Click to confirm you're human and load them again.",
+    "verify": "Verify"
   },
   "search": {
     "advanced": "Avançado",
@@ -1551,8 +1562,8 @@
     "title": "Perfil da embarcação",
     "toggleAllVessels": "Alternar a visibilidade de todas as embarcações",
     "tonnageGt": "Tonelagem (Gt)",
-    "trackLogin": "Uma das fontes selecionadas requer que você esteja <1>login</1> para ver o rastreamento e eventos da embarcação",
-    "trackResolution": "<0>Faça login</0> para ver trajetórias de embarcações mais detalhadas (grátis, 2 minutos)",
+    "trackLoginRequired": "<0>Log in</0> to see vessel tracks and events",
+    "trackLoginTooltip": "Register or log in to see vessel tracks and events (free, 2 minutes)",
     "transmissionDates": "Datas de transmissão",
     "transmissions": "Transmissions",
     "type": "Tipo",
