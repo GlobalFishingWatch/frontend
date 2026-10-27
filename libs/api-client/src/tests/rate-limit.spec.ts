@@ -45,11 +45,11 @@ describe('rate limit', () => {
       .mockResolvedValueOnce(new Response(null, { status: 204 }))
       .mockResolvedValueOnce(rateLimitedResponse(200, 10))
 
-    await expect(client.fetch('/vessels/abc/tracks')).resolves.toEqual({ ok: true })
+    await expect(client.fetch('/vessels/abc/tracks?dataset=a')).resolves.toEqual({ ok: true })
 
     const [resetUrl, resetInit] = fetchMock.mock.calls[1]
-    expect(resetUrl).toBe('https://api.example.com/v3/auth/rate-limit/reset')
-    expect(resetInit.body).toBe(JSON.stringify({ token: 'turnstile-token' }))
+    expect(resetUrl).toBe('https://api.example.com/v3/vessels/tracks/visualize-limit/reset')
+    expect(resetInit.body).toBe(JSON.stringify({ dataset: 'a', captchaToken: 'turnstile-token' }))
     expect(fetchMock).toHaveBeenCalledTimes(3)
     expect(client.getRateLimitChallengeState()).toBe('idle')
   })
@@ -65,12 +65,51 @@ describe('rate limit', () => {
       .mockResolvedValueOnce(new Response(null, { status: 204 }))
       .mockResolvedValueOnce(rateLimitedResponse(200, 10))
 
-    const request = client.fetch('/vessels/abc/tracks')
+    const request = client.fetch('/vessels/abc/tracks?dataset=a')
     await vi.waitFor(() => expect(client.getRateLimitChallengeState()).toBe('failed'))
 
     client.retryRateLimitChallenge()
     await expect(request).resolves.toEqual({ ok: true })
     expect(fetchMock).toHaveBeenCalledTimes(4)
+    expect(client.getRateLimitChallengeState()).toBe('idle')
+  })
+
+  it('resets each dataset with its own challenge, releasing only its parked requests', async ({
+    client,
+    fetchMock,
+  }) => {
+    const challengeB = Promise.withResolvers<string>()
+    vi.mocked(renderRateLimitChallenge)
+      .mockResolvedValueOnce('token-a')
+      .mockReturnValueOnce(challengeB.promise)
+    client.setRateLimitChallengeContainer(document.createElement('div'))
+    // First request per dataset is rate limited, the retry after its reset succeeds
+    const requests: Record<string, number> = {}
+    fetchMock.mockImplementation(async (url: string) => {
+      if (url.includes('visualize-limit/reset')) return new Response(null, { status: 204 })
+      const dataset = new URL(url).searchParams.get('dataset') as string
+      requests[dataset] = (requests[dataset] ?? 0) + 1
+      return requests[dataset] === 1 ? rateLimitedResponse(429, 0) : rateLimitedResponse(200, 10)
+    })
+
+    const requestA = client.fetch('/vessels/abc/tracks?dataset=a')
+    let requestBSettled = false
+    const requestB = client
+      .fetch('/vessels/def/tracks?dataset=b')
+      .finally(() => (requestBSettled = true))
+
+    await expect(requestA).resolves.toEqual({ ok: true })
+    expect(requestBSettled).toBe(false)
+
+    challengeB.resolve('token-b')
+    await expect(requestB).resolves.toEqual({ ok: true })
+    const resetBodies = fetchMock.mock.calls
+      .filter(([url]) => url.includes('visualize-limit/reset'))
+      .map(([, init]) => JSON.parse(init.body))
+    expect(resetBodies).toEqual([
+      { dataset: 'a', captchaToken: 'token-a' },
+      { dataset: 'b', captchaToken: 'token-b' },
+    ])
     expect(client.getRateLimitChallengeState()).toBe('idle')
   })
 
@@ -93,7 +132,7 @@ describe('rate limit', () => {
     client.onRateLimitReset(failingListener)
     client.onRateLimitReset(listener)
 
-    await expect(client.fetch('/vessels/abc/tracks')).resolves.toEqual({ ok: true })
+    await expect(client.fetch('/vessels/abc/tracks?dataset=a')).resolves.toEqual({ ok: true })
     expect(failingListener).toHaveBeenCalledTimes(1)
     expect(listener).toHaveBeenCalledTimes(1)
     expect(client.getRateLimitChallengeState()).toBe('idle')
@@ -109,7 +148,7 @@ describe('rate limit', () => {
         .mockResolvedValueOnce(new Response(null, { status: 403 }))
     )
 
-    const request = client.fetch('/vessels/abc/tracks')
+    const request = client.fetch('/vessels/abc/tracks?dataset=a')
     await vi.waitFor(() => expect(client.getRateLimitChallengeState()).toBe('failed'))
 
     client.cancelRateLimitChallenge()
@@ -146,7 +185,9 @@ describe('rate limit', () => {
   }) => {
     fetchMock.mockResolvedValue(rateLimitedResponse(429, 0))
 
-    await expect(client.fetch('/vessels/abc/tracks')).rejects.toMatchObject({ status: 429 })
+    await expect(client.fetch('/vessels/abc/tracks?dataset=a')).rejects.toMatchObject({
+      status: 429,
+    })
   })
 
   it('ignores a clear from a container that was already replaced', async ({
@@ -163,7 +204,7 @@ describe('rate limit', () => {
       .mockResolvedValueOnce(rateLimitedResponse(200, 10))
 
     // Still enabled: the request is parked and retried instead of rejected
-    await expect(client.fetch('/vessels/abc/tracks')).resolves.toEqual({ ok: true })
+    await expect(client.fetch('/vessels/abc/tracks?dataset=a')).resolves.toEqual({ ok: true })
   })
 
   it('rejects parked requests when the container is removed mid-challenge', async ({
@@ -175,7 +216,7 @@ describe('rate limit', () => {
     client.setRateLimitChallengeContainer(container)
     fetchMock.mockResolvedValueOnce(rateLimitedResponse(429, 0))
 
-    const request = client.fetch('/vessels/abc/tracks')
+    const request = client.fetch('/vessels/abc/tracks?dataset=a')
     await vi.waitFor(() => expect(client.getRateLimitChallengeState()).toBe('solving'))
 
     client.clearRateLimitChallengeContainer(container)
@@ -193,7 +234,7 @@ describe('rate limit', () => {
       .mockResolvedValueOnce(new Response(null, { status: 204 }))
       .mockResolvedValueOnce(rateLimitedResponse(200, 10))
 
-    const request = client.fetch('/vessels/abc/tracks')
+    const request = client.fetch('/vessels/abc/tracks?dataset=a')
     await vi.waitFor(() => expect(client.getRateLimitChallengeState()).toBe('solving'))
 
     client.setRateLimitChallengeContainer(next)

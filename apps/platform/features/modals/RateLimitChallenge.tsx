@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
@@ -24,21 +24,29 @@ function RateLimitChallenge() {
   return (
     <div className={cx(styles.overlay, { [styles.visible]: interactive || failed })}>
       <div className={styles.content}>
-        {interactive && <p>{t((t) => t.rateLimit.challenge)}</p>}
+        {interactive && (
+          <div className={styles.message}>
+            <h2 className={styles.title}>{t((t) => t.rateLimit.challengeTitle)}</h2>
+            <p>{t((t) => t.rateLimit.challenge)}</p>
+          </div>
+        )}
         {failed && (
-          <div className={styles.failed} role="alert">
-            <p>{t((t) => t.rateLimit.failed)}</p>
+          <Fragment>
+            <div className={styles.message} role="alert">
+              <h2 className={styles.title}>{t((t) => t.rateLimit.failedTitle)}</h2>
+              <p>{t((t) => t.rateLimit.failed)}</p>
+            </div>
             <div className={styles.actions}>
               <Button type="secondary" onClick={GFWAPI.cancelRateLimitChallenge}>
-                {t((t) => t.common.cancel)}
+                {t((t) => t.rateLimit.notNow)}
               </Button>
               <Button onClick={GFWAPI.retryRateLimitChallenge}>
                 {t((t) => t.rateLimit.retry)}
               </Button>
             </div>
-          </div>
+          </Fragment>
         )}
-        <div ref={containerRef} />
+        <div className={styles.challengeContainer} ref={containerRef} />
       </div>
     </div>
   )

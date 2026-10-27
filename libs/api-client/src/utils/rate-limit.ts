@@ -12,7 +12,7 @@ export const getRateLimitLogUrl = (url: string) => {
 }
 
 // Turnstile action the reset endpoint must check in the siteverify result
-export const RATE_LIMIT_CHALLENGE_ACTION = 'rate-limit-reset'
+export const TRACKS_VISUALIZE_LIMIT_CHALLENGE_ACTION = 'reset-visualize-tracks-limit'
 
 export const parseRateLimit = (response: Response): RateLimit => ({
   remaining: parseInt(response.headers?.get('Ratelimit-Remaining') || ''),
@@ -26,3 +26,13 @@ const VISUALIZATION_RATE_LIMITED_URL = /\/vessels\/[^/?]+\/tracks(\?|$)|\/events
 
 export const isVisualizationRateLimitedUrl = (url: string) =>
   VISUALIZATION_RATE_LIMITED_URL.test(url)
+
+/** Dataset the reset endpoint requires, tracks send `dataset` and events `datasets[0]` */
+export const getRateLimitDataset = (url: string) => {
+  try {
+    const { searchParams } = new URL(url, 'http://localhost')
+    return searchParams.get('dataset') ?? searchParams.get('datasets[0]') ?? undefined
+  } catch {
+    return undefined
+  }
+}

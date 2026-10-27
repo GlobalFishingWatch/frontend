@@ -123,7 +123,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   get cacheHash(): string {
     const { id, color, gapSegmentThreshold } = this.props
     const filters = this.getFilters()
-    return `${id}-${color.join('')}-${Object.values(filters).filter(Boolean).join('-')}-${gapSegmentThreshold}`
+    return `${id}-${color.join('')}-${Object.values(filters).filter(Boolean).join('-')}-${gapSegmentThreshold}-${this.getVesselLayersRateLimited()}`
   }
 
   getPickingInfo = ({
@@ -381,10 +381,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     }
 
     const chunks = this._getVesselChunks()
+    const rateLimited = this.getVesselLayersRateLimited()
     // return one layer with all events if we are consuming the data object from app resources
     return events?.flatMap(({ url, type, datasetId }) => {
-      const visible = visibleEvents?.includes(type)
-      if (!visible) {
+      if (!visibleEvents?.includes(type)) {
         return []
       }
       return chunks.flatMap(({ start, end }) => {
@@ -399,7 +399,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           data: eventUrl.toString(),
           fetch: fetchWithGFWAPI,
           type,
-          visible,
+          visible: !rateLimited,
           highlightEventIds: mergedHighlightEventIds,
           loaders: [VesselEventsLoader],
           onError: (e: any) => this.onSublayerError(type, e),
@@ -605,6 +605,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getVesselEventsData(types?: EventTypes[]) {
+    // Same as the map: no events while any of the vessel requests is rate limited
+    if (this.getVesselLayersRateLimited()) {
+      return []
+    }
     return getEvents(this.getEventLayers(), {
       types,
       startTime: this.props.startTime,

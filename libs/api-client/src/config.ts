@@ -42,8 +42,8 @@ export const SETTINGS_PATH = 'settings'
 export const LOGOUT_SESSION_PATH = 'logout-session'
 export const GUEST_USER_TYPE = 'guest'
 export const CONCURRENT_ERROR_STATUS = 429
-// TODO: placeholder until the API team confirms the endpoint that validates the Turnstile token
-export const RATE_LIMIT_RESET_PATH = 'rate-limit/reset'
+// Validates the Turnstile token and resets the track/events limit
+export const VISUALIZE_LIMIT_RESET_PATH = 'vessels/tracks/visualize-limit/reset'
 // Solve the challenge before the limit is hit, roughly one vessel of in-flight track/events requests
 export const RATE_LIMIT_CHALLENGE_THRESHOLD = 3
 

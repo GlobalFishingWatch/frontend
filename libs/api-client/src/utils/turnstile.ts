@@ -1,6 +1,6 @@
 import { getEnv } from './env'
 import type { RateLimitDebug } from './rate-limit'
-import { RATE_LIMIT_CHALLENGE_ACTION } from './rate-limit'
+import { TRACKS_VISUALIZE_LIMIT_CHALLENGE_ACTION } from './rate-limit'
 
 // https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/
 // Must be loaded from this exact url, never proxied or bundled
@@ -59,7 +59,7 @@ export async function renderRateLimitChallenge(
       const sitekey = getEnv('VITE_TURNSTILE_SITE_KEY')
       widgetId = turnstile.render(container, {
         sitekey,
-        action: RATE_LIMIT_CHALLENGE_ACTION,
+        action: TRACKS_VISUALIZE_LIMIT_CHALLENGE_ACTION,
         appearance: 'interaction-only',
         'response-field': false,
         callback: (token: string) => {
