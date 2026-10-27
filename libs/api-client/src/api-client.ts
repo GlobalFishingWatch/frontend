@@ -848,13 +848,9 @@ export class GFW_API_CLASS {
       const rateLimitDataset = isVisualizationRateLimitedUrl(url)
         ? getRateLimitDataset(url)
         : undefined
-      if (
-        getIsRateLimitExceeded(e) &&
-        !rateLimitRetried &&
-        this.rateLimitChallengeContainer &&
-        rateLimitDataset
-      ) {
-        this.rateLimitedDatasets.add(rateLimitDataset)
+      const rateLimited = getIsRateLimitExceeded(e) && !!rateLimitDataset
+      if (rateLimited) this.rateLimitedDatasets.add(rateLimitDataset)
+      if (rateLimited && !rateLimitRetried && this.rateLimitChallengeContainer) {
         this.debugRateLimit('429: request parked until the challenge resets the limit', {
           url: getRateLimitLogUrl(url),
           dataset: rateLimitDataset,

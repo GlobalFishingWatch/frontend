@@ -14,8 +14,8 @@ platform:
       VITE_USE_LOCAL_DATAVIEWS: 'false'
       VITE_WORKSPACE_ENV: production
       VITE_REPORT_DAYS_LIMIT: '366'
-      VITE_TURNSTILE_SITE_KEY: projects/674016975526/secrets/TURNSTILE_SITE_KEY_TRACKS_PRO/versions/latest
     secrets:
+      VITE_TURNSTILE_SITE_KEY: projects/674016975526/secrets/TURNSTILE_SITE_KEY_TRACKS_PRO/versions/latest
       SENTRY_AUTH_TOKEN: projects/674016975526/secrets/FISHING_MAP_SENTRY_AUTH_TOKEN/versions/latest
   deploy:
     env_vars:

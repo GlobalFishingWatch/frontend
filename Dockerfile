@@ -70,8 +70,10 @@ ENV API_GATEWAY=$API_GATEWAY \
 COPY . .
 RUN --mount=type=secret,id=NX_CLOUD_ACCESS_TOKEN \
     --mount=type=secret,id=SENTRY_AUTH_TOKEN,required=false \
+    --mount=type=secret,id=VITE_TURNSTILE_SITE_KEY,required=false \
     NX_CLOUD_ACCESS_TOKEN="$(cat /run/secrets/NX_CLOUD_ACCESS_TOKEN 2>/dev/null || true)" \
     SENTRY_AUTH_TOKEN="$(cat /run/secrets/SENTRY_AUTH_TOKEN 2>/dev/null || true)" \
+    VITE_TURNSTILE_SITE_KEY="$(cat /run/secrets/VITE_TURNSTILE_SITE_KEY 2>/dev/null || echo "$VITE_TURNSTILE_SITE_KEY")" \
     NODE_OPTIONS='--max-old-space-size=6144' \
     pnpm exec nx run ${APP_NAME}:build --output-style=stream
 
