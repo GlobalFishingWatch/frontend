@@ -104,6 +104,7 @@ const icons = [
   'report',
   'ruler',
   'satellite',
+  'satellite-off',
   'save',
   'search',
   'section-collapse',

@@ -26,6 +26,7 @@ import {
 import { useTimebarTracksGraphExtent } from 'features/_map/map/timebar-graph.hooks'
 import { selectRealTimeTimerange } from 'features/_map/timebar/timebar.selectors'
 import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
+import { useSetFourwingsVisualizationMode } from 'features/_map/workspace/activity/activity.hooks'
 import {
   selectActivityVisualizationMode,
   selectBivariateDataviews,
@@ -47,7 +48,6 @@ import {
 import { selectReportHotspotArea } from 'features/_reports/reports.config.selectors'
 import { hotspotGeometryAtom } from 'features/_reports/reports-hotspot.hooks'
 import { selectDebugOptions } from 'features/debug/debug.slice'
-import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyReportLocation,
   selectIsIndexLocation,
@@ -83,7 +83,7 @@ export const useActivityDataviewId = (dataview: UrlDataviewInstance) => {
 
 export const useGlobalConfigConnect = () => {
   const { start, end } = useTimerangeConnect()
-  const { replaceQueryParams } = useReplaceQueryParams()
+  const setFourwingsVisualizationMode = useSetFourwingsVisualizationMode()
   const { t } = useTranslation()
   const isWorkspace = useSelector(selectIsWorkspaceLocation)
   const showTimeComparison = useSelector(selectShowTimeComparison)
@@ -108,8 +108,7 @@ export const useGlobalConfigConnect = () => {
         layer.props.category === DataviewCategory.Activity ||
         layer.props.category === DataviewCategory.Detections
       ) {
-        const categoryQueryParam = `${layer.props.category}VisualizationMode`
-        replaceQueryParams({ [categoryQueryParam]: HEATMAP_ID })
+        setFourwingsVisualizationMode(layer.props.category, HEATMAP_ID)
         if (isWorkspace) {
           toast(
             t((t) => t.toasts.maxPointsVisualizationExceeded),
@@ -120,7 +119,7 @@ export const useGlobalConfigConnect = () => {
         }
       }
     },
-    [isWorkspace, replaceQueryParams, t]
+    [isWorkspace, setFourwingsVisualizationMode, t]
   )
 
   return useMemo(() => {

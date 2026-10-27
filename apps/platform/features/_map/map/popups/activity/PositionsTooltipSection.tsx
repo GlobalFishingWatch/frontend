@@ -10,6 +10,7 @@ import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils
 import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 
 import type { SliceExtendedFourwingsPickingObject } from '../../map.slice'
+import { getPositionsDataviewInstanceId } from '../map-popups.utils'
 import PopupSectionLayout from '../shared/PopupSectionLayout'
 
 import PositionsTooltipRow from './PositionsTooltipRow'
@@ -48,12 +49,14 @@ function PositionsTooltipSection({
 
   if (showFeaturesDetails) {
     const getTitle = (feature: SliceExtendedFourwingsPickingObject) => {
-      const dataview = dataviewInstances?.find((instance) => instance.id === feature.layerId)
+      const dataview = dataviewInstances?.find(
+        (instance) => instance.id === getPositionsDataviewInstanceId(feature)
+      )
       return dataview
         ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
         : feature.title
     }
-    const featuresByLayer = groupBy(features, (feature) => feature.layerId)
+    const featuresByLayer = groupBy(features, getPositionsDataviewInstanceId)
     return Object.entries(featuresByLayer).map(([layerId, layerFeatures]) => (
       <PopupSectionLayout
         key={layerId}

@@ -569,6 +569,11 @@
     "rgb": "crwdns138371:0crwdne138371:0"
   },
   "detections": "crwdns132671:0crwdne132671:0",
+  "detectionScene": {
+    "addHighlight": "crwdns138841:0crwdne138841:0",
+    "highlight": "crwdns138843:0crwdne138843:0",
+    "removeHighlight": "crwdns138845:0crwdne138845:0"
+  },
   "download": {
     "apiPortal": "crwdns132673:0crwdne132673:0",
     "area": "crwdns132675:0crwdne132675:0",
