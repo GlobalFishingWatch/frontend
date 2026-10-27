@@ -1054,9 +1054,9 @@
     "failed": "This check protects vessel data from automated traffic. Vessel tracks and events are paused until it passes.",
     "failedTitle": "We couldn't verify you",
     "notNow": "Not now",
-    "profileActivity": "Vessel tracks and events limit reached. Verify you are human to see this vessel activity.",
-    "retry": "Try again",
-    "trackLimitReached": "Vessel tracks and events limit reached. Click to verify you are human and load them again."
+    "profileActivity": "Vessel tracks and events are paused. Verify you're human to see this vessel's activity.",
+    "trackLimitReached": "Vessel tracks and events are paused. Click to confirm you're human and load them again.",
+    "verify": "Verify"
   },
   "search": {
     "advanced": "Advanced",
