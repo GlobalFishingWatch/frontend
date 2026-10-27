@@ -292,6 +292,18 @@ export const selectActiveTrackDataviews = createDeepEqualSelector(
   }
 )
 
+// Vessels without a track dataset (e.g. guest users) have nothing to draw in the timebar
+export const selectTimebarActiveTrackDataviews = createSelector(
+  [selectActiveTrackDataviews],
+  (dataviews) => {
+    return dataviews?.filter(
+      ({ id, datasets }) =>
+        !getIsVesselDataviewInstanceId(id) ||
+        datasets?.some(({ type }) => type === DatasetTypes.Tracks)
+    )
+  }
+)
+
 export const selectVectorDataviews = selectDataviewInstancesByType(DataviewType.FourwingsVector)
 export const selectActiveVectorDataviews = createDeepEqualSelector(
   [selectVectorDataviews],

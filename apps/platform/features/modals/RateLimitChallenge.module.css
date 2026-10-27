@@ -1,0 +1,46 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.visible {
+  background: rgba(var(--primary-blue-rgb), 0.75);
+  pointer-events: auto;
+}
+
+.visible .content {
+  max-width: 60rem;
+  padding: var(--space-M);
+  background: var(--color-background);
+  border-radius: var(--border-radius-0);
+  font: var(--font-M);
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+  margin-bottom: var(--space-SM);
+}
+
+.title {
+  font: var(--font-L-bold);
+}
+
+.actions {
+  display: flex;
+  margin-top: var(--space-S);
+  justify-content: flex-end;
+  gap: var(--space-S);
+}
+
+.challengeContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}

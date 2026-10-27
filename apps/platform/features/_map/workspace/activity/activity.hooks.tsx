@@ -32,6 +32,7 @@ import {
   selectDetectionsVisualizationMode,
   selectEnvironmentVisualizationMode,
 } from 'features/_map/workspace/selectors/app.selectors'
+import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { setUserSetting } from 'features/_user/user.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
@@ -86,8 +87,10 @@ export const useVisualizationsOptions = (
         ? hasDetectionsDataviewVesselGroups
         : false
 
+  const guestUser = useSelector(selectIsGuestUser)
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(layerId)
-  const isPositionsLayerAvailable = fourwingsActivityLayer?.instance?.getIsPositionsAvailable()
+  const isPositionsLayerAvailable =
+    !guestUser && fourwingsActivityLayer?.instance?.getIsPositionsAvailable()
   const activeVisualizationOption = useSelector(
     category === DataviewCategory.Detections
       ? selectDetectionsVisualizationMode
@@ -144,9 +147,11 @@ export const useVisualizationsOptions = (
                   {
                     id: POSITIONS_ID,
                     label: <Icon icon={isPositionsLayerAvailable ? 'vessel' : 'vessel-disabled'} />,
-                    tooltip: isPositionsLayerAvailable
-                      ? t((t) => t.map.positions)
-                      : t((t) => t.map.positionsDisabled),
+                    tooltip: guestUser
+                      ? t((t) => t.map.positionsLogin)
+                      : isPositionsLayerAvailable
+                        ? t((t) => t.map.positions)
+                        : t((t) => t.map.positionsDisabled),
                     tooltipPlacement: 'bottom',
                     disabled: !isPositionsLayerAvailable,
                   },
@@ -155,7 +160,7 @@ export const useVisualizationsOptions = (
           ] as ChoiceOption<FourwingsVisualizationMode>[])
         : []),
     ]
-  }, [category, hasVesselGroupsFilter, isPositionsLayerAvailable, positionsSupported, t])
+  }, [category, guestUser, hasVesselGroupsFilter, isPositionsLayerAvailable, positionsSupported, t])
 
   return useMemo(
     () => ({ visualizationOptions, activeVisualizationOption, onVisualizationModeChange }),

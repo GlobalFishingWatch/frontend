@@ -24,7 +24,6 @@ import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
   getDatasetVersion,
-  getRelatedDatasetByType,
   getRelatedDatasetsByType,
   removeDatasetVersion,
 } from '@globalfishingwatch/datasets-client'
@@ -210,29 +209,21 @@ export const getVesselDataviewInstanceDatasetConfig = (
 export const resolveVesselTrackConfig = ({
   config,
   datasets,
-  loggedUser,
 }: {
   config: UrlDataviewInstance['config']
   datasets: Dataset[]
-  loggedUser: boolean
 }) => {
   const resolvedConfig = { ...config }
   if (!resolvedConfig.info) {
     return resolvedConfig
   }
   const infoDataset = datasets.find((d) => d.id === resolvedConfig.info)
-  // Vessel pined from not logged user but is logged now and the related dataset is available
-  if (loggedUser && !resolvedConfig.track) {
-    const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)?.id
-    if (trackDatasetId) {
-      resolvedConfig.track = trackDatasetId
-    }
+  const { track, trackRealTime } = getVesselTrackDatasetIds(infoDataset, datasets)
+  if (!resolvedConfig.track && track) {
+    resolvedConfig.track = track
   }
-  if (!resolvedConfig.trackRealTime && resolvedConfig.ssvid) {
-    const { trackRealTime } = getVesselTrackDatasetIds(infoDataset, datasets)
-    if (trackRealTime) {
-      resolvedConfig.trackRealTime = trackRealTime
-    }
+  if (!resolvedConfig.trackRealTime && resolvedConfig.ssvid && trackRealTime) {
+    resolvedConfig.trackRealTime = trackRealTime
   }
   // Without events in the instance, resolveDataviews falls back to the template default events
   // datasets, which may belong to another pipe or source than the vessel info dataset
@@ -252,12 +243,10 @@ export const resolveVesselDataviewInstance = (
   {
     datasets,
     dataviews,
-    loggedUser,
     trackThinningZoomConfig,
   }: {
     datasets: Dataset[]
     dataviews: Dataview[]
-    loggedUser: boolean
     trackThinningZoomConfig: DataviewConfig['trackThinningZoomConfig']
   }
 ): UrlDataviewInstance => {
@@ -283,7 +272,6 @@ export const resolveVesselDataviewInstance = (
         info: dataviewInstance.config?.info || dataviewInfoDatasetId,
       },
       datasets,
-      loggedUser,
     })
     const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
       getVesselIdFromInstanceId(dataviewInstance.id),

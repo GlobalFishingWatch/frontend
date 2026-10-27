@@ -1,4 +1,4 @@
-export type DownloadRateLimit = {
+export type RateLimit = {
   remaining: number
   limit: number
   reset?: string

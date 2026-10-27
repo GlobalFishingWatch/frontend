@@ -10,6 +10,8 @@ export const dependencyChecksOptions = {
     '{projectRoot}/vitest.config.{js,ts,mjs,mts}',
     '{projectRoot}/esbuild.*.ts',
     '{projectRoot}/**/*.{spec,test}.{ts,tsx}',
+    // Test-only folders: shared fixtures/helpers there are not *.spec.ts but never ship
+    '{projectRoot}/src/tests/**',
     '{projectRoot}/scripts/**',
     // playwright/sharp/dataviews-client/deck-layers are devDependencies of ocean-areas: local
     // screenshot scripts and rfmos.ts (deck-layers HIDDEN_RFMO_IDS), not part of the published

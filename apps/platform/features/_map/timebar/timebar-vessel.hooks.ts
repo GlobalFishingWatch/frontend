@@ -41,15 +41,6 @@ const hasUniqueChunks = (segments: TrackSegment[]) => {
   return segments?.[0]?.some((segment) => segment.id)
 }
 
-export const hasTracksWithNoData = (tracks = [] as VesselTrackAtom) => {
-  if (!tracks) {
-    return false
-  }
-  return tracks.some(
-    ({ chunks, status }) => status !== ResourceStatus.Loading && chunks.length === 0
-  )
-}
-
 export const useVesselTracksLayers = () => {
   const dataviews = useSelector(selectTimebarVesselsDataviews)
   const ids = useMemo(() => {
