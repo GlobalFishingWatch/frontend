@@ -1050,6 +1050,7 @@
   "rateLimit": {
     "challenge": "Confirm you are human to keep loading vessel tracks",
     "failed": "We couldn't verify that you are human. Vessel tracks and events won't load until you try again.",
+    "profileActivity": "Vessel tracks and events limit reached. Verify you are human to see this vessel activity.",
     "retry": "Try again",
     "trackLimitReached": "Vessel tracks and events limit reached. Click to verify you are human and load them again."
   },

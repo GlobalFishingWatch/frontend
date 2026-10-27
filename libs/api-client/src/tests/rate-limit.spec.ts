@@ -114,7 +114,7 @@ describe('rate limit', () => {
 
     client.cancelRateLimitChallenge()
     await expect(request).rejects.toMatchObject({ status: 429 })
-    expect(client.getRateLimitChallengeState()).toBe('idle')
+    expect(client.getRateLimitChallengeState()).toBe('cancelled')
   })
 
   it.for([

@@ -73,7 +73,7 @@ function VesselLayerPanel({
   const [filterOpen, setFiltersOpen] = useState(false)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { url: infoUrl, dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
-  const vesselLayer = useGetDeckLayer<VesselLayer>(dataview.id)
+  const vesselLayerInstance = useGetDeckLayer<VesselLayer>(dataview.id)?.instance
   // const vesselInstance = useMapVesselLayer(dataview.id)
   const gfwUser = useSelector(selectIsGFWUser)
   const guestUser = useSelector(selectIsGuestUser)
@@ -114,19 +114,19 @@ function VesselLayerPanel({
   }
 
   const showDeprecatedWarning = isWorkspaceOwner && dataview.deprecated
-  const trackLoaded = vesselLayer?.instance?.getVesselTracksLayersLoaded()
-  const trackLayerVisible = vesselLayer?.instance?.props?.visible
+  const trackLoaded = vesselLayerInstance?.getVesselTracksLayersLoaded()
+  const trackLayerVisible = vesselLayerInstance?.props?.visible
   const infoLoading = infoResource?.status === ResourceStatus.Loading
   const infoError = infoResource?.status === ResourceStatus.Error
-  const trackError = vesselLayer?.instance.getVesselLayersError('track')
+  const trackError = vesselLayerInstance?.getVesselLayersError('track')
   // Track and events fail independently, events usually later as they take longer to respond
-  const rateLimited = vesselLayer?.instance.getVesselLayersRateLimited()
+  const rateLimited = vesselLayerInstance?.getVesselLayersRateLimited()
   // Refetch them once any rate limit reset succeeds, wherever the challenge was started from
   useEffect(() => {
-    if (rateLimited) {
-      return GFWAPI.onRateLimitReset(() => vesselLayer?.instance.reloadErroredSublayers())
+    if (rateLimited && vesselLayerInstance) {
+      return GFWAPI.onRateLimitReset(() => vesselLayerInstance?.reloadErroredSublayers())
     }
-  }, [rateLimited, vesselLayer])
+  }, [rateLimited, vesselLayerInstance])
   const trackLoading = trackLayerVisible && !trackLoaded && !trackError
   // Nothing to draw: guests get no track datasets and a failed track stays failed until reloaded
   const layerDisabled = guestUser || !!trackError
@@ -263,7 +263,7 @@ function VesselLayerPanel({
                     {!guestUser && (
                       <FitBounds
                         hasError={trackError}
-                        layer={vesselLayer?.instance}
+                        layer={vesselLayerInstance}
                         infoResource={infoResource}
                         disabled={trackLoading}
                       />

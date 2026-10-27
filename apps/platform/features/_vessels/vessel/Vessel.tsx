@@ -53,7 +53,11 @@ import {
   getVesselIdentities,
 } from 'features/_vessels/vessel/vessel.utils'
 import { useVesselFitBounds } from 'features/_vessels/vessel/vessel-bounds.hooks'
-import { useSetVesselProfileEvents } from 'features/_vessels/vessel/vessel-events.hooks'
+import {
+  useSetVesselProfileEvents,
+  useVesselProfileRateLimit,
+} from 'features/_vessels/vessel/vessel-events.hooks'
+import VesselRateLimitDisclaimer from 'features/_vessels/vessel/VesselRateLimitDisclaimer'
 import VesselSubHeader from 'features/_vessels/vessel/VesselSubHeader'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -148,8 +152,10 @@ const Vessel = () => {
     [removeDataviewInstance, upsertDataviewInstance]
   )
 
-  const sectionTabs: Tab<VesselSection>[] = useMemo(
-    () => [
+  const { blocked: rateLimitBlocked, verifying, verify } = useVesselProfileRateLimit()
+
+  const sectionTabs: Tab<VesselSection>[] = useMemo(() => {
+    const tabs: Tab<VesselSection>[] = [
       {
         id: 'activity',
         title: t((t) => t.vessel.sectionSummary),
@@ -193,9 +199,22 @@ const Vessel = () => {
             ? t((t) => t.vessel.sectionInsightsTooltip)
             : undefined,
       },
-    ],
-    [t, updateAreaLayersVisibility, hasEventsDataset, eventsDatasetsLoading, isOnlyVMS]
-  )
+    ]
+    if (!rateLimitBlocked) {
+      return tabs
+    }
+    const disclaimer = <VesselRateLimitDisclaimer verifying={verifying} onVerify={verify} />
+    return tabs.map((tab) => ({ ...tab, content: disclaimer }))
+  }, [
+    t,
+    updateAreaLayersVisibility,
+    hasEventsDataset,
+    eventsDatasetsLoading,
+    isOnlyVMS,
+    rateLimitBlocked,
+    verifying,
+    verify,
+  ])
 
   useEffect(() => {
     const fetchVesselProfileAreaDatasets = async () => {

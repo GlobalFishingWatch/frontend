@@ -26,7 +26,6 @@ const VesselActivity = () => {
   const hasEventsDataset = useSelector(selectVesselHasEventsDatasets)
   const eventsLoading = useVesselProfileEventsLoading()
   const eventsError = useVesselProfileEventsError()
-
   const setActivityMode = (option: ChoiceOption<VesselProfileActivityMode>) => {
     replaceQueryParams({ vesselActivityMode: option.id })
     trackEvent({

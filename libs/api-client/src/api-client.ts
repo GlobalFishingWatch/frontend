@@ -81,7 +81,7 @@ export type RefreshStrategy = () => Promise<UserTokens>
 export type SessionInvalidateStrategy = () => void | Promise<unknown>
 
 export type RequestStatus = 'idle' | 'refreshingToken' | 'logging' | 'downloading'
-export type RateLimitChallengeState = 'idle' | 'solving' | 'interactive' | 'failed'
+export type RateLimitChallengeState = 'idle' | 'solving' | 'interactive' | 'failed' | 'cancelled'
 
 export class GFW_API_CLASS {
   debug: DebugMode
@@ -108,7 +108,6 @@ export class GFW_API_CLASS {
   // Bumped to invalidate an attempt whose container went away, its late results are ignored
   private rateLimitChallengeAttemptId = 0
   // Set when the user cancels: stops background challenges until a request is rate limited again
-  private rateLimitChallengeCancelled = false
   private rateLimitResetListeners = new Set<() => void>()
   private rateLimitChallengeState: RateLimitChallengeState = 'idle'
   private rateLimitChallengeListeners = new Set<() => void>()
@@ -287,7 +286,6 @@ export class GFW_API_CLASS {
   }
 
   startRateLimitChallenge = () => {
-    this.rateLimitChallengeCancelled = false
     this.debugRateLimit('challenge requested by the user')
     return this.ensureRateLimitChallenge()
   }
@@ -342,7 +340,6 @@ export class GFW_API_CLASS {
         })
         if (isStale()) return
         this.rateLimitMockRemaining = RATE_LIMIT_MOCK_LIMIT
-        this.rateLimitChallengeCancelled = false
         this.debugRateLimit('reset succeeded', {
           status: response.status,
           ...parseRateLimit(response),
@@ -381,10 +378,9 @@ export class GFW_API_CLASS {
   cancelRateLimitChallenge = () => {
     if (this.rateLimitChallengeState === 'failed') {
       this.debugRateLimit('challenge cancelled by the user')
-      this.rateLimitChallengeCancelled = true
       this.rateLimitReset?.reject(new Error('GFWAPI: rate limit challenge cancelled'))
       this.rateLimitReset = null
-      this.setRateLimitChallengeState('idle')
+      this.setRateLimitChallengeState('cancelled')
     }
   }
 
@@ -403,7 +399,10 @@ export class GFW_API_CLASS {
       remaining,
       limit,
     })
-    if (remaining <= RATE_LIMIT_CHALLENGE_THRESHOLD && !this.rateLimitChallengeCancelled) {
+    if (
+      remaining <= RATE_LIMIT_CHALLENGE_THRESHOLD &&
+      this.rateLimitChallengeState !== 'cancelled'
+    ) {
       this.debugRateLimit(`remaining ${remaining} <= threshold ${RATE_LIMIT_CHALLENGE_THRESHOLD}`)
       // Failure is already logged by ensureRateLimitChallenge
       this.ensureRateLimitChallenge().catch(() => {})
@@ -420,14 +419,15 @@ export class GFW_API_CLASS {
       this.debugRateLimit('mock: limit exceeded, faking 429 without network', {
         url: getRateLimitLogUrl(url),
       })
-    }
-    const response = exceeded ? new Response(null, { status: 429 }) : await fetch(url, init)
-    if (!exceeded) {
+    } else {
+      // Claim the slot before awaiting, concurrent requests would all pass the check otherwise
       this.rateLimitMockRemaining--
     }
+    const remaining = this.rateLimitMockRemaining
+    const response = exceeded ? new Response(null, { status: 429 }) : await fetch(url, init)
     const headers = new Headers(response.headers)
     headers.set('Ratelimit-Limit', String(RATE_LIMIT_MOCK_LIMIT))
-    headers.set('Ratelimit-Remaining', String(this.rateLimitMockRemaining))
+    headers.set('Ratelimit-Remaining', String(remaining))
     return new Response(response.body, {
       status: response.status,
       statusText: response.statusText,
