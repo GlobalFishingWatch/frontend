@@ -27,7 +27,6 @@ import { Route as ApiMigramarOptionsRouteImport } from './api/migramar/options'
 import { Route as ApiOceanAreasIndexRouteImport } from './api/ocean-areas/index'
 import { Route as ApiOceanAreasNameRouteImport } from './api/ocean-areas/name'
 import { Route as ApiOceanAreasSearchRouteImport } from './api/ocean-areas/search'
-import { Route as ApiRateLimitResetRouteImport } from './api/rate-limit/reset'
 import { Route as PlatformContentAreasIndexRouteImport } from './_platform/_content/areas/index'
 import { Route as PlatformContentAreasPlaceTypeRouteImport } from './_platform/_content/areas/$placeType'
 import { Route as PlatformContentHelpAndResourcesIndexRouteImport } from './_platform/_content/help-and-resources/index'
@@ -137,11 +136,6 @@ const ApiOceanAreasNameRoute = ApiOceanAreasNameRouteImport.update({
 const ApiOceanAreasSearchRoute = ApiOceanAreasSearchRouteImport.update({
   id: '/api/ocean-areas/search',
   path: '/api/ocean-areas/search',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiRateLimitResetRoute = ApiRateLimitResetRouteImport.update({
-  id: '/api/rate-limit/reset',
-  path: '/api/rate-limit/reset',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlatformContentAreasIndexRoute =
@@ -295,7 +289,6 @@ export interface FileRoutesByFullPath {
   '/api/migramar/options': typeof ApiMigramarOptionsRoute
   '/api/ocean-areas/name': typeof ApiOceanAreasNameRoute
   '/api/ocean-areas/search': typeof ApiOceanAreasSearchRoute
-  '/api/rate-limit/reset': typeof ApiRateLimitResetRoute
   '/api/ocean-areas/': typeof ApiOceanAreasIndexRoute
   '/areas/$placeType': typeof PlatformContentAreasPlaceTypeRoute
   '/map/user': typeof PlatformMapMapUserRoute
@@ -334,7 +327,6 @@ export interface FileRoutesByTo {
   '/api/migramar/options': typeof ApiMigramarOptionsRoute
   '/api/ocean-areas/name': typeof ApiOceanAreasNameRoute
   '/api/ocean-areas/search': typeof ApiOceanAreasSearchRoute
-  '/api/rate-limit/reset': typeof ApiRateLimitResetRoute
   '/api/ocean-areas': typeof ApiOceanAreasIndexRoute
   '/areas/$placeType': typeof PlatformContentAreasPlaceTypeRoute
   '/map/user': typeof PlatformMapMapUserRoute
@@ -377,7 +369,6 @@ export interface FileRoutesById {
   '/api/migramar/options': typeof ApiMigramarOptionsRoute
   '/api/ocean-areas/name': typeof ApiOceanAreasNameRoute
   '/api/ocean-areas/search': typeof ApiOceanAreasSearchRoute
-  '/api/rate-limit/reset': typeof ApiRateLimitResetRoute
   '/api/ocean-areas/': typeof ApiOceanAreasIndexRoute
   '/_platform/_content/areas/$placeType': typeof PlatformContentAreasPlaceTypeRoute
   '/_platform/_map/map/user': typeof PlatformMapMapUserRoute
@@ -419,7 +410,6 @@ export interface FileRouteTypes {
     | '/api/migramar/options'
     | '/api/ocean-areas/name'
     | '/api/ocean-areas/search'
-    | '/api/rate-limit/reset'
     | '/api/ocean-areas/'
     | '/areas/$placeType'
     | '/map/user'
@@ -458,7 +448,6 @@ export interface FileRouteTypes {
     | '/api/migramar/options'
     | '/api/ocean-areas/name'
     | '/api/ocean-areas/search'
-    | '/api/rate-limit/reset'
     | '/api/ocean-areas'
     | '/areas/$placeType'
     | '/map/user'
@@ -500,7 +489,6 @@ export interface FileRouteTypes {
     | '/api/migramar/options'
     | '/api/ocean-areas/name'
     | '/api/ocean-areas/search'
-    | '/api/rate-limit/reset'
     | '/api/ocean-areas/'
     | '/_platform/_content/areas/$placeType'
     | '/_platform/_map/map/user'
@@ -537,7 +525,6 @@ export interface RootRouteChildren {
   ApiMigramarOptionsRoute: typeof ApiMigramarOptionsRoute
   ApiOceanAreasNameRoute: typeof ApiOceanAreasNameRoute
   ApiOceanAreasSearchRoute: typeof ApiOceanAreasSearchRoute
-  ApiRateLimitResetRoute: typeof ApiRateLimitResetRoute
   ApiOceanAreasIndexRoute: typeof ApiOceanAreasIndexRoute
   ApiTrackCorrectionsWorkspaceIdIssueIdRoute: typeof ApiTrackCorrectionsWorkspaceIdIssueIdRoute
   ApiTrackCorrectionsWorkspaceIdIndexRoute: typeof ApiTrackCorrectionsWorkspaceIdIndexRoute
@@ -669,13 +656,6 @@ declare module '@tanstack/react-router' {
       path: '/api/ocean-areas/search'
       fullPath: '/api/ocean-areas/search'
       preLoaderRoute: typeof ApiOceanAreasSearchRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/rate-limit/reset': {
-      id: '/api/rate-limit/reset'
-      path: '/api/rate-limit/reset'
-      fullPath: '/api/rate-limit/reset'
-      preLoaderRoute: typeof ApiRateLimitResetRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_platform/_content/areas/': {
@@ -961,7 +941,6 @@ const rootRouteChildren: RootRouteChildren = {
   ApiMigramarOptionsRoute: ApiMigramarOptionsRoute,
   ApiOceanAreasNameRoute: ApiOceanAreasNameRoute,
   ApiOceanAreasSearchRoute: ApiOceanAreasSearchRoute,
-  ApiRateLimitResetRoute: ApiRateLimitResetRoute,
   ApiOceanAreasIndexRoute: ApiOceanAreasIndexRoute,
   ApiTrackCorrectionsWorkspaceIdIssueIdRoute:
     ApiTrackCorrectionsWorkspaceIdIssueIdRoute,

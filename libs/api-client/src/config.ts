@@ -44,10 +44,6 @@ export const GUEST_USER_TYPE = 'guest'
 export const CONCURRENT_ERROR_STATUS = 429
 // TODO: placeholder until the API team confirms the endpoint that validates the Turnstile token
 export const RATE_LIMIT_RESET_PATH = 'rate-limit/reset'
-// Local only: url (or path on the app origin) replacing the API reset endpoint
-export const RATE_LIMIT_RESET_URL = getEnv('VITE_RATE_LIMIT_RESET_URL')
-// Local only: simulate the API counter client-side until the API sends Ratelimit-* headers
-export const RATE_LIMIT_MOCK_LIMIT = Number(getEnv('VITE_RATE_LIMIT_MOCK_LIMIT')) || 0
 // Solve the challenge before the limit is hit, roughly one vessel of in-flight track/events requests
 export const RATE_LIMIT_CHALLENGE_THRESHOLD = 3
 

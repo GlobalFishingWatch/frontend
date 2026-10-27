@@ -37,9 +37,7 @@ import {
   GUEST_USER_TYPE,
   LOGOUT_SESSION_PATH,
   RATE_LIMIT_CHALLENGE_THRESHOLD,
-  RATE_LIMIT_MOCK_LIMIT,
   RATE_LIMIT_RESET_PATH,
-  RATE_LIMIT_RESET_URL,
   REGISTER_PATH,
   SETTINGS_PATH,
   USER_REFRESH_TOKEN_STORAGE_KEY,
@@ -111,7 +109,6 @@ export class GFW_API_CLASS {
   private rateLimitResetListeners = new Set<() => void>()
   private rateLimitChallengeState: RateLimitChallengeState = 'idle'
   private rateLimitChallengeListeners = new Set<() => void>()
-  private rateLimitMockRemaining = RATE_LIMIT_MOCK_LIMIT
   status: RequestStatus = 'idle'
 
   constructor({
@@ -235,9 +232,7 @@ export class GFW_API_CLASS {
     if (container !== this.rateLimitChallengeContainer) {
       this.rateLimitChallengeContainer = container
       this.debugRateLimit('challenge container set', {
-        limit: RATE_LIMIT_MOCK_LIMIT || 'off',
         threshold: RATE_LIMIT_CHALLENGE_THRESHOLD,
-        resetUrl: RATE_LIMIT_RESET_URL || `/${AUTH_PATH}/${RATE_LIMIT_RESET_PATH}`,
       })
       if (this.rateLimitReset && this.rateLimitChallengeState !== 'failed') {
         this.debugRateLimit('challenge moved to the new container')
@@ -330,16 +325,13 @@ export class GFW_API_CLASS {
           },
         })
         if (isStale()) return
-        const url = RATE_LIMIT_RESET_URL
-          ? new URL(RATE_LIMIT_RESET_URL, window.location.origin).href
-          : this.generateUrl(`/${AUTH_PATH}/${RATE_LIMIT_RESET_PATH}`, { absolute: true })
+        const url = this.generateUrl(`/${AUTH_PATH}/${RATE_LIMIT_RESET_PATH}`, { absolute: true })
         this.debugRateLimit('reset request sent', { url })
         const response = await this._internalFetch<Response>({
           url,
           options: { method: 'POST', body: { token }, responseType: 'default' },
         })
         if (isStale()) return
-        this.rateLimitMockRemaining = RATE_LIMIT_MOCK_LIMIT
         this.debugRateLimit('reset succeeded', {
           status: response.status,
           ...parseRateLimit(response),
@@ -407,32 +399,6 @@ export class GFW_API_CLASS {
       // Failure is already logged by ensureRateLimitChallenge
       this.ensureRateLimitChallenge().catch(() => {})
     }
-  }
-
-  // ponytail: local stand-in for the API counter, delete once track/events responses carry Ratelimit-* headers
-  private async fetchWithRateLimitMock(url: string, init: RequestInit): Promise<Response> {
-    if (!RATE_LIMIT_MOCK_LIMIT || !isVisualizationRateLimitedUrl(url)) {
-      return fetch(url, init)
-    }
-    const exceeded = this.rateLimitMockRemaining <= 0
-    if (exceeded) {
-      this.debugRateLimit('mock: limit exceeded, faking 429 without network', {
-        url: getRateLimitLogUrl(url),
-      })
-    } else {
-      // Claim the slot before awaiting, concurrent requests would all pass the check otherwise
-      this.rateLimitMockRemaining--
-    }
-    const remaining = this.rateLimitMockRemaining
-    const response = exceeded ? new Response(null, { status: 429 }) : await fetch(url, init)
-    const headers = new Headers(response.headers)
-    headers.set('Ratelimit-Limit', String(RATE_LIMIT_MOCK_LIMIT))
-    headers.set('Ratelimit-Remaining', String(remaining))
-    return new Response(response.body, {
-      status: response.status,
-      statusText: response.statusText,
-      headers,
-    })
   }
 
   private waitForRateLimitChallenge(signal?: AbortSignal | null) {
@@ -790,7 +756,7 @@ export class GFW_API_CLASS {
         Authorization: `Bearer ${token ?? this.token}`,
       }
       const fetchUrl = isUrlAbsolute(url) ? url : this.baseUrl + url
-      const data = await this.fetchWithRateLimitMock(fetchUrl, {
+      const data = await fetch(fetchUrl, {
         method,
         signal,
         ...(cache && { cache }),
