@@ -212,9 +212,14 @@ function VesselsSection(): React.ReactElement<any> {
             >
               <Switch
                 className="print-hidden"
-                active={someVesselsVisible}
+                active={someVesselsVisible && !guestUser}
+                disabled={guestUser}
                 onClick={onToggleAllVessels}
-                tooltip={t((t) => t.vessel.toggleAllVessels)}
+                tooltip={
+                  guestUser
+                    ? t((t) => t.vessel.trackLoginTooltip)
+                    : t((t) => t.vessel.toggleAllVessels)
+                }
                 tooltipPlacement="top"
               />
             </span>
@@ -299,7 +304,7 @@ function VesselsSection(): React.ReactElement<any> {
             <div className={styles.emptyState}>{t((t) => t.workspace.emptyStateVessels)}</div>
           )}
         </SortableContext>
-        {activeDataviews.length > 0 && guestUser && (
+        {dataviews.length > 0 && guestUser && (
           <p className={cx(styles.disclaimer, 'print-hidden')}>
             <Trans i18nKey={(t) => t.vessel.trackLoginRequired}>
               <LoginLink className={styles.link} loginSource="vessel-tracks">

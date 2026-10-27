@@ -1558,6 +1558,7 @@
     "toggleAllVessels": "Toggle all vessels visibility",
     "tonnageGt": "Tonnage (Gt)",
     "trackLoginRequired": "<0>Log in</0> to see vessel tracks and events",
+    "trackLoginTooltip": "Register or log in to see vessel tracks and events (free, 2 minutes)",
     "transmissionDates": "Transmission dates",
     "transmissions": "Transmissions",
     "type": "Type",

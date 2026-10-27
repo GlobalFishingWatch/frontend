@@ -89,8 +89,6 @@ function VesselLayerPanel({
   const [colorOpen, setColorOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
 
-  const layerActive = dataview?.config?.visible ?? true
-
   const changeTrackColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
       id: dataview.id,
@@ -130,6 +128,9 @@ function VesselLayerPanel({
     }
   }, [rateLimited, vesselLayer])
   const trackLoading = trackLayerVisible && !trackLoaded && !trackError
+  // Nothing to draw: guests get no track datasets and a failed track stays failed until reloaded
+  const layerDisabled = guestUser || !!trackError
+  const layerActive = (dataview?.config?.visible ?? true) && !layerDisabled
 
   const vesselData = infoResource?.data
   const vesselLabel = vesselData ? getVesselShipNameLabel(vesselData) : ''
@@ -201,6 +202,8 @@ function VesselLayerPanel({
         <LayerSwitch
           testId={`vessel-switch-${vesselLabel.replace(/\s/g, '-')}`}
           active={layerActive}
+          disabled={layerDisabled}
+          tooltip={guestUser ? t((t) => t.vessel.trackLoginTooltip) : undefined}
           className={styles.switch}
           dataview={dataview}
         />
@@ -228,6 +231,7 @@ function VesselLayerPanel({
           showTooltip={false}
           className={styles.name}
           classNameActive={styles.active}
+          active={layerActive}
           dataview={dataview}
           toggleVisibility={false}
         />
