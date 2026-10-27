@@ -16,7 +16,7 @@ function VesselRateLimitDisclaimer({ verifying, onVerify }: VesselRateLimitDiscl
     <div className={styles.disclaimer}>
       <p className={styles.message}>{t((t) => t.rateLimit.profileActivity)}</p>
       <Button loading={verifying} onClick={onVerify}>
-        {t((t) => t.rateLimit.retry)}
+        {t((t) => t.rateLimit.verify)}
       </Button>
     </div>
   )

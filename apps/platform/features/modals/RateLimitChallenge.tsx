@@ -57,7 +57,7 @@ function RateLimitChallenge() {
                 {t((t) => t.rateLimit.notNow)}
               </Button>
               <Button onClick={GFWAPI.retryRateLimitChallenge}>
-                {t((t) => t.rateLimit.retry)}
+                {t((t) => t.rateLimit.verify)}
               </Button>
             </div>
           </Fragment>

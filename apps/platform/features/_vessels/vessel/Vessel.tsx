@@ -200,21 +200,8 @@ const Vessel = () => {
             : undefined,
       },
     ]
-    if (!rateLimitBlocked) {
-      return tabs
-    }
-    const disclaimer = <VesselRateLimitDisclaimer verifying={verifying} onVerify={verify} />
-    return tabs.map((tab) => ({ ...tab, content: disclaimer }))
-  }, [
-    t,
-    updateAreaLayersVisibility,
-    hasEventsDataset,
-    eventsDatasetsLoading,
-    isOnlyVMS,
-    rateLimitBlocked,
-    verifying,
-    verify,
-  ])
+    return tabs
+  }, [t, updateAreaLayersVisibility, hasEventsDataset, eventsDatasetsLoading, isOnlyVMS])
 
   useEffect(() => {
     const fetchVesselProfileAreaDatasets = async () => {
@@ -289,6 +276,8 @@ const Vessel = () => {
           title={t((t) => t.errors.vesselActivityLogin)}
           loginSource="vessel-events"
         />
+      ) : rateLimitBlocked ? (
+        <VesselRateLimitDisclaimer verifying={verifying} onVerify={verify} />
       ) : hasSelfReportedData ? (
         <Fragment>
           <Tabs
