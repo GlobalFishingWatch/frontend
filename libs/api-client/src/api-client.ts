@@ -655,6 +655,13 @@ export class GFW_API_CLASS {
     }
   }
 
+  updateUser(data: Partial<UserData>) {
+    return this.fetch<unknown, Partial<UserData>>(`/${AUTH_PATH}/me`, {
+      method: 'PATCH',
+      body: data,
+    })
+  }
+
   async fetchGuestUser({ token }: { token?: string } = {}): Promise<UserData> {
     if (this.debug) {
       this.debugLog('GFWAPI: fetchGuestUser', { stateless: token != null })

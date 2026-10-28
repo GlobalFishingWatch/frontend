@@ -1,7 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-import type { FetchOptions } from '@globalfishingwatch/api-client'
 import { getGuestUser, GFWAPI } from '@globalfishingwatch/api-client'
 import type {
   UserApiAdditionalInformation,
@@ -74,7 +73,7 @@ export const updateUserApiAdditionalInfoThunk = createAsyncThunk(
   'user/updateApiAdditionalInfo',
   async (info: UserApiAdditionalInformation, { dispatch }) => {
     const body = Object.fromEntries(Object.entries(info).filter(([, value]) => value !== null))
-    await GFWAPI.fetch('/auth/me', { method: 'PATCH', body } as FetchOptions<any>)
+    await GFWAPI.updateUser(body)
     return dispatch(fetchUserThunk()).unwrap()
   }
 )
