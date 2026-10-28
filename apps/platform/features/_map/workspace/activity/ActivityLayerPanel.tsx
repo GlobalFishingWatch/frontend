@@ -272,7 +272,6 @@ function ActivityLayerPanel({
                 </div>
               </ExpandedContainer>
             )}
-            {/* {layerActive && stats && <ActivityFitBounds stats={stats} loading={isFetching} />} */}
             <InfoButton
               dataview={dataview}
               // Workaround to always show the auxiliar dataset too

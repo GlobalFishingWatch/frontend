@@ -826,7 +826,6 @@
   },
   "hours": "hours",
   "layer": {
-    "activityFitBounds": "Center view on activity",
     "add": "Add layer",
     "areas": {
       "eez": "EEZ",
