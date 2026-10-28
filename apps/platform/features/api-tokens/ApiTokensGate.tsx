@@ -12,6 +12,7 @@ import {
   selectUserLogged,
 } from 'features/_user/selectors/user.selectors'
 
+import { useReloadApiTokensOnUserChange } from './api-tokens.hooks'
 import ApiTokensHeader from './ApiTokensHeader'
 import ApiTokensSignup from './ApiTokensSignup'
 
@@ -23,6 +24,7 @@ function ApiTokensGate() {
   const hasReadPermission = useSelector(selectHasUserApplicationReadPermission)
   const isInfoCompleted = useSelector(selectIsUserApiInfoCompleted)
   const isGuest = !userLogged || !userData || userData.type === GUEST_USER_TYPE
+  useReloadApiTokensOnUserChange()
 
   if (!isGuest && hasReadPermission) {
     return (
