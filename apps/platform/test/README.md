@@ -1,144 +1,93 @@
 # Integration Tests
 
-## Running tests locally
+Vitest browser-mode specs in `test/integration/`. They render the real app (TanStack Router + Redux
+
+- Jotai) inside a Playwright-driven browser and hit the **live** GFW API, so results depend on the
+  gateway in `.env` being up. For full-page flows (real login, SSR, navigation between pages) use
+  `apps/platform-e2e` instead.
+
+## Setup (once)
+
+1. `apps/platform/.env` must exist (copy `.env.sample`). It provides `VITE_API_GATEWAY` and the test
+   credentials:
+
+   ```bash
+   TEST_USER_EMAIL=...
+   TEST_USER_PASSWORD=...
+   ```
+
+   Without credentials the run still works: authenticated specs run as a guest and fail.
+
+2. Install the browsers: `pnpm exec playwright install chromium` (add `firefox webkit` for the
+   full matrix).
+
+No dev server is needed. Vitest starts its own Vite server for the specs.
+
+## Running
+
+Run everything from the workspace root, through Nx. `--` passes the rest to `vitest`.
+
+| Task                        | Command                                                                        |
+| --------------------------- | ------------------------------------------------------------------------------ |
+| Whole suite, Chromium only  | `TEST_CHROME_ONLY=true pnpm nx test platform`                                  |
+| Whole suite, all 3 browsers | `pnpm nx test platform`                                                        |
+| One spec file               | `TEST_CHROME_ONLY=true pnpm nx test platform -- test/integration/App.spec.tsx` |
+| One test by name            | `TEST_CHROME_ONLY=true pnpm nx test platform -- -t "layer toggle"`             |
+| Interactive UI (Chromium)   | `pnpm nx test:ui platform`                                                     |
+| Watch mode                  | `pnpm nx test:watch platform`                                                  |
+
+- `TEST_CHROME_ONLY=true` is what CI uses. Without it every spec runs three times (Chromium,
+  Firefox, WebKit), serially.
+- `platform:test` is cached by Nx, but the specs depend on the live API. Add `--skip-nx-cache` when
+  you want a real run against unchanged code.
+- Every test target first runs `clean-test-artifacts`, so artifacts from the previous run are gone.
+
+CI: `.github/workflows/integration-tests.yml` runs `nx affected -t test` with `TEST_CHROME_ONLY=true`
+on every non-draft PR and posts the result as a sticky PR comment.
+
+## What happens during a run
+
+1. **Global setup** (`setup/vitest.setup-global.ts` → `setup/login/auth-setup.ts`) runs in Node
+   before any spec. If `test/.auth/tokens.json` holds a token the API still accepts, it is reused.
+   Otherwise it launches headless Chromium, starts a small callback server on port **3000**
+   (`setup/login/proxy-server.ts`), logs in through the gateway with the `.env` credentials and
+   writes `test/.auth/tokens.json` (gitignored). Every step is logged to `test/.auth/auth-setup.log`.
+   A login failure is logged, not thrown, so unauthenticated specs still run.
+2. **Per-file setup** (`setup/vitest.setup.ts`) runs in the browser: fixes the clock to
+   `TEST_END_DATE` (`setup/config.ts`), initializes i18n, and pre-sets the localStorage keys that
+   would otherwise open welcome / onboarding / update-video popups over the map.
+3. **Specs** call `render()` from `test/appTestUtils.tsx` with a store built from
+   `test/utils/store` (`defaultState` = a snapshot of the Redux state).
+
+## Reading failures
+
+| Path                                                        | Contents                                  |
+| ----------------------------------------------------------- | ----------------------------------------- |
+| `.vitest/attachments/failure-screenshots/<spec>/<test>.png` | Screenshot at the moment each test failed |
+| `test/.auth/auth-setup.log`                                 | Login flow log, browser console included  |
+| `test/integration/__traces__/`                              | Playwright traces, `test:ui` runs only    |
+
+The screenshot is usually enough. A test that times out on `locator.click` with a popup or the
+landing page in the screenshot is a setup problem (localStorage keys, `defaultState`), not a
+problem in the feature under test.
+
+Headless runs do not record traces: the config only traces on retry, and `retry` is 0. Run the spec
+with `pnpm nx test:ui platform` to get one, then open it:
 
 ```bash
-nx test platform
+pnpm exec playwright show-trace "apps/platform/test/integration/__traces__/<spec>/<trace-file>.trace.zip"
 ```
 
-With Vitest UI (interactive browser):
+### When `defaultState` drifts from the app
 
-```bash
-nx test:ui platform
-```
+`test/utils/store/state.ts` is a hand-kept snapshot, not derived from the slices. When a slice gains
+a field, the snapshot does not, and selectors read `undefined`. Example: the `modals` snapshot lacked
+`updateVideo`, so `state.modals.updateVideo !== false` read as "open" and the video modal covered
+every spec. Add new slice fields to the snapshot when you add them to the slice.
 
-## Reading test artifacts
+## Authentication in tests
 
-After a run (local or CI), artifacts are written to `test/integration/`:
-
-| Path               | Contents                                                                 |
-| ------------------ | ------------------------------------------------------------------------ |
-| `__screenshots__/` | PNG screenshot taken at the moment of each failure                       |
-| `__traces__/`      | Playwright `.trace.zip` files with full timeline, network, DOM snapshots |
-
-### Viewing a trace
-
-```bash
-npx playwright show-trace "apps/platform/test/integration/__traces__/<spec>/<trace-file>.trace.zip"
-```
-
-The Playwright Trace Viewer shows:
-
-- **Timeline** — every action, click, navigation with timestamps
-- **Snapshots** — DOM state before/after each action (use the scrubber to replay)
-- **Network** — all requests and responses
-- **Console** — browser logs and errors
-
-Example for the vessel popup test:
-
-```bash
-npx playwright show-trace "apps/platform/test/integration/__traces__/Vessels.spec.tsx/platform-chromium-Vessel-map-popup-should-open-vessel-popup-on-vessel-click-and-be-able-to-navigate-to-vessel-viewer-0-0.trace.zip"
-```
-
-### Downloading CI traces
-
-CI uploads all traces to GCS after each run. The direct download link is printed at the end of the Cloud Build log:
-
-```
-📊 Integration Tests Traces: https://storage.googleapis.com/gfw-playwright-traces-ttl30/frontend/integration-tests/<BUILD_ID>/traces.tar.gz
-```
-
-Download and extract, then open any `.trace.zip` with the command above.
-
-## Authentication in Tests
-
-Tests use **pre-authentication** to avoid navigating to external OAuth pages during test execution.
-
-### How it works
-
-1. **Global Setup** ([auth-setup.ts](./auth-setup.ts)):
-   - Runs once before all tests in a real Playwright browser (no iframe)
-   - Checks if dev server is running; starts it automatically if not
-   - Navigates to the auth gateway and logs in with test credentials
-   - Extracts auth tokens from localStorage
-   - Saves tokens to `.auth/tokens.json` in the workspace app test folder
-   - Cleanup: Stops dev server after tests if it was started by the setup
-   - Vite plugin serves `.auth/tokens.json` at the `/.auth/tokens.json` endpoint
-   - This allows browser tests to fetch the tokens file created by global setup
-
-2. **Test Setup** ([vitest.setup.ts](./vitest.setup.ts)):
-   - Initializes i18n and mocks browser dialogs
-   - Authentication tokens are loaded per-test via render options (see below)
-
-3. **Render Method** ([appTestUtils.tsx](./appTestUtils.tsx)):
-   - Renders through TanStack Router (`RouterProvider` + production route tree)
-   - Returns `router` alongside RTL queries for navigation helpers
-   - Accepts `authenticated: true` option to load tokens before rendering
-   - Fetches tokens from the `/.auth/tokens.json` endpoint
-   - Loads tokens into localStorage for that specific test
-
-### Running Authenticated Tests
-
-**Prerequisites:**
-
-- Environment variables configured (see below)
-- Dev server will be started automatically if not already running
-
-**Enable global setup:**
-
-In [vitest.config.ts](../vitest.config.ts), uncomment the `globalSetup` line:
-
-```typescript
-globalSetup: './test/auth-setup.ts',
-```
-
-**Run tests:**
-
-```bash
-# This will authenticate and run tests
-# Dev server starts automatically if needed
-nx test platform
-
-# Or with UI
-nx test:ui platform
-```
-
-**How it works:**
-
-- Global setup checks if dev server is running at `http://localhost:3003`
-- If not running, it starts the dev server automatically using `nx start platform`
-- Waits for server to be ready (up to 2 minutes)
-- Authenticates and saves tokens to `.auth/tokens.json` (ignored by git)
-- Tests run with authentication
-- Dev server is stopped after tests complete (only if it was started by the setup)
-- All setup steps are logged to `.auth/auth-setup.log` for debugging
-
-**First run:** Global setup starts server, logs in, saves tokens
-**Subsequent runs:** Tests reuse existing tokens unless they expire
-
-**Debugging authentication issues:**
-
-If authentication fails, check `.auth/auth-setup.log` for detailed logs including:
-
-- Dev server startup output
-- Browser console messages
-- Authentication flow steps
-- Error messages and stack traces
-
-### Environment Variables
-
-Required in `.env` or environment:
-
-```bash
-# Test credentials
-TEST_USER_EMAIL=your-test-user@email.com
-TEST_USER_PASSWORD=your-test-password
-
-# API gateway
-VITE_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org
-```
-
-### Writing Authenticated Tests
+### Writing authenticated tests
 
 To test features that require authentication, pass `authenticated: true` to the render method:
 

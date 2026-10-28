@@ -106,6 +106,8 @@ export default defineConfig(({ mode }): ViteUserConfig => {
         'tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       ],
       fileParallelism: false,
+      // Expected with real API data: datasets without geometryType are hidden on purpose.
+      onConsoleLog: (log) => !log.includes('Dataset hidden from the layer library'),
       // maxWorkers: '50%',
       reporters: ['default'],
       coverage: {
