@@ -51,8 +51,12 @@ const tsconfigPathAliases = [
   })),
 ]
 
+// The persistent profile keeps the browser HTTP cache (tiles) warm between runs. One profile per
+// Nx task: split CI tasks (integration-ci--<spec>) run as parallel processes, and Chromium refuses
+// a profile another process already holds
+const nxTaskName = process.env.NX_TASK_TARGET_TARGET ?? 'default'
 const playwrightProvider: BrowserProviderOption = playwright({
-  persistentContext: true,
+  persistentContext: `./node_modules/.cache/vitest-playwright-user-data/${nxTaskName.replace(/[^\w.-]+/g, '_')}`,
 })
 
 export default defineConfig(({ mode }): ViteUserConfig => {

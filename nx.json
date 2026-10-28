@@ -12,7 +12,17 @@
         "devTargetName": "start"
       }
     },
-    "@nx/vitest",
+    {
+      "plugin": "@nx/vitest",
+      "exclude": ["apps/platform/**/*"]
+    },
+    {
+      "plugin": "@nx/vitest",
+      "options": {
+        "ciTargetName": "integration-ci"
+      },
+      "include": ["apps/platform/**/*"]
+    },
     {
       "plugin": "@nx/playwright/plugin",
       "options": {
@@ -63,6 +73,9 @@
       "options": {
         "args": "--pass-with-no-tests"
       }
+    },
+    "integration-ci--**/**": {
+      "dependsOn": ["prepare-loaders"]
     },
     "lint": {
       "cache": true,

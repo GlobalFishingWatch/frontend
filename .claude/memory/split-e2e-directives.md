@@ -55,4 +55,45 @@ not maximal.
 - The specs hit the live dev/staging API, so a replayed pass can hide an API-side break; smoke runs
   uncached against the deployed image.
 
+## The platform vitest suite is split too, as `integration-ci` (since 2026-10-28)
+
+A second `@nx/vitest` entry in `nx.json`, scoped to `apps/platform/**`, sets
+`ciTargetName: "integration-ci"`. The bare `@nx/vitest` entry excludes `apps/platform/**`, so
+libs keep a plain `test`. `.github/workflows/integration-tests.yml` distributes it to the same
+`linux-large-pnpm` workers.
+
+- **Not `test-ci`:** `e2e-tests.yml` runs `nx affected -t test-ci` across the workspace and
+  would pick up the vitest specs.
+- **`start-ci-run` flags, not `start-workers`:** `.nx/ci-config.yaml` has
+  `stop-after: test-ci`, and `start-workers` takes no flags. Adding `integration-ci` to that
+  shared list risks e2e runs waiting on a target they never run. Whether `start-ci-run` flags
+  fully override the file was not verifiable locally (the client is obfuscated). Check the first
+  PR run.
+- **Two commands:** libs `-t test --exclude='*-e2e,platform'`, then `-t integration-ci`. Running
+  `-t test integration-ci` together would also run the unsplit `platform:test`.
+- Split tasks do not inherit `test`'s `dependsOn`. `targetDefaults["integration-ci--**/**"]`
+  adds `prepare-loaders`. `clean-test-artifacts` is left out on purpose: it would delete
+  `__traces__` while sibling specs are writing to them.
+- **One login per CI run.** The API keeps one token per user, and a new login invalidates the
+  previous one, so parallel workers must never log in separately. The main job runs
+  `platform:test:login` (jiti, because lib `dist` uses extensionless imports that plain Node ESM
+  rejects) and forwards `tokens.json` as `TEST_AUTH_TOKENS`. `auth-setup.ts` writes that value and
+  never logs in when it is set. The test user's credentials are not forwarded to workers. Login
+  runs before `start-ci-run`, because `--with-env-vars` captures values at that point.
+- Locally, split tasks run `globalSetup` in parallel processes. An `mkdir` lock in
+  `auth-setup.ts` lets one log in while the others reuse its tokens. The login proxy uses fixed
+  port 3000, so concurrent logins would also collide there.
+- **Browser profile (`persistentContext`).** On CI there is one profile per worker, and
+  `integration-ci` runs with `--parallel=1`. A worker's specs share the tile cache, as in the old
+  serial run. Locally there is one profile per Nx task, because Chromium refuses a profile that
+  another process holds.
+
+**Why the cache does not persist across CI runs:** checked 2026-10-28 against the dev gateway.
+4wings tiles send `cache-control: private, max-age=86400`, and dataset/dataview JSON sends
+`no-cache`. A restored profile therefore only helps tiles less than 24h old. PR runs use the
+read-only Nx Cloud token, so they cannot write a workflow cache.
+
+**Also known (2026-10-28):** `e2e-tests.yml` (`LoginPage`) uses the same `TEST_USER_EMAIL`. Its
+logins can invalidate the integration run's token when both workflows run on the same push.
+
 See [[browser-testing-uses-platform-e2e]] and [[task-based-affected]].

@@ -19,6 +19,12 @@ dotenv.config({ path: path.resolve(__dirname, '../../../.env'), quiet: true })
 const AUTH_DIR = path.join(__dirname, '../../.auth')
 const TOKENS_FILE = path.join(AUTH_DIR, 'tokens.json')
 const AUTH_LOG_FILE = path.join(AUTH_DIR, 'auth-setup.log')
+// Split CI tasks (integration-ci--*) each run this global setup in their own process. The lock
+// makes the first one log in and the rest reuse its tokens.json; it also keeps two login flows
+// from racing for the auth proxy's fixed port.
+const AUTH_LOCK_DIR = path.join(AUTH_DIR, 'login.lock')
+const AUTH_LOCK_STALE_MS = 60000
+const AUTH_LOCK_POLL_MS = 500
 const NAVIGATION_TIMEOUT_MS = 10000
 const INVALID_CREDENTIALS_MESSAGE = 'email or password incorrect'
 
@@ -60,6 +66,29 @@ async function hasValidTokens(): Promise<boolean> {
 
 function rejectAfter(ms: number, message: string): Promise<never> {
   return new Promise((_, reject) => setTimeout(() => reject(new Error(message)), ms))
+}
+
+// mkdir is atomic, so it works as a cross-process lock without extra dependencies.
+async function acquireAuthLock() {
+  for (;;) {
+    try {
+      fs.mkdirSync(AUTH_LOCK_DIR)
+      return
+    } catch {
+      // A killed process leaves its lock behind; break it once it is older than any login flow.
+      const lockAge =
+        Date.now() - (fs.statSync(AUTH_LOCK_DIR, { throwIfNoEntry: false })?.mtimeMs ?? 0)
+      if (lockAge > AUTH_LOCK_STALE_MS) {
+        fs.rmSync(AUTH_LOCK_DIR, { recursive: true, force: true })
+      } else {
+        await new Promise((resolve) => setTimeout(resolve, AUTH_LOCK_POLL_MS))
+      }
+    }
+  }
+}
+
+function releaseAuthLock() {
+  fs.rmSync(AUTH_LOCK_DIR, { recursive: true, force: true })
 }
 
 function logBanner(message: string) {
@@ -182,6 +211,7 @@ async function runAuthSetup(runLabel: string, options: AuthSetupOptions = {}) {
   initLogStream(AUTH_LOG_FILE)
   logBanner(`Authentication Setup Started (${runLabel})`)
 
+  await acquireAuthLock()
   try {
     if (await hasValidTokens()) {
       log('✅ Valid tokens found, skipping auth setup')
@@ -207,6 +237,7 @@ async function runAuthSetup(runLabel: string, options: AuthSetupOptions = {}) {
       log(`⚠️  Authentication setup failed. Unauthenticated tests will still run. ${errorMessage}`)
     }
   } finally {
+    releaseAuthLock()
     closeLogStream()
   }
 }
