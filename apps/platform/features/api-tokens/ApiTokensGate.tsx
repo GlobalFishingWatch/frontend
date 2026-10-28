@@ -2,7 +2,7 @@ import { Trans } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Outlet } from '@tanstack/react-router'
 
-import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
+import { GFWAPI, GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 
 import LoginLink from 'features/_user/LoginLink'
 import { selectHasUserApplicationReadPermission } from 'features/_user/selectors/user.permissions.selectors'
@@ -11,6 +11,7 @@ import {
   selectUserData,
   selectUserLogged,
 } from 'features/_user/selectors/user.selectors'
+import { useIsClientHydrated } from 'hooks/ssr.hooks'
 
 import { useReloadApiTokensOnUserChange } from './api-tokens.hooks'
 import ApiTokensHeader from './ApiTokensHeader'
@@ -19,6 +20,8 @@ import ApiTokensSignup from './ApiTokensSignup'
 import styles from './ApiTokens.module.css'
 
 function ApiTokensGate() {
+  // The callback needs the browser URL, so the href is set after hydration to avoid a mismatch
+  const isClientHydrated = useIsClientHydrated()
   const userLogged = useSelector(selectUserLogged)
   const userData = useSelector(selectUserData)
   const hasReadPermission = useSelector(selectHasUserApplicationReadPermission)
@@ -38,7 +41,15 @@ function ApiTokensGate() {
       <p>
         {isGuest ? (
           <Trans i18nKey={(t) => t.apiTokens.loginRequired}>
-            {'Register or '}
+            <a
+              className={styles.link}
+              href={isClientHydrated ? GFWAPI.getRegisterUrl(window.location.href) : undefined}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Register
+            </a>
+            {' or '}
             <LoginLink className={styles.link} loginSource="api-tokens">
               login
             </LoginLink>
