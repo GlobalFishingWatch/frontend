@@ -17,6 +17,7 @@ import { selectActiveReportDataviews } from 'features/_map/dataviews/selectors/d
 import { getDownloadReportSupported } from 'features/_map/download/download.utils'
 import { selectReportLoadVessels } from 'features/_map/workspace/selectors/app.selectors'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
+import WorkspaceLoginError from 'features/_map/workspace/WorkspaceLoginError'
 import { selectActiveReportSubCategories } from 'features/_reports/reports.selectors'
 import ReportActivityPlaceholder from 'features/_reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportEventsPlaceholder from 'features/_reports/shared/placeholders/ReportEventsPlaceholder'
@@ -36,10 +37,12 @@ import EventsReportDownload from 'features/_reports/tabs/events/EventsReportDown
 import EventsReportGraph from 'features/_reports/tabs/events/EventsReportGraph'
 import EventsReportGraphSelector from 'features/_reports/tabs/events/EventsReportGraphSelector'
 import EventsReportSubsectionSelector from 'features/_reports/tabs/events/EventsReportSubsectionSelector'
+import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useFetchContextDatasetAreas } from 'features/data/areas/areas.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectIsVesselGroupReportLocation } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './EventsReport.module.css'
@@ -57,6 +60,8 @@ function EventsReport() {
   const fetchEventsStatsParams = useSelector(selectFetchEventsStatsParams)
   const totalEvents = useSelector(selectTotalStatsEvents)
   const reportLoadVessels = useSelector(selectReportLoadVessels)
+  const guestUser = useSelector(selectIsGuestUser)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const showSubsectionSelector = activeReportSubCategories && activeReportSubCategories.length > 1
   const timerangeSupported = getDownloadReportSupported(start, end)
   const datasetAreasId = useSelector(selectEventsGraphDatasetAreaId)
@@ -67,7 +72,7 @@ function EventsReport() {
   const { status: vessselStatus } = useGetReportEventsVesselsQuery(
     fetchEventsVesselsParams as GetReportEventParams,
     {
-      skip: !fetchEventsVesselsParams || !timerangeSupported || reportOutdated,
+      skip: !fetchEventsVesselsParams || !timerangeSupported || reportOutdated || guestUser,
     }
   )
 
@@ -172,7 +177,20 @@ function EventsReport() {
         </div>
         {hasEvents && (
           <div className={cx('card', styles.subsection)}>
-            {!timerangeSupported ? (
+            {guestUser ? (
+              <ReportVesselsPlaceholder animate={false}>
+                <div className={styles.cover}>
+                  <WorkspaceLoginError
+                    loginSource="report-private"
+                    title={
+                      isVesselGroupReportLocation
+                        ? t((t) => t.errors.vesselGroupReportLogin)
+                        : t((t) => t.errors.reportLogin)
+                    }
+                  />
+                </div>
+              </ReportVesselsPlaceholder>
+            ) : !timerangeSupported ? (
               <ReportVesselsPlaceholder animate={false}>
                 <div className={cx(styles.cover, styles.error)}>
                   <p>{t((t) => t.analysis.timeRangeTooLong)}</p>
