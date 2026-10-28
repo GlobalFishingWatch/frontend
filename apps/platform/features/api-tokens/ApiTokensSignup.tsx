@@ -83,12 +83,14 @@ function ApiTokensSignup() {
   )
 
   const commercialMessage = (
-    <Trans i18nKey={(t) => t.apiTokens.commercialNotAllowed}>
-      {
-        'For the moment we only allow API for non commercial purposes, if you are interested in a commercial option please contact us at '
-      }
-      <a href="mailto:apis@globalfishingwatch.org">apis@globalfishingwatch.org</a>
-    </Trans>
+    <span>
+      <Trans i18nKey={(t) => t.apiTokens.commercialNotAllowed}>
+        {
+          'For the moment we only allow API for non commercial purposes, if you are interested in a commercial option please contact us at '
+        }
+        <a href="mailto:apis@globalfishingwatch.org">apis@globalfishingwatch.org</a>
+      </Trans>
+    </span>
   )
 
   return (
