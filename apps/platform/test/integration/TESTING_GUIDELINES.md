@@ -943,9 +943,6 @@ nx test:ui platform
 
 # Run specific test file
 nx test platform Vessels.spec.tsx
-
-# Run in CI environment (Docker)
-nx test:ci platform
 ```
 
 ### Reading Test Artifacts

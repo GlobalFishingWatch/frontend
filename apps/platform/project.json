@@ -272,14 +272,6 @@
         "config": "./vitest.config.ts"
       }
     },
-    "test:ci": {
-      "executor": "nx:run-commands",
-      "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
-      "options": {
-        "command": "docker compose -f docker-compose.test.yml run --rm test",
-        "cwd": "apps/platform"
-      }
-    },
     "test:coverage": {
       "executor": "nx:run-commands",
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],

@@ -12,18 +12,6 @@ With Vitest UI (interactive browser):
 nx test:ui platform
 ```
 
-## Replicating the CI environment locally
-
-Tests run in CI inside `mcr.microsoft.com/playwright:v1.58.2-noble` (Linux/Noble) with only Chromium and no auth credentials. To reproduce a CI failure locally:
-
-```bash
-nx test:ci platform
-```
-
-This runs the exact same Docker image and flags as CI (`--browser=chromium`). Requires Docker to be running.
-
-> The Docker image is ~1.5 GB and will be cached after the first pull.
-
 ## Reading test artifacts
 
 After a run (local or CI), artifacts are written to `test/integration/`:
