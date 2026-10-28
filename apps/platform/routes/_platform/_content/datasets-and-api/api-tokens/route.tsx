@@ -8,6 +8,8 @@ import { getRouteHead } from 'router/router.meta'
 export const Route = createFileRoute('/_platform/_content/datasets-and-api/api-tokens')({
   component: ApiTokensGate,
   loader: ({ context }) => loadApiTokens(context),
+  // Drop the tokens on leave so a later visit never shows a previous user's list from cache
+  gcTime: 0,
   head: () => getRouteHead({ category: t((s) => s.apiTokens.title) }),
   // The rendered HTML carries the user's API tokens
   headers: () => ({ 'Cache-Control': 'private, no-store' }),
