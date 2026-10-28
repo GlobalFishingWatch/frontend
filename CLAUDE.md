@@ -70,6 +70,7 @@ Durable facts about this repo live in a `.claude/memory/` folder, one fact per f
 @.claude/memory/sheets-append-row-placement.md
 @.claude/memory/task-based-affected.md
 @.claude/memory/split-e2e-directives.md
+@.claude/memory/libs-release-scope.md
 
 ### Project-scoped knowledge lives with the project
 

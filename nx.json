@@ -180,7 +180,8 @@
         "projects": ["libs/*", "!libs/i18n-labels"],
         "version": {
           "currentVersionResolver": "disk",
-          "preserveLocalDependencyProtocols": true
+          "preserveLocalDependencyProtocols": true,
+          "updateDependents": "never"
         }
       },
       "i18n-labels": {
