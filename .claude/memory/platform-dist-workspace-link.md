@@ -49,6 +49,12 @@ Consequences:
     `api-client` and `deck-loaders`. Without the dependency, typecheck failed on a fresh
     clone. It also failed intermittently when `proto:generate` rewrote those files mid-read. A
     cached pass hid both cases, because the gitignored files are not in the typecheck inputs.
+  - Since 2026-10-28 every vitest `test` task needs the same dependency, including platform's
+    `test` and `integration-ci--*`. It comes from the `test` default in `nx.json`, or from each
+    lib's `project.json` where that file overrides `dependsOn`. Locally the `*.gen.js` files are
+    usually already on disk, so tests passed. On a fresh Nx Cloud worker they were missing:
+    `deck-loaders`, `api-client` and `timebar` tests failed with
+    `Cannot find module './vessel-track-proto.gen.js'`.
 - The old `types-watch` (`nx watch → dist`) was removed from the dependencies of `start`. With `development` exports, rebuilding `dist` on every lib edit does nothing useful for Vite or the IDE; switching it to `typecheck` would only burn CPU.
 - `platform:build` **keeps** `^build` — production resolves `default` → `dist`.
 - Go-to-definition lands in lib source instead of generated `.d.ts`.

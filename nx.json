@@ -75,7 +75,10 @@
       }
     },
     "integration-ci--**/**": {
-      "dependsOn": ["prepare-loaders"]
+      "dependsOn": ["prepare-loaders", "^proto:generate"]
+    },
+    "test": {
+      "dependsOn": ["proto:generate", "^proto:generate"]
     },
     "lint": {
       "cache": true,

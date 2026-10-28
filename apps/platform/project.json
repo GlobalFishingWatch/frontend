@@ -257,9 +257,18 @@
         "{workspaceRoot}/coverage/apps/platform",
         "{projectRoot}/test/coverage/apps/platform"
       ],
-      "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
+      "dependsOn": ["clean-test-artifacts", "prepare-loaders", "^proto:generate"],
       "options": {
         "config": "./vitest.config.ts"
+      }
+    },
+    "test:login": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "dependsOn": ["api-client:build"],
+      "options": {
+        "cwd": "apps/platform",
+        "command": "jiti test/setup/login/login.ts"
       }
     },
     "test:changed": {

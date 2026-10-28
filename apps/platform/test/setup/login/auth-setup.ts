@@ -19,9 +19,9 @@ dotenv.config({ path: path.resolve(__dirname, '../../../.env'), quiet: true })
 const AUTH_DIR = path.join(__dirname, '../../.auth')
 const TOKENS_FILE = path.join(AUTH_DIR, 'tokens.json')
 const AUTH_LOG_FILE = path.join(AUTH_DIR, 'auth-setup.log')
-// Split CI tasks (integration-ci--*) each run this global setup in their own process. The lock
-// makes the first one log in and the rest reuse its tokens.json; it also keeps two login flows
-// from racing for the auth proxy's fixed port.
+// Parallel local runs (integration-ci--* tasks) each run this global setup in their own process.
+// The lock makes the first one log in and the rest reuse its tokens.json; it also keeps two login
+// flows from racing for the auth proxy's fixed port.
 const AUTH_LOCK_DIR = path.join(AUTH_DIR, 'login.lock')
 const AUTH_LOCK_STALE_MS = 60000
 const AUTH_LOCK_POLL_MS = 500
@@ -213,6 +213,15 @@ async function runAuthSetup(runLabel: string, options: AuthSetupOptions = {}) {
 
   await acquireAuthLock()
   try {
+    // CI logs in once in the main job and hands the tokens to every worker. Workers must never
+    // log in themselves: the API keeps one token per user, so a new login invalidates the others.
+    const sharedTokens = process.env.TEST_AUTH_TOKENS
+    if (sharedTokens) {
+      fs.writeFileSync(TOKENS_FILE, sharedTokens)
+      log('✅ Using tokens from TEST_AUTH_TOKENS, skipping auth setup')
+      return
+    }
+
     if (await hasValidTokens()) {
       log('✅ Valid tokens found, skipping auth setup')
       return

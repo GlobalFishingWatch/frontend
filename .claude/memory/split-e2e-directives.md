@@ -64,13 +64,26 @@ libs keep a plain `test`. `.github/workflows/integration-tests.yml` distributes 
 
 - **Not `test-ci`:** `e2e-tests.yml` runs `nx affected -t test-ci` across the workspace and
   would pick up the vitest specs.
-- **`start-ci-run` flags, not `start-workers`:** `.nx/ci-config.yaml` has
-  `stop-after: test-ci`, and `start-workers` takes no flags. Adding `integration-ci` to that
-  shared list risks e2e runs waiting on a target they never run. Whether `start-ci-run` flags
-  fully override the file was not verifiable locally (the client is obfuscated). Check the first
-  PR run.
+- **Its own `ci-config`, swapped in:** `start-workers` reads only `.nx/ci-config.yaml` and takes
+  no flags. That file is e2e's, with `stop-after: test-ci`. `start-ci-run` exits 1 while that file
+  exists ("A CI configuration file was detected, but `start-ci-run` does not load it", seen
+  2026-10-28). So the integration job runs `cp .nx/ci-config.integration.yaml .nx/ci-config.yaml`
+  before `start-workers`. Listing both targets in one shared file was avoided because
+  stop-after waits for every listed target.
 - **Two commands:** libs `-t test --exclude='*-e2e,platform'`, then `-t integration-ci`. Running
   `-t test integration-ci` together would also run the unsplit `platform:test`.
+- **Workers, browsers and login only when `integration-ci` is affected.** A `Detect affected
+tests` step runs `nx show projects -t <target> --affected --json`. When platform is not
+  affected, lib tests run on the GitHub runner. They use jsdom/node, never vitest browser mode,
+  and finish faster than workers boot. A PR that only edits the workflow or
+  `.nx/ci-config.integration.yaml` affects nothing, so it runs no tests. To exercise a CI change,
+  touch an input as well.
+- **Each workflow sets its own `NX_CI_EXECUTION_ENV`** (`e2e`, `integration`). Both are Nx Cloud
+  main jobs on the same commit and PR branch. Without it, E2E failed on every push from
+  2026-10-28 on with `CI pipeline execution <run>-1 cancelled. Reason: One or more workflows were
+cancelled`. The last E2E pass was the commit where Integration Tests was still disabled. Nx
+  documents this variable for multiple main jobs. Do not change `NX_BRANCH` instead: it must stay
+  the PR number for the GitHub integration.
 - Split tasks do not inherit `test`'s `dependsOn`. `targetDefaults["integration-ci--**/**"]`
   adds `prepare-loaders`. `clean-test-artifacts` is left out on purpose: it would delete
   `__traces__` while sibling specs are writing to them.
@@ -79,7 +92,7 @@ libs keep a plain `test`. `.github/workflows/integration-tests.yml` distributes 
   `platform:test:login` (jiti, because lib `dist` uses extensionless imports that plain Node ESM
   rejects) and forwards `tokens.json` as `TEST_AUTH_TOKENS`. `auth-setup.ts` writes that value and
   never logs in when it is set. The test user's credentials are not forwarded to workers. Login
-  runs before `start-ci-run`, because `--with-env-vars` captures values at that point.
+  runs before `start-workers`, which captures the forwarded env values when it starts.
 - Locally, split tasks run `globalSetup` in parallel processes. An `mkdir` lock in
   `auth-setup.ts` lets one log in while the others reuse its tokens. The login proxy uses fixed
   port 3000, so concurrent logins would also collide there.

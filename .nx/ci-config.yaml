@@ -1,5 +1,7 @@
 # Read by every Nx Cloud command, but only a run started with `nx-cloud start-workers`
 # distributes (today: .github/workflows/e2e-tests.yml). Other jobs keep running locally.
+# .github/workflows/integration-tests.yml distributes too, with .nx/ci-config.integration.yaml
+# copied over this file, because its last target is `integration-ci`, not `test-ci`.
 dte:
   distribute-on: 3 linux-large-pnpm
 lifecycle:

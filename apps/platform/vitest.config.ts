@@ -51,12 +51,15 @@ const tsconfigPathAliases = [
   })),
 ]
 
-// The persistent profile keeps the browser HTTP cache (tiles) warm between runs. One profile per
-// Nx task: split CI tasks (integration-ci--<spec>) run as parallel processes, and Chromium refuses
-// a profile another process already holds
-const nxTaskName = process.env.NX_TASK_TARGET_TARGET ?? 'default'
+// The persistent profile keeps the browser HTTP cache (tiles) warm across spec files. Chromium
+// refuses a profile another process already holds, so:
+// - CI shares one profile per worker. integration-tests.yml runs `integration-ci` with
+//   --parallel=1, so a worker's specs run one after another and each reuses the tiles the
+//   previous ones fetched.
+// - Locally, split tasks may run in parallel, so each Nx task gets its own profile.
+const profileName = process.env.CI ? 'ci' : (process.env.NX_TASK_TARGET_TARGET ?? 'default')
 const playwrightProvider: BrowserProviderOption = playwright({
-  persistentContext: `./node_modules/.cache/vitest-playwright-user-data/${nxTaskName.replace(/[^\w.-]+/g, '_')}`,
+  persistentContext: `./node_modules/.cache/vitest-playwright-user-data/${profileName.replace(/[^\w.-]+/g, '_')}`,
 })
 
 export default defineConfig(({ mode }): ViteUserConfig => {
