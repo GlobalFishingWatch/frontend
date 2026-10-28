@@ -4,8 +4,8 @@ import type { ViteUserConfig } from 'vitest/config'
 import { defineConfig } from 'vitest/config'
 import type { BrowserProviderOption } from 'vitest/node'
 
-import { authTokensPlugin, publicAssetsPlugin } from './test/utils/vitest/plugins'
-import { basePath, plugins } from './vite.config'
+import { authTokensPlugin, publicAssetsPlugin } from './test/utils/vitest/plugins.ts'
+import { basePath, plugins } from './vite.config.ts'
 
 const DEFAULT_VIEWPORT = { width: 1280, height: 720 }
 

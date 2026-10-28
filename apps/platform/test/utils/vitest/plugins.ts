@@ -6,7 +6,7 @@ import type { IncomingMessage, ServerResponse } from 'http'
 import type { Connect, Plugin, PreviewServer, ViteDevServer } from 'vite'
 
 // Derived rather than hardcoded so the platform basepath only has to change in one place.
-import { basePath } from '../../../vite.config'
+import { basePath } from '../../../vite.config.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const TOKENS_PATH = path.resolve(__dirname, '../../.auth/tokens.json')
