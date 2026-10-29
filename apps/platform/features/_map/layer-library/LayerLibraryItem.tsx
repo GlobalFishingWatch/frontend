@@ -117,10 +117,10 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
       <div className={styles.container}>
         <div className={styles.image} style={{ backgroundImage: `url(${previewImageUrl})` }} />
         <div className={styles.content}>
-          <h2 className={styles.title}>
+          <h2 className={styles.title} translate="no">
             {getHighlightedText(name as string, highlightedText, styles)}
           </h2>
-          <p className={styles.description}>
+          <p className={styles.description} translate="no">
             {getHighlightedText(description as string, highlightedText, styles)}
           </p>
           <div className={styles.actions}>
