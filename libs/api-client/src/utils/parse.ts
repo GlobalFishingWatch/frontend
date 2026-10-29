@@ -24,7 +24,8 @@ export const processStatus = (
         await response.text().then((text) => {
           try {
             const res = JSON.parse(text)
-            errors.message = res.message
+            // The gateway answers `{ error }`, e.g. a rejected captcha
+            errors.message = res.message ?? res.error
             errors.messages = res.messages
           } catch {
             errors.message = statusText

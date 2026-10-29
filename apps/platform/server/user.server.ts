@@ -30,7 +30,7 @@ export async function resolveUserStateFromRequest(): Promise<{ user: UserData | 
   // cookie (throws 401) or the refresh is dead.
   try {
     const refreshToken = readCookieString(cookieHeader, USER_REFRESH_TOKEN_COOKIE_KEY)
-    const tokens = await refreshAuthTokens(refreshToken ?? undefined, setCookie)
+    const tokens = await refreshAuthTokens({ refreshToken: refreshToken ?? undefined, setCookie })
     const user = await GFWAPI.fetchUser({
       token: tokens.token,
       headers: SSR_HEADERS,

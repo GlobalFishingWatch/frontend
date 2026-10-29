@@ -22,12 +22,17 @@ export const loginServerFn = createServerFn({ method: 'POST' })
     }
   })
 
-export const refreshTokenServerFn = createServerFn({ method: 'POST' }).handler(
-  async (): Promise<Tokens> => {
+// The captcha token is solved in the browser, the gateway protects the refresh route with it
+export const refreshTokenServerFn = createServerFn({ method: 'POST' })
+  .validator((data: { captchaToken?: string } = {}) => data)
+  .handler(async ({ data }): Promise<Tokens> => {
     const { getCookie, setCookie } = await import('@tanstack/react-start/server')
-    return refreshAuthTokens(getCookie(USER_REFRESH_TOKEN_COOKIE_KEY), setCookie)
-  }
-)
+    return refreshAuthTokens({
+      refreshToken: getCookie(USER_REFRESH_TOKEN_COOKIE_KEY),
+      setCookie,
+      captchaToken: data.captchaToken,
+    })
+  })
 
 export const clearAuthCookiesServerFn = createServerFn({ method: 'POST' }).handler(
   async (): Promise<boolean> => {

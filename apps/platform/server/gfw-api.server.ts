@@ -53,7 +53,7 @@ export function configureServerGFWAPI() {
         const cookie = getRequest()?.headers.get('cookie') ?? ''
         const refreshToken = readCookieString(cookie, USER_REFRESH_TOKEN_COOKIE_KEY) ?? undefined
 
-        const tokens = await refreshAuthTokens(refreshToken, setCookie)
+        const tokens = await refreshAuthTokens({ refreshToken, setCookie })
         if (holder) {
           holder.token = tokens.token
         }

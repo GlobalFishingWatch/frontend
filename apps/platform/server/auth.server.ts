@@ -1,4 +1,4 @@
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { CAPTCHA_HEADER, GFWAPI } from '@globalfishingwatch/api-client'
 
 import {
   SSR_HEADERS,
@@ -35,10 +35,15 @@ const refreshInFlight = new Map<string, { tokens: Promise<Tokens>; expiresAt: nu
 
 // Reloads tokens from the given refresh token and persists them. Throws a 401 when there
 // is no refresh token. Shared between the refresh RPC and SSR user resolution
-export async function refreshAuthTokens(
-  refreshToken: string | undefined,
+export async function refreshAuthTokens({
+  refreshToken,
+  setCookie,
+  captchaToken,
+}: {
+  refreshToken: string | undefined
   setCookie: CookieSetter
-): Promise<Tokens> {
+  captchaToken?: string
+}): Promise<Tokens> {
   if (!refreshToken) {
     const error = new Error('No refresh token') as Error & { status: number }
     error.status = 401
@@ -50,7 +55,10 @@ export async function refreshAuthTokens(
   }
   let entry = refreshInFlight.get(refreshToken)
   if (!entry) {
-    const tokens = GFWAPI.reloadTokens(refreshToken, SSR_HEADERS)
+    const tokens = GFWAPI.reloadTokens(refreshToken, {
+      ...SSR_HEADERS,
+      ...(captchaToken && { [CAPTCHA_HEADER]: captchaToken }),
+    })
     // Don't cache a failed rotation — let the next caller retry against the gateway.
     tokens.catch(() => refreshInFlight.delete(refreshToken))
     entry = { tokens, expiresAt: now + REFRESH_DEDUP_TTL_MS }

@@ -2,40 +2,49 @@ import { Fragment, useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
-import { GFWAPI } from '@globalfishingwatch/api-client'
-import { useRateLimitChallengeState } from '@globalfishingwatch/api-client/hooks'
+import { CAPTCHA_ACTIONS, GFWAPI } from '@globalfishingwatch/api-client'
+import {
+  useCaptchaChallengeState,
+  useRateLimitChallengeState,
+} from '@globalfishingwatch/api-client/hooks'
 import { Button } from '@globalfishingwatch/ui-components/button'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 
-import styles from './RateLimitChallenge.module.css'
+import styles from './CaptchaChallenge.module.css'
 
-// GFWAPI renders the Turnstile widget here when a track/events request hits the rate limit (429).
+// GFWAPI renders the Turnstile widget here for every captcha protected request, e.g. the
+// track/events limit reset (429) or the token refresh.
 // It stays invisible unless Cloudflare asks for an interaction, so the node must never remount:
 // moving the iframe reloads the challenge.
-function RateLimitChallenge() {
+function CaptchaChallenge() {
   const { t } = useTranslation()
-  const challengeState = useRateLimitChallengeState()
+  const captcha = useCaptchaChallengeState()
+  const rateLimitState = useRateLimitChallengeState()
   const containerRef = useCallback((container: HTMLDivElement) => {
-    GFWAPI.setRateLimitChallengeContainer(container)
-    return () => GFWAPI.clearRateLimitChallengeContainer(container)
+    GFWAPI.setCaptchaContainer(container)
+    return () => GFWAPI.clearCaptchaContainer(container)
   }, [])
 
-  const previousChallengeState = useRef(challengeState)
+  const previousRateLimitState = useRef(rateLimitState)
   useEffect(() => {
-    const previous = previousChallengeState.current
-    previousChallengeState.current = challengeState
-    // From 'failed' it is a user retry and from 'interactive' the next queued dataset, same reset
-    if (challengeState === 'solving' && (previous === 'idle' || previous === 'cancelled')) {
+    const previous = previousRateLimitState.current
+    previousRateLimitState.current = rateLimitState
+    // From 'failed' it is a user retry, same reset
+    if (rateLimitState === 'resetting' && (previous === 'idle' || previous === 'cancelled')) {
       trackEvent({ category: TrackCategory.Tracks, action: 'rate_limit_reset_needed' })
     }
-    if (challengeState === 'interactive' && previous !== 'interactive') {
+  }, [rateLimitState])
+
+  const interactive = captcha.status === 'interactive'
+  const rateLimitCaptcha = captcha.action === CAPTCHA_ACTIONS.visualizeLimitReset
+  useEffect(() => {
+    if (interactive && rateLimitCaptcha) {
       trackEvent({ category: TrackCategory.Tracks, action: 'rate_limit_challenge_interactive' })
     }
-  }, [challengeState])
+  }, [interactive, rateLimitCaptcha])
 
-  const interactive = challengeState === 'interactive'
-  const failed = challengeState === 'failed'
+  const failed = rateLimitState === 'failed'
 
   return (
     <div className={cx(styles.overlay, { [styles.visible]: interactive || failed })}>
@@ -43,7 +52,7 @@ function RateLimitChallenge() {
         {interactive && (
           <div className={styles.message}>
             <h2 className={styles.title}>{t((t) => t.rateLimit.challengeTitle)}</h2>
-            <p>{t((t) => t.rateLimit.challenge)}</p>
+            {rateLimitCaptcha && <p>{t((t) => t.rateLimit.challenge)}</p>}
           </div>
         )}
         {failed && (
@@ -68,4 +77,4 @@ function RateLimitChallenge() {
   )
 }
 
-export default RateLimitChallenge
+export default CaptchaChallenge
