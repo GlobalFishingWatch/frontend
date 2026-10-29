@@ -8,9 +8,24 @@ import {
 } from 'features/app/app.config'
 import { clearAuthCookies, refreshAuthTokens } from 'server/auth.server'
 
-export async function resolveUserStateFromRequest(): Promise<{ user: UserData | null }> {
-  const { getRequest, setCookie } = await import('@tanstack/react-start/server')
-  const cookieHeader = getRequest().headers.get('cookie') ?? ''
+type UserState = { user: UserData | null }
+
+const userStateByRequest = new WeakMap<Request, Promise<UserState>>()
+
+export async function resolveUserStateFromRequest(): Promise<UserState> {
+  const { getRequest } = await import('@tanstack/react-start/server')
+  const request = getRequest()
+  let userState = userStateByRequest.get(request)
+  if (!userState) {
+    userState = fetchUserStateFromRequest(request)
+    userStateByRequest.set(request, userState)
+  }
+  return userState
+}
+
+async function fetchUserStateFromRequest(request: Request): Promise<UserState> {
+  const { setCookie } = await import('@tanstack/react-start/server')
+  const cookieHeader = request.headers.get('cookie') ?? ''
   const token = readCookieString(cookieHeader, USER_TOKEN_COOKIE_KEY)
 
   // Try the access token if present.

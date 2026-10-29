@@ -2,7 +2,11 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 import { getGuestUser, GFWAPI } from '@globalfishingwatch/api-client'
-import type { UserData, UserGroupId } from '@globalfishingwatch/api-types'
+import type {
+  UserApiAdditionalInformation,
+  UserData,
+  UserGroupId,
+} from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
 import type { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
 
@@ -64,6 +68,15 @@ export const logoutUserThunk = createAsyncThunk(
 )
 
 export const fetchUserThunk = createAsyncThunk('user/fetch', () => GFWAPI.fetchUser())
+
+export const updateUserApiAdditionalInfoThunk = createAsyncThunk(
+  'user/updateApiAdditionalInfo',
+  async (info: UserApiAdditionalInformation, { dispatch }) => {
+    const body = Object.fromEntries(Object.entries(info).filter(([, value]) => value !== null))
+    await GFWAPI.updateUser(body)
+    return dispatch(fetchUserThunk()).unwrap()
+  }
+)
 
 const userSlice = createSlice({
   name: 'user',

@@ -160,7 +160,10 @@ function PlatformNav() {
           {item.loading ? <Spinner size="small" inline /> : <Icon icon={item.icon} />}
         </span>
       )}
-      <span data-nav-label>{item.label}</span>
+      <span data-nav-label>
+        {item.label}
+        {item.href && <Icon icon="external-link" className={styles.externalIcon} />}
+      </span>
     </Fragment>
   )
 
@@ -258,7 +261,9 @@ function PlatformNav() {
           }}
         >
           <div
-            className={cx(styles.tab, { [styles.current]: isItemActive(section) })}
+            className={cx(styles.tab, {
+              [styles.current]: isItemActive(section) || section.id === routeSectionId,
+            })}
             data-testid={`link-${section.id}`}
           >
             {isRouted(section) ? (
