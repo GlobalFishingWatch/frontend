@@ -159,7 +159,6 @@ function EventsReport() {
               <label className={styles.headerContainerLabel}>{t((t) => t.common.events)}</label>
               {hasEvents && (
                 <Fragment>
-                  <ReportGraphScreenshot graphRef={graphRef} name="events" withSummary />
                   <EventsReportGraphSelector
                     disabled={isLoadingVessels || !hasEvents}
                     containerClassName={styles.graphSelector}
@@ -167,6 +166,7 @@ function EventsReport() {
                   {isIndividualSupported && (
                     <EventsReportDownload dataviews={eventsDataviews} start={start} end={end} />
                   )}
+                  <ReportGraphScreenshot graphRef={graphRef} name="events" withSummary />
                 </Fragment>
               )}
             </div>

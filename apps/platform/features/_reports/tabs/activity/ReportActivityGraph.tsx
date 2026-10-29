@@ -145,6 +145,7 @@ export default function ReportActivity() {
           {!isEmptyData && !hasError && featureFlags[FeatureFlag.HotspotButton] && (
             <ReportHotspotControls />
           )}
+          <ReportActivityGraphSelector loading={isInitialLoad} />
           {!isEmptyData && !hasError && (
             <ReportGraphScreenshot
               graphRef={graphRef}
@@ -152,7 +153,6 @@ export default function ReportActivity() {
               withSummary
             />
           )}
-          <ReportActivityGraphSelector loading={isInitialLoad} />
         </div>
       )}
       {/* Dataset Comparison Selectors needs to go above the graph instead of time comparison selectors */}

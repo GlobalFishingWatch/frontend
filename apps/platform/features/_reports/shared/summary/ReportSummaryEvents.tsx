@@ -9,7 +9,7 @@ import { DatasetTypes, EventTypes } from '@globalfishingwatch/api-types'
 
 import { selectActiveReportDataviews } from 'features/_map/dataviews/selectors/dataviews.selectors'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
-import { selectReportAreaId } from 'features/_reports/reports.current.selectors'
+import { selectIsGlobalReport } from 'features/_reports/report-area/area-reports.selectors'
 import ReportSummaryPlaceholder from 'features/_reports/shared/placeholders/ReportSummaryPlaceholder'
 import { selectReportVesselsFlags } from 'features/_reports/shared/vessels/report-vessels.selectors'
 import {
@@ -31,7 +31,7 @@ export default function ReportSummaryEvents({ areaName }: { areaName?: string } 
   const totalStatsEvents = useSelector(selectTotalStatsEvents)
   const totalEventsVessels = useSelector(selectTotalEventsVessels)
   const reportVesselsFlags = useSelector(selectReportVesselsFlags)
-  const reportAreaId = useSelector(selectReportAreaId)
+  const isGlobalReport = useSelector(selectIsGlobalReport)
   const eventsStatsDataGrouped = useSelector(selectEventsStatsDataGrouped)
 
   const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
@@ -60,7 +60,7 @@ export default function ReportSummaryEvents({ areaName }: { areaName?: string } 
 
     const area = isPortReportLocation
       ? t((t) => t.portsReport.toThisPort, { defaultValue: 'to this port' })
-      : reportAreaId
+      : !isGlobalReport
         ? areaName
           ? t((t) => t.analysis.inNamedArea, { area: areaName })
           : t((t) => t.analysis.inTheArea, { defaultValue: 'in the area' })
@@ -102,7 +102,7 @@ export default function ReportSummaryEvents({ areaName }: { areaName?: string } 
     eventType,
     eventsStatsDataGrouped,
     isPortReportLocation,
-    reportAreaId,
+    isGlobalReport,
     reportVesselsFlags?.size,
     t,
     eventDataset?.source,

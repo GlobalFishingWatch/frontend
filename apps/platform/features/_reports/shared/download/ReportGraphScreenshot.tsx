@@ -12,8 +12,9 @@ import { SwitchRow } from '@globalfishingwatch/ui-components/switch-row'
 
 import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import { selectReportAreaName } from 'features/_reports/report-area/area-reports.selectors'
+import { selectReportCategory } from 'features/_reports/reports.selectors'
+import { ReportCategory } from 'features/_reports/reports.types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectIsVesselGroupReportLocation } from 'router/routes.selectors'
 
 import ReportGraphLegend from './ReportGraphLegend'
 import ReportGraphSummary from './ReportGraphSummary'
@@ -57,7 +58,7 @@ function ReportGraphScreenshot({
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
   const reportAreaName = useSelector(selectReportAreaName)
-  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const reportCategory = useSelector(selectReportCategory)
   const [open, setOpen] = useState(false)
   const [format, setFormat] = useState<ReportGraphScreenshotFormat>('png')
   const [includeSummary, setIncludeSummary] = useState(true)
@@ -65,7 +66,9 @@ function ReportGraphScreenshot({
   const [downloading, setDownloading] = useState(false)
   const imageRef = useRef<HTMLDivElement>(null)
   const showSummary = withSummary && includeSummary
-  const showLegend = withSummary && includeLegend && !isVesselGroupReportLocation
+  // The vessel group vessels tab has no layers to list
+  const hasLegend = withSummary && reportCategory !== ReportCategory.VesselGroup
+  const showLegend = hasLegend && includeLegend
 
   const graphCopyRef = useCallback(
     (container: HTMLDivElement | null) => {
@@ -163,7 +166,7 @@ function ReportGraphScreenshot({
               onClick={() => setIncludeSummary(!includeSummary)}
             />
           )}
-          {withSummary && !isVesselGroupReportLocation && (
+          {hasLegend && (
             <SwitchRow
               label={t((t) => t.analysis.graphScreenshotLegend)}
               active={includeLegend}

@@ -53,6 +53,7 @@ function ReportVessels({
       {!showOnlyTable && (
         <div className={styles.titleRow}>
           {title && <label className={styles.blockTitle}>{title}</label>}
+          <ReportVesselsGraphSelector loading={loading} />
           {!loading && (
             <ReportGraphScreenshot
               graphRef={graphRef}
@@ -61,7 +62,6 @@ function ReportVessels({
               filter={filter}
             />
           )}
-          <ReportVesselsGraphSelector loading={loading} />
         </div>
       )}
       {loading ? (

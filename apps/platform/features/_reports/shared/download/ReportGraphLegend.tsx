@@ -10,12 +10,20 @@ import {
   getSourcesSelectedInDataview,
   groupVmsSources,
 } from 'features/_map/workspace/activity/activity.utils'
+import { selectVGRData } from 'features/_reports/report-vessel-group/vessel-group-report.slice'
 import { selectReportVesselsFiltered } from 'features/_reports/shared/vessels/report-vessels.selectors'
 import { useVesselGroupsOptions } from 'features/_user/vessel-groups/vessel-groups.hooks'
+import { selectIsVesselGroupReportLocation } from 'router/routes.selectors'
 
 import styles from './ReportGraphScreenshot.module.css'
 
-function ReportGraphLegendItem({ dataview }: { dataview: UrlDataviewInstance }) {
+function ReportGraphLegendItem({
+  dataview,
+  vesselGroupName,
+}: {
+  dataview: UrlDataviewInstance
+  vesselGroupName?: string
+}) {
   const { t } = useTranslation()
   const vesselGroupsOptions = useVesselGroupsOptions()
   const sourcesSelected = getSourcesSelectedInDataview(dataview)
@@ -28,6 +36,7 @@ function ReportGraphLegendItem({ dataview }: { dataview: UrlDataviewInstance }) 
   const { filtersAllowed } = getFiltersInDataview(dataview, { vesselGroups: vesselGroupsOptions })
   const filters = filtersAllowed
     .filter(({ optionsSelected }) => optionsSelected.length > 0)
+    .filter(({ id }) => !(vesselGroupName && id === 'vessel-groups'))
     .map(({ label, optionsSelected }) => {
       // Range filters come as [[min], [max]] pairs
       const values = optionsSelected.map((option: any) =>
@@ -39,7 +48,11 @@ function ReportGraphLegendItem({ dataview }: { dataview: UrlDataviewInstance }) 
   return (
     <li className={styles.legendItem}>
       <span className={styles.dot} style={{ color: dataview.config?.color }} />
-      {[sources && `${t((t) => t.layer.source)}: ${sources}`, ...filters]
+      {[
+        sources && `${t((t) => t.layer.source)}: ${sources}`,
+        vesselGroupName && `${t((t) => t.vesselGroup.vesselGroup)}: ${vesselGroupName}`,
+        ...filters,
+      ]
         .filter(Boolean)
         .join('  -  ')}
     </li>
@@ -47,6 +60,8 @@ function ReportGraphLegendItem({ dataview }: { dataview: UrlDataviewInstance }) 
 }
 
 function ReportGraphLegend() {
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const vesselGroup = useSelector(selectVGRData)
   const allDataviews = useSelector(selectActiveReportDataviews)
   const vessels = useSelector(selectReportVesselsFiltered)
   const dataviewIdsWithVessels = vessels && new Set(vessels.map((vessel) => vessel.dataviewId))
@@ -57,7 +72,11 @@ function ReportGraphLegend() {
   return (
     <ul className={styles.legend}>
       {dataviews.map((dataview) => (
-        <ReportGraphLegendItem key={dataview.id} dataview={dataview} />
+        <ReportGraphLegendItem
+          key={dataview.id}
+          dataview={dataview}
+          vesselGroupName={isVesselGroupReportLocation ? vesselGroup?.name : undefined}
+        />
       ))}
     </ul>
   )

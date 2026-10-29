@@ -1652,6 +1652,7 @@
     "searchResultsTable": "Vessels matched by {{field}}{{timeRange}}: {{number}}",
     "searchVesselsRequired": "To match with GFW dataset and create a vessel group",
     "summary": "This group contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>",
+    "summaryNamed": "{{name}} contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>",
     "tooManyVessels_one": "Maximum number of vessels is {{count}}",
     "tooManyVessels_other": "Maximum number of vessels is {{count}}",
     "unmatchedIDs": "Unmatched vessels: {{ids}}",

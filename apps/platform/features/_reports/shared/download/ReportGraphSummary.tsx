@@ -1,13 +1,22 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { DateTime } from 'luxon'
 
 import { groupVmsSources } from 'features/_map/workspace/activity/activity.utils'
 import { selectReportAreaName } from 'features/_reports/report-area/area-reports.selectors'
+import { selectVGRData } from 'features/_reports/report-vessel-group/vessel-group-report.slice'
 import { selectReportCategory, selectReportSubCategory } from 'features/_reports/reports.selectors'
 import { ReportCategory } from 'features/_reports/reports.types'
 import { useReportActivitySummaryData } from 'features/_reports/shared/summary/report-summary-activity.hooks'
 import ReportSummaryEvents from 'features/_reports/shared/summary/ReportSummaryEvents'
+import {
+  selectReportVesselGroupFlags,
+  selectReportVesselGroupTimeRange,
+} from 'features/_reports/shared/vessels/report-vessels.selectors'
 import { getReportSubCategoryLabel } from 'features/_reports/tabs/activity/reports-activity.utils'
+import { getVesselGroupVesselsCount } from 'features/_user/vessel-groups/vessel-groups.utils'
+import { formatI18nDate } from 'features/i18n/i18nDate.utils'
+import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { htmlSafeParse } from 'utils/html-parser'
 import { listAsSentence } from 'utils/shared'
 
@@ -84,6 +93,25 @@ function ReportGraphSummaryActivity({ vesselsFiltered, hideSources }: ReportGrap
   )
 }
 
+/** Same sentence as the vessel group report title, with the group name instead of "This group" */
+function ReportGraphSummaryVesselGroup() {
+  const { t } = useTranslation()
+  const vesselGroup = useSelector(selectVGRData)
+  const timeRange = useSelector(selectReportVesselGroupTimeRange)
+  const flags = useSelector(selectReportVesselGroupFlags)
+
+  if (!vesselGroup || !timeRange) return null
+  return htmlSafeParse(
+    t((t) => t.vesselGroup.summaryNamed, {
+      name: vesselGroup.name,
+      vessels: formatI18nNumber(getVesselGroupVesselsCount(vesselGroup)) as string,
+      flags: String(flags?.size ?? 0),
+      start: formatI18nDate(timeRange.start, { format: DateTime.DATE_MED }),
+      end: formatI18nDate(timeRange.end, { format: DateTime.DATE_MED }),
+    })
+  )
+}
+
 /** What, where and when the report shows, as one sentence for graph screenshots */
 function ReportGraphSummary(props: ReportGraphSummaryProps) {
   const reportCategory = useSelector(selectReportCategory)
@@ -91,7 +119,9 @@ function ReportGraphSummary(props: ReportGraphSummaryProps) {
 
   return (
     <p className={styles.summary}>
-      {reportCategory === ReportCategory.Events ? (
+      {reportCategory === ReportCategory.VesselGroup ? (
+        <ReportGraphSummaryVesselGroup />
+      ) : reportCategory === ReportCategory.Events ? (
         <ReportSummaryEvents areaName={areaName} />
       ) : (
         <ReportGraphSummaryActivity {...props} />
