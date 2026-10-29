@@ -296,7 +296,6 @@
     "map": "Carte",
     "matchedVessels": "Navires correspondants",
     "messageAssistant": "Message the assistant…",
-    "messages": "messages",
     "messages_one": "message",
     "messages_other": "messages",
     "meters": "mètres",
@@ -568,7 +567,8 @@
     "nir": "Near-infrared",
     "rgb": "Red, green and blue (visible light)"
   },
-  "detections": "",
+  "detections_one": "",
+  "detections_other": "",
   "detectionScene": {
     "addHighlight": "Highlight other detections from the same satellite scene",
     "highlight": "Scene",
@@ -824,9 +824,9 @@
       "title": "Use cases"
     }
   },
-  "hours": "hours",
+  "hours_one": "",
+  "hours_other": "",
   "layer": {
-    "activityFitBounds": "Centrer la vue sur l'activité",
     "add": "Ajouter un calque",
     "areas": {
       "eez": "ZEE",

@@ -296,7 +296,6 @@
     "map": "crwdns132263:0crwdne132263:0",
     "matchedVessels": "crwdns132265:0crwdne132265:0",
     "messageAssistant": "crwdns132267:0crwdne132267:0",
-    "messages": "crwdns138621:0crwdne138621:0",
     "messages_one": "crwdns132269:0crwdne132269:0",
     "messages_other": "crwdns132271:0crwdne132271:0",
     "meters": "crwdns132273:0crwdne132273:0",
@@ -568,7 +567,8 @@
     "nir": "crwdns138369:0crwdne138369:0",
     "rgb": "crwdns138371:0crwdne138371:0"
   },
-  "detections": "crwdns132671:0crwdne132671:0",
+  "detections_one": "crwdns138871:0crwdne138871:0",
+  "detections_other": "crwdns138873:0crwdne138873:0",
   "detectionScene": {
     "addHighlight": "crwdns138841:0crwdne138841:0",
     "highlight": "crwdns138843:0crwdne138843:0",
@@ -824,9 +824,9 @@
       "title": "crwdns138401:0crwdne138401:0"
     }
   },
-  "hours": "crwdns133111:0crwdne133111:0",
+  "hours_one": "crwdns138875:0crwdne138875:0",
+  "hours_other": "crwdns138877:0crwdne138877:0",
   "layer": {
-    "activityFitBounds": "crwdns133113:0crwdne133113:0",
     "add": "crwdns133115:0crwdne133115:0",
     "areas": {
       "eez": "crwdns133117:0crwdne133117:0",
