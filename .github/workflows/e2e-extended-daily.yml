@@ -1,12 +1,8 @@
 name: E2E Extended (daily)
 
-# Runs the `extended` Playwright suite (@smoke + @extended, Chromium) every day against the deployed
-# production app, using the test code from main. Production auth only accepts its own callback URLs,
-# so the suite can't run against a local dev server there. Failures are reported to Slack.
-# Scheduled workflows only run from the default branch of the repository.
 on:
   schedule:
-    - cron: '0 5 * * *' # 05:00 UTC
+    - cron: '0 5 * * *'
   workflow_dispatch:
 
 concurrency:
@@ -21,7 +17,7 @@ jobs:
     env:
       CI: '1'
       PLAYWRIGHT_BASE_URL: https://globalfishingwatch.org
-      PLAYWRIGHT_BROWSER: chromium
+      PLAYWRIGHT_BROWSER: all
       TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
       TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
       TEST_USER_NAME: ${{ secrets.TEST_USER_NAME }}
@@ -35,7 +31,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/setup@v3
         with:
-          install: false # the explicit --frozen-lockfile step below owns installing
+          install: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
@@ -46,14 +42,11 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
 
-      # The map popup test depends on specific vessel data and fails on production, skipped for now
       - name: Run extended e2e suite
         working-directory: apps/platform-e2e
-        run: >-
-          pnpm exec playwright test --workers=1 --grep "@smoke|@extended"
-          --grep-invert "vessel presence popup"
+        run: pnpm exec playwright test --workers=1 --grep "@smoke|@extended"
 
       - name: Upload Playwright report
         if: failure()
