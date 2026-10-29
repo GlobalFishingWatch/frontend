@@ -5,6 +5,8 @@ import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { toFiniteNumber } from '@globalfishingwatch/data-transforms'
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 
+import type { PolygonsCoverage } from 'features/_reports/reports-polygons.utils'
+
 /** Precomputed polygon area some context and user datasets ship as a feature property. */
 export const AREA_KM2_PROPERTY = 'area_km2'
 
@@ -32,6 +34,7 @@ export type FilteredPolygons = {
   contained: (FourwingsFeature | Feature<Point> | Feature<Geometry>)[]
   overlapping: (FourwingsFeature | Feature<Point> | Feature<Geometry>)[]
   error?: string
+  coverage?: PolygonsCoverage
 }
 
 function isCellInPolygon(cellGeometry: FourwingsFeature, polygon: Polygon) {
