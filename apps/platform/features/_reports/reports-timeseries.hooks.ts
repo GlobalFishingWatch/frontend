@@ -388,6 +388,9 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
       // this effect a new `instances` and re-run it until React aborts with "Maximum update depth".
       setReportState((prev) => (prev.isLoading ? prev : { ...prev, isLoading: true }))
       try {
+        // Collecting the rendered features below is synchronous and can take a while on large
+        // areas, so yield first to let the browser paint the switched tab with its loading state
+        await new Promise((resolve) => setTimeout(resolve))
         const featuresFiltered = await getFeaturesFilteredByArea({
           instances,
           areaId: area.id,
