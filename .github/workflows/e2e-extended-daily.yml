@@ -1,7 +1,7 @@
 name: E2E Extended (daily)
 
 # Runs the `extended` Playwright suite (@smoke + @extended on Chromium, Firefox and WebKit) every
-# day against main, with the platform dev server pointed at the staging API gateway. Failures are
+# day against main, with the platform dev server pointed at the production API gateway. Failures are
 # reported to Slack. Scheduled workflows only run from the default branch of the repository.
 on:
   schedule:
@@ -20,8 +20,8 @@ jobs:
     env:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN_READ_ONLY }}
       CI: '1'
-      VITE_API_GATEWAY: https://gateway.api.staging.globalfishingwatch.org
-      VITE_WORKSPACE_ENV: development
+      VITE_API_GATEWAY: https://gateway.api.globalfishingwatch.org
+      VITE_WORKSPACE_ENV: production
       TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
       TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
       TEST_USER_NAME: ${{ secrets.TEST_USER_NAME }}
@@ -75,4 +75,4 @@ jobs:
         with:
           channel: '#eng-api-front-test-failures'
           token: ${{ secrets.SLACK_BOT_TOKEN }}
-          message: ":red_circle: *Daily extended e2e tests failed* on `main` (staging API)\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
+          message: ":red_circle: *Daily extended e2e tests failed* on `main` (production API)\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
