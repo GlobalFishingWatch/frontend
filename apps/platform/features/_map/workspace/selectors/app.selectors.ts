@@ -3,9 +3,10 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { RulerData } from '@globalfishingwatch/deck-layers'
 // Leaf subpath: PlatformLayout reads selectReadOnly from this module, so it is in the always-loaded
 // graph and the root barrel would put all of deck.gl in every page's entry chunk.
-import { HEATMAP_HIGH_RES_ID } from '@globalfishingwatch/deck-layers/config'
+import { HEATMAP_HIGH_RES_ID, HEATMAP_ID } from '@globalfishingwatch/deck-layers/config'
 
 import { selectWorkspaceStateProperty } from 'features/_map/workspace/workspace.selectors'
+import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { selectIsAnyAreaReportLocation } from 'router/routes.selectors'
 
 export const selectActivityCategory = selectWorkspaceStateProperty('activityCategory')
@@ -20,21 +21,32 @@ export const selectMapAnnotations = selectWorkspaceStateProperty('mapAnnotations
 export const selectVisibleEvents = selectWorkspaceStateProperty('visibleEvents')
 export const selectReportLoadVessels = selectWorkspaceStateProperty('reportLoadVessels')
 
+// Positions tiles require login, guests fall back to the default heatmap
 export const selectActivityVisualizationMode = createSelector(
-  [selectIsAnyAreaReportLocation, selectWorkspaceStateProperty('activityVisualizationMode')],
-  (isAnyReportLocation, activityVisualizationMode) => {
-    if (isAnyReportLocation && activityVisualizationMode === 'positions') {
-      return HEATMAP_HIGH_RES_ID
+  [
+    selectIsAnyAreaReportLocation,
+    selectIsGuestUser,
+    selectWorkspaceStateProperty('activityVisualizationMode'),
+  ],
+  (isAnyReportLocation, guestUser, activityVisualizationMode) => {
+    if (activityVisualizationMode === 'positions') {
+      if (isAnyReportLocation) return HEATMAP_HIGH_RES_ID
+      if (guestUser) return HEATMAP_ID
     }
     return activityVisualizationMode
   }
 )
 
 export const selectDetectionsVisualizationMode = createSelector(
-  [selectIsAnyAreaReportLocation, selectWorkspaceStateProperty('detectionsVisualizationMode')],
-  (isAnyReportLocation, detectionsVisualizationMode) => {
-    if (isAnyReportLocation && detectionsVisualizationMode === 'positions') {
-      return 'heatmap-high-res'
+  [
+    selectIsAnyAreaReportLocation,
+    selectIsGuestUser,
+    selectWorkspaceStateProperty('detectionsVisualizationMode'),
+  ],
+  (isAnyReportLocation, guestUser, detectionsVisualizationMode) => {
+    if (detectionsVisualizationMode === 'positions') {
+      if (isAnyReportLocation) return HEATMAP_HIGH_RES_ID
+      if (guestUser) return HEATMAP_ID
     }
     return detectionsVisualizationMode
   }

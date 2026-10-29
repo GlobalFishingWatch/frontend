@@ -295,7 +295,6 @@
     "map": "Map",
     "matchedVessels": "Matched vessels",
     "messageAssistant": "Message the assistant…",
-    "messages": "messages",
     "messages_one": "message",
     "messages_other": "messages",
     "meters": "meters",
@@ -567,7 +566,8 @@
     "nir": "Near-infrared",
     "rgb": "Red, green and blue (visible light)"
   },
-  "detections": "",
+  "detections_one": "",
+  "detections_other": "",
   "detectionScene": {
     "addHighlight": "Highlight other detections from the same satellite scene",
     "highlight": "Scene",
@@ -823,9 +823,9 @@
       "title": "Use cases"
     }
   },
-  "hours": "hours",
+  "hours_one": "",
+  "hours_other": "",
   "layer": {
-    "activityFitBounds": "Center view on activity",
     "add": "Add layer",
     "areas": {
       "eez": "EEZ",
@@ -938,6 +938,7 @@
     "nauticalMilesAbbr": "nm",
     "positions": "See positions visualizations mode",
     "positionsDisabled": "A more detailed visualization is available in areas with less activity, please zoom in or reduce your time range to see it",
+    "positionsLogin": "Register or log in to see vessel positions (free, 2 minutes)",
     "referenceLayersClose": "Close reference layers",
     "referenceLayersOpen": "Open reference layers",
     "rulers_add": "Measure distance",
@@ -1045,6 +1046,16 @@
     "seePortReport": "See all entry events to this port",
     "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "toThisPort": "to this port"
+  },
+  "rateLimit": {
+    "challenge": "This check protects vessel data from automated traffic. Complete it to keep loading vessel tracks and events.",
+    "challengeTitle": "Confirm you're human",
+    "failed": "This check protects vessel data from automated traffic. Vessel tracks and events are paused until it passes.",
+    "failedTitle": "We couldn't verify you",
+    "notNow": "Not now",
+    "profileActivity": "Vessel tracks and events are paused. Verify you're human to see this vessel's activity.",
+    "trackLimitReached": "Vessel tracks and events are paused. Click to confirm you're human and load them again.",
+    "verify": "Verify"
   },
   "search": {
     "advanced": "Advanced",
@@ -1386,7 +1397,7 @@
       "purse seine": "Purse seine",
       "purse_seine": "Purse seine",
       "purse_seine_support": "Purse seine support",
-      "purse_seines": "Purse seine",
+      "purse_seines": "Purse seines",
       "reefer": "Reefer",
       "research": "Research",
       "seiners": "Seiners",
@@ -1550,8 +1561,8 @@
     "title": "Vessel profile",
     "toggleAllVessels": "Toggle all vessels visibility",
     "tonnageGt": "Tonnage (Gt)",
-    "trackLogin": "One of your selected sources requires you to <1>log in</1> to see vessel tracks and events",
-    "trackResolution": "<0>Login</0> to see more detailed vessel tracks (free, 2 minutes)",
+    "trackLoginRequired": "<0>Log in</0> to see vessel tracks and events",
+    "trackLoginTooltip": "Register or log in to see vessel tracks and events (free, 2 minutes)",
     "transmissionDates": "Transmission dates",
     "transmissions": "Transmissions",
     "type": "Type",

@@ -5,19 +5,6 @@
   "projectType": "application",
   "tags": ["app"],
   "targets": {
-    "watch-deps": {
-      "executor": "nx:run-commands",
-      "continuous": true,
-      "options": {
-        "command": "nx watch --projects port-labeler --includeDependencies -- nx run-many -t build -p \\$NX_PROJECT_NAME --exclude=port-labeler"
-      }
-    },
-    "deploy": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "nx build port-labeler --parallel"
-      }
-    },
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["{projectRoot}/{options.outDir}", "{workspaceRoot}/dist/apps/port-labeler"],
@@ -35,20 +22,7 @@
       }
     },
     "start": {
-      "executor": "nx:run-commands",
-      "continuous": true,
-      "options": {
-        "commands": ["nx serve i18n-labels", "vite"],
-        "cwd": "{projectRoot}",
-        "parallel": true
-      }
-    },
-    "preview": {
-      "defaultConfiguration": "development",
-      "configurations": {
-        "development": {},
-        "production": {}
-      }
+      "dependsOn": [{ "projects": ["i18n-labels"], "target": "serve", "waitFor": "ready" }]
     }
   }
 }

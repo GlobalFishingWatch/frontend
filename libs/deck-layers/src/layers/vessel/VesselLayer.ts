@@ -6,7 +6,7 @@ import type { Position } from 'geojson'
 import { extent } from 'simple-statistics'
 
 import type { ThinningLevels } from '@globalfishingwatch/api-client'
-import { THINNING_LEVELS } from '@globalfishingwatch/api-client'
+import { getIsRateLimitExceeded, THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import type { EventTypes } from '@globalfishingwatch/api-types'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { type Bbox, getUTCDateTime } from '@globalfishingwatch/data-transforms'
@@ -66,6 +66,10 @@ type VesselLayerState = {
   errors: {
     [key in EventTypes | 'track']?: string
   }
+  // Bumped per sublayer type by reloadErroredSublayers, part of the chunk ids so deck refetches them
+  reloads?: {
+    [key in EventTypes | 'track']?: number
+  }
   highlightedFeatures: DeckLayerPickingObject[]
   highlightStartTime?: number
   highlightEndTime?: number
@@ -119,7 +123,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   get cacheHash(): string {
     const { id, color, gapSegmentThreshold } = this.props
     const filters = this.getFilters()
-    return `${id}-${color.join('')}-${Object.values(filters).filter(Boolean).join('-')}-${gapSegmentThreshold}`
+    return `${id}-${color.join('')}-${Object.values(filters).filter(Boolean).join('-')}-${gapSegmentThreshold}-${this.getVesselLayersRateLimited()}`
   }
 
   getPickingInfo = ({
@@ -303,8 +307,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         (f as VesselTrackPickingObject).subcategory === DataviewType.Track
     )
 
+    // No trackUrl is a valid state, e.g. guest users can't load vessel tracks
     if (!trackUrl || !visible) {
-      if (!trackUrl) console.warn('trackUrl needed for vessel layer')
       return []
     }
     const { zoom } = this.context.viewport
@@ -317,7 +321,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       // Only the on/off state is part of the identity: the gap value is applied at render time
       // (shader uniform + segment helper), so changing it must not trigger a reparse/reload.
       const computeGaps = Boolean(gapSegmentThreshold)
-      const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}-${computeGaps ? 'gaps' : ''}`
+      const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}-${computeGaps ? 'gaps' : ''}${this._getReloadSuffix('track')}`
       return new VesselTrackLayer(
         this.getSubLayerProps({
           id: chunkId,
@@ -344,7 +348,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           _pathType: 'open',
           widthUnits: 'pixels',
           widthScale: 1,
-          wrapLongitude: true,
+          // No wrapLongitude: with _pathType deck skips path normalization, so it would be a
+          // no-op. The API DECKGL format already splits paths at the antimeridian.
           jointRounded: true,
           capRounded: true,
           getColor: color,
@@ -377,14 +382,14 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     }
 
     const chunks = this._getVesselChunks()
+    const rateLimited = this.getVesselLayersRateLimited()
     // return one layer with all events if we are consuming the data object from app resources
     return events?.flatMap(({ url, type, datasetId }) => {
-      const visible = visibleEvents?.includes(type)
-      if (!visible) {
+      if (!visibleEvents?.includes(type)) {
         return []
       }
       return chunks.flatMap(({ start, end }) => {
-        const chunkId = `${this.props.id}-${EVENT_LAYER_TYPE}-${type}-${datasetId}-${start}-${end}`
+        const chunkId = `${this.props.id}-${EVENT_LAYER_TYPE}-${type}-${datasetId}-${start}-${end}${this._getReloadSuffix(type)}`
         const eventUrl = new URL(url as string)
         eventUrl.searchParams.append('start-date', start as string)
         eventUrl.searchParams.append('end-date', end as string)
@@ -395,7 +400,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           data: eventUrl.toString(),
           fetch: fetchWithGFWAPI,
           type,
-          visible,
+          visible: !rateLimited,
           highlightEventIds: mergedHighlightEventIds,
           loaders: [VesselEventsLoader],
           onError: (e: any) => this.onSublayerError(type, e),
@@ -601,6 +606,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getVesselEventsData(types?: EventTypes[]) {
+    // Same as the map: no events while any of the vessel requests is rate limited
+    if (this.getVesselLayersRateLimited()) {
+      return []
+    }
     return getEvents(this.getEventLayers(), {
       types,
       startTime: this.props.startTime,
@@ -673,6 +682,32 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       return Object.entries(this.state.errors).some(([key, value]) => key !== 'track' && value)
     }
     return this.state.errors?.[type] !== undefined
+  }
+
+  getVesselLayersRateLimited(): boolean {
+    return Object.values(this.state?.errors ?? {}).some((value) => {
+      const error = value as unknown as { status?: number; cause?: { status?: number } } | undefined
+      return getIsRateLimitExceeded({ status: error?.status ?? error?.cause?.status })
+    })
+  }
+
+  reloadErroredSublayers() {
+    const { errors, reloads = {} } = this.state
+    const erroredTypes = Object.keys(errors) as (EventTypes | 'track')[]
+    if (erroredTypes.length) {
+      this.setState({
+        errors: {},
+        reloads: {
+          ...reloads,
+          ...Object.fromEntries(erroredTypes.map((type) => [type, (reloads[type] ?? 0) + 1])),
+        },
+      })
+    }
+  }
+
+  private _getReloadSuffix(type: EventTypes | 'track') {
+    const reload = this.state?.reloads?.[type]
+    return reload ? `-reload-${reload}` : ''
   }
 
   getAllSublayersLoaded() {

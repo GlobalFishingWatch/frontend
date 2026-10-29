@@ -52,6 +52,7 @@ runs:
 
         AFFECTED=$(pnpm exec nx show projects \
           --affected \
+          -t build \
           --base=${{ inputs.base }} \
           --head=${{ inputs.head }} \
           --type app \

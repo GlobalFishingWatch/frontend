@@ -5,12 +5,6 @@
   "projectType": "application",
   "tags": ["app"],
   "targets": {
-    "deploy": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "nx build api-portal --parallel"
-      }
-    },
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["{projectRoot}/{options.outDir}", "{workspaceRoot}/dist/apps/api-portal"],
@@ -25,21 +19,6 @@
         "production": {
           "mode": "production"
         }
-      }
-    },
-    "start": {
-      "executor": "nx:run-commands",
-      "continuous": true,
-      "options": {
-        "command": "vite",
-        "cwd": "{projectRoot}"
-      }
-    },
-    "preview": {
-      "defaultConfiguration": "development",
-      "configurations": {
-        "development": {},
-        "production": {}
       }
     }
   }
