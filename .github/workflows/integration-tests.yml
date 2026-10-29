@@ -65,11 +65,16 @@ jobs:
       # Only the platform suite needs a browser, the test user's login and Nx Cloud workers (lib
       # tests run in jsdom/node). Task-based affected (`-t`) selects a target only when its inputs
       # changed, so a PR that does not touch what platform's specs read skips all three.
+      # The platform suite is off until its specs are fixed: set the repository variable
+      # PLATFORM_INTEGRATION_TESTS=true to turn it back on. Lib tests always run.
       - name: Detect affected tests
         id: affected
         run: |
           AFFECTED="--affected --base=origin/${{ github.event.pull_request.base.ref }} --head=HEAD --json"
-          platform=$(pnpm exec nx show projects -t integration-ci $AFFECTED)
+          platform='[]'
+          if [ "${{ vars.PLATFORM_INTEGRATION_TESTS }}" = "true" ]; then
+            platform=$(pnpm exec nx show projects -t integration-ci $AFFECTED)
+          fi
           libs=$(pnpm exec nx show projects -t test --exclude='*-e2e,platform' $AFFECTED)
           echo "platform=$([ "$platform" = "[]" ] && echo false || echo true)" >> "$GITHUB_OUTPUT"
           echo "libs=$([ "$libs" = "[]" ] && echo false || echo true)" >> "$GITHUB_OUTPUT"

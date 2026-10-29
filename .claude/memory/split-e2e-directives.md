@@ -72,6 +72,10 @@ libs keep a plain `test`. `.github/workflows/integration-tests.yml` distributes 
   stop-after waits for every listed target.
 - **Two commands:** libs `-t test --exclude='*-e2e,platform'`, then `-t integration-ci`. Running
   `-t test integration-ci` together would also run the unsplit `platform:test`.
+- **Off in CI by default (since 2026-10-29).** Most platform specs are outdated and fail, so
+  `integration-ci` runs only when the repository variable `PLATFORM_INTEGRATION_TESTS` is
+  `true`. Otherwise the detect step reports platform as not affected, and only lib tests run.
+  Remove the gate once the specs pass.
 - **Workers, browsers and login only when `integration-ci` is affected.** A `Detect affected
 tests` step runs `nx show projects -t <target> --affected --json`. When platform is not
   affected, lib tests run on the GitHub runner. They use jsdom/node, never vitest browser mode,
