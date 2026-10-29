@@ -116,7 +116,11 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
                     search={{}}
                     onClick={() => onWorkspaceClick(workspace)}
                   >
-                    <span className={styles.workspaceTitle} data-test="workspace-name">
+                    <span
+                      className={styles.workspaceTitle}
+                      data-test="workspace-name"
+                      translate="no"
+                    >
                       {getHighlightedText(label as string, searchQuery, styles)}
                     </span>
                     {isOutdated ? (
