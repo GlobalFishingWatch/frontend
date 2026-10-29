@@ -14,6 +14,9 @@
         "staticFilePath": "libs/i18n-labels",
         "watch": false,
         "host": "0.0.0.0"
+      },
+      "readyWhen": {
+        "signal": true
       }
     },
     "build": {

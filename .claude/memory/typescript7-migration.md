@@ -51,3 +51,20 @@ Concretely, in `node_modules/.bin/`: **`tsc` is TS 7.0.2 native, `tsc6` is TS 6.
 ## Libs now have their own `typecheck` target
 
 Previously only apps did, so libs were type-checked only as a side effect of `dist` (TS 6 API). Every lib now has `typecheck` → `tsc --noEmit --project <lib>/tsconfig.lib.json`, which means libs get TS 7 speed too. The command comes from the `typecheck` entry in `nx.json` `targetDefaults`; each project only declares the bits that differ.
+
+Where the target comes from (since Nx 24, 2026-10-24): `@nx/js/typescript` in `nx.json` infers `typecheck` for apps and `platform-e2e`; `@nx/vite/plugin` stopped inferring it. That plugin deliberately **skips** projects whose `build` already type-checks, which is every lib (`@nx/js:tsc`). So each `libs/*/project.json` keeps an empty `"typecheck": {}` — removing it removes the lib's typecheck. Verified with a graph diff.
+
+## Lib builds stay on `@nx/js:tsc` (TS 6) until TS 7.1 (decided 2026-10-28)
+
+Nx 24 already has a native-binary path: the `@nx/js/typescript` plugin's `build` option infers
+`tsc --build <configName>`, which runs the TS 7 `tsc`. Tried on `deck-layers`: about 2.5s against
+13s for the `@nx/js:tsc` target. The `.js` output was byte-identical, and the `.d.ts` output
+differed only in union order and quote style. It was not adopted, for two reasons:
+
+- `tsc --build` copies no assets. `api-client`, `timebar`, `ui-components`,
+  `responsive-visualizations` and `i18n-labels` would each need their own copy step.
+- `--rootDir` is rejected in build mode, so every lib tsconfig would need `rootDir: ./src` and a
+  `tsBuildInfoFile` inside `dist`. Without `rootDir`, output lands in `dist/libs/<lib>/src/…`.
+
+The team chose to wait for TS 7.1, which ships the JS API, and for an Nx release that supports it
+in `@nx/js:tsc` (nrwl/nx#36306). Re-check both before migrating the lib builds.

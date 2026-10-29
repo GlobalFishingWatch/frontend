@@ -57,31 +57,19 @@ inventory.
 
 ## Docker
 
-Two-stage build. First build a local dependencies image, then build the app image.
-
-> **Note:** [Dockerfile](Dockerfile) defaults to the remote base image (CI/production). For local
-> builds, swap line 1:
->
-> ```dockerfile
-> # FROM us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:latest AS builder
-> FROM dependencies:local AS builder
-> ```
+CI builds every app image from the root [Dockerfile](../../Dockerfile). The same command works
+locally:
 
 ```bash
-# Step 1 — build base dependencies image
-docker build --target deps -t dependencies:local .
-
-# Step 2 — build app image
-docker build -f apps/platform/Dockerfile \
+docker build --target production-node \
+  --build-arg APP_NAME=platform \
   --build-arg VITE_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org \
   --build-arg VITE_WORKSPACE_ENV=development \
   --build-arg COMMIT_SHA=local-test \
   -t platform:local .
 ```
 
-Other build args the Dockerfile accepts: `VITE_API_VERSION`, `VITE_GOOGLE_MEASUREMENT_ID`,
-`VITE_GOOGLE_TAG_MANAGER_ID`, `VITE_USE_LOCAL_DATASETS`, `VITE_USE_LOCAL_DATAVIEWS`,
-`VITE_REPORT_DAYS_LIMIT`, `VITE_REALTIME_ENABLED`, `VITE_CHATBOT_ENABLED`, `SENTRY_AUTH_TOKEN`.
+The root Dockerfile lists the other build args it accepts as `ARG` lines.
 
 ### Run
 
