@@ -82,12 +82,13 @@ tests` step runs `nx show projects -t <target> --affected --json`. When platform
   and finish faster than workers boot. A PR that only edits the workflow or
   `.nx/ci-config.integration.yaml` affects nothing, so it runs no tests. To exercise a CI change,
   touch an input as well.
-- **Each workflow sets its own `NX_CI_EXECUTION_ENV`** (`e2e`, `integration`). Both are Nx Cloud
-  main jobs on the same commit and PR branch. Without it, E2E failed on every push from
-  2026-10-28 on with `CI pipeline execution <run>-1 cancelled. Reason: One or more workflows were
-cancelled`. The last E2E pass was the commit where Integration Tests was still disabled. Nx
-  documents this variable for multiple main jobs. Do not change `NX_BRANCH` instead: it must stay
-  the PR number for the GitHub integration.
+- **Integration Tests sets `NX_BRANCH: <PR number>-integration`.** Each GitHub workflow has its
+  own run id, so it opens its own Nx Cloud pipeline execution (CIPE). A new CIPE on a branch
+  cancels the running one. From 2026-10-28, E2E failed on every push with `One or more workflows
+were cancelled`, even when Integration Tests only read the remote cache and started no workers.
+  `NX_CI_EXECUTION_ENV` did not help (tried 2026-10-28): it separates main jobs inside **one**
+  CIPE, not two CIPEs. E2E keeps the plain PR number, which the Nx Cloud GitHub integration needs.
+  Integration Tests posts its own PR comment, so it does not need that integration.
 - Split tasks do not inherit `test`'s `dependsOn`. `targetDefaults["integration-ci--**/**"]`
   adds `prepare-loaders`. `clean-test-artifacts` is left out on purpose: it would delete
   `__traces__` while sibling specs are writing to them.

@@ -17,10 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN_READ_ONLY }}
-      # Integration Tests runs its own Nx Cloud main job on the same commit and branch. Without
-      # distinct execution envs, Nx Cloud cancels one pipeline when the other starts ("One or
-      # more workflows were cancelled"). NX_* variables reach the workers automatically.
-      NX_CI_EXECUTION_ENV: e2e
       # Forwarded to the workers by .nx/ci-config.yaml (workers.with-env-vars)
       PLAYWRIGHT_BROWSER: chromium
       VITE_API_GATEWAY: https://gateway.api.${{ github.event.pull_request.base.ref == 'main' && 'staging' || 'dev' }}.globalfishingwatch.org

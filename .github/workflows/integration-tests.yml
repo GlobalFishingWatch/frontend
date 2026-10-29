@@ -21,10 +21,10 @@ jobs:
     # Job-level so every nx step reads the Nx Cloud remote cache (nxCloudId in nx.json)
     env:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN_READ_ONLY }}
-      # E2E Tests runs its own Nx Cloud main job on the same commit and branch. Without distinct
-      # execution envs, Nx Cloud cancels one pipeline when the other starts ("One or more workflows
-      # were cancelled"). NX_* variables reach the workers automatically.
-      NX_CI_EXECUTION_ENV: integration
+      # Each GitHub workflow is its own Nx Cloud pipeline execution (CIPE), and a new CIPE on a
+      # branch cancels the running one ("One or more workflows were cancelled"). E2E Tests keeps
+      # the PR number for the Nx Cloud GitHub integration; this workflow posts its own comment.
+      NX_BRANCH: ${{ github.event.pull_request.number }}-integration
       # Forwarded to the workers by .nx/ci-config.integration.yaml (workers.with-env-vars)
       CI: '1'
       VITE_API_GATEWAY: https://gateway.api.${{ github.event.pull_request.base.ref == 'main' && 'staging' || 'dev' }}.globalfishingwatch.org
