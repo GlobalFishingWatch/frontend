@@ -14,7 +14,8 @@ concurrency:
 jobs:
   integration-tests:
     name: Run Integration Tests
-    if: github.event.action != 'closed' && github.event.pull_request.draft == false
+    # Dependabot runs get no repository secrets (only the separate Dependabot store), so skip them
+    if: github.event.action != 'closed' && github.event.pull_request.draft == false && github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write

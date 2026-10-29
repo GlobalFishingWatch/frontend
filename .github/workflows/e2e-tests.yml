@@ -13,7 +13,8 @@ concurrency:
 jobs:
   e2e:
     name: Run affected e2e specs
-    if: github.event.pull_request.draft == false
+    # Dependabot runs get no repository secrets (only the separate Dependabot store), so skip them
+    if: github.event.pull_request.draft == false && github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     env:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN_READ_ONLY }}
