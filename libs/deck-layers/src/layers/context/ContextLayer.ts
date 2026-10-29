@@ -10,7 +10,7 @@ import { TileLayer } from '@deck.gl/geo-layers'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import type { GeoJsonProperties } from 'geojson'
 
-import { unwrapFeatureLongitudes } from '@globalfishingwatch/data-transforms'
+import { mergeFeatureParts, unwrapFeatureLongitudes } from '@globalfishingwatch/data-transforms'
 
 import {
   COLOR_HIGHLIGHT_FILL,
@@ -47,7 +47,7 @@ import {
   getContextId,
   getContextLink,
   getSelectedTilesFeatures,
-  mergePickedFeatures,
+  groupPickedFeatures,
 } from './context.utils'
 
 type _ContextLayerProps = TileLayerProps & ContextLayerProps
@@ -176,6 +176,10 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
   }
 
   getRenderedFeatures(maxFeatures: number | null = null): ContextFeature[] {
+    return this.getRenderedFeatureGroups(maxFeatures).map(mergeFeatureParts)
+  }
+
+  getRenderedFeatureGroups(maxFeatures: number | null = null): ContextFeature[][] {
     const { viewport } = this.context
     const { idProperty = DEFAULT_ID_PROPERTY, valueProperties, datasetId } = this.props.layers[0]
     if (!viewport) return []
@@ -209,7 +213,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
       }
     })
 
-    return mergePickedFeatures<ContextFeature>({
+    return groupPickedFeatures<ContextFeature>({
       pickedFeatures,
       idProperty,
       layers: this.props.layers,

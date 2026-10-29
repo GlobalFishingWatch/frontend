@@ -54,7 +54,11 @@ import type {
   FilterByPolygonMode,
   FilteredPolygons,
 } from 'features/_reports/reports-geo.utils'
-import { useFilterCellsByPolygonWorker } from 'features/_reports/reports-geo.utils.workers.hooks'
+import {
+  filterPolygonsByAreaInWorker,
+  terminateFilterPolygonsWorker,
+  useFilterCellsByPolygonWorker,
+} from 'features/_reports/reports-geo.utils.workers.hooks'
 import {
   filterTimeseriesByTimerange,
   getTimeseries,
@@ -204,11 +208,13 @@ export async function getFeaturesFilteredByArea({
   instances,
   areaId,
   areaGeometry,
+  areaProperties,
   filterCellsByPolygon,
 }: {
   instances: ReportDeckLayer[]
   areaId: string | number
   areaGeometry: Polygon | MultiPolygon
+  areaProperties?: Record<string, any> | null
   filterCellsByPolygon: (params: FilterByPolygomParams) => Promise<FilteredPolygons[]>
 }): Promise<FilteredPolygons[][] | null> {
   const featuresFiltered: FilteredPolygons[][] = []
@@ -227,28 +233,44 @@ export async function getFeaturesFilteredByArea({
       return null
     }
 
+    if (instance instanceof UserContextTileLayer || instance instanceof ContextLayer) {
+      // Merging the tile parts is a polygon union per feature, so it happens in the worker
+      const featureGroups = instance.getRenderedFeatureGroups()
+      const error = instance.getError?.()
+      if (error || !featureGroups.length) {
+        featuresFiltered.push([{ contained: [], overlapping: [], error, instanceId: instance.id }])
+        continue
+      }
+      featuresFiltered.push(
+        await filterPolygonsByAreaInWorker({
+          instanceId: instance.id,
+          featureGroups,
+          areaGeometry,
+          areaProperties,
+          skipFilter: areaId === ENTIRE_WORLD_REPORT_AREA_ID,
+        })
+      )
+      continue
+    }
+
     const isUserPointsTileLayer = instance instanceof UserPointsTileLayer
     const hasTimeFilter = instance.props.startTime || instance.props.endTime
 
-    const features = isPolygonLayer
-      ? instance.getRenderedFeatures()
-      : isUserPointsTileLayer
-        ? ((
-            instance.getData({
-              includeNonTemporalFeatures: true,
-              skipTemporalFilter: !hasTimeFilter,
-            }) as Feature<Point>[]
-          ).map(unwrapFeatureLongitudes) as unknown as FourwingsFeature[])
-        : (instance?.getData?.() as FourwingsFeature[])
+    const features = isUserPointsTileLayer
+      ? ((
+          instance.getData({
+            includeNonTemporalFeatures: true,
+            skipTemporalFilter: !hasTimeFilter,
+          }) as Feature<Point>[]
+        ).map(unwrapFeatureLongitudes) as unknown as FourwingsFeature[])
+      : (instance?.getData?.() as FourwingsFeature[])
 
     const error = instance?.getError?.()
     if (error || !features?.length) {
       featuresFiltered.push([{ contained: [], overlapping: [], error, instanceId: instance.id }])
     } else {
       let mode: FilterByPolygonMode = 'cell'
-      if (isPolygonLayer) {
-        mode = 'polygon'
-      } else if (instance instanceof FourwingsLayer) {
+      if (instance instanceof FourwingsLayer) {
         mode =
           instance.getMode() === POSITIONS_ID
             ? 'point'
@@ -303,6 +325,8 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
   )
 
   const lastProcessedHash = useRef('')
+  // processingHash of the run in flight
+  const runningHash = useRef('')
   const layersStateHash = useAtomValue(layersStateHashAtom)
 
   const instances = useMemo(
@@ -369,9 +393,19 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
   ])
 
   useEffect(() => {
+    // A run goes stale only when processingHash changes (category switch, layers reloading):
+    // its results belong to other layers and would be paired with the current ones by index.
+    // `instances` alone gets a new identity on any unrelated map layer update, which must not
+    // restart a run that takes tens of seconds on large areas.
+    if (runningHash.current && runningHash.current !== processingHash) {
+      runningHash.current = ''
+      terminateFilterPolygonsWorker()
+    }
+
     if (
       !processingHash ||
       processingHash === lastProcessedHash.current ||
+      processingHash === runningHash.current ||
       !isAreaInViewport ||
       !isLoaded ||
       !area?.geometry ||
@@ -383,6 +417,9 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
     if (!area?.geometry) {
       return
     }
+    const runHash = processingHash
+    runningHash.current = runHash
+    const isStale = () => runningHash.current !== runHash
     const processFeatures = async () => {
       // Return prev when already loading: a new object re-renders every subscriber, which can hand
       // this effect a new `instances` and re-run it until React aborts with "Maximum update depth".
@@ -391,14 +428,18 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
         // Collecting the rendered features below is synchronous and can take a while on large
         // areas, so yield first to let the browser paint the switched tab with its loading state
         await new Promise((resolve) => setTimeout(resolve))
+        if (isStale()) {
+          return
+        }
         const featuresFiltered = await getFeaturesFilteredByArea({
           instances,
           areaId: area.id,
           areaGeometry: area.geometry!,
+          areaProperties: area.id === REPORT_BUFFER_FEATURE_ID ? undefined : area.properties,
           filterCellsByPolygon,
         })
-        if (featuresFiltered === null) {
-          // Layers still transitioning - effect will re-run once they settle
+        if (isStale() || featuresFiltered === null) {
+          // Stale, or layers still transitioning - effect will re-run once they settle
           return
         }
 
@@ -415,12 +456,21 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
         }))
         lastProcessedHash.current = processingHash
       } catch (error) {
+        if (isStale()) {
+          // the worker was terminated for a newer run
+          return
+        }
         console.error('Error processing features:', error)
         setReportState((prev) => ({
           ...prev,
           ...initialReportState,
         }))
         lastProcessedHash.current = ''
+      } finally {
+        // Release the slot unless a newer run already took it, so the next run can start
+        if (!isStale()) {
+          runningHash.current = ''
+        }
       }
     }
 
@@ -434,8 +484,20 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
     isLoaded,
     area?.geometry,
     area?.id,
+    area?.properties,
     instances,
   ])
+
+  useEffect(
+    () => () => {
+      // Leaving the computed categories: drop the run in flight and stop its worker job
+      if (runningHash.current) {
+        runningHash.current = ''
+        terminateFilterPolygonsWorker()
+      }
+    },
+    []
+  )
 
   useEffect(() => {
     const { featuresFiltered } = reportState
@@ -452,19 +514,15 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
         featuresFiltered: prev.featuresFiltered,
         start,
         end,
-        reportArea: area?.geometry as Polygon | MultiPolygon | undefined,
-        reportAreaProperties: area?.id === REPORT_BUFFER_FEATURE_ID ? undefined : area?.properties,
       })
       return { ...prev, stats }
     })
-    // Only stats needs to recalculate on featuresFiltered, start/end and area geometry changes;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reportState.featuresFiltered, start, end, setReportState, area?.geometry])
+  }, [reportState.featuresFiltered, start, end, setReportState])
 
   return reportState
 }
 
-// Run once only in ReportActivityGraph.tsx and ReportEnvironmnet.tsx
 export const useComputeReportTimeSeries = () => {
   const reportLayers = useReportInstances()
   useReportTimeseries(reportLayers)
