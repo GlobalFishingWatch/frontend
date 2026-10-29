@@ -1,4 +1,4 @@
-import { Fragment, useCallback } from 'react'
+import { Fragment, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
@@ -20,6 +20,7 @@ import type {
 } from 'features/_reports/reports-timeseries.hooks'
 import { useTimeseriesStats } from 'features/_reports/reports-timeseries.hooks'
 import { getStatsValue } from 'features/_reports/reports-timeseries-shared.utils'
+import ReportGraphScreenshot from 'features/_reports/shared/download/ReportGraphScreenshot'
 import ReportActivityPlaceholder from 'features/_reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportStatsPlaceholder from 'features/_reports/shared/placeholders/ReportStatsPlaceholder'
 import ReportSummaryTags from 'features/_reports/shared/summary/ReportSummaryTags'
@@ -109,6 +110,7 @@ function ReportPolygonsGraph({
   const timeseriesStats = useTimeseriesStats()
   const tags = dataviews ?? [dataview]
   const contextLayer = useGetDeckLayer<ContextLayer>(statsId ?? dataview.id)
+  const graphRef = useRef<HTMLDivElement>(null)
 
   // getPickedFeatureToHighlight matches on id alone, so no need to keep the geometry around
   const highlightArea = useCallback(
@@ -149,6 +151,9 @@ function ReportPolygonsGraph({
         <span>
           <strong>{title}</strong> {unit && <span>({unit})</span>}
         </span>
+        {showEvolution && !loading && (
+          <ReportGraphScreenshot graphRef={graphRef} name={`polygons-${statsId ?? dataview.id}`} />
+        )}
       </div>
       {loading || !layerStats ? (
         <ReportStatsPlaceholder />
@@ -201,7 +206,9 @@ function ReportPolygonsGraph({
         (loading ? (
           <ReportActivityPlaceholder showHeader={false} loading />
         ) : (
-          <ReportPolygonsEvolution start={start} end={end} data={data} />
+          <div ref={graphRef}>
+            <ReportPolygonsEvolution start={start} end={end} data={data} />
+          </div>
         ))}
 
       {topAreas && topAreas.length > 1 && (

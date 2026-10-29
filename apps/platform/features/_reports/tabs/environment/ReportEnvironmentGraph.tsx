@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
@@ -29,6 +29,7 @@ import {
   useReportTimeSeriesErrors,
   useTimeseriesStats,
 } from 'features/_reports/reports-timeseries.hooks'
+import ReportGraphScreenshot from 'features/_reports/shared/download/ReportGraphScreenshot'
 import ReportActivityPlaceholder from 'features/_reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportStatsPlaceholder from 'features/_reports/shared/placeholders/ReportStatsPlaceholder'
 import ReportSummaryTags from 'features/_reports/shared/summary/ReportSummaryTags'
@@ -63,6 +64,7 @@ function ReportEnvironmentGraph({
   const interval = getFourwingsInterval(start, end, allAvailableIntervals)
   const layersTimeseriesErrors = useReportTimeSeriesErrors()
   const isDynamic = isEnvironmentalDataview(dataview) // checks for animated heatmaps
+  const graphRef = useRef<HTMLDivElement>(null)
   if (!dataview) return null
 
   const { min, mean, max } = (timeseriesStats?.[dataview.id] as FourwingsReportGraphStats) || {}
@@ -98,6 +100,13 @@ function ReportEnvironmentGraph({
     dataview.config?.minVisibleValue || dataview.config?.maxVisibleValue
   )
   const hasFilters = filtersAllowed.some(showSchemaFilter) || hasVisibleValues
+  const showGraph =
+    !datasetError &&
+    (isDynamic || isHeatmapVector) &&
+    !isLoading &&
+    !hasError &&
+    !isEmptyData &&
+    GraphComponent !== undefined
 
   return (
     <div className={cx('card', styles.container)}>
@@ -113,6 +122,9 @@ function ReportEnvironmentGraph({
             </Fragment>
           )}
         </span>
+        {showGraph && (
+          <ReportGraphScreenshot graphRef={graphRef} name={`environment-${dataview?.id}`} />
+        )}
       </div>
       {hasFilters && (
         <div className={styles.tagsContainer}>
@@ -140,21 +152,26 @@ function ReportEnvironmentGraph({
             </div>
           </ReportActivityPlaceholder>
         ) : GraphComponent ? (
-          <GraphComponent
-            start={start}
-            end={end}
-            data={data}
-            removeEmptyValues={removeEmptyValues}
-            // TODO: currents and winds
-            // Refactor the ReportVectorGraphTooltip component and pass it here
-            // before it was using the entire timeline but we want to use only the data from the hovered date
-            // freezeTooltipOnClick={isHeatmapVector}
-            TooltipContent={
-              isHeatmapVector ? (
-                <ReportVectorGraphTooltip instanceId={dataview.id} color={dataview.config?.color} />
-              ) : undefined
-            }
-          />
+          <div ref={graphRef}>
+            <GraphComponent
+              start={start}
+              end={end}
+              data={data}
+              removeEmptyValues={removeEmptyValues}
+              // TODO: currents and winds
+              // Refactor the ReportVectorGraphTooltip component and pass it here
+              // before it was using the entire timeline but we want to use only the data from the hovered date
+              // freezeTooltipOnClick={isHeatmapVector}
+              TooltipContent={
+                isHeatmapVector ? (
+                  <ReportVectorGraphTooltip
+                    instanceId={dataview.id}
+                    color={dataview.config?.color}
+                  />
+                ) : undefined
+              }
+            />
+          </div>
         ) : null)
       )}
       {datasetError ? null : isLoading ? (

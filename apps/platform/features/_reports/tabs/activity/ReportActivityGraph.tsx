@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo } from 'react'
+import React, { Fragment, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -22,6 +22,7 @@ import {
   useReportFilteredTimeSeries,
   useReportTimeSeriesErrors,
 } from 'features/_reports/reports-timeseries.hooks'
+import ReportGraphScreenshot from 'features/_reports/shared/download/ReportGraphScreenshot'
 import ReportActivityPlaceholder from 'features/_reports/shared/placeholders/ReportActivityPlaceholder'
 import { isTimeComparisonGraph } from 'features/_reports/shared/utils/reports.utils'
 import ReportActivityComparisonTotals from 'features/_reports/tabs/activity/ReportActivityComparisonTotals'
@@ -82,6 +83,7 @@ export default function ReportActivity() {
   const reportActivityGraph = useSelector(selectReportActivityGraph)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
   const featureFlags = useSelector(selectFeatureFlags)
+  const graphRef = useRef<HTMLDivElement>(null)
 
   const SelectorsComponent = SELECTORS_BY_TYPE[reportActivityGraph]
 
@@ -143,6 +145,13 @@ export default function ReportActivity() {
           {!isEmptyData && !hasError && featureFlags[FeatureFlag.HotspotButton] && (
             <ReportHotspotControls />
           )}
+          {!isEmptyData && !hasError && (
+            <ReportGraphScreenshot
+              graphRef={graphRef}
+              name={`activity-${reportActivityGraph}`}
+              withSummary
+            />
+          )}
           <ReportActivityGraphSelector loading={isInitialLoad} />
         </div>
       )}
@@ -157,7 +166,7 @@ export default function ReportActivity() {
             : isEmptyData && t((t) => t.analysis.noDataByArea)}
         </ReportActivityPlaceholder>
       ) : (
-        GraphElement
+        <div ref={graphRef}>{GraphElement}</div>
       )}
       {!isInitialLoad &&
         !isEmptyData &&

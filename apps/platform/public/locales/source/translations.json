@@ -40,6 +40,10 @@
     "evolution": "Evolution",
     "global": "Global",
     "globally": "globally",
+    "graphScreenshot": "Graph screenshot",
+    "graphScreenshotFilter": "Vessel filter",
+    "graphScreenshotLegend": "Legend",
+    "graphScreenshotSummary": "Summary",
     "groupByCoverage": "by coverage",
     "groupByEEZ": "By EEZ",
     "groupByFAO": "By FAO",
@@ -54,6 +58,7 @@
       "tooltip": "This is the portion of {{area}} {{unit}} with the most activity in your area",
       "tooltipAmmount": "{{ammount}} hours ({{percentage}}% of total)"
     },
+    "inNamedArea": "in <strong>{{area}}</strong>",
     "insideYourArea": "inside your area",
     "inTheArea": "in the area",
     "kilometers": "kilometers",

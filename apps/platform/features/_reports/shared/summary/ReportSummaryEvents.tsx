@@ -23,7 +23,8 @@ import { getDatasetSourceTranslated } from 'features/i18n/utils.datasets'
 import { selectIsPortReportLocation } from 'router/routes.selectors'
 import { htmlSafeParse } from 'utils/html-parser'
 
-export default function ReportSummaryEvents() {
+/** `areaName` names the area instead of "in the area", for when the report title is not around */
+export default function ReportSummaryEvents({ areaName }: { areaName?: string } = {}) {
   const { t } = useTranslation()
   const timerange = useSelector(selectTimeRange)
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
@@ -60,7 +61,9 @@ export default function ReportSummaryEvents() {
     const area = isPortReportLocation
       ? t((t) => t.portsReport.toThisPort, { defaultValue: 'to this port' })
       : reportAreaId
-        ? t((t) => t.analysis.inTheArea, { defaultValue: 'in the area' })
+        ? areaName
+          ? t((t) => t.analysis.inNamedArea, { area: areaName })
+          : t((t) => t.analysis.inTheArea, { defaultValue: 'in the area' })
         : t((t) => t.analysis.globally)
 
     if (!totalEventsVessels) {
@@ -95,6 +98,7 @@ export default function ReportSummaryEvents() {
       area,
     })
   }, [
+    areaName,
     eventType,
     eventsStatsDataGrouped,
     isPortReportLocation,

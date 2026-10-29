@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -5,6 +6,7 @@ import cx from 'classnames'
 import { Select } from '@globalfishingwatch/ui-components'
 
 import { selectReportArea } from 'features/_reports/report-area/area-reports.selectors'
+import ReportGraphScreenshot from 'features/_reports/shared/download/ReportGraphScreenshot'
 import ReportActivityPlaceholder from 'features/_reports/shared/placeholders/ReportActivityPlaceholder'
 
 import { useMigramar } from './reportEnvironmentMigramar.hooks'
@@ -25,10 +27,14 @@ function ReportEnvironmentMigramar() {
     graphData,
     loading,
   } = useMigramar(reportArea?.properties?.id)
+  const graphRef = useRef<HTMLDivElement>(null)
 
   return (
     <div className={cx('card', styles.container)}>
-      <p className={styles.summary}>{t((t) => t.analysis.migramar.title)}</p>
+      <p className={styles.summary}>
+        {t((t) => t.analysis.migramar.title)}
+        {graphData && <ReportGraphScreenshot graphRef={graphRef} name="migramar" />}
+      </p>
       {!loading && speciesOptions.length >= 1 && indicatorOptions.length >= 1 && (
         <div className={styles.migramarSelectors}>
           <div>
@@ -64,7 +70,9 @@ function ReportEnvironmentMigramar() {
         </div>
       )}
       {graphData ? (
-        <ReportEnvironmentMigramarGraph row={graphData} />
+        <div ref={graphRef}>
+          <ReportEnvironmentMigramarGraph row={graphData} />
+        </div>
       ) : (
         <ReportActivityPlaceholder showHeader={false}>
           {!loading &&
