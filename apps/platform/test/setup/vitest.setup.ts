@@ -68,11 +68,12 @@ beforeAll(async () => {
     localStorage.setItem('VesselProfilePopup', '{"visible":false,"showAgain":false}')
     localStorage.setItem('DeepSeaMiningPopup', '{"visible":false,"showAgain":false}')
     localStorage.setItem('OnboardingPanelDismissed', 'true')
+    localStorage.setItem('UpdateVideoSeen', 'true')
     localStorage.setItem('HighlightPopup', `"${HIGHLIGHT_DATAVIEW_INSTANCE_ID}"`)
     localStorage.setItem('i18nextLng', '"en"')
     localStorage.setItem(
       'hints',
-      '{"fishingEffortHeatmap":true,"filterActivityLayers":true,"clickingOnAGridCellToShowVessels":true,"changingTheTimeRange":true,"areaSearch":true,"periodComparisonBaseline":true,"userContextLayers":true}'
+      '{"fishingEffortHeatmap":true,"filterActivityLayers":true,"clickingOnAGridCellToShowVessels":true,"changingTheTimeRange":true,"areaSearch":true,"periodComparisonBaseline":true,"reportAreaSearch":true,"userContextLayers":true}'
     )
   }
 })

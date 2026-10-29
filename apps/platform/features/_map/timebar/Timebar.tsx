@@ -18,6 +18,7 @@ import type {
 } from '@globalfishingwatch/timebar'
 import { Timebar } from '@globalfishingwatch/timebar'
 
+import { DECK_DEVICE_PROPS } from 'data/map/config'
 import { selectHasVectorDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import { useMapDrawConnect } from 'features/_map/map/map-draw.hooks'
 import { useTimebarTracksGraphSteps } from 'features/_map/map/timebar-graph.hooks'
@@ -400,6 +401,7 @@ const TimebarWrapper = () => {
           onMouseMove={onMouseMove}
           onGraphClick={onGraphClick}
           showDeckStats={debugOptions.deckStats}
+          deviceProps={DECK_DEVICE_PROPS}
         >
           {!isSmallScreen ? timebarGraphComponent : null}
         </Timebar.Charts.Wrapper>

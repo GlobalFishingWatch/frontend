@@ -6,7 +6,7 @@
   "tags": ["lib"],
   "targets": {
     "test": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build", "proto:generate", "^proto:generate"]
     },
     "build": {
       "executor": "@nx/js:tsc"

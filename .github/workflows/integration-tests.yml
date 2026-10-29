@@ -1,5 +1,8 @@
 name: Integration Tests
 
+# Lib unit tests run as `test`. The platform vitest suite runs as `integration-ci`, which the
+# @nx/vitest plugin splits into one `integration-ci--<file>` task per spec. All of them are
+# distributed to Nx Cloud workers (.nx/ci-config.yaml, launch template in .nx/workflows/agents.yaml).
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review, closed]
@@ -15,6 +18,18 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+    # Job-level so every nx step reads the Nx Cloud remote cache (nxCloudId in nx.json)
+    env:
+      NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN_READ_ONLY }}
+      # Each GitHub workflow is its own Nx Cloud pipeline execution (CIPE), and a new CIPE on a
+      # branch cancels the running one ("One or more workflows were cancelled"). E2E Tests keeps
+      # the PR number for the Nx Cloud GitHub integration; this workflow posts its own comment.
+      NX_BRANCH: ${{ github.event.pull_request.number }}-integration
+      # Forwarded to the workers by .nx/ci-config.integration.yaml (workers.with-env-vars)
+      CI: '1'
+      VITE_API_GATEWAY: https://gateway.api.${{ github.event.pull_request.base.ref == 'main' && 'staging' || 'dev' }}.globalfishingwatch.org
+      VITE_WORKSPACE_ENV: development
+      TEST_CHROME_ONLY: 'true'
 
     steps:
       - name: Notify the developer about integration tests running
@@ -25,16 +40,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
         with:
-          fetch-depth: 100
-      - name: Fetch base branch
-        run: git fetch origin ${{ github.event.pull_request.base.ref }} --depth=100
+          # Full history so nx affected always finds the merge base with the PR's base branch
+          fetch-depth: 0
+          filter: tree:0
 
-      # --- Setting up dependencies and cache ---------------------------------
+      # --- Setting up dependencies and workers -------------------------------
 
       - name: Setup pnpm
         uses: pnpm/setup@v3
         with:
           install: false # the explicit --frozen-lockfile step below owns installing
+
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
@@ -43,96 +59,119 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Cache Nx computation
-        uses: actions/cache@v6
-        with:
-          path: .nx/cache
-          key: ${{ runner.os }}-nx-${{ hashFiles('pnpm-lock.yaml', 'nx.json') }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-nx-${{ hashFiles('pnpm-lock.yaml', 'nx.json') }}-
-            ${{ runner.os }}-nx-
-
-      # Guards what each page may statically load: the eager store, routes/_platform.tsx (the layout
-      # every page renders under) and every content page. Rules live in
-      # apps/platform/scripts/load-boundaries/config.ts.
-      # Deliberately not continue-on-error — a regression here is silent in every other check.
       - name: Check load boundaries
-        run: pnpm exec nx run platform:check-load-boundaries
+        run: pnpm exec nx affected -t check-load-boundaries --base=origin/${{ github.event.pull_request.base.ref }} --head=HEAD
 
+      # Only the platform suite needs a browser, the test user's login and Nx Cloud workers (lib
+      # tests run in jsdom/node). Task-based affected (`-t`) selects a target only when its inputs
+      # changed, so a PR that does not touch what platform's specs read skips all three.
+      # The platform suite is off until its specs are fixed: set the repository variable
+      # PLATFORM_INTEGRATION_TESTS=true to turn it back on. Lib tests always run.
+      - name: Detect affected tests
+        id: affected
+        run: |
+          AFFECTED="--affected --base=origin/${{ github.event.pull_request.base.ref }} --head=HEAD --json"
+          platform='[]'
+          if [ "${{ vars.PLATFORM_INTEGRATION_TESTS }}" = "true" ]; then
+            platform=$(pnpm exec nx show projects -t integration-ci $AFFECTED)
+          fi
+          libs=$(pnpm exec nx show projects -t test --exclude='*-e2e,platform' $AFFECTED)
+          echo "platform=$([ "$platform" = "[]" ] && echo false || echo true)" >> "$GITHUB_OUTPUT"
+          echo "libs=$([ "$libs" = "[]" ] && echo false || echo true)" >> "$GITHUB_OUTPUT"
+          echo "Affected: platform $platform, libs $libs"
+
+      # --- Logging in once, for every worker ---------------------------------
       - name: Cache Playwright browsers
+        if: steps.affected.outputs.platform == 'true'
         id: playwright-cache
         uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Install Playwright browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        if: steps.affected.outputs.platform == 'true' && steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
+      - name: Log in the test user
+        if: steps.affected.outputs.platform == 'true'
+        env:
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+        run: |
+          pnpm exec nx run platform:test:login
+          TOKENS_FILE=apps/platform/test/.auth/tokens.json
+          if [ -f "$TOKENS_FILE" ]; then
+            echo "::add-mask::$(jq -r .token "$TOKENS_FILE")"
+            echo "::add-mask::$(jq -r .refreshToken "$TOKENS_FILE")"
+            echo "TEST_AUTH_TOKENS=$(jq -c . "$TOKENS_FILE")" >> "$GITHUB_ENV"
+          else
+            echo "::warning::Login failed; integration tests run unauthenticated"
+          fi
+
+      # `start-workers` reads only .nx/ci-config.yaml, which is the e2e config (stops after
+      # `test-ci`), and `start-ci-run` refuses to run while that file exists. So this job swaps in
+      # its own config first. Browsers are installed on the workers by the launch template.
+      # Without workers (platform not affected) the lib tests below run on this runner: they take
+      # seconds, less than booting workers.
+      - name: Start Nx Cloud workers
+        if: steps.affected.outputs.platform == 'true'
+        run: |
+          cp .nx/ci-config.integration.yaml .nx/ci-config.yaml
+          pnpm dlx nx-cloud start-workers
 
       # --- Running tests -----------------------------------------------------
 
+      # Two commands, because `-t test integration-ci` would also run platform:test, the unsplit
+      # suite. Libs go first: `integration-ci` is the stop-after target in .nx/ci-config.integration.yaml.
+      # --parallel=1 runs one spec at a time per worker, so the specs on a worker share one browser
+      # profile and its tile cache (see vitest.config.ts).
       - name: Run affected tests
         id: run-tests
+        if: steps.affected.outputs.platform == 'true' || steps.affected.outputs.libs == 'true'
         run: |
           set -euo pipefail
-          pnpm exec nx affected \
-            --target=test \
-            --exclude='*-e2e' \
-            --parallel=4 \
-            --output-style=stream \
-            --base=origin/${{ github.event.pull_request.base.ref }} \
-            --head=HEAD 2>&1 \
-            | tee test-output.txt
+          AFFECTED="--base=origin/${{ github.event.pull_request.base.ref }} --head=HEAD --output-style=static"
+          status=0
+          if [ "${{ steps.affected.outputs.libs }}" = "true" ]; then
+            pnpm exec nx affected -t test --exclude='*-e2e,platform' $AFFECTED 2>&1 | tee -a test-output.txt || status=1
+          fi
+          if [ "${{ steps.affected.outputs.platform }}" = "true" ]; then
+            pnpm exec nx affected -t integration-ci --parallel=1 $AFFECTED 2>&1 | tee -a test-output.txt || status=1
+          fi
+          exit $status
         env:
-          VITE_API_GATEWAY: https://gateway.api.${{ github.event.pull_request.base.ref == 'main' && 'staging' || 'dev' }}.globalfishingwatch.org
-          VITE_WORKSPACE_ENV: development
-          CI: '1'
           NX_DAEMON: 'false'
-          NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
-          NODE_OPTIONS: --trace-warnings
-          TEST_CHROME_ONLY: 'true'
-          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
-          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
 
+      # With --output-style=static every task prints as one block headed by "> nx run <task>", and
+      # each command ends with Nx's own "Failed tasks:" list, which is the pass/fail source.
       - name: Parse test results
         if: always()
         run: |
+          touch test-output.txt # absent when nothing was affected
           sed 's/\x1b\[[0-9;]*[a-zA-Z]//g; s/\x1b\[[?][0-9]*[a-zA-Z]//g' test-output.txt | awk '
-            # With --parallel and --output-style=stream, Nx prefixes each line as:
-            #   "project-name: <log line>"
-            # We track which targets are :test targets, accumulate output per-project
-            # using the prefix, and detect pass/fail per project.
             /^> nx run / {
-              # $4 is e.g. "platform:test" — split to get just the project name
-              split($4, parts, ":")
-              proj = parts[1]
-              if (parts[2] == "test") {
-                is_test_target[proj] = 1
-                failed[proj] = 1
-              }
+              task = $4
+              split(task, parts, ":")
+              cur = (parts[2] == "test" || index(parts[2], "integration-ci--") == 1) ? task : ""
+              if (cur != "" && !(cur in seen)) { seen[cur] = 1; order[++n] = cur }
+              in_failed = 0
+              next
             }
-            {
-              # Match lines prefixed by a known project: "proj-name: ..."
-              if (match($0, /^([a-zA-Z0-9_-]+): /, arr)) {
-                proj = arr[1]
-                if (is_test_target[proj]) {
-                  line = substr($0, length(proj) + 3)
-                  output[proj] = (output[proj] == "" ? line : output[proj] "\n" line)
-                  if (/Tests +[0-9]+ passed/ && !/failed/) failed[proj] = 0
-                }
-              }
-            }
+            # Start of the Nx run summary: stop attaching lines to the last task
+            /^ *(NX |—)/ { cur = ""; next }
+            /Failed tasks:/ { in_failed = 1; next }
+            in_failed && /^ *- / { sub(/^ *- /, ""); failed[$1] = 1; next }
+            cur != "" { output[cur] = (output[cur] == "" ? $0 : output[cur] "\n" $0) }
             END {
               print "## Test Results\n"
               pass_count = 0
               fail_count = 0
-              for (proj in is_test_target) {
-                if (!is_test_target[proj]) continue
-                status = (failed[proj] ? "❌" : "✅")
-                printf "<details>\n<summary>%s %s:test</summary>\n\n```\n%s\n```\n\n</details>\n\n", status, proj, output[proj]
-                if (failed[proj]) fail_count++; else pass_count++
+              for (i = 1; i <= n; i++) {
+                t = order[i]
+                status = (t in failed) ? "❌" : "✅"
+                printf "<details>\n<summary>%s %s</summary>\n\n```\n%s\n```\n\n</details>\n\n", status, t, output[t]
+                if (t in failed) fail_count++; else pass_count++
               }
-              if (pass_count == 0 && fail_count == 0) {
+              if (n == 0) {
                 printf "---\n**Summary:** No tests were run\n"
               } else {
                 printf "---\n**Summary:** %d passed, %d failed\n", pass_count, fail_count

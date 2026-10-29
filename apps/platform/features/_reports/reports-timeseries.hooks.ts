@@ -384,9 +384,9 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
       return
     }
     const processFeatures = async () => {
-      setReportState((prev) => {
-        return { ...prev, isLoading: true }
-      })
+      // Return prev when already loading: a new object re-renders every subscriber, which can hand
+      // this effect a new `instances` and re-run it until React aborts with "Maximum update depth".
+      setReportState((prev) => (prev.isLoading ? prev : { ...prev, isLoading: true }))
       try {
         const featuresFiltered = await getFeaturesFilteredByArea({
           instances,

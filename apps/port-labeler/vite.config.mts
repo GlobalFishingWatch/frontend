@@ -1,4 +1,5 @@
 /// <reference types='vitest' />
+import { nxReadySignal } from '@nx/vite/plugins/nx-ready-signal.plugin'
 import react from '@vitejs/plugin-react'
 import { config } from 'dotenv'
 import { defineConfig } from 'vite'
@@ -51,6 +52,7 @@ export default defineConfig(({ command }) => ({
         },
       ],
     }),
+    nxReadySignal(),
   ],
 
   build: {

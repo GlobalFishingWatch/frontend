@@ -179,3 +179,7 @@ export const REPORT_ONLY_VISIBLE_LAYERS = [
   DataviewType.UserContext,
   DataviewType.UserPoints,
 ]
+
+// Shared by every deck in the app (map, places map, timebar). luma defaults `debug` to
+// NODE_ENV !== 'production', which wraps every WebGL call in dev and tests; opt in explicitly.
+export const DECK_DEVICE_PROPS = { debug: process.env.DEBUG_DECK_LUMA === 'true' }

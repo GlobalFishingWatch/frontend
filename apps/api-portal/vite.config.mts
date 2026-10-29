@@ -1,4 +1,5 @@
 /// <reference types='vitest' />
+import { nxReadySignal } from '@nx/vite/plugins/nx-ready-signal.plugin'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import react from '@vitejs/plugin-react'
 import { config } from 'dotenv'
@@ -51,6 +52,7 @@ export default defineConfig(({ command, mode }) => {
           },
         ],
       }),
+      nxReadySignal(),
     ],
 
     build: {

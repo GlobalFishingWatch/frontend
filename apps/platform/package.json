@@ -28,10 +28,6 @@
     "@globalfishingwatch/ui-components": "workspace:^",
     "@platform/config": "workspace:*"
   },
-  "devDependencies": {
-    "i18next-cli": "^1.74.1",
-    "source-map-explorer": "^2.5.3"
-  },
   "browserslist": [
     ">0.1%",
     "not dead",
