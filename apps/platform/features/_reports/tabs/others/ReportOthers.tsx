@@ -18,7 +18,6 @@ import { isUserHeatmapDataviewReportSupported } from 'features/_reports/report-d
 import { categoryToDataviewMap, ReportCategory } from 'features/_reports/reports.types'
 import type { ReportGraphProps } from 'features/_reports/reports-timeseries.hooks'
 import {
-  useComputeReportTimeSeries,
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
 } from 'features/_reports/reports-timeseries.hooks'
@@ -38,7 +37,6 @@ const REPORT_OTHERS_USER_GEOMETRIES: DatasetGeometryType[] = ['polygons', 'point
 function ReportOthers() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  useComputeReportTimeSeries()
   const { start, end } = useTimerangeConnect()
   const timeseriesLoading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
