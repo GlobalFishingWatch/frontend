@@ -113,7 +113,7 @@ function UserReports() {
                     search={{}}
                     onClick={() => onReportClick()}
                   >
-                    <span className={styles.workspaceTitle}>
+                    <span className={styles.workspaceTitle} translate="no">
                       {getHighlightedText(label as string, searchQuery, styles)}
                     </span>
                     {isOutdated ? (

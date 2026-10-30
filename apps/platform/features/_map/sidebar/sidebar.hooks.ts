@@ -19,11 +19,14 @@ export function useClipboardNotification(feedbackTime = 10000) {
       if (!stringToClipboard) {
         console.warn('No string to copy')
       }
-      setShowClipboardNotification(true)
-      copyToClipboard(stringToClipboard)
-      timeoutRef.current = setTimeout(() => {
-        setShowClipboardNotification(false)
-      }, feedbackTime)
+      void copyToClipboard(stringToClipboard).then((copied) => {
+        if (!copied) return
+        clearTimeout(timeoutRef.current)
+        setShowClipboardNotification(true)
+        timeoutRef.current = setTimeout(() => {
+          setShowClipboardNotification(false)
+        }, feedbackTime)
+      })
     },
     [feedbackTime]
   )

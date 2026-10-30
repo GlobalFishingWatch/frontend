@@ -3,6 +3,7 @@ import { Settings } from 'luxon'
 import { beforeAll, vi } from 'vitest'
 
 import type * as ReportsGeoUtilsModule from 'features/_reports/reports-geo.utils'
+import type * as ReportsPolygonsUtilsModule from 'features/_reports/reports-polygons.utils'
 import { getIsBrowser } from 'utils/dom'
 
 import { TEST_END_DATE } from './config'
@@ -35,10 +36,13 @@ Settings.now = () => mockDate.valueOf()
 const HIGHLIGHT_DATAVIEW_INSTANCE_ID = 'sentinel2'
 
 // Mock Web Workers to prevent blocking in tests
-// This is needed for filterCellsByPolygonWorker used in reports
+// This is needed for the cells and polygons workers used in reports
 vi.mock('features/_reports/reports-geo.utils.workers.hooks', async () => {
   const { filterByPolygon } = await vi.importActual<typeof ReportsGeoUtilsModule>(
     'features/_reports/reports-geo.utils'
+  )
+  const { filterPolygonsByArea } = await vi.importActual<typeof ReportsPolygonsUtilsModule>(
+    'features/_reports/reports-polygons.utils'
   )
 
   return {
@@ -47,6 +51,8 @@ vi.mock('features/_reports/reports-geo.utils.workers.hooks', async () => {
         return filterByPolygon(params)
       }
     },
+    filterPolygonsByAreaInWorker: async (params: any) => filterPolygonsByArea(params),
+    terminateFilterPolygonsWorker: () => undefined,
   }
 })
 

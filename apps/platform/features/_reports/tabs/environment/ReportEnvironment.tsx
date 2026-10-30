@@ -19,7 +19,6 @@ import { REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON } from 'features/_reports/repo
 import { selectReportActivityGraph } from 'features/_reports/reports.config.selectors'
 import { categoryToDataviewMap, ReportCategory } from 'features/_reports/reports.types'
 import {
-  useComputeReportTimeSeries,
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
 } from 'features/_reports/reports-timeseries.hooks'
@@ -41,7 +40,6 @@ import styles from './ReportEnvironment.module.css'
 function ReportEnvironment() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  useComputeReportTimeSeries()
 
   const { start, end } = useTimerangeConnect()
   const loading = useReportFeaturesLoading()

@@ -14,10 +14,8 @@ import {
 import { REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON } from 'features/_reports/reports.config'
 import { selectReportActivityGraph } from 'features/_reports/reports.config.selectors'
 import type { ReportActivityGraph } from 'features/_reports/reports.types'
-import { useComputeReportHotspot } from 'features/_reports/reports-hotspot.hooks'
 import type { ReportGraphProps } from 'features/_reports/reports-timeseries.hooks'
 import {
-  useComputeReportTimeSeries,
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
   useReportTimeSeriesErrors,
@@ -62,9 +60,6 @@ const SHARED_GRAPHS: Record<SharedGraphType, React.FC<ReportActivityProps>> = {
 }
 
 export default function ReportActivity() {
-  useComputeReportTimeSeries()
-  useComputeReportHotspot()
-
   const fitAreaInViewport = useFitAreaInViewport()
   const { loaded, bbox } = useReportAreaBounds()
   const bboxHash = bbox ? bbox.join(',') : ''

@@ -91,7 +91,7 @@ export const selectUserWorkspaces = createSelector(
       workspaces?.filter(
         (workspace) =>
           workspace.ownerId === userData?.id &&
-          !workspace.id.startsWith(AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX)
+          !workspace.name.startsWith(AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX)
       ),
       ['createdAt'],
       ['desc']

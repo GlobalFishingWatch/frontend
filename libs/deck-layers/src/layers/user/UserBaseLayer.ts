@@ -12,7 +12,7 @@ import { PMTiles } from 'pmtiles'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
-import { unwrapFeatureLongitudes } from '@globalfishingwatch/data-transforms'
+import { mergeFeatureParts, unwrapFeatureLongitudes } from '@globalfishingwatch/data-transforms'
 import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
 import { DEFAULT_ID_PROPERTY } from '#config/layers.config'
@@ -22,8 +22,8 @@ import {
   getContextId,
   getSelectedTilesFeatures,
   getValidSublayerFilters,
+  groupPickedFeatures,
   hasSublayerFilters,
-  mergePickedFeatures,
   supportDataFilterExtension,
 } from '#layers/context/context.utils'
 import type { ContextFeature, ContextSubLayerConfig } from '#layers/context/index'
@@ -216,6 +216,10 @@ export abstract class UserBaseLayer<
   }
 
   getRenderedFeatures(maxFeatures: number | null = null): UserLayerFeature[] {
+    return this.getRenderedFeatureGroups(maxFeatures).map(mergeFeatureParts)
+  }
+
+  getRenderedFeatureGroups(maxFeatures: number | null = null): UserLayerFeature[][] {
     const { viewport } = this.context
     const idProperty = this.props.layers[0].idProperty || DEFAULT_ID_PROPERTY
     if (!viewport) return []
@@ -253,7 +257,7 @@ export abstract class UserBaseLayer<
       }
     })
 
-    return mergePickedFeatures<UserLayerFeature>({
+    return groupPickedFeatures<UserLayerFeature>({
       pickedFeatures,
       idProperty,
       layers: this.props.layers,

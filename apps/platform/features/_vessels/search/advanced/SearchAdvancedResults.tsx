@@ -435,7 +435,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
                   (label?.length > TOOLTIP_LABEL_CHARACTERS ? label : '')
                 }
               >
-                <span>
+                <span translate="no">
                   {getHighlightedText(name, searchQuery || '', cellStyles)}{' '}
                   {otherNamesLabel && (
                     <span className={cellStyles.secondary}>{otherNamesLabel}</span>
@@ -488,9 +488,13 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         header: t((t) => t.vessel.mmsi),
         cell: ({ row }) => {
           const ssvid = getSearchIdentityResolved(row.original).ssvid || EMPTY_FIELD_PLACEHOLDER
-          return searchFilters.ssvid
-            ? getHighlightedText(ssvid, searchFilters.ssvid || '', cellStyles)
-            : ssvid
+          return (
+            <span translate="no">
+              {searchFilters.ssvid
+                ? getHighlightedText(ssvid, searchFilters.ssvid || '', cellStyles)
+                : ssvid}
+            </span>
+          )
         },
       }),
       columnHelper.display({
@@ -499,9 +503,13 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         header: t((t) => t.vessel.imo),
         cell: ({ row }) => {
           const imo = getSearchIdentityResolved(row.original).imo || EMPTY_FIELD_PLACEHOLDER
-          return searchFilters.imo
-            ? getHighlightedText(imo, searchFilters.imo || '', cellStyles)
-            : imo
+          return (
+            <span translate="no">
+              {searchFilters.imo
+                ? getHighlightedText(imo, searchFilters.imo || '', cellStyles)
+                : imo}
+            </span>
+          )
         },
       }),
       columnHelper.display({
@@ -511,9 +519,13 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         cell: ({ row }) => {
           const callsign =
             getSearchIdentityResolved(row.original).callsign || EMPTY_FIELD_PLACEHOLDER
-          return searchFilters.callsign
-            ? getHighlightedText(callsign, searchFilters.callsign || '', cellStyles)
-            : callsign
+          return (
+            <span translate="no">
+              {searchFilters.callsign
+                ? getHighlightedText(callsign, searchFilters.callsign || '', cellStyles)
+                : callsign}
+            </span>
+          )
         },
       }),
       ...columnsByInfoSource,
@@ -542,7 +554,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
               <Tooltip
                 content={(label as string[])?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}
               >
-                <span>
+                <span translate="no">
                   {getHighlightedText(label as string, searchFilters.owner || '', cellStyles)}
                 </span>
               </Tooltip>

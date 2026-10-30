@@ -26,6 +26,25 @@ export function getPolygonsUnion(geoms: PolygonGeomCoords[]): MultiPolygonCoords
   return toMultiPolygonCoords(merged?.geometry)
 }
 
+/**
+ * Merges the parts of one feature that tiling split apart: polygon geometries are unioned,
+ * any other geometry keeps the first part.
+ */
+export function mergeFeatureParts<T extends Feature>(parts: T[]): T {
+  const first = parts[0]
+  const geometryType = first.geometry?.type
+  if (parts.length === 1 || (geometryType !== 'Polygon' && geometryType !== 'MultiPolygon')) {
+    return first
+  }
+  const geoms = parts.map(
+    (part) => (part.geometry as Polygon | MultiPolygon).coordinates as PolygonGeomCoords
+  )
+  return {
+    ...first,
+    geometry: { type: 'MultiPolygon', coordinates: getPolygonsUnion(geoms) } as MultiPolygon,
+  }
+}
+
 export function getPolygonsIntersection(
   a: PolygonGeomCoords,
   b: PolygonGeomCoords
