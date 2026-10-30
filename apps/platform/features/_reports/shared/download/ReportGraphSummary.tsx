@@ -3,9 +3,16 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 
+import { getDatasetTitleByDataview } from 'features/_map/datasets/datasets.utils'
+import { selectReportComparisonDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { groupVmsSources } from 'features/_map/workspace/activity/activity.utils'
 import { selectReportAreaName } from 'features/_reports/report-area/area-reports.selectors'
 import { selectVGRData } from 'features/_reports/report-vessel-group/vessel-group-report.slice'
+import { REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON } from 'features/_reports/reports.config'
+import {
+  selectReportActivityGraph,
+  selectReportComparisonDataviewIds,
+} from 'features/_reports/reports.config.selectors'
 import { selectReportCategory, selectReportSubCategory } from 'features/_reports/reports.selectors'
 import { ReportCategory } from 'features/_reports/reports.types'
 import { useReportActivitySummaryData } from 'features/_reports/shared/summary/report-summary-activity.hooks'
@@ -45,12 +52,11 @@ function ReportGraphSummaryActivity({ vesselsFiltered, hideSources }: ReportGrap
       : t((t) => t.analysis.inTheArea)
   const activityType =
     summary.datasetTitle ??
-    (summary.isActivity
-      ? `<strong>${(reportSubCategory
-          ? getReportSubCategoryLabel(reportSubCategory)
-          : t((t) => t.common.activity)
-        ).toLowerCase()}</strong>`
-      : '')
+    (reportSubCategory
+      ? `<strong>${getReportSubCategoryLabel(reportSubCategory).toLowerCase()}</strong>`
+      : summary.isActivity
+        ? `<strong>${t((t) => t.common.activity).toLowerCase()}</strong>`
+        : '')
   const unit = t(
     (t) => t.common[reportCategory === ReportCategory.Activity ? 'hour' : 'detection'],
     {
@@ -121,6 +127,29 @@ export function ReportGraphSummaryArea() {
   return <Fragment> {htmlSafeParse(t((t) => t.analysis.inNamedArea, { area: areaName }))}</Fragment>
 }
 
+/** " compared with <dataset>", when the graph compares the report layer with another dataset */
+export function ReportGraphSummaryComparison() {
+  const { t } = useTranslation()
+  const reportActivityGraph = useSelector(selectReportActivityGraph)
+  const comparisonDataviewIds = useSelector(selectReportComparisonDataviewIds)
+  const comparisonDataviews = useSelector(selectReportComparisonDataviews)
+  const comparedDataview =
+    reportActivityGraph === REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON
+      ? comparisonDataviews.find(({ id }) => id === comparisonDataviewIds?.compare)
+      : undefined
+  if (!comparedDataview) return null
+  return (
+    <Fragment>
+      {' '}
+      {htmlSafeParse(
+        t((t) => t.analysis.comparedWith, {
+          dataset: getDatasetTitleByDataview(comparedDataview, { showPrivateIcon: false }),
+        })
+      )}
+    </Fragment>
+  )
+}
+
 /** What, where and when the report shows, as one sentence for graph screenshots */
 function ReportGraphSummary(props: ReportGraphSummaryProps) {
   const reportCategory = useSelector(selectReportCategory)
@@ -133,7 +162,10 @@ function ReportGraphSummary(props: ReportGraphSummaryProps) {
       ) : reportCategory === ReportCategory.Events ? (
         <ReportSummaryEvents areaName={areaName} />
       ) : (
-        <ReportGraphSummaryActivity {...props} />
+        <Fragment>
+          <ReportGraphSummaryActivity {...props} />
+          <ReportGraphSummaryComparison />
+        </Fragment>
       )}
     </p>
   )

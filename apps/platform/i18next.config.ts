@@ -42,6 +42,7 @@ const DYNAMIC_KEYS = [
   'common.minute',
   'common.minute_one',
   'common.minute_other',
+  'common.nightLightDetections',
   'common.numEvents',
   'common.onlyVisibleForGFWShort',
   'common.plus',

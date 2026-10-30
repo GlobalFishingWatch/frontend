@@ -1,9 +1,12 @@
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 
 import { groupVmsSources } from 'features/_map/workspace/activity/activity.utils'
+import { selectReportSubCategory } from 'features/_reports/reports.selectors'
 import ReportSummaryPlaceholder from 'features/_reports/shared/placeholders/ReportSummaryPlaceholder'
 import { useReportActivitySummaryData } from 'features/_reports/shared/summary/report-summary-activity.hooks'
 import type { ReportActivityUnit } from 'features/_reports/tabs/activity/reports-activity.types'
+import { getReportSubCategoryLabel } from 'features/_reports/tabs/activity/reports-activity.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse } from 'utils/html-parser'
 import { listAsSentence } from 'utils/shared'
@@ -17,6 +20,7 @@ export default function ReportSummaryActivity({
 }) {
   const { t } = useTranslation()
   const summary = useReportActivitySummaryData({ reportStatus })
+  const reportSubCategory = useSelector(selectReportSubCategory)
 
   if (!summary) return <ReportSummaryPlaceholder />
   if (summary.type === 'timeCompare') return htmlSafeParse(summary.description)
@@ -26,7 +30,12 @@ export default function ReportSummaryActivity({
     : t((t) => t.analysis.inTheArea, { defaultValue: 'in the area' })
   const activityType =
     summary.datasetTitle ??
-    (summary.isActivity ? `<strong>${t((t) => t.common.activity).toLowerCase()}</strong>` : '')
+    (summary.isActivity
+      ? `<strong>${t((t) => t.common.activity).toLowerCase()}</strong>`
+      : // Detection layers of different sources have no common title, the subcategory is
+        reportSubCategory
+        ? getReportSubCategoryLabel(reportSubCategory).toLowerCase()
+        : '')
   const unit = t((t) => t.common[activityUnit], { defaultValue: 'hours', count: summary.count })
 
   if (summary.type === 'vessels') {

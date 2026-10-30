@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { DATASETS_USER_SOURCE_ID } from 'features/_map/datasets/datasets.slice'
@@ -36,15 +37,20 @@ function ReportGraphLegendItem({
   const groupedSources = dataviewWithPrivateDatasets(dataview)
     ? []
     : groupVmsSources(sourcesSelected)
-  // Layers outside the activity ones list their datasets as sources, so the provider says more
+  // Only activity and detections have sources to pick, the rest list their dataset as the only
+  // one, so the provider says more
+  const hasSourcesSelection =
+    dataview.category === DataviewCategory.Activity ||
+    dataview.category === DataviewCategory.Detections
   const datasetSource = dataview.datasets?.find(
     ({ source }) => source && source !== DATASETS_USER_SOURCE_ID
   )?.source
-  const sources = withTitle
-    ? datasetSource && htmlSafeParse(datasetSource)
-    : (groupedSources.length ? groupedSources : sourcesSelected)
-        .map(({ label }) => label)
-        .join(', ')
+  const sources =
+    withTitle && !hasSourcesSelection
+      ? datasetSource && htmlSafeParse(datasetSource)
+      : (groupedSources.length ? groupedSources : sourcesSelected)
+          .map(({ label }) => label)
+          .join(', ')
   const { filtersAllowed } = getFiltersInDataview(dataview, { vesselGroups: vesselGroupsOptions })
   const filters = filtersAllowed
     .filter(({ optionsSelected }) => optionsSelected.length > 0)
@@ -102,7 +108,7 @@ function ReportGraphLegend({ dataviews: dataviewsProp }: { dataviews?: UrlDatavi
           key={dataview.id}
           dataview={dataview}
           vesselGroupName={isVesselGroupReportLocation ? vesselGroup?.name : undefined}
-          // Graphs passing their own layers have no sources, the name tells them apart
+          // Graphs passing their own layers can mix datasets, the name tells them apart
           withTitle={dataviewsProp !== undefined}
         />
       ))}

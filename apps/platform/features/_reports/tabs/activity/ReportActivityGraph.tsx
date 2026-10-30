@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import { selectReportComparisonDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import {
   useFitAreaInViewport,
@@ -81,6 +82,7 @@ export default function ReportActivity() {
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
   const reportActivityGraph = useSelector(selectReportActivityGraph)
+  const comparisonDataviews = useSelector(selectReportComparisonDataviews)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
   const featureFlags = useSelector(selectFeatureFlags)
   const graphRef = useRef<HTMLDivElement>(null)
@@ -151,6 +153,7 @@ export default function ReportActivity() {
               graphRef={graphRef}
               name={`activity-${reportActivityGraph}`}
               withSummary
+              legendDataviews={isDatasetComparison ? comparisonDataviews : undefined}
             />
           )}
         </div>

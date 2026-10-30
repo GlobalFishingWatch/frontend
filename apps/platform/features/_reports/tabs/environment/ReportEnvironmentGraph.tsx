@@ -1,5 +1,6 @@
 import React, { Fragment, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type { DataviewType } from '@globalfishingwatch/api-types'
@@ -16,10 +17,13 @@ import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { DATASETS_USER_SOURCE_ID } from 'features/_map/datasets/datasets.slice'
 import { getDatasetImportLogs, hasDatasetError } from 'features/_map/datasets/datasets.utils'
 import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
+import { selectReportComparisonDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import InfoError from 'features/_map/workspace/shared/InfoError'
 import { showSchemaFilter } from 'features/_map/workspace/shared/LayerSchemaFilter.utils'
 import OutOfTimerangeDisclaimer from 'features/_map/workspace/shared/OutOfBoundsDisclaimer'
+import { REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON } from 'features/_reports/reports.config'
+import { selectReportActivityGraph } from 'features/_reports/reports.config.selectors'
 import type {
   FourwingsReportGraphStats,
   ReportGraphProps,
@@ -30,7 +34,10 @@ import {
   useTimeseriesStats,
 } from 'features/_reports/reports-timeseries.hooks'
 import ReportGraphScreenshot from 'features/_reports/shared/download/ReportGraphScreenshot'
-import { ReportGraphSummaryArea } from 'features/_reports/shared/download/ReportGraphSummary'
+import {
+  ReportGraphSummaryArea,
+  ReportGraphSummaryComparison,
+} from 'features/_reports/shared/download/ReportGraphSummary'
 import ReportActivityPlaceholder from 'features/_reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportStatsPlaceholder from 'features/_reports/shared/placeholders/ReportStatsPlaceholder'
 import ReportSummaryTags from 'features/_reports/shared/summary/ReportSummaryTags'
@@ -61,6 +68,9 @@ function ReportEnvironmentGraph({
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
   const timeseriesStats = useTimeseriesStats()
+  const isDatasetComparison =
+    useSelector(selectReportActivityGraph) === REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON
+  const comparisonDataviews = useSelector(selectReportComparisonDataviews)
   const allAvailableIntervals = getAvailableIntervalsInDataviews([dataview])
   const interval = getFourwingsInterval(start, end, allAvailableIntervals)
   const layersTimeseriesErrors = useReportTimeSeriesErrors()
@@ -134,9 +144,10 @@ function ReportEnvironmentGraph({
               <p>
                 {titleSentence}
                 <ReportGraphSummaryArea />
+                <ReportGraphSummaryComparison />
               </p>
             }
-            legendDataviews={[dataview]}
+            legendDataviews={isDatasetComparison ? comparisonDataviews : [dataview]}
           />
         )}
       </div>
