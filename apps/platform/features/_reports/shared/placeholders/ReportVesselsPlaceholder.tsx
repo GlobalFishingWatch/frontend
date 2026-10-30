@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import cx from 'classnames'
 
 import { ReportBarGraphPlaceholder } from 'features/_reports/shared/placeholders/ReportBarGraphPlaceholder'
+import { ReportSlowLoading } from 'features/_reports/shared/placeholders/ReportSlowLoading'
 
 import styles from './placeholders.module.css'
 
@@ -11,6 +12,7 @@ export default function ReportVesselsPlaceholder({
   showGraphHeader = true,
   showSearch = true,
   animate = true,
+  showSlowLoading = false,
   className,
 }: {
   children?: React.ReactNode
@@ -18,6 +20,7 @@ export default function ReportVesselsPlaceholder({
   showGraphHeader?: boolean
   showSearch?: boolean
   animate?: boolean
+  showSlowLoading?: boolean
   className?: string
 }) {
   const tableRows = Array(11).fill('')
@@ -77,6 +80,7 @@ export default function ReportVesselsPlaceholder({
           </div>
         </div>
         {children}
+        {showSlowLoading && <ReportSlowLoading />}
       </div>
     </Fragment>
   )
