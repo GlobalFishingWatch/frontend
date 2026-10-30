@@ -195,7 +195,7 @@ const ReportActivityEvolution = ({
           interval="preserveStartEnd"
           tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
           axisLine={{
-            stroke: paddedDomain[0] === 0 ? 'var(--color-primary-blue)' : 'transparent',
+            stroke: paddedDomain[0] === 0 ? 'var(--color-secondary-blue)' : 'transparent',
           }}
           hide={hideAxes}
         />

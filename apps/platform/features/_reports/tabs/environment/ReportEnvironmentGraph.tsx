@@ -1,5 +1,6 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type { DataviewType } from '@globalfishingwatch/api-types'
@@ -16,10 +17,13 @@ import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { DATASETS_USER_SOURCE_ID } from 'features/_map/datasets/datasets.slice'
 import { getDatasetImportLogs, hasDatasetError } from 'features/_map/datasets/datasets.utils'
 import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
+import { selectReportComparisonDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import InfoError from 'features/_map/workspace/shared/InfoError'
 import { showSchemaFilter } from 'features/_map/workspace/shared/LayerSchemaFilter.utils'
 import OutOfTimerangeDisclaimer from 'features/_map/workspace/shared/OutOfBoundsDisclaimer'
+import { REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON } from 'features/_reports/reports.config'
+import { selectReportActivityGraph } from 'features/_reports/reports.config.selectors'
 import type {
   FourwingsReportGraphStats,
   ReportGraphProps,
@@ -29,6 +33,11 @@ import {
   useReportTimeSeriesErrors,
   useTimeseriesStats,
 } from 'features/_reports/reports-timeseries.hooks'
+import ReportGraphScreenshot from 'features/_reports/shared/download/ReportGraphScreenshot'
+import {
+  ReportGraphSummaryArea,
+  ReportGraphSummaryComparison,
+} from 'features/_reports/shared/download/ReportGraphSummary'
 import ReportActivityPlaceholder from 'features/_reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportStatsPlaceholder from 'features/_reports/shared/placeholders/ReportStatsPlaceholder'
 import ReportSummaryTags from 'features/_reports/shared/summary/ReportSummaryTags'
@@ -59,10 +68,14 @@ function ReportEnvironmentGraph({
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
   const timeseriesStats = useTimeseriesStats()
+  const isDatasetComparison =
+    useSelector(selectReportActivityGraph) === REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON
+  const comparisonDataviews = useSelector(selectReportComparisonDataviews)
   const allAvailableIntervals = getAvailableIntervalsInDataviews([dataview])
   const interval = getFourwingsInterval(start, end, allAvailableIntervals)
   const layersTimeseriesErrors = useReportTimeSeriesErrors()
   const isDynamic = isEnvironmentalDataview(dataview) // checks for animated heatmaps
+  const graphRef = useRef<HTMLDivElement>(null)
   if (!dataview) return null
 
   const { min, mean, max } = (timeseriesStats?.[dataview.id] as FourwingsReportGraphStats) || {}
@@ -98,21 +111,45 @@ function ReportEnvironmentGraph({
     dataview.config?.minVisibleValue || dataview.config?.maxVisibleValue
   )
   const hasFilters = filtersAllowed.some(showSchemaFilter) || hasVisibleValues
+  const titleSentence = (
+    <Fragment>
+      {aggregationFunction === 'AVG' && <span>{upperFirst(t((t) => t.common.average))} </span>}
+      <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
+      {isDynamic && (
+        <Fragment>
+          {t((t) => t.common.between)} <strong>{formatI18nDate(start)}</strong>{' '}
+          {t((t) => t.common.and)} <strong>{formatI18nDate(end)}</strong>
+        </Fragment>
+      )}
+    </Fragment>
+  )
+  const showGraph =
+    !datasetError &&
+    (isDynamic || isHeatmapVector) &&
+    !isLoading &&
+    !hasError &&
+    !isEmptyData &&
+    GraphComponent !== undefined
 
   return (
     <div className={cx('card', styles.container)}>
       <div className={styles.summary}>
         <ReportSummaryTags dataview={dataview} showFilters={false} />
-        <span>
-          {aggregationFunction === 'AVG' && <span>{upperFirst(t((t) => t.common.average))} </span>}
-          <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
-          {isDynamic && (
-            <Fragment>
-              {t((t) => t.common.between)} <strong>{formatI18nDate(start)}</strong>{' '}
-              {t((t) => t.common.and)} <strong>{formatI18nDate(end)}</strong>
-            </Fragment>
-          )}
-        </span>
+        <span>{titleSentence}</span>
+        {showGraph && (
+          <ReportGraphScreenshot
+            graphRef={graphRef}
+            name={`environment-${dataview?.id}`}
+            summary={
+              <p>
+                {titleSentence}
+                <ReportGraphSummaryArea />
+                <ReportGraphSummaryComparison />
+              </p>
+            }
+            legendDataviews={isDatasetComparison ? comparisonDataviews : [dataview]}
+          />
+        )}
       </div>
       {hasFilters && (
         <div className={styles.tagsContainer}>
@@ -140,21 +177,26 @@ function ReportEnvironmentGraph({
             </div>
           </ReportActivityPlaceholder>
         ) : GraphComponent ? (
-          <GraphComponent
-            start={start}
-            end={end}
-            data={data}
-            removeEmptyValues={removeEmptyValues}
-            // TODO: currents and winds
-            // Refactor the ReportVectorGraphTooltip component and pass it here
-            // before it was using the entire timeline but we want to use only the data from the hovered date
-            // freezeTooltipOnClick={isHeatmapVector}
-            TooltipContent={
-              isHeatmapVector ? (
-                <ReportVectorGraphTooltip instanceId={dataview.id} color={dataview.config?.color} />
-              ) : undefined
-            }
-          />
+          <div ref={graphRef}>
+            <GraphComponent
+              start={start}
+              end={end}
+              data={data}
+              removeEmptyValues={removeEmptyValues}
+              // TODO: currents and winds
+              // Refactor the ReportVectorGraphTooltip component and pass it here
+              // before it was using the entire timeline but we want to use only the data from the hovered date
+              // freezeTooltipOnClick={isHeatmapVector}
+              TooltipContent={
+                isHeatmapVector ? (
+                  <ReportVectorGraphTooltip
+                    instanceId={dataview.id}
+                    color={dataview.config?.color}
+                  />
+                ) : undefined
+              }
+            />
+          </div>
         ) : null)
       )}
       {datasetError ? null : isLoading ? (
