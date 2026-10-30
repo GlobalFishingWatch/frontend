@@ -236,9 +236,7 @@ function LayerSchemaFilter({
     (rangeSelected: SliderRangeValues | number) => {
       const filterRange = getRangeLimitsBySchema(schemaFilter)
       if (Array.isArray(rangeSelected)) {
-        const isFullRange =
-          rangeSelected[0] === filterRange[0] && rangeSelected[1] === filterRange[1]
-        if (isFullRange && !optionsSelected?.length) {
+        if (rangeSelected[0] === filterRange[0] && rangeSelected[1] === filterRange[1]) {
           onClean(id)
         } else if (rangeSelected.length === 1 && !Number.isNaN(rangeSelected[0])) {
           const selection = getValueByUnit(rangeSelected[0], {
@@ -267,7 +265,7 @@ function LayerSchemaFilter({
         }
       }
     },
-    [id, onClean, onSelect, optionsSelected, schemaFilter, type, unit]
+    [id, onClean, onSelect, schemaFilter, type, unit]
   )
 
   if (!showSchemaFilter(schemaFilter)) {
