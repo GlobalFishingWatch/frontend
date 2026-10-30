@@ -21,6 +21,7 @@ import type {
 import { useTimeseriesStats } from 'features/_reports/reports-timeseries.hooks'
 import { getStatsValue } from 'features/_reports/reports-timeseries-shared.utils'
 import ReportGraphScreenshot from 'features/_reports/shared/download/ReportGraphScreenshot'
+import { ReportGraphSummaryArea } from 'features/_reports/shared/download/ReportGraphSummary'
 import ReportActivityPlaceholder from 'features/_reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportStatsPlaceholder from 'features/_reports/shared/placeholders/ReportStatsPlaceholder'
 import ReportSummaryTags from 'features/_reports/shared/summary/ReportSummaryTags'
@@ -143,6 +144,44 @@ function ReportPolygonsGraph({
   const { filtersAllowed } = getFiltersInDataview(dataview)
   const hasFilters = filtersAllowed.some(showSchemaFilter)
   const showEvolution = dataviewHasUserTimeRange(dataview)
+  const statsSummary =
+    containedCount || overlappingCount ? (
+      <p className={styles.summary}>
+        {containedCount !== 0 && (
+          <Fragment>
+            <strong>
+              {containedCount} {t((t) => t.analysis.polygonsFullyContained)}
+            </strong>
+            <ReportSublayerValues values={containedValues} tags={tags} />
+          </Fragment>
+        )}{' '}
+        {containedCount !== 0 && overlappingCount !== 0 && `${t((t) => t.common.and)} `}
+        {overlappingCount !== 0 && (
+          <Fragment>
+            <strong>
+              {overlappingCount} {t((t) => t.analysis.polygonsOverlapping)}
+            </strong>
+            <ReportSublayerValues values={overlappingValues} tags={tags} />
+          </Fragment>
+        )}{' '}
+        {t((t) => t.analysis.polygons, {
+          count: (containedCount || 0) + (overlappingCount || 0),
+        })}
+        {typeof areaCoverageRatio === 'number' && typeof areaCoverageKm2 === 'number' && (
+          <Fragment>
+            {', '}
+            {t((t) => t.analysis.polygonsAreaCoverage, {
+              areakm2: formatI18nNumber(areaCoverageKm2, {
+                maximumFractionDigits: 1,
+              }).toString(),
+              coverage: formatI18nNumber(areaCoverageRatio * 100, {
+                maximumFractionDigits: 2,
+              }).toString(),
+            })}
+          </Fragment>
+        )}
+      </p>
+    ) : null
 
   return (
     <div className={cx('card', styles.container, className)}>
@@ -152,47 +191,26 @@ function ReportPolygonsGraph({
           <strong>{title}</strong> {unit && <span>({unit})</span>}
         </span>
         {showEvolution && !loading && (
-          <ReportGraphScreenshot graphRef={graphRef} name={`polygons-${statsId ?? dataview.id}`} />
+          <ReportGraphScreenshot
+            graphRef={graphRef}
+            name={`polygons-${statsId ?? dataview.id}`}
+            summary={
+              <Fragment>
+                <p>
+                  <strong>{title}</strong> {unit && `(${unit})`}
+                  <ReportGraphSummaryArea />
+                </p>
+                {statsSummary}
+              </Fragment>
+            }
+            legendDataviews={tags}
+          />
         )}
       </div>
       {loading || !layerStats ? (
         <ReportStatsPlaceholder />
-      ) : containedCount || overlappingCount ? (
-        <p className={styles.summary}>
-          {containedCount !== 0 && (
-            <Fragment>
-              <strong>
-                {containedCount} {t((t) => t.analysis.polygonsFullyContained)}
-              </strong>
-              <ReportSublayerValues values={containedValues} tags={tags} />
-            </Fragment>
-          )}{' '}
-          {containedCount !== 0 && overlappingCount !== 0 && `${t((t) => t.common.and)} `}
-          {overlappingCount !== 0 && (
-            <Fragment>
-              <strong>
-                {overlappingCount} {t((t) => t.analysis.polygonsOverlapping)}
-              </strong>
-              <ReportSublayerValues values={overlappingValues} tags={tags} />
-            </Fragment>
-          )}{' '}
-          {t((t) => t.analysis.polygons, {
-            count: (containedCount || 0) + (overlappingCount || 0),
-          })}
-          {typeof areaCoverageRatio === 'number' && typeof areaCoverageKm2 === 'number' && (
-            <Fragment>
-              {', '}
-              {t((t) => t.analysis.polygonsAreaCoverage, {
-                areakm2: formatI18nNumber(areaCoverageKm2, {
-                  maximumFractionDigits: 1,
-                }).toString(),
-                coverage: formatI18nNumber(areaCoverageRatio * 100, {
-                  maximumFractionDigits: 2,
-                }).toString(),
-              })}
-            </Fragment>
-          )}
-        </p>
+      ) : statsSummary ? (
+        statsSummary
       ) : (
         <p className={styles.summary}>{t((t) => t.analysis.noPolygonsContainedOrOverlapping)}</p>
       )}

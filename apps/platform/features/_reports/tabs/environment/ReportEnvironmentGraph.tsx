@@ -30,6 +30,7 @@ import {
   useTimeseriesStats,
 } from 'features/_reports/reports-timeseries.hooks'
 import ReportGraphScreenshot from 'features/_reports/shared/download/ReportGraphScreenshot'
+import { ReportGraphSummaryArea } from 'features/_reports/shared/download/ReportGraphSummary'
 import ReportActivityPlaceholder from 'features/_reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportStatsPlaceholder from 'features/_reports/shared/placeholders/ReportStatsPlaceholder'
 import ReportSummaryTags from 'features/_reports/shared/summary/ReportSummaryTags'
@@ -100,6 +101,18 @@ function ReportEnvironmentGraph({
     dataview.config?.minVisibleValue || dataview.config?.maxVisibleValue
   )
   const hasFilters = filtersAllowed.some(showSchemaFilter) || hasVisibleValues
+  const titleSentence = (
+    <Fragment>
+      {aggregationFunction === 'AVG' && <span>{upperFirst(t((t) => t.common.average))} </span>}
+      <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
+      {isDynamic && (
+        <Fragment>
+          {t((t) => t.common.between)} <strong>{formatI18nDate(start)}</strong>{' '}
+          {t((t) => t.common.and)} <strong>{formatI18nDate(end)}</strong>
+        </Fragment>
+      )}
+    </Fragment>
+  )
   const showGraph =
     !datasetError &&
     (isDynamic || isHeatmapVector) &&
@@ -112,18 +125,19 @@ function ReportEnvironmentGraph({
     <div className={cx('card', styles.container)}>
       <div className={styles.summary}>
         <ReportSummaryTags dataview={dataview} showFilters={false} />
-        <span>
-          {aggregationFunction === 'AVG' && <span>{upperFirst(t((t) => t.common.average))} </span>}
-          <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
-          {isDynamic && (
-            <Fragment>
-              {t((t) => t.common.between)} <strong>{formatI18nDate(start)}</strong>{' '}
-              {t((t) => t.common.and)} <strong>{formatI18nDate(end)}</strong>
-            </Fragment>
-          )}
-        </span>
+        <span>{titleSentence}</span>
         {showGraph && (
-          <ReportGraphScreenshot graphRef={graphRef} name={`environment-${dataview?.id}`} />
+          <ReportGraphScreenshot
+            graphRef={graphRef}
+            name={`environment-${dataview?.id}`}
+            summary={
+              <p>
+                {titleSentence}
+                <ReportGraphSummaryArea />
+              </p>
+            }
+            legendDataviews={[dataview]}
+          />
         )}
       </div>
       {hasFilters && (

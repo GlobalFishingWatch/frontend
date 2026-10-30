@@ -18,6 +18,7 @@ import type { ReportGraphProps } from 'features/_reports/reports-timeseries.hook
 import { useTimeseriesStats } from 'features/_reports/reports-timeseries.hooks'
 import { getStatsValue } from 'features/_reports/reports-timeseries-shared.utils'
 import ReportGraphScreenshot from 'features/_reports/shared/download/ReportGraphScreenshot'
+import { ReportGraphSummaryArea } from 'features/_reports/shared/download/ReportGraphSummary'
 import ReportActivityPlaceholder from 'features/_reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportStatsPlaceholder from 'features/_reports/shared/placeholders/ReportStatsPlaceholder'
 import ReportSummaryTags from 'features/_reports/shared/summary/ReportSummaryTags'
@@ -125,7 +126,20 @@ function ReportPointsGraph({
           <strong>{title}</strong> {unit && <span>({unit})</span>}
         </span>
         {hasTimeFilter && !loading && statsCounts !== 0 && (
-          <ReportGraphScreenshot graphRef={graphRef} name={`points-${dataview.id}`} />
+          <ReportGraphScreenshot
+            graphRef={graphRef}
+            name={`points-${dataview.id}`}
+            summary={
+              <Fragment>
+                <p>
+                  <strong>{title}</strong> {unit && `(${unit})`}
+                  <ReportGraphSummaryArea />
+                </p>
+                {StatsComponent}
+              </Fragment>
+            }
+            legendDataviews={tags}
+          />
         )}
       </h2>
       {hasTimeFilter && loading ? <ReportStatsPlaceholder /> : StatsComponent}

@@ -16,7 +16,7 @@ import { getLocalStorageItem, setLocalStorageItem } from 'utils/dom'
 export type ReportGraphScreenshotSettings = {
   format: 'png' | 'svg'
   summary: boolean
-  legend: boolean
+  footer: boolean
 }
 
 export interface UserSettings {

@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
@@ -110,6 +111,14 @@ function ReportGraphSummaryVesselGroup() {
       end: formatI18nDate(timeRange.end, { format: DateTime.DATE_MED }),
     })
   )
+}
+
+/** " in <area name>", to append to the summary of graphs not built from the report layers */
+export function ReportGraphSummaryArea() {
+  const { t } = useTranslation()
+  const areaName = useSelector(selectReportAreaName)
+  if (!areaName) return null
+  return <Fragment> {htmlSafeParse(t((t) => t.analysis.inNamedArea, { area: areaName }))}</Fragment>
 }
 
 /** What, where and when the report shows, as one sentence for graph screenshots */

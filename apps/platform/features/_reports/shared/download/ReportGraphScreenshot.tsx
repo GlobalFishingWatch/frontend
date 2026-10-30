@@ -1,12 +1,14 @@
-import type { RefObject } from 'react'
+import type { ReactNode, RefObject } from 'react'
 import { Fragment, useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Button } from '@globalfishingwatch/ui-components/button'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components/choice'
 import { Choice } from '@globalfishingwatch/ui-components/choice'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { Logo } from '@globalfishingwatch/ui-components/logo'
 import { Modal } from '@globalfishingwatch/ui-components/modal'
 import { SwitchRow } from '@globalfishingwatch/ui-components/switch-row'
 
@@ -30,7 +32,7 @@ type ReportGraphScreenshotFormat = ReportGraphScreenshotSettings['format']
 const DEFAULT_SETTINGS: ReportGraphScreenshotSettings = {
   format: 'png',
   summary: true,
-  legend: true,
+  footer: true,
 }
 
 const FORMAT_OPTIONS: ChoiceOption<ReportGraphScreenshotFormat>[] = [
@@ -49,13 +51,23 @@ const cloneGraph = (graph: HTMLElement) => {
   const clone = graph.cloneNode(true) as HTMLElement
   clone.querySelectorAll(HOVER_SELECTORS).forEach((element) => element.remove())
   clone.style.width = `${graph.offsetWidth}px`
+  // Wrappers spacing the graph in the report would add their gap to the image one
+  for (let element: Element | null = clone; element; element = element.firstElementChild) {
+    if (element instanceof HTMLElement) element.style.marginBlock = '0'
+    if (element.childElementCount !== 1) break
+  }
   return clone
 }
 
 type ReportGraphScreenshotProps = {
   graphRef: RefObject<HTMLDivElement | null>
   name: string
+  /** Uses the report summary and its layers as legend */
   withSummary?: boolean
+  /** Summary for graphs that are not about the report layers, replaces the report one */
+  summary?: ReactNode
+  /** Layers to list in the legend instead of the report ones */
+  legendDataviews?: UrlDataviewInstance[]
   filter?: string
 }
 
@@ -63,6 +75,8 @@ function ReportGraphScreenshot({
   graphRef,
   name,
   withSummary,
+  summary,
+  legendDataviews,
   filter,
 }: ReportGraphScreenshotProps) {
   const { t } = useTranslation()
@@ -75,7 +89,7 @@ function ReportGraphScreenshot({
   const {
     format,
     summary: includeSummary,
-    legend: includeLegend,
+    footer: includeFooter,
   } = { ...DEFAULT_SETTINGS, ...userSettings.reportGraphScreenshot }
   const setSettings = (settings: Partial<ReportGraphScreenshotSettings>) => {
     dispatch(
@@ -83,7 +97,7 @@ function ReportGraphScreenshot({
         reportGraphScreenshot: {
           format,
           summary: includeSummary,
-          legend: includeLegend,
+          footer: includeFooter,
           ...settings,
         },
       })
@@ -91,10 +105,12 @@ function ReportGraphScreenshot({
   }
   const [downloading, setDownloading] = useState(false)
   const imageRef = useRef<HTMLDivElement>(null)
-  const showSummary = withSummary && includeSummary
-  // The vessel group vessels tab has no layers to list
-  const hasLegend = withSummary && reportCategory !== ReportCategory.VesselGroup
-  const showLegend = hasLegend && includeLegend
+  const hasSummary = withSummary || summary !== undefined
+  const showSummary = hasSummary && includeSummary
+  const showLegend = legendDataviews
+    ? legendDataviews.length > 0
+    : // The vessel group vessels tab has no layers to list
+      withSummary && reportCategory !== ReportCategory.VesselGroup
 
   const graphCopyRef = useCallback(
     (container: HTMLDivElement | null) => {
@@ -115,7 +131,9 @@ function ReportGraphScreenshot({
         .join('-')
       if (format === 'svg') {
         // snapdom writes no XML declaration, so viewers not assuming UTF-8 garble non-ASCII text
-        const svg = await (await snapdom.toBlob(imageRef.current, { format: 'svg' })).text()
+        const svg = await (
+          await snapdom.toBlob(imageRef.current, { format: 'svg', embedFonts: true })
+        ).text()
         const { saveAs } = await import('file-saver')
         saveAs(
           new Blob(
@@ -128,12 +146,17 @@ function ReportGraphScreenshot({
         )
       } else {
         // download() always writes at dpr 1, scale keeps the PNG sharp
-        await snapdom.download(imageRef.current, { format, filename, scale: 2 })
+        await snapdom.download(imageRef.current, {
+          format,
+          filename,
+          scale: 2,
+          embedFonts: true,
+        })
       }
       trackEvent({
         category: TrackCategory.Analysis,
         action: 'report_graph_download',
-        label: [name, format, showSummary && 'summary', showLegend && 'legend']
+        label: [name, format, showSummary && 'summary', includeFooter && 'footer']
           .filter(Boolean)
           .join('_'),
       })
@@ -156,7 +179,7 @@ function ReportGraphScreenshot({
         onClick={() => setOpen(true)}
       />
       <Modal
-        title={t((t) => t.map.screenshotPreview)}
+        title={t((t) => t.analysis.graphScreenshotTitle)}
         isOpen={open}
         onClose={() => setOpen(false)}
         className={styles.modal}
@@ -166,16 +189,31 @@ function ReportGraphScreenshot({
           <div className={styles.frame}>
             {/* Everything inside this element is what ends up in the image */}
             <div ref={imageRef} className={styles.image}>
-              {showSummary && (
-                <ReportGraphSummary vesselsFiltered={!!filter} hideSources={showLegend} />
-              )}
+              {showSummary &&
+                (summary !== undefined ? (
+                  <div className={styles.summary}>{summary}</div>
+                ) : (
+                  <ReportGraphSummary vesselsFiltered={!!filter} hideSources={showLegend} />
+                ))}
               <div ref={graphCopyRef} />
-              {filter && (
-                <p className={styles.legend}>
-                  {t((t) => t.analysis.graphScreenshotFilter)}: {filter}
-                </p>
+              {(filter || showLegend) && (
+                <div className={styles.legend}>
+                  {filter && (
+                    <span>
+                      {t((t) => t.analysis.graphScreenshotFilter)}: {filter}
+                    </span>
+                  )}
+                  {showLegend && <ReportGraphLegend dataviews={legendDataviews} />}
+                </div>
               )}
-              {showLegend && <ReportGraphLegend />}
+              {includeFooter && (
+                <div className={styles.footer}>
+                  <span>
+                    <a href={window.location.href}>www.globalfishingwatch.org/platform</a>
+                  </span>
+                  <Logo className={styles.logo} />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -185,20 +223,18 @@ function ReportGraphScreenshot({
             activeOption={format}
             onSelect={(option) => setSettings({ format: option.id })}
           />
-          {withSummary && (
+          {hasSummary && (
             <SwitchRow
               label={t((t) => t.analysis.graphScreenshotSummary)}
               active={includeSummary}
               onClick={() => setSettings({ summary: !includeSummary })}
             />
           )}
-          {hasLegend && (
-            <SwitchRow
-              label={t((t) => t.analysis.graphScreenshotLegend)}
-              active={includeLegend}
-              onClick={() => setSettings({ legend: !includeLegend })}
-            />
-          )}
+          <SwitchRow
+            label={t((t) => t.analysis.graphScreenshotFooter)}
+            active={includeFooter}
+            onClick={() => setSettings({ footer: !includeFooter })}
+          />
           <Button loading={downloading} onClick={onDownload}>
             {t((t) => t.map.screenshotDownload)}
           </Button>

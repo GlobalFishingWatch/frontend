@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { Fragment, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -7,6 +7,7 @@ import { Select } from '@globalfishingwatch/ui-components'
 
 import { selectReportArea } from 'features/_reports/report-area/area-reports.selectors'
 import ReportGraphScreenshot from 'features/_reports/shared/download/ReportGraphScreenshot'
+import { ReportGraphSummaryArea } from 'features/_reports/shared/download/ReportGraphSummary'
 import ReportActivityPlaceholder from 'features/_reports/shared/placeholders/ReportActivityPlaceholder'
 
 import { useMigramar } from './reportEnvironmentMigramar.hooks'
@@ -28,12 +29,37 @@ function ReportEnvironmentMigramar() {
     loading,
   } = useMigramar(reportArea?.properties?.id)
   const graphRef = useRef<HTMLDivElement>(null)
+  const dataSource = graphData?.data_owner && (
+    <span>
+      {t((t) => t.analysis.dataSource)}: {graphData.data_owner}
+    </span>
+  )
 
   return (
     <div className={cx('card', styles.container)}>
       <p className={styles.summary}>
         {t((t) => t.analysis.migramar.title)}
-        {graphData && <ReportGraphScreenshot graphRef={graphRef} name="migramar" />}
+        {graphData && (
+          <ReportGraphScreenshot
+            graphRef={graphRef}
+            name="migramar"
+            summary={
+              <Fragment>
+                <p>
+                  <strong>{t((t) => t.analysis.migramar.title)}</strong>
+                  <ReportGraphSummaryArea />
+                </p>
+                <p>
+                  {t((t) => t.analysis.migramar.species)}: {effectiveSpecies?.label}
+                  {'  -  '}
+                  {t((t) => t.analysis.migramar.indicator)}: {effectiveIndicator?.label}
+                </p>
+                {dataSource && <p>{dataSource}</p>}
+              </Fragment>
+            }
+            legendDataviews={[]}
+          />
+        )}
       </p>
       {!loading && speciesOptions.length >= 1 && indicatorOptions.length >= 1 && (
         <div className={styles.migramarSelectors}>
@@ -81,13 +107,7 @@ function ReportEnvironmentMigramar() {
             t((t) => t.analysis.migramar.noData)}
         </ReportActivityPlaceholder>
       )}
-      {graphData?.data_owner && (
-        <p className={styles.disclaimer}>
-          <span>
-            {t((t) => t.analysis.dataSource)}: {graphData.data_owner}
-          </span>
-        </p>
-      )}
+      {dataSource && <p className={styles.disclaimer}>{dataSource}</p>}
     </div>
   )
 }
