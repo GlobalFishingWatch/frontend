@@ -14,14 +14,24 @@ import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import { selectReportAreaName } from 'features/_reports/report-area/area-reports.selectors'
 import { selectReportCategory } from 'features/_reports/reports.selectors'
 import { ReportCategory } from 'features/_reports/reports.types'
+import { selectUserSettings } from 'features/_user/selectors/user.selectors'
+import type { ReportGraphScreenshotSettings } from 'features/_user/user.slice'
+import { setUserSetting } from 'features/_user/user.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
 
 import ReportGraphLegend from './ReportGraphLegend'
 import ReportGraphSummary from './ReportGraphSummary'
 
 import styles from './ReportGraphScreenshot.module.css'
 
-type ReportGraphScreenshotFormat = 'png' | 'svg'
+type ReportGraphScreenshotFormat = ReportGraphScreenshotSettings['format']
+
+const DEFAULT_SETTINGS: ReportGraphScreenshotSettings = {
+  format: 'png',
+  summary: true,
+  legend: true,
+}
 
 const FORMAT_OPTIONS: ChoiceOption<ReportGraphScreenshotFormat>[] = [
   { id: 'png', label: 'PNG' },
@@ -56,13 +66,29 @@ function ReportGraphScreenshot({
   filter,
 }: ReportGraphScreenshotProps) {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const { start, end } = useTimerangeConnect()
   const reportAreaName = useSelector(selectReportAreaName)
   const reportCategory = useSelector(selectReportCategory)
   const [open, setOpen] = useState(false)
-  const [format, setFormat] = useState<ReportGraphScreenshotFormat>('png')
-  const [includeSummary, setIncludeSummary] = useState(true)
-  const [includeLegend, setIncludeLegend] = useState(true)
+  const userSettings = useSelector(selectUserSettings)
+  const {
+    format,
+    summary: includeSummary,
+    legend: includeLegend,
+  } = { ...DEFAULT_SETTINGS, ...userSettings.reportGraphScreenshot }
+  const setSettings = (settings: Partial<ReportGraphScreenshotSettings>) => {
+    dispatch(
+      setUserSetting({
+        reportGraphScreenshot: {
+          format,
+          summary: includeSummary,
+          legend: includeLegend,
+          ...settings,
+        },
+      })
+    )
+  }
   const [downloading, setDownloading] = useState(false)
   const imageRef = useRef<HTMLDivElement>(null)
   const showSummary = withSummary && includeSummary
@@ -157,20 +183,20 @@ function ReportGraphScreenshot({
           <Choice
             options={FORMAT_OPTIONS}
             activeOption={format}
-            onSelect={(option) => setFormat(option.id)}
+            onSelect={(option) => setSettings({ format: option.id })}
           />
           {withSummary && (
             <SwitchRow
               label={t((t) => t.analysis.graphScreenshotSummary)}
               active={includeSummary}
-              onClick={() => setIncludeSummary(!includeSummary)}
+              onClick={() => setSettings({ summary: !includeSummary })}
             />
           )}
           {hasLegend && (
             <SwitchRow
               label={t((t) => t.analysis.graphScreenshotLegend)}
               active={includeLegend}
-              onClick={() => setIncludeLegend(!includeLegend)}
+              onClick={() => setSettings({ legend: !includeLegend })}
             />
           )}
           <Button loading={downloading} onClick={onDownload}>
