@@ -18,36 +18,14 @@ export function ReportSlowLoading() {
   // TODO:CONTENT placeholder copy — needs comms/product sign-off
   const facts = useMemo(
     () => [
-      t((t) => t.analysis.slowReportFacts.ais, {
-        defaultValue:
-          'AIS was built to stop ships colliding, not to track fishing. Global Fishing Watch repurposed it to make fishing activity visible.',
-      }),
-      t((t) => t.analysis.slowReportFacts.founders, {
-        defaultValue:
-          'Global Fishing Watch began as a collaboration between Oceana, SkyTruth and Google.',
-      }),
-      t((t) => t.analysis.slowReportFacts.openData, {
-        defaultValue: 'All of our fishing activity data is free and open to anyone.',
-      }),
-      t((t) => t.analysis.slowReportFacts.machineLearning, {
-        defaultValue:
-          'Machine learning infers when a vessel is fishing from the shape of its track.',
-      }),
-      t((t) => t.analysis.slowReportFacts.radar, {
-        defaultValue:
-          'Satellite radar can spot vessels at night and through cloud, including ones not broadcasting their position.',
-      }),
-      t((t) => t.analysis.slowReportFacts.gearTypes, {
-        defaultValue:
-          'A vessel’s track can reveal its gear — trawlers, longliners and purse seiners each move differently.',
-      }),
-      t((t) => t.analysis.slowReportFacts.transshipment, {
-        defaultValue:
-          'Transshipment — moving catch between vessels at sea — can break the link between a fish and where it was caught.',
-      }),
-      t((t) => t.analysis.slowReportFacts.governments, {
-        defaultValue: 'Governments around the world use our tools to monitor their own waters.',
-      }),
+      t((t) => t.analysis.slowReportTips.positionsMode),
+      t((t) => t.analysis.slowReportTips.uploadRaster),
+      t((t) => t.analysis.slowReportTips.drawArea),
+      t((t) => t.analysis.slowReportTips.bufferArea),
+      t((t) => t.analysis.slowReportTips.vesselGroups),
+      t((t) => t.analysis.slowReportTips.printReport),
+      t((t) => t.analysis.slowReportTips.rangeFilter),
+      t((t) => t.analysis.slowReportTips.otherReports),
     ],
     [t]
   )

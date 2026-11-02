@@ -118,17 +118,18 @@
     "selectDatasetPlaceholder": "Select a dataset to compare",
     "share": "Share report",
     "showFullReport": "See full analysis",
-    "slowReportFacts": {
-      "ais": "AIS was built to stop ships colliding, not to track fishing. Global Fishing Watch repurposed it to make fishing activity visible.",
-      "founders": "Global Fishing Watch began as a collaboration between Oceana, SkyTruth and Google.",
-      "gearTypes": "A vessel’s track can reveal its gear — trawlers, longliners and purse seiners each move differently.",
-      "governments": "Governments around the world use our tools to monitor their own waters.",
-      "machineLearning": "Machine learning infers when a vessel is fishing from the shape of its track.",
-      "openData": "All of our fishing activity data is free and open to anyone.",
-      "radar": "Satellite radar can spot vessels at night and through cloud, including ones not broadcasting their position.",
-      "transshipment": "Transshipment — moving catch between vessels at sea — can break the link between a fish and where it was caught."
-    },
     "slowReportMessage": "You requested a lot of data, this is taking longer than expected",
+    "slowReportTips": {
+      "bufferArea": "You can add a buffer around any area to include the waters just outside its borders in your report.",
+      "drawArea": "You can draw your own polygon on the map and use it as a reference layer for reports.",
+      "otherReports": "Besides areas, you can also get reports for ports, vessel groups and individual vessels.",
+      "positionsMode": "Zoom in or shorten the time range on an activity layer to switch to positions mode and see individual vessel positions instead of a heatmap.",
+      "printReport": "Reports can be printed or saved as PDF to share offline.",
+      "rangeFilter": "Drag layer handles to show only the range of values you care about.",
+      "shareMap": "Sharing the map link keeps your layers, filters and time range exactly as you see them.",
+      "uploadRaster": "You can upload your own raster data as a GeoTIFF or NetCDF file and show it as a heatmap alongside our layers.",
+      "vesselGroups": "You can save a list of vessels as a vessel group and get a report on their activity together."
+    },
     "statsDisclaimerDynamic": "During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.",
     "statsDisclaimerDynamicMean": "During this time, the average value at any given {{interval}} and place inside your area was {{mean}} {{unit}}.",
     "statsDisclaimerStatic": "The average value for your area is {{mean}} {{unit}}. The minimum and maximum are {{min}} {{unit}} and {{max}} {{unit}}.",
