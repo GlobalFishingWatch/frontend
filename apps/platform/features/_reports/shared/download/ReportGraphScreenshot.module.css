@@ -118,3 +118,7 @@
   width: auto;
   height: 3rem;
 }
+
+.noLink {
+  cursor: default;
+}

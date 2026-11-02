@@ -247,7 +247,14 @@ function ReportGraphScreenshot({
               )}
               {includeFooter && (
                 <div className={styles.footer}>
-                  <a href={window.location.href}>www.globalfishingwatch.org/platform</a>
+                  <a
+                    className={styles.noLink}
+                    href={window.location.href}
+                    tabIndex={-1}
+                    onClick={(e) => e.preventDefault()}
+                  >
+                    www.globalfishingwatch.org/platform
+                  </a>
                   <Logo className={styles.logo} />
                 </div>
               )}
