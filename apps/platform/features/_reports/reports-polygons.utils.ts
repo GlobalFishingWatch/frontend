@@ -1,9 +1,9 @@
 // Runs inside reports-polygons.workers.ts: keep imports free of deck.gl and anything that
 // touches the DOM, type-only imports excepted.
-import { area } from '@turf/turf'
+import { area, bbox } from '@turf/turf'
 import type { Feature, GeoJsonProperties, Geometry, MultiPolygon, Polygon } from 'geojson'
 
-import type { PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
+import type { Bbox, PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
 import {
   getPolygonsIntersection,
   getPolygonsUnion,
@@ -12,7 +12,7 @@ import {
 } from '@globalfishingwatch/data-transforms'
 
 import type { FilteredPolygons } from 'features/_reports/reports-geo.utils'
-import { filterByPolygon, getAreaKm2 } from 'features/_reports/reports-geo.utils'
+import { clipToFeatureBbox, filterByPolygon, getAreaKm2 } from 'features/_reports/reports-geo.utils'
 import type {
   PolygonsReportGraphStats,
   PolygonsReportTopArea,
@@ -98,11 +98,15 @@ export function getPolygonsCoverage({
         aggregatedM2 += getAreaKm2({ geometry: undefined, properties: p.properties }) * 1e6
         return
       }
+      const nearAreaPolygons = clipToFeatureBbox(reportArea, bbox(p) as Bbox)
+      if (!nearAreaPolygons.length) {
+        return
+      }
       let clipped: ReturnType<typeof getPolygonsIntersection> = []
       try {
         clipped = getPolygonsIntersection(
           p.geometry.coordinates as PolygonGeomCoords,
-          reportArea.coordinates as PolygonGeomCoords
+          nearAreaPolygons
         )
       } catch (e) {
         console.warn('Report polygon coverage: could not clip an overlapping polygon', e)

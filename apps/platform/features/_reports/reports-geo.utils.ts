@@ -1,5 +1,12 @@
-import { area, bbox, booleanContains, booleanIntersects, booleanPointInPolygon } from '@turf/turf'
-import type { Feature, Geometry, MultiPolygon, Point, Polygon } from 'geojson'
+import {
+  area,
+  bbox,
+  bboxClip,
+  booleanContains,
+  booleanIntersects,
+  booleanPointInPolygon,
+} from '@turf/turf'
+import type { Feature, Geometry, MultiPolygon, Point, Polygon, Position } from 'geojson'
 
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { toFiniteNumber } from '@globalfishingwatch/data-transforms'
@@ -27,6 +34,49 @@ export function getAreaKm2({
   if (precomputed !== undefined) return precomputed
   if (!geometry) return 0
   return area({ type: 'Feature', geometry, properties: {} } as Feature) / 1_000_000
+}
+
+/**
+ * The area's polygons, each with a bbox of its own. turf splits a MultiPolygon into parts without
+ * one on every predicate call and walks the whole part to get it, once per feature tested. The
+ * parts' bboxes are also far tighter than the area's: one split at ±180 spans every longitude.
+ */
+function getAreaParts(geometry: Polygon | MultiPolygon): Polygon[] {
+  return (geometry.type === 'Polygon' ? [geometry.coordinates] : geometry.coordinates).map(
+    (coordinates) => {
+      const part: Polygon = { type: 'Polygon', coordinates }
+      return { ...part, bbox: bbox(part) }
+    }
+  )
+}
+
+function bboxesOverlap([ax1, ay1, ax2, ay2]: Bbox, [bx1, by1, bx2, by2]: Bbox) {
+  return bx2 >= ax1 && bx1 <= ax2 && by2 >= ay1 && by1 <= ay2
+}
+
+/** Degrees added around a feature's bbox, so the cut's straight edges stay off its outline */
+const BBOX_CLIP_PAD = 0.001
+
+/**
+ * The polygons of `geometry` that lie inside a feature's bbox, padded.
+ * turf's predicates and polyclip-ts walk every vertex of both inputs, so cutting a large area
+ * down to one feature's surroundings first, a single linear pass, makes them far cheaper. The
+ * answer does not change, since the feature lies inside its own bbox.
+ */
+export function clipToFeatureBbox(
+  geometry: Polygon | MultiPolygon,
+  [x1, y1, x2, y2]: Bbox
+): Position[][][] {
+  const cut = bboxClip(geometry, [
+    x1 - BBOX_CLIP_PAD,
+    y1 - BBOX_CLIP_PAD,
+    x2 + BBOX_CLIP_PAD,
+    y2 + BBOX_CLIP_PAD,
+  ]).geometry as Polygon | MultiPolygon
+  // turf leaves an empty polygon in place of every part that falls outside
+  return (cut.type === 'Polygon' ? [cut.coordinates] : cut.coordinates).filter(
+    (polygon) => polygon.length
+  )
 }
 
 export type FilteredPolygons = {
@@ -73,6 +123,7 @@ export function filterByPolygon({
     polygon = { ...polygon, bbox: widened }
   }
   const [px1, py1, px2, py2] = polygon.bbox as Bbox
+  const areaParts = mode === 'polygon' ? getAreaParts(polygon) : []
   const filtered = layersCells.map((layerCells) => {
     return layerCells.reduce(
       (acc, cell) => {
@@ -87,15 +138,39 @@ export function filterByPolygon({
         }
         if (mode === 'polygon') {
           const feature = cell as Feature<Geometry>
-          if (!feature?.geometry) return acc
-          const subPolygons: Feature<Polygon>[] =
-            feature.geometry.type === 'MultiPolygon'
-              ? feature.geometry.coordinates.map((coords) => ({
-                  ...feature,
-                  geometry: { type: 'Polygon' as const, coordinates: coords },
-                }))
-              : ([feature] as Feature<Polygon>[])
-          if (subPolygons.every((p) => booleanContains(polygon, p))) {
+          if (!feature?.geometry) {
+            return acc
+          }
+          if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
+            const featureBbox = bbox(feature) as Bbox
+            const parts: Polygon[] = areaParts.flatMap((part) =>
+              // Only parts whose bbox reaches the feature can contain or touch it
+              bboxesOverlap(part.bbox as Bbox, featureBbox)
+                ? clipToFeatureBbox(part, featureBbox).map((coordinates) => ({
+                    type: 'Polygon' as const,
+                    coordinates,
+                  }))
+                : []
+            )
+            if (!parts.length) {
+              return acc
+            }
+            const featureParts: Polygon[] =
+              feature.geometry.type === 'MultiPolygon'
+                ? feature.geometry.coordinates.map((coordinates) => ({
+                    type: 'Polygon',
+                    coordinates,
+                  }))
+                : [feature.geometry]
+            if (featureParts.every((p) => parts.some((part) => booleanContains(part, p)))) {
+              acc.contained.push(feature)
+            } else if (parts.some((part) => booleanIntersects(part, feature))) {
+              acc.overlapping.push(feature)
+            }
+            return acc
+          }
+          // Point-represented areas, see getPolygonsCoverage
+          if (booleanContains(polygon, feature)) {
             acc.contained.push(feature)
           } else {
             const [fx1, fy1, fx2, fy2] = bbox(feature)
