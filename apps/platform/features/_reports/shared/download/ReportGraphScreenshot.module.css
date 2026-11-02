@@ -54,6 +54,11 @@
   width: 8rem;
 }
 
+.error {
+  font: var(--font-S);
+  color: var(--color-danger-red);
+}
+
 .previewFooter > button {
   margin-left: auto;
   min-width: 15rem;

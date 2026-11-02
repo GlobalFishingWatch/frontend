@@ -113,6 +113,7 @@ function ReportGraphScreenshot({
     )
   }
   const [downloading, setDownloading] = useState(false)
+  const [downloadError, setDownloadError] = useState(false)
   const [graphWidth, setGraphWidth] = useState<number>()
   const imageRef = useRef<HTMLDivElement>(null)
   const graphCopyRef = useRef<HTMLDivElement>(null)
@@ -136,6 +137,7 @@ function ReportGraphScreenshot({
 
   const onOpen = () => {
     setGraphWidth(graphRef.current?.offsetWidth)
+    setDownloadError(false)
     setOpen(true)
   }
 
@@ -155,6 +157,7 @@ function ReportGraphScreenshot({
   const onDownload = async () => {
     if (!imageRef.current) return
     setDownloading(true)
+    setDownloadError(false)
     try {
       const { snapdom } = await import('@zumer/snapdom')
       const filename = ['GFW', name, reportAreaName, start?.slice(0, 10), end?.slice(0, 10)]
@@ -191,11 +194,13 @@ function ReportGraphScreenshot({
           .filter(Boolean)
           .join('_'),
       })
+      onClose()
     } catch (e) {
       console.warn(e)
+      // Kept open so the user knows no file was saved and can retry
+      setDownloadError(true)
     }
     setDownloading(false)
-    onClose()
   }
 
   return (
@@ -235,7 +240,9 @@ function ReportGraphScreenshot({
                       {t((t) => t.analysis.graphScreenshotFilter)}: {filter}
                     </span>
                   )}
-                  {showLegend && <ReportGraphLegend dataviews={legendDataviews} />}
+                  {showLegend && (
+                    <ReportGraphLegend dataviews={legendDataviews} vesselsFiltered={!!filter} />
+                  )}
                 </div>
               )}
               {includeFooter && (
@@ -276,6 +283,7 @@ function ReportGraphScreenshot({
             active={includeFooter}
             onClick={() => setSettings({ footer: !includeFooter })}
           />
+          {downloadError && <p className={styles.error}>{t((t) => t.errors.genericShort)}</p>}
           <Button loading={downloading} onClick={onDownload}>
             {t((t) => t.map.screenshotDownload)}
           </Button>
