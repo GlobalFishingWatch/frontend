@@ -17,7 +17,7 @@ import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import { selectReportAreaName } from 'features/_reports/report-area/area-reports.selectors'
 import { selectReportCategory } from 'features/_reports/reports.selectors'
 import { ReportCategory } from 'features/_reports/reports.types'
-import { selectUserSettings } from 'features/_user/selectors/user.selectors'
+import { selectIsGFWUser, selectUserSettings } from 'features/_user/selectors/user.selectors'
 import type { ReportGraphScreenshotSettings } from 'features/_user/user.slice'
 import { setUserSetting } from 'features/_user/user.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -91,6 +91,7 @@ function ReportGraphScreenshot({
   const { start, end } = useTimerangeConnect()
   const reportAreaName = useSelector(selectReportAreaName)
   const reportCategory = useSelector(selectReportCategory)
+  const isGFWUser = useSelector(selectIsGFWUser)
   const [open, setOpen] = useState(false)
   const userSettings = useSelector(selectUserSettings)
   const {
@@ -201,6 +202,10 @@ function ReportGraphScreenshot({
       setDownloadError(true)
     }
     setDownloading(false)
+  }
+
+  if (!isGFWUser) {
+    return null
   }
 
   return (
