@@ -4,17 +4,14 @@ import { uniqBy } from 'es-toolkit'
 import type { IdentityVessel, Locale, Resource } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
-import type {
-  GetDatasetConfigsCallbacks,
-  UrlDataviewInstance,
-} from '@globalfishingwatch/dataviews-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
-  extendDataviewDatasetConfig,
   getIsVesselDataviewInstanceId,
   getResources,
   getVesselDataviewInstanceId,
   resolveDataviewDatasetResource,
   resolveDataviews,
+  resolveTrackDataviewsDatasetsConfig,
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
 import { BASEMAP_LABELS_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
@@ -31,18 +28,13 @@ import { selectDataviewInstancesInjected } from 'features/_map/dataviews/selecto
 import { selectWorkspaceDataviewInstancesMerged } from 'features/_map/dataviews/selectors/dataviews.merged.selectors'
 import { selectHighlightedTime } from 'features/_map/timebar/timebar.slice'
 import { selectTimeMode } from 'features/_map/workspace/workspace.selectors'
-import {
-  selectIsGuestUser,
-  selectUserLanguage,
-  selectUserLogged,
-} from 'features/_user/selectors/user.selectors'
+import { selectIsGuestUser, selectUserLanguage } from 'features/_user/selectors/user.selectors'
 import { selectAllVesselGroups } from 'features/_user/vessel-groups/vessel-groups.slice'
 import { selectTrackCorrectionVesselDataviewId } from 'features/_vessels/track-correction/track-correction.slice'
 import { selectCurrentVesselEvent } from 'features/_vessels/vessel/selectors/vessel.selectors'
 import { selectLonglineSetsOnMap } from 'features/_vessels/vessel/vessel.config.selectors'
 import { getVesselProperty } from 'features/_vessels/vessel/vessel.utils'
 import { selectTrackThinningConfig } from 'features/data/resources/resources.selectors.thinning'
-import { infoDatasetConfigsCallback } from 'features/data/resources/resources.utils'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import {
   selectIsAnyVesselLocation,
@@ -97,7 +89,6 @@ export const selectAllDataviewInstancesResolved = createSelector(
     selectAllDataviews,
     selectAllDatasets,
     selectAllVesselGroups,
-    selectUserLogged,
     selectTrackThinningConfig,
     selectIsGuestUser,
     selectTrackCorrectionVesselDataviewId,
@@ -114,7 +105,6 @@ export const selectAllDataviewInstancesResolved = createSelector(
     dataviews,
     datasets,
     vesselGroups,
-    loggedUser,
     trackThinningZoomConfig,
     guestUser,
     trackCorrectionVesselDataviewId,
@@ -134,7 +124,6 @@ export const selectAllDataviewInstancesResolved = createSelector(
         ? resolveVesselDataviewInstance(dataviewInstance, {
             datasets,
             dataviews,
-            loggedUser,
             trackThinningZoomConfig,
           })
         : dataviewInstance
@@ -179,12 +168,10 @@ export const selectAllDataviewInstancesResolved = createSelector(
         return dataview
       }
     )
-    const callbacks: GetDatasetConfigsCallbacks = {
-      info: infoDatasetConfigsCallback(guestUser),
-    }
-    const dataviewInstancesResolvedExtended = extendDataviewDatasetConfig(
+    const dataviewInstancesResolvedExtended = resolveTrackDataviewsDatasetsConfig(
       dataviewInstancesResolvedWithConfigInjected,
-      callbacks
+      // Guest users can't load vessel tracks or events and get a different vessel info response
+      { vesselTracksAndEventsAllowed: !guestUser, infoCache: !guestUser }
     )
     const dataviewInstancesResolvedExtendedUniq = uniqBy(
       dataviewInstancesResolvedExtended,
@@ -215,8 +202,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
 )
 
 /**
- * Calls getResources to prepare track dataviews' datasetConfigs.
- * Injects app-specific logic by using getResources's callback
+ * Calls getResources to prepare track dataviews' info resources
  */
 export const selectDataviewsResources = createSelector(
   [selectAllDataviewInstancesResolved],

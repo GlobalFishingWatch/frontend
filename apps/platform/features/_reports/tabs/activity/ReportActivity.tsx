@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { isEqual } from 'es-toolkit'
 
 import {
-  getIsConcurrentError,
+  getIsRateLimitExceeded,
   getIsTimeoutError,
   isAuthError,
 } from '@globalfishingwatch/api-client'
@@ -131,7 +131,7 @@ function ActivityReport() {
         return isEqual(currentReportParams, reportParams)
       })
     : undefined
-  const concurrentReportError = getIsConcurrentError(statusError!)
+  const concurrentReportError = getIsRateLimitExceeded(statusError!)
   const isSameWorkspaceReport =
     concurrentReportError && window?.location.href === lastReport?.workspaceUrl
   const isBQEditorDataset = dataviews.some((dataview) =>

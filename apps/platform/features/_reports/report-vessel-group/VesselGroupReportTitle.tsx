@@ -131,7 +131,7 @@ export default function VesselGroupReportTitle() {
               }
               loading={isLoading}
               disabled={isLoading}
-              icon={<Icon icon="warning" />}
+              icon={<Icon icon="update-required" />}
               onClick={() => {
                 migrateToLatestVesselGroup(vesselGroup)
               }}

@@ -41,12 +41,8 @@ export const DATASET_CONFIGURATION_INTERVALS: FourwingsInterval[] = ['YEAR', 'MO
 export const DATASET_CONFIGURATION_BULK_DOWNLOAD_FORMATS: BulkDownloadFormat[] = ['CSV', 'JSON']
 
 export const THINNING_PARAMS: (keyof ThinningConfig)[] = [
-  'distance-fishing',
   'distance-transit',
-  'bearing-val-fishing',
   'bearing-val-transit',
-  'change-speed-fishing',
   'change-speed-transit',
-  'min-accuracy-fishing',
   'min-accuracy-transit',
 ]

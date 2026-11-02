@@ -82,7 +82,6 @@
     "noTimeComparisonAllowed": "Mode perbandingan waktu tidak tersedia saat lapisan memiliki filter yang berbeda",
     "noVesselDataFiltered": "Tidak ada kapal yang cocok dengan filter Anda",
     "onlyEvolutionSupported": "Click the evolution button above to see the vessels active in the area",
-    "others": "Lain-lain",
     "othersLayersAreReportArea": "The layers used to create this report area can't be analysed against themselves. Turn on another polygon or point layer to see results here.",
     "periodComparison": "perbandingan periode",
     "periodComparison1st": "acuan dasar awal",
@@ -296,7 +295,6 @@
     "map": "Peta",
     "matchedVessels": "Kapal yang cocok",
     "messageAssistant": "Message the assistant…",
-    "messages": "messages",
     "messages_one": "message",
     "messages_other": "messages",
     "meters": "meters",
@@ -375,6 +373,7 @@
     "unknownProperty": "Unknown",
     "unknownVessel": "Kapal tidak dikenal",
     "update": "Memperbarui",
+    "updated": "Updated",
     "user": "Pengguna",
     "userGuide": "Panduan pengguna",
     "value": "nilai",
@@ -567,7 +566,13 @@
     "nir": "Near-infrared",
     "rgb": "Red, green and blue (visible light)"
   },
-  "detections": "",
+  "detections_one": "",
+  "detections_other": "",
+  "detectionScene": {
+    "addHighlight": "Highlight other detections from the same satellite scene",
+    "highlight": "Scene",
+    "removeHighlight": "Clear scene highlight"
+  },
   "download": {
     "apiPortal": "Lihat API kami di sini",
     "area": "Area",
@@ -818,9 +823,9 @@
       "title": "Use cases"
     }
   },
-  "hours": "hours",
+  "hours_one": "",
+  "hours_other": "",
   "layer": {
-    "activityFitBounds": "Tampilan tengah pada aktivitas",
     "add": "Tambahkan lapisan",
     "areas": {
       "eez": "ZEE",
@@ -933,6 +938,7 @@
     "nauticalMilesAbbr": "nm",
     "positions": "See positions visualizations mode",
     "positionsDisabled": "A more detailed visualization is available in areas with less activity, please zoom in or reduce your time range to see it",
+    "positionsLogin": "Register or log in to see vessel positions (free, 2 minutes)",
     "referenceLayersClose": "Close reference layers",
     "referenceLayersOpen": "Open reference layers",
     "rulers_add": "Tambahkan penggaris",
@@ -1040,6 +1046,16 @@
     "seePortReport": "See all entry events to this port",
     "summaryEvents": "<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "toThisPort": "to this port"
+  },
+  "rateLimit": {
+    "challenge": "This check protects vessel data from automated traffic. Complete it to keep loading vessel tracks and events.",
+    "challengeTitle": "Confirm you're human",
+    "failed": "This check protects vessel data from automated traffic. Vessel tracks and events are paused until it passes.",
+    "failedTitle": "We couldn't verify you",
+    "notNow": "Not now",
+    "profileActivity": "Vessel tracks and events are paused. Verify you're human to see this vessel's activity.",
+    "trackLimitReached": "Vessel tracks and events are paused. Click to confirm you're human and load them again.",
+    "verify": "Verify"
   },
   "search": {
     "advanced": "Lanjutan",
@@ -1545,8 +1561,8 @@
     "title": "Profil kapal",
     "toggleAllVessels": "Toggle all vessels visibility",
     "tonnageGt": "Tonase (GT)",
-    "trackLogin": "Salah satu sumber yang Anda pilih mengharuskan Anda untuk <1>login</1> untuk melihat lintasan dan peristiwa kapal",
-    "trackResolution": "<0>Login</0> to see more detailed vessel tracks (free, 2 minutes)",
+    "trackLoginRequired": "<0>Log in</0> to see vessel tracks and events",
+    "trackLoginTooltip": "Register or log in to see vessel tracks and events (free, 2 minutes)",
     "transmissionDates": "Tanggal transmisi",
     "transmissions": "Transmissions",
     "type": "Jenis",
@@ -1597,7 +1613,6 @@
     "columnSelectionTooltip": "Select identifier columns to enable vessel identity review and matching with the GFW dataset",
     "confirmAbort": "Anda akan kehilangan perubahan apa pun yang dibuat dalam kelompok kapal ini. Apakah Anda yakin?",
     "confirmRemove": "Apakah Anda yakin ingin menghapus kelompok kapal ini secara permanen?",
-    "copyOf": "Copy of",
     "createNewGroup": "Buat kelompok baru",
     "csvFile": "Upload a file",
     "csvLink": "Click to see an example CSV file",
@@ -1634,6 +1649,7 @@
     "tooManyVessels_one": "Jumlah maksimum kapal adalah {{count}}",
     "tooManyVessels_other": "Jumlah maksimum kapal adalah {{count}}",
     "unmatchedIDs": "Unmatched vessels: {{ids}}",
+    "updateError": "The vessel group {{name}} couldn't be updated: {{error}}",
     "updateRequired": "Update required",
     "uploadPublic": "Izinkan pengguna lain untuk melihat kelompok kapal ini ketika Anda berbagi ruang kerja",
     "vesselAddedToGroup": "Your vessel group was updated",
@@ -1702,6 +1718,7 @@
     "deprecatedActivityLayerMigrated": "There is already a copy of this layer using the latest dataset. Click to remove this one",
     "deprecatedVesselGroupLayer": "This vessel group is using outdated data. Click to create it again with the latest dataset",
     "deprecatedVesselLayer": "This vessel is using outdated data. Click to search in the latest dataset.",
+    "deprecatedVesselLayerSwitch": "This vessel is using outdated data. Click to add a copy with the latest dataset",
     "edit": "Ubah ruang kerja",
     "editAccess": "Edit access",
     "editName": "Edit nama ruang kerja",
@@ -1715,6 +1732,7 @@
     "migrationDisclaimer": "Some layers in this workspace are using outdated data",
     "migrationDisclaimerNote": "Follow the instructions of the warning icons to update them. <a target='_blank' href='https://globalfishingwatch.org/platform-update/version-4-data-pipeline-release/'>Learn more.</a>",
     "migrationMigrateAll": "Update all layers to the latest dataset",
+    "migrationVesselGroupsError": "These vessel groups couldn't be updated automatically: {{names}}. Update them from their layer panel",
     "nameRequired": "Workspace name is required",
     "passwordIncorrect": "Invalid password",
     "passwordMinLength": "Password must be at least 5 characters",
@@ -1739,7 +1757,7 @@
     },
     "title": "Workspace",
     "titlePlural": "Workspaces",
-    "updateDeprecatedDataviews": "This workspace contains layers that are using outdated data. Please update them from your workspace.",
+    "updateDeprecatedDataviews": "This workspace contains layers that are using outdated data. Click to update them from your workspace.",
     "uploadPublicDisabled": "Ruang kerja ini tidak dapat dibagikan secara publik karena berisi dataset pribadi",
     "user": "Ruang kerja pengguna",
     "viewAccess": "View access",

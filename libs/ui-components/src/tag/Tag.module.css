@@ -3,6 +3,8 @@
   font: var(--font-S);
   display: inline-flex;
   align-items: center;
+  box-sizing: border-box;
+  max-width: 100%;
   padding: 0 var(--space-XS);
   cursor: default;
   margin-right: var(--space-XS);
@@ -25,6 +27,10 @@
 
 .content {
   color: var(--color-primary-blue);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .removeBtn {

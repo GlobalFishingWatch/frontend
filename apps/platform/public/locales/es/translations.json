@@ -82,7 +82,6 @@
     "noTimeComparisonAllowed": "Modos de comparación de tiempo no están disponibles cuando las capas tienen diferentes filtros",
     "noVesselDataFiltered": "No hay embarcaciones que coincidan con su filtro",
     "onlyEvolutionSupported": "Haga clic en el botón de evolución de arriba para ver los buques activos en el área",
-    "others": "Otras áreas",
     "othersLayersAreReportArea": "Las capas usadas para crear esta área del reporte no se pueden analizar contra sí mismas. Active otra capa de polígonos o de puntos para ver resultados aquí.",
     "periodComparison": "Comparación entre periodos",
     "periodComparison1st": "Inicio de línea base",
@@ -296,7 +295,6 @@
     "map": "Mapa",
     "matchedVessels": "Embarcaciones coincidentes",
     "messageAssistant": "Message the assistant…",
-    "messages": "messages",
     "messages_one": "message",
     "messages_other": "messages",
     "meters": "metros",
@@ -375,6 +373,7 @@
     "unknownProperty": "Desconocido",
     "unknownVessel": "Buque desconocido",
     "update": "Actualizar",
+    "updated": "Updated",
     "user": "Usuario",
     "userGuide": "Guía de usuario",
     "value": "valor",
@@ -567,7 +566,13 @@
     "nir": "Near-infrared",
     "rgb": "Red, green and blue (visible light)"
   },
-  "detections": "",
+  "detections_one": "",
+  "detections_other": "",
+  "detectionScene": {
+    "addHighlight": "Highlight other detections from the same satellite scene",
+    "highlight": "Scene",
+    "removeHighlight": "Clear scene highlight"
+  },
   "download": {
     "apiPortal": "Ver nuestras APIs aquí",
     "area": "Área",
@@ -818,9 +823,9 @@
       "title": "Use cases"
     }
   },
-  "hours": "hours",
+  "hours_one": "",
+  "hours_other": "",
   "layer": {
-    "activityFitBounds": "Centrar mapa en la actividad",
     "add": "Añadir capa",
     "areas": {
       "eez": "EEZ",
@@ -933,6 +938,7 @@
     "nauticalMilesAbbr": "mn",
     "positions": "Ver modo de visualización de posiciones",
     "positionsDisabled": "Una visualización más detallada está disponible en áreas con menos actividad, por favor amplíe la imagen o reduzca su intervalo de tiempo para verla",
+    "positionsLogin": "Register or log in to see vessel positions (free, 2 minutes)",
     "referenceLayersClose": "Cerrar capas de referencia",
     "referenceLayersOpen": "Abrir capas de referencia",
     "rulers_add": "Mide distancias",
@@ -1040,6 +1046,16 @@
     "seePortReport": "Ver todos los eventos de entrada a este puerto",
     "summaryEvents": "<strong>{{vessels}} buques</strong> de <strong>{{flags}} banderas</strong> entraron en este puerto <strong>{{activityQuantity}}</strong> veces entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
     "toThisPort": "to this port"
+  },
+  "rateLimit": {
+    "challenge": "This check protects vessel data from automated traffic. Complete it to keep loading vessel tracks and events.",
+    "challengeTitle": "Confirm you're human",
+    "failed": "This check protects vessel data from automated traffic. Vessel tracks and events are paused until it passes.",
+    "failedTitle": "We couldn't verify you",
+    "notNow": "Not now",
+    "profileActivity": "Vessel tracks and events are paused. Verify you're human to see this vessel's activity.",
+    "trackLimitReached": "Vessel tracks and events are paused. Click to confirm you're human and load them again.",
+    "verify": "Verify"
   },
   "search": {
     "advanced": "Avanzada",
@@ -1545,8 +1561,8 @@
     "title": "Perfil de embarcación",
     "toggleAllVessels": "Activar/desactivar la visibilidad de todos las embarcaciones",
     "tonnageGt": "Tonelaje (Gt)",
-    "trackLogin": "Una de las fuentes seleccionadas requiere que <1>inicie sesión</1> para ver pistas de embarcaciones y eventos",
-    "trackResolution": "<0>Inicia sesión</0> sesión para ver pistas de embarcaciones más detalladas (gratis, 2 minutos)",
+    "trackLoginRequired": "<0>Log in</0> to see vessel tracks and events",
+    "trackLoginTooltip": "Register or log in to see vessel tracks and events (free, 2 minutes)",
     "transmissionDates": "Fecha de transmisiones",
     "transmissions": "Transmisiones",
     "type": "Tipo",
@@ -1597,7 +1613,6 @@
     "columnSelectionTooltip": "Seleccione las columnas identificadoras para permitir la revisión de identidad del buque y la coincidencia con el conjunto de datos de GFW",
     "confirmAbort": "Perderá cualquier cambio realizado en este grupo de embarcaciones. ¿Está seguro?",
     "confirmRemove": "¿Está seguro de que quieres eliminar permanentemente este grupo de embarcaciones?",
-    "copyOf": "Copia de",
     "createNewGroup": "Crear nuevo grupo",
     "csvFile": "Subir un archivo",
     "csvLink": "Haga clic para ver un ejemplo de archivo CSV",
@@ -1634,6 +1649,7 @@
     "tooManyVessels_one": "El número máximo de embarcaciones es {{count}}",
     "tooManyVessels_other": "El número máximo de embarcaciones es {{count}}",
     "unmatchedIDs": "Barcos sin coincidencia: {{ids}}",
+    "updateError": "The vessel group {{name}} couldn't be updated: {{error}}",
     "updateRequired": "Actualización requerida",
     "uploadPublic": "Permitir a otros usuarios ver este grupo de embarcaciones cuando comparta un espacio de trabajo",
     "vesselAddedToGroup": "Tu grupo de buques fue actualizado",
@@ -1702,6 +1718,7 @@
     "deprecatedActivityLayerMigrated": "Ya hay una copia de esta capa usando el último dataset. Haga clic para quitar esta",
     "deprecatedVesselGroupLayer": "Este grupo de embarcaciones está usando datos obsoletos. Haga clic para crearlo de nuevo con el último conjunto de datos",
     "deprecatedVesselLayer": "Esta embarcación utiliza datos obsoletos. Haga clic para buscar en el conjunto de datos más reciente.",
+    "deprecatedVesselLayerSwitch": "This vessel is using outdated data. Click to add a copy with the latest dataset",
     "edit": "Editar espacio de trabajo",
     "editAccess": "Editar acceso",
     "editName": "Modificar el nombre del espacio de trabajo",
@@ -1715,6 +1732,7 @@
     "migrationDisclaimer": "Algunas capas en este área de trabajo están usando datos desactualizados",
     "migrationDisclaimerNote": "Sigue las instrucciones de los iconos de advertencia para actualizarlos. <a target='_blank' href='https://globalfishingwatch.org/platform-update/version-4-data-pipeline-release/'>Ver más.</a>",
     "migrationMigrateAll": "Actualizar todas las capas al último conjunto de datos",
+    "migrationVesselGroupsError": "These vessel groups couldn't be updated automatically: {{names}}. Update them from their layer panel",
     "nameRequired": "Se necesita cargar el nombre del área de trabajo",
     "passwordIncorrect": "Contraseña invalida",
     "passwordMinLength": "La contraseña debe tener al menos 5 caracteres",

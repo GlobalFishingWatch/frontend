@@ -93,12 +93,18 @@ jobs:
           if [ "$PROJECT" != 'affected' ]; then
             LIST="$PROJECT"
           else
-            BASE=$(git describe --tags --match '@gfw/*' --abbrev=0 2>/dev/null || echo 'HEAD~1')
-            echo "Computing affected libs since $BASE"
             # --projects='libs/*' mirrors the release "libs" group in nx.json, so apps and
             # the workspace root never leak into the list
-            LIST=$(pnpm exec nx show projects --affected --base="$BASE" --head=HEAD \
-              --projects='libs/*' --exclude=i18n-labels,linting --json | jq -r 'join(",")')
+            LIBS=(--projects='libs/*' --exclude=i18n-labels,linting)
+            # Apps deploy under @gfw/* too, so only a tag of one of these libs counts as the base
+            MATCH=()
+            for LIB in $(pnpm exec nx show projects "${LIBS[@]}" --json | jq -r '.[]'); do
+              MATCH+=(--match "@gfw/$LIB@*")
+            done
+            BASE=$(git describe --tags --abbrev=0 "${MATCH[@]}" 2>/dev/null || echo 'HEAD~1')
+            echo "Computing affected libs since $BASE"
+            LIST=$(pnpm exec nx show projects --affected -t build --base="$BASE" --head=HEAD \
+              "${LIBS[@]}" --json | jq -r 'join(",")')
           fi
           echo "Releasing: ${LIST:-<none>}"
           echo "list=$LIST" >> "$GITHUB_OUTPUT"

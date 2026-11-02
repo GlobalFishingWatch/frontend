@@ -1,3 +1,4 @@
+import { nxReadySignal } from '@nx/vite/plugins/nx-ready-signal.plugin'
 import { sentryTanstackStart } from '@sentry/tanstackstart-react/vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import react from '@vitejs/plugin-react'
@@ -117,6 +118,7 @@ export default defineConfig(({ command, mode }) => {
     },
     plugins: [
       ...plugins,
+      nxReadySignal(),
       command === 'serve' &&
         ({
           name: 'deck-layers-full-reload',

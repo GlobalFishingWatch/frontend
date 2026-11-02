@@ -42,6 +42,7 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
 
   const loading =
+    workspacesStatus === AsyncReducerStatus.Idle ||
     workspacesStatus === AsyncReducerStatus.Loading ||
     workspacesStatus === AsyncReducerStatus.LoadingItem
   const updateLoading = workspacesStatus === AsyncReducerStatus.LoadingUpdate
@@ -115,17 +116,20 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
                     search={{}}
                     onClick={() => onWorkspaceClick(workspace)}
                   >
-                    <span className={styles.workspaceTitle} data-test="workspace-name">
+                    <span
+                      className={styles.workspaceTitle}
+                      data-test="workspace-name"
+                      translate="no"
+                    >
                       {getHighlightedText(label as string, searchQuery, styles)}
                     </span>
                     {isOutdated ? (
                       <IconButton
-                        icon="warning"
-                        type={'warning-invert'}
+                        icon="update-required"
+                        type="update-required"
                         loading={loading}
                         disabled={loading}
                         tooltip={t((t) => t.workspace.updateDeprecatedDataviews)}
-                        size="small"
                       />
                     ) : (
                       <IconButton icon="arrow-right" />

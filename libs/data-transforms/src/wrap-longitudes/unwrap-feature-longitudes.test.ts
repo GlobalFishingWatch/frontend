@@ -1,9 +1,11 @@
-import type { Feature, MultiPolygon, Point, Polygon } from 'geojson'
+import type { Feature, MultiPoint, MultiPolygon, Point, Polygon } from 'geojson'
 import { describe, expect, it } from 'vitest'
 
 import { unwrapFeatureLongitudes } from './wrap-longitudes'
 
-const feature = <T extends Point | Polygon | MultiPolygon>(geometry: T): Feature<T> => ({
+const feature = <T extends Point | MultiPoint | Polygon | MultiPolygon>(
+  geometry: T
+): Feature<T> => ({
   type: 'Feature',
   geometry,
   properties: {},
@@ -55,6 +57,32 @@ describe('unwrapFeatureLongitudes', () => {
       ],
     } as Polygon)
     expect(unwrapFeatureLongitudes(inRangePolygon)).toBe(inRangePolygon)
+  })
+
+  it('shifts each point of a multipoint independently', () => {
+    // A tile buffer at the antimeridian hands back a point together with its copy one world west.
+    // Shifted as a group by their mean longitude, neither point moved.
+    const result = unwrapFeatureLongitudes(
+      feature({
+        type: 'MultiPoint',
+        coordinates: [
+          [173.759765625, -35.03],
+          [-186.240234375, -35.03],
+        ],
+      } as MultiPoint)
+    )
+    const [first, second] = (result.geometry as MultiPoint).coordinates
+    expect(first[0]).toBeCloseTo(173.759765625)
+    expect(second[0]).toBeCloseTo(173.759765625)
+
+    const inRange = feature({
+      type: 'MultiPoint',
+      coordinates: [
+        [170, 0],
+        [175, 5],
+      ],
+    } as MultiPoint)
+    expect(unwrapFeatureLongitudes(inRange)).toBe(inRange)
   })
 
   it('shifts each ring of a multipolygon independently', () => {

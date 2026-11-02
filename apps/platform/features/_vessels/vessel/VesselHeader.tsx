@@ -19,6 +19,7 @@ import {
 import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import VesselDownload from 'features/_map/workspace/vessels/VesselDownload'
 import { selectIsWorkspaceOwnerOrDefault } from 'features/_map/workspace/workspace.selectors'
+import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import VesselGroupAddButton, {
   VesselGroupAddActionButton,
 } from 'features/_user/vessel-groups/VesselGroupAddButton'
@@ -56,6 +57,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
   const vesselProfileDataviewIntance = useSelector(selectVesselProfileDataviewIntanceResolved)
   const vessel = useSelector(selectVesselInfoData)
+  const guestUser = useSelector(selectIsGuestUser)
   const vesselColor = useSelector(selectVesselProfileColor)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
   const vesselProfileDataview = useSelector(selectVesselProfileDataview)
@@ -228,8 +230,14 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
         </h1>
 
         <div className={styles.actionsContainer}>
-          {showDeprecatedWarning && <VesselDeprecatedLink vesselIdentity={vessel} />}
-          {vesselProfileDataview ? (
+          {showDeprecatedWarning && (
+            <VesselDeprecatedLink
+              vesselIdentity={vessel}
+              dataview={vesselProfileDataviewIntance}
+              isVesselProfile
+            />
+          )}
+          {vesselProfileDataview && (
             <VesselDownload
               dataview={vesselProfileDataview}
               vesselIds={vessel.identities
@@ -239,26 +247,19 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
               datasetId={vessel.track as string}
               iconType="border"
             />
-          ) : (
-            // Placeholder while the dataview resolves to avoid SSR flickering
+          )}
+          {!guestUser && (
             <IconButton
               className="print-hidden"
               type="border"
-              icon="download"
+              icon="target"
+              tooltip={t((t) => t.layer.vessel_fit_bounds)}
+              tooltipPlacement="bottom"
               size="medium"
-              disabled
+              disabled={!isClientHydrated || !boundsReady}
+              onClick={onVesselFitBoundsClick}
             />
           )}
-          <IconButton
-            className="print-hidden"
-            type="border"
-            icon="target"
-            tooltip={t((t) => t.layer.vessel_fit_bounds)}
-            tooltipPlacement="bottom"
-            size="medium"
-            disabled={!isClientHydrated || !boundsReady}
-            onClick={onVesselFitBoundsClick}
-          />
           <IconButton
             className="print-hidden"
             type="border"

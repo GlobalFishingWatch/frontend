@@ -27,6 +27,11 @@ import {
   selectDeprecatedDataviewInstances,
 } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
+import {
+  getIsVesselDataviewMigrated,
+  getIsVesselDataviewOutdated,
+  getLatestVesselDataviewInstances,
+} from 'features/_vessels/vessel/vessel.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 
 const normalizeDataviewFilters = (filters?: DataviewConfig['filters']) =>
@@ -141,15 +146,24 @@ export function useMigrateToLatestDataview() {
   const migrateToLatestDataviewInstance = useCallback(
     async (dataviewInstance: DataviewInstance | UrlDataviewInstance) => {
       setIsLoading(true)
-      const dataviewInstances = await getMigratedDataviewInstances(dataviewInstance)
+      const dataviewInstances = getIsVesselDataviewOutdated(dataviewInstance, deprecatedDatasets)
+        ? getLatestVesselDataviewInstances(dataviewInstance, deprecatedDatasets)
+        : await getMigratedDataviewInstances(dataviewInstance)
       upsertDataviewInstance(dataviewInstances)
       setIsLoading(false)
     },
-    [getMigratedDataviewInstances, upsertDataviewInstance]
+    [deprecatedDatasets, getMigratedDataviewInstances, upsertDataviewInstance]
   )
 
   const getIsDataviewMigrated = useCallback(
     (dataviewInstance: DataviewInstance | UrlDataviewInstance) => {
+      if (getIsVesselDataviewOutdated(dataviewInstance, deprecatedDatasets)) {
+        return getIsVesselDataviewMigrated(
+          dataviewInstance,
+          workspaceDataviewInstances || [],
+          deprecatedDatasets
+        )
+      }
       const dataviewId = LEGACY_TO_LATEST_DATAVIEWS[dataviewInstance.slug!] || dataviewInstance.slug
 
       if (!LEGACY_TO_LATEST_DATAVIEWS[dataviewInstance.slug!]) {
@@ -215,12 +229,23 @@ export function useMigrateToLatestDataview() {
         })
       )
     ).flat()
+    const outdatedVesselDataviewInstances = (deprecatedDataviewInstances || []).filter(
+      (dataviewInstance) => getIsVesselDataviewOutdated(dataviewInstance, deprecatedDatasets)
+    )
+    dataviewInstances.push(
+      ...outdatedVesselDataviewInstances.flatMap((dataviewInstance) =>
+        getIsDataviewMigrated(dataviewInstance)
+          ? [{ id: dataviewInstance.id, config: { visible: false } }]
+          : getLatestVesselDataviewInstances(dataviewInstance, deprecatedDatasets)
+      )
+    )
     if (dataviewInstances.length) {
       upsertDataviewInstance(dataviewInstances)
     }
     setIsLoading(false)
     return dataviewInstances
   }, [
+    deprecatedDatasets,
     deprecatedDataviewInstances,
     getIsDataviewMigrated,
     getMigratedDataviewInstances,

@@ -1,6 +1,6 @@
 // import the original type declarations
 // import all namespaces (for the default language, only)
-import type { datasets, flags, timebar } from '@globalfishingwatch/i18n-labels'
+import type { flags, timebar } from '@globalfishingwatch/i18n-labels'
 
 import 'react-i18next'
 
@@ -10,7 +10,6 @@ declare module 'react-i18next' {
   // and extend them!
   interface Resources {
     translations: typeof translations
-    datasets: typeof datasets
     timebar: typeof timebar
     flags: typeof flags
   }

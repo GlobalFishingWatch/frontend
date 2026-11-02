@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import type { OrthographicViewState } from '@deck.gl/core'
+import type { DeckProps, OrthographicViewState } from '@deck.gl/core'
 import { OrthographicView } from '@deck.gl/core'
 import DeckGL from '@deck.gl/react'
 import { _StatsWidget as StatsWidget } from '@deck.gl/widgets'
@@ -16,7 +16,13 @@ import styles from './charts.module.css'
 const VIEW = new OrthographicView({ id: '2d-scene', controller: false })
 const WRAPPER_STYLE = { position: 'absolute', top: 0, left: 0 } as const
 
-const TimebarDeckglWrapper = ({ showDeckStats = false }: { showDeckStats?: boolean }) => {
+const TimebarDeckglWrapper = ({
+  showDeckStats = false,
+  deviceProps,
+}: {
+  showDeckStats?: boolean
+  deviceProps?: DeckProps['deviceProps']
+}) => {
   const { outerWidth, graphHeight } = useTimelineContext()
   const outerScale = useOuterScale()
   const origin = useTimebarTimeOrigin()
@@ -42,6 +48,7 @@ const TimebarDeckglWrapper = ({ showDeckStats = false }: { showDeckStats?: boole
     <div style={WRAPPER_STYLE} className={cx(styles.charts, { [styles.loading]: loading })}>
       <DeckGL
         views={VIEW}
+        deviceProps={deviceProps}
         viewState={viewState}
         layers={layers}
         width={outerWidth}

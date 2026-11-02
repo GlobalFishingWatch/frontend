@@ -52,6 +52,7 @@ function UserVesselGroups() {
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const loading =
     datasetsStatus === AsyncReducerStatus.Loading ||
+    vesselGroupStatus === AsyncReducerStatus.Idle ||
     vesselGroupStatus === AsyncReducerStatus.Loading
   const editingGroupId = useSelector(selectVesselGroupEditId)
   const onEditClick = useEditVesselGroupModal()
@@ -124,7 +125,11 @@ function UserVesselGroups() {
                 return (
                   <li className={styles.dataset} key={vesselGroup.id}>
                     <VesselGroupReportLink vesselGroupId={vesselGroup.id}>
-                      <span className={styles.workspaceLink} data-test="workspace-name">
+                      <span
+                        className={styles.workspaceLink}
+                        data-test="workspace-name"
+                        translate="no"
+                      >
                         {getHighlightedText(label as string, searchQuery, styles)}{' '}
                         <span className={cx(styles.secondary, styles.marginLeft)}>
                           ({getVesselGroupVesselsCount(vesselGroup)})
@@ -143,7 +148,7 @@ function UserVesselGroups() {
                         <Button
                           type="border-secondary"
                           size="small"
-                          icon={<Icon icon="warning" />}
+                          icon={<Icon icon="update-required" />}
                           tooltip={
                             hasDeletedDatasets
                               ? t((t) => t.workspace.deletedVesselGroupLayer)

@@ -122,7 +122,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
               )
               return (
                 <li className={styles.dataset} key={vesselGroup?.id}>
-                  <span className={styles.datasetLabel}>
+                  <span className={styles.datasetLabel} translate="no">
                     <Icon icon="vessel-group" />
                     {getHighlightedText(
                       formatInfoField(vesselGroup?.name, 'shipname') as string,
@@ -136,7 +136,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
                       <Button
                         type="border-secondary"
                         size="small"
-                        icon={<Icon icon="warning" />}
+                        icon={<Icon icon="update-required" />}
                         tooltip={
                           hasDeletedDatasets
                             ? t((t) => t.workspace.deletedVesselGroupLayer)

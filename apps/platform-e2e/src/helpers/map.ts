@@ -42,12 +42,14 @@ export async function searchMapArea(page: Page, areaName: string) {
 export async function clickMapCenter(page: Page) {
   await waitForMapIdle(page)
 
-  await page.click(MAP_VIEWPORT)
+  // The view div is pointer-events: none (see Map.module.css), so the canvas under it takes the
+  // click. force skips Playwright's hit-target check, which would otherwise wait forever.
+  await page.click(MAP_VIEWPORT, { force: true })
 }
 
 async function clickMapPosition(page: Page, position: { x: number; y: number }) {
   await waitForMapIdle(page)
-  await page.click(MAP_VIEWPORT, { position })
+  await page.click(MAP_VIEWPORT, { position, force: true })
 }
 
 async function retryClickUntilVisible(

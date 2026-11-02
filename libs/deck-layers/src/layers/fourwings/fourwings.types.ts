@@ -59,6 +59,7 @@ export type FourwingsDeckSublayer = {
   maxVisibleValue?: number
   // Used only blue-planet workspace to be able to show only one detection by id
   filterIds?: string[]
+  highlightedSceneId?: string
   positionProperties?: string[]
   vesselGroups?: string | string[]
   vesselGroupsLength?: number

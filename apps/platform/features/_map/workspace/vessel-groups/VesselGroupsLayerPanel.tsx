@@ -12,6 +12,10 @@ import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
 import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import { useLayerPanelDataviewSort } from 'features/_map/workspace/shared/layer-panel-sort.hook'
+import {
+  getLayerMoreIcon,
+  getLayerStatusIcon,
+} from 'features/_map/workspace/shared/layer-status-icon.utils'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import { selectIsWorkspaceOwnerOrDefault } from 'features/_map/workspace/workspace.selectors'
 import {
@@ -240,8 +244,11 @@ function VesselGroupLayerPanel({
             {!readOnly &&
               (hasDeletedDatasets || (layerActive && (layerError || showDeprecatedWarning))) && (
                 <IconButton
-                  icon="warning"
-                  type={warningActive ? 'warning-invert' : 'warning'}
+                  {...getLayerStatusIcon({
+                    deleted: hasDeletedDatasets,
+                    deprecated: showDeprecatedWarning,
+                    error: !!layerError,
+                  })}
                   onClick={warningActive ? onUpdateDeprecatedLayerClick : undefined}
                   loading={isLoading}
                   disabled={isLoading}
@@ -274,26 +281,12 @@ function VesselGroupLayerPanel({
             />
           )}
         <IconButton
-          icon={
-            hasDeletedDatasets
-              ? 'warning'
-              : layerActive
-                ? layerError || showDeprecatedWarning
-                  ? 'warning'
-                  : 'more'
-                : undefined
-          }
-          type={
-            hasDeletedDatasets
-              ? 'warning-invert'
-              : layerActive
-                ? showDeprecatedWarning
-                  ? 'warning-invert'
-                  : layerError
-                    ? 'warning'
-                    : 'default'
-                : 'default'
-          }
+          {...getLayerMoreIcon({
+            layerActive,
+            deleted: hasDeletedDatasets,
+            deprecated: showDeprecatedWarning,
+            error: !!layerError,
+          })}
           loading={!warningActive && layerActive && !layerLoaded}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"

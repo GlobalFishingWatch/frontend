@@ -82,7 +82,6 @@
     "noTimeComparisonAllowed": "crwdns131845:0crwdne131845:0",
     "noVesselDataFiltered": "crwdns131847:0crwdne131847:0",
     "onlyEvolutionSupported": "crwdns131849:0crwdne131849:0",
-    "others": "crwdns131851:0crwdne131851:0",
     "othersLayersAreReportArea": "crwdns138515:0crwdne138515:0",
     "periodComparison": "crwdns131853:0crwdne131853:0",
     "periodComparison1st": "crwdns131855:0crwdne131855:0",
@@ -296,7 +295,6 @@
     "map": "crwdns132263:0crwdne132263:0",
     "matchedVessels": "crwdns132265:0crwdne132265:0",
     "messageAssistant": "crwdns132267:0crwdne132267:0",
-    "messages": "crwdns138621:0crwdne138621:0",
     "messages_one": "crwdns132269:0crwdne132269:0",
     "messages_other": "crwdns132271:0crwdne132271:0",
     "meters": "crwdns132273:0crwdne132273:0",
@@ -375,6 +373,7 @@
     "unknownProperty": "crwdns132405:0crwdne132405:0",
     "unknownVessel": "crwdns132407:0crwdne132407:0",
     "update": "crwdns132409:0crwdne132409:0",
+    "updated": "crwdns138833:0crwdne138833:0",
     "user": "crwdns132411:0crwdne132411:0",
     "userGuide": "crwdns132413:0crwdne132413:0",
     "value": "crwdns132415:0crwdne132415:0",
@@ -567,7 +566,13 @@
     "nir": "crwdns138369:0crwdne138369:0",
     "rgb": "crwdns138371:0crwdne138371:0"
   },
-  "detections": "crwdns132671:0crwdne132671:0",
+  "detections_one": "crwdns138871:0crwdne138871:0",
+  "detections_other": "crwdns138873:0crwdne138873:0",
+  "detectionScene": {
+    "addHighlight": "crwdns138841:0crwdne138841:0",
+    "highlight": "crwdns138843:0crwdne138843:0",
+    "removeHighlight": "crwdns138845:0crwdne138845:0"
+  },
   "download": {
     "apiPortal": "crwdns132673:0crwdne132673:0",
     "area": "crwdns132675:0crwdne132675:0",
@@ -818,9 +823,9 @@
       "title": "crwdns138401:0crwdne138401:0"
     }
   },
-  "hours": "crwdns133111:0crwdne133111:0",
+  "hours_one": "crwdns138875:0crwdne138875:0",
+  "hours_other": "crwdns138877:0crwdne138877:0",
   "layer": {
-    "activityFitBounds": "crwdns133113:0crwdne133113:0",
     "add": "crwdns133115:0crwdne133115:0",
     "areas": {
       "eez": "crwdns133117:0crwdne133117:0",
@@ -933,6 +938,7 @@
     "nauticalMilesAbbr": "crwdns133309:0crwdne133309:0",
     "positions": "crwdns133311:0crwdne133311:0",
     "positionsDisabled": "crwdns133313:0crwdne133313:0",
+    "positionsLogin": "crwdns138847:0crwdne138847:0",
     "referenceLayersClose": "crwdns133315:0crwdne133315:0",
     "referenceLayersOpen": "crwdns133317:0crwdne133317:0",
     "rulers_add": "crwdns133319:0crwdne133319:0",
@@ -1040,6 +1046,16 @@
     "seePortReport": "crwdns133391:0crwdne133391:0",
     "summaryEvents": "crwdns133393:0{{vessels}}crwdnd133393:0{{flags}}crwdnd133393:0{{activityQuantity}}crwdnd133393:0{{start}}crwdnd133393:0{{end}}crwdne133393:0",
     "toThisPort": "crwdns138593:0crwdne138593:0"
+  },
+  "rateLimit": {
+    "challenge": "crwdns138849:0crwdne138849:0",
+    "challengeTitle": "crwdns138851:0crwdne138851:0",
+    "failed": "crwdns138853:0crwdne138853:0",
+    "failedTitle": "crwdns138855:0crwdne138855:0",
+    "notNow": "crwdns138857:0crwdne138857:0",
+    "profileActivity": "crwdns138859:0crwdne138859:0",
+    "trackLimitReached": "crwdns138863:0crwdne138863:0",
+    "verify": "crwdns138869:0crwdne138869:0"
   },
   "search": {
     "advanced": "crwdns133395:0crwdne133395:0",
@@ -1545,8 +1561,8 @@
     "title": "crwdns134295:0crwdne134295:0",
     "toggleAllVessels": "crwdns134297:0crwdne134297:0",
     "tonnageGt": "crwdns134299:0crwdne134299:0",
-    "trackLogin": "crwdns134301:0crwdne134301:0",
-    "trackResolution": "crwdns134303:0crwdne134303:0",
+    "trackLoginRequired": "crwdns138865:0crwdne138865:0",
+    "trackLoginTooltip": "crwdns138867:0crwdne138867:0",
     "transmissionDates": "crwdns134305:0crwdne134305:0",
     "transmissions": "crwdns134307:0crwdne134307:0",
     "type": "crwdns134309:0crwdne134309:0",
@@ -1597,7 +1613,6 @@
     "columnSelectionTooltip": "crwdns134383:0crwdne134383:0",
     "confirmAbort": "crwdns134385:0crwdne134385:0",
     "confirmRemove": "crwdns134387:0crwdne134387:0",
-    "copyOf": "crwdns134389:0crwdne134389:0",
     "createNewGroup": "crwdns134391:0crwdne134391:0",
     "csvFile": "crwdns134393:0crwdne134393:0",
     "csvLink": "crwdns134395:0crwdne134395:0",
@@ -1634,6 +1649,7 @@
     "tooManyVessels_one": "crwdns134459:0{{count}}crwdne134459:0",
     "tooManyVessels_other": "crwdns134463:0{{count}}crwdne134463:0",
     "unmatchedIDs": "crwdns134465:0{{ids}}crwdne134465:0",
+    "updateError": "crwdns138835:0{{name}}crwdnd138835:0{{error}}crwdne138835:0",
     "updateRequired": "crwdns134467:0crwdne134467:0",
     "uploadPublic": "crwdns134469:0crwdne134469:0",
     "vesselAddedToGroup": "crwdns134471:0crwdne134471:0",
@@ -1702,6 +1718,7 @@
     "deprecatedActivityLayerMigrated": "crwdns134579:0crwdne134579:0",
     "deprecatedVesselGroupLayer": "crwdns134581:0crwdne134581:0",
     "deprecatedVesselLayer": "crwdns134583:0crwdne134583:0",
+    "deprecatedVesselLayerSwitch": "crwdns138837:0crwdne138837:0",
     "edit": "crwdns134585:0crwdne134585:0",
     "editAccess": "crwdns134587:0crwdne134587:0",
     "editName": "crwdns134589:0crwdne134589:0",
@@ -1715,6 +1732,7 @@
     "migrationDisclaimer": "crwdns134603:0crwdne134603:0",
     "migrationDisclaimerNote": "crwdns134605:0crwdne134605:0",
     "migrationMigrateAll": "crwdns134607:0crwdne134607:0",
+    "migrationVesselGroupsError": "crwdns138839:0{{names}}crwdne138839:0",
     "nameRequired": "crwdns134609:0crwdne134609:0",
     "passwordIncorrect": "crwdns134611:0crwdne134611:0",
     "passwordMinLength": "crwdns134613:0crwdne134613:0",
