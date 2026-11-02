@@ -5,6 +5,7 @@ import type { RootState } from 'reducers'
 
 export enum FeatureFlag {
   HotspotButton = 'hotspotButton',
+  SlowReportTips = 'slowReportTips',
 }
 
 export enum DebugOption {
@@ -32,6 +33,7 @@ export const debugInitialState: DebugState = {
   active: false,
   featureFlags: {
     hotspotButton: false,
+    slowReportTips: false,
   },
   options: {
     debugTiles: false,

@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
+
+import { FeatureFlag, selectFeatureFlags } from 'features/debug/debug.slice'
 
 import styles from './placeholders.module.css'
 
@@ -14,6 +17,8 @@ export function ReportSlowLoading() {
   const [isSlow, setIsSlow] = useState(false)
   const [progress, setProgress] = useState(0)
   const [factIndex, setFactIndex] = useState(0)
+  const featureFlags = useSelector(selectFeatureFlags)
+  const showTips = featureFlags[FeatureFlag.SlowReportTips]
 
   // TODO:CONTENT placeholder copy — needs comms/product sign-off
   const facts = useMemo(
@@ -44,19 +49,17 @@ export function ReportSlowLoading() {
   }, [isSlow])
 
   useEffect(() => {
-    if (!isSlow || facts.length <= 1) return
+    if (!showTips || !isSlow || facts.length <= 1) return
     setFactIndex(Math.floor(Math.random() * facts.length))
     const interval = setInterval(() => {
       setFactIndex((current) => (current + 1) % facts.length)
     }, FACT_ROTATION_MS)
     return () => clearInterval(interval)
-  }, [isSlow, facts.length])
+  }, [showTips, isSlow, facts.length])
 
   if (!isSlow) return null
 
-  const message = t((t) => t.analysis.slowReportMessage, {
-    defaultValue: 'You requested a lot of data, this is taking longer than expected',
-  })
+  const message = t((t) => t.analysis.slowReportMessage)
 
   return (
     <div className={styles.slowLoading}>
@@ -71,9 +74,11 @@ export function ReportSlowLoading() {
       >
         <div className={styles.progressBar} style={{ width: `${progress}%` }} />
       </div>
-      <p className={styles.slowLoadingFact} aria-live="polite">
-        `{t((t) => t.common.didYouKnow)}`{facts[factIndex]}
-      </p>
+      {showTips && (
+        <p className={styles.slowLoadingFact} aria-live="polite">
+          `{t((t) => t.common.didYouKnow)}`{facts[factIndex]}
+        </p>
+      )}
     </div>
   )
 }
