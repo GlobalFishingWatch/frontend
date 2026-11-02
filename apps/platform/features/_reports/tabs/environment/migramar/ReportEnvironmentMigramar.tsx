@@ -58,6 +58,7 @@ function ReportEnvironmentMigramar() {
               </Fragment>
             }
             legendDataviews={[]}
+            disabled={loading}
           />
         )}
       </p>

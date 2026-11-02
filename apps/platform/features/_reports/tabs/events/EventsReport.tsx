@@ -93,14 +93,14 @@ function EventsReport() {
     statsStatus === 'fulfilled' ? totalEvents !== undefined && totalEvents > 0 : false
   const showPortsTable = eventsDataview?.datasets?.[0]?.subcategory !== 'port_visit' && hasEvents
 
+  const isLoadingGraph =
+    (datasetAreasId && datasetAreas?.status !== AsyncReducerStatus.Finished) || isLoadingStats
+
   const graph = useMemo(() => {
     if (statsError) {
       return <p className={styles.error}>{(statsError as any).message}</p>
     }
-    if (
-      (datasetAreasId && datasetAreas?.status !== AsyncReducerStatus.Finished) ||
-      isLoadingStats
-    ) {
+    if (isLoadingGraph) {
       return <ReportActivityPlaceholder showHeader={false} loading />
     }
     if (!hasEvents) {
@@ -112,7 +112,7 @@ function EventsReport() {
       )
     }
     return <EventsReportGraph onIndividualSupportedChange={setIsIndividualSupported} />
-  }, [datasetAreas?.status, datasetAreasId, isLoadingStats, hasEvents, statsError, t])
+  }, [isLoadingGraph, hasEvents, statsError, t])
 
   if (!vesselDatasets.length) {
     return (
@@ -166,7 +166,12 @@ function EventsReport() {
                   {isIndividualSupported && (
                     <EventsReportDownload dataviews={eventsDataviews} start={start} end={end} />
                   )}
-                  <ReportGraphScreenshot graphRef={graphRef} name="events" withSummary />
+                  <ReportGraphScreenshot
+                    graphRef={graphRef}
+                    name="events"
+                    withSummary
+                    disabled={isLoadingGraph || isLoadingVessels}
+                  />
                 </Fragment>
               )}
             </div>

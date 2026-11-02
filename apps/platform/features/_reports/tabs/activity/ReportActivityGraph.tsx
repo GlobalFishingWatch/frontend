@@ -154,6 +154,7 @@ export default function ReportActivity() {
               name={`activity-${reportActivityGraph}`}
               withSummary
               legendDataviews={isDatasetComparison ? comparisonDataviews : undefined}
+              disabled={reportAreaStatus !== AsyncReducerStatus.Finished}
             />
           )}
         </div>

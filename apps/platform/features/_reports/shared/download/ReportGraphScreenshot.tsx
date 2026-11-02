@@ -73,6 +73,8 @@ type ReportGraphScreenshotProps = {
   /** Layers to list in the legend instead of the report ones */
   legendDataviews?: UrlDataviewInstance[]
   filter?: string
+  /** Graph still loading, the button stays visible but inactive */
+  disabled?: boolean
 }
 
 function ReportGraphScreenshot({
@@ -82,6 +84,7 @@ function ReportGraphScreenshot({
   summary,
   legendDataviews,
   filter,
+  disabled,
 }: ReportGraphScreenshotProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -204,6 +207,7 @@ function ReportGraphScreenshot({
         className={styles.button}
         tooltip={t((t) => t.analysis.graphScreenshot)}
         tooltipPlacement="top"
+        disabled={disabled}
         onClick={onOpen}
       />
       <Modal
