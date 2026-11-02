@@ -102,7 +102,7 @@ const ReportBarTooltip = (props: any) => {
                     ))}
                     {restValue !== 0 && (
                       <li key="others" className={styles.tooltipValue}>
-                        {t((t) => t.analysis.others)}: {restValue}
+                        {t((t) => t.common.others)}: {restValue}
                       </li>
                     )}
                   </Fragment>
@@ -169,7 +169,7 @@ const ReportGraphTick = (props: any) => {
     }
   }
 
-  const label = isOtherCategory ? t((t) => t.analysis.others) : getTickLabel(payload.value)
+  const label = isOtherCategory ? t((t) => t.common.others) : getTickLabel(payload.value)
   const labelChunks = label.split(' ')
   const labelChunksClean = [labelChunks[0]]
   labelChunks.slice(1).forEach((chunk: any) => {

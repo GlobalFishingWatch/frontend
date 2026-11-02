@@ -150,6 +150,15 @@ function ReportPolygonsGraph({
           <strong>{title}</strong> {unit && <span>({unit})</span>}
         </span>
       </div>
+      {hasFilters && (
+        <div className={styles.tagsContainer}>
+          {tags.length > 1 ? (
+            tags.map((d) => <ReportSummaryTags key={d.id} dataview={d} />)
+          ) : (
+            <ReportSummaryTags dataview={dataview} showColor={false} />
+          )}
+        </div>
+      )}
       {loading || !layerStats ? (
         <ReportStatsPlaceholder />
       ) : containedCount || overlappingCount ? (
@@ -190,12 +199,6 @@ function ReportPolygonsGraph({
         </p>
       ) : (
         <p className={styles.summary}>{t((t) => t.analysis.noPolygonsContainedOrOverlapping)}</p>
-      )}
-
-      {hasFilters && (
-        <div className={styles.tagsContainer}>
-          {tags.length > 1 && tags.map((d) => <ReportSummaryTags dataview={d} />)}
-        </div>
       )}
       {showEvolution &&
         (loading ? (

@@ -25,6 +25,7 @@ import {
   selectReportSubCategory,
   selectReportVesselGraph,
 } from 'features/_reports/reports.selectors'
+import ReportComputation from 'features/_reports/shared/ReportComputation'
 import ReportVessels from 'features/_reports/shared/vessels/ReportVessels'
 import EventsReport from 'features/_reports/tabs/events/EventsReport'
 import VesselGroupReportInsights from 'features/_reports/tabs/vessel-group-insights/VGRInsights'
@@ -195,6 +196,7 @@ function VesselGroupReport() {
         </div>
       )}
 
+      {!showOnlyVessels && <ReportComputation category={reportCategory} />}
       <Tabs
         tabs={sectionTabs}
         activeTab={showOnlyVessels ? ReportCategory.VesselGroup : reportCategory}
