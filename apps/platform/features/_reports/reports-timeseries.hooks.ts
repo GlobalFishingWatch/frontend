@@ -210,15 +210,22 @@ export async function getFeaturesFilteredByArea({
   areaGeometry,
   areaProperties,
   filterCellsByPolygon,
+  isCancelled,
 }: {
   instances: ReportDeckLayer[]
   areaId: string | number
   areaGeometry: Polygon | MultiPolygon
   areaProperties?: Record<string, any> | null
   filterCellsByPolygon: (params: FilterByPolygomParams) => Promise<FilteredPolygons[]>
+  /** Checked before each layer: terminating the polygons worker only stops the job in flight,
+   * so a cancelled run would otherwise keep queuing jobs ahead of the run that replaced it */
+  isCancelled?: () => boolean
 }): Promise<FilteredPolygons[][] | null> {
   const featuresFiltered: FilteredPolygons[][] = []
   for (const instance of instances) {
+    if (isCancelled?.()) {
+      return null
+    }
     const isPolygonLayer =
       instance instanceof UserContextTileLayer || instance instanceof ContextLayer
     const viewportLoaded =
@@ -437,6 +444,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => 
           areaGeometry: area.geometry!,
           areaProperties: area.id === REPORT_BUFFER_FEATURE_ID ? undefined : area.properties,
           filterCellsByPolygon,
+          isCancelled: isStale,
         })
         if (isStale() || featuresFiltered === null) {
           // Stale, or layers still transitioning - effect will re-run once they settle
