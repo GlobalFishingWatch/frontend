@@ -7,19 +7,16 @@ import ReportSummaryPlaceholder from 'features/_reports/shared/placeholders/Repo
 import { useReportActivitySummaryData } from 'features/_reports/shared/summary/report-summary-activity.hooks'
 import type { ReportActivityUnit } from 'features/_reports/tabs/activity/reports-activity.types'
 import { getReportSubCategoryLabel } from 'features/_reports/tabs/activity/reports-activity.utils'
-import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse } from 'utils/html-parser'
 import { listAsSentence } from 'utils/shared'
 
 export default function ReportSummaryActivity({
   activityUnit,
-  reportStatus = AsyncReducerStatus.Finished,
 }: {
   activityUnit: ReportActivityUnit
-  reportStatus?: AsyncReducerStatus
 }) {
   const { t } = useTranslation()
-  const summary = useReportActivitySummaryData({ reportStatus })
+  const summary = useReportActivitySummaryData()
   const reportSubCategory = useSelector(selectReportSubCategory)
 
   if (!summary) return <ReportSummaryPlaceholder />

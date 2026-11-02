@@ -31,6 +31,7 @@ import { selectReportVesselsFiltered } from 'features/_reports/shared/vessels/re
 import {
   getReportRequestHash,
   selectReportRequestHash,
+  selectReportVesselsStatus,
 } from 'features/_reports/tabs/activity/reports-activity.slice'
 import { useTimeCompareTimeDescription } from 'features/_reports/tabs/activity/reports-activity-timecomparison.hooks'
 import { formatEvolutionData } from 'features/_reports/tabs/activity/reports-activity-timeseries.utils'
@@ -73,13 +74,12 @@ export type ReportActivitySummaryData =
     })
 
 export function useReportActivitySummaryData({
-  reportStatus = AsyncReducerStatus.Finished,
   vesselsFiltered = false,
 }: {
-  reportStatus?: AsyncReducerStatus
   vesselsFiltered?: boolean
 } = {}): ReportActivitySummaryData | undefined {
   const { i18n } = useTranslation()
+  const reportStatus = useSelector(selectReportVesselsStatus)
   const timerange = useTimerangeConnect()
   const reportCategory = useSelector(selectReportCategory)
   const reportDataviews = useSelector(selectReportDataviewsWithPermissions)
