@@ -133,7 +133,6 @@
       "positionsMode": "Zoom in or shorten the time range on an activity layer to switch to positions mode and see individual vessel positions instead of a heatmap.",
       "printReport": "Reports can be printed or saved as PDF to share offline.",
       "rangeFilter": "Drag layer handles to show only the range of values you care about.",
-      "shareMap": "Sharing the map link keeps your layers, filters and time range exactly as you see them.",
       "uploadRaster": "You can upload your own raster data as a GeoTIFF or NetCDF file and show it as a heatmap alongside our layers.",
       "vesselGroups": "You can save a list of vessels as a vessel group and get a report on their activity together."
     },

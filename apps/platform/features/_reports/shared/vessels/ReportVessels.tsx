@@ -65,7 +65,7 @@ function ReportVessels({
         </div>
       )}
       {loading ? (
-        <ReportVesselsPlaceholder showGraphHeader={false} />
+        <ReportVesselsPlaceholder showGraphHeader={false} showSlowLoading />
       ) : (
         <Fragment>
           {!showOnlyTable && (
