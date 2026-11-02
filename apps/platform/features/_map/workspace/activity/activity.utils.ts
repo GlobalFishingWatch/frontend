@@ -43,7 +43,9 @@ export const getSourcesSelectedInDataview = (
 
 export const groupVmsSources = (sources: TagItem[], { inline = false } = {}): TagItem[] => {
   const vmsSources = sources.filter((source) => source.label.includes('VMS'))
-  if (vmsSources.length <= 1) return []
+  if (vmsSources.length <= 1) {
+    return []
+  }
   const countries = t((t) => t.common.country, { count: 2 })
   return [
     ...sources.filter((source) => !source.label.includes('VMS')),

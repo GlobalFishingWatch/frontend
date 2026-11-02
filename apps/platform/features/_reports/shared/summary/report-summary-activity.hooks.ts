@@ -101,6 +101,8 @@ export function useReportActivitySummaryData({
   const reportHours = vesselsFiltered
     ? sum(filteredVessels?.map((vessel) => vessel.value || 0) || [])
     : allReportHours
+  // A filter matching no vessels is a real 0, not missing data
+  const hasReportHours = !!reportHours || (vesselsFiltered && !!filteredVessels)
   const reportOutdated =
     reportRequestHash !==
     getReportRequestHash({
@@ -136,10 +138,10 @@ export function useReportActivitySummaryData({
     const isDetectionsFinished =
       reportCategory === ReportCategory.Detections &&
       reportStatus === AsyncReducerStatus.Finished &&
-      !!reportHours
+      hasReportHours
 
     if (
-      reportHours &&
+      hasReportHours &&
       reportStatus === AsyncReducerStatus.Finished &&
       reportCategory !== ReportCategory.Detections &&
       !reportOutdated
@@ -191,6 +193,7 @@ export function useReportActivitySummaryData({
     isGlobalReport,
     reportCategory,
     reportHours,
+    hasReportHours,
     timerange?.start,
     timerange?.end,
     reportStatus,
