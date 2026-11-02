@@ -4,7 +4,7 @@ import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
 
 import {
-  getIsConcurrentError,
+  getIsRateLimitExceeded,
   getIsTimeoutError,
   GFWAPI,
   parseAPIError,
@@ -145,9 +145,13 @@ export const downloadActivityThunk = createAsyncThunk<
               'region-dataset': datasetId,
             }),
         'group-by': groupBy,
-        'buffer-unit': bufferUnit?.toUpperCase(),
-        'buffer-value': bufferValue,
-        'buffer-operation': bufferOperation?.toUpperCase(),
+        ...(bufferUnit &&
+          bufferValue &&
+          bufferOperation && {
+            'buffer-unit': bufferUnit.toUpperCase(),
+            'buffer-value': bufferValue,
+            'buffer-operation': bufferOperation.toUpperCase(),
+          }),
       }
       const fileName = `${areaName} - ${downloadActivityParams['date-range']}.${
         format === HeatmapDownloadFormat.Json ? 'json' : 'zip'
@@ -242,7 +246,7 @@ const downloadActivitySlice = createSlice({
         state.status = AsyncReducerStatus.Error
         if (action.payload?.message) {
           const isTimeoutError =
-            getIsTimeoutError(action.payload) || getIsConcurrentError(action.payload)
+            getIsTimeoutError(action.payload) || getIsRateLimitExceeded(action.payload)
           if (isTimeoutError) {
             state.hadTimeoutError = true
           }
@@ -297,7 +301,7 @@ export const selectIsDownloadActivityTimeoutError = createSelector(
 
 export const selectIsDownloadActivityConcurrentError = createSelector(
   [selectDownloadActivityError],
-  (downloadError) => getIsConcurrentError(downloadError)
+  (downloadError) => getIsRateLimitExceeded(downloadError)
 )
 
 export default downloadActivitySlice.reducer

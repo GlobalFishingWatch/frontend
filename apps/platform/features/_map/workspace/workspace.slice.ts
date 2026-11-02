@@ -33,7 +33,7 @@ import {
 } from '@platform/config/map/workspaces'
 
 import type { VALID_PASSWORD } from 'data/map/config'
-import { DEFAULT_TIME_RANGE, PRIVATE_SUFIX, WORKSPACE_HISTORY_NAVIGATION } from 'data/map/config'
+import { DEFAULT_TIME_RANGE, WORKSPACE_HISTORY_NAVIGATION } from 'data/map/config'
 import {
   DEFAULT_DATAVIEW_SLUGS,
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
@@ -43,6 +43,11 @@ import {
 import { MARINE_MANAGER_WORKSPACES } from 'data/map/highlighted-workspaces/marine-manager'
 import { getWorkspaceEnv } from 'data/workspace-env'
 import { fetchDatasetsByIdsThunk } from 'features/_map/datasets/datasets.slice'
+import {
+  getDatasetsInDataviews,
+  getLatestEndDateFromDatasets,
+  getVesselGroupsInDataviews,
+} from 'features/_map/datasets/datasets.utils'
 import { fetchDataviewsByIdsThunk } from 'features/_map/dataviews/dataviews.slice'
 import type { AppWorkspace } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { fetchReportsThunk } from 'features/_reports/reports.slice'
@@ -76,7 +81,7 @@ import {
   selectWorkspaceReportId,
   selectWorkspaceStatus,
 } from './workspace.selectors'
-import { cleanReportQuery, parseUpsertWorkspace } from './workspace.utils'
+import { cleanReportQuery, getIsPrivateWorkspace, parseUpsertWorkspace } from './workspace.utils'
 
 /**
  * History navigation entry stored in TanStack Router format.
@@ -253,7 +258,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
                 } as Workspace<any>
               }
             }
-            if (workspace.id.includes(PRIVATE_SUFIX) && guestUser) {
+            if (getIsPrivateWorkspace(workspace) && guestUser) {
               return rejectWithValue({ error: { status: 401, message: 'Private workspace' } })
             }
           } else {
@@ -279,7 +284,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           workspaceId === DEFAULT_WORKSPACE_ID
         ) {
           workspace = await getDefaultWorkspace()
-          if (workspace.id.includes(PRIVATE_SUFIX) && guestUser) {
+          if (getIsPrivateWorkspace(workspace) && guestUser) {
             return rejectWithValue({ error: { status: 401, message: 'Private workspace' } })
           }
         }
@@ -343,8 +348,6 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       // the reducer map, so a static import lands it in every page's entry chunk. Awaited *before* the
       // aborted check below so that check is still followed by synchronous work, as it was originally.
       const { LIBRARY_LAYERS } = await import('data/map/layer-library')
-      const { getDatasetsInDataviews, getLatestEndDateFromDatasets, getVesselGroupsInDataviews } =
-        await import('features/_map/datasets/datasets.utils')
       const { getVesselDataviewInstanceDatasetConfig } =
         await import('features/_map/dataviews/dataviews.utils')
 
@@ -683,7 +686,8 @@ const workspaceSlice = createSlice({
   extraReducers: (builder) => {
     // Logout cleanup. Lives here rather than as actions dispatched from user.slice's logout thunk so
     // that user.slice (eagerly registered) does not import this slice, which drags deck.gl and the
-    // timebar into every page's entry chunk. Guarded by scripts/check-store-graph.mjs.
+    // timebar into every page's entry chunk.
+    // Guarded by apps/platform/scripts/load-boundaries.
     // The logout thunk also used to dispatch a staff-only-dataview filter, but it ran after the
     // workspace data was already cleared, so it was a no-op. Clearing is the whole behaviour.
     builder.addCase(logoutUserThunk.fulfilled, (state) => {

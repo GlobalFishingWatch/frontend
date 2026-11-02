@@ -15,6 +15,7 @@ import cx from 'classnames'
 import { toLngLatCoordinates } from '@globalfishingwatch/data-transforms'
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { MAP_POPUP_TESTID } from '@platform/config/selectors/map'
 
 import { useDeckMap } from 'features/_map/map/map-context.hooks'
 import { getMapViewport, MAP_CONTAINER_ID } from 'features/_map/map/map-viewport.hooks'
@@ -124,7 +125,7 @@ function PopupWrapper({
       }}
       translate="no"
     >
-      <div className={styles.contentWrapper} data-testid="map-popup-wrapper">
+      <div className={styles.contentWrapper} data-testid={MAP_POPUP_TESTID}>
         {showArrow && (
           <FloatingArrow fill="var(--color-off-white-0)" ref={arrowRef} context={context} />
         )}

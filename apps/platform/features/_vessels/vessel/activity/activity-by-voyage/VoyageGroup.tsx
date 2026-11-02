@@ -7,7 +7,7 @@ import { DateTime } from 'luxon'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import type { ActivityEvent } from 'features/_vessels/vessel/activity/vessels-activity.selectors'
 import { selectVesselInfoDataId } from 'features/_vessels/vessel/selectors/vessel.selectors'
 import { parseEventsToCSV } from 'features/_vessels/vessel/vessel.download'

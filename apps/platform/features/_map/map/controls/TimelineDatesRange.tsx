@@ -1,4 +1,4 @@
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 
 import TimeRangeDates from './TimeRangeDates'
 

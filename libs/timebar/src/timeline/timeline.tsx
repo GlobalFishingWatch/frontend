@@ -1,5 +1,6 @@
 import type React from 'react'
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import type { DeckProps } from '@deck.gl/core'
 import cx from 'classnames'
 import type { ScaleTime } from 'd3-scale'
 import { scaleTime } from 'd3-scale'
@@ -44,6 +45,8 @@ type TimebarTimelineProps = {
   onMouseMove?: TimebarMouseMoveHandler
   onGraphClick?: (toggle: boolean) => void
   showDeckStats?: boolean
+  /** Forwarded to the charts' DeckGL, e.g. `{ debug: false }` to skip luma's dev-mode WebGL wrapping. */
+  deviceProps?: DeckProps['deviceProps']
   shortestTimeRange?: 'day' | 'hour' | 'minute'
 }
 
@@ -59,6 +62,7 @@ export const TimebarTimeline = ({
   onMouseMove,
   onGraphClick,
   showDeckStats = false,
+  deviceProps,
   shortestTimeRange = 'day',
 }: TimebarTimelineProps) => {
   const {
@@ -257,7 +261,7 @@ export const TimebarTimeline = ({
               shortestTimeRange={shortestTimeRange}
             />
             {children}
-            <TimebarDeckglWrapper showDeckStats={showDeckStats} />
+            <TimebarDeckglWrapper showDeckStats={showDeckStats} deviceProps={deviceProps} />
           </div>
         </div>
         <div

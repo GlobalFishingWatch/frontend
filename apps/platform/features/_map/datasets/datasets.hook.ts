@@ -23,13 +23,8 @@ import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.h
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDebugOptions } from 'features/debug/debug.slice'
-import type { DatasetUploadConfig } from 'features/modals/modals.slice'
-import {
-  selectDatasetUploadModalConfig,
-  selectDatasetUploadModalOpen,
-  setDatasetUploadConfig,
-  setModalOpen,
-} from 'features/modals/modals.slice'
+import { useDatasetModalOpenConnect } from 'features/modals/modals.hooks'
+import { setDatasetUploadConfig } from 'features/modals/modals.slice'
 import type { AsyncError } from 'utils/async-slice'
 
 import type { UpsertDataset } from './datasets.slice'
@@ -93,46 +88,6 @@ export const useAddDataviewFromDatasetToWorkspace = () => {
   )
 
   return useMemo(() => ({ addDataviewFromDatasetToWorkspace }), [addDataviewFromDatasetToWorkspace])
-}
-
-export const useDatasetModalOpenConnect = () => {
-  const dispatch = useAppDispatch()
-  const datasetModalOpen = useSelector(selectDatasetUploadModalOpen)
-
-  const dispatchDatasetModalOpen = useCallback(
-    (open: boolean) => {
-      dispatch(setModalOpen({ id: 'datasetUpload', open }))
-    },
-    [dispatch]
-  )
-
-  return useMemo(
-    () => ({
-      datasetModalOpen,
-      dispatchDatasetModalOpen,
-    }),
-    [datasetModalOpen, dispatchDatasetModalOpen]
-  )
-}
-
-export const useDatasetModalConfigConnect = () => {
-  const dispatch = useAppDispatch()
-  const datasetModal = useSelector(selectDatasetUploadModalConfig)
-
-  const dispatchDatasetModalConfig = useCallback(
-    (config: DatasetUploadConfig) => {
-      dispatch(setDatasetUploadConfig(config))
-    },
-    [dispatch]
-  )
-
-  return useMemo(
-    () => ({
-      ...datasetModal,
-      dispatchDatasetModalConfig,
-    }),
-    [datasetModal, dispatchDatasetModalConfig]
-  )
 }
 
 export const useDatasetsAPI = () => {

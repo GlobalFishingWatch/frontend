@@ -32,6 +32,7 @@ export function ResponsiveBarChart({
   barValueFormatter,
   onIndividualItemClick,
   onAggregatedItemClick,
+  onIndividualSupportedChange,
 }: ResponsiveBarChartProps) {
   const aggregatedValueKeys = useValueKeys(aggregatedValueKey)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -44,6 +45,7 @@ export function ResponsiveBarChart({
       getAggregatedData,
       getIndividualData,
       getIsIndividualSupported: getIsIndividualBarChartSupported,
+      onIndividualSupportedChange,
     }
   )
 

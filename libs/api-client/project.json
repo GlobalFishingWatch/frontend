@@ -44,7 +44,7 @@
       }
     },
     "test": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "proto:generate", "^proto:generate"],
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "command": "vitest run --config=vitest.config.mts"

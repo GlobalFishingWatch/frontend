@@ -24,7 +24,7 @@ import {
   getRelatedDatasetsByType,
   resolveEndpoint,
 } from '@globalfishingwatch/datasets-client'
-import { setResource } from '@globalfishingwatch/dataviews-client'
+import { CACHE_FALSE_PARAM, setResource } from '@globalfishingwatch/dataviews-client'
 
 import { PROFILE_DATAVIEW_SLUGS } from 'data/map/dataviews'
 import {
@@ -36,7 +36,6 @@ import type { VesselInstanceDatasets } from 'features/_map/datasets/datasets.uti
 import { fetchDataviewsByIdsThunk } from 'features/_map/dataviews/dataviews.slice'
 import { selectVesselTemplateDataviews } from 'features/_map/dataviews/selectors/dataviews.static.selectors'
 import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
-import { CACHE_FALSE_PARAM } from 'features/_vessels/vessel/vessel.config'
 import { getVesselIdentities, getVesselProperty } from 'features/_vessels/vessel/vessel.utils'
 import { selectResources } from 'features/data/resources/resources.slice'
 import { workspaceTabClicked } from 'features/nav/nav.actions'
@@ -142,7 +141,9 @@ export const fetchVesselInfoThunk = createAsyncThunk(
       const datasetsToFetch = [trackDatasetId, ...eventsDatasetsId].flatMap((id) => {
         return selectDatasetById(id)(state) ? [] : [id]
       })
-      dispatch(fetchDatasetsByIdsThunk({ ids: datasetsToFetch }))
+      // Awaited before returning: in SSR the store is dehydrated once this thunk resolves, so a
+      // fire-and-forget fetch ships without the track dataset and the client never requests it
+      const datasetsPromise = dispatch(fetchDatasetsByIdsThunk({ ids: datasetsToFetch }))
 
       const datasetConfig = getVesselInfoDataviewInstanceDatasetConfig(
         vesselId,
@@ -186,6 +187,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
       dispatch(setResource(resource))
 
       const identities = getVesselIdentities(vessel)
+      await datasetsPromise
       return {
         id: getVesselProperty(vessel, 'id'),
         dataset: dataset,

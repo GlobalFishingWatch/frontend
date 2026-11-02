@@ -18,7 +18,6 @@ import {
 } from 'features/_map/workspace/workspace.selectors'
 import type { LastWorkspaceVisited } from 'features/_map/workspace/workspace.slice'
 import { getVesselDatasetsWithoutRelated } from 'features/_reports/shared/vessels/report-vessels.selectors'
-import { selectUserId } from 'features/_user/selectors/user.permissions.selectors'
 import { selectIsGFWUser, selectIsJACUser } from 'features/_user/selectors/user.selectors'
 import { getVesselGroupVesselsCount } from 'features/_user/vessel-groups/vessel-groups.utils'
 import {
@@ -119,13 +118,6 @@ export const selectVesselGroupModalDatasetsWithoutEventsRelated = createSelector
       vesselDatasets,
       relatedType: DatasetTypes.Events,
     })
-  }
-)
-
-export const selectUserVesselGroups = createSelector(
-  [selectAllVesselGroups, selectUserId],
-  (vesselGroups, userId) => {
-    return vesselGroups?.filter((d) => d.ownerId === userId)
   }
 )
 

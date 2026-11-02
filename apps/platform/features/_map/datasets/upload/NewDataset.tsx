@@ -22,17 +22,16 @@ import { selectIsGuestUser, selectIsUserExpired } from 'features/_user/selectors
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import UserGuideLink from 'features/help/UserGuideLink'
+import {
+  useDatasetModalConfigConnect,
+  useDatasetModalOpenConnect,
+} from 'features/modals/modals.hooks'
 import type { DatasetUploadStyle } from 'features/modals/modals.slice'
 import { selectLocationType } from 'router/routes.selectors'
 import type { DatasetGeometryTypesSupported } from 'utils/files'
 import { getFileTypes } from 'utils/files'
 
-import {
-  useAddDataviewFromDatasetToWorkspace,
-  useDatasetModalConfigConnect,
-  useDatasetModalOpenConnect,
-  useDatasetsAPI,
-} from '../datasets.hook'
+import { useAddDataviewFromDatasetToWorkspace, useDatasetsAPI } from '../datasets.hook'
 
 // import DatasetConfig, { extractPropertiesFromGeojson } from '../DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'

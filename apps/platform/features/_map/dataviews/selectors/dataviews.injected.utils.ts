@@ -1,9 +1,6 @@
 import { EventTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import {
-  PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG,
-  PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG,
-} from '@platform/config/map/dataviews'
+import { PORTS_FOOTPRINT_GLOBAL_DATAVIEW_SLUG } from '@platform/config/map/dataviews'
 
 import { PORT_VISITS_REPORT_DATAVIEW_ID } from 'features/_map/dataviews/dataviews.utils'
 import { getVesselGroupEventsDataviewInstance } from 'features/_reports/report-vessel-group/vessel-group-report.dataviews'
@@ -30,8 +27,7 @@ export function getIsInjectedDataview(dataview?: UrlDataviewInstance) {
   })
   const isPortReportDataview =
     dataview.id === PORT_VISITS_REPORT_DATAVIEW_ID ||
-    dataview.id === PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG ||
-    dataview.id === PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG
+    dataview.id === PORTS_FOOTPRINT_GLOBAL_DATAVIEW_SLUG
   const isAreaReportDataview = dataview.id === REPORT_EVENTS_GRAPH_AREA_DATAVIEW_ID
   const isComparisonDataview = dataview.origin === COMPARISON_INJECTED_DATAVIEW_ORIGIN
 

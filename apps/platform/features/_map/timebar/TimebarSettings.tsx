@@ -21,7 +21,7 @@ import {
   selectActiveVesselGroupDataviews,
   selectActiveVesselsDataviews,
 } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
-import { selectActiveTrackDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
+import { selectTimebarActiveTrackDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/_map/dataviews/selectors/dataviews.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
@@ -76,7 +76,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const activeEnvironmentalDataviews = useSelector(
     selectActiveHeatmapEnvironmentalDataviewsWithoutStatic
   )
-  const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
+  const activeTrackDataviews = useSelector(selectTimebarActiveTrackDataviews)
   const activeVesselGroupDataviews = useSelector(selectActiveVesselGroupDataviews)
   const activeUserPointsDataviews = useSelector(selectActiveUserPointsWithTimeRangeDataviews)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)

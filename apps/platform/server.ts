@@ -55,7 +55,7 @@ function compressHtml(request: Request, response: Response) {
 }
 
 const fetchHandler = {
-  async fetch(request: Request, opts?: unknown) {
+  async fetch(request: Request, opts?: RequestOptions<Register>) {
     inFlightRequests++
     try {
       const result = proxy(request)
@@ -65,7 +65,7 @@ const fetchHandler = {
       }
 
       const requestToUse = result.type === 'request' ? result.request : request
-      return await server.fetch(requestToUse, opts as RequestOptions<Register> | undefined)
+      return await server.fetch(requestToUse, opts)
     } finally {
       inFlightRequests--
     }
@@ -76,9 +76,9 @@ const sentryEntry =
   process.env.NODE_ENV === 'production' ? wrapFetchWithSentry(fetchHandler) : fetchHandler
 
 const compressedEntry = {
-  async fetch(request: Request, opts?: unknown) {
+  async fetch(request: Request, opts?: RequestOptions<Register>) {
     return compressHtml(request, await sentryEntry.fetch(request, opts))
   },
 }
 
-export default createServerEntry(compressedEntry as Parameters<typeof createServerEntry>[0])
+export default createServerEntry(compressedEntry)

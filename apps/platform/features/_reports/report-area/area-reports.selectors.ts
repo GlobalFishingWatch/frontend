@@ -33,8 +33,9 @@ import {
 import {
   selectCurrentReport,
   selectReportAreaId,
+  selectReportAreaIds,
   selectReportDatasetId,
-} from 'features/_reports/reports.selectors'
+} from 'features/_reports/reports.current.selectors'
 import type { ReportCategory } from 'features/_reports/reports.types'
 import type { ReportVesselValues } from 'features/_reports/shared/vessels/report-vessels.types'
 import {
@@ -109,13 +110,6 @@ export const selectIsReportOwner = createSelector(
   [selectCurrentReport, selectUserData],
   (report, userData) => {
     return report?.ownerId === userData?.id
-  }
-)
-
-export const selectReportAreaIds = createSelector(
-  [selectReportAreaId, selectReportDatasetId],
-  (areaId, datasetId) => {
-    return { datasetId, areaId }
   }
 )
 

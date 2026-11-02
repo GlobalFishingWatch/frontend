@@ -1,8 +1,9 @@
 import { expect, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
+import { MAP_VIEW_ID } from '@platform/config/selectors/map'
+
 import { mapInstanceAtom } from 'features/_map/map/map.atoms'
-import { MAP_VIEW_ID } from 'features/_map/map/map-viewport.hooks'
 
 import type { JotaiStore, render } from '../appTestUtils'
 

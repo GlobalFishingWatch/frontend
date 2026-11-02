@@ -51,3 +51,18 @@ export function getOnboardingCards(t: TFunc): OnboardingCard[] {
     },
   ]
 }
+
+/** One file per language: the subtitles are burned into the frames, so each poster is per language too. */
+export const UPDATE_VIDEO_SOURCES = Object.fromEntries(
+  ['en', 'es', 'fr', 'pt'].map((language) => [
+    language,
+    {
+      src: `${PATH_BASENAME}/videos/update-${language}.mp4`,
+      poster: `${PATH_BASENAME}/videos/update-poster-${language}.jpg`,
+    },
+  ])
+)
+
+export function getUpdateVideoSource(language: string) {
+  return UPDATE_VIDEO_SOURCES[language.slice(0, 2)] ?? UPDATE_VIDEO_SOURCES.en
+}

@@ -15,7 +15,7 @@ import {
   getActiveDatasetsInActivityDataviews,
   getDatasetsInDataviews,
 } from 'features/_map/datasets/datasets.utils'
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 
 import styles from 'features/_map/workspace/shared/LayerPanel.module.css'

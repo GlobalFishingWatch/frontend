@@ -57,7 +57,7 @@ function Search() {
   const datasetError = useSelector(selectDatasetsError)
 
   useEffect(() => {
-    if (debouncedQuery === '' && query === '') {
+    if (!debouncedQuery && !query) {
       dispatch(cleanVesselSearchResults())
     }
   }, [debouncedQuery, dispatch, query])

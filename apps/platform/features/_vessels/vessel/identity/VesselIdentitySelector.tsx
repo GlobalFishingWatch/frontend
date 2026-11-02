@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import { isRegistryInTimerange } from 'features/_vessels/vessel/identity/vessel-identity.utils'
 import { selectVesselInfoData } from 'features/_vessels/vessel/selectors/vessel.selectors'
 import {

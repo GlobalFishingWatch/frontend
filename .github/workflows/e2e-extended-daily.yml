@@ -1,0 +1,72 @@
+name: E2E Extended (daily)
+
+on:
+  schedule:
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  e2e-extended:
+    name: Run extended e2e suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      CI: '1'
+      PLAYWRIGHT_BASE_URL: https://globalfishingwatch.org
+      PLAYWRIGHT_BROWSER: all
+      TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+      TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+      TEST_USER_NAME: ${{ secrets.TEST_USER_NAME }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - name: Setup pnpm
+        uses: pnpm/setup@v3
+        with:
+          install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
+
+      - name: Run extended e2e suite
+        working-directory: apps/platform-e2e
+        run: pnpm exec playwright test --workers=1 --grep "@smoke|@extended"
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: apps/platform-e2e/playwright-report
+
+  notify-failure:
+    name: Notify Slack on failure
+    runs-on: ubuntu-latest
+    needs: e2e-extended
+    if: failure()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Notify Slack
+        uses: ./.github/actions/notify-slack
+        with:
+          channel: '#eng-api-front-test-failures'
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          message: ":red_circle: *Daily extended e2e tests failed* on `main` (production)\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"

@@ -93,6 +93,15 @@ const DebugFeatureFlags: React.FC = () => {
       <p>Show the gaps threshold filter by hours in the vessel layer filters</p>
       <div className={styles.header}>
         <Switch
+          id="option_log_clicked_features"
+          active={debugOptions.logClickedFeatures}
+          onClick={() => dispatch(toggleDebugOption(DebugOption.LogClickedFeatures))}
+        />
+        <label htmlFor="option_log_clicked_features">Log clicked features</label>
+      </div>
+      <p>Log to the console the picked features of every layer on map click</p>
+      <div className={styles.header}>
+        <Switch
           id="option_disable_dataset_hash"
           active={debugOptions.addDatasetIdHash}
           onClick={() => dispatch(toggleDebugOption(DebugOption.DatasetIdHash))}

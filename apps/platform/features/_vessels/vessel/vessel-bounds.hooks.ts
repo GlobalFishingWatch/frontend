@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 
 import { DEFAULT_TIME_RANGE } from 'data/map/config'
 import { useMapFitBounds } from 'features/_map/map/map-bounds.hooks'
-import { useSetTimerange, useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useSetTimerange, useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import {
   selectVesselFitBoundsOnLoad,
   selectVesselInfoData,

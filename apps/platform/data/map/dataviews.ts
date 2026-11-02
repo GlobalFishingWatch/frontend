@@ -9,35 +9,62 @@ import { DataviewType } from '@globalfishingwatch/api-types'
 import { BasemapType } from '@globalfishingwatch/deck-layers/config'
 import * as DATAVIEWS_CONFIG from '@platform/config/map/dataviews'
 
-export const LEGACY_TO_LATEST_DATAVIEWS: DatasetsMigration = {
-  'apparent-fishing-effort-ais-v-3': DATAVIEWS_CONFIG.FISHING_AIS_DATAVIEW_SLUG,
-  'apparent-fishing-effort-v-3': DATAVIEWS_CONFIG.FISHING_ALL_DATAVIEW_SLUG,
-  'apparent-fishing-effort-vms-v-3': DATAVIEWS_CONFIG.FISHING_VMS_DATAVIEW_SLUG,
-  'apparent-fishing-effort': DATAVIEWS_CONFIG.FISHING_ALL_DATAVIEW_SLUG,
-  'encounter-cluster-events-v-3': DATAVIEWS_CONFIG.CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
-  'encounter-cluster-events': DATAVIEWS_CONFIG.CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
-  'fishing-map-vessel-track-v-3': DATAVIEWS_CONFIG.TEMPLATE_VESSEL_DATAVIEW_SLUG,
-  'fishing-map-vessel-track': DATAVIEWS_CONFIG.TEMPLATE_VESSEL_DATAVIEW_SLUG,
-  'loitering-cluster-events-v-3': DATAVIEWS_CONFIG.CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
-  'port-visit-cluster-events-v-3': DATAVIEWS_CONFIG.CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
-  'presence-activity-v-3': DATAVIEWS_CONFIG.PRESENCE_DATAVIEW_SLUG,
-  'presence-activity': DATAVIEWS_CONFIG.PRESENCE_DATAVIEW_SLUG,
-  'sar-v-3': DATAVIEWS_CONFIG.SAR_DATAVIEW_SLUG,
-  'sentinel-2-v-3': DATAVIEWS_CONFIG.SENTINEL2_DATAVIEW_SLUG,
-  'vessel-presence-v-3': DATAVIEWS_CONFIG.PRESENCE_DATAVIEW_SLUG,
-  'vessel-presence': DATAVIEWS_CONFIG.PRESENCE_DATAVIEW_SLUG,
-  'viirs-match-v-3': DATAVIEWS_CONFIG.VIIRS_MATCH_DATAVIEW_SLUG,
-  'viirs-match': DATAVIEWS_CONFIG.VIIRS_MATCH_DATAVIEW_SLUG,
-  sar: DATAVIEWS_CONFIG.SAR_DATAVIEW_SLUG,
-}
+const LATEST_TO_LEGACY_DATAVIEWS: [latest: string, legacy: string[]][] = [
+  [
+    DATAVIEWS_CONFIG.FISHING_ALL_DATAVIEW_SLUG,
+    ['apparent-fishing-effort', 'apparent-fishing-effort-v-3', 'apparent-fishing-effort-v-4'],
+  ],
+  [
+    DATAVIEWS_CONFIG.FISHING_AIS_DATAVIEW_SLUG,
+    ['apparent-fishing-effort-ais-v-3', 'apparent-fishing-effort-ais-v-4'],
+  ],
+  [
+    DATAVIEWS_CONFIG.FISHING_VMS_DATAVIEW_SLUG,
+    ['apparent-fishing-effort-vms-v-3', 'apparent-fishing-effort-vms-v-4'],
+  ],
+  [
+    DATAVIEWS_CONFIG.CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
+    ['encounter-cluster-events', 'encounter-cluster-events-v-3', 'encounter-cluster-events-v-4'],
+  ],
+  [DATAVIEWS_CONFIG.CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG, ['gaps-ais-off-cluster-events-v-4']],
+  [
+    DATAVIEWS_CONFIG.CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
+    ['loitering-cluster-events-v-3', 'loitering-cluster-events-v-4'],
+  ],
+  [
+    DATAVIEWS_CONFIG.CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
+    ['port-visit-cluster-events-v-3', 'port-visit-cluster-events-v-4'],
+  ],
+  [
+    DATAVIEWS_CONFIG.PRESENCE_DATAVIEW_SLUG,
+    [
+      'presence-activity',
+      'presence-activity-v-3',
+      'presence-activity-v-4',
+      'vessel-presence',
+      'vessel-presence-v-3',
+    ],
+  ],
+  [DATAVIEWS_CONFIG.SAR_DATAVIEW_SLUG, ['sar', 'sar-v-3', 'sar-v-4']],
+  [DATAVIEWS_CONFIG.SENTINEL2_DATAVIEW_SLUG, ['sentinel-2-v-3', 'sentinel-2-v-4']],
+  [DATAVIEWS_CONFIG.VIIRS_MATCH_DATAVIEW_SLUG, ['viirs-match', 'viirs-match-v-3']],
+  [
+    DATAVIEWS_CONFIG.TEMPLATE_VESSEL_DATAVIEW_SLUG,
+    ['fishing-map-vessel-track', 'fishing-map-vessel-track-v-3', 'fishing-map-vessel-track-v-4'],
+  ],
+  [DATAVIEWS_CONFIG.TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG, ['vessel-track-only-v-4']],
+]
+
+export const LEGACY_TO_LATEST_DATAVIEWS: DatasetsMigration = Object.fromEntries(
+  LATEST_TO_LEGACY_DATAVIEWS.flatMap(([latest, legacy]) => legacy.map((slug) => [slug, latest]))
+)
 
 export const OCEAN_AREAS_DATAVIEWS = [
   DATAVIEWS_CONFIG.EEZ_DATAVIEW_SLUG,
   DATAVIEWS_CONFIG.MPA_DATAVIEW_SLUG,
   DATAVIEWS_CONFIG.FAO_AREAS_DATAVIEW_SLUG,
   DATAVIEWS_CONFIG.RFMO_DATAVIEW_SLUG,
-  DATAVIEWS_CONFIG.PORTS_AIS_DATAVIEW_SLUG,
-  DATAVIEWS_CONFIG.PORTS_VMS_DATAVIEW_SLUG,
+  DATAVIEWS_CONFIG.PORTS_GLOBAL_DATAVIEW_SLUG,
 ]
 
 export const VMS_VESSEL_DATAVIEW_SLUGS: Partial<Record<UserGroupId, string>> = {
@@ -58,6 +85,7 @@ export const TEMPLATE_DATAVIEW_SLUGS = [
   DATAVIEWS_CONFIG.TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
   DATAVIEWS_CONFIG.TEMPLATE_USER_TRACK_DATAVIEW_SLUG,
   DATAVIEWS_CONFIG.TEMPLATE_CONTEXT_DATAVIEW_SLUG,
+  DATAVIEWS_CONFIG.TEMPLATE_CONTEXT_PMTILES_DATAVIEW_SLUG,
   DATAVIEWS_CONFIG.TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG,
   DATAVIEWS_CONFIG.TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
   DATAVIEWS_CONFIG.TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
@@ -106,10 +134,8 @@ export const CONTEXT_LAYERS_DATAVIEWS = [
   DATAVIEWS_CONFIG.FAO_AREAS_DATAVIEW_SLUG,
   DATAVIEWS_CONFIG.BASEMAP_LABELS_DATAVIEW_SLUG,
   DATAVIEWS_CONFIG.FIXED_INFRASTRUCTURE_DATAVIEW_SLUG,
-  DATAVIEWS_CONFIG.PORTS_AIS_DATAVIEW_SLUG,
-  DATAVIEWS_CONFIG.PORTS_VMS_DATAVIEW_SLUG,
-  DATAVIEWS_CONFIG.PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG,
-  DATAVIEWS_CONFIG.PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG,
+  DATAVIEWS_CONFIG.PORTS_GLOBAL_DATAVIEW_SLUG,
+  DATAVIEWS_CONFIG.PORTS_FOOTPRINT_GLOBAL_DATAVIEW_SLUG,
 ]
 
 const ENVIRONMENT_DATAVIEWS = [

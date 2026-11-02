@@ -9,9 +9,10 @@ import { toLngLatCoordinates } from '@globalfishingwatch/data-transforms'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { selectVesselsDatasets } from 'features/_map/datasets/datasets.selectors'
-import { useMapViewport, useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
+import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
+import { useMapViewport } from 'features/_map/map/map-viewport.hooks'
 import { overlaysCursorAtom } from 'features/_map/map/overlays/overlays-hooks'
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import { useSetTrackCorrectionId } from 'features/_vessels/track-correction/track-correction.hooks'
 import {
   setTrackCorrectionDataviewId,

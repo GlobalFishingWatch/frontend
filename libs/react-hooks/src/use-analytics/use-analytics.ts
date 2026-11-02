@@ -119,21 +119,30 @@ export const useAnalyticsInit = ({
       return
     }
     let cancelled = false
-    getReactGAClient()
-      .then((reactGA) => {
-        if (cancelled) {
-          return
-        }
-        if (typeof reactGA.initialize === 'function') {
-          reactGA.initialize(config, initGtagOptions)
-          setInitialized(true)
-        }
-        // Tip: Uncomment this to prevent sending hits to GA
-        // reactGA.set({ sendHitTask: null })
-      })
-      .catch(() => {})
+    const init = () => {
+      getReactGAClient()
+        .then((reactGA) => {
+          if (cancelled) {
+            return
+          }
+          if (typeof reactGA.initialize === 'function') {
+            reactGA.initialize(config, initGtagOptions)
+            setInitialized(true)
+          }
+          // Tip: Uncomment this to prevent sending hits to GA
+          // reactGA.set({ sendHitTask: null })
+        })
+        .catch(() => {})
+    }
+    const idleId =
+      typeof requestIdleCallback === 'function'
+        ? requestIdleCallback(init, { timeout: 3000 })
+        : undefined
+    const timeoutId = idleId === undefined ? setTimeout(init, 2000) : undefined
     return () => {
       cancelled = true
+      if (idleId !== undefined) cancelIdleCallback(idleId)
+      if (timeoutId !== undefined) clearTimeout(timeoutId)
     }
   }, [config, initGtagOptions])
 

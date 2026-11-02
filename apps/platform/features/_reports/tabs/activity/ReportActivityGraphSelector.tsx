@@ -18,7 +18,7 @@ import {
 import { selectReportActivityGraph } from 'features/_reports/reports.config.selectors'
 import { type ReportActivityGraph } from 'features/_reports/reports.types'
 import { REPORT_ACTIVITY_GRAPH_TIME_OPTIONS } from 'features/_reports/shared/utils/reports.utils'
-import { useSetReportTimeComparison } from 'features/_reports/tabs/activity/reports-activity-timecomparison.hooks'
+import { useReportTimeComparisonParams } from 'features/_reports/tabs/activity/reports-activity-timecomparison.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectUrlDataviewInstances } from 'router/routes.selectors'
@@ -35,7 +35,7 @@ type ReportActivityGraphSelectorProps = {
 export default function ReportActivityGraphSelector({
   loading = false,
 }: ReportActivityGraphSelectorProps) {
-  const { setReportTimecomparison, resetReportTimecomparison } = useSetReportTimeComparison()
+  const { getTimeComparisonParams, getResetTimeComparisonParams } = useReportTimeComparisonParams()
   const { replaceQueryParams } = useReplaceQueryParams()
   const selectedReportActivityGraph = useSelector(selectReportActivityGraph)
   const { t } = useTranslation()
@@ -84,31 +84,31 @@ export default function ReportActivityGraphSelector({
       )
 
       if (isEvolutionOrDatasetComparison(option.id)) {
-        resetReportTimecomparison()
-
         const reportComparisonDataviewIds =
           option.id === REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON
             ? { main: dataviews[0]?.id, compare: '' }
             : undefined
 
         replaceQueryParams({
+          ...getResetTimeComparisonParams(),
           reportComparisonDataviewIds,
           ...(option.id === REPORT_ACTIVITY_GRAPH_EVOLUTION && {
             dataviewInstances: filteredDataviewInstances,
           }),
+          reportActivityGraph: option.id,
         })
       } else {
-        setReportTimecomparison(option.id)
         replaceQueryParams({
+          ...getTimeComparisonParams(option.id),
           reportComparisonDataviewIds: undefined,
           dataviewInstances: filteredDataviewInstances,
+          reportActivityGraph: option.id,
         })
       }
       trackEvent({
         category: TrackCategory.Analysis,
         action: `Click on ${option.id} activity graph`,
       })
-      replaceQueryParams({ reportActivityGraph: option.id })
     }
   }
 

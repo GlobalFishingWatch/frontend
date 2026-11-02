@@ -7,7 +7,7 @@ import { useSearchByOwnerQuery } from 'queries/map/search-api'
 import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import { Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import RelatedVessel from 'features/_vessels/vessel/related-vessels/RelatedVessel'
 import { selectVesselInfoData } from 'features/_vessels/vessel/selectors/vessel.selectors'
 import { selectVesselDatasetId } from 'features/_vessels/vessel/vessel.config.selectors'

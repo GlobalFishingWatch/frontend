@@ -8,6 +8,10 @@ import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { Tooltip } from '@globalfishingwatch/ui-components/tooltip'
+import {
+  SIDEBAR_LOGIN_LINK_TESTID,
+  SIDEBAR_USER_LINK_TESTID,
+} from '@platform/config/selectors/user'
 
 import { selectWorkspaceCustomStatus } from 'features/_map/workspace/workspace.selectors'
 import { selectReportsStatus } from 'features/_reports/reports.slice'
@@ -74,7 +78,7 @@ const UserButton = ({
     <div className={cx(className, styles.wrapper)}>
       {guestUser || isUserExpired ? (
         <LoginLink
-          dataTestId="sidebar-login-link"
+          dataTestId={SIDEBAR_LOGIN_LINK_TESTID}
           tooltip={t((t) => t.common.login)}
           className={styles.loginLinkButton}
           loginSource="user-icon"
@@ -98,7 +102,7 @@ const UserButton = ({
           <Link
             to="/user"
             replace
-            data-testid="sidebar-user-link"
+            data-testid={SIDEBAR_USER_LINK_TESTID}
             className={cx(styles.wrapper, { [styles.openFileAnimation]: isAnimating })}
           >
             <span data-nav-icon>

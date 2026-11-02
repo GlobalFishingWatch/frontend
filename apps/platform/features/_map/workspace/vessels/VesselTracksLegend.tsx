@@ -156,6 +156,7 @@ function VesselTracksLegend(): React.ReactElement<any> | null {
           filterableDataviews.length > 0 && {
             brush: {
               range,
+              keepScale: true,
               onChange: onBrushChange,
               handleTooltip: t((t) => t.map.legendBrushHelp),
             },

@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { Button } from '@globalfishingwatch/ui-components'
 
 import downloadPopupImage from 'assets/images/download-popup.jpg'
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 
 import { getDownloadReportSupported } from './download.utils'
 

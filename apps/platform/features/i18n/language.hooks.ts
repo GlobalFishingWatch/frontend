@@ -52,7 +52,7 @@ export function useLanguageOptions() {
       setIsLoading(true)
       const locale = lang === 'source' ? Locale.en : (lang as Locale)
       // Read at click time instead of useSelector so the nav doesn't re-render on dataview changes.
-      // Lazy import keeps the dataview selector graph out of the platform shell (check-store-graph).
+      // Lazy import keeps the dataview selector graph out of the platform shell (check-load-boundaries).
       const { selectAllDataviewInstancesResolved } =
         await import('features/_map/dataviews/selectors/dataviews.resolvers.selectors')
       datasetsRefreshRef.current?.abort()

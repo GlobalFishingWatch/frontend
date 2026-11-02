@@ -76,7 +76,7 @@ export const useBeforeUnload = () => {
       e.preventDefault()
       setTimeout(() => {
         dispatch(setModalOpen({ id: 'createWorkspace', open: true }))
-      }, 400)
+      }, 1000)
     },
     [dispatch]
   )

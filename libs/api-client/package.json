@@ -17,6 +17,11 @@
       "development": "./src/utils/*.ts",
       "types": "./dist/utils/*.d.ts",
       "default": "./dist/utils/*.js"
+    },
+    "./hooks": {
+      "development": "./src/hooks/index.ts",
+      "types": "./dist/hooks/index.d.ts",
+      "default": "./dist/hooks/index.js"
     }
   },
   "main": "./dist/index.js",

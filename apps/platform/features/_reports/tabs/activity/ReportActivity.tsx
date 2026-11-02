@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { isEqual } from 'es-toolkit'
 
 import {
-  getIsConcurrentError,
+  getIsRateLimitExceeded,
   getIsTimeoutError,
   isAuthError,
 } from '@globalfishingwatch/api-client'
@@ -37,10 +37,12 @@ import { selectReportDataviewsWithPermissions } from 'features/_reports/report-a
 import { parseReportUrl } from 'features/_reports/report-area/area-reports.utils'
 import { selectReportActivityGraph } from 'features/_reports/reports.config.selectors'
 import {
-  selectActiveReportSubCategories,
   selectReportAreaId,
-  selectReportCategory,
   selectReportDatasetId,
+} from 'features/_reports/reports.current.selectors'
+import {
+  selectActiveReportSubCategories,
+  selectReportCategory,
 } from 'features/_reports/reports.selectors'
 import { ReportCategory } from 'features/_reports/reports.types'
 import ReportVesselsPlaceholder from 'features/_reports/shared/placeholders/ReportVesselsPlaceholder'
@@ -129,7 +131,7 @@ function ActivityReport() {
         return isEqual(currentReportParams, reportParams)
       })
     : undefined
-  const concurrentReportError = getIsConcurrentError(statusError!)
+  const concurrentReportError = getIsRateLimitExceeded(statusError!)
   const isSameWorkspaceReport =
     concurrentReportError && window?.location.href === lastReport?.workspaceUrl
   const isBQEditorDataset = dataviews.some((dataview) =>
@@ -405,7 +407,6 @@ function ActivityReport() {
       <div className={cx('card', styles.subsection, styles.front)}>
         <ReportSummary
           activityUnit={activityUnit}
-          reportStatus={reportStatus}
           // without tags in vessel goup reports because filtering doesn't work in injected dataviews
           showTags={!isVesselGroupReportLocation}
         />

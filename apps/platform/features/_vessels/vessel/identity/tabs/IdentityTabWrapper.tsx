@@ -8,7 +8,7 @@ import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import VesselInfoCorrection from 'features/_map/workspace/vessels/VesselInfoCorrection'
 import { selectIsGFWUser, selectIsJACUser } from 'features/_user/selectors/user.selectors'

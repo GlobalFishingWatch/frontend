@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './__root'
 import { Route as PlatformRouteImport } from './_platform'
+import { Route as LlmsDottxtRouteImport } from './llms[.]txt'
 import { Route as LoginRouteImport } from './login'
 import { Route as PlatformIndexRouteImport } from './_platform/index'
 import { Route as PlatformContentRouteImport } from './_platform/_content'
@@ -51,6 +52,11 @@ import { Route as PlatformMapMapCategoryWorkspaceIdReportChar123DatasetIdChar125
 
 const PlatformRoute = PlatformRouteImport.update({
   id: '/_platform',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
+  id: '/llms.txt',
+  path: '/llms.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -270,6 +276,7 @@ const PlatformMapMapCategoryWorkspaceIdReportChar123DatasetIdChar125Char123AreaI
 
 export interface FileRoutesByFullPath {
   '/': typeof PlatformIndexRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/login': typeof LoginRoute
   '/api/corrections': typeof ApiCorrectionsRoute
   '/api/downloadSurvey': typeof ApiDownloadSurveyRoute
@@ -307,6 +314,7 @@ export interface FileRoutesByFullPath {
   '/map/$category/$workspaceId/report/{-$datasetId}/{-$areaId}': typeof PlatformMapMapCategoryWorkspaceIdReportChar123DatasetIdChar125Char123AreaIdChar125Route
 }
 export interface FileRoutesByTo {
+  '/llms.txt': typeof LlmsDottxtRoute
   '/login': typeof LoginRoute
   '/': typeof PlatformIndexRoute
   '/api/corrections': typeof ApiCorrectionsRoute
@@ -345,6 +353,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_platform': typeof PlatformRouteWithChildren
+  '/llms.txt': typeof LlmsDottxtRoute
   '/login': typeof LoginRoute
   '/_platform/_content': typeof PlatformContentRouteWithChildren
   '/_platform/_map': typeof PlatformMapRouteWithChildren
@@ -388,6 +397,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/llms.txt'
     | '/login'
     | '/api/corrections'
     | '/api/downloadSurvey'
@@ -425,6 +435,7 @@ export interface FileRouteTypes {
     | '/map/$category/$workspaceId/report/{-$datasetId}/{-$areaId}'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/llms.txt'
     | '/login'
     | '/'
     | '/api/corrections'
@@ -462,6 +473,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_platform'
+    | '/llms.txt'
     | '/login'
     | '/_platform/_content'
     | '/_platform/_map'
@@ -504,6 +516,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   PlatformRoute: typeof PlatformRouteWithChildren
+  LlmsDottxtRoute: typeof LlmsDottxtRoute
   LoginRoute: typeof LoginRoute
   ApiCorrectionsRoute: typeof ApiCorrectionsRoute
   ApiDownloadSurveyRoute: typeof ApiDownloadSurveyRoute
@@ -524,6 +537,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof PlatformRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/llms.txt': {
+      id: '/llms.txt'
+      path: '/llms.txt'
+      fullPath: '/llms.txt'
+      preLoaderRoute: typeof LlmsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -912,6 +932,7 @@ const PlatformRouteWithChildren = PlatformRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   PlatformRoute: PlatformRouteWithChildren,
+  LlmsDottxtRoute: LlmsDottxtRoute,
   LoginRoute: LoginRoute,
   ApiCorrectionsRoute: ApiCorrectionsRoute,
   ApiDownloadSurveyRoute: ApiDownloadSurveyRoute,

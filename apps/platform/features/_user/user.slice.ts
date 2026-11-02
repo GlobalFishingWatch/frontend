@@ -13,8 +13,16 @@ import type { LoginSource } from 'features/_user/user.types'
 import { logoutServerFn } from 'server/auth.serverfn'
 import { getLocalStorageItem, setLocalStorageItem } from 'utils/dom'
 
+export type ReportGraphScreenshotSettings = {
+  format: 'png' | 'svg'
+  summary: boolean
+  footer: boolean
+  width?: number
+}
+
 export interface UserSettings {
   [PREFERRED_FOURWINGS_VISUALISATION_MODE]?: FourwingsVisualizationMode
+  reportGraphScreenshot?: ReportGraphScreenshotSettings
 }
 
 interface UserState {
@@ -55,7 +63,8 @@ export const logoutUserThunk = createAsyncThunk(
       }
       // Workspace cleanup happens in workspace.slice's extraReducers, reacting to this thunk.
       // Dispatching workspace actions from here made user.slice import workspace.slice, which put
-      // deck.gl and the timebar in the entry chunk of every page — see scripts/check-store-graph.mjs.
+      // deck.gl and the timebar in the entry chunk of every page.
+      // See apps/platform/scripts/load-boundaries.
     } catch (e: any) {
       console.warn(e)
     }

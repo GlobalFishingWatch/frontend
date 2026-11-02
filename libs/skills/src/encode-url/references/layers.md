@@ -102,8 +102,7 @@ Known national dataset ids (source: `gfw-terraform-api-resources/resources/datas
 | `high-seas`                     | `high-seas`            |
 | `eez-areas-12nm`                | `eez-12-nm`            |
 | `offshore-fixed-infrastructure` | `fixed-infrastructure` |
-| `port-locations`                | `ais-ports`            |
-| `port-locations-vms`            | `vms-ports`            |
+| `port-locations`                | `global-ports-v-5`     |
 | `graticules`                    | `graticules`           |
 | `high-seas-pockets`             | `high-seas-pocket`     |
 | `gfcm-fao`                      | `gfcm-fao`             |

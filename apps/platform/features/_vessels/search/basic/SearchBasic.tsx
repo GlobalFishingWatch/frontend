@@ -12,6 +12,7 @@ import {
   PRIVATE_BRAZIL_DATASET_CODE,
 } from '@globalfishingwatch/datasets-client'
 import { InputText, Spinner } from '@globalfishingwatch/ui-components'
+import { SEARCH_VESSELS_BASIC_INPUT_TESTID } from '@platform/config/selectors/vessels'
 
 import SearchBasicResultList from 'features/_vessels/search/basic/SearchBasicResultList'
 import { MIN_SEARCH_CHARACTERS, RESULTS_PER_PAGE } from 'features/_vessels/search/search.config'
@@ -140,7 +141,7 @@ function SearchBasic({
               autoFocus
               disabled={!basicSearchAllowed}
               className={styles.input}
-              testId="search-vessels-basic-input"
+              testId={SEARCH_VESSELS_BASIC_INPUT_TESTID}
               type="search"
               loading={
                 searchStatus === AsyncReducerStatus.Loading ||

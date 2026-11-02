@@ -1,0 +1,17 @@
+# .github/workflows/integration-tests.yml copies this over .nx/ci-config.yaml before
+# `nx-cloud start-workers`, which only reads that path. Kept separate because the stop target
+# differs from e2e's (`test-ci`).
+dte:
+  distribute-on: 3 linux-large-pnpm
+lifecycle:
+  stop-after:
+    - integration-ci
+workers:
+  # NX_* variables are forwarded automatically. The test user's credentials are deliberately
+  # absent: workers must not log in (see apps/platform/test/setup/login/auth-setup.ts).
+  with-env-vars:
+    - CI
+    - VITE_API_GATEWAY
+    - VITE_WORKSPACE_ENV
+    - TEST_CHROME_ONLY
+    - TEST_AUTH_TOKENS

@@ -11,21 +11,23 @@ export function getPickedFeatureToHighlight(
     datasetId?: string
   }
 ) {
+  const getId = (properties?: Record<string, any>) =>
+    properties?.[idProperty] ?? properties?.[idProperty.toLowerCase()]
+  const dataId = getId(data.properties)
+  // Without an id every feature would match an id-less picked feature (undefined === undefined),
+  // so fall back to the feature's own id and only match picked features carrying that same id
+  if (dataId == null) {
+    return data.id != null && pickedFeatures?.some((f) => f.id === data.id)
+  }
   return pickedFeatures?.some((f) => {
-    if (
-      f.id === data.properties?.[idProperty] ||
-      f.properties?.[idProperty] === data.properties?.[idProperty]
-    ) {
+    if (f.id === dataId || getId(f.properties) === dataId) {
       return true
     }
     if (!datasetId || !f.properties?.datasetIds?.length) {
       return false
     }
     return (f.properties?.datasetIds as string[])?.some((id, index) => {
-      return (
-        f.properties?.areaIds?.[index] === data.properties[idProperty].toString() &&
-        id === datasetId
-      )
+      return f.properties?.areaIds?.[index] === dataId.toString() && id === datasetId
     })
   })
 }

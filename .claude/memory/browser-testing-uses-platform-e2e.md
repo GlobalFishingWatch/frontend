@@ -22,7 +22,12 @@ details wrong:
 - Browser matrix is env-driven (`PLAYWRIGHT_BROWSER=all|chromium,firefox|…`), 3-minute test
   timeout, 30s expect timeout, trace/screenshot/video on failure, `maxDiffPixelRatio: 0.01`,
   `snapshotPathTemplate` → `__screenshots__/`.
-- `test:local` has `dependsOn: platform:start`, so Nx boots the dev server (port 3003) for you.
+- `test:local`, `screenshots` and every `test-ci--*` task depend on `platform:start` with
+  `waitFor: "ready"`, inferred from `webServer.command` (`pnpm nx run platform:start`). Nx boots the
+  dev server (port 3003) and holds Playwright until Vite listens (`nxReadySignal()` in `vite.config.ts`).
+  The smoke `test` target opts out (`dependsOn: []`). See [[split-e2e-directives]].
+  Pass Playwright flags after `--`: `pnpm nx test:local platform-e2e -- --grep "<name>"` — a bare
+  `--project` is read by Nx, not Playwright. Pick the browser with `PLAYWRIGHT_BROWSER=chromium`.
 - Existing helpers to reuse instead of rewriting: `src/helpers/hydration.ts` (SSR hydration wait),
   `src/helpers/map.ts`, `src/helpers/modals.ts`, `src/helpers/timeouts.ts`,
   `src/pages/LoginPage.ts`, `src/tags.ts` (`@smoke` / `@extended`).
@@ -40,6 +45,7 @@ Test files must match `*.e2e.spec.(ts|tsx)` under `src/` or Playwright ignores t
 | One spec                    | add `--grep "<name>"`                                        |
 | Screenshots                 | `pnpm nx screenshots platform-e2e` (`:update` to rebaseline) |
 | Screenshot report           | `pnpm nx screenshots:report platform-e2e`                    |
+| HTML report (any run)       | `pnpm nx show-report platform-e2e`                           |
 
 New browser check → add a spec under `apps/platform-e2e/src/tests/`, reuse the fixtures and
 helpers, tag it. Ad-hoc interactive poking (Playwright MCP) is fine, but point it at the dev server

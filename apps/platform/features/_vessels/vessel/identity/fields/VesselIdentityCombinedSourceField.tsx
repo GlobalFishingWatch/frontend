@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { type VesselInfo } from '@globalfishingwatch/api-types'
 import { Icon } from '@globalfishingwatch/ui-components'
 
-import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
+import { selectIsGFWUser, selectIsJACUser } from 'features/_user/selectors/user.selectors'
 import type { VesselLastIdentity } from 'features/_vessels/search/search.slice'
 import { getIsCombinedSourceInTimerange } from 'features/_vessels/vessel/identity/fields/vessel-identity.utils'
 import VesselIdentityField from 'features/_vessels/vessel/identity/fields/VesselIdentityField'
@@ -24,6 +24,7 @@ const VesselIdentityCombinedSourceField = ({
   property,
 }: VesselIdentityCombinedSourceFieldProps) => {
   const isGFWUser = useSelector(selectIsGFWUser)
+  const isJACUser = useSelector(selectIsJACUser)
   const [geartypesExpanded, setGeartypesExpanded] = useState<number | null>(null)
   const [vesseltypesExpanded, setVesseltypesExpanded] = useState<number | null>(null)
   const combinedSource = identity?.combinedSourcesInfo?.[property]
@@ -68,7 +69,7 @@ const VesselIdentityCombinedSourceField = ({
             </Fragment>
           )
 
-          if (isGFWUser && property === 'geartypes') {
+          if ((isGFWUser || isJACUser) && property === 'geartypes') {
             return (
               <Fragment key={index}>
                 <li onClick={() => toggleGearTypesExpanded(index)} className={styles.expandable}>
@@ -85,7 +86,7 @@ const VesselIdentityCombinedSourceField = ({
             )
           }
 
-          if (isGFWUser && property === 'shiptypes') {
+          if ((isGFWUser || isJACUser) && property === 'shiptypes') {
             return (
               <Fragment key={index}>
                 <li onClick={() => toggleVesselTypesExpanded(index)} className={styles.expandable}>

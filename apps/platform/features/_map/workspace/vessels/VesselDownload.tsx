@@ -46,20 +46,17 @@ function VesselDownloadButton({
     dispatch(setModalOpen({ id: 'downloadTrack', open: true }))
   }
 
+  if (!downloadSupported) {
+    return null
+  }
+
   return (
     <UserLoggedIconButton
       loginSource="vessel-download"
       icon="download"
       type={iconType}
-      disabled={!downloadSupported}
       loginTooltip={t((t) => t.download.trackLogin) as string}
-      tooltip={
-        downloadSupported
-          ? t((t) => t.download.trackAction)
-          : t((t) => t.download.trackNotAllowed, {
-              defaultValue: "You don't have permissions to download tracks from this source",
-            })
-      }
+      tooltip={t((t) => t.download.trackAction)}
       tooltipPlacement="top"
       onClick={onDownloadClick}
       size="medium"

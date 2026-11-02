@@ -27,6 +27,7 @@ import {
   selectLayerLibraryModalOpen,
   selectOnboardingModalOpen,
   selectTurningTidesModalOpen,
+  selectUpdateVideoModalOpen,
   selectVesselCorrectionModalOpen,
   setModalOpen,
   toggleBigQueryModal,
@@ -55,6 +56,9 @@ const Welcome = lazy(() => import('features/welcome/Welcome'))
 const VesselGroupModal = lazy(() => import('features/_user/vessel-groups/VesselGroupModal'))
 const FeedbackModal = lazy(() => import('features/feedback/FeedbackModal'))
 const OnboardingModal = lazy(() => import('features/onboarding/OnboardingModal'))
+// Lazy to keep it out of the shell. Its container only matters near the rate limit, long after this loads
+const RateLimitChallenge = lazy(() => import('./RateLimitChallenge'))
+const UpdateVideoModal = lazy(() => import('features/onboarding/UpdateVideoModal'))
 const VesselCorrectionModal = lazy(
   () => import('features/_vessels/vessel/vesselCorrection/VesselCorrectionModal')
 )
@@ -116,6 +120,7 @@ const AppModals = () => {
   const feedbackModalOpen = useSelector(selectFeedbackModalOpen)
   const welcomePopupContentKey = useSelector(selectWelcomeModalKey)
   const onboardingModalOpen = useSelector(selectOnboardingModalOpen)
+  const updateVideoModalOpen = useSelector(selectUpdateVideoModalOpen)
   const vesselCorrectionModalOpen = useSelector(selectVesselCorrectionModalOpen)
 
   const [saveWorkspaceBeforeLeave, setSaveWorkspaceBeforeLeave] = useSessionStorage<
@@ -274,6 +279,11 @@ const AppModals = () => {
           )}
         </Fragment>
       )}
+      {updateVideoModalOpen && (
+        <Suspense fallback={null}>
+          <UpdateVideoModal />
+        </Suspense>
+      )}
       {onboardingModalOpen && (
         <Suspense fallback={null}>
           <OnboardingModal />
@@ -284,6 +294,9 @@ const AppModals = () => {
           <VesselGroupModal />
         </Suspense>
       )}
+      <Suspense fallback={null}>
+        <RateLimitChallenge />
+      </Suspense>
     </Fragment>
   )
 }

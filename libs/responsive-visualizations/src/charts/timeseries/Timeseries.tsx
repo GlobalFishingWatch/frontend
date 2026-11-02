@@ -37,6 +37,7 @@ export function ResponsiveTimeseries({
   onIndividualItemClick,
   onAggregatedItemClick,
   individualIcon,
+  onIndividualSupportedChange,
 }: ResponsiveTimeseriesProps) {
   const aggregatedValueKeys = useValueKeys(aggregatedValueKey)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -50,6 +51,7 @@ export function ResponsiveTimeseries({
     getAggregatedData,
     getIndividualData,
     getIsIndividualSupported: getIsIndividualTimeseriesSupported,
+    onIndividualSupportedChange,
   })
 
   if (!getAggregatedData && !getIndividualData) {

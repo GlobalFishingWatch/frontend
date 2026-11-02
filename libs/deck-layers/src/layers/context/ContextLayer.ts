@@ -10,7 +10,7 @@ import { TileLayer } from '@deck.gl/geo-layers'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import type { GeoJsonProperties } from 'geojson'
 
-import { unwrapFeatureLongitudes } from '@globalfishingwatch/data-transforms'
+import { mergeFeatureParts, unwrapFeatureLongitudes } from '@globalfishingwatch/data-transforms'
 
 import {
   COLOR_HIGHLIGHT_FILL,
@@ -41,11 +41,13 @@ import type {
 } from './context.types'
 import { ContextLayerId } from './context.types'
 import {
+  filterHiddenFeatures,
+  getContextFilterOperatorsHash,
   getContextFiltersHash,
   getContextId,
   getContextLink,
   getSelectedTilesFeatures,
-  mergePickedFeatures,
+  groupPickedFeatures,
 } from './context.utils'
 
 type _ContextLayerProps = TileLayerProps & ContextLayerProps
@@ -174,6 +176,10 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
   }
 
   getRenderedFeatures(maxFeatures: number | null = null): ContextFeature[] {
+    return this.getRenderedFeatureGroups(maxFeatures).map(mergeFeatureParts)
+  }
+
+  getRenderedFeatureGroups(maxFeatures: number | null = null): ContextFeature[][] {
     const { viewport } = this.context
     const { idProperty = DEFAULT_ID_PROPERTY, valueProperties, datasetId } = this.props.layers[0]
     if (!viewport) return []
@@ -183,11 +189,25 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
       const layer = this.props.layers[index] || this.props.layers[0]
       const sublayer = layer?.sublayers?.[0]
       if (!sublayer) return
-      const features = getSelectedTilesFeatures<ContextFeature>(tileLayer, viewport, {
-        wgs84: isPMTilesUrl(layer.tilesUrl),
-      })
+      // Tile content is not filtered by the DataFilterExtension the way rendered features are,
+      // so mirror its category filter here: first filter key, any of the filter values.
+      const filterKey = Object.keys(sublayer.filters || {})[0]
+      const filterCategories = Object.values(sublayer.filters || {}).flatMap((value) => value || [])
+      const features = filterHiddenFeatures(
+        getSelectedTilesFeatures<ContextFeature>(tileLayer, viewport, {
+          wgs84: isPMTilesUrl(layer.tilesUrl),
+        }),
+        layer.id
+      )
       for (const feature of features) {
         if (maxFeatures !== null && pickedFeatures.length >= maxFeatures) break
+        if (
+          filterKey &&
+          filterCategories.length &&
+          !filterCategories.includes(feature.properties?.[filterKey])
+        ) {
+          continue
+        }
         const object = {
           ...feature,
           color: sublayer.color,
@@ -204,7 +224,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
       }
     })
 
-    return mergePickedFeatures<ContextFeature>({
+    return groupPickedFeatures<ContextFeature>({
       pickedFeatures,
       idProperty,
       layers: this.props.layers,
@@ -226,6 +246,12 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
         ? {}
         : { loaders: [GFWMVTLoader], loadOptions: { ...getFetchLoadOptions() } }
       const tilesLoadProps = { ...loaderProps, debounceTime, maxRequests }
+      const sublayersHash = layer.sublayers
+        .map(
+          (s) =>
+            `${s.dataviewId}:${s.color}:${s.thickness}:${getContextFiltersHash(s.filters)}:${getContextFilterOperatorsHash(s.filterOperators)}`
+        )
+        .join(',')
 
       if (layer.id === ContextLayerId.EEZBoundaries) {
         return new TilesLayer<ContextFeature>({
@@ -233,6 +259,9 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
           data: layer.tilesUrl,
           ...tilesLoadProps,
           maxZoom: 8,
+          updateTriggers: {
+            renderSubLayers: [sublayersHash],
+          },
           renderSubLayers: (props: any) => {
             const mvtSublayerProps = { ...props, ...getSublayerProps(props) }
             return layer.sublayers.map((sublayer) => {
@@ -273,11 +302,12 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
         maxZoom: 8,
         onViewportLoad: this.props.onViewportLoad,
         updateTriggers: {
-          renderSubLayers: [highlightedFeaturesHash],
+          renderSubLayers: [highlightedFeaturesHash, sublayersHash],
         },
         renderSubLayers: (props) => {
           const mvtSublayerProps = {
             ...props,
+            data: filterHiddenFeatures(props.data, layer.id),
             ...getSublayerProps({ tile: props.tile, extensions: props.extensions }),
           }
           return layer.sublayers.map((sublayer) => {

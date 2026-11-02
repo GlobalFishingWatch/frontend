@@ -8,7 +8,7 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
  * only consumer is features/_map/workspace/workspace.utils.ts, which the workspace and workspaces slices
  * both reach. Importing them from area-reports.utils / reports-activity-timeseries.utils put @turf/turf,
  * match-sorter, simple-statistics and deck-layers in the reducer map, and therefore in the entry chunk
- * of every page — see scripts/check-store-graph.mjs.
+ * of every page — see apps/platform/scripts/load-boundaries.
  */
 
 export function cleanAggregateByPropertyDataviewFromReport(dataview: UrlDataviewInstance) {

@@ -43,8 +43,11 @@ fine because the compiler drops the handler body and its imports on the client.
 - New `createServerFn` → `<feature>.serverfn.ts` next to the feature, nothing else exported.
 - Helper that touches the request, cookies, secrets, fs or nitro → `.server.ts`.
 - `__root.tsx` loads `server/user.server` and `server/screen-size.server` through
-  `if (!import.meta.env.SSR) return …; await import(…)`. Keep that guard if you touch it — the
-  dynamic import is what keeps the client build clean.
+  `createIsomorphicFn().server(…).client(…)` with **static** imports. The compiler drops the
+  `.server()` body and the now-unused imports from the client bundle. Since Start 1.169
+  (2026-10-13), the old `if (!import.meta.env.SSR) return …; await import(…)` guard trips import
+  protection: the plugin sees the dynamic `import()` in the client graph and warns, guard or not.
+  Don't go back to it.
 - `routes/api/ocean-areas/*` are plain HTTP endpoints for `hooks/ocean-areas.ts`, not server
   functions. Converting them is a separate decision.
 

@@ -1,16 +1,18 @@
-import { useCallback, useState } from 'react'
+import { lazy, Suspense, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 
-import { IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { Modal } from '@globalfishingwatch/ui-components/modal'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { DEFAULT_WORKSPACE_CATEGORY } from '@platform/config/map/workspaces'
 import { ROUTE_PATHS } from '@platform/config/routes'
+import { REMOVE_WORKSPACE_BUTTON_TESTID } from '@platform/config/selectors/user'
 
 import { selectDeprecatedDatasets } from 'features/_map/datasets/datasets.slice'
 import { hasWorkspaceDataviewsDeprecated } from 'features/_map/dataviews/dataviews.utils'
-import { useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
-import EditWorkspace from 'features/_map/workspace/save/WorkspaceEdit'
+import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
 import { getWorkspaceLabel } from 'features/_map/workspace/workspace.utils'
 import type { AppWorkspace } from 'features/_map/workspaces-list/workspaces-list.slice'
 import {
@@ -26,6 +28,9 @@ import { selectUserWorkspacesActive } from './selectors/user.permissions.selecto
 
 import styles from './User.module.css'
 
+// Lazy: the edit form pulls the map workspace save flow, only needed once the user clicks edit.
+const EditWorkspace = lazy(() => import('features/_map/workspace/save/WorkspaceEdit'))
+
 function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -37,6 +42,7 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
 
   const loading =
+    workspacesStatus === AsyncReducerStatus.Idle ||
     workspacesStatus === AsyncReducerStatus.Loading ||
     workspacesStatus === AsyncReducerStatus.LoadingItem
   const updateLoading = workspacesStatus === AsyncReducerStatus.LoadingUpdate
@@ -80,7 +86,9 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
           contentClassName={styles.modal}
           onClose={onClose}
         >
-          <EditWorkspace workspace={editWorkspace} isWorkspaceList onFinish={onClose} />
+          <Suspense fallback={null}>
+            <EditWorkspace workspace={editWorkspace} isWorkspaceList onFinish={onClose} />
+          </Suspense>
         </Modal>
       )}
       {loading ? (
@@ -108,17 +116,20 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
                     search={{}}
                     onClick={() => onWorkspaceClick(workspace)}
                   >
-                    <span className={styles.workspaceTitle} data-test="workspace-name">
+                    <span
+                      className={styles.workspaceTitle}
+                      data-test="workspace-name"
+                      translate="no"
+                    >
                       {getHighlightedText(label as string, searchQuery, styles)}
                     </span>
                     {isOutdated ? (
                       <IconButton
-                        icon="warning"
-                        type={'warning-invert'}
+                        icon="update-required"
+                        type="update-required"
                         loading={loading}
                         disabled={loading}
                         tooltip={t((t) => t.workspace.updateDeprecatedDataviews)}
-                        size="small"
                       />
                     ) : (
                       <IconButton icon="arrow-right" />
@@ -138,8 +149,8 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
                     loading={workspace.id === workspacesStatusId && deleteLoading}
                     tooltip={t((t) => t.workspace.remove)}
                     onClick={() => onDeleteClick(workspace)}
-                    testId="remove-workspace-button"
-                    data-testid="remove-workspace-button"
+                    testId={REMOVE_WORKSPACE_BUTTON_TESTID}
+                    data-testid={REMOVE_WORKSPACE_BUTTON_TESTID}
                   />
                 </li>
               )

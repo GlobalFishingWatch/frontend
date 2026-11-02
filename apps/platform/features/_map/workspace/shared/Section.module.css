@@ -135,7 +135,7 @@
 .disclaimer {
   background-color: var(--color-help-yellow);
   padding: 0 var(--space-XS);
-  margin: 0 var(--space-XS);
+  margin: 0 var(--space-XS) var(--space-S);
 }
 
 .link {

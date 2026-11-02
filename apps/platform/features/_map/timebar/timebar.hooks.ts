@@ -12,7 +12,7 @@ import {
   selectActiveUserPointsWithTimeRangeDataviews,
   selectActiveVesselGroupDataviews,
 } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
-import { selectActiveTrackDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
+import { selectTimebarActiveTrackDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/_map/dataviews/selectors/dataviews.selectors'
 import {
   selectTimebarGraph,
@@ -35,11 +35,6 @@ import {
   setHasChangedSettings,
   setHighlightedEvents,
 } from './timebar.slice'
-
-// The timerange cluster moved to timerange.hooks so always-loaded callers (workspace.hook, reached from
-// app-shell.hooks / LanguageToggle / user.hooks) do not pull @globalfishingwatch/timebar and
-// deck-layer-composer. Re-exported here for the 34 modules that already import it from this file.
-export { timerangeState, useSetTimerange, useTimerangeConnect } from './timerange.hooks'
 
 export const useDisableHighlightTimeConnect = () => {
   const dispatch = useAppDispatch()
@@ -188,7 +183,7 @@ export const useTimebarVisualisation = () => {
   const activeEventsDataviews = useSelector(selectActiveEventsDataviews)
   const activeVesselGroupDataviews = useSelector(selectActiveVesselGroupDataviews)
   const activeUserPointsDataviews = useSelector(selectActiveUserPointsWithTimeRangeDataviews)
-  const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
+  const activeTrackDataviews = useSelector(selectTimebarActiveTrackDataviews)
   const activeEnvDataviews = useSelector(selectActiveHeatmapEnvironmentalDataviewsWithoutStatic)
   const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
 

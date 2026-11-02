@@ -19,7 +19,10 @@ import {
 } from 'features/_map/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectAllDataviewsInWorkspace } from 'features/_map/dataviews/selectors/dataviews.selectors'
-import { getIsWorkspaceArchived } from 'features/_map/workspace/workspace.utils'
+import {
+  getIsPrivateWorkspace,
+  getIsWorkspaceArchived,
+} from 'features/_map/workspace/workspace.utils'
 import { selectPrivateSearchDatasetIds } from 'features/_user/selectors/user.groups.selectors'
 import { selectIsGuestUser, selectUserData } from 'features/_user/selectors/user.selectors'
 import { isDatasetSearchFieldNeededSupported } from 'features/_vessels/search/advanced/advanced-search.utils'
@@ -56,10 +59,13 @@ const selectSearchDatasetsInWorkspace = createSelector(
   ) => {
     const isArchivedWorkspace = !!workspaceId && getIsWorkspaceArchived({ id: workspaceId })
     // Archived (pipe 4) workspaces search only their own layers, as the default dataviews are
-    // built for the current pipe. Any other workspace searches every dataset available: the
-    // default dataviews plus the private datasets granted by permissions in the current pipe
-    // version, as the permission ids come from LATEST_DATASETS_VMS and are still v4
-    const datasetsIds = isArchivedWorkspace
+    // built for the current pipe. Private (e.g. country) workspaces do too, so they don't search
+    // other countries' VMS listed in the default dataviews. Any other workspace searches every
+    // dataset available: the default dataviews plus the private datasets granted by permissions in
+    // the current pipe version, as the permission ids come from LATEST_DATASETS_VMS and are still v4
+    const searchesOnlyWorkspaceLayers =
+      isArchivedWorkspace || (!!workspaceId && getIsPrivateWorkspace({ id: workspaceId }))
+    const datasetsIds = searchesOnlyWorkspaceLayers
       ? getDatasetsInDataviews(dataviewInstances)
       : [
           ...getDatasetsInDataviews(dataviews),
@@ -72,7 +78,7 @@ const selectSearchDatasetsInWorkspace = createSelector(
       return [id, ...(relatedDatasets || []).map((d) => d.id)]
     })
     // Private datasets granted by permissions replace their public version when it is in the workspace
-    const workspaceDatasets = isArchivedWorkspace
+    const workspaceDatasets = searchesOnlyWorkspaceLayers
       ? [
           ...datasets,
           ...privateSearchDatasetIds.filter((id) =>

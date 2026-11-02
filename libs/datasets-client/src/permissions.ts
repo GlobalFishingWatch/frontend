@@ -26,6 +26,14 @@ export const checkDatasetReportPermission = (datasetId: string, permissions: Use
   return checkExistPermissionInList(permissions, permission)
 }
 
+export const checkDatasetGriddedActivityPermission = (
+  datasetId: string,
+  permissions: UserPermission[]
+) => {
+  const permission = { type: 'dataset', value: datasetId, action: 'gridded-activity' }
+  return checkExistPermissionInList(permissions, permission)
+}
+
 export const checkDatasetDownloadTrackPermission = (
   datasetId: string,
   permissions: UserPermission[]

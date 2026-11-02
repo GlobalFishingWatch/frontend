@@ -149,6 +149,10 @@ export class FourwingsClustersLayer extends CompositeLayer<
     return `${this.state?.viewportLoaded ?? false}`
   }
 
+  get isLoaded(): boolean {
+    return super.isLoaded && !!this.state?.viewportLoaded && !this.internalState?.needsUpdate
+  }
+
   get clusterMode(): FourwingsClusterMode {
     const { clusterMaxZoomLevels } = this.props
     if (!clusterMaxZoomLevels) {

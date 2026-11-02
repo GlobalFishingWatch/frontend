@@ -22,7 +22,7 @@ import { getSourcesSelectedInDataview } from 'features/_map/workspace/activity/a
 import { selectWorkspaceWithCurrentState } from 'features/_map/workspace/selectors/app.workspace.selectors'
 import { getWorkspaceReport, parseUpsertWorkspace } from 'features/_map/workspace/workspace.utils'
 import { createWorkspaceThunk } from 'features/_map/workspaces-list/workspaces-list.slice'
-import { selectReportAreaIds } from 'features/_reports/report-area/area-reports.selectors'
+import { selectReportAreaIds } from 'features/_reports/reports.current.selectors'
 import { createReportThunk } from 'features/_reports/reports.slice'
 import { selectUserGroupsClean } from 'features/_user/selectors/user.permissions.selectors'
 import { selectIsGuestUser, selectUserData } from 'features/_user/selectors/user.selectors'

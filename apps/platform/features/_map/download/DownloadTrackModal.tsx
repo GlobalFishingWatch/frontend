@@ -19,7 +19,7 @@ import {
   selectDownloadTrackStatus,
 } from 'features/_map/download/downloadTrack.slice'
 import TimelineDatesRange from 'features/_map/map/controls/TimelineDatesRange'
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'

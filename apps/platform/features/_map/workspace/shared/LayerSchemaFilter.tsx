@@ -5,6 +5,7 @@ import type { FilterOperator } from '@globalfishingwatch/api-types'
 import { EXCLUDE_FILTER_ID, INCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import type { SupportedDatasetFilter } from '@globalfishingwatch/datasets-client'
 import { getOperationLabel } from '@globalfishingwatch/dataviews-client'
+import { BATHYMETRY_DEPTH_GROUPS } from '@globalfishingwatch/deck-layers/config'
 import type {
   ChoiceOption,
   MultiSelectOption,
@@ -184,6 +185,29 @@ const getRangeBySchema = (schemaFilter: DataviewFilterConfig): number[] => {
 
 const UNSORTED_FILTERS: SupportedDatasetFilter[] = ['speed', 'elevation', 'vessel-groups', 'depth']
 
+const getDepthOptionsWithHeaders = (options: MultiSelectOption[]): MultiSelectOption[] => {
+  const isGroup = (option: MultiSelectOption) => Object.hasOwn(BATHYMETRY_DEPTH_GROUPS, option.id)
+  const getHeader = (id: string, label: string): MultiSelectOption => ({
+    id,
+    label,
+    disableSelection: true,
+    className: styles.optionsGroupHeader,
+    height: 28,
+  })
+  return [
+    getHeader(
+      'depth-groups-header',
+      t((t) => t.layer.depthLineGroups)
+    ),
+    ...options.filter(isGroup),
+    getHeader(
+      'depth-single-header',
+      t((t) => t.layer.depthSingleLines)
+    ),
+    ...options.filter((option) => !isGroup(option)),
+  ]
+}
+
 function LayerSchemaFilter({
   schemaFilter,
   onSelect,
@@ -361,7 +385,7 @@ function LayerSchemaFilter({
             options,
             filterOperator,
           })}
-          options={options}
+          options={id === 'depth' ? getDepthOptionsWithHeaders(options) : options}
           selectedOptions={optionsSelected}
           onSelect={(selection) => onSelect({ filterKey: id, selection })}
           labelContainerClassName={styles.labelContainer}

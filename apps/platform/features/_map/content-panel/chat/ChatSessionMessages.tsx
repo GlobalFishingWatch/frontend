@@ -24,7 +24,7 @@ import {
   navigateToolOutputSchema,
   useNavigateToolMapState,
 } from 'features/_map/content-panel/chat/navigate-tool'
-import ContentMarkdown from 'features/_map/content-panel/ContentMarkdown'
+import ContentMarkdown from 'features/help/markdown/ContentMarkdown'
 
 import styles from './Chat.module.css'
 

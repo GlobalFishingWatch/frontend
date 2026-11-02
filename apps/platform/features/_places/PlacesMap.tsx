@@ -19,6 +19,7 @@ import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { SwitchRow } from '@globalfishingwatch/ui-components/switch-row'
 import { DEFAULT_PLACES_VIEWPORT } from '@platform/config/map/app'
 
+import { DECK_DEVICE_PROPS } from 'data/map/config'
 import BasemapSwitcher from 'features/_map/map/controls/BasemapSwitcher'
 import { getContextValue } from 'features/_map/map/popups/map-popups.utils'
 import { hoveredPlaceAtom } from 'features/_places/places.atoms'
@@ -175,6 +176,7 @@ function PlacesMap({ dataviewsByType, type }: PlacesMapProps) {
     <Fragment>
       <DeckGL
         views={PLACES_MAP_VIEW}
+        deviceProps={DECK_DEVICE_PROPS}
         viewState={viewState}
         onViewStateChange={({ viewState, interactionState }) => {
           const isUserMove =

@@ -5,6 +5,10 @@
   flex-wrap: wrap;
 }
 
+.tagList > li {
+  max-width: 100%;
+}
+
 .sourceExpanded {
   display: none;
   font: var(--font-XS);

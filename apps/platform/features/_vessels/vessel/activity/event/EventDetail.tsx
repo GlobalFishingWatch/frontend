@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 
-import type { EventNextPort, Locale } from '@globalfishingwatch/api-types'
+import type { EventNextPort, EventType, Locale } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { IconButton, SolarStatus, Spinner } from '@globalfishingwatch/ui-components'
 
@@ -12,6 +12,7 @@ import { getHasVesselProfileInstance } from 'features/_map/dataviews/dataviews.u
 import { selectWorkspaceDataviewInstancesMerged } from 'features/_map/dataviews/selectors/dataviews.merged.selectors'
 import PortsReportLink from 'features/_reports/report-port/PortsReportLink'
 import { useActivityEventTranslations } from 'features/_vessels/vessel/activity/event/event.hook'
+import { selectVesselEventsDatasets } from 'features/_vessels/vessel/selectors/vessel.resources.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/_vessels/vessel/vessel.config'
 import { selectVesselDatasetId } from 'features/_vessels/vessel/vessel.config.selectors'
 import { useVesselProfileEncounterLayer } from 'features/_vessels/vessel/vessel.hooks'
@@ -77,18 +78,21 @@ const TimeFields = ({ event }: { event: VesselEvent }) => {
 
 const PortVisitedAfterField = ({ nextPort }: { nextPort: EventNextPort | undefined }) => {
   const { t } = useTranslation()
+  const vesselEventsDatasets = useSelector(selectVesselEventsDatasets)
+  const portDataset = vesselEventsDatasets?.find(
+    (dataset) => (dataset.subcategory as EventType) === 'port_visit'
+  )
+  const portLabel = nextPort?.id
+    ? `${formatInfoField(nextPort.name || nextPort.id, 'port')} (${formatInfoField(nextPort.flag, 'flag')})`
+    : EMPTY_FIELD_PLACEHOLDER
+
   return (
     <li>
       <label className={styles.fieldLabel}>{t((t) => t.eventInfo.portVisitedAfter)}</label>
       <span>
-        {nextPort?.id ? (
-          <PortsReportLink port={nextPort}>
-            {formatInfoField(nextPort.name || nextPort.id, 'port')} (
-            {formatInfoField(nextPort.flag, 'flag')})
-          </PortsReportLink>
-        ) : (
-          EMPTY_FIELD_PLACEHOLDER
-        )}
+        <PortsReportLink port={{ ...nextPort, datasetId: portDataset?.id }}>
+          {portLabel}
+        </PortsReportLink>
       </span>
     </li>
   )

@@ -5,7 +5,6 @@ import type {
   VesselSearchState,
   VesselSearchStateProperty,
 } from 'features/_vessels/search/search.types'
-import { IS_PIPE_4 } from 'features/_vessels/vessel/vessel.config'
 import { selectLocationQuery } from 'router/routes.selectors'
 
 type VesselSearchProperty<P extends VesselSearchStateProperty> = Required<VesselSearchState>[P]
@@ -54,12 +53,9 @@ export const selectSearchSelfReportedHull = selectVesselSearchStateProperty('sel
 export const selectSearchSelfReportedOrigin =
   selectVesselSearchStateProperty('selfReportedInfo.origin')
 
-//TO DO: remove the below selectors when migrate to pipe 4
 export const selectSearchNationalId = selectVesselSearchStateProperty('nationalId')
 export const selectSearchCodMarinha = selectVesselSearchStateProperty('codMarinha')
-export const selectSearchFleet = IS_PIPE_4
-  ? selectVesselSearchStateProperty('selfReportedInfo.sourceFleet')
-  : selectVesselSearchStateProperty('fleet')
+export const selectSearchFleet = selectVesselSearchStateProperty('fleet')
 
 export const selectSearchFilters = createSelector(
   [

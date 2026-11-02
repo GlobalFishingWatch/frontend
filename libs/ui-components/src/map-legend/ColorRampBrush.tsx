@@ -17,6 +17,7 @@ export type ColorRampBrushConfig = {
   className?: string
   handleTooltip?: string
   extent?: [number, number]
+  keepScale?: boolean
 }
 
 type ColorRampBrushProps = Omit<ColorRampBrushConfig, 'extent'> & {
@@ -70,6 +71,7 @@ export function ColorRampBrush({
   inset = [false, false],
   extent,
   gradientStyle,
+  keepScale = false,
 }: ColorRampBrushProps) {
   const trackRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -384,7 +386,7 @@ export function ColorRampBrush({
         // pointer around with no button held
         onPointerCancel={() => setDrag(undefined)}
       >
-        {(isInset || (!drag && (min !== undefined || max !== undefined))) && (
+        {!keepScale && (isInset || (!drag && (min !== undefined || max !== undefined))) && (
           <Fragment>
             {/* Hides the ramp's own gradient, which stays put while the handles move */}
             <span className={styles.backdrop} />

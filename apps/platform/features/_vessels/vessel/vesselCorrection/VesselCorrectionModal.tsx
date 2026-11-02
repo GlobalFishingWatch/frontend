@@ -151,7 +151,7 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
       title={
         <Fragment>
           {t((t) => t.vessel.vesselCorrection.title)}
-          <GFWOnly userGroup="any" />
+          <GFWOnly userGroup="jac" />
         </Fragment>
       }
       isOpen={isOpen}

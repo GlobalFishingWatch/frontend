@@ -23,21 +23,6 @@
           "mode": "production"
         }
       }
-    },
-    "start": {
-      "executor": "nx:run-commands",
-      "continuous": true,
-      "options": {
-        "command": "vite",
-        "cwd": "{projectRoot}"
-      }
-    },
-    "preview": {
-      "defaultConfiguration": "development",
-      "configurations": {
-        "development": {},
-        "production": {}
-      }
     }
   }
 }
