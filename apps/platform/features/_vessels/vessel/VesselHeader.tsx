@@ -237,7 +237,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
               isVesselProfile
             />
           )}
-          {vesselProfileDataview ? (
+          {vesselProfileDataview && (
             <VesselDownload
               dataview={vesselProfileDataview}
               vesselIds={vessel.identities
@@ -246,15 +246,6 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
               vesselTitle={shipname}
               datasetId={vessel.track as string}
               iconType="border"
-            />
-          ) : (
-            // Placeholder while the dataview resolves to avoid SSR flickering
-            <IconButton
-              className="print-hidden"
-              type="border"
-              icon="download"
-              size="medium"
-              disabled
             />
           )}
           {!guestUser && (
