@@ -333,7 +333,7 @@ importers:
         specifier: 4.0.4
         version: 4.0.4
       '@typescript/native':
-        specifier: npm:typescript@^7.0.2
+        specifier: npm:typescript@7.0.2
         version: typescript@7.0.2
       '@uiw/react-json-view':
         specifier: 2.0.0-alpha.44
@@ -579,7 +579,7 @@ importers:
         specifier: 5.1.0
         version: 5.1.0
       typescript:
-        specifier: npm:@typescript/typescript6@^6.0.2
+        specifier: npm:@typescript/typescript6@6.0.2
         version: '@typescript/typescript6@6.0.2'
       unified:
         specifier: 11.0.5

@@ -10,8 +10,8 @@ TypeScript 7.0 (GA 2026-07-08) is a native Go port of `tsc`, roughly 10x faster,
 This workspace therefore uses Nx's official aliasing scheme. Root `package.json`:
 
 ```json
-"typescript": "npm:@typescript/typescript6@^6.0.2",
-"@typescript/native": "npm:typescript@^7.0.2"
+"typescript": "npm:@typescript/typescript6@6.0.2",
+"@typescript/native": "npm:typescript@7.0.2"
 ```
 
 `require('typescript')` resolves to the 6.0 API so Nx and eslint keep working, while the `tsc` CLI runs native 7.0. Validated when introduced: Nx project graph works, full-workspace `typecheck` output is byte-identical to plain TS 6.0.3, lint is clean, a fresh `api-portal` build succeeds.
