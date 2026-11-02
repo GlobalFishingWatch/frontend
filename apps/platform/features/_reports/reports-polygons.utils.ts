@@ -90,6 +90,14 @@ export function getPolygonsCoverage({
 
     // Clip overlapping polygons to the report area first so all geometries stay small.
     ;(featureGroup.overlapping as Feature<Polygon | MultiPolygon>[]).forEach((p) => {
+      // Point-represented areas (too small for the tileset to keep as polygons) cannot be clipped.
+      // One lands here when it sits on the area's edge, e.g. on the ±180 seam, so it counts by its
+      // area_km2 like a contained one.
+      const geometryType = p.geometry?.type
+      if (geometryType !== 'Polygon' && geometryType !== 'MultiPolygon') {
+        aggregatedM2 += getAreaKm2({ geometry: undefined, properties: p.properties }) * 1e6
+        return
+      }
       let clipped: ReturnType<typeof getPolygonsIntersection> = []
       try {
         clipped = getPolygonsIntersection(
