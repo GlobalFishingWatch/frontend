@@ -182,7 +182,9 @@ export function useReportActivitySummaryData({
         ...base,
         type: 'timeseries',
         quantity: String(quantity),
-        imprecision: Math.round(((timeseriesMaxHours - timeseriesHours) / timeseriesHours) * 100),
+        imprecision: timeseriesHours
+          ? Math.round(((timeseriesMaxHours - timeseriesHours) / timeseriesHours) * 100)
+          : 0,
       }
     }
   }, [
