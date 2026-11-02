@@ -1,5 +1,5 @@
 import type { ReactNode, RefObject } from 'react'
-import { Fragment, useCallback, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -8,6 +8,7 @@ import { Button } from '@globalfishingwatch/ui-components/button'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components/choice'
 import { Choice } from '@globalfishingwatch/ui-components/choice'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { InputText } from '@globalfishingwatch/ui-components/input-text'
 import { Logo } from '@globalfishingwatch/ui-components/logo'
 import { Modal } from '@globalfishingwatch/ui-components/modal'
 import { SwitchRow } from '@globalfishingwatch/ui-components/switch-row'
@@ -39,6 +40,9 @@ const FORMAT_OPTIONS: ChoiceOption<ReportGraphScreenshotFormat>[] = [
   { id: 'png', label: 'PNG' },
   { id: 'svg', label: 'SVG' },
 ]
+
+const MIN_WIDTH = 300
+const MAX_WIDTH = 2000
 
 // Recharts keeps the last hovered point active after the mouse leaves the graph
 const HOVER_SELECTORS = '.recharts-tooltip-wrapper, .recharts-tooltip-cursor, .recharts-active-dot'
@@ -90,6 +94,7 @@ function ReportGraphScreenshot({
     format,
     summary: includeSummary,
     footer: includeFooter,
+    width,
   } = { ...DEFAULT_SETTINGS, ...userSettings.reportGraphScreenshot }
   const setSettings = (settings: Partial<ReportGraphScreenshotSettings>) => {
     dispatch(
@@ -98,13 +103,16 @@ function ReportGraphScreenshot({
           format,
           summary: includeSummary,
           footer: includeFooter,
+          width,
           ...settings,
         },
       })
     )
   }
   const [downloading, setDownloading] = useState(false)
+  const [graphWidth, setGraphWidth] = useState<number>()
   const imageRef = useRef<HTMLDivElement>(null)
+  const graphCopyRef = useRef<HTMLDivElement>(null)
   const hasSummary = withSummary || summary !== undefined
   const showSummary = hasSummary && includeSummary
   const showLegend = legendDataviews
@@ -112,14 +120,34 @@ function ReportGraphScreenshot({
     : // The vessel group vessels tab has no layers to list
       withSummary && reportCategory !== ReportCategory.VesselGroup
 
-  const graphCopyRef = useCallback(
-    (container: HTMLDivElement | null) => {
-      if (container && graphRef.current) {
-        container.replaceChildren(cloneGraph(graphRef.current))
-      }
-    },
-    [graphRef]
-  )
+  useEffect(() => {
+    const graph = graphRef.current
+    if (!open || !graph) return
+    if (width) graph.style.width = `${width}px`
+    const timeout = setTimeout(() => graphCopyRef.current?.replaceChildren(cloneGraph(graph)), 100)
+    return () => {
+      clearTimeout(timeout)
+      graph.style.width = ''
+    }
+  }, [open, width, graphRef])
+
+  const onOpen = () => {
+    setGraphWidth(graphRef.current?.offsetWidth)
+    setOpen(true)
+  }
+
+  const onClose = () => {
+    setOpen(false)
+  }
+
+  const onWidthBlur = (input: HTMLInputElement) => {
+    const value = input.valueAsNumber
+    if (value >= MIN_WIDTH && value <= MAX_WIDTH) {
+      if (value !== width) setSettings({ width: value })
+    } else {
+      input.value = String(width ?? graphWidth ?? '')
+    }
+  }
 
   const onDownload = async () => {
     if (!imageRef.current) return
@@ -164,7 +192,7 @@ function ReportGraphScreenshot({
       console.warn(e)
     }
     setDownloading(false)
-    setOpen(false)
+    onClose()
   }
 
   return (
@@ -176,12 +204,12 @@ function ReportGraphScreenshot({
         className={styles.button}
         tooltip={t((t) => t.analysis.graphScreenshot)}
         tooltipPlacement="top"
-        onClick={() => setOpen(true)}
+        onClick={onOpen}
       />
       <Modal
         title={t((t) => t.analysis.graphScreenshotTitle)}
         isOpen={open}
-        onClose={() => setOpen(false)}
+        onClose={onClose}
         className={styles.modal}
         contentClassName={styles.content}
       >
@@ -208,9 +236,7 @@ function ReportGraphScreenshot({
               )}
               {includeFooter && (
                 <div className={styles.footer}>
-                  <span>
-                    <a href={window.location.href}>www.globalfishingwatch.org/platform</a>
-                  </span>
+                  <a href={window.location.href}>www.globalfishingwatch.org/platform</a>
                   <Logo className={styles.logo} />
                 </div>
               )}
@@ -222,6 +248,17 @@ function ReportGraphScreenshot({
             options={FORMAT_OPTIONS}
             activeOption={format}
             onSelect={(option) => setSettings({ format: option.id })}
+          />
+          <InputText
+            type="number"
+            inputSize="small"
+            label={t((t) => t.analysis.graphScreenshotWidth)}
+            min={MIN_WIDTH}
+            max={MAX_WIDTH}
+            defaultValue={width ?? graphWidth}
+            onBlur={(e) => onWidthBlur(e.currentTarget)}
+            onKeyDown={(e) => e.key === 'Enter' && e.currentTarget.blur()}
+            className={styles.width}
           />
           {hasSummary && (
             <SwitchRow

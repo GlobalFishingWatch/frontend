@@ -17,6 +17,7 @@ export type ReportGraphScreenshotSettings = {
   format: 'png' | 'svg'
   summary: boolean
   footer: boolean
+  width?: number
 }
 
 export interface UserSettings {
