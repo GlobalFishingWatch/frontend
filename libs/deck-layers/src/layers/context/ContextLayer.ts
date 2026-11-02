@@ -189,6 +189,10 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
       const layer = this.props.layers[index] || this.props.layers[0]
       const sublayer = layer?.sublayers?.[0]
       if (!sublayer) return
+      // Tile content is not filtered by the DataFilterExtension the way rendered features are,
+      // so mirror its category filter here: first filter key, any of the filter values.
+      const filterKey = Object.keys(sublayer.filters || {})[0]
+      const filterCategories = Object.values(sublayer.filters || {}).flatMap((value) => value || [])
       const features = filterHiddenFeatures(
         getSelectedTilesFeatures<ContextFeature>(tileLayer, viewport, {
           wgs84: isPMTilesUrl(layer.tilesUrl),
@@ -197,6 +201,13 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
       )
       for (const feature of features) {
         if (maxFeatures !== null && pickedFeatures.length >= maxFeatures) break
+        if (
+          filterKey &&
+          filterCategories.length &&
+          !filterCategories.includes(feature.properties?.[filterKey])
+        ) {
+          continue
+        }
         const object = {
           ...feature,
           color: sublayer.color,
