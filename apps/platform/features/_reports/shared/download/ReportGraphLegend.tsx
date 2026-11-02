@@ -89,12 +89,22 @@ function ReportGraphLegendItem({
   )
 }
 
-function ReportGraphLegend({ dataviews: dataviewsProp }: { dataviews?: UrlDataviewInstance[] }) {
+function ReportGraphLegend({
+  dataviews: dataviewsProp,
+  vesselsFiltered,
+}: {
+  dataviews?: UrlDataviewInstance[]
+  vesselsFiltered?: boolean
+}) {
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const vesselGroup = useSelector(selectVGRData)
   const allDataviews = useSelector(selectActiveReportDataviews)
   const vessels = useSelector(selectReportVesselsFiltered)
-  const dataviewIdsWithVessels = vessels && new Set(vessels.map((vessel) => vessel.dataviewId))
+  // With no matches the graph is empty, so list every layer the filter ran against
+  const dataviewIdsWithVessels =
+    vesselsFiltered && vessels?.length
+      ? new Set(vessels.map((vessel) => vessel.dataviewId))
+      : undefined
   const dataviews = dataviewsProp
     ? dataviewsProp
     : dataviewIdsWithVessels
