@@ -50,7 +50,7 @@ import { VesselEventsLayer } from './VesselEventsLayer'
 import type { VesselTrackPositionFeature } from './VesselPositionLayer'
 import { VesselTrackPositionLayer } from './VesselPositionLayer'
 import type { VesselTrackLayerProps } from './VesselTrackLayer'
-import { VesselTrackLayer } from './VesselTrackLayer'
+import { coarsenPositionFeature, VesselTrackLayer } from './VesselTrackLayer'
 
 export type VesselEventsLayerProps = Omit<_VesselEventsLayerProps, 'type'> & {
   events: VesselDeckLayersEvent[]
@@ -547,6 +547,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         data = [lastPosition]
       }
     }
+
+    // TEMP experiment: coarse vessel position to match the raster track
+    data = data.map(coarsenPositionFeature)
 
     return [
       new VesselTrackPositionLayer(
