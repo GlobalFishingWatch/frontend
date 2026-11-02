@@ -125,7 +125,11 @@ function UserVesselGroups() {
                 return (
                   <li className={styles.dataset} key={vesselGroup.id}>
                     <VesselGroupReportLink vesselGroupId={vesselGroup.id}>
-                      <span className={styles.workspaceLink} data-test="workspace-name">
+                      <span
+                        className={styles.workspaceLink}
+                        data-test="workspace-name"
+                        translate="no"
+                      >
                         {getHighlightedText(label as string, searchQuery, styles)}{' '}
                         <span className={cx(styles.secondary, styles.marginLeft)}>
                           ({getVesselGroupVesselsCount(vesselGroup)})

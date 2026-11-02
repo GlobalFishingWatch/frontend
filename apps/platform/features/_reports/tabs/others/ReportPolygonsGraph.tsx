@@ -207,18 +207,21 @@ function ReportPolygonsGraph({
           />
         )}
       </div>
+      {hasFilters && (
+        <div className={styles.tagsContainer}>
+          {tags.length > 1 ? (
+            tags.map((d) => <ReportSummaryTags key={d.id} dataview={d} />)
+          ) : (
+            <ReportSummaryTags dataview={dataview} showColor={false} />
+          )}
+        </div>
+      )}
       {loading || !layerStats ? (
         <ReportStatsPlaceholder />
       ) : statsSummary ? (
         statsSummary
       ) : (
         <p className={styles.summary}>{t((t) => t.analysis.noPolygonsContainedOrOverlapping)}</p>
-      )}
-
-      {hasFilters && (
-        <div className={styles.tagsContainer}>
-          {tags.length > 1 && tags.map((d) => <ReportSummaryTags dataview={d} />)}
-        </div>
       )}
       {showEvolution &&
         (loading ? (

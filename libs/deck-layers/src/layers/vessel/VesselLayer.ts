@@ -348,7 +348,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           _pathType: 'open',
           widthUnits: 'pixels',
           widthScale: 1,
-          wrapLongitude: true,
+          // No wrapLongitude: with _pathType deck skips path normalization, so it would be a
+          // no-op. The API DECKGL format already splits paths at the antimeridian.
           jointRounded: true,
           capRounded: true,
           getColor: color,

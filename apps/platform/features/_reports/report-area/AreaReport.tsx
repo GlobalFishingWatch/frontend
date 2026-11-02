@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
@@ -29,6 +29,7 @@ import {
 import { getReportCategoryFromDataview } from 'features/_reports/report-area/area-reports.utils'
 import { selectReportCategory } from 'features/_reports/reports.selectors'
 import { ReportCategory } from 'features/_reports/reports.types'
+import ReportComputation from 'features/_reports/shared/ReportComputation'
 import ReportActivity from 'features/_reports/tabs/activity/ReportActivity'
 import { resetReportData } from 'features/_reports/tabs/activity/reports-activity.actions'
 import { selectReportVesselsStatus } from 'features/_reports/tabs/activity/reports-activity.slice'
@@ -196,16 +197,21 @@ export default function Report() {
     return <ErrorPlaceholder title={t((t) => t.analysis.noLayersActive)}></ErrorPlaceholder>
   }
 
-  return filteredCategoryTabs.length > 1 ? (
-    <div className="cardContainer">
-      <Tabs
-        className={styles.tabContainer}
-        tabs={filteredCategoryTabs}
-        activeTab={reportCategory}
-        onTabClick={handleTabClick}
-      />
-    </div>
-  ) : (
-    <ReportTabContent category={reportCategory} />
+  return (
+    <Fragment>
+      <ReportComputation category={reportCategory} />
+      {filteredCategoryTabs.length > 1 ? (
+        <div className="cardContainer">
+          <Tabs
+            className={styles.tabContainer}
+            tabs={filteredCategoryTabs}
+            activeTab={reportCategory}
+            onTabClick={handleTabClick}
+          />
+        </div>
+      ) : (
+        <ReportTabContent category={reportCategory} />
+      )}
+    </Fragment>
   )
 }

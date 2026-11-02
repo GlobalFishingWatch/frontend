@@ -28,6 +28,7 @@ jobs:
   deploy:
     uses: ./.github/workflows/_build-and-deploy.yml
     permissions:
+      actions: read # nx-set-shas reads past runs to find the affected base
       contents: read
       id-token: write
     with:

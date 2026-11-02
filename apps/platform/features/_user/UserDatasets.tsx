@@ -229,7 +229,7 @@ function UserDatasets() {
                   return (
                     <li className={styles.dataset} key={dataset.id}>
                       <span>
-                        <span className={styles.datasetName}>
+                        <span className={styles.datasetName} translate="no">
                           {datasetIcon && (
                             <Icon icon={datasetIcon} style={{ transform: 'translateY(25%)' }} />
                           )}

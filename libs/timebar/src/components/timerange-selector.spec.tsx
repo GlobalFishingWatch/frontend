@@ -65,6 +65,8 @@ describe('TimeRangeSelector', () => {
       { id: 'last3days', label: 'Last 3 days', num: 3, unit: 'day' },
     ]
     render(<TimeRangeSelector {...baseProps} onSubmit={vi.fn()} lastXOptions={lastXOptions} />)
+    // The options live in a popover opened by the quick-select (lightning) button.
+    fireEvent.click(screen.getByRole('button', { name: 'lightning' }))
     expect(screen.getByText('Last day')).toBeTruthy()
     expect(screen.getByText('Last 3 days')).toBeTruthy()
     // The default options should not be present.

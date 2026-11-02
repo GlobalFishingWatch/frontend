@@ -43,6 +43,11 @@ import {
 import { MARINE_MANAGER_WORKSPACES } from 'data/map/highlighted-workspaces/marine-manager'
 import { getWorkspaceEnv } from 'data/workspace-env'
 import { fetchDatasetsByIdsThunk } from 'features/_map/datasets/datasets.slice'
+import {
+  getDatasetsInDataviews,
+  getLatestEndDateFromDatasets,
+  getVesselGroupsInDataviews,
+} from 'features/_map/datasets/datasets.utils'
 import { fetchDataviewsByIdsThunk } from 'features/_map/dataviews/dataviews.slice'
 import type { AppWorkspace } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { fetchReportsThunk } from 'features/_reports/reports.slice'
@@ -343,8 +348,6 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       // the reducer map, so a static import lands it in every page's entry chunk. Awaited *before* the
       // aborted check below so that check is still followed by synchronous work, as it was originally.
       const { LIBRARY_LAYERS } = await import('data/map/layer-library')
-      const { getDatasetsInDataviews, getLatestEndDateFromDatasets, getVesselGroupsInDataviews } =
-        await import('features/_map/datasets/datasets.utils')
       const { getVesselDataviewInstanceDatasetConfig } =
         await import('features/_map/dataviews/dataviews.utils')
 

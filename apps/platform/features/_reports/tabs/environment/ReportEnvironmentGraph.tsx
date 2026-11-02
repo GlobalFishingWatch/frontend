@@ -29,7 +29,6 @@ import type {
   ReportGraphProps,
 } from 'features/_reports/reports-timeseries.hooks'
 import {
-  useComputeReportTimeSeries,
   useReportTimeSeriesErrors,
   useTimeseriesStats,
 } from 'features/_reports/reports-timeseries.hooks'
@@ -64,7 +63,6 @@ function ReportEnvironmentGraph({
   index?: number
   removeEmptyValues?: boolean
 }) {
-  useComputeReportTimeSeries()
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
   const timeseriesStats = useTimeseriesStats()

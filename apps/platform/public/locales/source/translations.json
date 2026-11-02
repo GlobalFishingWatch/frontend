@@ -90,7 +90,6 @@
     "noTimeComparisonAllowed": "Time comparison modes are not available when layers have different filters",
     "noVesselDataFiltered": "There are no vessels matching your filter",
     "onlyEvolutionSupported": "Click the evolution button above to see the vessels active in the area",
-    "others": "Others",
     "othersLayersAreReportArea": "The layers used to create this report area can't be analysed against themselves. Turn on another polygon or point layer to see results here.",
     "periodComparison": "Period comparison",
     "periodComparison1st": "Baseline start",
@@ -304,7 +303,6 @@
     "map": "Map",
     "matchedVessels": "Matched vessels",
     "messageAssistant": "Message the assistant…",
-    "messages": "messages",
     "messages_one": "message",
     "messages_other": "messages",
     "meters": "meters",
@@ -577,7 +575,8 @@
     "nir": "Near-infrared",
     "rgb": "Red, green and blue (visible light)"
   },
-  "detections": "",
+  "detections_one": "",
+  "detections_other": "",
   "detectionScene": {
     "addHighlight": "Highlight other detections from the same satellite scene",
     "highlight": "Scene",
@@ -833,9 +832,9 @@
       "title": "Use cases"
     }
   },
-  "hours": "hours",
+  "hours_one": "",
+  "hours_other": "",
   "layer": {
-    "activityFitBounds": "Center view on activity",
     "add": "Add layer",
     "areas": {
       "eez": "EEZ",

@@ -38,12 +38,15 @@ allowBuilds:
   unrs-resolver: true
 
 patchedDependencies:
-  # Moves SIGINT/SIGTERM handlers outside watch-mode so vitest exits cleanly in
-  # non-watch CI runs. Remove once @nx/vitest ships the upstream fix.
-  '@nx/vitest@23.2.1': patches/@nx__vitest@23.2.1.patch
   # Adds an import.meta.dirname fallback + exports map so h3-js resolves __dirname in
   # the ESM (Vite/Nitro) server bundle. Remove once h3-js publishes ESM-safe builds.
   h3-js@4.4.0: patches/h3-js@4.4.0.patch
+  # `extract --watch` runs one extraction at a time (it started one per changed file, so a
+  # branch switch ran hundreds at once, ~1.3 GB) and watches folders instead of the files
+  # present at startup, so new files get extracted. Still unfixed upstream in 1.80.4.
+  # Pinned to 1.80.3: 1.80.4 rewrites the nested `"": "Unknown"` keys under
+  # vessel.gearTypes / vesselTypes as top-level flat `"vessel.gearTypes."` keys.
+  i18next-cli@1.80.3: patches/i18next-cli@1.80.3.patch
   # Removes a lookbehind from the email-autolink regex. Safari/iOS <16.4 can't parse
   # lookbehind regex literals, so the whole bundle chunk fails to load and crashes the
   # app for those users. Remove once we drop support for Safari <16.4.
