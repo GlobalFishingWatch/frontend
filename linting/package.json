@@ -40,7 +40,7 @@
     "eslint": "10.x",
     "eslint-config-prettier": "10.x",
     "eslint-import-resolver-typescript": "4.x",
-    "eslint-package-json": "1.x",
+    "eslint-package-json": "3.x",
     "eslint-plugin-import": "2.x",
     "eslint-plugin-jsx-a11y": "6.x",
     "eslint-plugin-react": "7.x",
