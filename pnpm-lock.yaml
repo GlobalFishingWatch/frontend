@@ -180,6 +180,7 @@ overrides:
   undici@7: 7.29.0
 
 patchedDependencies:
+  '@zumer/snapdom@3.7.0': 7534ccfdb0ff22d36d833229110ee05f6e9c2e0f74bc3d8871fd0bc317c13085
   h3-js@4.4.0: 6037d05f0d79b92f28b830588c398a852fc6bbaf5aeddc1b68988e8545b262a4
   i18next-cli@1.80.3: 8cd41b9031813e38bcba0c50cf1f09a108c174bbcb5b1a99d3efb184a333b054
   mdast-util-gfm-autolink-literal@2.0.1: f666bea6fc810a9fb94265fd5a3c810320751c8a74ea37a8d26423c9d7310469
@@ -340,7 +341,7 @@ importers:
         version: 2.0.0-alpha.44(@babel/runtime@7.29.7)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@zumer/snapdom':
         specifier: 3.7.0
-        version: 3.7.0
+        version: 3.7.0(patch_hash=7534ccfdb0ff22d36d833229110ee05f6e9c2e0f74bc3d8871fd0bc317c13085)
       ai:
         specifier: 7.0.157
         version: 7.0.157(zod@4.6.7)
@@ -19310,7 +19311,7 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  '@zumer/snapdom@3.7.0': {}
+  '@zumer/snapdom@3.7.0(patch_hash=7534ccfdb0ff22d36d833229110ee05f6e9c2e0f74bc3d8871fd0bc317c13085)': {}
 
   a5-js@0.10.1: {}
 
