@@ -35,11 +35,9 @@ function DetectionFeedbackModal({ isOpen = false, onClose }: DetectionFeedbackMo
     try {
       const data: FeedbackForm['data'] = {
         date: getUTCDate().toISOString(),
-        userAgent: navigator.userAgent,
-        resolution: `${window.innerWidth}x${window.innerHeight}`,
-        url: getCurrentAppUrl(),
-        userId: userData?.id,
+        name: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
         email: userData?.email || '',
+        organization: userData?.organization,
         feedbackType: 'detection',
         datasetId,
         detectionId,

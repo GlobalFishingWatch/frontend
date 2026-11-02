@@ -133,6 +133,12 @@ function DetectionThumbnails({
             }
           />
         )}
+        <IconButton
+          icon="feedback"
+          size="small"
+          type="invert"
+          onClick={() => dispatch(openDetectionFeedbackModal({ datasetId, detectionId }))}
+        />
         {options.length > 1 && (
           <Choice
             size="small"
@@ -142,12 +148,6 @@ function DetectionThumbnails({
             containerClassName={popupStyles.thumbnailBands}
           />
         )}
-        <IconButton
-          icon="feedback"
-          size="small"
-          type="invert"
-          onClick={() => dispatch(openDetectionFeedbackModal({ datasetId, detectionId }))}
-        />
       </div>
     </div>
   )

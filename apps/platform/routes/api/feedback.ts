@@ -14,8 +14,8 @@ export type FeedbackForm = {
   type: FeedbackDataType
   data: {
     date: string
-    userAgent: string
-    resolution: string
+    userAgent?: string
+    resolution?: string
     url?: string
     userId?: number | typeof GUEST_USER_TYPE
     name?: string

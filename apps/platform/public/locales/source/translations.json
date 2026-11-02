@@ -574,6 +574,8 @@
     "send": "Send feedback",
     "title": "Detection feedback"
   },
+  "detections_one": "",
+  "detections_other": "",
   "detectionScene": {
     "addHighlight": "Highlight other detections from the same satellite scene",
     "highlight": "Scene",
