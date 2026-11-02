@@ -82,7 +82,6 @@
     "noTimeComparisonAllowed": "Les modes de comparaison temporelle ne sont pas disponibles lorsque des filtres différents ont été appliqués aux calques",
     "noVesselDataFiltered": "Aucun navire ne correspond à votre filtre",
     "onlyEvolutionSupported": "Click the evolution button above to see the vessels active in the area",
-    "others": "Autres zones",
     "othersLayersAreReportArea": "Les calques utilisés pour créer cette zone de rapport ne peuvent pas être analysés par rapport à eux-mêmes. Activez un autre calque de polygones ou de points pour voir des résultats ici.",
     "periodComparison": "Comparaison de périodes",
     "periodComparison1st": "Début référence",
