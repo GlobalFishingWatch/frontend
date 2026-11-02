@@ -82,7 +82,6 @@
     "noTimeComparisonAllowed": "Os modos de comparação de tempo não ficam disponíveis quando as camadas têm filtros diferentes",
     "noVesselDataFiltered": "Não há nenhuma embarcação correspondente ao seu filtro",
     "onlyEvolutionSupported": "Click the evolution button above to see the vessels active in the area",
-    "others": "Outras áreas",
     "othersLayersAreReportArea": "As camadas usadas para criar esta área do relatório não podem ser analisadas em relação a si mesmas. Ative outra camada de polígonos ou de pontos para ver os resultados aqui.",
     "periodComparison": "Comparação por período",
     "periodComparison1st": "Início da base de referência",

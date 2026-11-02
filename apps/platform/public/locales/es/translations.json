@@ -82,7 +82,6 @@
     "noTimeComparisonAllowed": "Modos de comparación de tiempo no están disponibles cuando las capas tienen diferentes filtros",
     "noVesselDataFiltered": "No hay embarcaciones que coincidan con su filtro",
     "onlyEvolutionSupported": "Haga clic en el botón de evolución de arriba para ver los buques activos en el área",
-    "others": "Otras áreas",
     "othersLayersAreReportArea": "Las capas usadas para crear esta área del reporte no se pueden analizar contra sí mismas. Active otra capa de polígonos o de puntos para ver resultados aquí.",
     "periodComparison": "Comparación entre periodos",
     "periodComparison1st": "Inicio de línea base",
