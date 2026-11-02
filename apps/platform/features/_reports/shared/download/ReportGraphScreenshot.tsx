@@ -166,8 +166,10 @@ function ReportGraphScreenshot({
         .join('-')
       if (format === 'svg') {
         // snapdom writes no XML declaration, so viewers not assuming UTF-8 garble non-ASCII text
+        // dpr 1 keeps the device pixel ratio zoom out of the layout, macOS Preview applies it
+        // twice to nested svgs (needs the snapdom patch in pnpm-workspace.yaml)
         const svg = await (
-          await snapdom.toBlob(imageRef.current, { format: 'svg', embedFonts: true })
+          await snapdom.toBlob(imageRef.current, { format: 'svg', embedFonts: true, dpr: 1 })
         ).text()
         const { saveAs } = await import('file-saver')
         saveAs(
