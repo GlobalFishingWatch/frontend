@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -19,6 +19,7 @@ import { selectReportLoadVessels } from 'features/_map/workspace/selectors/app.s
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
 import WorkspaceLoginError from 'features/_map/workspace/WorkspaceLoginError'
 import { selectActiveReportSubCategories } from 'features/_reports/reports.selectors'
+import ReportGraphScreenshot from 'features/_reports/shared/download/ReportGraphScreenshot'
 import ReportActivityPlaceholder from 'features/_reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportEventsPlaceholder from 'features/_reports/shared/placeholders/ReportEventsPlaceholder'
 import ReportVesselsPlaceholder from 'features/_reports/shared/placeholders/ReportVesselsPlaceholder'
@@ -68,6 +69,7 @@ function EventsReport() {
   const datasetAreas = useFetchContextDatasetAreas(datasetAreasId)
   const { updateReportHash, reportOutdated } = useReportHash()
   const [isIndividualSupported, setIsIndividualSupported] = useState(false)
+  const graphRef = useRef<HTMLDivElement>(null)
 
   const { status: vessselStatus } = useGetReportEventsVesselsQuery(
     fetchEventsVesselsParams as GetReportEventParams,
@@ -96,14 +98,14 @@ function EventsReport() {
     statsStatus === 'fulfilled' ? totalEvents !== undefined && totalEvents > 0 : false
   const showPortsTable = eventsDataview?.datasets?.[0]?.subcategory !== 'port_visit' && hasEvents
 
+  const isLoadingGraph =
+    (datasetAreasId && datasetAreas?.status !== AsyncReducerStatus.Finished) || isLoadingStats
+
   const graph = useMemo(() => {
     if (statsError) {
       return <p className={styles.error}>{(statsError as any).message}</p>
     }
-    if (
-      (datasetAreasId && datasetAreas?.status !== AsyncReducerStatus.Finished) ||
-      isLoadingStats
-    ) {
+    if (isLoadingGraph) {
       return <ReportActivityPlaceholder showHeader={false} loading />
     }
     if (!hasEvents) {
@@ -115,7 +117,7 @@ function EventsReport() {
       )
     }
     return <EventsReportGraph onIndividualSupportedChange={setIsIndividualSupported} />
-  }, [datasetAreas?.status, datasetAreasId, isLoadingStats, hasEvents, statsError, t])
+  }, [isLoadingGraph, hasEvents, statsError, t])
 
   if (!vesselDatasets.length) {
     return (
@@ -169,10 +171,16 @@ function EventsReport() {
                   {isIndividualSupported && (
                     <EventsReportDownload dataviews={eventsDataviews} start={start} end={end} />
                   )}
+                  <ReportGraphScreenshot
+                    graphRef={graphRef}
+                    name="events"
+                    withSummary
+                    disabled={isLoadingGraph || isLoadingVessels}
+                  />
                 </Fragment>
               )}
             </div>
-            {graph}
+            <div ref={graphRef}>{graph}</div>
           </div>
         </div>
         {hasEvents && (

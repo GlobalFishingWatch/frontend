@@ -49,7 +49,7 @@ export function IndividualTimeseries({
         dataKey={dateKey}
         interval="preserveStartEnd"
         tickFormatter={(tick: string) => tickLabelFormatter?.(tick, timeseriesInterval) || tick}
-        axisLine={true}
+        axisLine={{ stroke: 'var(--color-secondary-blue)' }}
       />
       {fullTimeseries?.length && <Tooltip content={customTooltip} />}
       <foreignObject width="100%" height="100%">
