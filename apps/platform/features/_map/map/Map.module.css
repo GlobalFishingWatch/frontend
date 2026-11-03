@@ -3,6 +3,13 @@
   position: relative;
 }
 
+/* @deck.gl/react renders a full-size `view-${MAP_VIEW_ID}` div for the DeckGL children above the canvas.
+  editable-layers >= 9.4.8 listens for native clicks on the canvas itself, so this
+  div swallowed every draw click. Overlay items opt back in with `pointerEvents: 'all'`. */
+.container :global(#view-mapViewport) {
+  pointer-events: none;
+}
+
 @media print {
   .container {
     height: auto;

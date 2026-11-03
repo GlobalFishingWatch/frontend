@@ -212,7 +212,7 @@ function SearchBasicResult({
           onClick={isInWorkspace ? undefined : onSelectClick}
         />
         <div className={styles.fullWidth}>
-          <div className={styles.name}>
+          <div className={styles.name} translate="no">
             <VesselLink
               vesselId={vesselData.id}
               identity={bestIdentityMatch}
@@ -238,19 +238,19 @@ function SearchBasicResult({
             </div>
             <div className={styles.property}>
               <label>{t((t) => t.vessel.mmsi)}</label>
-              <span>
+              <span translate="no">
                 {getHighlightedText(ssvid || EMPTY_FIELD_PLACEHOLDER, highlightQuery, styles)}
               </span>
             </div>
             <div className={styles.property}>
               <label>{t((t) => t.vessel.imo)}</label>
-              <span>
+              <span translate="no">
                 {getHighlightedText(imo || EMPTY_FIELD_PLACEHOLDER, highlightQuery, styles)}
               </span>
             </div>
             <div className={styles.property}>
               <label>{t((t) => t.vessel.callsign)}</label>
-              <span>
+              <span translate="no">
                 {getHighlightedText(callsign || EMPTY_FIELD_PLACEHOLDER, highlightQuery, styles)}
               </span>
             </div>

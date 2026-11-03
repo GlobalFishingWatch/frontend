@@ -60,7 +60,7 @@ function UserWorkspacesArchive({ searchQuery }: { searchQuery: string }) {
                 search={{}}
                 onClick={() => onWorkspaceClick(workspace)}
               >
-                <span className={styles.workspaceTitle}>
+                <span className={styles.workspaceTitle} translate="no">
                   {getHighlightedText(label as string, searchQuery, styles)}
                 </span>
                 <IconButton icon="arrow-right" />

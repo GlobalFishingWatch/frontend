@@ -8,7 +8,10 @@ import { SOURCE_TAG_TESTID } from '@platform/config/selectors/workspace'
 
 import { useMigrateToLatestDataview } from 'features/_map/dataviews/dataviews.hooks'
 import { dataviewWithPrivateDatasets } from 'features/_map/dataviews/dataviews.utils'
-import { getSourcesSelectedInDataview } from 'features/_map/workspace/activity/activity.utils'
+import {
+  getSourcesSelectedInDataview,
+  groupVmsSources,
+} from 'features/_map/workspace/activity/activity.utils'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 
 import styles from 'features/_map/workspace/shared/LayerPanel.module.css'
@@ -36,22 +39,8 @@ function DatasetFilterSource({
     getIsDataviewMigrated,
     isLoading: isMigrating,
   } = useMigrateToLatestDataview()
-  const nonVmsSources = sourcesSelected.filter((source) => !source.label.includes('VMS'))
-  const vmsSources = sourcesSelected.filter((source) => source.label.includes('VMS'))
   const hasPrivateDatasets = dataviewWithPrivateDatasets(dataview as UrlDataviewInstance)
-  let mergedSourceOptions: TagItem[] = []
-  if (!hasPrivateDatasets && vmsSources?.length > 1) {
-    mergedSourceOptions = [
-      ...nonVmsSources,
-      {
-        id: 'vms-grouped',
-        label: `VMS (${vmsSources.length} ${t((t) => t.common.country, {
-          count: 2,
-        })})`,
-        tooltip: vmsSources.map((source) => source.label).join(', '),
-      },
-    ]
-  }
+  const mergedSourceOptions = hasPrivateDatasets ? [] : groupVmsSources(sourcesSelected)
 
   if (!sourcesSelected?.length) {
     return null

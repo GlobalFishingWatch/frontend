@@ -1,9 +1,8 @@
 import type { PickingInfo, Viewport } from '@deck.gl/core'
 import type { _Tile2DHeader as Tile2DHeader, GeoBoundingBox } from '@deck.gl/geo-layers'
-import type { Feature, MultiPolygon, Polygon } from 'geojson'
+import type { Feature } from 'geojson'
 
-import type { PolygonGeomCoords } from '@globalfishingwatch/data-transforms'
-import { getPolygonsUnion, unwrapFeatureLongitudes } from '@globalfishingwatch/data-transforms'
+import { unwrapFeatureLongitudes } from '@globalfishingwatch/data-transforms'
 
 import { DEFAULT_ID_PROPERTY } from '#config/layers.config'
 import { transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
@@ -28,7 +27,7 @@ export const getContextId = (feature: ContextFeature, idProperty = DEFAULT_ID_PR
     feature.properties?.id ||
     // Precomputed tilesets aggregate the polygons too small to survive simplification into one
     // feature, which by construction has no source id. Without this they all share a falsy key
-    // and mergePickedFeatures collapses every one of them into a single feature.
+    // and groupPickedFeatures collapses every one of them into a single feature.
     feature.properties?.featureId
   )
 }
@@ -206,13 +205,17 @@ export function getSelectedTilesFeatures<T extends Feature>(
   })
 }
 
-export function mergePickedFeatures<T extends Feature>(
+/**
+ * Groups the parts of each feature that tiling split apart, without merging them, so the
+ * expensive geometry union can run off the main thread (see mergeFeatureParts).
+ */
+export function groupPickedFeatures<T extends Feature>(
   { pickedFeatures, idProperty = DEFAULT_ID_PROPERTY, layers } = {} as {
     pickedFeatures: PickingInfo[]
     idProperty: string
     layers: { id: string }[]
   }
-): T[] {
+): T[][] {
   const featureGroups = new Map<string, T[]>()
 
   for (const f of pickedFeatures) {
@@ -232,28 +235,5 @@ export function mergePickedFeatures<T extends Feature>(
     featureGroups.get(cacheKey)!.push(obj)
   }
 
-  const merged: T[] = []
-  for (const group of featureGroups.values()) {
-    if (group.length === 1) {
-      merged.push(group[0])
-      continue
-    }
-    const first = group[0]
-    const geometryType = first.geometry?.type
-    if (geometryType === 'Polygon' || geometryType === 'MultiPolygon') {
-      const geoms = group.map(
-        (g) => (g.geometry as Polygon | MultiPolygon).coordinates as PolygonGeomCoords
-      )
-      merged.push({
-        ...first,
-        geometry: {
-          type: 'MultiPolygon',
-          coordinates: getPolygonsUnion(geoms),
-        } as MultiPolygon,
-      })
-    } else {
-      merged.push(first)
-    }
-  }
-  return merged
+  return [...featureGroups.values()]
 }

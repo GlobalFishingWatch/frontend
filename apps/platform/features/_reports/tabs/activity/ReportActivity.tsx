@@ -407,7 +407,6 @@ function ActivityReport() {
       <div className={cx('card', styles.subsection, styles.front)}>
         <ReportSummary
           activityUnit={activityUnit}
-          reportStatus={reportStatus}
           // without tags in vessel goup reports because filtering doesn't work in injected dataviews
           showTags={!isVesselGroupReportLocation}
         />
