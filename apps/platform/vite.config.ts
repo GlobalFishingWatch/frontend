@@ -262,6 +262,10 @@ export default defineConfig(({ command, mode }) => {
         // desync an already-constructed instance from the freshly reloaded prototype.
         'i18next',
         'react-i18next',
+        // sentryTanstackStart (11.10+) forces this into noExternal, so Nitro stops tracing it into
+        // .output/server/node_modules. instrument.server.mjs is copied there unbundled and imports
+        // it at boot (`node --import`), so without this the container dies with ERR_MODULE_NOT_FOUND.
+        '@sentry/tanstackstart-react',
       ],
     },
   }
