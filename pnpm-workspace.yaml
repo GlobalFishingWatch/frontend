@@ -42,9 +42,6 @@ patchedDependencies:
   # window.devicePixelRatio. macOS Preview applies that zoom twice to nested svgs, so the `dpr`
   # option now caps it and SVG exports pass `dpr: 1`. Redo on every snapdom upgrade.
   '@zumer/snapdom@3.7.0': patches/@zumer__snapdom@3.7.0.patch
-  # Adds an import.meta.dirname fallback + exports map so h3-js resolves __dirname in
-  # the ESM (Vite/Nitro) server bundle. Remove once h3-js publishes ESM-safe builds.
-  h3-js@4.4.0: patches/h3-js@4.4.0.patch
   # Removes a lookbehind from the email-autolink regex. Safari/iOS <16.4 can't parse
   # lookbehind regex literals, so the whole bundle chunk fails to load and crashes the
   # app for those users. Remove once we drop support for Safari <16.4.
