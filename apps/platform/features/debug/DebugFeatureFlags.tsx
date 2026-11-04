@@ -124,6 +124,17 @@ const DebugFeatureFlags: React.FC = () => {
           <p>Show the hotspot zone button in the report activity graph</p>
           <div className={styles.header}>
             <Switch
+              id="option_slow_report_tips"
+              active={featureFlags.slowReportTips}
+              onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.SlowReportTips))}
+            />
+            <label htmlFor="option_slow_report_tips">
+              <strong>Feature flag:</strong> Slow report tips
+            </label>
+          </div>
+          <p>Show the "Did you know?" tips while a slow report loads</p>
+          <div className={styles.header}>
+            <Switch
               id="option_areas_on_screen"
               active={debugOptions.areasOnScreen}
               onClick={() => dispatch(toggleDebugOption(DebugOption.AreasOnScreen))}

@@ -226,3 +226,58 @@
   align-items: center;
   justify-content: center;
 }
+
+.slowLoading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-S);
+  padding: var(--space-M);
+  text-align: center;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(var(--white-rgb), 0) 0%,
+    rgba(var(--white-rgb), 0.85) 22%,
+    rgba(var(--white-rgb), 0.95) 40%,
+    rgba(var(--white-rgb), 0.95) 60%,
+    rgba(var(--white-rgb), 0.85) 78%,
+    rgba(var(--white-rgb), 0) 100%
+  );
+}
+
+.slowLoadingMessage {
+  color: var(--color-primary-blue);
+  max-width: 44rem;
+}
+
+.progressTrack {
+  width: 100%;
+  max-width: 32rem;
+  height: 0.6rem;
+  border-radius: 0.3rem;
+  overflow: hidden;
+  background: rgba(var(--primary-blue-rgb), 0.15);
+}
+
+.progressBar {
+  height: 100%;
+  background: var(--color-secondary-blue);
+  transition: width var(--transition);
+}
+
+.slowLoadingFact {
+  color: var(--color-primary-blue);
+  opacity: var(--opacity-secondary);
+  max-width: 44rem;
+  min-height: 4rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progressBar {
+    transition: none;
+  }
+}
