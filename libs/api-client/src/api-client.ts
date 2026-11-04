@@ -326,13 +326,11 @@ export class GFW_API_CLASS {
   }
 
   /**
-   * Single-use token for a gateway route with validateCaptcha, undefined without a container.
-   * Aborting the signal rejects it, waiting in the queue or while solving
+   * Single-use token for `action`, undefined without a container. Aborting the signal rejects it,
+   * waiting in the queue or while solving. Public for tokens verified outside GFWAPI.fetch, e.g.
+   * by an app server function
    */
-  private getCaptchaToken(
-    action: string,
-    signal?: AbortSignal | null
-  ): Promise<string | undefined> {
+  getCaptchaToken(action: string, signal?: AbortSignal | null): Promise<string | undefined> {
     const token = this.captchaQueue.then(() => {
       signal?.throwIfAborted()
       return this.solveCaptcha(action, signal)

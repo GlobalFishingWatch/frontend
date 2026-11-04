@@ -1,0 +1,15 @@
+.gate {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-M);
+  padding: var(--space-M);
+  text-align: center;
+}
+
+.message {
+  color: var(--color-secondary-blue);
+  font: var(--font-S);
+}

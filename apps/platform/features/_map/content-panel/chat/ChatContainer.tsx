@@ -6,6 +6,7 @@ import ChatSession from 'features/_map/content-panel/chat/ChatSession'
 import { KEEP_MAP_POPUP_ATTRIBUTE } from 'features/_map/map/map.config'
 import LoginLink from 'features/_user/LoginLink'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/_user/selectors/user.selectors'
+import HumanSessionGate from 'features/human-session/HumanSessionGate'
 
 import styles from './Chat.module.css'
 
@@ -31,8 +32,10 @@ function ChatContainer() {
 
   return (
     <div className={styles.chat} {...{ [KEEP_MAP_POPUP_ATTRIBUTE]: true }}>
-      <ChatHeader />
-      <ChatSession />
+      <HumanSessionGate>
+        <ChatHeader />
+        <ChatSession />
+      </HumanSessionGate>
     </div>
   )
 }

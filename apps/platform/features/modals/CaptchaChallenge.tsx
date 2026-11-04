@@ -58,7 +58,9 @@ function CaptchaChallenge() {
             <p>
               {rateLimitCaptcha
                 ? t((t) => t.rateLimit.challenge)
-                : t((t) => t.rateLimit.sessionChallenge)}
+                : captcha.action === CAPTCHA_ACTIONS.humanSession
+                  ? t((t) => t.humanSession.challenge)
+                  : t((t) => t.rateLimit.sessionChallenge)}
             </p>
           </div>
         )}

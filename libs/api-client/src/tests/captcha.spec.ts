@@ -120,6 +120,18 @@ describe('captcha', () => {
     )
   })
 
+  it('solves a token for callers outside fetch, e.g. a server function', async ({ client }) => {
+    await expect(client.getCaptchaToken('human-session')).resolves.toBeUndefined()
+
+    client.setCaptchaContainer(document.createElement('div'))
+    await expect(client.getCaptchaToken('human-session')).resolves.toBe('turnstile-token')
+    expect(vi.mocked(renderCaptchaChallenge)).toHaveBeenLastCalledWith(
+      expect.anything(),
+      expect.objectContaining({ action: 'human-session' })
+    )
+    expect(client.getCaptchaChallengeState()).toEqual({ status: 'idle' })
+  })
+
   it('hands the captcha token to the refreshStrategy', async ({ client }) => {
     const refreshStrategy = vi.fn(async () => ({ token: 't', refreshToken: 'r' }))
     client.configure({ refreshStrategy })
