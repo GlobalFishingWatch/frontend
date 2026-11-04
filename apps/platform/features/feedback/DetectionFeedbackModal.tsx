@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -6,11 +6,9 @@ import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { Button, InputText, Modal, Tag } from '@globalfishingwatch/ui-components'
 
 import { PATH_BASENAME } from 'data/map/config'
-import GFWOnly from 'features/_user/GFWOnly'
 import { selectUserData } from 'features/_user/selectors/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectDetectionFeedbackModal } from 'features/modals/modals.slice'
-import { getCurrentAppUrl } from 'router/routes.utils'
 import type { FeedbackForm } from 'routes/api/feedback'
 
 import styles from './DetectionFeedbackModal.module.css'
@@ -27,11 +25,13 @@ function DetectionFeedbackModal({ isOpen = false, onClose }: DetectionFeedbackMo
 
   const [loading, setLoading] = useState(false)
   const [comment, setComment] = useState('')
+  const [error, setError] = useState(false)
 
   const sendFeedback = async (e: any) => {
     e.preventDefault()
     e.stopPropagation()
     setLoading(true)
+    setError(false)
     try {
       const data: FeedbackForm['data'] = {
         date: getUTCDate().toISOString(),
@@ -66,18 +66,14 @@ function DetectionFeedbackModal({ isOpen = false, onClose }: DetectionFeedbackMo
       })
     } catch (e: any) {
       setLoading(false)
+      setError(true)
       console.error('Error: ', e)
     }
   }
 
   return (
     <Modal
-      title={
-        <Fragment>
-          {t((t) => t.detectionFeedback.title)}
-          <GFWOnly userGroup="any" />
-        </Fragment>
-      }
+      title={t((t) => t.detectionFeedback.title)}
       isOpen={isOpen}
       onClose={onClose}
       contentClassName={styles.modalContent}
@@ -106,6 +102,7 @@ function DetectionFeedbackModal({ isOpen = false, onClose }: DetectionFeedbackMo
         </div>
 
         <div className={styles.footer}>
+          {error && <p className={styles.error}>{t((t) => t.errors.genericShort)}</p>}
           <Button
             disabled={loading || !comment.trim()}
             onClick={sendFeedback}

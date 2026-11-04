@@ -137,6 +137,7 @@ function DetectionThumbnails({
           icon="feedback"
           size="small"
           type="invert"
+          tooltip={t((t) => t.detectionFeedback.title)}
           onClick={() => dispatch(openDetectionFeedbackModal({ datasetId, detectionId }))}
         />
         {options.length > 1 && (

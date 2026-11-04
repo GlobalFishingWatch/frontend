@@ -24,6 +24,12 @@
   width: 100%;
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-S);
+}
+
+.error {
+  color: var(--color-danger-red);
 }
 
 .cta {
