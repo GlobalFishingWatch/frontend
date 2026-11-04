@@ -48,12 +48,43 @@ export const Route = createFileRoute('/api/feedback')({
         const body = await request.json().catch(() => ({}))
         const { type, data }: FeedbackForm = body || {}
 
-        if (!data || !type) {
+        if (!data || typeof data !== 'object' || !type) {
           return Response.json(
             { success: false, message: 'Feedback data is required' },
             { status: 400 }
           )
         }
+
+        // Guests can send feedback, but every guest submission needs its own captcha
+        const { getRequestUser, getUserFullName } = await import('server/user.server')
+        const { CAPTCHA_ACTIONS, CAPTCHA_HEADER, GUEST_USER_TYPE } =
+          await import('@globalfishingwatch/api-client')
+        const user = await getRequestUser()
+        if (!user) {
+          const { assertCaptcha } = await import('server/captcha.server')
+          try {
+            await assertCaptcha(
+              request.headers.get(CAPTCHA_HEADER) || undefined,
+              CAPTCHA_ACTIONS.feedback,
+              request.headers.get('cf-connecting-ip') || undefined
+            )
+          } catch (e: any) {
+            return Response.json(
+              { success: false, message: e.message },
+              { status: e.status || 401 }
+            )
+          }
+        }
+        // The verified identity wins over whatever the body claims
+        const row: FeedbackForm['data'] = user
+          ? {
+              ...data,
+              userId: user.id,
+              email: user.email,
+              name: getUserFullName(user),
+              organization: user.organization,
+            }
+          : { ...data, userId: GUEST_USER_TYPE }
 
         try {
           const spreadsheetId =
@@ -77,12 +108,12 @@ export const Route = createFileRoute('/api/feedback')({
               ? feedbackSpreadsheetDoc.sheetsByIndex[0]
               : feedbackSpreadsheetDoc.sheetsByTitle[spreadsheetTitle]
 
-          await sheet.addRow(sanitizeSheetRow(data))
+          await sheet.addRow(sanitizeSheetRow(row))
 
           return Response.json({
             success: true,
             message: 'Feedback received successfully',
-            data: data,
+            data: row,
           })
         } catch (error: any) {
           console.error('Feedback submission error:', error.message)

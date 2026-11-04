@@ -54,6 +54,7 @@ export const CAPTCHA_ACTIONS = {
   visualizeLimitReset: 'reset-visualize-tracks-limit',
   refreshToken: 'refresh-token',
   humanSession: 'human-session',
+  feedback: 'feedback',
 } as const
 
 export const ANONYMOUS_PERMISSIONS = [

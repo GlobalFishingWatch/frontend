@@ -1,9 +1,6 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
 
-import { GFWAPI, GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-
-import { USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
-import { SSR_HEADERS } from 'server/ssr-headers.server'
+import { getRequestUser } from 'server/user.server'
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -51,22 +48,9 @@ export function isHumanSession(value: string | undefined, userId: number) {
   )
 }
 
-/** Logged user of the request, verified by the gateway from the token cookie. Null for guests */
-export async function getRequestUserId(): Promise<number | null> {
-  const { getCookie } = await import('@tanstack/react-start/server')
-  const token = getCookie(USER_TOKEN_COOKIE_KEY)
-  if (!token) return null
-  try {
-    const user = await GFWAPI.fetchUser({ token, headers: SSR_HEADERS })
-    return user.type === GUEST_USER_TYPE ? null : user.id
-  } catch {
-    return null
-  }
-}
-
 /** For server code that must only serve sessions that passed the captcha */
 export async function hasHumanSession() {
   const { getCookie } = await import('@tanstack/react-start/server')
-  const userId = await getRequestUserId()
-  return userId !== null && isHumanSession(getCookie(HUMAN_SESSION_COOKIE_KEY), userId)
+  const user = await getRequestUser()
+  return user !== null && isHumanSession(getCookie(HUMAN_SESSION_COOKIE_KEY), user.id)
 }

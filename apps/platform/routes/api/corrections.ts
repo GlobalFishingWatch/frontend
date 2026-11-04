@@ -67,14 +67,26 @@ export const Route = createFileRoute('/api/corrections')({
   server: {
     handlers: {
       POST: async ({ request }: { request: Request }) => {
-        const { isSameOrigin, forbiddenResponse } = await import('server/api/utils/request')
+        const { isSameOrigin, forbiddenResponse, unauthorizedResponse } =
+          await import('server/api/utils/request')
         if (!isSameOrigin(request)) {
           return forbiddenResponse()
         }
+        const { getRequestUser } = await import('server/user.server')
+        const user = await getRequestUser()
+        if (!user) {
+          return unauthorizedResponse()
+        }
         const body = await request.json().catch(() => null)
-        const rawData = body?.data
+        // Any other source maps every column to '' and appends a blank row that splits the sheet
+        const rawData =
+          body?.data &&
+          (body.data.source === VesselIdentitySourceEnum.Registry ||
+            body.data.source === VesselIdentitySourceEnum.SelfReported)
+            ? { ...body.data, reviewer: user.email }
+            : null
 
-        if (!rawData || !rawData.source) {
+        if (!rawData) {
           return Response.json(
             { success: false, message: 'Correction data with source is required' },
             { status: 400 }

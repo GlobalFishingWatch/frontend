@@ -15,17 +15,31 @@ export const Route = createFileRoute('/api/downloadSurvey')({
   server: {
     handlers: {
       POST: async ({ request }: { request: Request }) => {
-        const { isSameOrigin, forbiddenResponse } = await import('server/api/utils/request')
+        const { isSameOrigin, forbiddenResponse, unauthorizedResponse } =
+          await import('server/api/utils/request')
         if (!isSameOrigin(request)) {
           return forbiddenResponse()
         }
-        const data: DownloadSurveyPayload = await request.json().catch(() => null)
+        const { getRequestUser, getUserFullName } = await import('server/user.server')
+        const user = await getRequestUser()
+        if (!user) {
+          return unauthorizedResponse()
+        }
+        const body: DownloadSurveyPayload = await request.json().catch(() => null)
 
-        if (!data || !data.email) {
+        if (!body || typeof body !== 'object') {
           return Response.json(
             { success: false, message: 'Survey data is required' },
             { status: 400 }
           )
+        }
+
+        // The verified identity wins over whatever the body claims
+        const data: DownloadSurveyPayload = {
+          ...body,
+          name: getUserFullName(user),
+          email: user.email ?? '',
+          organization: user.organization ?? '',
         }
 
         try {
