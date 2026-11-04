@@ -77,8 +77,13 @@ export function isAuthError(error = {} as Partial<ParsedAPIError> | null) {
   return isUnauthorized(error) || isForbidden(error)
 }
 
-// Gateway answers of the routes with validateCaptcha: 401 rejected token, 503 Turnstile unavailable
-const CAPTCHA_ERROR_MESSAGES = ['invalid captcha', 'captcha verification unavailable']
+// Answers of the captcha protected requests: 401 rejected token, 503 Turnstile unavailable.
+// App servers verifying a captcha must throw these same messages
+export const CAPTCHA_ERRORS = {
+  invalid: 'invalid captcha',
+  unavailable: 'captcha verification unavailable',
+} as const
+const CAPTCHA_ERROR_MESSAGES = Object.values(CAPTCHA_ERRORS)
 
 // Matched by message, it survives server-fn deserialization like the session messages below
 export const isCaptchaError = (error?: { message?: string } | null) =>

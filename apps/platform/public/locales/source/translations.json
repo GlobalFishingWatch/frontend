@@ -841,6 +841,10 @@
   },
   "hours_one": "",
   "hours_other": "",
+  "humanSession": {
+    "challenge": "This check protects the assistant from automated traffic. Complete it to start chatting.",
+    "failed": "We couldn't verify you're human, so the assistant is unavailable. Try again."
+  },
   "layer": {
     "add": "Add layer",
     "areas": {

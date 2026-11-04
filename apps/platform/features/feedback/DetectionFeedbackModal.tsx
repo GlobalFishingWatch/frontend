@@ -5,11 +5,11 @@ import { useSelector } from 'react-redux'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { Button, InputText, Modal, Tag } from '@globalfishingwatch/ui-components'
 
-import { PATH_BASENAME } from 'data/map/config'
 import DatasetLabel from 'features/_map/datasets/DatasetLabel'
 import { selectDatasetById } from 'features/_map/datasets/datasets.slice'
-import { selectUserData } from 'features/_user/selectors/user.selectors'
+import { selectIsGuestUser, selectUserData } from 'features/_user/selectors/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { postFeedback } from 'features/feedback/feedback.utils'
 import { selectDetectionFeedbackModal } from 'features/modals/modals.slice'
 import type { FeedbackForm } from 'routes/api/feedback'
 
@@ -25,6 +25,7 @@ function DetectionFeedbackModal({ isOpen = false, onClose }: DetectionFeedbackMo
   const { datasetId, detectionId } = useSelector(selectDetectionFeedbackModal)
   const dataset = useSelector(selectDatasetById(datasetId || ''))
   const userData = useSelector(selectUserData)
+  const isGuest = useSelector(selectIsGuestUser)
 
   const [loading, setLoading] = useState(false)
   const [comment, setComment] = useState('')
@@ -47,19 +48,7 @@ function DetectionFeedbackModal({ isOpen = false, onClose }: DetectionFeedbackMo
         description: comment,
       }
 
-      const response = await fetch(`${PATH_BASENAME}/api/feedback`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ type: 'detections', data }),
-      })
-
-      const responseData = await response.json()
-
-      if (!response.ok) {
-        throw new Error(responseData.message || 'Something went wrong')
-      }
+      await postFeedback({ type: 'detections', data, isGuest })
       setLoading(false)
       onClose()
 

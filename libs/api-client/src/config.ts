@@ -48,10 +48,13 @@ export const VISUALIZE_LIMIT_RESET_PATH = 'vessels/tracks/visualize-limit/reset'
 
 // Header the gateway reads on the routes with validateCaptcha
 export const CAPTCHA_HEADER = 'x-captcha-token'
-// Turnstile action of each protected route, must match its gateway captchaAction
+// Turnstile action of each protected request, must match the action its verifier checks
+// (the gateway captchaAction or an app server function)
 export const CAPTCHA_ACTIONS = {
   visualizeLimitReset: 'reset-visualize-tracks-limit',
   refreshToken: 'refresh-token',
+  humanSession: 'human-session',
+  feedback: 'feedback',
 } as const
 
 export const ANONYMOUS_PERMISSIONS = [

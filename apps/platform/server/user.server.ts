@@ -1,6 +1,7 @@
 import {
   getGuestUser,
   GFWAPI,
+  GUEST_USER_TYPE,
   isCaptchaError,
   readCookieString,
 } from '@globalfishingwatch/api-client'
@@ -45,3 +46,22 @@ export async function resolveUserStateFromRequest(): Promise<{ user: UserData | 
     return { user: getGuestUser() }
   }
 }
+
+/**
+ * Logged user of the request, verified by the gateway from the token cookie. Null for guests.
+ * Read-only: unlike resolveUserStateFromRequest it never refreshes tokens or writes cookies
+ */
+export async function getRequestUser(): Promise<UserData | null> {
+  const { getCookie } = await import('@tanstack/react-start/server')
+  const token = getCookie(USER_TOKEN_COOKIE_KEY)
+  if (!token) return null
+  try {
+    const user = await GFWAPI.fetchUser({ token, headers: SSR_HEADERS })
+    return user.type === GUEST_USER_TYPE ? null : user
+  } catch {
+    return null
+  }
+}
+
+export const getUserFullName = (user: UserData) =>
+  `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim()

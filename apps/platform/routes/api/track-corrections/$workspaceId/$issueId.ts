@@ -24,9 +24,15 @@ export const Route = createFileRoute('/api/track-corrections/$workspaceId/$issue
         request: Request
         params: { workspaceId: string; issueId: string }
       }) => {
-        const { isSameOrigin, forbiddenResponse } = await import('server/api/utils/request')
+        const { isSameOrigin, forbiddenResponse, unauthorizedResponse } =
+          await import('server/api/utils/request')
         if (!isSameOrigin(request)) {
           return forbiddenResponse()
+        }
+        const { getRequestUser, getUserFullName } = await import('server/user.server')
+        const user = await getRequestUser()
+        if (!user) {
+          return unauthorizedResponse()
         }
         const { workspaceId, issueId } = params
         const body = await request.json()
@@ -61,7 +67,12 @@ export const Route = createFileRoute('/api/track-corrections/$workspaceId/$issue
 
         const { addCommentToIssue } = await import('server/api/track-corrections/post-comment')
         const { getWorkspaceIssueDetail } = await import('server/api/track-corrections/get-one')
-        await addCommentToIssue(issueId, body.commentBody as TrackCorrectionComment, workspaceId)
+        // `user` is the issue author, `reviewer` the verified commenter
+        const commentBody: TrackCorrectionComment = {
+          ...body.commentBody,
+          reviewer: getUserFullName(user),
+        }
+        await addCommentToIssue(issueId, commentBody, workspaceId)
         await getWorkspaceIssueDetail(workspaceId, issueId)
 
         return Response.json({
