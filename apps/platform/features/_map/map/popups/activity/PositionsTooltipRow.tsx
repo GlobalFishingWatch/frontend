@@ -136,7 +136,7 @@ function DetectionThumbnails({
         <IconButton
           icon="feedback"
           size="small"
-          type="invert"
+          className={popupStyles.thumbnailSceneButton}
           tooltip={t((t) => t.detectionFeedback.title)}
           onClick={() => dispatch(openDetectionFeedbackModal({ datasetId, detectionId }))}
         />
