@@ -6,6 +6,8 @@ import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { Button, InputText, Modal, Tag } from '@globalfishingwatch/ui-components'
 
 import { PATH_BASENAME } from 'data/map/config'
+import DatasetLabel from 'features/_map/datasets/DatasetLabel'
+import { selectDatasetById } from 'features/_map/datasets/datasets.slice'
 import { selectUserData } from 'features/_user/selectors/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectDetectionFeedbackModal } from 'features/modals/modals.slice'
@@ -21,6 +23,7 @@ type DetectionFeedbackModalProps = {
 function DetectionFeedbackModal({ isOpen = false, onClose }: DetectionFeedbackModalProps) {
   const { t } = useTranslation()
   const { datasetId, detectionId } = useSelector(selectDetectionFeedbackModal)
+  const dataset = useSelector(selectDatasetById(datasetId || ''))
   const userData = useSelector(selectUserData)
 
   const [loading, setLoading] = useState(false)
@@ -82,7 +85,7 @@ function DetectionFeedbackModal({ isOpen = false, onClose }: DetectionFeedbackMo
         <div className={styles.top}>
           <div>
             <label>{t((t) => t.detectionFeedback.dataset)}</label>
-            <Tag>{datasetId}</Tag>
+            <Tag>{dataset ? <DatasetLabel dataset={dataset} /> : datasetId}</Tag>
           </div>
           <div>
             <label>{t((t) => t.detectionFeedback.detectionId)}</label>
