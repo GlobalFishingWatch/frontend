@@ -1,16 +1,18 @@
-import { Fragment, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Fragment, useCallback, useLayoutEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import geojsonArea from '@mapbox/geojson-area'
 import { QueryStatus } from '@reduxjs/toolkit/query/react'
 import cx from 'classnames'
 import type { MultiPolygon, Polygon } from 'geojson'
 
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Button, Icon, IconButton, Popover } from '@globalfishingwatch/ui-components'
+import { REPORT_DOWNLOAD_PDF_TESTID } from '@platform/config/selectors/report'
 
 import { AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION } from 'data/map/config'
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
+import { useDeckMap } from 'features/_map/map/map-context.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import { selectWorkspaceStatus } from 'features/_map/workspace/workspace.selectors'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/_map/workspace/workspace.slice'
 import {
@@ -90,6 +92,10 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   const isStandaloneReportLocation = useSelector(selectIsStandaloneReportLocation)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const isClientHydrated = useIsClientHydrated()
+  const deck = useDeckMap()
+  // The dates the print shows over the map (MapInfo → TimelineDatesRange)
+  const { start, end } = useTimerangeConnect()
+  const [pdfLoading, setPdfLoading] = useState(false)
 
   const handleBufferUnitChange = useCallback(
     (option: ChoiceOption<BufferUnit>) => {
@@ -131,21 +137,28 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
     [previewBuffer, dispatch]
   )
 
-  useEffect(() => {
-    const onAfterPrint = () => dispatch(setPrintMode(false))
-    window.addEventListener('afterprint', onAfterPrint)
-    return () => window.removeEventListener('afterprint', onAfterPrint)
-  }, [dispatch])
-
-  const onPrintClick = () => {
+  const onDownloadPdfClick = async () => {
     closeAllSidePanels()
     fitAreaInViewport()
     trackEvent({
       category: TrackCategory.Analysis,
-      action: `Click print/save as pdf`,
+      action: `Click download pdf`,
     })
+    setPdfLoading(true)
+    // Print mode renders every vessel row instead of the current page
     dispatch(setPrintMode(true))
-    requestAnimationFrame(window.print)
+    try {
+      const { downloadSidebarPdf } = await import('features/pdf/pdf.download')
+      await downloadSidebarPdf({
+        deck,
+        filename: `GFW-report-${reportTitle}.pdf`,
+        title: typeof reportTitle === 'string' ? reportTitle : '',
+        timerange: start && end ? { start, end } : undefined,
+      })
+    } finally {
+      dispatch(setPrintMode(false))
+      setPdfLoading(false)
+    }
   }
 
   const handleTooltipHide = useCallback(() => {
@@ -309,11 +322,13 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
                 <IconButton
                   className={styles.actionButton}
                   type="border"
-                  icon="print"
-                  tooltip={t((t) => t.analysis.print)}
+                  icon="download"
+                  tooltip={t((t) => t.analysis.downloadPdf)}
                   size="medium"
                   tooltipPlacement="bottom"
-                  onClick={onPrintClick}
+                  loading={pdfLoading}
+                  onClick={onDownloadPdfClick}
+                  testId={REPORT_DOWNLOAD_PDF_TESTID}
                 />
               )}
             </div>

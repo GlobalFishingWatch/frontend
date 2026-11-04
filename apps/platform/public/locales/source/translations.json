@@ -29,6 +29,7 @@
     "difference": "buffer only",
     "disclaimer": "The data shown above should be taken as an estimate.",
     "dissolve": "combined",
+    "downloadPdf": "Download PDF",
     "downloadVesselsList": "Download list (CSV)",
     "editTitle": "Edit report",
     "error": "There was a problem loading the data, please try refreshing the page",
