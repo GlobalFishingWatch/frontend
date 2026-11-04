@@ -1,7 +1,5 @@
 import type { RateLimit } from '@globalfishingwatch/api-types'
 
-export type RateLimitDebug = (message: string, data?: Record<string, unknown>) => void
-
 /** Path only, track urls carry long query strings */
 export const getRateLimitLogUrl = (url: string) => {
   try {
@@ -10,9 +8,6 @@ export const getRateLimitLogUrl = (url: string) => {
     return url
   }
 }
-
-// Turnstile action the reset endpoint must check in the siteverify result
-export const TRACKS_VISUALIZE_LIMIT_CHALLENGE_ACTION = 'reset-visualize-tracks-limit'
 
 export const parseRateLimit = (response: Response): RateLimit => ({
   remaining: parseInt(response.headers?.get('Ratelimit-Remaining') || ''),

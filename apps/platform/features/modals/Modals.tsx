@@ -56,8 +56,6 @@ const Welcome = lazy(() => import('features/welcome/Welcome'))
 const VesselGroupModal = lazy(() => import('features/_user/vessel-groups/VesselGroupModal'))
 const FeedbackModal = lazy(() => import('features/feedback/FeedbackModal'))
 const OnboardingModal = lazy(() => import('features/onboarding/OnboardingModal'))
-// Lazy to keep it out of the shell. Its container only matters near the rate limit, long after this loads
-const RateLimitChallenge = lazy(() => import('./RateLimitChallenge'))
 const UpdateVideoModal = lazy(() => import('features/onboarding/UpdateVideoModal'))
 const VesselCorrectionModal = lazy(
   () => import('features/_vessels/vessel/vesselCorrection/VesselCorrectionModal')
@@ -294,9 +292,6 @@ const AppModals = () => {
           <VesselGroupModal />
         </Suspense>
       )}
-      <Suspense fallback={null}>
-        <RateLimitChallenge />
-      </Suspense>
     </Fragment>
   )
 }

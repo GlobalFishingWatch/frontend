@@ -28,7 +28,7 @@ try {
 
 GFWAPI.configure({
   tokenStorage: createCookieTokenStorage(USER_TOKEN_COOKIE_KEY),
-  refreshStrategy: () => refreshTokenServerFn(),
+  refreshStrategy: (captchaToken) => refreshTokenServerFn({ data: { captchaToken } }),
   sessionInvalidateStrategy: () => clearAuthCookiesServerFn(),
 })
 

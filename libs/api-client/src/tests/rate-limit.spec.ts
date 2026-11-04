@@ -1,13 +1,19 @@
 import { describe, expect, vi } from 'vitest'
 
 import { isVisualizationRateLimitedUrl, parseRateLimit } from '../utils/rate-limit'
-import { renderRateLimitChallenge } from '../utils/turnstile'
+import { renderCaptchaChallenge } from '../utils/turnstile'
 
 import { createApiClient, it } from './helpers'
 
 vi.mock('../utils/turnstile', () => ({
-  renderRateLimitChallenge: vi.fn(() => Promise.resolve('turnstile-token')),
+  renderCaptchaChallenge: vi.fn(() => Promise.resolve('turnstile-token')),
 }))
+
+// A widget nobody solves, it only settles when GFWAPI aborts it
+const pendingChallenge = (_: HTMLElement, { signal }: { signal: AbortSignal }) =>
+  new Promise<string>((_, reject) =>
+    signal.addEventListener('abort', () => reject(signal.reason), { once: true })
+  )
 
 const rateLimitedResponse = (status: number, remaining: number) =>
   new Response(JSON.stringify({ ok: status < 400 }), {
@@ -39,7 +45,7 @@ describe('rate limit', () => {
     client,
     fetchMock,
   }) => {
-    client.setRateLimitChallengeContainer(document.createElement('div'))
+    client.setCaptchaContainer(document.createElement('div'))
     fetchMock
       .mockResolvedValueOnce(rateLimitedResponse(429, 0))
       .mockResolvedValueOnce(new Response(null, { status: 204 }))
@@ -49,7 +55,12 @@ describe('rate limit', () => {
 
     const [resetUrl, resetInit] = fetchMock.mock.calls[1]
     expect(resetUrl).toBe('https://api.example.com/v3/vessels/tracks/visualize-limit/reset')
-    expect(resetInit.body).toBe(JSON.stringify({ dataset: 'a', captchaToken: 'turnstile-token' }))
+    expect(resetInit.body).toBe(JSON.stringify({ dataset: 'a' }))
+    expect(resetInit.headers['x-captcha-token']).toBe('turnstile-token')
+    expect(vi.mocked(renderCaptchaChallenge)).toHaveBeenLastCalledWith(
+      expect.anything(),
+      expect.objectContaining({ action: 'reset-visualize-tracks-limit' })
+    )
     expect(fetchMock).toHaveBeenCalledTimes(3)
     expect(client.getRateLimitChallengeState()).toBe('idle')
   })
@@ -58,7 +69,7 @@ describe('rate limit', () => {
     client,
     fetchMock,
   }) => {
-    client.setRateLimitChallengeContainer(document.createElement('div'))
+    client.setCaptchaContainer(document.createElement('div'))
     fetchMock
       .mockResolvedValueOnce(rateLimitedResponse(429, 0))
       .mockResolvedValueOnce(new Response(null, { status: 403 }))
@@ -79,10 +90,10 @@ describe('rate limit', () => {
     fetchMock,
   }) => {
     const challengeB = Promise.withResolvers<string>()
-    vi.mocked(renderRateLimitChallenge)
+    vi.mocked(renderCaptchaChallenge)
       .mockResolvedValueOnce('token-a')
       .mockReturnValueOnce(challengeB.promise)
-    client.setRateLimitChallengeContainer(document.createElement('div'))
+    client.setCaptchaContainer(document.createElement('div'))
     // First request per dataset is rate limited, the retry after its reset succeeds
     const requests: Record<string, number> = {}
     fetchMock.mockImplementation(async (url: string) => {
@@ -103,12 +114,12 @@ describe('rate limit', () => {
 
     challengeB.resolve('token-b')
     await expect(requestB).resolves.toEqual({ ok: true })
-    const resetBodies = fetchMock.mock.calls
+    const resets = fetchMock.mock.calls
       .filter(([url]) => url.includes('visualize-limit/reset'))
-      .map(([, init]) => JSON.parse(init.body))
-    expect(resetBodies).toEqual([
-      { dataset: 'a', captchaToken: 'token-a' },
-      { dataset: 'b', captchaToken: 'token-b' },
+      .map(([, init]) => [JSON.parse(init.body).dataset, init.headers['x-captcha-token']])
+    expect(resets).toEqual([
+      ['a', 'token-a'],
+      ['b', 'token-b'],
     ])
     expect(client.getRateLimitChallengeState()).toBe('idle')
   })
@@ -116,7 +127,7 @@ describe('rate limit', () => {
   it('calls every reset listener even when one throws, and keeps the reset successful', async ({
     client,
   }) => {
-    client.setRateLimitChallengeContainer(document.createElement('div'))
+    client.setCaptchaContainer(document.createElement('div'))
     vi.stubGlobal(
       'fetch',
       vi
@@ -139,7 +150,7 @@ describe('rate limit', () => {
   })
 
   it('rejects parked requests with their 429 when the user cancels', async ({ client }) => {
-    client.setRateLimitChallengeContainer(document.createElement('div'))
+    client.setCaptchaContainer(document.createElement('div'))
     vi.stubGlobal(
       'fetch',
       vi
@@ -157,27 +168,33 @@ describe('rate limit', () => {
   })
 
   it.for([
-    { debug: 'request', request: true, auth: false, rateLimit: false },
-    { debug: 'auth', request: false, auth: true, rateLimit: false },
-    { debug: 'rate-limit', request: false, auth: false, rateLimit: true },
-    { debug: true, request: true, auth: true, rateLimit: true },
-    { debug: false, request: false, auth: false, rateLimit: false },
-  ] as const)('debug $debug only logs its scope', async ({ debug, request, auth, rateLimit }) => {
-    const log = vi.spyOn(console, 'log').mockImplementation(() => {})
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-    const client = createApiClient({ debug })
-    client.setRateLimitChallengeContainer(document.createElement('div'))
-    client.configure({ baseUrl: 'https://api.example.com' })
-    // No refresh token stored: logs an [auth] warning and rejects
-    await client.refreshAPIToken().catch(() => {})
+    { debug: 'request', request: true, auth: false, rateLimit: false, captcha: false },
+    { debug: 'auth', request: false, auth: true, rateLimit: false, captcha: false },
+    { debug: 'rate-limit', request: false, auth: false, rateLimit: true, captcha: false },
+    { debug: 'captcha', request: false, auth: false, rateLimit: false, captcha: true },
+    { debug: true, request: true, auth: true, rateLimit: true, captcha: true },
+    { debug: false, request: false, auth: false, rateLimit: false, captcha: false },
+  ] as const)(
+    'debug $debug only logs its scope',
+    async ({ debug, request, auth, rateLimit, captcha }) => {
+      const log = vi.spyOn(console, 'log').mockImplementation(() => {})
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const client = createApiClient({ debug })
+      client.setCaptchaContainer(document.createElement('div'))
+      await client.startRateLimitChallenge()
+      client.configure({ baseUrl: 'https://api.example.com' })
+      // No refresh token stored: logs an [auth] warning and rejects
+      await client.refreshAPIToken().catch(() => {})
 
-    const messages = [...log.mock.calls, ...warn.mock.calls].map(([message]) => String(message))
-    expect(messages.some((m) => m.startsWith('GFWAPI:'))).toBe(request)
-    expect(messages.some((m) => m.startsWith('[auth]'))).toBe(auth)
-    expect(messages.some((m) => m.startsWith('[rate-limit]'))).toBe(rateLimit)
-    log.mockRestore()
-    warn.mockRestore()
-  })
+      const messages = [...log.mock.calls, ...warn.mock.calls].map(([message]) => String(message))
+      expect(messages.some((m) => m.startsWith('GFWAPI:'))).toBe(request)
+      expect(messages.some((m) => m.startsWith('[auth]'))).toBe(auth)
+      expect(messages.some((m) => m.startsWith('[rate-limit]'))).toBe(rateLimit)
+      expect(messages.some((m) => m.startsWith('[captcha]'))).toBe(captcha)
+      log.mockRestore()
+      warn.mockRestore()
+    }
+  )
 
   it('rejects the 429 as before when no challenge container is set', async ({
     client,
@@ -195,9 +212,9 @@ describe('rate limit', () => {
     fetchMock,
   }) => {
     const replaced = document.createElement('div')
-    client.setRateLimitChallengeContainer(replaced)
-    client.setRateLimitChallengeContainer(document.createElement('div'))
-    client.clearRateLimitChallengeContainer(replaced)
+    client.setCaptchaContainer(replaced)
+    client.setCaptchaContainer(document.createElement('div'))
+    client.clearCaptchaContainer(replaced)
     fetchMock
       .mockResolvedValueOnce(rateLimitedResponse(429, 0))
       .mockResolvedValueOnce(new Response(null, { status: 204 }))
@@ -211,35 +228,35 @@ describe('rate limit', () => {
     client,
     fetchMock,
   }) => {
-    vi.mocked(renderRateLimitChallenge).mockReturnValueOnce(new Promise(() => {}))
+    vi.mocked(renderCaptchaChallenge).mockImplementationOnce(pendingChallenge)
     const container = document.createElement('div')
-    client.setRateLimitChallengeContainer(container)
+    client.setCaptchaContainer(container)
     fetchMock.mockResolvedValueOnce(rateLimitedResponse(429, 0))
 
     const request = client.fetch('/vessels/abc/tracks?dataset=a')
-    await vi.waitFor(() => expect(client.getRateLimitChallengeState()).toBe('solving'))
+    await vi.waitFor(() => expect(client.getCaptchaChallengeState().status).toBe('solving'))
 
-    client.clearRateLimitChallengeContainer(container)
+    client.clearCaptchaContainer(container)
     await expect(request).rejects.toMatchObject({ status: 429 })
     expect(client.getRateLimitChallengeState()).toBe('idle')
   })
 
   it('moves a running challenge to a new container', async ({ client, fetchMock }) => {
-    vi.mocked(renderRateLimitChallenge).mockReturnValueOnce(new Promise(() => {}))
+    vi.mocked(renderCaptchaChallenge).mockImplementationOnce(pendingChallenge)
     const previous = document.createElement('div')
     const next = document.createElement('div')
-    client.setRateLimitChallengeContainer(previous)
+    client.setCaptchaContainer(previous)
     fetchMock
       .mockResolvedValueOnce(rateLimitedResponse(429, 0))
       .mockResolvedValueOnce(new Response(null, { status: 204 }))
       .mockResolvedValueOnce(rateLimitedResponse(200, 10))
 
     const request = client.fetch('/vessels/abc/tracks?dataset=a')
-    await vi.waitFor(() => expect(client.getRateLimitChallengeState()).toBe('solving'))
+    await vi.waitFor(() => expect(client.getCaptchaChallengeState().status).toBe('solving'))
 
-    client.setRateLimitChallengeContainer(next)
-    client.clearRateLimitChallengeContainer(previous)
+    client.setCaptchaContainer(next)
+    client.clearCaptchaContainer(previous)
     await expect(request).resolves.toEqual({ ok: true })
-    expect(vi.mocked(renderRateLimitChallenge)).toHaveBeenLastCalledWith(next, expect.anything())
+    expect(vi.mocked(renderCaptchaChallenge)).toHaveBeenLastCalledWith(next, expect.anything())
   })
 })

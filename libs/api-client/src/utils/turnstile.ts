@@ -1,6 +1,6 @@
 import { getEnv } from './env'
-import type { RateLimitDebug } from './rate-limit'
-import { TRACKS_VISUALIZE_LIMIT_CHALLENGE_ACTION } from './rate-limit'
+
+export type CaptchaDebug = (message: string, data?: Record<string, unknown>) => void
 
 // https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/
 // Must be loaded from this exact url, never proxied or bundled
@@ -21,7 +21,7 @@ declare global {
 
 let turnstileLoading: Promise<Turnstile> | null = null
 
-function loadTurnstile(debug: RateLimitDebug): Promise<Turnstile> {
+function loadTurnstile(debug: CaptchaDebug): Promise<Turnstile> {
   if (window.turnstile) {
     return Promise.resolve(window.turnstile)
   }
@@ -47,21 +47,32 @@ function loadTurnstile(debug: RateLimitDebug): Promise<Turnstile> {
   return turnstileLoading
 }
 
-/** Runs a Managed challenge that stays invisible unless Cloudflare needs an interaction, resolves with the single-use token */
-export async function renderRateLimitChallenge(
+/**
+ * Runs a Managed challenge that stays invisible unless Cloudflare needs an interaction, resolves
+ * with the single-use token. Aborting rejects and removes the widget
+ */
+export async function renderCaptchaChallenge(
   container: HTMLElement,
-  { onInteractive, debug }: { onInteractive: () => void; debug: RateLimitDebug }
+  {
+    action,
+    signal,
+    onInteractive,
+    debug,
+  }: { action: string; signal: AbortSignal; onInteractive: () => void; debug: CaptchaDebug }
 ): Promise<string> {
   const turnstile = await loadTurnstile(debug)
+  signal.throwIfAborted()
   let widgetId: string | undefined
   try {
     return await new Promise<string>((resolve, reject) => {
+      signal.addEventListener('abort', () => reject(signal.reason), { once: true })
       const sitekey = getEnv('VITE_TURNSTILE_SITE_KEY')
       widgetId = turnstile.render(container, {
         sitekey,
-        action: TRACKS_VISUALIZE_LIMIT_CHALLENGE_ACTION,
+        action,
         appearance: 'interaction-only',
         'response-field': false,
+        'refresh-timeout': 'never',
         callback: (token: string) => {
           debug('turnstile: solved', { tokenLength: token.length })
           resolve(token)
@@ -75,13 +86,18 @@ export async function renderRateLimitChallenge(
           debug('turnstile: error', { code })
           reject(new Error(`Turnstile error ${code}`))
         },
-        'timeout-callback': () => debug('turnstile: interactive challenge timed out'),
+        // Rejects instead of letting Turnstile refresh it: an unanswered widget would block the
+        // captcha queue, and the token refresh with it, for good
+        'timeout-callback': () => {
+          debug('turnstile: interactive challenge timed out')
+          reject(new Error('Turnstile interactive challenge timed out'))
+        },
         'unsupported-callback': () => {
           debug('turnstile: unsupported browser')
           reject(new Error('Turnstile unsupported browser'))
         },
       })
-      debug('turnstile: widget rendered', { widgetId, sitekey })
+      debug('turnstile: widget rendered', { widgetId, sitekey, action })
     })
   } finally {
     if (widgetId) {

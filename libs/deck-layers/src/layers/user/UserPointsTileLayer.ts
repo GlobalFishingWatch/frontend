@@ -20,7 +20,7 @@ import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
 import { COLOR_HIGHLIGHT_LINE, DEFAULT_LINE_COLOR } from '#config/colors.config'
 import { LayerGroup } from '#config/sort.config'
-import { getFetchLoadOptions, GFWMVTLoader } from '#layers/_shared/api'
+import { fetchWithGFWAPI, GFWMVTLoader } from '#layers/_shared/api'
 import { getMVTSublayerProps, transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
 import type { ContextSublayerCallbackParams } from '#layers/context/context.types'
 import {
@@ -307,9 +307,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
         data: this._getTilesUrl(layer.tilesUrl),
         loaders: [GFWMVTLoader],
         maxZoom,
-        loadOptions: {
-          ...getFetchLoadOptions(),
-        },
+        fetch: fetchWithGFWAPI,
         onTileError: this._onLayerError,
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props) => {
