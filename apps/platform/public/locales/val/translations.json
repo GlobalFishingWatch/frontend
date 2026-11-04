@@ -575,6 +575,14 @@
     "nir": "crwdns138369:0crwdne138369:0",
     "rgb": "crwdns138371:0crwdne138371:0"
   },
+  "detectionFeedback": {
+    "commentPlaceholder": "crwdns138901:0crwdne138901:0",
+    "comments": "crwdns138903:0crwdne138903:0",
+    "dataset": "crwdns138905:0crwdne138905:0",
+    "detectionId": "crwdns138907:0crwdne138907:0",
+    "send": "crwdns138909:0crwdne138909:0",
+    "title": "crwdns138911:0crwdne138911:0"
+  },
   "detections_one": "crwdns138871:0crwdne138871:0",
   "detections_other": "crwdns138873:0crwdne138873:0",
   "detectionScene": {
