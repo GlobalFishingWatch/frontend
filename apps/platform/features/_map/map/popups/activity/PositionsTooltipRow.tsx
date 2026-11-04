@@ -37,6 +37,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import I18nDate from 'features/i18n/i18nDate'
+import { openDetectionFeedbackModal } from 'features/modals/modals.slice'
 import { pickDateFormatByPrecision } from 'utils/dates'
 import { formatInfoField, upperFirst } from 'utils/info'
 
@@ -80,6 +81,8 @@ function DetectionThumbnails({
   highlightedSceneId?: string
 }) {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+
   const [selectedName, setSelectedName] = useState<string>()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const sceneId = getDetectionSceneId(detectionId)
@@ -130,6 +133,13 @@ function DetectionThumbnails({
             }
           />
         )}
+        <IconButton
+          icon="feedback"
+          size="small"
+          className={popupStyles.thumbnailSceneButton}
+          tooltip={t((t) => t.detectionFeedback.title)}
+          onClick={() => dispatch(openDetectionFeedbackModal({ datasetId, detectionId }))}
+        />
         {options.length > 1 && (
           <Choice
             size="small"
