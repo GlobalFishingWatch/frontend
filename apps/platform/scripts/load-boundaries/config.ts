@@ -110,7 +110,7 @@ export const CHECKS: Check[] = [
     // entry chunk. Slices injected with rootReducer.inject() are not in it.
     label: 'eager store',
     entries: ['routes/__root.tsx', 'store/reducers.ts'],
-    maxModules: 190,
+    maxModules: 200,
     forbid: EVERY_PAGE,
     why: 'The reducer map loads on every page, including pages with no map.',
   },

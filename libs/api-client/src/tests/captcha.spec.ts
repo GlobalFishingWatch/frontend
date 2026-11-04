@@ -1,6 +1,7 @@
 import { describe, expect, vi } from 'vitest'
 
-import { isSessionError } from '../utils/errors'
+import { isCaptchaError, isSessionError } from '../utils/errors'
+import { processStatus } from '../utils/parse'
 import { renderCaptchaChallenge } from '../utils/turnstile'
 
 import { it } from './helpers'
@@ -13,6 +14,12 @@ const tokensResponse = () =>
   new Response(JSON.stringify({ token: 'new-token', refreshToken: 'new-refresh' }), {
     status: 200,
   })
+
+// A widget nobody solves, it only settles when GFWAPI aborts it
+const pendingChallenge = (_: HTMLElement, { signal }: { signal: AbortSignal }) =>
+  new Promise<string>((_, reject) =>
+    signal.addEventListener('abort', () => reject(signal.reason), { once: true })
+  )
 
 const captchaRejected = () =>
   new Response(JSON.stringify({ error: 'invalid captcha' }), { status: 401 })
@@ -141,5 +148,115 @@ describe('captcha', () => {
     expect(sessionInvalidateStrategy).not.toHaveBeenCalled()
     expect(storage.getItem('GFW_API_USER_REFRESH_TOKEN')).toBe('refresh')
     expect(isSessionError({ status: 401, message: 'invalid captcha' })).toBe(false)
+  })
+
+  it('cancelling a widget rejects its request and frees the queue', async ({
+    client,
+    fetchMock,
+  }) => {
+    vi.mocked(renderCaptchaChallenge).mockImplementationOnce(pendingChallenge)
+    client.setCaptchaContainer(document.createElement('div'))
+    fetchMock.mockImplementation(async () => new Response('{}', { status: 200 }))
+
+    const cancelled = client.fetch('/protected', { captcha: 'some-action' })
+    const next = client.fetch('/protected', { captcha: 'some-action' })
+    await vi.waitFor(() => expect(client.getCaptchaChallengeState().status).toBe('solving'))
+    client.cancelCaptcha()
+
+    await expect(cancelled).rejects.toThrow('GFWAPI: captcha cancelled')
+    await expect(next).resolves.toEqual({})
+    expect(fetchMock.mock.calls.map(([, init]) => init.headers['x-captcha-token'])).toEqual([
+      'turnstile-token',
+    ])
+  })
+
+  it('an aborted request gives up its widget', async ({ client, fetchMock }) => {
+    vi.mocked(renderCaptchaChallenge).mockImplementationOnce(pendingChallenge)
+    client.setCaptchaContainer(document.createElement('div'))
+    const controller = new AbortController()
+
+    const request = client.fetch('/protected', {
+      captcha: 'some-action',
+      signal: controller.signal,
+    })
+    await vi.waitFor(() => expect(client.getCaptchaChallengeState().status).toBe('solving'))
+    controller.abort()
+
+    await expect(request).rejects.toThrow()
+    expect(fetchMock).not.toHaveBeenCalled()
+    expect(client.getCaptchaChallengeState()).toEqual({ status: 'idle' })
+  })
+
+  it('sends the request without a token when the container goes away mid-solve', async ({
+    client,
+    fetchMock,
+  }) => {
+    vi.mocked(renderCaptchaChallenge).mockImplementationOnce(pendingChallenge)
+    const container = document.createElement('div')
+    client.setCaptchaContainer(container)
+    fetchMock.mockResolvedValueOnce(new Response('{}', { status: 200 }))
+
+    const request = client.fetch('/protected', { captcha: 'some-action' })
+    await vi.waitFor(() => expect(client.getCaptchaChallengeState().status).toBe('solving'))
+    client.clearCaptchaContainer(container)
+
+    await expect(request).resolves.toEqual({})
+    expect(fetchMock.mock.calls[0][1].headers['x-captcha-token']).toBeUndefined()
+  })
+
+  it.for([
+    { name: 'the widget fails', status: undefined },
+    { name: 'the gateway cannot verify it', status: 503 },
+  ])(
+    'does not retry the token reload when $name',
+    async ({ status }, { client, fetchMock, storage }) => {
+      storage.setItem('GFW_API_USER_REFRESH_TOKEN', 'refresh')
+      client.setCaptchaContainer(document.createElement('div'))
+      if (status) {
+        fetchMock.mockResolvedValue(
+          new Response(JSON.stringify({ error: 'captcha verification unavailable' }), { status })
+        )
+      } else {
+        vi.mocked(renderCaptchaChallenge).mockRejectedValueOnce(new Error('Turnstile error 110200'))
+      }
+
+      await expect(client.refreshAPIToken()).rejects.toBeDefined()
+      expect(vi.mocked(renderCaptchaChallenge)).toHaveBeenCalledTimes(1)
+      expect(fetchMock).toHaveBeenCalledTimes(status ? 1 : 0)
+    }
+  )
+
+  it('solves the refresh captcha before taking the cross-tab lock', async ({ client }) => {
+    const order: string[] = []
+    vi.mocked(renderCaptchaChallenge).mockImplementationOnce(async () => {
+      order.push('captcha')
+      return 'turnstile-token'
+    })
+    vi.stubGlobal('navigator', {
+      locks: {
+        request: (_: string, run: () => Promise<unknown>) => {
+          order.push('lock')
+          return run()
+        },
+      },
+    })
+    client.configure({ refreshStrategy: async () => ({ token: 't', refreshToken: 'r' }) })
+    client.setCaptchaContainer(document.createElement('div'))
+
+    await client.refreshAPIToken()
+
+    expect(order).toEqual(['captcha', 'lock'])
+  })
+
+  it('reads the error of a 5xx body, so a 503 captcha answer is recognized', async () => {
+    const response = new Response(JSON.stringify({ error: 'captcha verification unavailable' }), {
+      status: 503,
+      statusText: 'Service Unavailable',
+    })
+
+    const error = await processStatus(response).catch((e) => e)
+
+    expect(error).toMatchObject({ status: 503, message: 'captcha verification unavailable' })
+    expect(isCaptchaError(error)).toBe(true)
   })
 })

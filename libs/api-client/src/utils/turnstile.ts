@@ -72,6 +72,7 @@ export async function renderCaptchaChallenge(
         action,
         appearance: 'interaction-only',
         'response-field': false,
+        'refresh-timeout': 'never',
         callback: (token: string) => {
           debug('turnstile: solved', { tokenLength: token.length })
           resolve(token)
@@ -85,7 +86,12 @@ export async function renderCaptchaChallenge(
           debug('turnstile: error', { code })
           reject(new Error(`Turnstile error ${code}`))
         },
-        'timeout-callback': () => debug('turnstile: interactive challenge timed out'),
+        // Rejects instead of letting Turnstile refresh it: an unanswered widget would block the
+        // captcha queue, and the token refresh with it, for good
+        'timeout-callback': () => {
+          debug('turnstile: interactive challenge timed out')
+          reject(new Error('Turnstile interactive challenge timed out'))
+        },
         'unsupported-callback': () => {
           debug('turnstile: unsupported browser')
           reject(new Error('Turnstile unsupported browser'))

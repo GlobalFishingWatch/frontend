@@ -20,7 +20,8 @@ export const processStatus = (
         message: '',
         messages: [],
       }
-      if (response.status >= 400 && response.status < 500) {
+      // 5xx too: the gateway's 503 tells an unavailable captcha verification apart
+      if (response.status >= 400) {
         await response.text().then((text) => {
           try {
             const res = JSON.parse(text)

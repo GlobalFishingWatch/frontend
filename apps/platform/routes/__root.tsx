@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
 import type { ReactNode } from 'react'
-import { Suspense } from 'react'
+import { lazy, Suspense } from 'react'
 import robotoLatin400 from '@fontsource/roboto/files/roboto-latin-400-normal.woff2?url'
 import robotoLatin500 from '@fontsource/roboto/files/roboto-latin-500-normal.woff2?url'
 // import { TanStackDevtools } from '@tanstack/react-devtools'
@@ -23,6 +23,8 @@ import { getPanelWidthsFromRequest } from 'server/screen-size.server'
 import { resolveUserStateFromRequest } from 'server/user.server'
 
 import appCss from './styles.css?url'
+
+const CaptchaChallenge = lazy(() => import('features/modals/CaptchaChallenge'))
 
 const GOOGLE_TAG_MANAGER_ID = import.meta.env.VITE_GOOGLE_TAG_MANAGER_ID as string
 
@@ -120,6 +122,7 @@ function RootComponent() {
       <Suspense fallback={null}>
         <I18nSSRProvider>
           <Outlet />
+          <CaptchaChallenge />
         </I18nSSRProvider>
       </Suspense>
       {/* {import.meta.env.DEV && (

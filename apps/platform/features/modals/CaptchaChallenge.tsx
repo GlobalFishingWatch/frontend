@@ -47,12 +47,19 @@ function CaptchaChallenge() {
   const failed = rateLimitState === 'failed'
 
   return (
-    <div className={cx(styles.overlay, { [styles.visible]: interactive || failed })}>
+    <div
+      className={cx(styles.overlay, { [styles.visible]: interactive || failed })}
+      data-react-aria-top-layer
+    >
       <div className={styles.content}>
         {interactive && (
           <div className={styles.message}>
             <h2 className={styles.title}>{t((t) => t.rateLimit.challengeTitle)}</h2>
-            {rateLimitCaptcha && <p>{t((t) => t.rateLimit.challenge)}</p>}
+            <p>
+              {rateLimitCaptcha
+                ? t((t) => t.rateLimit.challenge)
+                : t((t) => t.rateLimit.sessionChallenge)}
+            </p>
           </div>
         )}
         {failed && (
@@ -72,6 +79,14 @@ function CaptchaChallenge() {
           </Fragment>
         )}
         <div className={styles.challengeContainer} ref={containerRef} />
+        {interactive && (
+          <div className={styles.actions}>
+            {/* Rejects the protected request, a rate limit reset then offers to retry */}
+            <Button type="secondary" onClick={GFWAPI.cancelCaptcha}>
+              {t((t) => t.rateLimit.notNow)}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )
