@@ -67,7 +67,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
   initializeState(context: LayerContext): void {
     super.initializeState(context)
     const { dataUrl } = this.props
-    if (typeof dataUrl === 'string') {
+    if (dataUrl && typeof dataUrl === 'string') {
       this._loadDataUrl(dataUrl)
     }
   }
