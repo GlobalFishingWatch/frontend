@@ -575,6 +575,14 @@
     "nir": "Near-infrared",
     "rgb": "Red, green and blue (visible light)"
   },
+  "detectionFeedback": {
+    "commentPlaceholder": "Describe the issue with this detection",
+    "comments": "Comments",
+    "dataset": "Dataset",
+    "detectionId": "Detection id",
+    "send": "Send feedback",
+    "title": "Detection feedback"
+  },
   "detections_one": "",
   "detections_other": "",
   "detectionScene": {
@@ -1767,7 +1775,7 @@
     },
     "title": "Workspace",
     "titlePlural": "Workspaces",
-    "updateDeprecatedDataviews": "This workspace contains layers that are using outdated data. Click to update them from your workspace.",
+    "updateDeprecatedDataviews": "This workspace contains layers that are using outdated data. Please update them from your workspace.",
     "uploadPublicDisabled": "Cet espace de travail ne peut pas être partagé publiquement car il contient des jeux de données privés",
     "user": "Espace de travail de l'utilisateur",
     "viewAccess": "Voir les permissions",
