@@ -1062,6 +1062,7 @@
     "failedTitle": "We couldn't verify you",
     "notNow": "Not now",
     "profileActivity": "Vessel tracks and events are paused. Verify you're human to see this vessel's activity.",
+    "sessionChallenge": "We need to confirm you are a human. Complete it to stay logged in.",
     "trackLimitReached": "Vessel tracks and events are paused. Click to confirm you're human and load them again.",
     "verify": "Verify"
   },
