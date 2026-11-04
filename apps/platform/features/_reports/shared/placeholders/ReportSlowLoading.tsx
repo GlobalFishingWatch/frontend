@@ -18,7 +18,7 @@ export function ReportSlowLoading() {
   const [progress, setProgress] = useState(0)
   const [factIndex, setFactIndex] = useState(0)
   const featureFlags = useSelector(selectFeatureFlags)
-  const showTips = featureFlags[FeatureFlag.SlowReportTips]
+  const isEnabled = featureFlags[FeatureFlag.SlowReportTips]
 
   // TODO:CONTENT placeholder copy — needs comms/product sign-off
   const facts = useMemo(
@@ -36,12 +36,17 @@ export function ReportSlowLoading() {
   )
 
   useEffect(() => {
+    if (!isEnabled) {
+      return
+    }
     const timeout = setTimeout(() => setIsSlow(true), SLOW_REPORT_DELAY_MS)
     return () => clearTimeout(timeout)
-  }, [])
+  }, [isEnabled])
 
   useEffect(() => {
-    if (!isSlow) return
+    if (!isSlow) {
+      return
+    }
     const interval = setInterval(() => {
       setProgress((current) => Math.min(current + PROGRESS_STEP_PERCENT, PROGRESS_MAX_PERCENT))
     }, PROGRESS_INTERVAL_MS)
@@ -49,15 +54,19 @@ export function ReportSlowLoading() {
   }, [isSlow])
 
   useEffect(() => {
-    if (!showTips || !isSlow || facts.length <= 1) return
+    if (!isSlow || facts.length <= 1) {
+      return
+    }
     setFactIndex(Math.floor(Math.random() * facts.length))
     const interval = setInterval(() => {
       setFactIndex((current) => (current + 1) % facts.length)
     }, FACT_ROTATION_MS)
     return () => clearInterval(interval)
-  }, [showTips, isSlow, facts.length])
+  }, [isSlow, facts.length])
 
-  if (!isSlow) return null
+  if (!isEnabled || !isSlow) {
+    return null
+  }
 
   const message = t((t) => t.analysis.slowReportMessage)
 
@@ -74,11 +83,9 @@ export function ReportSlowLoading() {
       >
         <div className={styles.progressBar} style={{ width: `${progress}%` }} />
       </div>
-      {showTips && (
-        <p className={styles.slowLoadingFact} aria-live="polite">
-          `{t((t) => t.common.didYouKnow)}`{facts[factIndex]}
-        </p>
-      )}
+      <p className={styles.slowLoadingFact} aria-live="polite">
+        `{t((t) => t.common.didYouKnow)}`{facts[factIndex]}
+      </p>
     </div>
   )
 }
