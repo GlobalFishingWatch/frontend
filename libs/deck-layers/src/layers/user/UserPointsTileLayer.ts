@@ -20,7 +20,7 @@ import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
 import { COLOR_HIGHLIGHT_LINE, DEFAULT_LINE_COLOR } from '#config/colors.config'
 import { LayerGroup } from '#config/sort.config'
-import { fetchWithGFWAPI, GFWMVTLoader } from '#layers/_shared/api'
+import { fetchWithGFWAPI, getTileErrorMessage, GFWMVTLoader } from '#layers/_shared/api'
 import { getMVTSublayerProps, transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
 import type { ContextSublayerCallbackParams } from '#layers/context/context.types'
 import {
@@ -289,9 +289,10 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return this.props.layers?.[0]?.sublayers?.[0]?.color
   }
 
-  _onLayerError = (error: Error) => {
-    if (!error.message.includes('404')) {
-      this.setState({ error: error.message })
+  _onLayerError = (error: Error | Response) => {
+    const message = getTileErrorMessage(error)
+    if (message) {
+      this.setState({ error: message })
     }
     return true
   }

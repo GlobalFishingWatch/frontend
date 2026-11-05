@@ -16,7 +16,7 @@ import {
 } from '#config/colors.config'
 import { DEFAULT_ID_PROPERTY } from '#config/layers.config'
 import { LayerGroup } from '#config/sort.config'
-import { fetchWithGFWAPI, GFWMVTLoader } from '#layers/_shared/api'
+import { fetchWithGFWAPI, getTileErrorMessage, GFWMVTLoader } from '#layers/_shared/api'
 import { getPickedFeatureToHighlight } from '#layers/_shared/picking.utils'
 import {
   getMVTSublayerProps,
@@ -149,9 +149,10 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
       : 0
   }
 
-  _onLayerError = (error: Error) => {
-    if (!error.message.includes('404')) {
-      this.setState({ error: error.message })
+  _onLayerError = (error: Error | Response) => {
+    const message = getTileErrorMessage(error)
+    if (message) {
+      this.setState({ error: message })
     }
     return true
   }
