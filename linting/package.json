@@ -49,9 +49,9 @@
     "eslint-plugin-simple-import-sort": "14.x",
     "prettier": "3.x",
     "prettier-eslint": "17.x",
-    "stylelint": "^17.16.0",
+    "stylelint": "^18.0.0",
     "stylelint-config-css-modules": "4.x",
-    "stylelint-config-standard": "40.x",
+    "stylelint-config-standard": "41.x",
     "typescript-eslint": "8.x"
   }
 }
