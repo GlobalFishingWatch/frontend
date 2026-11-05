@@ -10,6 +10,7 @@ import type { HelpHubArticleData } from 'features/help/helpHub.types'
 import { findHelpHubSection } from 'features/help/helpHub.utils'
 import HelpHubSectionPage from 'features/help/HelpHubSectionPage'
 import { getArticleHead, getRouteHead } from 'router/router.meta'
+import { redirectToMapUnlessPlatformMode } from 'router/routes.guards'
 
 /**
  * One route serves both `/help-and-resources/$sectionSlug` and `.../$itemSlug`. The loader fetches
@@ -22,6 +23,7 @@ export const Route = createFileRoute(
   component: HelpHubSectionPage,
   ...helpHubRouteCache,
   beforeLoad: ({ params }) => {
+    redirectToMapUnlessPlatformMode()
     if (!findHelpHubSection(params.sectionSlug)) {
       throw redirect({
         to: ROUTE_PATHS.HELP_HUB,

@@ -9,12 +9,14 @@ import { PLACE_TYPES } from 'features/_places/places.types'
 import { getAreaTypeTexts } from 'features/_places/places.utils'
 import { t } from 'features/i18n/i18n'
 import { getPlacesHead } from 'router/router.meta'
+import { redirectToMapUnlessPlatformMode } from 'router/routes.guards'
 import { validatePlacesSearchParams } from 'router/routes.search'
 
 export const Route = createFileRoute('/_platform/_content/areas/$placeType')({
   component: Areas,
   validateSearch: validatePlacesSearchParams,
   beforeLoad: ({ params, search }) => {
+    redirectToMapUnlessPlatformMode()
     if (PLACE_TYPES.areas.includes(params.placeType as OceanAreaType)) {
       return
     }
