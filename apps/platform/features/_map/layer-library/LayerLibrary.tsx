@@ -6,7 +6,7 @@ import cx from 'classnames'
 import { uniq } from 'es-toolkit'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { checkExistPermissionInList } from '@globalfishingwatch/auth-middleware/utils'
+import { checkDatasetReadPermission } from '@globalfishingwatch/datasets-client'
 import { InputText, Spinner } from '@globalfishingwatch/ui-components'
 
 import type { LibraryLayer } from 'data/map/layer-library'
@@ -407,11 +407,7 @@ const LayerLibrary: FC = () => {
                     if (
                       (layer.onlyGFWUser && !isGFWUser) ||
                       (layer.datasetPermission &&
-                        !checkExistPermissionInList(userPermissions, {
-                          type: 'dataset',
-                          value: layer.datasetPermission,
-                          action: 'read',
-                        }))
+                        !checkDatasetReadPermission(layer.datasetPermission, userPermissions))
                     ) {
                       return null
                     }
