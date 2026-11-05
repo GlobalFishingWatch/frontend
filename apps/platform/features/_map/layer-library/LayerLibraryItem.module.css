@@ -34,11 +34,6 @@
   overflow: hidden;
 }
 
-.highlighted {
-  display: inline-block;
-  background: var(--color-highlight-blue);
-}
-
 .actions {
   display: flex;
   align-items: center;

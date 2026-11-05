@@ -5,13 +5,12 @@ import { stringify } from 'qs'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { DownloadDataset } from '@globalfishingwatch/api-types'
 import { useGFWLogin } from '@globalfishingwatch/react-hooks'
-import { IconButton, InputText } from '@globalfishingwatch/ui-components'
+import { HighlightedText, IconButton, InputText } from '@globalfishingwatch/ui-components'
 
 import Loader from '../../components/loader/loader'
 import TopBar from '../../components/topBar/topBar'
 import { getUTCString } from '../../utils/dates'
 import { sortByLastUpdated, sortDatasets } from '../../utils/sorting'
-import { getHighlightedText } from '../../utils/text'
 
 import { Route as DatasetsDatasetIdRoute } from './../../../src/routes/datasets.$datasetId'
 
@@ -97,12 +96,12 @@ function HomePage() {
                 className={styles.card}
               >
                 <h2 className={styles.title}>
-                  {getHighlightedText(name as string, searchQuery, styles)}
+                  <HighlightedText text={name as string} highlight={searchQuery} />
                 </h2>
                 <div>
                   <p className={styles.description}>
                     {' '}
-                    {getHighlightedText(description as string, searchQuery, styles)}
+                    <HighlightedText text={description as string} highlight={searchQuery} />
                   </p>
                   {/* TODO add update frequency when attribute is created V*/}
                   {/* {lastUpdated && <Tag className={styles.tag}>MONTHLY UPDATES</Tag>} */}

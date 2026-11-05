@@ -13,6 +13,7 @@ import { getVesselDataviewInstanceId } from '@globalfishingwatch/dataviews-clien
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   FIRST_YEAR_OF_DATA,
+  HighlightedText,
   IconButton,
   YearlyTransmissionsTimeline,
 } from '@globalfishingwatch/ui-components'
@@ -49,7 +50,6 @@ import {
   getVesselOtherNamesLabel,
   getVesselShipTypeLabel,
 } from 'utils/info'
-import { getHighlightedText } from 'utils/text'
 
 import styles from './SearchBasicResult.module.css'
 
@@ -221,11 +221,10 @@ function SearchBasicResult({
               query={vesselQuery}
               fitBounds={isStandaloneSearchLocation}
             >
-              {getHighlightedText(
-                (name as string) || EMPTY_FIELD_PLACEHOLDER,
-                highlightQuery,
-                styles
-              )}
+              <HighlightedText
+                text={(name as string) || EMPTY_FIELD_PLACEHOLDER}
+                highlight={highlightQuery}
+              />
             </VesselLink>
             <span className={styles.secondary}>{otherNamesLabel}</span>
           </div>
@@ -239,19 +238,25 @@ function SearchBasicResult({
             <div className={styles.property}>
               <label>{t((t) => t.vessel.mmsi)}</label>
               <span translate="no">
-                {getHighlightedText(ssvid || EMPTY_FIELD_PLACEHOLDER, highlightQuery, styles)}
+                <HighlightedText
+                  text={ssvid || EMPTY_FIELD_PLACEHOLDER}
+                  highlight={highlightQuery}
+                />
               </span>
             </div>
             <div className={styles.property}>
               <label>{t((t) => t.vessel.imo)}</label>
               <span translate="no">
-                {getHighlightedText(imo || EMPTY_FIELD_PLACEHOLDER, highlightQuery, styles)}
+                <HighlightedText text={imo || EMPTY_FIELD_PLACEHOLDER} highlight={highlightQuery} />
               </span>
             </div>
             <div className={styles.property}>
               <label>{t((t) => t.vessel.callsign)}</label>
               <span translate="no">
-                {getHighlightedText(callsign || EMPTY_FIELD_PLACEHOLDER, highlightQuery, styles)}
+                <HighlightedText
+                  text={callsign || EMPTY_FIELD_PLACEHOLDER}
+                  highlight={highlightQuery}
+                />
               </span>
             </div>
             <div className={styles.property}>

@@ -9,6 +9,7 @@ import { useDebounce } from 'use-debounce'
 import type { OceanAreaType } from '@globalfishingwatch/ocean-areas'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+import { HighlightedText } from '@globalfishingwatch/ui-components'
 import { Button } from '@globalfishingwatch/ui-components/button'
 import { Choice } from '@globalfishingwatch/ui-components/choice'
 import { Icon } from '@globalfishingwatch/ui-components/icon'
@@ -26,7 +27,6 @@ import PlacesSortButton from 'features/_places/PlacesSortButton'
 import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { useIsClientHydrated } from 'hooks/ssr.hooks'
 import { useAppSearch, useReplaceQueryParams } from 'router/routes.hook'
-import { getHighlightedText } from 'utils/text'
 
 import styles from './PlacesPage.module.css'
 
@@ -189,7 +189,7 @@ function PlacesPage({
                     title={label.length > PLACE_LABEL_TITLE_MIN_LENGTH ? label : undefined}
                     translate="no"
                   >
-                    {getHighlightedText(label, urlQuery, styles)}
+                    <HighlightedText text={label} highlight={urlQuery} />
                   </span>
                 </PlaceLink>
               </li>

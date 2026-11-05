@@ -55,11 +55,6 @@
   cursor: pointer;
 }
 
-.highlighted {
-  display: inline-block;
-  background: var(--color-highlight-blue);
-}
-
 .warningButton {
   color: var(--color-danger-secondary-red);
 }

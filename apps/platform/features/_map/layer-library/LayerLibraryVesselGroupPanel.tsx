@@ -5,7 +5,13 @@ import cx from 'classnames'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { Button, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
+import {
+  Button,
+  HighlightedText,
+  Icon,
+  IconButton,
+  Spinner,
+} from '@globalfishingwatch/ui-components'
 
 import {
   selectDeletedDatasets,
@@ -32,7 +38,6 @@ import { setModalOpen } from 'features/modals/modals.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getIsBrowser } from 'utils/dom'
 import { formatInfoField } from 'utils/info'
-import { getHighlightedText } from 'utils/text'
 
 import styles from './LayerLibraryVesselGroupPanel.module.css'
 
@@ -124,11 +129,10 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
                 <li className={styles.dataset} key={vesselGroup?.id}>
                   <span className={styles.datasetLabel} translate="no">
                     <Icon icon="vessel-group" />
-                    {getHighlightedText(
-                      formatInfoField(vesselGroup?.name, 'shipname') as string,
-                      searchQuery,
-                      styles
-                    )}{' '}
+                    <HighlightedText
+                      text={formatInfoField(vesselGroup?.name, 'shipname') as string}
+                      highlight={searchQuery}
+                    />{' '}
                     ({getVesselGroupVesselsCount(vesselGroup)})
                   </span>
                   <div>

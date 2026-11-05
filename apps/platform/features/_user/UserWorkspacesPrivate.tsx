@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 
 import type { Workspace } from '@globalfishingwatch/api-types'
+import { HighlightedText } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { DEFAULT_WORKSPACE_CATEGORY } from '@platform/config/map/workspaces'
 import { ROUTE_PATHS } from '@platform/config/routes'
@@ -13,7 +14,6 @@ import { selectWorkspaceListStatus } from 'features/_map/workspaces-list/workspa
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
-import { getHighlightedText } from 'utils/text'
 
 import { selectUserWorkspacesPrivateActive } from './selectors/user.permissions.selectors'
 
@@ -66,7 +66,7 @@ function UserWorkspacesPrivate({ searchQuery }: { searchQuery: string }) {
                 onClick={() => onWorkspaceClick(workspace)}
               >
                 <span className={styles.workspaceTitle} translate="no">
-                  {getHighlightedText(label as string, searchQuery, styles)}
+                  <HighlightedText text={label as string} highlight={searchQuery} />
                 </span>
                 <IconButton icon="arrow-right" />
               </Link>

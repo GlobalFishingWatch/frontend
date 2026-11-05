@@ -229,6 +229,13 @@ sup {
   background: var(--color-highlight-blue);
 }
 
+/* Search matches, see HighlightedText */
+mark {
+  color: inherit;
+  background: var(--color-highlight-blue);
+  box-decoration-break: clone;
+}
+
 label {
   color: var(--color-secondary-blue);
   font: var(--font-S);

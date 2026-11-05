@@ -8,7 +8,7 @@ import type { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types
 import { DatasetStatus, DataviewCategory } from '@globalfishingwatch/api-types'
 import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
-import { Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
+import { HighlightedText, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
 import { getDataviewInstanceByDataset, useAddDataset } from 'features/_map/datasets/datasets.hook'
 import {
@@ -30,7 +30,6 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { getTimeAgo, getUTCDateTime, sortByCreationDate } from 'utils/dates'
 import { getIsBrowser } from 'utils/dom'
-import { getHighlightedText } from 'utils/text'
 
 import { scrollToLayerLibrarySection } from './LayerLibrary.utils'
 
@@ -195,7 +194,10 @@ const LayerLibraryUserPanel = ({
                           {datasetIcon && (
                             <Icon icon={datasetIcon} style={{ transform: 'translateY(25%)' }} />
                           )}
-                          {getHighlightedText(getDatasetLabel(dataset), searchQuery, styles)}
+                          <HighlightedText
+                            text={getDatasetLabel(dataset)}
+                            highlight={searchQuery}
+                          />
                         </span>
                         <span className={styles.datasetMeta}>{createdAgo}</span>
                       </span>

@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type { VesselGroup } from '@globalfishingwatch/api-types'
+import { HighlightedText } from '@globalfishingwatch/ui-components'
 import { Button } from '@globalfishingwatch/ui-components/button'
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
@@ -39,7 +40,6 @@ import {
 import { useAppDispatch } from 'features/app/app.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
-import { getHighlightedText } from 'utils/text'
 
 import styles from './User.module.css'
 
@@ -130,7 +130,7 @@ function UserVesselGroups() {
                         data-test="workspace-name"
                         translate="no"
                       >
-                        {getHighlightedText(label as string, searchQuery, styles)}{' '}
+                        <HighlightedText text={label as string} highlight={searchQuery} />{' '}
                         <span className={cx(styles.secondary, styles.marginLeft)}>
                           ({getVesselGroupVesselsCount(vesselGroup)})
                         </span>
