@@ -83,6 +83,18 @@ function getResponseHeader({
   return value
 }
 
+/**
+ * `onTileError` message for a tile loaded with `fetchWithGFWAPI`, or `undefined` for a 404 (empty
+ * tile). HTTP failures reject with the raw `Response` (`responseType: 'default'`), which has no
+ * `message`; parse failures and aborts reject with an `Error`.
+ */
+export function getTileErrorMessage(error: Error | Response): string | undefined {
+  if (error instanceof Response) {
+    return error.status === 404 ? undefined : `${error.status} ${error.statusText}`.trim()
+  }
+  return error?.message?.includes('404') ? undefined : error?.message
+}
+
 export async function fetchWithGFWAPI(
   url: string,
   { signal, layer }: FetchWithGFWAPIContext = {}
