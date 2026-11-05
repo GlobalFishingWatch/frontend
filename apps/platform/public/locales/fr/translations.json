@@ -940,6 +940,7 @@
     "nameRequired": "Le nom du calque est requis",
     "next_port_id": "Port suivant",
     "period": "Période",
+    "port_sources": "Source",
     "properties": {
       "color": "Color",
       "thickness": "Thickness"

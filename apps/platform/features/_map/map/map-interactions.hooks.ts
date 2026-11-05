@@ -606,9 +606,7 @@ export const useRefreshClickedEvent = () => {
   )
 }
 
-// Long enough for a cold tile load on a slow connection. On timeout we give up rather than pick
-// into half-loaded layers, which would show a partial popup the sharer never saw.
-const RESTORE_PICK_TIMEOUT = 10000
+const RESTORE_PICK_TIMEOUT = 30000
 
 /**
  * Rebuilds the clicked popup from the coordinates in the URL, so a clicked cell survives a reload

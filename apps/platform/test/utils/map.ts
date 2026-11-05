@@ -43,7 +43,7 @@ export async function waitForMapViewport(jotaiStore: JotaiStore, timeout = 10000
       }
       return viewport
     },
-    { timeout }
+    { timeout, message: 'map viewport ready' }
   )
 }
 

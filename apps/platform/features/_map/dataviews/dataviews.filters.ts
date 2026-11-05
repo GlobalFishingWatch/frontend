@@ -15,6 +15,7 @@ import {
   datasetHasFilterAllowed,
   getDatasetFilterItem,
   getDatasetFiltersAllowed,
+  getDatasetSource,
 } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
@@ -198,7 +199,9 @@ export const getCommonFiltersInDataview = (
   if (filter === 'flag') {
     return getFlags()
   } else if (filter === 'next_port_id') {
-    return getPorts()
+    // AIS events list AIS ports, VMS events VMS ports; a mixed selection lists them all
+    const sources = uniq(activeDatasets?.map((d) => getDatasetSource(d.id)) || [])
+    return getPorts(sources.length === 1 ? sources[0] : undefined)
   } else if (filter === 'vessel-groups') {
     if (activeDatasets?.every((d) => getDatasetFiltersAllowed(d)?.includes(filter))) {
       if (isGuestUser) {

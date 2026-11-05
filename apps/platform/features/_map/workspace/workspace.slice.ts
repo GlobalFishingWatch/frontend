@@ -20,6 +20,7 @@ import {
   DataviewCategory,
   EndpointId,
 } from '@globalfishingwatch/api-types'
+import { checkDatasetReadPermission } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { parseLegacyDataviewInstanceConfig } from '@globalfishingwatch/dataviews-client'
 import {
@@ -55,7 +56,11 @@ import {
   selectPrivateSearchDatasetIds,
   selectPrivateUserGroupsWithDatasetPermission,
 } from 'features/_user/selectors/user.groups.selectors'
-import { selectIsGFWUser, selectIsGuestUser } from 'features/_user/selectors/user.selectors'
+import {
+  selectIsGFWUser,
+  selectIsGuestUser,
+  selectUserData,
+} from 'features/_user/selectors/user.selectors'
 import { logoutUserThunk } from 'features/_user/user.slice'
 import { fetchVesselGroupsThunk } from 'features/_user/vessel-groups/vessel-groups.slice'
 import { REPORT, ROUTES_WITH_DEFAULT_WORKSPACE } from 'router/routes'
@@ -208,6 +213,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const urlDataviewInstances = selectUrlDataviewInstances(state)
     const guestUser = selectIsGuestUser(state)
     const gfwUser = selectIsGFWUser(state)
+    const userPermissions = selectUserData(state)?.permissions || []
     const currentWorkspace = selectWorkspace(state)
     const privateUserGroupsWithDatasetPermission =
       selectPrivateUserGroupsWithDatasetPermission(state)
@@ -299,6 +305,10 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         }
       }
 
+      // Loaded here rather than statically: the layer library reaches deck-layers, and this slice is in
+      // the reducer map, so a static import lands it in every page's entry chunk.
+      const { LIBRARY_LAYERS } = await import('data/map/layer-library')
+
       const dataviewIds = [
         // Load extra dataviews here when needed for gfwUsers
         ...DEFAULT_DATAVIEW_SLUGS,
@@ -314,6 +324,13 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         // Inject dataviews for gfw staff only
         dataviewIds.push(...ONLY_GFW_STAFF_DATAVIEW_SLUGS)
       }
+      dataviewIds.push(
+        ...LIBRARY_LAYERS.flatMap(({ dataviewId, datasetPermission }) =>
+          datasetPermission && checkDatasetReadPermission(datasetPermission, userPermissions)
+            ? (dataviewId as string)
+            : []
+        )
+      )
       const workspacePipeVersion = getWorkspacePipeVersion(workspaceId)
       if (workspacePipeVersion) {
         // Vessel templates matching the workspace pipe, see selectVesselTemplateDataviews
@@ -344,10 +361,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         }
       }
 
-      // Loaded here rather than statically: the layer library reaches deck-layers, and this slice is in
-      // the reducer map, so a static import lands it in every page's entry chunk. Awaited *before* the
-      // aborted check below so that check is still followed by synchronous work, as it was originally.
-      const { LIBRARY_LAYERS } = await import('data/map/layer-library')
+      // Awaited *before* the aborted check below so that check is still followed by synchronous work.
       const { getVesselDataviewInstanceDatasetConfig } =
         await import('features/_map/dataviews/dataviews.utils')
 

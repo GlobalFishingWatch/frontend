@@ -200,7 +200,7 @@ function DetectionThumbnail({ data, scale, datasetId }: DetectionThumbnailProps)
   const { t } = useTranslation()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const imgRef = useRef<HTMLImageElement>(null)
-  const thumbnailSize = datasetId === 'private-global-planet-presence:v4.0' ? 200 : 100
+  const thumbnailSize = datasetId?.startsWith('private-global-planet-presence:') ? 200 : 100
 
   const draw = (e: React.SyntheticEvent<HTMLImageElement>) => {
     drawEnhancedImageToCanvas({
