@@ -940,6 +940,7 @@
     "nameRequired": "Layer name is required",
     "next_port_id": "Next port",
     "period": "Period",
+    "port_sources": "Source",
     "properties": {
       "color": "Color",
       "thickness": "Thickness"
