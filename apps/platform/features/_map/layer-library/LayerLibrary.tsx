@@ -6,6 +6,7 @@ import cx from 'classnames'
 import { uniq } from 'es-toolkit'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { checkDatasetReadPermission } from '@globalfishingwatch/datasets-client'
 import { InputText, Spinner } from '@globalfishingwatch/ui-components'
 
 import type { LibraryLayer } from 'data/map/layer-library'
@@ -27,7 +28,11 @@ import LayerLibraryItem from 'features/_map/layer-library/LayerLibraryItem'
 import LayerLibraryUserPanel from 'features/_map/layer-library/LayerLibraryUserPanel'
 import { isSupportedReportDataviewType } from 'features/_reports/report-dataview-category.utils'
 import { selectUserDatasets } from 'features/_user/selectors/user.permissions.selectors'
-import { selectIsGFWUser, selectIsGuestUser } from 'features/_user/selectors/user.selectors'
+import {
+  selectIsGFWUser,
+  selectIsGuestUser,
+  selectUserData,
+} from 'features/_user/selectors/user.selectors'
 import { selectAllVisibleVesselGroups } from 'features/_user/vessel-groups/vessel-groups.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
 import {
@@ -54,6 +59,7 @@ const LayerLibrary: FC = () => {
   const layerLibraryUniqueCategory = useSelector(selectLayerLibraryUniqueCategory)
   const layerLibraryUserGeometries = useSelector(selectLayerLibraryUserGeometries)
   const isGFWUser = useSelector(selectIsGFWUser)
+  const userPermissions = useSelector(selectUserData)?.permissions || []
   const guestUser = useSelector(selectIsGuestUser)
   const [currentCategory, setCurrentCategory] = useState<DataviewCategory>(
     initialCategory || DataviewCategory.Activity
@@ -398,7 +404,11 @@ const LayerLibrary: FC = () => {
                     })}
                   </label>
                   {layersByCategory[category].map((layer) => {
-                    if (layer.onlyGFWUser && !isGFWUser) {
+                    if (
+                      (layer.onlyGFWUser && !isGFWUser) ||
+                      (layer.datasetPermission &&
+                        !checkDatasetReadPermission(layer.datasetPermission, userPermissions))
+                    ) {
                       return null
                     }
                     return (

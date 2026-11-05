@@ -21,6 +21,11 @@ export const getPrivateSearchDatasetIds = (permissions: UserPermission[] = []) =
       : []
   })
 
+export const checkDatasetReadPermission = (datasetId: string, permissions: UserPermission[]) => {
+  const permission = { type: 'dataset', value: datasetId, action: 'read' }
+  return checkExistPermissionInList(permissions, permission)
+}
+
 export const checkDatasetReportPermission = (datasetId: string, permissions: UserPermission[]) => {
   const permission = { type: 'dataset', value: datasetId, action: 'report' }
   return checkExistPermissionInList(permissions, permission)
