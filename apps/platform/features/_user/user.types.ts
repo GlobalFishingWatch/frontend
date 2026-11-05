@@ -1,4 +1,5 @@
 export type LoginSource =
+  | 'api-tokens'
   | 'assistant'
   | 'draw-points'
   | 'draw-polygon'

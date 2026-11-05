@@ -79,7 +79,7 @@ const UserButton = ({
       {guestUser || isUserExpired ? (
         <LoginLink
           dataTestId={SIDEBAR_LOGIN_LINK_TESTID}
-          tooltip={t((t) => t.common.login)}
+          tooltip={withLabel ? undefined : t((t) => t.common.login)}
           className={styles.loginLinkButton}
           loginSource="user-icon"
         >
