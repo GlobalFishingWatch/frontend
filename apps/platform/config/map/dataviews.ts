@@ -80,6 +80,7 @@ export const VIIRS_MATCH_DATAVIEW_SLUG = 'viirs-match-v-4' as const
 export const VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG = 'viirs-match-skylight-v-4' as const
 export const SAR_DATAVIEW_SLUG = `sar-v-${PIPE_DATASET_VERSION}` as const
 export const SENTINEL2_DATAVIEW_SLUG = `sentinel-2-v-${PIPE_DATASET_VERSION}` as const
+export const PLANET_DATAVIEW_SLUG = `planet-v-${PIPE_DATASET_VERSION}` as const
 
 // Event cluster dataview slugs
 export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG =
