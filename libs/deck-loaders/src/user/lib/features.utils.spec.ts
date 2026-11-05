@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vitest } from 'vitest'
 
-import { isFeatureInFilter, isFeatureInFilters } from './features.utils'
+import { getFilterProperties, isFeatureInFilter, isFeatureInFilters } from './features.utils'
 
 describe('features.utils', () => {
   beforeEach(() => {
@@ -114,6 +114,28 @@ describe('features.utils', () => {
           depth: [50, 150],
         })
       ).toBe(false)
+    })
+  })
+
+  describe('port sources filter', () => {
+    const port = { properties: { encounters: 'ais', loitering: 'ais,vms' } }
+    const aisOnly = { properties: { encounters: 'ais', loitering: '' } }
+
+    it('matches a source in any of encounters or loitering', () => {
+      expect(isFeatureInFilter(port, { id: 'port_sources', values: ['VMS'] })).toBe(true)
+      expect(isFeatureInFilter(aisOnly, { id: 'port_sources', values: ['VMS'] })).toBe(false)
+      expect(isFeatureInFilter(aisOnly, { id: 'port_sources', values: ['AIS', 'VMS'] })).toBe(true)
+    })
+
+    it('inverts with the exclude operator', () => {
+      expect(
+        isFeatureInFilter(aisOnly, { id: 'port_sources', values: ['VMS'], operator: 'exclude' })
+      ).toBe(true)
+    })
+
+    it('reads the underlying properties for the tiles request', () => {
+      expect(getFilterProperties('port_sources')).toEqual(['encounters', 'loitering'])
+      expect(getFilterProperties('flag')).toEqual(['flag'])
     })
   })
 })

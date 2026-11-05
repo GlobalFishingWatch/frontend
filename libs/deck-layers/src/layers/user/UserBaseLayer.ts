@@ -13,7 +13,7 @@ import { PMTiles } from 'pmtiles'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { mergeFeatureParts, unwrapFeatureLongitudes } from '@globalfishingwatch/data-transforms'
-import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
+import { getFilterProperties, isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
 
 import { DEFAULT_ID_PROPERTY } from '#config/layers.config'
 import { isPMTilesUrl, transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
@@ -267,7 +267,9 @@ export abstract class UserBaseLayer<
   _getTilesUrl(tilesUrl: string) {
     const { startTimeProperty, endTimeProperty, layers } = this.props
     const valueProperties = layers.flatMap((l) => l.valueProperties || [])
-    const filters = layers.flatMap((l) => l.sublayers?.flatMap((s) => Object.keys(s.filters || {})))
+    const filters = layers.flatMap((l) =>
+      l.sublayers?.flatMap((s) => Object.keys(s.filters || {}).flatMap(getFilterProperties))
+    )
     const aggregatedProperty = layers.flatMap((l) =>
       l.sublayers?.flatMap((s) => s.aggregateByProperty || [])
     )
