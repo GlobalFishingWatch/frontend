@@ -34,7 +34,7 @@ export class GFWAPITestUtils {
 
           await assertRequestReceived(spy, matchingCalls)
         },
-        { timeout: options?.timeout ?? 15000 }
+        { timeout: options?.timeout ?? 15000, message: `request to ${urlFilter}` }
       )
     })
   }
