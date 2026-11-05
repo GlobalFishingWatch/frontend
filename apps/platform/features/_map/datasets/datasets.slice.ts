@@ -14,9 +14,10 @@ import type {
   APIPagination,
   Dataset,
   DatasetsMigration,
+  Locale,
   UploadResponse,
 } from '@globalfishingwatch/api-types'
-import { DATASET_TYPE_TO_CONFIG_TYPE, DatasetTypes, Locale } from '@globalfishingwatch/api-types'
+import { DATASET_TYPE_TO_CONFIG_TYPE, DatasetTypes } from '@globalfishingwatch/api-types'
 import {
   getDatasetConfiguration,
   getIsDatasetVersionDowngrade,
@@ -24,21 +25,15 @@ import {
 } from '@globalfishingwatch/datasets-client'
 
 import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV, PUBLIC_SUFIX } from 'data/map/config'
+import { getAPILocale } from 'features/_map/datasets/datasets.utils'
 import i18n from 'features/i18n/i18n'
 import type { i18nSupportedLocale } from 'features/i18n/i18n.config'
-import { CROWDIN_IN_CONTEXT_LANG, CROWDIN_SOURCE_LANG } from 'features/i18n/i18n.config'
 import type { RootState } from 'store'
 import type { AsyncError, AsyncReducer } from 'utils/async-slice'
 import { asyncInitialState, createAsyncSlice } from 'utils/async-slice'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
 export const DEPRECATED_DATASETS_HEADER = 'X-Deprecated-Dataset'
-
-function getAPILocale(locale: i18nSupportedLocale) {
-  return locale === CROWDIN_SOURCE_LANG || locale === CROWDIN_IN_CONTEXT_LANG
-    ? Locale.en.toUpperCase()
-    : locale.toUpperCase()
-}
 
 export interface DatasetsState extends AsyncReducer<Dataset> {
   deprecatedDatasets: DatasetsMigration

@@ -27,6 +27,7 @@ import { createReportThunk } from 'features/_reports/reports.slice'
 import { selectUserGroupsClean } from 'features/_user/selectors/user.permissions.selectors'
 import { selectIsGuestUser, selectUserData } from 'features/_user/selectors/user.selectors'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { postFeedback } from 'features/feedback/feedback.utils'
 import { selectIsAnyAreaReportLocation, selectIsWorkspaceLocation } from 'router/routes.selectors'
 import { getCurrentAppUrl } from 'router/routes.utils'
 import { getIsBrowser } from 'utils/dom'
@@ -226,19 +227,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
         userId: feedbackData.userId || GUEST_USER_TYPE,
       }
 
-      const response = await fetch(`${PATH_BASENAME}/api/feedback`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ type: 'feedback', data: finalFeedbackData }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Something went wrong')
-      }
+      await postFeedback({ type: 'feedback', data: finalFeedbackData, isGuest: guestUser })
       setLoading(false)
       setInitialFeedbackStateWithUserData()
       onClose()

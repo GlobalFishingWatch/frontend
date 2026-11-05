@@ -20,7 +20,7 @@ import {
 } from '#config/colors.config'
 import { DEFAULT_ID_PROPERTY } from '#config/layers.config'
 import { LayerGroup } from '#config/sort.config'
-import { getFetchLoadOptions, GFWMVTLoader } from '#layers/_shared/api'
+import { fetchWithGFWAPI, GFWMVTLoader } from '#layers/_shared/api'
 import { getPickedFeatureToHighlight } from '#layers/_shared/picking.utils'
 import {
   getMVTSublayerProps,
@@ -244,7 +244,8 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
       const getSublayerProps = isPMTiles ? getPMTilesSublayerProps : getMVTSublayerProps
       const loaderProps = isPMTiles
         ? {}
-        : { loaders: [GFWMVTLoader], loadOptions: { ...getFetchLoadOptions() } }
+        : // Through GFWAPI so a 401/403 (e.g. expired token on a private dataset) refreshes and retries
+          { loaders: [GFWMVTLoader], fetch: fetchWithGFWAPI }
       const tilesLoadProps = { ...loaderProps, debounceTime, maxRequests }
       const sublayersHash = layer.sublayers
         .map(

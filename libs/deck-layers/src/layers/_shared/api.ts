@@ -24,17 +24,6 @@ type FetchWithGFWAPIContext = {
   }
 }
 
-export function getFetchLoadOptions(extraOptions = {}) {
-  return {
-    fetch: {
-      headers: {
-        Authorization: `Bearer ${GFWAPI.token}`,
-      },
-      ...extraOptions,
-    },
-  }
-}
-
 /** Deck icon atlases served from the app public folder (e.g. vessel-sprite.png, events-color-sprite.png). */
 const DECK_SPRITE_PATTERN = /-sprite\.png$/i
 

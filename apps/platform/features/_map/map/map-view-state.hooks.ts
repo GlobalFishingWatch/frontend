@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import type { MapView, ViewStateMap } from '@deck.gl/core'
 import { throttle } from 'es-toolkit'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom, useStore } from 'jotai'
 
 import { boundsAtom, viewStateAtom } from 'features/_map/map/map.atoms'
 import { useDeckMap } from 'features/_map/map/map-context.hooks'
@@ -45,17 +45,23 @@ export function useSetMapCoordinates() {
   const setMapViewState = useMapSetViewState()
   const { isTransitioning } = useAtomValue(boundsAtom)
   const deckMap = useDeckMap()
+  const store = useStore()
   return useCallback(
     (coordinates: Partial<ViewStateMap<MapView>>) => {
       if (!isTransitioning) {
         setMapViewState(coordinates)
         if (deckMap) {
-          const viewState = getSafeViewState(coordinates) as ViewStateMap<MapView>
+          // Deck needs a full viewState: a partial one (e.g. only `zoom` from the zoom buttons)
+          // makes MapState assert on the missing longitude/latitude
+          const viewState = {
+            ...store.get(viewStateAtom),
+            ...getSafeViewState(coordinates),
+          } as ViewStateMap<MapView>
           // Can't find why this is needed to properly update the view state
           deckMap.setProps({ viewState })
         }
       }
     },
-    [deckMap, isTransitioning, setMapViewState]
+    [deckMap, isTransitioning, setMapViewState, store]
   )
 }

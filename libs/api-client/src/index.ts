@@ -7,5 +7,11 @@ export * from './utils/search'
 export * from './utils/thinning'
 export * from './utils/token-storage'
 export * from './utils/url'
-export { GUEST_USER_TYPE, API_VERSION, API_GATEWAY } from './config'
+export {
+  GUEST_USER_TYPE,
+  API_VERSION,
+  API_GATEWAY,
+  CAPTCHA_ACTIONS,
+  CAPTCHA_HEADER,
+} from './config'
 export type { DebugMode } from './config'

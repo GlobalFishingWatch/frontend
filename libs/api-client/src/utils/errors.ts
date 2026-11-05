@@ -77,6 +77,18 @@ export function isAuthError(error = {} as Partial<ParsedAPIError> | null) {
   return isUnauthorized(error) || isForbidden(error)
 }
 
+// Answers of the captcha protected requests: 401 rejected token, 503 Turnstile unavailable.
+// App servers verifying a captcha must throw these same messages
+export const CAPTCHA_ERRORS = {
+  invalid: 'invalid captcha',
+  unavailable: 'captcha verification unavailable',
+} as const
+const CAPTCHA_ERROR_MESSAGES = Object.values(CAPTCHA_ERRORS)
+
+// Matched by message, it survives server-fn deserialization like the session messages below
+export const isCaptchaError = (error?: { message?: string } | null) =>
+  CAPTCHA_ERROR_MESSAGES.some((m) => error?.message?.includes(m))
+
 const NO_SESSION_MESSAGES = [
   'No refresh token',
   'No login token provided',
@@ -85,9 +97,14 @@ const NO_SESSION_MESSAGES = [
 ] as const
 
 // Auth/session rejection — incl. server-fn errors that lose `status` after deserialization.
+// A rejected captcha is a 401 too, but the session is still valid
 export function isSessionError(error?: { status?: number; message?: string } | null) {
-  if (!error) return false
-  if (isAuthError(error) || getIsUnauthorizedError(error)) return true
+  if (!error || isCaptchaError(error)) {
+    return false
+  }
+  if (isAuthError(error) || getIsUnauthorizedError(error)) {
+    return true
+  }
   const message = error.message ?? ''
   return NO_SESSION_MESSAGES.some((m) => message.includes(m))
 }

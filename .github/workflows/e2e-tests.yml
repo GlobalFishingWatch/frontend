@@ -14,7 +14,8 @@ jobs:
   e2e:
     name: Run affected e2e specs
     # Dependabot runs get no repository secrets (only the separate Dependabot store), so skip them
-    if: github.event.pull_request.draft == false && github.event.pull_request.user.login != 'dependabot[bot]'
+    # Crowdin's translation PRs (i18n_dev) only touch locale JSON
+    if: github.head_ref != 'i18n_dev' && github.event.pull_request.draft == false && github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     env:
       NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN_READ_ONLY }}

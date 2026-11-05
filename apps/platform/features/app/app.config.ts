@@ -28,6 +28,5 @@ export type { PanelWidths } from './cookies.config'
 
 const SSR_SUBDOMAIN_SUFFIX =
   { development: '-dev', staging: '-sta' }[import.meta.env.VITE_WORKSPACE_ENV as string] ?? ''
+
 export const SSR_REFERER = `https://ssr${SSR_SUBDOMAIN_SUFFIX}.globalfishingwatch.org`
-// The gateway grants anonymous access by referer; node fetch sends none, browsers do.
-export const SSR_HEADERS = { referer: SSR_REFERER } as HeadersInit

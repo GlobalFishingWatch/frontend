@@ -26,14 +26,13 @@ const NO_CACHE_HEADERS = {
   'cache-control': 'no-store',
 } as const
 
-function staticRouteRules(basePath: string, mode: string) {
+// Nitro matches route rules against the path with baseURL stripped, so no basePath prefix here
+function staticRouteRules(mode: string) {
   const headers = mode === 'production' ? LOCALE_JSON_CACHE_HEADERS : NO_CACHE_HEADERS
   const imageHeaders = mode === 'production' ? IMAGE_CACHE_HEADERS : NO_CACHE_HEADERS
   return {
     '/locales/**': { headers },
-    [`${basePath}/locales/**`]: { headers },
     '/images/**': { headers: imageHeaders },
-    [`${basePath}/images/**`]: { headers: imageHeaders },
   }
 }
 
@@ -134,9 +133,9 @@ export default defineConfig(({ command, mode }) => {
       nitro({
         // server.ts is the Vite SSR entry (environments.ssr below), not a Nitro handler
         serverEntry: false,
-        baseURL: basePath,
+        // baseURL comes from Vite `base` (nitro >= 3.0.261103-rc syncs them)
         sourcemap: true,
-        routeRules: staticRouteRules(basePath, mode),
+        routeRules: staticRouteRules(mode),
         compressPublicAssets: {
           gzip: true,
           brotli: true,

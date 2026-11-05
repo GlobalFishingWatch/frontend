@@ -1,10 +1,7 @@
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { CAPTCHA_HEADER, GFWAPI } from '@globalfishingwatch/api-client'
 
-import {
-  SSR_HEADERS,
-  USER_REFRESH_TOKEN_COOKIE_KEY,
-  USER_TOKEN_COOKIE_KEY,
-} from 'features/app/app.config'
+import { USER_REFRESH_TOKEN_COOKIE_KEY, USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
+import { SSR_HEADERS, SSR_REFERER_HEADERS } from 'server/ssr-headers.server'
 
 export type Tokens = { token: string; refreshToken: string }
 export type CookieSetter = (key: string, value: string, options?: Record<string, unknown>) => void
@@ -34,11 +31,18 @@ const REFRESH_DEDUP_TTL_MS = 10_000
 const refreshInFlight = new Map<string, { tokens: Promise<Tokens>; expiresAt: number }>()
 
 // Reloads tokens from the given refresh token and persists them. Throws a 401 when there
-// is no refresh token. Shared between the refresh RPC and SSR user resolution
-export async function refreshAuthTokens(
-  refreshToken: string | undefined,
+// is no refresh token. Shared between the refresh RPC and SSR user resolution.
+// fromBrowser: the refresh RPC forwards the visitor's captcha instead of the frontend secret, which
+// would make the gateway skip it. Without it, it's a server refresh, sent with the secret
+export async function refreshAuthTokens({
+  refreshToken,
+  setCookie,
+  fromBrowser,
+}: {
+  refreshToken: string | undefined
   setCookie: CookieSetter
-): Promise<Tokens> {
+  fromBrowser?: { captchaToken?: string }
+}): Promise<Tokens> {
   if (!refreshToken) {
     const error = new Error('No refresh token') as Error & { status: number }
     error.status = 401
@@ -50,7 +54,15 @@ export async function refreshAuthTokens(
   }
   let entry = refreshInFlight.get(refreshToken)
   if (!entry) {
-    const tokens = GFWAPI.reloadTokens(refreshToken, SSR_HEADERS)
+    const tokens = GFWAPI.reloadTokens(
+      refreshToken,
+      fromBrowser
+        ? {
+            ...SSR_REFERER_HEADERS,
+            ...(fromBrowser.captchaToken && { [CAPTCHA_HEADER]: fromBrowser.captchaToken }),
+          }
+        : SSR_HEADERS
+    )
     // Don't cache a failed rotation — let the next caller retry against the gateway.
     tokens.catch(() => refreshInFlight.delete(refreshToken))
     entry = { tokens, expiresAt: now + REFRESH_DEDUP_TTL_MS }

@@ -13,6 +13,7 @@ import {
   getIsTimeoutError,
   getIsUnauthorizedError,
   isAuthError,
+  isCaptchaError,
   isForbidden,
   isSessionError,
   isTransientError,
@@ -27,12 +28,14 @@ import {
 } from './utils/rate-limit'
 import type { TokenStorage } from './utils/token-storage'
 import { createLocalStorageTokenStorage } from './utils/token-storage'
-import { renderRateLimitChallenge } from './utils/turnstile'
+import { renderCaptchaChallenge } from './utils/turnstile'
 import { isUrlAbsolute } from './utils/url'
 import {
   API_GATEWAY,
   API_VERSION,
   AUTH_PATH,
+  CAPTCHA_ACTIONS,
+  CAPTCHA_HEADER,
   DEBUG_API_REQUESTS,
   type DebugMode,
   GUEST_USER_TYPE,
@@ -57,6 +60,8 @@ export type ApiVersion = '' | 'v3'
 export type FetchOptions<T = unknown> = Partial<Omit<RequestInit, 'body' | 'headers'>> & {
   body?: T
   cache?: RequestCache
+  // Turnstile action of a gateway route with captcha validation required, every attempt sends a fresh single-use token.
+  captcha?: string
   // Static headers or a function to avoid stale values between requests (e.g. a rotating refresh-token)
   headers?: HeadersInit | (() => HeadersInit)
   local?: boolean
@@ -75,11 +80,23 @@ type InternalFetchOptions<Body = unknown> = {
   rateLimitRetried?: boolean
 }
 
-export type RefreshStrategy = () => Promise<UserTokens>
+// Gets the captcha token for the protected refresh route, undefined without a captcha container
+export type RefreshStrategy = (captchaToken?: string) => Promise<UserTokens>
 export type SessionInvalidateStrategy = () => void | Promise<unknown>
 
 export type RequestStatus = 'idle' | 'refreshingToken' | 'logging' | 'downloading'
-export type RateLimitChallengeState = 'idle' | 'solving' | 'interactive' | 'failed' | 'cancelled'
+export type CaptchaChallengeState = {
+  status: 'idle' | 'solving' | 'interactive'
+  action?: string
+}
+export type RateLimitChallengeState = 'idle' | 'resetting' | 'failed' | 'cancelled'
+
+export const IDLE_CAPTCHA_CHALLENGE: CaptchaChallengeState = { status: 'idle' }
+
+// Abort reasons that keep the request going: the widget restarts in the new container, or the
+// request is sent without a token once there is no container left
+const CAPTCHA_CONTAINER_REPLACED = new Error('GFWAPI: captcha container replaced')
+const CAPTCHA_CONTAINER_REMOVED = new Error('GFWAPI: captcha container removed')
 
 export class GFW_API_CLASS {
   debug: DebugMode
@@ -98,7 +115,12 @@ export class GFW_API_CLASS {
   private refreshStrategy: RefreshStrategy | null = null
   private sessionInvalidateStrategy: SessionInvalidateStrategy | null = null
   private defaultHeaders: HeadersInit = {}
-  private rateLimitChallengeContainer: HTMLElement | null = null
+  private captchaContainer: HTMLElement | null = null
+  // One widget at a time, each token is single use
+  private captchaQueue: Promise<unknown> = Promise.resolve()
+  // Aborts the widget being solved when its container goes away
+  private captchaAbort: AbortController | null = null
+  private captchaChallengeState = IDLE_CAPTCHA_CHALLENGE
   // Per dataset, the API limits each one separately. Settles once that dataset is reset (resolve) or
   // the user cancels (reject). Survives failed attempts so parked requests keep waiting while the
   // user retries. Insertion order is the challenge queue, one reset call per dataset
@@ -110,7 +132,8 @@ export class GFW_API_CLASS {
   private rateLimitChallengeAttemptId = 0
   private rateLimitResetListeners = new Set<(dataset: string) => void>()
   private rateLimitChallengeState: RateLimitChallengeState = 'idle'
-  private rateLimitChallengeListeners = new Set<() => void>()
+  // Notified on captcha and rate limit challenge changes
+  private challengeListeners = new Set<() => void>()
   status: RequestStatus = 'idle'
 
   constructor({
@@ -152,7 +175,6 @@ export class GFW_API_CLASS {
     }
   }
 
-  // Arrow function so it can be handed to the Turnstile helpers; filter the console by "[rate-limit]"
   /** Token storage, refresh, login, logout and session logs; filter the console by "[auth]" */
   private debugAuth(message: string, data?: unknown) {
     if (this.isDebugging('auth')) {
@@ -166,9 +188,16 @@ export class GFW_API_CLASS {
     }
   }
 
-  private debugRateLimit = (message: string, data?: Record<string, unknown>) => {
+  private debugRateLimit(message: string, data?: Record<string, unknown>) {
     if (this.isDebugging('rate-limit')) {
       console.log(`[rate-limit] ${message}`, ...(data ? [data] : []))
+    }
+  }
+
+  // Arrow function so it can be handed to the Turnstile helpers; filter the console by "[captcha]"
+  private debugCaptcha = (message: string, data?: Record<string, unknown>) => {
+    if (this.isDebugging('captcha')) {
+      console.log(`[captcha] ${message}`, ...(data ? [data] : []))
     }
   }
 
@@ -230,25 +259,24 @@ export class GFW_API_CLASS {
     }
   }
 
-  setRateLimitChallengeContainer(container: HTMLElement) {
-    if (container !== this.rateLimitChallengeContainer) {
-      this.rateLimitChallengeContainer = container
-      this.debugRateLimit('challenge container set')
-      if (this.rateLimitResets.size && this.rateLimitChallengeState !== 'failed') {
-        this.debugRateLimit('challenge moved to the new container')
-        this.invalidateRateLimitChallengeAttempt()
-        this.runRateLimitChallengeAttempt(container)
-      }
+  /** Where the Turnstile widgets render, without one the protected requests are sent with no token */
+  setCaptchaContainer(container: HTMLElement) {
+    if (container !== this.captchaContainer) {
+      this.captchaContainer = container
+      this.debugCaptcha('container set')
+      // The running widget restarts in the new container, see solveCaptcha
+      this.captchaAbort?.abort(CAPTCHA_CONTAINER_REPLACED)
     }
   }
 
-  clearRateLimitChallengeContainer(container: HTMLElement) {
-    if (container !== this.rateLimitChallengeContainer) {
-      this.debugRateLimit('challenge container clear ignored, another container took over')
+  clearCaptchaContainer(container: HTMLElement) {
+    if (container !== this.captchaContainer) {
+      this.debugCaptcha('container clear ignored, another container took over')
       return
     }
-    this.rateLimitChallengeContainer = null
-    this.debugRateLimit('challenge container removed')
+    this.captchaContainer = null
+    this.debugCaptcha('container removed')
+    this.captchaAbort?.abort(CAPTCHA_CONTAINER_REMOVED)
     if (this.rateLimitResets.size) {
       // No UI left to solve, retry or cancel the challenge: release parked requests with their 429
       this.debugRateLimit('challenge abandoned, parked requests rejected')
@@ -268,14 +296,83 @@ export class GFW_API_CLASS {
     this.rateLimitChallengeAttempt = null
   }
 
-  subscribeRateLimitChallenge = (listener: () => void) => {
-    this.rateLimitChallengeListeners.add(listener)
+  subscribeChallengeState = (listener: () => void) => {
+    this.challengeListeners.add(listener)
     return () => {
-      this.rateLimitChallengeListeners.delete(listener)
+      this.challengeListeners.delete(listener)
     }
   }
 
+  getCaptchaChallengeState = () => this.captchaChallengeState
+
   getRateLimitChallengeState = () => this.rateLimitChallengeState
+
+  private setCaptchaChallengeState(state: CaptchaChallengeState) {
+    this.debugCaptcha(`state ${this.captchaChallengeState.status} -> ${state.status}`, {
+      action: state.action,
+    })
+    this.captchaChallengeState = state
+    this.challengeListeners.forEach((listener) => listener())
+  }
+
+  /** Gives up the widget being solved, e.g. the user closes the challenge: its request rejects */
+  cancelCaptcha = () => {
+    if (this.captchaAbort) {
+      this.debugCaptcha('challenge cancelled by the user', {
+        action: this.captchaChallengeState.action,
+      })
+      this.captchaAbort.abort(new Error('GFWAPI: captcha cancelled'))
+    }
+  }
+
+  /**
+   * Single-use token for `action`, undefined without a container. Aborting the signal rejects it,
+   * waiting in the queue or while solving. Public for tokens verified outside GFWAPI.fetch, e.g.
+   * by an app server function
+   */
+  getCaptchaToken(action: string, signal?: AbortSignal | null): Promise<string | undefined> {
+    const token = this.captchaQueue.then(() => {
+      signal?.throwIfAborted()
+      return this.solveCaptcha(action, signal)
+    })
+    this.captchaQueue = token.catch(() => {})
+    return token
+  }
+
+  private async solveCaptcha(
+    action: string,
+    signal?: AbortSignal | null
+  ): Promise<string | undefined> {
+    // Loops when the container is replaced mid-challenge, the widget can't move with it
+    while (this.captchaContainer) {
+      const abort = new AbortController()
+      this.captchaAbort = abort
+      const onRequestAbort = () => abort.abort(signal?.reason)
+      signal?.addEventListener('abort', onRequestAbort, { once: true })
+      this.setCaptchaChallengeState({ status: 'solving', action })
+      try {
+        return await renderCaptchaChallenge(this.captchaContainer, {
+          action,
+          signal: abort.signal,
+          debug: this.debugCaptcha,
+          onInteractive: () => {
+            if (!abort.signal.aborted) {
+              this.setCaptchaChallengeState({ status: 'interactive', action })
+            }
+          },
+        })
+      } catch (e) {
+        const reason = abort.signal.reason
+        if (reason !== CAPTCHA_CONTAINER_REPLACED && reason !== CAPTCHA_CONTAINER_REMOVED) throw e
+      } finally {
+        signal?.removeEventListener('abort', onRequestAbort)
+        this.captchaAbort = null
+        this.setCaptchaChallengeState(IDLE_CAPTCHA_CHALLENGE)
+      }
+    }
+    this.debugCaptcha('no container, request sent without token', { action })
+    return undefined
+  }
 
   onRateLimitReset = (listener: (dataset: string) => void) => {
     this.rateLimitResetListeners.add(listener)
@@ -297,12 +394,11 @@ export class GFW_API_CLASS {
   private setRateLimitChallengeState(state: RateLimitChallengeState) {
     this.debugRateLimit(`challenge state ${this.rateLimitChallengeState} -> ${state}`)
     this.rateLimitChallengeState = state
-    this.rateLimitChallengeListeners.forEach((listener) => listener())
+    this.challengeListeners.forEach((listener) => listener())
   }
 
   private ensureRateLimitChallenge(dataset: string): Promise<void> {
-    const container = this.rateLimitChallengeContainer
-    if (!container) {
+    if (!this.captchaContainer) {
       this.debugRateLimit('challenge skipped: no container')
       return Promise.reject(new Error('GFWAPI: no rate limit challenge container'))
     }
@@ -317,12 +413,12 @@ export class GFW_API_CLASS {
     this.rateLimitResets.set(dataset, reset)
     // After a failure the queue waits for the user to retry or cancel
     if (this.rateLimitChallengeState !== 'failed') {
-      this.runRateLimitChallengeAttempt(container)
+      this.runRateLimitChallengeAttempt()
     }
     return reset.promise
   }
 
-  private runRateLimitChallengeAttempt(container: HTMLElement) {
+  private runRateLimitChallengeAttempt() {
     // One at a time: each reset needs its own single-use token
     const dataset = this.rateLimitResets.keys().next().value
     if (this.rateLimitChallengeAttempt || !dataset) {
@@ -331,32 +427,22 @@ export class GFW_API_CLASS {
     const attemptId = ++this.rateLimitChallengeAttemptId
     const isStale = () => attemptId !== this.rateLimitChallengeAttemptId
 
-    this.setRateLimitChallengeState('solving')
+    this.setRateLimitChallengeState('resetting')
     this.rateLimitChallengeAttempt = (async () => {
       try {
-        const captchaToken = await renderRateLimitChallenge(container, {
-          debug: this.debugRateLimit,
-          onInteractive: () => {
-            if (!isStale()) this.setRateLimitChallengeState('interactive')
-          },
-        })
-        if (isStale()) return
         const url = this.generateUrl(`/${VISUALIZE_LIMIT_RESET_PATH}`, { absolute: true })
         this.debugRateLimit('reset request sent', { url, dataset })
-        const response = await this._internalFetch<Response>({
+        // json, not default: the parsed error message tells a rejected captcha from a session 401
+        await this._internalFetch({
           url,
           options: {
             method: 'POST',
-            body: { dataset, captchaToken },
-            responseType: 'default',
+            body: { dataset },
+            captcha: CAPTCHA_ACTIONS.visualizeLimitReset,
           },
         })
         if (isStale()) return
-        this.debugRateLimit('reset succeeded', {
-          dataset,
-          status: response.status,
-          ...parseRateLimit(response),
-        })
+        this.debugRateLimit('reset succeeded', { dataset })
         this.rateLimitResets.get(dataset)?.resolve()
         this.rateLimitResets.delete(dataset)
         this.rateLimitedDatasets.delete(dataset)
@@ -382,9 +468,9 @@ export class GFW_API_CLASS {
           if (
             this.rateLimitResets.size &&
             this.rateLimitChallengeState !== 'failed' &&
-            this.rateLimitChallengeContainer
+            this.captchaContainer
           ) {
-            this.runRateLimitChallengeAttempt(this.rateLimitChallengeContainer)
+            this.runRateLimitChallengeAttempt()
           }
         }
       }
@@ -392,9 +478,9 @@ export class GFW_API_CLASS {
   }
 
   retryRateLimitChallenge = () => {
-    if (this.rateLimitChallengeState === 'failed' && this.rateLimitChallengeContainer) {
+    if (this.rateLimitChallengeState === 'failed' && this.captchaContainer) {
       this.debugRateLimit('challenge retried by the user')
-      this.runRateLimitChallengeAttempt(this.rateLimitChallengeContainer)
+      this.runRateLimitChallengeAttempt()
     }
   }
 
@@ -409,7 +495,7 @@ export class GFW_API_CLASS {
 
   private logRateLimit(url: string, response: Response) {
     if (
-      !this.rateLimitChallengeContainer ||
+      !this.captchaContainer ||
       !isVisualizationRateLimitedUrl(url) ||
       !response.headers?.has('Ratelimit-Remaining')
     ) {
@@ -583,18 +669,31 @@ export class GFW_API_CLASS {
     }).then(processStatus)
   }
 
-  private async reloadAPIToken(refreshToken: string, reloadRetries = 0): Promise<UserTokens> {
+  // captchaToken is solved before the cross-tab lock, see refreshTokens. Retries need a new one
+  private async reloadAPIToken(
+    refreshToken: string,
+    captchaToken?: string,
+    reloadRetries = 0
+  ): Promise<UserTokens> {
     try {
-      const refreshResponse = await this.reloadTokens(refreshToken)
+      const refreshResponse = await this.reloadTokens(
+        refreshToken,
+        captchaToken ? { [CAPTCHA_HEADER]: captchaToken } : {}
+      )
       const { token, refreshToken: newRefreshToken } = refreshResponse
       this.token = token
       this.refreshToken = newRefreshToken
       return refreshResponse
     } catch (e: any) {
-      if (isTransientError(e) && reloadRetries < this.maxReloadRetries) {
+      // A captcha failure is not retried, each attempt would solve another widget
+      if (!isCaptchaError(e) && isTransientError(e) && reloadRetries < this.maxReloadRetries) {
         this.debugAuth(`Transient reload failure, retry attempt ${reloadRetries + 1}`)
         await new Promise((resolve) => setTimeout(resolve, 500 * (reloadRetries + 1)))
-        return this.reloadAPIToken(refreshToken, reloadRetries + 1)
+        return this.reloadAPIToken(
+          refreshToken,
+          await this.getCaptchaToken(CAPTCHA_ACTIONS.refreshToken),
+          reloadRetries + 1
+        )
       }
       this.debugAuthWarn('reloadAPIToken failed', e)
       throw e
@@ -614,6 +713,8 @@ export class GFW_API_CLASS {
   }
 
   private async refreshTokens(startRefreshToken: string): Promise<UserTokens> {
+    // Solved before the cross-tab lock: a challenge waiting for an interaction would block every tab
+    const captchaToken = await this.getCaptchaToken(CAPTCHA_ACTIONS.refreshToken)
     return this.withTokenRefreshLock(async () => {
       const rotatedBefore = this.getRotatedRefreshToken(startRefreshToken)
       if (rotatedBefore) {
@@ -621,12 +722,15 @@ export class GFW_API_CLASS {
         return { token: this.token, refreshToken: rotatedBefore }
       }
       try {
-        return await this.reloadAPIToken(startRefreshToken)
+        return await this.reloadAPIToken(startRefreshToken, captchaToken)
       } catch (e: any) {
         const rotatedDuring = this.getRotatedRefreshToken(startRefreshToken)
         if (rotatedDuring) {
           this.debugAuth('refreshTokens — retrying with token rotated during reload')
-          return await this.reloadAPIToken(rotatedDuring)
+          return await this.reloadAPIToken(
+            rotatedDuring,
+            await this.getCaptchaToken(CAPTCHA_ACTIONS.refreshToken)
+          )
         }
         throw e
       }
@@ -643,10 +747,13 @@ export class GFW_API_CLASS {
       this.debugAuthState('refreshAPIToken — via refreshStrategy')
       const strategy = this.refreshStrategy
       this.status = 'refreshingToken'
-      this.refreshingToken = this.withTokenRefreshLock(() => strategy()).finally(() => {
-        this.status = 'idle'
-        this.refreshingToken = null
-      })
+      // Solved before the cross-tab lock: a challenge waiting for an interaction would block every tab
+      this.refreshingToken = this.getCaptchaToken(CAPTCHA_ACTIONS.refreshToken)
+        .then((captchaToken) => this.withTokenRefreshLock(() => strategy(captchaToken)))
+        .finally(() => {
+          this.status = 'idle'
+          this.refreshingToken = null
+        })
       return this.refreshingToken
     }
 
@@ -759,8 +866,10 @@ export class GFW_API_CLASS {
       local = false,
       skipAuthRefresh = false,
       token,
+      captcha,
     } = options
     try {
+      const captchaToken = captcha ? await this.getCaptchaToken(captcha, signal) : undefined
       if (this.isDebugging('request')) {
         logDebugUrl('GFWAPI: Fetching URL: ', url)
         if (token != null) {
@@ -779,6 +888,7 @@ export class GFW_API_CLASS {
             email: getEnv('VITE_LOCAL_API_USER_EMAIL'),
           }),
         }),
+        ...(captchaToken && { [CAPTCHA_HEADER]: captchaToken }),
         Authorization: `Bearer ${token ?? this.token}`,
       }
       const fetchUrl = isUrlAbsolute(url) ? url : this.baseUrl + url
@@ -839,7 +949,7 @@ export class GFW_API_CLASS {
         : undefined
       const rateLimited = getIsRateLimitExceeded(e) && !!rateLimitDataset
       if (rateLimited) this.rateLimitedDatasets.add(rateLimitDataset)
-      if (rateLimited && !rateLimitRetried && this.rateLimitChallengeContainer) {
+      if (rateLimited && !rateLimitRetried && this.captchaContainer) {
         this.debugRateLimit('429: request parked until the challenge resets the limit', {
           url: getRateLimitLogUrl(url),
           dataset: rateLimitDataset,
@@ -865,6 +975,11 @@ export class GFW_API_CLASS {
           waitLogin,
           rateLimitRetried: true,
         })
+      }
+      // Its 401 is about the captcha, refreshing the session would not help
+      if (isCaptchaError(e) && e.status === 401) {
+        this.debugCaptcha('captcha rejected by the gateway', { url: getRateLimitLogUrl(url) })
+        throw e
       }
       // 401 = not authenticated, 403 = not authorized => try to refresh the token.
       if (refreshRetries > this.maxRefreshRetries) {
@@ -910,7 +1025,8 @@ export class GFW_API_CLASS {
           throw e
         }
       }
-      if (!stateless && ((authError && !skipAuthRefresh) || e.status >= 500)) {
+      // No 5xx retry on captcha protected requests, each one would solve another widget
+      if (!stateless && ((authError && !skipAuthRefresh) || (e.status >= 500 && !captcha))) {
         this.debugLog(`GFWAPI: retrying fetch (attempt ${refreshRetries + 1})`, {
           url,
           reason: authError ? 'auth' : '5xx',

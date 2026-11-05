@@ -20,6 +20,7 @@ import {
   selectBigQueryModalOpen,
   selectCreateWorkspaceModalOpen,
   selectDatasetUploadModalOpen,
+  selectDetectionFeedbackModalOpen,
   selectDownloadTrackModalOpen,
   selectEditorMenuOpen,
   selectEditWorkspaceModalOpen,
@@ -55,9 +56,8 @@ const EditorMenu = lazy(() => import('features/_map/editor/EditorMenu'))
 const Welcome = lazy(() => import('features/welcome/Welcome'))
 const VesselGroupModal = lazy(() => import('features/_user/vessel-groups/VesselGroupModal'))
 const FeedbackModal = lazy(() => import('features/feedback/FeedbackModal'))
+const DetectionFeedbackModal = lazy(() => import('features/feedback/DetectionFeedbackModal'))
 const OnboardingModal = lazy(() => import('features/onboarding/OnboardingModal'))
-// Lazy to keep it out of the shell. Its container only matters near the rate limit, long after this loads
-const RateLimitChallenge = lazy(() => import('./RateLimitChallenge'))
 const UpdateVideoModal = lazy(() => import('features/onboarding/UpdateVideoModal'))
 const VesselCorrectionModal = lazy(
   () => import('features/_vessels/vessel/vesselCorrection/VesselCorrectionModal')
@@ -122,6 +122,7 @@ const AppModals = () => {
   const onboardingModalOpen = useSelector(selectOnboardingModalOpen)
   const updateVideoModalOpen = useSelector(selectUpdateVideoModalOpen)
   const vesselCorrectionModalOpen = useSelector(selectVesselCorrectionModalOpen)
+  const detectionFeedbackModalOpen = useSelector(selectDetectionFeedbackModalOpen)
 
   const [saveWorkspaceBeforeLeave, setSaveWorkspaceBeforeLeave] = useSessionStorage<
     boolean | undefined
@@ -264,6 +265,14 @@ const AppModals = () => {
           />
         </Suspense>
       )}
+      {detectionFeedbackModalOpen && (
+        <Suspense fallback={null}>
+          <DetectionFeedbackModal
+            isOpen
+            onClose={() => dispatch(setModalOpen({ id: 'detectionFeedback', open: false }))}
+          />
+        </Suspense>
+      )}
       {!readOnly && isWorkspaceReady && (
         <Fragment>
           {/* Please don't judge this piece of code, it is needed to avoid race-conditions in the useLocalStorage internal hook */}
@@ -294,9 +303,6 @@ const AppModals = () => {
           <VesselGroupModal />
         </Suspense>
       )}
-      <Suspense fallback={null}>
-        <RateLimitChallenge />
-      </Suspense>
     </Fragment>
   )
 }

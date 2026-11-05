@@ -125,6 +125,17 @@
     "selectDatasetPlaceholder": "Select a dataset to compare",
     "share": "Partager le rapport",
     "showFullReport": "See full analysis for this area",
+    "slowReportMessage": "You requested a lot of data, this is taking longer than expected",
+    "slowReportTips": {
+      "bufferArea": "You can add a buffer around any area to include the waters just outside its borders in your report.",
+      "drawArea": "You can draw your own polygon on the map and use it as a reference layer for reports.",
+      "otherReports": "Besides areas, you can also get reports for ports, vessel groups and individual vessels.",
+      "positionsMode": "Zoom in or shorten the time range on an activity layer to switch to positions mode and see individual vessel positions instead of a heatmap.",
+      "printReport": "Reports can be printed or saved as PDF to share offline.",
+      "rangeFilter": "Drag layer handles to show only the range of values you care about.",
+      "uploadRaster": "You can upload your own raster data as a GeoTIFF or NetCDF file and show it as a heatmap alongside our layers.",
+      "vesselGroups": "You can save a list of vessels as a vessel group and get a report on their activity together."
+    },
     "statsDisclaimerDynamic": "Au cours de cette plage de temps, les valeurs minimales et maximales par {{interval}} et lieu à l'intérieur de votre zone étaient {{min}} {{unit}} et {{max}} {{unit}}.",
     "statsDisclaimerDynamicMean": "During this time, the average value at any given {{interval}} and place inside your area was {{mean}} {{unit}}.",
     "statsDisclaimerStatic": "La valeur moyenne pour votre zone est {{mean}} {{unit}}. Le minimum et le maximum sont {{min}} {{unit}} et {{max}} {{unit}}.",
@@ -245,6 +256,7 @@
     "detections": "Détections",
     "detections_one": "Detection",
     "detections_other": "Detections",
+    "didYouKnow": "Did you know?",
     "directions": "Directions",
     "dismiss": "Ignorer",
     "edit": "Modifier",
@@ -575,6 +587,14 @@
     "nir": "Near-infrared",
     "rgb": "Red, green and blue (visible light)"
   },
+  "detectionFeedback": {
+    "commentPlaceholder": "Describe the issue with this detection",
+    "comments": "Comments",
+    "dataset": "Dataset",
+    "detectionId": "Detection id",
+    "send": "Send feedback",
+    "title": "Detection feedback"
+  },
   "detections_one": "",
   "detections_other": "",
   "detectionScene": {
@@ -833,6 +853,10 @@
   },
   "hours_one": "",
   "hours_other": "",
+  "humanSession": {
+    "challenge": "This check protects the assistant from automated traffic. Complete it to start chatting.",
+    "failed": "We couldn't verify you're human, so the assistant is unavailable. Try again."
+  },
   "layer": {
     "add": "Ajouter un calque",
     "areas": {
@@ -1062,6 +1086,7 @@
     "failedTitle": "We couldn't verify you",
     "notNow": "Not now",
     "profileActivity": "Vessel tracks and events are paused. Verify you're human to see this vessel's activity.",
+    "sessionChallenge": "We need to confirm you are a human. Complete it to stay logged in.",
     "trackLimitReached": "Vessel tracks and events are paused. Click to confirm you're human and load them again.",
     "verify": "Verify"
   },
@@ -1766,7 +1791,7 @@
     },
     "title": "Workspace",
     "titlePlural": "Workspaces",
-    "updateDeprecatedDataviews": "This workspace contains layers that are using outdated data. Click to update them from your workspace.",
+    "updateDeprecatedDataviews": "This workspace contains layers that are using outdated data. Please update them from your workspace.",
     "uploadPublicDisabled": "Cet espace de travail ne peut pas être partagé publiquement car il contient des jeux de données privés",
     "user": "Espace de travail de l'utilisateur",
     "viewAccess": "Voir les permissions",

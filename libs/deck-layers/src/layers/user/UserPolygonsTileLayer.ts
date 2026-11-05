@@ -16,7 +16,7 @@ import {
 } from '#config/colors.config'
 import { DEFAULT_ID_PROPERTY } from '#config/layers.config'
 import { LayerGroup } from '#config/sort.config'
-import { getFetchLoadOptions, GFWMVTLoader } from '#layers/_shared/api'
+import { fetchWithGFWAPI, GFWMVTLoader } from '#layers/_shared/api'
 import { getPickedFeatureToHighlight } from '#layers/_shared/picking.utils'
 import {
   getMVTSublayerProps,
@@ -243,7 +243,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
         : {
             data: this._getTilesUrl(layer.tilesUrl),
             loaders: [GFWMVTLoader],
-            loadOptions: { ...getFetchLoadOptions() },
+            fetch: fetchWithGFWAPI,
           }
       return new TilesLayer<TileLayerProps<UserLayerFeature>, { layerId: string }>({
         id: `${layer.id}-base-layer`,

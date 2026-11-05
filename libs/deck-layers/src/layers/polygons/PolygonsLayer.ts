@@ -8,8 +8,9 @@ import type {
 } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { GeoJsonLayer } from '@deck.gl/layers'
-import { load } from '@loaders.gl/core'
 import type { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
+
+import { GFWAPI } from '@globalfishingwatch/api-client'
 
 import {
   COLOR_HIGHLIGHT_FILL,
@@ -19,7 +20,6 @@ import {
 } from '#config/colors.config'
 import { PREVIEW_BUFFER_GENERATOR_ID } from '#config/layers.config'
 import { LayerGroup } from '#config/sort.config'
-import { getFetchLoadOptions } from '#layers/_shared/api'
 import { getPickedFeatureToHighlight } from '#layers/_shared/picking.utils'
 import { getLayerGroupOffset, hexToDeckColor } from '#utils'
 
@@ -67,7 +67,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
   initializeState(context: LayerContext): void {
     super.initializeState(context)
     const { dataUrl } = this.props
-    if (typeof dataUrl === 'string') {
+    if (dataUrl && typeof dataUrl === 'string') {
       this._loadDataUrl(dataUrl)
     }
   }
@@ -103,11 +103,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
   _loadDataUrl(dataUrl: string) {
     this.setState({
       debouncedDataUrl: dataUrl,
-      dataPromise: load(
-        dataUrl,
-        this.props.loaders,
-        getFetchLoadOptions()
-      ) as Promise<FeatureCollection>,
+      dataPromise: GFWAPI.fetch<FeatureCollection>(dataUrl),
     })
   }
 

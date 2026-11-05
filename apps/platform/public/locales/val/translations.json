@@ -125,6 +125,17 @@
     "selectDatasetPlaceholder": "crwdns131915:0crwdne131915:0",
     "share": "crwdns131917:0crwdne131917:0",
     "showFullReport": "crwdns131919:0crwdne131919:0",
+    "slowReportMessage": "crwdns138917:0crwdne138917:0",
+    "slowReportTips": {
+      "bufferArea": "crwdns138919:0crwdne138919:0",
+      "drawArea": "crwdns138921:0crwdne138921:0",
+      "otherReports": "crwdns138923:0crwdne138923:0",
+      "positionsMode": "crwdns138925:0crwdne138925:0",
+      "printReport": "crwdns138927:0crwdne138927:0",
+      "rangeFilter": "crwdns138929:0crwdne138929:0",
+      "uploadRaster": "crwdns138931:0crwdne138931:0",
+      "vesselGroups": "crwdns138933:0crwdne138933:0"
+    },
     "statsDisclaimerDynamic": "crwdns131921:0{{interval}}crwdnd131921:0{{min}}crwdnd131921:0{{unit}}crwdnd131921:0{{max}}crwdnd131921:0{{unit}}crwdne131921:0",
     "statsDisclaimerDynamicMean": "crwdns138585:0{{interval}}crwdnd138585:0{{mean}}crwdnd138585:0{{unit}}crwdne138585:0",
     "statsDisclaimerStatic": "crwdns131923:0{{mean}}crwdnd131923:0{{unit}}crwdnd131923:0{{min}}crwdnd131923:0{{unit}}crwdnd131923:0{{max}}crwdnd131923:0{{unit}}crwdne131923:0",
@@ -245,6 +256,7 @@
     "detections": "crwdns132135:0crwdne132135:0",
     "detections_one": "crwdns132137:0crwdne132137:0",
     "detections_other": "crwdns132141:0crwdne132141:0",
+    "didYouKnow": "crwdns138935:0crwdne138935:0",
     "directions": "crwdns132143:0crwdne132143:0",
     "dismiss": "crwdns132145:0crwdne132145:0",
     "edit": "crwdns132147:0crwdne132147:0",
@@ -575,6 +587,14 @@
     "nir": "crwdns138369:0crwdne138369:0",
     "rgb": "crwdns138371:0crwdne138371:0"
   },
+  "detectionFeedback": {
+    "commentPlaceholder": "crwdns138901:0crwdne138901:0",
+    "comments": "crwdns138903:0crwdne138903:0",
+    "dataset": "crwdns138905:0crwdne138905:0",
+    "detectionId": "crwdns138907:0crwdne138907:0",
+    "send": "crwdns138909:0crwdne138909:0",
+    "title": "crwdns138911:0crwdne138911:0"
+  },
   "detections_one": "crwdns138871:0crwdne138871:0",
   "detections_other": "crwdns138873:0crwdne138873:0",
   "detectionScene": {
@@ -833,6 +853,10 @@
   },
   "hours_one": "crwdns138875:0crwdne138875:0",
   "hours_other": "crwdns138877:0crwdne138877:0",
+  "humanSession": {
+    "challenge": "crwdns138913:0crwdne138913:0",
+    "failed": "crwdns138915:0crwdne138915:0"
+  },
   "layer": {
     "add": "crwdns133115:0crwdne133115:0",
     "areas": {
@@ -1062,6 +1086,7 @@
     "failedTitle": "crwdns138855:0crwdne138855:0",
     "notNow": "crwdns138857:0crwdne138857:0",
     "profileActivity": "crwdns138859:0crwdne138859:0",
+    "sessionChallenge": "crwdns138899:0crwdne138899:0",
     "trackLimitReached": "crwdns138863:0crwdne138863:0",
     "verify": "crwdns138869:0crwdne138869:0"
   },
