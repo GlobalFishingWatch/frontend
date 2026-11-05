@@ -940,6 +940,7 @@
     "nameRequired": "É necessário informar o nome da camada",
     "next_port_id": "Próximo porto ",
     "period": "Período",
+    "port_sources": "Source",
     "properties": {
       "color": "Color",
       "thickness": "Thickness"

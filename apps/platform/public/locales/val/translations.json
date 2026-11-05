@@ -940,6 +940,7 @@
     "nameRequired": "crwdns133201:0crwdne133201:0",
     "next_port_id": "crwdns133203:0crwdne133203:0",
     "period": "crwdns133205:0crwdne133205:0",
+    "port_sources": "crwdns139001:0crwdne139001:0",
     "properties": {
       "color": "crwdns133207:0crwdne133207:0",
       "thickness": "crwdns133209:0crwdne133209:0"
