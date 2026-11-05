@@ -940,6 +940,7 @@
     "nameRequired": "Se requiere el nombre de la capa.",
     "next_port_id": "Siguiente puerto",
     "period": "Periodo",
+    "port_sources": "Source",
     "properties": {
       "color": "Color",
       "thickness": "Grosor"
