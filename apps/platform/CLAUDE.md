@@ -14,3 +14,4 @@ workspace-wide facts (lib resolution, build target names, dependency layout, Typ
 @.claude/memory/rolldown-lib-app-chunk-colocation.md
 @.claude/memory/load-boundaries-two-modes.md
 @.claude/memory/sentry-sdk-must-stay-external.md
+@.claude/memory/react-redux-signals-alpha.md

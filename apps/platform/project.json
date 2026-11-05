@@ -135,7 +135,7 @@
       ],
       "defaultConfiguration": "development",
       "options": {
-        "port": 3003
+        "port": 3000
       },
       "configurations": {
         "development": {},

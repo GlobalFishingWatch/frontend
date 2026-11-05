@@ -119,6 +119,20 @@ export default defineConfig(({ command, mode }) => {
     plugins: [
       ...plugins,
       nxReadySignal(),
+      // react-redux 9.4 alpha: swap Provider/useSelector for the signals implementation.
+      // Not a resolve.alias because that also rewrites deps' imports — recharts bundles its own
+      // react-redux@9.3 (no `./signals` export) for its internal chart store.
+      // REACT_REDUX_SIGNALS=false falls back to the stock hooks (A/B benchmarks, alpha rollback).
+      process.env.REACT_REDUX_SIGNALS !== 'false' &&
+        ({
+          name: 'react-redux-signals',
+          enforce: 'pre',
+          resolveId(id, importer, options) {
+            if (id === 'react-redux' && importer && !importer.includes('/node_modules/')) {
+              return this.resolve('react-redux/signals', importer, { ...options, skipSelf: true })
+            }
+          },
+        } satisfies Plugin),
       command === 'serve' &&
         ({
           name: 'deck-layers-full-reload',
