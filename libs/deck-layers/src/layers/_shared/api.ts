@@ -85,13 +85,9 @@ function getResponseHeader({
 
 /**
  * `onTileError` message for a tile loaded with `fetchWithGFWAPI`, or `undefined` for a 404 (empty
- * tile). HTTP failures reject with the raw `Response` (`responseType: 'default'`), which has no
- * `message`; parse failures and aborts reject with an `Error`.
+ * tile). HTTP failures arrive as `Error('<status> <statusText>')`, see `fetchWithGFWAPI`.
  */
-export function getTileErrorMessage(error: Error | Response): string | undefined {
-  if (error instanceof Response) {
-    return error.status === 404 ? undefined : `${error.status} ${error.statusText}`.trim()
-  }
+export function getTileErrorMessage(error: Error): string | undefined {
   return error?.message?.includes('404') ? undefined : error?.message
 }
 
@@ -107,6 +103,16 @@ export async function fetchWithGFWAPI(
     method: 'GET',
     signal,
     responseType: 'default',
+  }).catch((error: unknown) => {
+    if (error instanceof Response) {
+      throw Object.assign(
+        new Error(`${error.status} ${error.statusText}`.trim(), { cause: error }),
+        {
+          status: error.status,
+        }
+      )
+    }
+    throw error
   })
 
   const loaders = Array.isArray(layer?.props?.loaders) ? (layer.props.loaders as any[]) : []
