@@ -144,6 +144,11 @@
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "Konsentrasi fosfat (PO4)"
   },
+  "planet": {
+    "description": "This layer shows vessels detected using optical satellite imagery collected by Planet satellites. Optical imagery is similar to high-quality aerial photography from space, using reflected sunlight in visible and near-infrared wavelengths.",
+    "moreInfoLink": "",
+    "name": "Planet Imagery detections (Optical)"
+  },
   "port-locations": {
     "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
     "moreInfoLink": "",
