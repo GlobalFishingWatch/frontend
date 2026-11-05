@@ -180,7 +180,6 @@ overrides:
   undici@7: 7.29.0
 
 patchedDependencies:
-  '@zumer/snapdom@3.7.0': 7534ccfdb0ff22d36d833229110ee05f6e9c2e0f74bc3d8871fd0bc317c13085
   mdast-util-gfm-autolink-literal@2.0.1: f666bea6fc810a9fb94265fd5a3c810320751c8a74ea37a8d26423c9d7310469
 
 importers:
@@ -338,8 +337,8 @@ importers:
         specifier: 2.0.0-alpha.44
         version: 2.0.0-alpha.44(@babel/runtime@7.29.7)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@zumer/snapdom':
-        specifier: 3.7.0
-        version: 3.7.0(patch_hash=7534ccfdb0ff22d36d833229110ee05f6e9c2e0f74bc3d8871fd0bc317c13085)
+        specifier: 3.7.1
+        version: 3.7.1
       ai:
         specifier: 7.0.159
         version: 7.0.159(zod@4.6.7)
@@ -6858,8 +6857,8 @@ packages:
     resolution: {integrity: sha512-nrUSn7hzt7J6JWgWGz78ZYI8wj+gdIJdk0Ynjpp8l+trkn58Uqsf6RYrYkEK+3X18EX+TNdtJI0WxAtc+L84SQ==}
     hasBin: true
 
-  '@zumer/snapdom@3.7.0':
-    resolution: {integrity: sha512-YUbc4psiyjTktuOkvCkuDNWHjZiqwJZ/SPpnYmOUFoKWi6nyjY3CgW7+uQSwVTVR9ka2/Swz1UiRM739j07kmQ==}
+  '@zumer/snapdom@3.7.1':
+    resolution: {integrity: sha512-AElxtIKtSXX4G69MS1t/mwKI0Sfzcnm8D7A/mDqWWi96pL0JuPPBNJe9g5WzD/CcCa272lFB6NNhCIfIb2iaaQ==}
 
   a5-js@0.10.1:
     resolution: {integrity: sha512-UeTPtqZzXpDBLX0sm9GaUXArwHntBGQ9M1Bh7rB/wjibQEOmvaq5amgJKc4xf0A9GO9JgFhHRvlvdCeiav2+/g==}
@@ -18778,7 +18777,7 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  '@zumer/snapdom@3.7.0(patch_hash=7534ccfdb0ff22d36d833229110ee05f6e9c2e0f74bc3d8871fd0bc317c13085)': {}
+  '@zumer/snapdom@3.7.1': {}
 
   a5-js@0.10.1: {}
 

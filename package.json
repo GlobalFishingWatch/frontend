@@ -75,7 +75,7 @@
     "@types/mdast": "4.0.4",
     "@typescript/native": "npm:typescript@7.0.2",
     "@uiw/react-json-view": "2.0.0-alpha.44",
-    "@zumer/snapdom": "3.7.0",
+    "@zumer/snapdom": "3.7.1",
     "ai": "7.0.159",
     "classnames": "2.5.1",
     "color-blend": "4.0.0",
