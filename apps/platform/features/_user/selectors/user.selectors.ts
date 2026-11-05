@@ -48,3 +48,12 @@ export const selectIsGFWTestGroup = createSelector([selectActiveUserGroups], (us
 export const selectIsGuestUser = createSelector([selectUserData], (userData) => {
   return userData?.type === GUEST_USER_TYPE
 })
+
+export const selectIsUserApiInfoCompleted = createSelector([selectUserData], (userData) => {
+  return !!(
+    userData?.intendedUse &&
+    userData.whoEndUsers &&
+    userData.problemToResolve &&
+    userData.apiTerms
+  )
+})

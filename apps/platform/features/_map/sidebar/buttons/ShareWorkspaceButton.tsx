@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
-import { useClipboardNotification } from 'features/_map/sidebar/sidebar.hooks'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { useClipboardNotification } from 'hooks/clipboard.hooks'
 import type { ROUTE_TYPES } from 'router/routes'
 import { selectLocationType } from 'router/routes.selectors'
 import { getCurrentAppUrl } from 'router/routes.utils'

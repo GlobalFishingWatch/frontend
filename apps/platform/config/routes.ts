@@ -15,6 +15,8 @@ export const ROUTE_PATHS = {
   SEARCH: '/vessel-search' as const,
   REPORT: '/report/$reportId' as const,
   VESSEL: '/vessel/$vesselId' as const,
+  API_TOKENS: '/datasets-and-api/api-tokens' as const,
+  API_TOKEN: '/datasets-and-api/api-tokens/$tokenId' as const,
   HELP_HUB: '/help-and-resources' as const,
   HELP_HUB_SECTION: '/help-and-resources/$sectionSlug/{-$itemSlug}' as const,
   // Map

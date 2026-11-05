@@ -157,6 +157,24 @@
   transition: opacity 150ms linear;
 }
 
+.externalIcon {
+  margin: -0.3rem 0 -0.3rem var(--space-XS);
+  vertical-align: middle;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.tab:hover .externalIcon,
+.tabContent:focus-visible .externalIcon {
+  opacity: var(--opacity-secondary);
+}
+
+@media (hover: none) {
+  .externalIcon {
+    opacity: var(--opacity-secondary);
+  }
+}
+
 .subsectionTab [data-nav-label] {
   padding-left: calc(var(--sidebar-tabs-width) / 2 - var(--space-S) - var(--space-XS));
   width: calc(
