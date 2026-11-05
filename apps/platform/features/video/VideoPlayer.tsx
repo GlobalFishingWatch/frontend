@@ -47,7 +47,8 @@ function VideoPlayer({
     video.play().catch(() => {
       video.muted = true
       setMuted(true)
-      video.play()
+      // Muted autoplay can be blocked too (Safari low power mode); the user can still press play
+      video.play().catch(() => {})
     })
   }, [autoPlay])
 

@@ -80,7 +80,7 @@ export default function ReportActivityGraphSelector({
       fitAreaInViewport()
 
       const filteredDataviewInstances = (urlDataviewInstances || []).filter(
-        (dv) => !dv.id.includes(DATASET_COMPARISON_SUFFIX)
+        (dv) => !dv.id?.includes(DATASET_COMPARISON_SUFFIX)
       )
 
       if (isEvolutionOrDatasetComparison(option.id)) {

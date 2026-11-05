@@ -38,3 +38,46 @@ if (typeof Array.prototype.findLastIndex !== 'function') {
     return -1
   }
 }
+
+// Chrome < 92 / Safari < 15.4, both inside the client build target (see vite.config.ts)
+if (typeof Array.prototype.at !== 'function') {
+  Array.prototype.at = function (index: number) {
+    const i = Math.trunc(index) || 0
+    return this[i < 0 ? this.length + i : i]
+  }
+}
+
+// Chrome < 93 / Safari < 15.4
+if (typeof Object.hasOwn !== 'function') {
+  Object.hasOwn = (object: object, key: PropertyKey) =>
+    Object.prototype.hasOwnProperty.call(object, key)
+}
+
+// Browser page translation (Safari, the Google app, Google Translate) swaps React-owned text nodes
+// for its own `<font>` wrappers. React then calls removeChild/insertBefore with a node that is no
+// longer a child of that parent, the DOM throws `NotFoundError` and the router error boundary
+// replaces the page (FRONTEND-84). React does not handle this (facebook/react#11538), so skip the
+// call instead of throwing. Cost: a translated node React wanted to remove can stay on screen.
+if (typeof Node === 'function') {
+  const removeChild = Node.prototype.removeChild
+  Node.prototype.removeChild = function <T extends Node>(this: Node, child: T): T {
+    if (child.parentNode !== this) {
+      console.warn('removeChild skipped: node has a different parent', child, this)
+      return child
+    }
+    return removeChild.call(this, child) as T
+  }
+
+  const insertBefore = Node.prototype.insertBefore
+  Node.prototype.insertBefore = function <T extends Node>(
+    this: Node,
+    node: T,
+    reference: Node | null
+  ): T {
+    if (reference && reference.parentNode !== this) {
+      console.warn('insertBefore skipped: reference has a different parent', reference, this)
+      return node
+    }
+    return insertBefore.call(this, node, reference) as T
+  }
+}

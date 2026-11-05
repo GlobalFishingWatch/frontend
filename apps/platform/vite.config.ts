@@ -185,6 +185,11 @@ export default defineConfig(({ command, mode }) => {
     environments: {
       client: {
         build: {
+          // Vite 8 defaults to baseline-widely-available (chrome111/safari16.4) and emits
+          // ES2022 class static blocks (react-stately's Color), a SyntaxError on Chrome < 94 —
+          // FRONTEND-NE. Floors are the oldest browsers seen failing there (2026-11): Chrome
+          // Mobile 87 / Android WebViews and iOS 15. Firefox and Edge were not affected.
+          target: ['chrome87', 'safari15', 'firefox115', 'edge111'],
           chunkSizeWarningLimit: 1500,
           rolldownOptions: {
             output: {

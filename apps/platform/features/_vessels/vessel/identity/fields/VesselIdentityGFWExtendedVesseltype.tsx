@@ -37,7 +37,7 @@ const VesselIdentityGFWExtendedVesseltype = ({
         <Tooltip content="(coarseClass)">
           <span className={cx(styles.secondary, styles.help)}>ML prediction: </span>
         </Tooltip>
-        {coarseClassInTimerange?.value !== undefined
+        {coarseClassInTimerange?.value != null
           ? coarseClassInTimerange.value.toString()
           : EMPTY_FIELD_PLACEHOLDER}
       </li>
