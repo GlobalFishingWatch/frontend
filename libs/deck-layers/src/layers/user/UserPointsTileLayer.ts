@@ -289,7 +289,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return this.props.layers?.[0]?.sublayers?.[0]?.color
   }
 
-  _onLayerError = (error: Error | Response) => {
+  _onLayerError = (error: Error) => {
     const message = getTileErrorMessage(error)
     if (message) {
       this.setState({ error: message })

@@ -44,7 +44,7 @@ export default function ReportEnvironmentGraphSelector() {
       fitAreaInViewport()
 
       const filteredDataviewInstances = (urlDataviewInstances || []).filter(
-        (dv) => !dv.id.includes(DATASET_COMPARISON_SUFFIX)
+        (dv) => !dv.id?.includes(DATASET_COMPARISON_SUFFIX)
       )
       const reportComparisonDataviewIds =
         option.id === REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON

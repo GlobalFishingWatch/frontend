@@ -149,7 +149,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
       : 0
   }
 
-  _onLayerError = (error: Error | Response) => {
+  _onLayerError = (error: Error) => {
     const message = getTileErrorMessage(error)
     if (message) {
       this.setState({ error: message })

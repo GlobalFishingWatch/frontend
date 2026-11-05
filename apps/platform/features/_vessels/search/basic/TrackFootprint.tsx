@@ -7,9 +7,11 @@ import type { Feature, FeatureCollection, GeoJsonProperties, Geometry, Point } f
 import { DateTime } from 'luxon'
 import qs from 'qs'
 
-import { GFWAPI, THINNING_LEVELS } from '@globalfishingwatch/api-client'
-import { TrackField } from '@globalfishingwatch/api-types'
-import { segmentsToGeoJSON, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
+import { THINNING_LEVELS } from '@globalfishingwatch/api-client'
+import { segmentsToGeoJSON } from '@globalfishingwatch/data-transforms'
+import { fetchWithGFWAPI, getSegmentsFromData } from '@globalfishingwatch/deck-layers'
+import type { VesselTrackData } from '@globalfishingwatch/deck-loaders'
+import { VesselTrackLoader } from '@globalfishingwatch/deck-loaders'
 import { Icon, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 
 import trackFootprintBgImage from 'assets/images/track-footprint-bg.png'
@@ -32,8 +34,10 @@ const TRACK_FOOTPRINT_QUERY = {
   ...THINNING_LEVELS.Footprint,
   binary: true,
   fields: ['LONLAT', 'TIMESTAMP'],
-  format: 'VALUE_ARRAY',
+  format: 'DECKGL',
 }
+
+const TRACK_FOOTPRINT_LAYER = { props: { loaders: [VesselTrackLoader] } }
 
 function TrackFootprint({
   vesselIds,
@@ -67,28 +71,31 @@ function TrackFootprint({
         setError(true)
         return
       }
-      const vesselData = await GFWAPI.fetch<any>(
-        `/vessels/${vesselIds}/tracks?${qs.stringify(
-          {
-            ...TRACK_FOOTPRINT_QUERY,
-            dataset: trackDatasetId,
-          },
-          { arrayFormat: 'indices' }
-        )}`,
-        {
-          responseType: 'vessel',
-        }
-      )
-
-      if (vesselData.length === 0) {
+      let vesselData: VesselTrackData
+      try {
+        vesselData = (await fetchWithGFWAPI(
+          `/vessels/${vesselIds}/tracks?${qs.stringify(
+            {
+              ...TRACK_FOOTPRINT_QUERY,
+              dataset: trackDatasetId,
+            },
+            { arrayFormat: 'indices' }
+          )}`,
+          { layer: TRACK_FOOTPRINT_LAYER }
+        )) as VesselTrackData
+      } catch {
         setError(true)
         return
       }
 
-      const segments = trackValueArrayToSegments(vesselData, [
-        TrackField.lonlat,
-        TrackField.timestamp,
-      ])
+      const segments = getSegmentsFromData(vesselData, {
+        includeMiddlePoints: true,
+        includeCoordinates: true,
+      })
+      if (!segments.length) {
+        setError(true)
+        return
+      }
       const geoJson = segmentsToGeoJSON(segments)
       setTrackData(geoJson)
       const lastSegment = segments[segments.length - 1]

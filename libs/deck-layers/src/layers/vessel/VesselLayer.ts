@@ -148,9 +148,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       info.sourceLayer instanceof VesselTrackPositionLayer
     ) {
       const { timestamp, speed, depth, course } =
-        info.sourceLayer instanceof VesselTrackLayer
+        (info.sourceLayer instanceof VesselTrackLayer
           ? (info.object as VesselTrackProperties)
-          : (info.object as VesselPositionProperties).properties
+          : (info.object as VesselPositionProperties | undefined)?.properties) ?? {}
       const interactionType =
         (info.object as VesselPositionProperties)?.interactionType !== undefined
           ? (info.object as VesselTrackProperties)?.interactionType
