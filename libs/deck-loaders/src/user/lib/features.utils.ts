@@ -1,6 +1,23 @@
-import type { FilterOperator } from '@globalfishingwatch/api-types'
+import {
+  type FilterOperator,
+  PORT_SOURCES_FILTER_ID,
+  PORT_SOURCES_PROPERTIES,
+} from '@globalfishingwatch/api-types'
 
 export type FilterOperators = Record<string, FilterOperator>
+
+// Feature properties a filter reads: the virtual port sources filter reads several
+export const getFilterProperties = (id: string): string[] =>
+  id === PORT_SOURCES_FILTER_ID ? PORT_SOURCES_PROPERTIES : [id]
+
+const isPortInSources = (feature: any, values: string | string[]) => {
+  const portSources = PORT_SOURCES_PROPERTIES.flatMap((property) =>
+    String(feature?.properties?.[property] ?? '')
+      .toUpperCase()
+      .split(',')
+  )
+  return [values].flat().some((source) => portSources.includes(source))
+}
 
 export function isNumeric(str: string | number) {
   if (!str) return false
@@ -12,7 +29,13 @@ export function isFeatureInFilter(
   feature: any,
   { id, values, operator }: { id: string; values: any; operator?: FilterOperator }
 ) {
-  if (!values) return true
+  if (!values) {
+    return true
+  }
+  if (id === PORT_SOURCES_FILTER_ID) {
+    const inSources = isPortInSources(feature, values)
+    return operator === 'exclude' ? !inSources : inSources
+  }
   if (
     values.length === 2 &&
     isNumeric(values[0]) &&

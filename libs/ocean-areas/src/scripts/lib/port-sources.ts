@@ -1,9 +1,12 @@
-import type { Feature } from 'geojson'
+export type PortSource = 'AIS' | 'VMS'
 
-export type PortSource = 'ais' | 'vms'
-
-export function getPortSources(port: Feature): PortSource[] {
-  const { encounters, loitering, gaps } = port.properties ?? {}
-  const tags = [encounters, loitering, gaps].filter(Boolean).join(',').split(',')
-  return (['ais', 'vms'] as const).filter((source) => tags.includes(source))
+// A port belongs to a source when that source saw encounters or loitering there.
+// Mirrors PORT_SOURCES_PROPERTIES in @globalfishingwatch/api-types.
+export function getPortSources(properties?: {
+  encounters?: string
+  loitering?: string
+}): PortSource[] {
+  const { encounters, loitering } = properties ?? {}
+  const tags = [encounters, loitering].filter(Boolean).join(',').toUpperCase().split(',')
+  return (['AIS', 'VMS'] as const).filter((source) => tags.includes(source))
 }

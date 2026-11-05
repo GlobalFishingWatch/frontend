@@ -47,3 +47,10 @@ export type DatasetFilter = {
 }
 
 export type DatasetFilters = Partial<Record<FilterType, DatasetFilter[]>>
+
+// public-global-ports:* has no filters config in the API but frontend supports filter by
+// encounters and loitering events in the as comma lists ("ais,vms") property
+export const PORT_SOURCES_FILTER_ID = 'port_sources'
+export const PORT_SOURCES_PROPERTIES = ['encounters', 'loitering']
+export const PORT_SOURCES = ['AIS', 'VMS'] as const
+export type PortSource = (typeof PORT_SOURCES)[number]

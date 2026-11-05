@@ -83,6 +83,7 @@ const DYNAMIC_KEYS = [
   'layer.fleet_other',
   'layer.gearType_other',
   'layer.next_port_id',
+  'layer.port_sources',
   'layer.radiance',
   'layer.vessel-groups',
   'layer.vesselGroup',
