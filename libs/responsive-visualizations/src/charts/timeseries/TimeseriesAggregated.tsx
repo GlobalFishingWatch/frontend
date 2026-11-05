@@ -64,7 +64,9 @@ export function AggregatedTimeseries({
         dataKey={dateKey}
         interval="equidistantPreserveStart"
         tickFormatter={(tick: string) => tickLabelFormatter?.(tick, timeseriesInterval) || tick}
-        axisLine={paddedDomain[0] === 0}
+        axisLine={{
+          stroke: paddedDomain[0] === 0 ? 'var(--color-secondary-blue)' : 'transparent',
+        }}
       />
       <YAxis
         scale="linear"

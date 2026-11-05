@@ -11,6 +11,7 @@
     "change": "Cambio",
     "clickToFilterBy": "Haga clic aquí para filtrar por:",
     "clickToSeeAreaReport": "Haz clic para ver el informe de {{area}}",
+    "comparedWith": "compared with <strong>{{dataset}}</strong>",
     "comparisonNotAvailable": "Comparar conjuntos de datos no está disponible para esta capa",
     "comparisonTotalAfter": "Total after",
     "comparisonTotalBaseline": "Baseline total",
@@ -40,6 +41,12 @@
     "evolution": "Evolución",
     "global": "Global",
     "globally": "globalmente",
+    "graphScreenshot": "Graph screenshot",
+    "graphScreenshotFilter": "Vessel filter",
+    "graphScreenshotFooter": "Footer",
+    "graphScreenshotSummary": "Summary",
+    "graphScreenshotTitle": "Graph screenshot preview",
+    "graphScreenshotWidth": "Width (px)",
     "groupByCoverage": "por cobertura",
     "groupByEEZ": "Por ZEE",
     "groupByFAO": "Por FAO",
@@ -54,6 +61,7 @@
       "tooltip": "Esta es la porción de {{area}} {{unit}} con más actividad en tu área",
       "tooltipAmmount": "{{ammount}} horas ({{percentage}}% del total)"
     },
+    "inNamedArea": "in <strong>{{area}}</strong>",
     "insideYourArea": "dentro de su zona",
     "inTheArea": "en el área",
     "kilometers": "kilómetros",
@@ -82,7 +90,6 @@
     "noTimeComparisonAllowed": "Modos de comparación de tiempo no están disponibles cuando las capas tienen diferentes filtros",
     "noVesselDataFiltered": "No hay embarcaciones que coincidan con su filtro",
     "onlyEvolutionSupported": "Haga clic en el botón de evolución de arriba para ver los buques activos en el área",
-    "others": "Otras áreas",
     "othersLayersAreReportArea": "Las capas usadas para crear esta área del reporte no se pueden analizar contra sí mismas. Active otra capa de polígonos o de puntos para ver resultados aquí.",
     "periodComparison": "Comparación entre periodos",
     "periodComparison1st": "Inicio de línea base",
@@ -118,6 +125,17 @@
     "selectDatasetPlaceholder": "Seleccionar un conjunto de datos para comparar",
     "share": "Compartir informe",
     "showFullReport": "Ver análisis completo",
+    "slowReportMessage": "You requested a lot of data, this is taking longer than expected",
+    "slowReportTips": {
+      "bufferArea": "You can add a buffer around any area to include the waters just outside its borders in your report.",
+      "drawArea": "You can draw your own polygon on the map and use it as a reference layer for reports.",
+      "otherReports": "Besides areas, you can also get reports for ports, vessel groups and individual vessels.",
+      "positionsMode": "Zoom in or shorten the time range on an activity layer to switch to positions mode and see individual vessel positions instead of a heatmap.",
+      "printReport": "Reports can be printed or saved as PDF to share offline.",
+      "rangeFilter": "Drag layer handles to show only the range of values you care about.",
+      "uploadRaster": "You can upload your own raster data as a GeoTIFF or NetCDF file and show it as a heatmap alongside our layers.",
+      "vesselGroups": "You can save a list of vessels as a vessel group and get a report on their activity together."
+    },
     "statsDisclaimerDynamic": "Durante este tiempo, los valores mínimos y máximos de cualquier {{interval}} y lugar dados dentro de su área fueron {{min}} {{unit}} y {{max}} {{unit}}.",
     "statsDisclaimerDynamicMean": "During this time, the average value at any given {{interval}} and place inside your area was {{mean}} {{unit}}.",
     "statsDisclaimerStatic": "El valor promedio de su área es {{mean}} {{unit}}. El mínimo y el máximo son {{min}} {{unit}} y {{max}} {{unit}}.",
@@ -238,6 +256,7 @@
     "detections": "Detecciones",
     "detections_one": "Detección",
     "detections_other": "Detecciones",
+    "didYouKnow": "Did you know?",
     "directions": "Instrucciones",
     "dismiss": "Cancelar",
     "edit": "Editar",
@@ -296,7 +315,6 @@
     "map": "Mapa",
     "matchedVessels": "Embarcaciones coincidentes",
     "messageAssistant": "Message the assistant…",
-    "messages": "messages",
     "messages_one": "message",
     "messages_other": "messages",
     "meters": "metros",
@@ -311,6 +329,7 @@
     "navigateBackTo": "Volver a {{section}}",
     "newConversation": "New conversation",
     "newTimerange": "Nuevo periodo",
+    "nightLightDetections": "Night light detections",
     "noConversations": "No previous conversations",
     "noData": "No data",
     "none": "Ninguna",
@@ -568,7 +587,21 @@
     "nir": "Near-infrared",
     "rgb": "Red, green and blue (visible light)"
   },
-  "detections": "",
+  "detectionFeedback": {
+    "commentPlaceholder": "Describe the issue with this detection",
+    "comments": "Comments",
+    "dataset": "Dataset",
+    "detectionId": "Detection id",
+    "send": "Send feedback",
+    "title": "Detection feedback"
+  },
+  "detections_one": "",
+  "detections_other": "",
+  "detectionScene": {
+    "addHighlight": "Highlight other detections from the same satellite scene",
+    "highlight": "Scene",
+    "removeHighlight": "Clear scene highlight"
+  },
   "download": {
     "apiPortal": "Ver nuestras APIs aquí",
     "area": "Área",
@@ -621,7 +654,6 @@
     "trackAction": "Descargar trayectoria de embarcación",
     "trackLimitExceeded": "Ya has descargado {{limit}} trayectorias hoy, por favor inténtalo de nuevo mañana",
     "trackLogin": "Regístrate e inicia sesión para descargar trayectorias de barcos (gratis, 2 minutos)",
-    "trackNotAllowed": "No tienes permisos para descargar trayectorias de embarcaciones de esta fuente",
     "trackRemaining_one": "Puedes descargar hoy {{count}} trayectoria más",
     "trackRemaining_other": "Puedes descargar {{count}} trayectorias más hoy",
     "yearly": "Año",
@@ -819,9 +851,13 @@
       "title": "Use cases"
     }
   },
-  "hours": "hours",
+  "hours_one": "",
+  "hours_other": "",
+  "humanSession": {
+    "challenge": "This check protects the assistant from automated traffic. Complete it to start chatting.",
+    "failed": "We couldn't verify you're human, so the assistant is unavailable. Try again."
+  },
   "layer": {
-    "activityFitBounds": "Centrar mapa en la actividad",
     "add": "Añadir capa",
     "areas": {
       "eez": "EEZ",
@@ -934,6 +970,7 @@
     "nauticalMilesAbbr": "mn",
     "positions": "Ver modo de visualización de posiciones",
     "positionsDisabled": "Una visualización más detallada está disponible en áreas con menos actividad, por favor amplíe la imagen o reduzca su intervalo de tiempo para verla",
+    "positionsLogin": "Register or log in to see vessel positions (free, 2 minutes)",
     "referenceLayersClose": "Cerrar capas de referencia",
     "referenceLayersOpen": "Abrir capas de referencia",
     "rulers_add": "Mide distancias",
@@ -1041,6 +1078,17 @@
     "seePortReport": "Ver todos los eventos de entrada a este puerto",
     "summaryEvents": "<strong>{{vessels}} buques</strong> de <strong>{{flags}} banderas</strong> entraron en este puerto <strong>{{activityQuantity}}</strong> veces entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
     "toThisPort": "to this port"
+  },
+  "rateLimit": {
+    "challenge": "This check protects vessel data from automated traffic. Complete it to keep loading vessel tracks and events.",
+    "challengeTitle": "Confirm you're human",
+    "failed": "This check protects vessel data from automated traffic. Vessel tracks and events are paused until it passes.",
+    "failedTitle": "We couldn't verify you",
+    "notNow": "Not now",
+    "profileActivity": "Vessel tracks and events are paused. Verify you're human to see this vessel's activity.",
+    "sessionChallenge": "We need to confirm you are a human. Complete it to stay logged in.",
+    "trackLimitReached": "Vessel tracks and events are paused. Click to confirm you're human and load them again.",
+    "verify": "Verify"
   },
   "search": {
     "advanced": "Avanzada",
@@ -1546,8 +1594,8 @@
     "title": "Perfil de embarcación",
     "toggleAllVessels": "Activar/desactivar la visibilidad de todos las embarcaciones",
     "tonnageGt": "Tonelaje (Gt)",
-    "trackLogin": "Una de las fuentes seleccionadas requiere que <1>inicie sesión</1> para ver pistas de embarcaciones y eventos",
-    "trackResolution": "<0>Inicia sesión</0> sesión para ver pistas de embarcaciones más detalladas (gratis, 2 minutos)",
+    "trackLoginRequired": "<0>Log in</0> to see vessel tracks and events",
+    "trackLoginTooltip": "Register or log in to see vessel tracks and events (free, 2 minutes)",
     "transmissionDates": "Fecha de transmisiones",
     "transmissions": "Transmisiones",
     "type": "Tipo",
@@ -1631,6 +1679,7 @@
     "searchResultsTable": "Los barcos coinciden con {{field}}{{timeRange}}: {{number}}",
     "searchVesselsRequired": "Buscar buques para crear un grupo de buques",
     "summary": "Este grupo contiene <strong>{{vessels}} embarcaciones</strong> de <strong>{{flags}} flags</strong> activas desde <strong>{{start}}</strong> hasta <strong>{{end}}</strong>",
+    "summaryNamed": "{{name}} contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>",
     "tooManyVessels_one": "El número máximo de embarcaciones es {{count}}",
     "tooManyVessels_other": "El número máximo de embarcaciones es {{count}}",
     "unmatchedIDs": "Barcos sin coincidencia: {{ids}}",

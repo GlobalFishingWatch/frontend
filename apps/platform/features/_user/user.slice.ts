@@ -17,8 +17,16 @@ import type { LoginSource } from 'features/_user/user.types'
 import { logoutServerFn } from 'server/auth.serverfn'
 import { getLocalStorageItem, setLocalStorageItem } from 'utils/dom'
 
+export type ReportGraphScreenshotSettings = {
+  format: 'png' | 'svg'
+  summary: boolean
+  footer: boolean
+  width?: number
+}
+
 export interface UserSettings {
   [PREFERRED_FOURWINGS_VISUALISATION_MODE]?: FourwingsVisualizationMode
+  reportGraphScreenshot?: ReportGraphScreenshotSettings
 }
 
 interface UserState {

@@ -13,7 +13,7 @@ export const SHARED_LABELS_PATH =
     ? 'http://localhost:8000'
     : 'https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels@latest'
 
-export const PACKAGE_NAMESPACES = ['flags', 'datasets', 'timebar']
+export const PACKAGE_NAMESPACES = ['flags', 'timebar']
 
 i18n
   // load translation using http -> see /public/locales
@@ -35,7 +35,7 @@ i18n
         return `${PATH_BASENAME}/locales/{{lng}}/{{ns}}.json`
       },
     },
-    ns: ['translations', 'flags', 'datasets', 'timebar'],
+    ns: ['translations', 'flags', 'timebar'],
     defaultNS: 'translations',
     fallbackLng: Locale.en,
     supportedLngs: Object.values(Locale),

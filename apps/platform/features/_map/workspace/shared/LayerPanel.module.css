@@ -81,6 +81,11 @@
   transition: var(--transition);
 }
 
+.filters > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
 .actions > *:not(:last-child) {
   margin-right: calc(0px - var(--space-XS));
 }

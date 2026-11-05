@@ -15,6 +15,7 @@ export type FourwingsSublayerConfig = {
   filter?: DataviewConfig['filter']
   filters?: DataviewConfig['filters']
   filterIds?: DataviewConfig['filterIds']
+  highlightedSceneId?: DataviewConfig['highlightedSceneId']
   minVisibleValue?: DataviewConfig['minVisibleValue']
   maxVisibleValue?: DataviewConfig['maxVisibleValue']
   vesselGroups?: DataviewConfig['vessel-groups']

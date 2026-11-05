@@ -1,5 +1,5 @@
-export const BASE_URL = process.env.NODE_ENV === 'production' ? '/tracks-labeler' : ''
-export const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL ?? 'support@globalfishingwatch.org'
+export const BASE_URL = import.meta.env.PROD ? '/tracks-labeler' : ''
+export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 
 export const UNDO_HOTKEYS =
   'control+z,command+z,control+y,command+y,control+shift+z,command+shift+z'

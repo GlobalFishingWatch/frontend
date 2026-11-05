@@ -7,7 +7,7 @@ import type { APIPagination, Dataset, Dataview } from '@globalfishingwatch/api-t
 import type { OceanAreaType } from '@globalfishingwatch/ocean-areas'
 
 import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV } from 'data/map/config'
-import { getDatasetsInDataviews } from 'features/_map/datasets/datasets.utils'
+import { getAPILocale, getDatasetsInDataviews } from 'features/_map/datasets/datasets.utils'
 import type { PlaceCategory } from 'features/_places/places.types'
 import { PLACES_MAP_DATAVIEWS } from 'features/_places/places-map.config'
 import type { Locale } from 'types'
@@ -42,7 +42,7 @@ const fetchPlacesMapDataviews = async ({
   // ponytail: no relatedDatasets / deprecated-dataset handling, none of these context layers use them
   const { entries: datasets } = await fetchPublic<APIPagination<Dataset>>(
     `/datasets?${stringify(
-      { ids: datasetIds, cache: false, locale: locale.toUpperCase(), ...DEFAULT_PAGINATION_PARAMS },
+      { ids: datasetIds, cache: false, locale: getAPILocale(locale), ...DEFAULT_PAGINATION_PARAMS },
       { arrayFormat: 'comma' }
     )}&${stringify({ includes: ['I18N', 'DESCRIPTION'] }, { arrayFormat: 'indices' })}`
   )

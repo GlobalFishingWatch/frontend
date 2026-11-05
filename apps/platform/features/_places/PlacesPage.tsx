@@ -187,6 +187,7 @@ function PlacesPage({
                   <span
                     className={styles.name}
                     title={label.length > PLACE_LABEL_TITLE_MIN_LENGTH ? label : undefined}
+                    translate="no"
                   >
                     {getHighlightedText(label, urlQuery, styles)}
                   </span>

@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react'
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import type {
   DataviewDatasetConfigParam,
   IdentityVessel,
@@ -36,7 +37,7 @@ import VesselDownload from 'features/_map/workspace/vessels/VesselDownload'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import { selectIsWorkspaceOwnerOrDefault } from 'features/_map/workspace/workspace.selectors'
 import GFWOnly from 'features/_user/GFWOnly'
-import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
+import { selectIsGFWUser, selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { getOtherVesselNames } from 'features/_vessels/vessel/vessel.utils'
 import { getVesselShipNameLabel } from 'features/_vessels/vessel/vessel-label.utils'
 import VesselDeprecatedLink from 'features/_vessels/vessel/VesselDeprecatedLink'
@@ -72,9 +73,10 @@ function VesselLayerPanel({
   const [filterOpen, setFiltersOpen] = useState(false)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { url: infoUrl, dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
-  const vesselLayer = useGetDeckLayer<VesselLayer>(dataview.id)
+  const vesselLayerInstance = useGetDeckLayer<VesselLayer>(dataview.id)?.instance
   // const vesselInstance = useMapVesselLayer(dataview.id)
   const gfwUser = useSelector(selectIsGFWUser)
+  const guestUser = useSelector(selectIsGuestUser)
   const trackDatasetId = dataview.datasets?.find((rld) => rld.type === DatasetTypes.Tracks)?.id
   const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
@@ -86,8 +88,6 @@ function VesselLayerPanel({
 
   const [colorOpen, setColorOpen] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
-
-  const layerActive = dataview?.config?.visible ?? true
 
   const changeTrackColor = (color: ColorBarOption) => {
     upsertDataviewInstance({
@@ -114,12 +114,23 @@ function VesselLayerPanel({
   }
 
   const showDeprecatedWarning = isWorkspaceOwner && dataview.deprecated
-  const trackLoaded = vesselLayer?.instance?.getVesselTracksLayersLoaded()
-  const trackLayerVisible = vesselLayer?.instance?.props?.visible
+  const trackLoaded = vesselLayerInstance?.getVesselTracksLayersLoaded()
+  const trackLayerVisible = vesselLayerInstance?.props?.visible
   const infoLoading = infoResource?.status === ResourceStatus.Loading
   const infoError = infoResource?.status === ResourceStatus.Error
-  const trackError = vesselLayer?.instance.getVesselLayersError('track')
+  const trackError = vesselLayerInstance?.getVesselLayersError('track')
+  // Track and events fail independently, events usually later as they take longer to respond
+  const rateLimited = vesselLayerInstance?.getVesselLayersRateLimited()
+  // Refetch them once any rate limit reset succeeds, wherever the challenge was started from
+  useEffect(() => {
+    if (rateLimited && vesselLayerInstance) {
+      return GFWAPI.onRateLimitReset(() => vesselLayerInstance?.reloadErroredSublayers())
+    }
+  }, [rateLimited, vesselLayerInstance])
   const trackLoading = trackLayerVisible && !trackLoaded && !trackError
+  // Nothing to draw: guests get no track datasets and a failed track stays failed until reloaded
+  const layerDisabled = guestUser || !!trackError
+  const layerActive = (dataview?.config?.visible ?? true) && !layerDisabled
 
   const vesselData = infoResource?.data
   const vesselLabel = vesselData ? getVesselShipNameLabel(vesselData) : ''
@@ -191,6 +202,8 @@ function VesselLayerPanel({
         <LayerSwitch
           testId={`vessel-switch-${vesselLabel.replace(/\s/g, '-')}`}
           active={layerActive}
+          disabled={layerDisabled}
+          tooltip={guestUser ? t((t) => t.vessel.trackLoginTooltip) : undefined}
           className={styles.switch}
           dataview={dataview}
         />
@@ -218,6 +231,7 @@ function VesselLayerPanel({
           showTooltip={false}
           className={styles.name}
           classNameActive={styles.active}
+          active={layerActive}
           dataview={dataview}
           toggleVisibility={false}
         />
@@ -246,12 +260,14 @@ function VesselLayerPanel({
                       onToggleClick={onToggleColorOpen}
                       onClickOutside={closeExpandedContainer}
                     />
-                    <FitBounds
-                      hasError={trackError}
-                      layer={vesselLayer?.instance}
-                      infoResource={infoResource}
-                      disabled={trackLoading}
-                    />
+                    {!guestUser && (
+                      <FitBounds
+                        hasError={trackError}
+                        layer={vesselLayerInstance}
+                        infoResource={infoResource}
+                        disabled={trackLoading}
+                      />
+                    )}
                     <ExpandedContainer
                       visible={filterOpen}
                       onClickOutside={closeExpandedContainer}
@@ -294,13 +310,20 @@ function VesselLayerPanel({
           {showDeprecatedWarning && vesselData && (
             <VesselDeprecatedLink vesselIdentity={vesselData} dataview={dataview} />
           )}
-          {(infoError || trackError) && !showDeprecatedWarning && (
+          {(infoError || trackError || rateLimited) && !showDeprecatedWarning && (
             <IconButton
               size="small"
               icon="warning"
               type="warning-invert"
-              disabled
-              tooltip={`${t((t) => t.errors.vesselLoading)} (${vesselId})`}
+              disabled={!rateLimited}
+              onClick={
+                rateLimited ? () => GFWAPI.startRateLimitChallenge().catch(() => {}) : undefined
+              }
+              tooltip={
+                rateLimited
+                  ? t((t) => t.rateLimit.trackLimitReached)
+                  : `${t((t) => t.errors.vesselLoading)} (${vesselId})`
+              }
               tooltipPlacement="top"
             />
           )}

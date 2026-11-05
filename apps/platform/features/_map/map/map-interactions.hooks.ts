@@ -45,6 +45,7 @@ import {
 } from 'features/_map/map/map-interactions.atoms'
 import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
 import { useMapAnnotation } from 'features/_map/map/overlays/annotations/annotations.hooks'
+import { drawLayerInstanceAtom } from 'features/_map/map/overlays/draw/draw.hooks'
 import { useMapErrorNotification } from 'features/_map/map/overlays/error-notification/error-notification.hooks'
 import { overlaysCursorAtom } from 'features/_map/map/overlays/overlays-hooks'
 import useRulers from 'features/_map/map/overlays/rulers/rulers.hooks'
@@ -785,6 +786,10 @@ export const useMapCursor = () => {
       const features = store.get(deckHoverInteractionAtom)?.features
       if (overlaysCursor) {
         return overlaysCursor
+      }
+      const drawLayer = store.get(drawLayerInstanceAtom)?.instance
+      if (drawLayer) {
+        return drawLayer.getCursor({ isDragging })
       }
       if (features?.some(isRulerLayerPoint)) {
         return 'move'

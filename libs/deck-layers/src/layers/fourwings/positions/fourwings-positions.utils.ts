@@ -23,6 +23,21 @@ export function getIsActivityPositionMatched(feature: FourwingsPositionFeature) 
   )
 }
 
+export function getDetectionSceneId(detectionId?: string) {
+  if (!detectionId?.includes(';')) {
+    return undefined
+  }
+  return detectionId.split(';')[0].split('_AOI')[0]
+}
+
+/** Same as `getDetectionSceneId(detectionId) === sceneId` without allocating, as it runs per position in accessors */
+export function getIsDetectionInScene(detectionId: string | undefined, sceneId: string) {
+  if (!detectionId?.startsWith(sceneId) || !detectionId.includes(';')) {
+    return false
+  }
+  return detectionId[sceneId.length] === ';' || detectionId.startsWith('_AOI', sceneId.length)
+}
+
 export function getIsDetectionsPositionMatched(feature: FourwingsPositionFeature) {
   return (
     (feature.properties.shipname && feature.properties.shipname.length > 0) ||

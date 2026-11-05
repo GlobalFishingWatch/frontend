@@ -16,6 +16,7 @@ platform:
       VITE_PIPE_DATASET_VERSION: '5'
       VITE_REALTIME_ENABLED: 'false'
     secrets:
+      VITE_TURNSTILE_SITE_KEY: projects/706952489382/secrets/TURNSTILE_SITE_KEY_TRACKS_DEV/versions/latest
       SENTRY_AUTH_TOKEN: projects/706952489382/secrets/FISHING_MAP_SENTRY_AUTH_TOKEN/versions/latest
   deploy:
     env_vars:
@@ -23,22 +24,26 @@ platform:
       BASIC_AUTH_USER: gfw-fish
     secrets:
       BASIC_AUTH_PASS: projects/706952489382/secrets/FISHING_MAP_BASIC_AUTH_PASS/versions/latest
-      STRAPI_TOKEN: projects/674016975526/secrets/FISHING_MAP_STRAPI_TOKEN/versions/latest
-      STRAPI_URL: projects/674016975526/secrets/FISHING_MAP_STRAPI_URL/versions/latest
-      STRAPI_PREVIEW_SECRET: projects/674016975526/secrets/strapi-preview-secret-production/versions/latest
+      DETECTIONS_FEEDBACK_SPREADSHEET_ID: projects/706952489382/secrets/FISHING_MAP_DETECTIONS_FEEDBACK_SPREADSHEET_ID/versions/latest
       DOWNLOAD_SURVEY_SPREADSHEET_ID: projects/706952489382/secrets/FISHING_MAP_DOWNLOAD_SURVEY_SPREADSHEET_ID/versions/latest
       FEEDBACK_SPREADSHEET_ID: projects/706952489382/secrets/FISHING_MAP_FEEDBACK_SPREADSHEET_ID/versions/latest
+      GATEWAY_FRONTEND_SECRET: projects/706952489382/secrets/GATEWAY_FRONTEND_SECRET_DEV/versions/latest
       GFW_API_KEY: projects/706952489382/secrets/FISHING_MAP_GFW_API_KEY/versions/latest
+      HUMAN_SESSION_SECRET: projects/706952489382/secrets/FISHING_MAP_HUMAN_SESSION_SECRET/versions/latest
       IDENTITY_REVIEW_SPREADSHEET_ID: projects/706952489382/secrets/FISHING_MAP_IDENTITY_REVIEW_SPREADSHEET_ID/versions/latest
       MAP_ERRORS_SPREADSHEET_ID: projects/706952489382/secrets/FISHING_MAP_MAP_ERRORS_SPREADSHEET_ID/versions/latest
       MIGRAMAR_SPREADSHEET_ID: projects/706952489382/secrets/FISHING_MAP_MIGRAMAR_SPREADSHEET_ID/versions/latest
       SENTRY_AUTH_TOKEN: projects/706952489382/secrets/FISHING_MAP_SENTRY_AUTH_TOKEN/versions/latest
       SPREADSHEET_CLIENT_EMAIL: projects/706952489382/secrets/FISHING_MAP_SPREADSHEET_CLIENT_EMAIL/versions/latest
       SPREADSHEET_PRIVATE_KEY: projects/706952489382/secrets/FISHING_MAP_SPREADSHEET_PRIVATE_KEY/versions/latest
+      STRAPI_PREVIEW_SECRET: projects/674016975526/secrets/strapi-preview-secret-production/versions/latest
+      STRAPI_TOKEN: projects/674016975526/secrets/FISHING_MAP_STRAPI_TOKEN/versions/latest
+      STRAPI_URL: projects/674016975526/secrets/FISHING_MAP_STRAPI_URL/versions/latest
       TURNING_TIDES_AIS_ID: projects/706952489382/secrets/FISHING_MAP_TURNING_TIDES_AIS_ID/versions/latest
       TURNING_TIDES_BRAZIL_ID: projects/706952489382/secrets/FISHING_MAP_TURNING_TIDES_BRAZIL_ID/versions/latest
       TURNING_TIDES_CHILE_ID: projects/706952489382/secrets/FISHING_MAP_TURNING_TIDES_CHILE_ID/versions/latest
       TURNING_TIDES_PERU_ID: projects/706952489382/secrets/FISHING_MAP_TURNING_TIDES_PERU_ID/versions/latest
+      TURNSTILE_SECRET_KEY: projects/706952489382/secrets/TURNSTILE_TRACKS_DEV/versions/latest
 
 api-portal:
   target: production-nginx

@@ -10,6 +10,8 @@ import { CompositeLayer } from '@deck.gl/core'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import type { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
 
+import { GFWAPI } from '@globalfishingwatch/api-client'
+
 import {
   COLOR_HIGHLIGHT_FILL,
   COLOR_HIGHLIGHT_LINE,
@@ -18,7 +20,6 @@ import {
 } from '#config/colors.config'
 import { PREVIEW_BUFFER_GENERATOR_ID } from '#config/layers.config'
 import { LayerGroup } from '#config/sort.config'
-import { getFetchLoadOptions } from '#layers/_shared/api'
 import { getPickedFeatureToHighlight } from '#layers/_shared/picking.utils'
 import { getLayerGroupOffset, hexToDeckColor } from '#utils'
 
@@ -39,6 +40,9 @@ type PolygonsLayerState = {
   error: string
   highlightedFeatures?: PolygonPickingObject[]
   debouncedDataUrl?: string
+  // Single request shared by every sublayer: deck skips its resourceManager dedup
+  // when loadOptions are set, so passing the url to each sublayer fetched it once per sublayer
+  dataPromise?: Promise<FeatureCollection>
   _dataDebounceId?: ReturnType<typeof setTimeout>
 }
 
@@ -63,8 +67,8 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
   initializeState(context: LayerContext): void {
     super.initializeState(context)
     const { dataUrl } = this.props
-    if (typeof dataUrl === 'string') {
-      this.setState({ debouncedDataUrl: dataUrl })
+    if (dataUrl && typeof dataUrl === 'string') {
+      this._loadDataUrl(dataUrl)
     }
   }
 
@@ -90,12 +94,17 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
     }
 
     const id = setTimeout(() => {
-      this.setState({
-        debouncedDataUrl: this.props.dataUrl,
-        _dataDebounceId: undefined,
-      })
+      this._loadDataUrl(this.props.dataUrl as string)
+      this.setState({ _dataDebounceId: undefined })
     }, debounceTime)
     this.setState({ _dataDebounceId: id })
+  }
+
+  _loadDataUrl(dataUrl: string) {
+    this.setState({
+      debouncedDataUrl: dataUrl,
+      dataPromise: GFWAPI.fetch<FeatureCollection>(dataUrl),
+    })
   }
 
   finalizeState(context: LayerContext): void {
@@ -161,7 +170,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
 
     const dataToRender =
       dataUrl && typeof dataUrl === 'string'
-        ? (this.state.debouncedDataUrl ?? dataUrl)
+        ? this.state.dataPromise
         : (data as FeatureCollection<Geometry, GeoJsonProperties>)
 
     const showHighlight =
@@ -176,7 +185,6 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
       new GeoJsonLayer<GeoJsonProperties, { data: any }>({
         id: `${id}-lines`,
         data: dataToRender,
-        loadOptions: getFetchLoadOptions(),
         lineWidthUnits: 'pixels',
         lineWidthMinPixels: baseLineWidth,
         lineWidthMaxPixels: 2,
@@ -190,7 +198,6 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
         id: `${id}-highlight-fills`,
         stroked: false,
         data: dataToRender,
-        loadOptions: getFetchLoadOptions(),
         pickable: pickable,
         getPolygonOffset: (params) => getLayerGroupOffset(group, params),
         getFillColor: (d) => this.getFillColor(d as PolygonFeature),
@@ -201,7 +208,6 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
       new GeoJsonLayer<GeoJsonProperties, { data: any }>({
         id: `${id}-highlight-lines-bg`,
         data: dataToRender,
-        loadOptions: getFetchLoadOptions(),
         lineWidthMinPixels: 0,
         lineWidthUnits: 'pixels',
         filled: false,
@@ -219,7 +225,6 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
       new GeoJsonLayer<GeoJsonProperties, { data: any }>({
         id: `${id}-highlight-lines-fg`,
         data: dataToRender,
-        loadOptions: getFetchLoadOptions(),
         lineWidthMinPixels: 0,
         lineWidthUnits: 'pixels',
         filled: false,

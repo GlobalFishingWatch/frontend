@@ -13,6 +13,7 @@ import {
   DatasetTypes,
   DataviewCategory,
   EventTypes,
+  Locale,
 } from '@globalfishingwatch/api-types'
 import {
   getDatasetConfigurationProperty,
@@ -31,6 +32,14 @@ import { AIS_DATAVIEW_INSTANCE_ID, VMS_DATAVIEW_INSTANCE_ID } from '@platform/co
 
 import { DEFAULT_TIME_RANGE, FULL_SUFIX, PRIVATE_ICON, PUBLIC_SUFIX } from 'data/map/config'
 import { t } from 'features/i18n/i18n'
+
+// The API answers 422 to `locale=ID` (dev, staging and production, checked 2026-11-03), and the
+// Crowdin pseudo-languages are not API locales either
+const API_LOCALES: string[] = [Locale.en, Locale.es, Locale.fr, Locale.pt]
+
+export function getAPILocale(locale: string) {
+  return (API_LOCALES.includes(locale) ? locale : Locale.en).toUpperCase()
+}
 
 // Datasets ids for vessel instances
 export type VesselInstanceDatasets = {

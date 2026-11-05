@@ -328,7 +328,9 @@ const COARSE_SIMPLIFY_TOLERANCE = 0.1
 const FINE_SIMPLIFY_TOLERANCE = 0.001
 
 export function getSimplificationByDataview(dataview: UrlDataviewInstance | Dataview) {
-  return dataview?.slug === RFMO_DATAVIEW_SLUG ? COARSE_SIMPLIFY_TOLERANCE : FINE_SIMPLIFY_TOLERANCE
+  return dataview.id === 'seabird-risk-zones' || dataview?.slug === RFMO_DATAVIEW_SLUG
+    ? COARSE_SIMPLIFY_TOLERANCE
+    : FINE_SIMPLIFY_TOLERANCE
 }
 
 export function useFetchReportArea() {

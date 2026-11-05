@@ -4,6 +4,7 @@ import { expect } from 'playwright/test'
 import { MAP_POPUP_TESTID } from '@platform/config/selectors/map'
 
 import { TIMEOUTS } from '../helpers/timeouts'
+import { MAP_PATH } from '../paths'
 
 export type MapViewportWithClick = {
   latitude: number
@@ -40,15 +41,16 @@ export class MapPage {
     end,
     clickCoordinates: [clickLongitude, clickLatitude],
   }: MapViewportWithClick) {
-    const url = new URL(this.page.url())
-    url.searchParams.set('latitude', String(latitude))
-    url.searchParams.set('longitude', String(longitude))
-    url.searchParams.set('zoom', String(zoom))
-    url.searchParams.set('start', start)
-    url.searchParams.set('end', end)
-    url.searchParams.set('cCo[0]', String(clickLongitude))
-    url.searchParams.set('cCo[1]', String(clickLatitude))
-    await this.page.goto(url.toString())
+    const params = new URLSearchParams({
+      latitude: String(latitude),
+      longitude: String(longitude),
+      zoom: String(zoom),
+      start,
+      end,
+      'cCo[0]': String(clickLongitude),
+      'cCo[1]': String(clickLatitude),
+    })
+    await this.page.goto(`${MAP_PATH}?${params}`)
   }
 
   async waitForPopupLoaded() {

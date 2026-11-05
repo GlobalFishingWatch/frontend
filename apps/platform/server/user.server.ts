@@ -1,12 +1,15 @@
-import { getGuestUser, GFWAPI, readCookieString } from '@globalfishingwatch/api-client'
+import {
+  getGuestUser,
+  GFWAPI,
+  GUEST_USER_TYPE,
+  isCaptchaError,
+  readCookieString,
+} from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
 
-import {
-  SSR_HEADERS,
-  USER_REFRESH_TOKEN_COOKIE_KEY,
-  USER_TOKEN_COOKIE_KEY,
-} from 'features/app/app.config'
+import { USER_REFRESH_TOKEN_COOKIE_KEY, USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
 import { clearAuthCookies, refreshAuthTokens } from 'server/auth.server'
+import { SSR_HEADERS } from 'server/ssr-headers.server'
 
 type UserState = { user: UserData | null }
 
@@ -45,14 +48,35 @@ async function fetchUserStateFromRequest(request: Request): Promise<UserState> {
   // cookie (throws 401) or the refresh is dead.
   try {
     const refreshToken = readCookieString(cookieHeader, USER_REFRESH_TOKEN_COOKIE_KEY)
-    const tokens = await refreshAuthTokens(refreshToken ?? undefined, setCookie)
+    const tokens = await refreshAuthTokens({ refreshToken: refreshToken ?? undefined, setCookie })
     const user = await GFWAPI.fetchUser({
       token: tokens.token,
       headers: SSR_HEADERS,
     })
     return { user }
-  } catch {
-    clearAuthCookies(setCookie)
+  } catch (e) {
+    if (!isCaptchaError(e as { message?: string })) {
+      clearAuthCookies(setCookie)
+    }
     return { user: getGuestUser() }
   }
 }
+
+/**
+ * Logged user of the request, verified by the gateway from the token cookie. Null for guests.
+ * Read-only: unlike resolveUserStateFromRequest it never refreshes tokens or writes cookies
+ */
+export async function getRequestUser(): Promise<UserData | null> {
+  const { getCookie } = await import('@tanstack/react-start/server')
+  const token = getCookie(USER_TOKEN_COOKIE_KEY)
+  if (!token) return null
+  try {
+    const user = await GFWAPI.fetchUser({ token, headers: SSR_HEADERS })
+    return user.type === GUEST_USER_TYPE ? null : user
+  } catch {
+    return null
+  }
+}
+
+export const getUserFullName = (user: UserData) =>
+  `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim()

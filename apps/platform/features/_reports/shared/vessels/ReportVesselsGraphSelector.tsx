@@ -5,6 +5,7 @@ import cx from 'classnames'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
 
+import { selectVGRHasVMSVessels } from 'features/_reports/report-vessel-group/vessel-group-report.slice'
 import {
   REPORT_VESSELS_GRAPH_FLAG,
   REPORT_VESSELS_GRAPH_GEARTYPE,
@@ -29,6 +30,7 @@ function ReportVesselsGraphSelector({ loading }: { loading?: boolean }) {
   const reportCategory = useSelector(selectReportCategory)
   const reportSubCategory = useSelector(selectReportSubCategory)
   const selectedOptionId = useSelector(selectReportVesselGraph)
+  const hasVMSVessels = useSelector(selectVGRHasVMSVessels)
   const options: ChoiceOption<ReportVesselGraph | ReportVesselsSubCategory>[] = [
     {
       id: REPORT_VESSELS_GRAPH_FLAG,
@@ -72,6 +74,10 @@ function ReportVesselsGraphSelector({ loading }: { loading?: boolean }) {
             ),
             disabled: loading,
           },
+        ]
+      : []),
+    ...(reportCategory === ReportCategory.VesselGroup && !hasVMSVessels
+      ? [
           {
             id: 'coverage' as ReportVesselsSubCategory,
             label: (

@@ -1,0 +1,36 @@
+# Nx Cloud worker setup. Referenced by name from .nx/ci-config.yaml (`dte.distribute-on`).
+# Based on the prebuilt linux-*-js templates, plus pnpm 12: it ships as a native binary that
+# Corepack cannot install, so it is bootstrapped the same way as in the Dockerfile.
+launch-templates:
+  linux-large-pnpm:
+    resource-class: 'docker_linux_amd64/large'
+    image: 'ubuntu22.04-node24.14-v1'
+    init-steps:
+      - name: Checkout
+        uses: 'nrwl/nx-cloud-workflows/v6/workflow-steps/checkout/main.yaml'
+      - name: Restore Node Modules Cache
+        uses: 'nrwl/nx-cloud-workflows/v6/workflow-steps/cache/main.yaml'
+        inputs:
+          key: 'pnpm-lock.yaml|patches/**'
+          paths: 'node_modules'
+          base-branch: 'develop'
+      - name: Restore Browser Binary Cache
+        uses: 'nrwl/nx-cloud-workflows/v6/workflow-steps/cache/main.yaml'
+        inputs:
+          key: 'pnpm-lock.yaml|"browsers"'
+          paths: '../.cache/ms-playwright'
+          base-branch: 'develop'
+      # Reads the version from .nvmrc
+      - name: Install Node
+        uses: 'nrwl/nx-cloud-workflows/v6/workflow-steps/install-node/main.yaml'
+      - name: Install pnpm
+        script: |
+          export PNPM_HOME="$HOME/.local/share/pnpm"
+          SHELL=/bin/sh ENV="$HOME/.shrc" npx --yes get-pnpm 12
+          echo "PNPM_HOME=$PNPM_HOME" >> $NX_CLOUD_ENV
+          echo "PATH=$PNPM_HOME/bin:$PATH" >> $NX_CLOUD_ENV
+      - name: Install Node Modules
+        uses: 'nrwl/nx-cloud-workflows/v6/workflow-steps/install-node-modules/main.yaml'
+      # Only chromium: the CI e2e run sets PLAYWRIGHT_BROWSER=chromium
+      - name: Install Chromium
+        script: pnpm exec playwright install --with-deps chromium

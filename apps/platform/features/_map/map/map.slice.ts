@@ -48,6 +48,11 @@ import {
   getDatasetByIdsThunk,
   selectDatasetById,
 } from 'features/_map/datasets/datasets.slice'
+import {
+  getIsSkylightDataset,
+  getVesselGroupInDataview,
+  isRealTimeDataset,
+} from 'features/_map/datasets/datasets.utils'
 import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { getVesselSearchEndpoint } from 'features/_vessels/search/search.slice'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/_vessels/vessel/vessel.config'
@@ -69,7 +74,6 @@ export const MAX_TOOLTIP_LIST = 5
 const loadCategorySelectors = () =>
   import('features/_map/dataviews/selectors/dataviews.categories.selectors')
 const loadDataviewSelectors = () => import('features/_map/dataviews/selectors/dataviews.selectors')
-const loadDatasetsUtils = () => import('features/_map/datasets/datasets.utils')
 
 type ExtendedFeatureVesselDatasets = Omit<IdentityVessel, 'dataset'> & {
   id: string
@@ -329,11 +333,8 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
     { getState, signal, dispatch, rejectWithValue }
   ) => {
     try {
-      const [
-        { selectActiveTemporalgridDataviews },
-        { selectVesselGroupDataviews },
-        { getIsSkylightDataset, isRealTimeDataset },
-      ] = await Promise.all([loadDataviewSelectors(), loadCategorySelectors(), loadDatasetsUtils()])
+      const [{ selectActiveTemporalgridDataviews }, { selectVesselGroupDataviews }] =
+        await Promise.all([loadDataviewSelectors(), loadCategorySelectors()])
       const state = getState() as any
       const guestUser = selectIsGuestUser(state)
       const temporalgridDataviews = selectActiveTemporalgridDataviews(state) || []
@@ -506,10 +507,7 @@ export const fetchClusterEventThunk = createAsyncThunk(
     { signal, getState, dispatch, rejectWithValue }
   ) => {
     try {
-      const [{ selectEventsDataviews }, { getVesselGroupInDataview }] = await Promise.all([
-        loadCategorySelectors(),
-        loadDatasetsUtils(),
-      ])
+      const { selectEventsDataviews } = await loadCategorySelectors()
       const state = getState() as RootState
       const guestUser = selectIsGuestUser(state)
       const eventDataviews = selectEventsDataviews(state) || []

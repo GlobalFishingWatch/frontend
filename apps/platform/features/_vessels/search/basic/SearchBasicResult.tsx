@@ -21,6 +21,7 @@ import { SEARCH_VESSELS_OPTION_PREFIX } from '@platform/config/selectors/vessels
 import { selectVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/_map/map/map-bounds.hooks'
 import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
+import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import TrackFootprint from 'features/_vessels/search/basic/TrackFootprint'
 import { cleanVesselSearchResults, setSelectedVessels } from 'features/_vessels/search/search.slice'
 import { getSearchVesselId } from 'features/_vessels/search/search.utils'
@@ -73,6 +74,7 @@ function SearchBasicResult({
   const dispatch = useAppDispatch()
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const isSmallScreen = useSmallScreen()
+  const guestUser = useSelector(selectIsGuestUser)
   const isStandaloneSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const [highlightedYear, setHighlightedYear] = useState<number>()
   const [trackBbox, setTrackBbox] = useState<Bbox>()
@@ -210,7 +212,7 @@ function SearchBasicResult({
           onClick={isInWorkspace ? undefined : onSelectClick}
         />
         <div className={styles.fullWidth}>
-          <div className={styles.name}>
+          <div className={styles.name} translate="no">
             <VesselLink
               vesselId={vesselData.id}
               identity={bestIdentityMatch}
@@ -236,19 +238,19 @@ function SearchBasicResult({
             </div>
             <div className={styles.property}>
               <label>{t((t) => t.vessel.mmsi)}</label>
-              <span>
+              <span translate="no">
                 {getHighlightedText(ssvid || EMPTY_FIELD_PLACEHOLDER, highlightQuery, styles)}
               </span>
             </div>
             <div className={styles.property}>
               <label>{t((t) => t.vessel.imo)}</label>
-              <span>
+              <span translate="no">
                 {getHighlightedText(imo || EMPTY_FIELD_PLACEHOLDER, highlightQuery, styles)}
               </span>
             </div>
             <div className={styles.property}>
               <label>{t((t) => t.vessel.callsign)}</label>
-              <span>
+              <span translate="no">
                 {getHighlightedText(callsign || EMPTY_FIELD_PLACEHOLDER, highlightQuery, styles)}
               </span>
             </div>
@@ -340,7 +342,7 @@ function SearchBasicResult({
             )}
           </div>
         </div>
-        {!isSmallScreen && (
+        {!isSmallScreen && !guestUser && (
           <TrackFootprint
             vesselIds={selfReportedVesselIds}
             trackDatasetId={track}

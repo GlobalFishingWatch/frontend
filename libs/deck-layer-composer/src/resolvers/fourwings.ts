@@ -85,6 +85,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
       unit: units[0]!,
       filter: sublayer?.filter,
       filterIds: sublayer?.filterIds,
+      highlightedSceneId: sublayer?.highlightedSceneId,
       minVisibleValue: sublayer?.minVisibleValue,
       maxVisibleValue: sublayer?.maxVisibleValue,
       vesselGroups: sublayer?.vesselGroups,

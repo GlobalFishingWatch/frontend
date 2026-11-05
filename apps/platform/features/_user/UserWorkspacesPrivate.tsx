@@ -65,7 +65,7 @@ function UserWorkspacesPrivate({ searchQuery }: { searchQuery: string }) {
                 replace
                 onClick={() => onWorkspaceClick(workspace)}
               >
-                <span className={styles.workspaceTitle}>
+                <span className={styles.workspaceTitle} translate="no">
                   {getHighlightedText(label as string, searchQuery, styles)}
                 </span>
                 <IconButton icon="arrow-right" />

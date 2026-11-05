@@ -1,7 +1,8 @@
-import React, { Fragment, useEffect, useMemo } from 'react'
+import React, { Fragment, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import { selectReportComparisonDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import {
   useFitAreaInViewport,
@@ -14,14 +15,13 @@ import {
 import { REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON } from 'features/_reports/reports.config'
 import { selectReportActivityGraph } from 'features/_reports/reports.config.selectors'
 import type { ReportActivityGraph } from 'features/_reports/reports.types'
-import { useComputeReportHotspot } from 'features/_reports/reports-hotspot.hooks'
 import type { ReportGraphProps } from 'features/_reports/reports-timeseries.hooks'
 import {
-  useComputeReportTimeSeries,
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
   useReportTimeSeriesErrors,
 } from 'features/_reports/reports-timeseries.hooks'
+import ReportGraphScreenshot from 'features/_reports/shared/download/ReportGraphScreenshot'
 import ReportActivityPlaceholder from 'features/_reports/shared/placeholders/ReportActivityPlaceholder'
 import { isTimeComparisonGraph } from 'features/_reports/shared/utils/reports.utils'
 import ReportActivityComparisonTotals from 'features/_reports/tabs/activity/ReportActivityComparisonTotals'
@@ -62,9 +62,6 @@ const SHARED_GRAPHS: Record<SharedGraphType, React.FC<ReportActivityProps>> = {
 }
 
 export default function ReportActivity() {
-  useComputeReportTimeSeries()
-  useComputeReportHotspot()
-
   const fitAreaInViewport = useFitAreaInViewport()
   const { loaded, bbox } = useReportAreaBounds()
   const bboxHash = bbox ? bbox.join(',') : ''
@@ -80,8 +77,10 @@ export default function ReportActivity() {
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
   const reportActivityGraph = useSelector(selectReportActivityGraph)
+  const comparisonDataviews = useSelector(selectReportComparisonDataviews)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
   const featureFlags = useSelector(selectFeatureFlags)
+  const graphRef = useRef<HTMLDivElement>(null)
 
   const SelectorsComponent = SELECTORS_BY_TYPE[reportActivityGraph]
 
@@ -144,11 +143,24 @@ export default function ReportActivity() {
             <ReportHotspotControls />
           )}
           <ReportActivityGraphSelector loading={isInitialLoad} />
+          {!isEmptyData && !hasError && (
+            <ReportGraphScreenshot
+              graphRef={graphRef}
+              name={`activity-${reportActivityGraph}`}
+              withSummary
+              legendDataviews={isDatasetComparison ? comparisonDataviews : undefined}
+              disabled={reportAreaStatus !== AsyncReducerStatus.Finished}
+            />
+          )}
         </div>
       )}
       {/* Dataset Comparison Selectors needs to go above the graph instead of time comparison selectors */}
       {showSelectors && SelectorsComponent && isDatasetComparison && <SelectorsComponent />}
-      {isInitialLoad || reportAreaStatus !== AsyncReducerStatus.Finished ? (
+      {reportAreaStatus === AsyncReducerStatus.Error ? (
+        <ReportActivityPlaceholder showHeader={false} animate={false}>
+          {t((t) => t.errors.areaLoad)}
+        </ReportActivityPlaceholder>
+      ) : isInitialLoad || reportAreaStatus !== AsyncReducerStatus.Finished ? (
         <ReportActivityPlaceholder showHeader={!showSelectors} loading />
       ) : isEmptyData || hasError ? (
         <ReportActivityPlaceholder showHeader={false} animate={false}>
@@ -157,7 +169,7 @@ export default function ReportActivity() {
             : isEmptyData && t((t) => t.analysis.noDataByArea)}
         </ReportActivityPlaceholder>
       ) : (
-        GraphElement
+        <div ref={graphRef}>{GraphElement}</div>
       )}
       {!isInitialLoad &&
         !isEmptyData &&

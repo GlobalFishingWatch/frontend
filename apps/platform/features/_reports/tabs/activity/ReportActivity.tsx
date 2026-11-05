@@ -5,7 +5,7 @@ import cx from 'classnames'
 import { isEqual } from 'es-toolkit'
 
 import {
-  getIsConcurrentError,
+  getIsRateLimitExceeded,
   getIsTimeoutError,
   isAuthError,
 } from '@globalfishingwatch/api-client'
@@ -131,7 +131,7 @@ function ActivityReport() {
         return isEqual(currentReportParams, reportParams)
       })
     : undefined
-  const concurrentReportError = getIsConcurrentError(statusError!)
+  const concurrentReportError = getIsRateLimitExceeded(statusError!)
   const isSameWorkspaceReport =
     concurrentReportError && window?.location.href === lastReport?.workspaceUrl
   const isBQEditorDataset = dataviews.some((dataview) =>
@@ -275,7 +275,7 @@ function ActivityReport() {
       )
     }
     if (workspaceStatus === AsyncReducerStatus.Loading || reportLoading) {
-      return <ReportVesselsPlaceholder className="print-hidden" />
+      return <ReportVesselsPlaceholder showSlowLoading className="print-hidden" />
     }
     if (timerangeTooLong) {
       return (
@@ -407,7 +407,6 @@ function ActivityReport() {
       <div className={cx('card', styles.subsection, styles.front)}>
         <ReportSummary
           activityUnit={activityUnit}
-          reportStatus={reportStatus}
           // without tags in vessel goup reports because filtering doesn't work in injected dataviews
           showTags={!isVesselGroupReportLocation}
         />

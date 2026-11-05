@@ -24,7 +24,7 @@ import {
   getRelatedDatasetsByType,
   resolveEndpoint,
 } from '@globalfishingwatch/datasets-client'
-import { setResource } from '@globalfishingwatch/dataviews-client'
+import { CACHE_FALSE_PARAM, setResource } from '@globalfishingwatch/dataviews-client'
 
 import { PROFILE_DATAVIEW_SLUGS } from 'data/map/dataviews'
 import {
@@ -36,7 +36,6 @@ import type { VesselInstanceDatasets } from 'features/_map/datasets/datasets.uti
 import { fetchDataviewsByIdsThunk } from 'features/_map/dataviews/dataviews.slice'
 import { selectVesselTemplateDataviews } from 'features/_map/dataviews/selectors/dataviews.static.selectors'
 import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
-import { CACHE_FALSE_PARAM } from 'features/_vessels/vessel/vessel.config'
 import { getVesselIdentities, getVesselProperty } from 'features/_vessels/vessel/vessel.utils'
 import { selectResources } from 'features/data/resources/resources.slice'
 import { workspaceTabClicked } from 'features/nav/nav.actions'

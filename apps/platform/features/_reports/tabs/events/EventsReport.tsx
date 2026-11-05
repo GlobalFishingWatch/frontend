@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -17,7 +17,9 @@ import { selectActiveReportDataviews } from 'features/_map/dataviews/selectors/d
 import { getDownloadReportSupported } from 'features/_map/download/download.utils'
 import { selectReportLoadVessels } from 'features/_map/workspace/selectors/app.selectors'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
+import WorkspaceLoginError from 'features/_map/workspace/WorkspaceLoginError'
 import { selectActiveReportSubCategories } from 'features/_reports/reports.selectors'
+import ReportGraphScreenshot from 'features/_reports/shared/download/ReportGraphScreenshot'
 import ReportActivityPlaceholder from 'features/_reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportEventsPlaceholder from 'features/_reports/shared/placeholders/ReportEventsPlaceholder'
 import ReportVesselsPlaceholder from 'features/_reports/shared/placeholders/ReportVesselsPlaceholder'
@@ -36,10 +38,12 @@ import EventsReportDownload from 'features/_reports/tabs/events/EventsReportDown
 import EventsReportGraph from 'features/_reports/tabs/events/EventsReportGraph'
 import EventsReportGraphSelector from 'features/_reports/tabs/events/EventsReportGraphSelector'
 import EventsReportSubsectionSelector from 'features/_reports/tabs/events/EventsReportSubsectionSelector'
+import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useFetchContextDatasetAreas } from 'features/data/areas/areas.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
 import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectIsVesselGroupReportLocation } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './EventsReport.module.css'
@@ -57,17 +61,20 @@ function EventsReport() {
   const fetchEventsStatsParams = useSelector(selectFetchEventsStatsParams)
   const totalEvents = useSelector(selectTotalStatsEvents)
   const reportLoadVessels = useSelector(selectReportLoadVessels)
+  const guestUser = useSelector(selectIsGuestUser)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const showSubsectionSelector = activeReportSubCategories && activeReportSubCategories.length > 1
   const timerangeSupported = getDownloadReportSupported(start, end)
   const datasetAreasId = useSelector(selectEventsGraphDatasetAreaId)
   const datasetAreas = useFetchContextDatasetAreas(datasetAreasId)
   const { updateReportHash, reportOutdated } = useReportHash()
   const [isIndividualSupported, setIsIndividualSupported] = useState(false)
+  const graphRef = useRef<HTMLDivElement>(null)
 
   const { status: vessselStatus } = useGetReportEventsVesselsQuery(
     fetchEventsVesselsParams as GetReportEventParams,
     {
-      skip: !fetchEventsVesselsParams || !timerangeSupported || reportOutdated,
+      skip: !fetchEventsVesselsParams || !timerangeSupported || reportOutdated || guestUser,
     }
   )
 
@@ -91,14 +98,14 @@ function EventsReport() {
     statsStatus === 'fulfilled' ? totalEvents !== undefined && totalEvents > 0 : false
   const showPortsTable = eventsDataview?.datasets?.[0]?.subcategory !== 'port_visit' && hasEvents
 
+  const isLoadingGraph =
+    (datasetAreasId && datasetAreas?.status !== AsyncReducerStatus.Finished) || isLoadingStats
+
   const graph = useMemo(() => {
     if (statsError) {
       return <p className={styles.error}>{(statsError as any).message}</p>
     }
-    if (
-      (datasetAreasId && datasetAreas?.status !== AsyncReducerStatus.Finished) ||
-      isLoadingStats
-    ) {
+    if (isLoadingGraph) {
       return <ReportActivityPlaceholder showHeader={false} loading />
     }
     if (!hasEvents) {
@@ -110,7 +117,7 @@ function EventsReport() {
       )
     }
     return <EventsReportGraph onIndividualSupportedChange={setIsIndividualSupported} />
-  }, [datasetAreas?.status, datasetAreasId, isLoadingStats, hasEvents, statsError, t])
+  }, [isLoadingGraph, hasEvents, statsError, t])
 
   if (!vesselDatasets.length) {
     return (
@@ -164,15 +171,34 @@ function EventsReport() {
                   {isIndividualSupported && (
                     <EventsReportDownload dataviews={eventsDataviews} start={start} end={end} />
                   )}
+                  <ReportGraphScreenshot
+                    graphRef={graphRef}
+                    name="events"
+                    withSummary
+                    disabled={isLoadingGraph || isLoadingVessels}
+                  />
                 </Fragment>
               )}
             </div>
-            {graph}
+            <div ref={graphRef}>{graph}</div>
           </div>
         </div>
         {hasEvents && (
           <div className={cx('card', styles.subsection)}>
-            {!timerangeSupported ? (
+            {guestUser ? (
+              <ReportVesselsPlaceholder animate={false}>
+                <div className={styles.cover}>
+                  <WorkspaceLoginError
+                    loginSource="report-private"
+                    title={
+                      isVesselGroupReportLocation
+                        ? t((t) => t.errors.vesselGroupReportLogin)
+                        : t((t) => t.errors.reportLogin)
+                    }
+                  />
+                </div>
+              </ReportVesselsPlaceholder>
+            ) : !timerangeSupported ? (
               <ReportVesselsPlaceholder animate={false}>
                 <div className={cx(styles.cover, styles.error)}>
                   <p>{t((t) => t.analysis.timeRangeTooLong)}</p>

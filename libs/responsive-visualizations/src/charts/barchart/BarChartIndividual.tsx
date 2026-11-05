@@ -76,6 +76,7 @@ export function IndividualBarChart({
         dataKey={labelKey}
         interval={barLabelInterval}
         tickLine={false}
+        axisLine={{ stroke: 'var(--color-secondary-blue)' }}
         minTickGap={-1000}
         tick={barLabel}
         tickMargin={0}
