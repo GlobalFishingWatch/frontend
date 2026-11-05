@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 
+import { HighlightedText } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { Modal } from '@globalfishingwatch/ui-components/modal'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
@@ -22,7 +23,6 @@ import {
 } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { getHighlightedText } from 'utils/text'
 
 import { selectUserWorkspacesActive } from './selectors/user.permissions.selectors'
 
@@ -121,7 +121,7 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
                       data-test="workspace-name"
                       translate="no"
                     >
-                      {getHighlightedText(label as string, searchQuery, styles)}
+                      <HighlightedText text={label as string} highlight={searchQuery} />
                     </span>
                     {isOutdated ? (
                       <IconButton

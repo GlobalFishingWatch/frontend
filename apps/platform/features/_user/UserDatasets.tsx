@@ -9,6 +9,7 @@ import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
 } from '@globalfishingwatch/datasets-client'
+import { HighlightedText } from '@globalfishingwatch/ui-components'
 import { Button } from '@globalfishingwatch/ui-components/button'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components/choice'
 import { Choice } from '@globalfishingwatch/ui-components/choice'
@@ -40,7 +41,6 @@ import {
 } from 'features/modals/modals.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getTimeAgo, getUTCDateTime, sortByCreationDate } from 'utils/dates'
-import { getHighlightedText } from 'utils/text'
 
 import styles from './User.module.css'
 
@@ -233,7 +233,7 @@ function UserDatasets() {
                           {datasetIcon && (
                             <Icon icon={datasetIcon} style={{ transform: 'translateY(25%)' }} />
                           )}
-                          {getHighlightedText(label as string, searchQuery, styles)}
+                          <HighlightedText text={label as string} highlight={searchQuery} />
                         </span>
                         <span className={styles.datasetMeta}>{createdAgo}</span>
                       </span>

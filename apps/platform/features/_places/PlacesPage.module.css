@@ -112,11 +112,6 @@
   text-decoration: underline;
 }
 
-.highlighted {
-  background: var(--color-highlight-blue);
-  box-decoration-break: clone;
-}
-
 .mapColumn {
   position: sticky;
   top: 0;
