@@ -6,6 +6,7 @@ import type { TrackSegment } from '@globalfishingwatch/api-types'
 import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import type { DatasetEventSource } from '@globalfishingwatch/datasets-client'
 import { getDatasetSource } from '@globalfishingwatch/datasets-client'
+import type { DeckLayerAtom } from '@globalfishingwatch/deck-layer-composer'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import type { UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
 import type {
@@ -33,6 +34,18 @@ import { getEventDescription } from 'utils/events'
 const isVesselLayerInstance = (instance: VesselLayer | UserTracksLayer): instance is VesselLayer =>
   'getVesselTrackSegments' in instance
 
+// useGetDeckLayers matches by id only and its generic is an unchecked cast, so a layer with a
+// matching id that is not a track layer would crash on getColor()/getSegments() (FRONTEND-YN)
+const useTrackLayersOnly = <L extends VesselLayer | UserTracksLayer>(layers: DeckLayerAtom<L>[]) =>
+  useMemo(
+    () =>
+      layers.filter(
+        ({ instance }) =>
+          !!instance && ('getVesselTrackSegments' in instance || 'getSegments' in instance)
+      ),
+    [layers]
+  )
+
 const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return (chunk.props as TrackChunkProps)?.id || ''
 }
@@ -46,8 +59,7 @@ export const useVesselTracksLayers = () => {
   const ids = useMemo(() => {
     return dataviews.map((d) => d.id)
   }, [dataviews])
-  const vessels = useGetDeckLayers<VesselLayer>(ids)
-  return vessels
+  return useTrackLayersOnly(useGetDeckLayers<VesselLayer>(ids))
 }
 
 export const useTimebarTracksLayers = () => {
@@ -55,8 +67,7 @@ export const useTimebarTracksLayers = () => {
   const ids = useMemo(() => {
     return dataviews.map((d) => d.id)
   }, [dataviews])
-  const vessels = useGetDeckLayers<VesselLayer | UserTracksLayer>(ids)
-  return vessels
+  return useTrackLayersOnly(useGetDeckLayers<VesselLayer | UserTracksLayer>(ids))
 }
 
 export const useTimebarLayers = () => {
