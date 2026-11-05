@@ -144,6 +144,11 @@
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "Concentração de fosfato (PO4)"
   },
+  "planet": {
+    "description": "This layer shows vessels detected using optical satellite imagery collected by Planet satellites. Optical imagery is similar to high-quality aerial photography from space, using reflected sunlight in visible and near-infrared wavelengths.",
+    "moreInfoLink": "",
+    "name": "Planet Imagery detections (Optical)"
+  },
   "port-locations": {
     "description": "Portos são baseados no conjunto de dados de ancoragens do Global Fishing Watch, uma base de dados global de locais de ancoragem onde as embarcações se aglomeram. Esta camada inclui os portos com nome conhecido.",
     "moreInfoLink": "",
