@@ -18,7 +18,7 @@ vi.mock('@loaders.gl/core', () => ({
   }),
 }))
 
-const { fetchWithGFWAPI } = await import('./api')
+const { fetchWithGFWAPI, getTileErrorMessage } = await import('./api')
 
 const trackLayer = { props: { loaders: [{ id: 'vessel-tracks' }], loadOptions: {} } }
 
@@ -57,5 +57,19 @@ describe('fetchWithGFWAPI track timestampBase', () => {
     await fetchWithGFWAPI('/track', { layer: trackLayer })
     expect(error).not.toHaveBeenCalled()
     error.mockRestore()
+  })
+})
+
+describe('getTileErrorMessage', () => {
+  it('reads the raw Response that fetchWithGFWAPI rejects with', () => {
+    expect(getTileErrorMessage(new Response(null, { status: 404 }))).toBeUndefined()
+    expect(getTileErrorMessage(new Response(null, { status: 500, statusText: 'Boom' }))).toBe(
+      '500 Boom'
+    )
+  })
+
+  it('reads an Error message', () => {
+    expect(getTileErrorMessage(new Error('404 not found'))).toBeUndefined()
+    expect(getTileErrorMessage(new Error('parse failed'))).toBe('parse failed')
   })
 })
