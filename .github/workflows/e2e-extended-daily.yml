@@ -69,4 +69,4 @@ jobs:
         with:
           channel: '#eng-api-front-test-failures'
           token: ${{ secrets.SLACK_BOT_TOKEN }}
-          message: ":red_circle: *Daily extended e2e tests failed* on `main` (production)\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
+          message: ":red_circle: <!subteam^S091F43KM6F|@frontend-engineering-team> *Daily extended e2e tests failed* on `main` (production)\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
