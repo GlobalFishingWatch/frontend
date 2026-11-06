@@ -490,7 +490,12 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList | null {
-    const { visible, color, tilesUrl, eventType = 'encounter' } = this.props
+    const { visible, color, tilesUrl } = this.props
+    // eventType comes from the dataset subcategory, which can be one without an icon (e.g. dark_rendezvous)
+    const eventType =
+      this.props.eventType && this.props.eventType in ICON_MAPPING
+        ? this.props.eventType
+        : 'encounter'
     const { clusters, points, radiusScale } = this.state
     const highlightedFeatures = this._getHighlightedFeatures()
 

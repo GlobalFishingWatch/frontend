@@ -213,17 +213,6 @@ export function selectWorkspaceStateProperty<P extends WorkspaceStateProperty>(p
   )
 }
 
-const visibleEventsSelector = selectWorkspaceStateProperty('visibleEvents')
-export const selectWorkspaceVisibleEventsArray = createSelector(
-  [visibleEventsSelector],
-  (visibleEvents) => {
-    if (visibleEvents === 'all') {
-      return Object.values(EventTypes)
-    }
-    return Array.isArray(visibleEvents) ? ([...visibleEvents] as EventTypes[]) : []
-  }
-)
-
 export const selectDaysFromLatest = selectWorkspaceStateProperty('daysFromLatest')
 export const selectCollapsedSections = selectWorkspaceStateProperty('collapsedSections')
 export const selectTimeMode = selectWorkspaceStateProperty('timeMode')
@@ -233,6 +222,21 @@ export const selectMigramarLayer = selectWorkspaceStateProperty('migramarLayer')
 export const selectIsRealTimeMode = createSelector([selectTimeMode], (timeMode) => {
   return timeMode === 'realTime'
 })
+
+const visibleEventsSelector = selectWorkspaceStateProperty('visibleEvents')
+export const selectWorkspaceVisibleEventsArray = createSelector(
+  [visibleEventsSelector, selectIsRealTimeMode],
+  (visibleEvents, isRealTimeMode) => {
+    // Vessel track events lag behind real-time tracks, the Events section covers this mode instead
+    if (isRealTimeMode) {
+      return []
+    }
+    if (visibleEvents === 'all') {
+      return Object.values(EventTypes)
+    }
+    return Array.isArray(visibleEvents) ? ([...visibleEvents] as EventTypes[]) : []
+  }
+)
 
 export type WorkspaceFetchParams = { workspaceId: string; reportId?: string }
 

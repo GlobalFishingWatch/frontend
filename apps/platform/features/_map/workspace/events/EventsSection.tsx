@@ -10,6 +10,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { selectEventsDataviews } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
 import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import GlobalReportLink from 'features/_map/workspace/shared/GlobalReportLink'
+import { selectIsRealTimeMode } from 'features/_map/workspace/workspace.selectors'
 import { ReportCategory } from 'features/_reports/reports.types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -26,6 +27,7 @@ import styles from 'features/_map/workspace/shared/Section.module.css'
 function EventsLayerSection(): React.ReactElement<any> | null {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
+  const isRealTimeMode = useSelector(selectIsRealTimeMode)
   const dataviews = useSelector(selectEventsDataviews)
   const visibleDataviews = dataviews?.filter((dataview) => dataview.config?.visible === true)
   const hasVisibleDataviews = visibleDataviews.length >= 1
@@ -61,7 +63,9 @@ function EventsLayerSection(): React.ReactElement<any> | null {
       headerOptions={
         !readOnly ? (
           <div className={styles.sectionButtons}>
-            {hasVisibleDataviews && <GlobalReportLink reportCategory={ReportCategory.Events} />}
+            {hasVisibleDataviews && !isRealTimeMode && (
+              <GlobalReportLink reportCategory={ReportCategory.Events} />
+            )}
             <IconButton
               icon="plus"
               type="border"

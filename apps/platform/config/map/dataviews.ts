@@ -35,6 +35,7 @@ export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounters' as const
 export const PORT_VISITS_EVENTS_SOURCE_ID = 'port-visits' as const
 export const LOITERING_EVENTS_SOURCE_ID = 'loitering' as const
 export const GAPS_EVENTS_SOURCE_ID = 'gap' as const
+export const DARK_RENDEZVOUS_EVENTS_SOURCE_ID = 'dark-rendezvous' as const
 
 // Contextual layer dataview slugs
 export const BASEMAP_DATAVIEW_SLUG = 'basemap' as const
@@ -93,6 +94,8 @@ export const CLUSTER_GAPS_EVENTS_DATAVIEW_SLUG =
   `gaps-cluster-events-v-${PIPE_DATASET_VERSION}` as const
 export const CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG =
   `gaps-ais-off-cluster-events-v-${PIPE_DATASET_VERSION}` as const
+export const CLUSTER_DARK_RENDEZVOUS_EVENTS_DATAVIEW_SLUG =
+  'dark-rendezvous-cluster-events-v-1' as const
 
 // Swaps the `-v-<current pipe>` suffix of a versioned slug for another pipe version.
 // Slugs not tied to the current pipe (e.g. Panama's `-v-4-1`) are returned untouched.
