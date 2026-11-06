@@ -174,6 +174,7 @@ overrides:
   http-proxy-middleware@3: 3.0.7
   minimatch@10: 11.0.4
   minimatch@9: 11.0.4
+  nx>minimatch: 10.2.5
   nanoid@3: 3.3.18
   piscina@4: 4.9.4
   postcss@8: 8.5.25
@@ -8884,6 +8885,7 @@ packages:
   image-size@0.7.5:
     resolution: {integrity: sha512-Hiyv+mXHfFEP7LzUL/llg9RwFxxY+o9N3JVLIeG5E7iFIFAalxvRU9UZthBdYDEVnzHMgjnKJPPpay5BWf1g9g==}
     engines: {node: '>=6.9.0'}
+    deprecated: Please migrate to image-size@2.x
     hasBin: true
 
   immediate@3.0.6:
@@ -9816,6 +9818,10 @@ packages:
   min-indent@1.0.1:
     resolution: {integrity: sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==}
     engines: {node: '>=4'}
+
+  minimatch@10.2.5:
+    resolution: {integrity: sha512-MULkVLfKGYDFYejP07QOurDLLQpcjk7Fw+7jXS2R2czRQzR56yHRveU5NDJEOviH+hETZKSkIk5c+T23GjFUMg==}
+    engines: {node: 18 || 20 || >=22}
 
   minimatch@11.0.4:
     resolution: {integrity: sha512-/UJ1dEoVQTjPNDh6SGlUo+ueLMmoHTas4q+8yaAR/5t6nLAIiBDJtoYUh20IYleix7ehiQkgczb84PE3uzHkxg==}
@@ -22347,6 +22353,10 @@ snapshots:
 
   min-indent@1.0.1: {}
 
+  minimatch@10.2.5:
+    dependencies:
+      brace-expansion: 5.0.12
+
   minimatch@11.0.4:
     dependencies:
       '@isaacs/nonrecursive-glob-match': 1.0.3
@@ -22558,7 +22568,7 @@ snapshots:
       lines-and-columns: 2.0.3
       log-symbols: 4.1.0
       mimic-fn: 2.1.0
-      minimatch: 11.0.4
+      minimatch: 10.2.5
       minimist: 1.2.8
       npm-run-path: 4.0.1
       once: 1.4.0

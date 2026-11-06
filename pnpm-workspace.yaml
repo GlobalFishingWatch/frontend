@@ -19,6 +19,10 @@ overrides:
   http-proxy-middleware@3: 3.0.7
   minimatch@10: 11.0.4
   minimatch@9: 11.0.4
+  # nx 24 calls minimatch.makeRe, removed in 11: forcing 11 crashes `nx --exclude` globs.
+  # GHSA-g3hv-75wg-m249 has no 10.x fix, but nx only matches our own config globs.
+  # Drop once nx depends on minimatch >= 11.0.1.
+  nx>minimatch: 10.2.5
   nanoid@3: 3.3.18
   piscina@4: 4.9.4
   postcss@8: 8.5.25
