@@ -52,6 +52,15 @@ sentryInit({
   dataCollection: { userInfo: true, httpBodies: [] },
   tracesSampleRate: 0.1,
   denyUrls: [/googletagmanager\.com/, /google-analytics\.com/, /\/gtm-extras\//],
+  // Drop errors whose every frame is `<anonymous>`: code injected by extensions or host WebViews
+  // (FRONTEND-YA, FRONTEND-YQ). Our bundle always has file URLs, so any of our frames keeps the event.
+  beforeSend(event) {
+    const frames = event.exception?.values?.flatMap((value) => value.stacktrace?.frames ?? [])
+    if (frames?.length && frames.every((frame) => frame.filename === '<anonymous>')) {
+      return null
+    }
+    return event
+  },
   replaysSessionSampleRate: 0,
   replaysOnErrorSampleRate: 1.0,
 })
