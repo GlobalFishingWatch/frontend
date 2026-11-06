@@ -8,14 +8,14 @@ import { useAtom } from 'jotai'
 
 import { IconButton, Spinner, TextArea } from '@globalfishingwatch/ui-components'
 
-import { pendingPromptAtom } from 'features/_map/content-panel/chat/chat.atoms'
-import type { FeedbackRating } from 'features/_map/content-panel/chat/chat-session.hooks'
+import { pendingPromptAtom } from 'features/assistant/assistant.atoms'
+import type { FeedbackRating } from 'features/assistant/assistant-session.hooks'
 import {
   getFeedbackState,
   MAP_URL_CONTEXT_PREFIX,
-  useChatSession,
-} from 'features/_map/content-panel/chat/chat-session.hooks'
-import { useSetThreadLoading } from 'features/_map/content-panel/chat/chat-threads.hooks'
+  useAssistantSession,
+} from 'features/assistant/assistant-session.hooks'
+import { useSetThreadLoading } from 'features/assistant/assistant-threads.hooks'
 import {
   getNavigateToolAlternatives,
   getNavigateToolLinkProps,
@@ -23,10 +23,10 @@ import {
   type NavigateToolNavigation,
   navigateToolOutputSchema,
   useNavigateToolMapState,
-} from 'features/_map/content-panel/chat/navigate-tool'
+} from 'features/assistant/navigate-tool'
 import ContentMarkdown from 'features/help/markdown/ContentMarkdown'
 
-import styles from './Chat.module.css'
+import styles from './Assistant.module.css'
 
 function roleClass(role: UIMessage['role']): string {
   if (role === 'assistant') return styles.agent
@@ -37,17 +37,17 @@ function roleClass(role: UIMessage['role']): string {
 function toolActionLabel(t: TFunction, name: string): string | undefined {
   switch (name) {
     case 'navigate':
-      return t((t) => t.chat.toolNavigate)
+      return t((t) => t.assistant.toolNavigate)
     case 'run_skill_script':
-      return t((t) => t.chat.toolRunSkillScript)
+      return t((t) => t.assistant.toolRunSkillScript)
     case 'load_skill':
-      return t((t) => t.chat.toolLoadSkill)
+      return t((t) => t.assistant.toolLoadSkill)
     case 'read_skill_resource':
-      return t((t) => t.chat.toolReadSkillResource)
+      return t((t) => t.assistant.toolReadSkillResource)
     case 'bash':
-      return t((t) => t.chat.toolBash)
+      return t((t) => t.assistant.toolBash)
     case 'gfw_region-id-lookup':
-      return t((t) => t.chat.toolRegionLookup)
+      return t((t) => t.assistant.toolRegionLookup)
     default:
       return undefined
   }
@@ -69,15 +69,15 @@ function toolStateLabel(t: TFunction, state?: string): string | undefined {
 function skillResourceLabel(t: TFunction, basename: string): string | undefined {
   switch (basename) {
     case 'layers.md':
-      return t((t) => t.chat.skillLayers)
+      return t((t) => t.assistant.skillLayers)
     case 'areas.json':
-      return t((t) => t.chat.skillAreas)
+      return t((t) => t.assistant.skillAreas)
     case 'filters.md':
-      return t((t) => t.chat.skillFilters)
+      return t((t) => t.assistant.skillFilters)
     case 'query-params.md':
-      return t((t) => t.chat.skillQueryParams)
+      return t((t) => t.assistant.skillQueryParams)
     case 'routes.md':
-      return t((t) => t.chat.skillRoutes)
+      return t((t) => t.assistant.skillRoutes)
     default:
       return undefined
   }
@@ -126,7 +126,9 @@ function NavigateToolLink({
         const isCurrentView = isActive && isSameViewSearch
         const text =
           label ??
-          (isCurrentView ? t((t) => t.chat.toolNavigation) : t((t) => t.chat.toolNavigateBack))
+          (isCurrentView
+            ? t((t) => t.assistant.toolNavigation)
+            : t((t) => t.assistant.toolNavigateBack))
         return (
           <span
             className={cx(styles.toolLink, {
@@ -152,7 +154,9 @@ function NavigateToolLinks({ output }: { output: unknown }) {
       <NavigateToolLink navigation={parsed.data.navigation} />
       {alternatives.length > 0 && (
         <div className={styles.toolAlternatives}>
-          <span className={styles.toolAlternativesTitle}>{t((t) => t.chat.toolAlternatives)}</span>
+          <span className={styles.toolAlternativesTitle}>
+            {t((t) => t.assistant.toolAlternatives)}
+          </span>
           {alternatives.map((alternative, i) => (
             <NavigateToolLink
               key={i}
@@ -204,7 +208,7 @@ function MessageParts({ message }: { message: UIMessage }) {
           if (!part.text) return null
           return (
             <details key={idx} className={styles.thinking}>
-              <summary>{t((t) => t.chat.thinking)}</summary>
+              <summary>{t((t) => t.assistant.thinking)}</summary>
               <div className={styles.thinkingBlock}>
                 <ContentMarkdown variant="chat">{part.text}</ContentMarkdown>
               </div>
@@ -214,7 +218,7 @@ function MessageParts({ message }: { message: UIMessage }) {
         if (part.type === 'data-tripwire') {
           return (
             <div key={idx} className={styles.tripwire}>
-              {tripwireReason(part) ?? t((t) => t.chat.requestBlocked)}
+              {tripwireReason(part) ?? t((t) => t.assistant.requestBlocked)}
             </div>
           )
         }
@@ -256,9 +260,9 @@ function MessageFeedback({
         icon="thumbs-up"
         size="small"
         className={cx({ [styles.feedbackActive]: rating === 'up' })}
-        tooltip={t((t) => t.chat.feedbackUp)}
+        tooltip={t((t) => t.assistant.feedbackUp)}
         onClick={() => {
-          const reason = window.prompt(t((t) => t.chat.feedbackUpReason))
+          const reason = window.prompt(t((t) => t.assistant.feedbackUpReason))
           onRate('up', reason || '')
         }}
       />
@@ -266,10 +270,10 @@ function MessageFeedback({
         icon="thumbs-down"
         size="small"
         className={cx({ [styles.feedbackActive]: rating === 'down' })}
-        tooltip={t((t) => t.chat.feedbackDown)}
+        tooltip={t((t) => t.assistant.feedbackDown)}
         onClick={() => {
           // ponytail: native prompt, swap for a textarea popover if it needs styling
-          const reason = window.prompt(t((t) => t.chat.feedbackDownReason))
+          const reason = window.prompt(t((t) => t.assistant.feedbackDownReason))
           if (reason === null) return
           onRate('down', reason)
         }}
@@ -278,7 +282,7 @@ function MessageFeedback({
   )
 }
 
-function ChatSessionMessages({
+function AssistantMessages({
   threadId,
   userId,
   initialMessages,
@@ -293,7 +297,7 @@ function ChatSessionMessages({
 }) {
   const { t } = useTranslation()
 
-  const { messages, loading, error, sendMessage, sendFeedback } = useChatSession({
+  const { messages, loading, error, sendMessage, sendFeedback } = useAssistantSession({
     threadId,
     userId,
     initialMessages,
@@ -392,4 +396,4 @@ function ChatSessionMessages({
   )
 }
 
-export default ChatSessionMessages
+export default AssistantMessages

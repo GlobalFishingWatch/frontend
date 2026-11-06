@@ -1,16 +1,16 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import ChatHeader from 'features/_map/content-panel/chat/ChatHeader'
-import ChatSession from 'features/_map/content-panel/chat/ChatSession'
 import { KEEP_MAP_POPUP_ATTRIBUTE } from 'features/_map/map/map.config'
 import LoginLink from 'features/_user/LoginLink'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/_user/selectors/user.selectors'
+import AssistantHeader from 'features/assistant/AssistantHeader'
+import AssistantSession from 'features/assistant/AssistantSession'
 import HumanSessionGate from 'features/human-session/HumanSessionGate'
 
-import styles from './Chat.module.css'
+import styles from './Assistant.module.css'
 
-function ChatContainer() {
+function AssistantContainer() {
   const { t } = useTranslation()
   const isGuestUser = useSelector(selectIsGuestUser)
   const isGFWUser = useSelector(selectIsGFWUser)
@@ -31,13 +31,13 @@ function ChatContainer() {
   }
 
   return (
-    <div className={styles.chat} {...{ [KEEP_MAP_POPUP_ATTRIBUTE]: true }}>
+    <div className={styles.assistant} {...{ [KEEP_MAP_POPUP_ATTRIBUTE]: true }}>
       <HumanSessionGate>
-        <ChatHeader />
-        <ChatSession />
+        <AssistantHeader />
+        <AssistantSession />
       </HumanSessionGate>
     </div>
   )
 }
 
-export default ChatContainer
+export default AssistantContainer

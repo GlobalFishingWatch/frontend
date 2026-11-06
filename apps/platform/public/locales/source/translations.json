@@ -183,23 +183,7 @@
     "tokenNotFound": "Token not found",
     "whoEndUsers": "Who are your end users?"
   },
-  "bigQuery": {
-    "aggregateAvg": "Average",
-    "aggregateSum": "Sum",
-    "aggregationMode": "Aggregation mode *",
-    "create": "Create",
-    "query": "Query",
-    "queryError": "There is an error in the query",
-    "runCost": "This query will move:",
-    "runCostCheck": "Check creation cost",
-    "selectVisualisation": "Select a visualisation mode first",
-    "validationError": "Query, name, visualisation mode, aggregation mode and checking creation cost are required",
-    "visualiationMode": "Visualisation mode",
-    "visualisationActivity": "Activity (heatmap)",
-    "visualisationActivityHint": "(Ensure id, lat, lon, timestamp and value are all present)",
-    "visualisationEvents": "Events (clusters)"
-  },
-  "chat": {
+  "assistant": {
     "couldNotDeleteConversation": "Could not delete conversation",
     "feedbackDown": "This answer was not helpful",
     "feedbackDownReason": "What was wrong with this answer?",
@@ -221,6 +205,22 @@
     "toolReadSkillResource": "Reading skill resource",
     "toolRegionLookup": "Looking up region",
     "toolRunSkillScript": "Running skill script"
+  },
+  "bigQuery": {
+    "aggregateAvg": "Average",
+    "aggregateSum": "Sum",
+    "aggregationMode": "Aggregation mode *",
+    "create": "Create",
+    "query": "Query",
+    "queryError": "There is an error in the query",
+    "runCost": "This query will move:",
+    "runCostCheck": "Check creation cost",
+    "selectVisualisation": "Select a visualisation mode first",
+    "validationError": "Query, name, visualisation mode, aggregation mode and checking creation cost are required",
+    "visualiationMode": "Visualisation mode",
+    "visualisationActivity": "Activity (heatmap)",
+    "visualisationActivityHint": "(Ensure id, lat, lon, timestamp and value are all present)",
+    "visualisationEvents": "Events (clusters)"
   },
   "common": {
     "active": "Active",

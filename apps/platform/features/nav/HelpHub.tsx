@@ -120,7 +120,7 @@ function HelpHub() {
             <button
               type="button"
               className={cx(styles.link)}
-              onClick={() => openSidePanel({ type: 'chat' })}
+              onClick={() => openSidePanel({ type: 'assistant' })}
             >
               {t((t) => t.common.assistant)}
             </button>

@@ -37,7 +37,7 @@ import type { MapCoordinates } from 'types'
 
 /**
  * Summary of what the user sees on the map right now, read from the deck layers
- * already loaded for the viewport. Sent to the agent with each chat message so it
+ * already loaded for the viewport. Sent to the agent with each assistant message so it
  * can answer "is there any vessel here?", "what areas are visible?" or "where is
  * the activity?". Only what is rendered in the viewport for the current time range:
  * tiles outside the view are not loaded, so this is never a global answer.
@@ -296,7 +296,7 @@ export function getMapView(params: GetMapViewParams) {
         return layer.loaded ? summary : { ...summary, loaded: false }
       } catch (e) {
         // a layer in a transitional state must not block the message
-        console.warn('chat map view: could not summarize layer', layer.id, e)
+        console.warn('assistant map view: could not summarize layer', layer.id, e)
         return []
       }
     }),
@@ -408,7 +408,7 @@ function getClickedSummary(clicked: SliceInteractionEvent | null, datasets: Data
       try {
         return getClickedFeatureSummary(feature, datasets)
       } catch (e) {
-        console.warn('chat map view: could not summarize clicked feature', e)
+        console.warn('assistant map view: could not summarize clicked feature', e)
         return []
       }
     }),

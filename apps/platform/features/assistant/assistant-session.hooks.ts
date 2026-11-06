@@ -4,24 +4,24 @@ import { useNavigate } from '@tanstack/react-router'
 import { DefaultChatTransport, getToolName, isToolUIPart, type UIMessage } from 'ai'
 import { isNil, omitBy } from 'es-toolkit'
 import { useStore as useJotaiStore } from 'jotai'
-import { AGENT_BASE_URL } from 'queries/map/chat-api'
+import { AGENT_BASE_URL } from 'queries/assistant-api'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { deckLayersAtom } from '@globalfishingwatch/deck-layer-composer'
 import { OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 
-import { getMapView } from 'features/_map/content-panel/chat/chat-map-view'
-import {
-  getNavigateToolLinkProps,
-  navigateToolOutputSchema,
-  useNavigateToolMapState,
-} from 'features/_map/content-panel/chat/navigate-tool'
+import { getMapView } from 'features/_map/assistant/map-assistant-context'
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import { mapInstanceAtom } from 'features/_map/map/map.atoms'
 import { selectClickedEvent } from 'features/_map/map/map.slice'
 import { selectViewport } from 'features/_map/workspace/selectors/app.viewport.selectors'
 import { selectWorkspaceWithCurrentState } from 'features/_map/workspace/selectors/app.workspace.selectors'
 import { useAppStore } from 'features/app/app.hooks'
+import {
+  getNavigateToolLinkProps,
+  navigateToolOutputSchema,
+  useNavigateToolMapState,
+} from 'features/assistant/navigate-tool'
 import { useOceanAreas } from 'hooks/ocean-areas'
 
 // Messages sent before the url moved to the request context still carry it in the text
@@ -62,7 +62,7 @@ export function getFeedbackState(messages: UIMessage[]) {
   return { ratings, questionIds, hiddenIds }
 }
 
-async function chatFetchWithAuth(
+async function assistantFetchWithAuth(
   input: RequestInfo | URL,
   init: RequestInit = {}
 ): Promise<Response> {
@@ -82,14 +82,19 @@ async function chatFetchWithAuth(
   }
 }
 
-type ChatSessionArgs = {
+type AssistantSessionArgs = {
   threadId: string
   userId: number | string | undefined
   initialMessages: UIMessage[]
   onFinished?: () => void
 }
 
-export function useChatSession({ threadId, userId, initialMessages, onFinished }: ChatSessionArgs) {
+export function useAssistantSession({
+  threadId,
+  userId,
+  initialMessages,
+  onFinished,
+}: AssistantSessionArgs) {
   const routerNavigate = useNavigate()
   const store = useAppStore()
   const jotaiStore = useJotaiStore()
@@ -99,9 +104,9 @@ export function useChatSession({ threadId, userId, initialMessages, onFinished }
   const transport = useMemo(() => {
     return new DefaultChatTransport({
       api: `${AGENT_BASE_URL}/chat`,
-      fetch: chatFetchWithAuth,
+      fetch: assistantFetchWithAuth,
       prepareSendMessagesRequest({ messages, body }) {
-        console.log('🚀 ~ useChatSession ~ body:', body)
+        console.log('🚀 ~ useAssistantSession ~ body:', body)
         return {
           body: {
             ...body,
@@ -180,7 +185,7 @@ export function useChatSession({ threadId, userId, initialMessages, onFinished }
         clicked: selectClickedEvent(state),
       })
     } catch (e) {
-      console.warn('chat: could not read the map view', e)
+      console.warn('assistant: could not read the map view', e)
       return undefined
     }
   }, [jotaiStore, store, getOceanAreaName])

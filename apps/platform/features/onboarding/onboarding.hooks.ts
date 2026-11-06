@@ -7,11 +7,6 @@ import { AIS_DATAVIEW_INSTANCE_ID, VMS_DATAVIEW_INSTANCE_ID } from '@platform/co
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/config/map/workspaces'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
-import {
-  activeThreadAtom,
-  newActiveThread,
-  pendingPromptAtom,
-} from 'features/_map/content-panel/chat/chat.atoms'
 import { useSidePanel, withSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import { mergeDataviewIntancesToUpsert } from 'features/_map/workspace/workspace.hook'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
@@ -20,6 +15,11 @@ import { useFitAreaInViewport } from 'features/_reports/report-area/area-reports
 import { ReportCategory } from 'features/_reports/reports.types'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  activeThreadAtom,
+  newActiveThread,
+  pendingPromptAtom,
+} from 'features/assistant/assistant.atoms'
 import type { UserGuideSlug } from 'features/cms/user-guide.types'
 import { findSectionForSlug } from 'features/help/userGuide.utils'
 import { setHintToOpen } from 'features/hints/hints.slice'
@@ -135,7 +135,7 @@ export function useOnboardingCopilotPrompt() {
       dispatch(setModalOpen({ id: 'onboarding', open: false }))
       setActiveThread(newActiveThread())
       setPendingPrompt(trimmed)
-      openSidePanel({ type: 'chat' })
+      openSidePanel({ type: 'assistant' })
     },
     [dispatch, openSidePanel, setActiveThread, setPendingPrompt]
   )

@@ -22,10 +22,10 @@ type AgentThread = {
   updatedAt: string
 }
 
-export const chatApi = createApi({
-  reducerPath: 'chatApi',
+export const assistantApi = createApi({
+  reducerPath: 'assistantApi',
   baseQuery: threadsQuery,
-  tagTypes: ['ChatThread', 'ChatThreadMessages'],
+  tagTypes: ['AssistantThread', 'AssistantThreadMessages'],
   endpoints: (builder) => ({
     getThreads: builder.query<AgentThread[], { resourceId: string }>({
       query: ({ resourceId }) => ({
@@ -33,7 +33,7 @@ export const chatApi = createApi({
       }),
       transformResponse: (response: { threads?: AgentThread[] } | AgentThread[]) =>
         Array.isArray(response) ? response : (response.threads ?? []),
-      providesTags: ['ChatThread'],
+      providesTags: ['AssistantThread'],
     }),
     getThreadMessages: builder.query<UIMessage[], { threadId: string; resourceId: string }>({
       queryFn: async ({ threadId, resourceId }, api) => {
@@ -55,7 +55,7 @@ export const chatApi = createApi({
         return { data: data?.uiMessages ?? [] }
       },
       providesTags: (_result, _error, { threadId }) => [
-        { type: 'ChatThreadMessages', id: threadId },
+        { type: 'AssistantThreadMessages', id: threadId },
       ],
     }),
     deleteThread: builder.mutation<boolean, { threadId: string; resourceId: string }>({
@@ -71,11 +71,12 @@ export const chatApi = createApi({
         // A 404 (already gone) counts as a successful delete, not a failure.
         return { data: !result.error || result.error.status === 404 }
       },
-      invalidatesTags: ['ChatThread'],
+      invalidatesTags: ['AssistantThread'],
     }),
   }),
 })
 
-injectQueryApi(chatApi)
+injectQueryApi(assistantApi)
 
-export const { useGetThreadsQuery, useGetThreadMessagesQuery, useDeleteThreadMutation } = chatApi
+export const { useGetThreadsQuery, useGetThreadMessagesQuery, useDeleteThreadMutation } =
+  assistantApi
