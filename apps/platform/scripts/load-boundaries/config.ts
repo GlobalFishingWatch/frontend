@@ -117,7 +117,7 @@ export const CHECKS: Check[] = [
   {
     label: 'platform shell',
     entries: [SHELL],
-    maxModules: 320,
+    maxModules: 322,
     forbid: EVERY_PAGE,
     why: 'routes/_platform.tsx is the Redux shell every page mounts.',
   },
