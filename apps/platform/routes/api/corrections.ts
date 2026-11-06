@@ -4,8 +4,6 @@ import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 
 import type { InfoCorrectionSendFormat } from 'features/_vessels/vessel/vesselCorrection/VesselCorrection.types'
 
-const IDENTITY_REVIEW_SPREADSHEET_ID = process.env.IDENTITY_REVIEW_SPREADSHEET_ID || ''
-
 const REGISTRY_CORRECTIONS_SHEET_TITLE = 'Vessel Registry Corrections'
 const GFW_SOURCE_CORRECTIONS_SHEET_TITLE = 'Vessel GFW Source Corrections'
 
@@ -94,7 +92,8 @@ export const Route = createFileRoute('/api/corrections')({
         }
 
         try {
-          const spreadsheetId: string = IDENTITY_REVIEW_SPREADSHEET_ID
+          const { serverEnv } = await import('server/env.server')
+          const spreadsheetId = serverEnv.IDENTITY_REVIEW_SPREADSHEET_ID
           const spreadsheetTitle: string =
             rawData.source === VesselIdentitySourceEnum.Registry
               ? REGISTRY_CORRECTIONS_SHEET_TITLE

@@ -1,12 +1,25 @@
 import { JWT } from 'google-auth-library'
 import { GoogleSpreadsheet } from 'google-spreadsheet'
 
-import { TRACK_CORRECTION_SPREADSHEET_ID_BY_WORKSPACE } from '../../../features/_vessels/track-correction/track-correction.constants'
+import type { TurningTidesWorkspaceId } from '../../../features/_vessels/track-correction/track-correction.constants'
+import { serverEnv } from '../../env.server'
 
-const FEEDBACK_CLIENT_EMAIL = process.env.SPREADSHEET_CLIENT_EMAIL
-const FEEDBACK_PRIVATE_KEY = process.env.SPREADSHEET_PRIVATE_KEY?.replace(/\\n/gm, '\n') || ''
+const FEEDBACK_CLIENT_EMAIL = serverEnv.SPREADSHEET_CLIENT_EMAIL
+const FEEDBACK_PRIVATE_KEY = serverEnv.SPREADSHEET_PRIVATE_KEY
 
-export const loadSpreadsheetDoc = async (id: string) => {
+const TRACK_CORRECTION_SPREADSHEET_ID_BY_WORKSPACE: Record<
+  TurningTidesWorkspaceId,
+  string | undefined
+> = {
+  'tt-brazil-public': serverEnv.TURNING_TIDES_BRAZIL_ID,
+  'tt-chile-public': serverEnv.TURNING_TIDES_CHILE_ID,
+  'tt-peru-public': serverEnv.TURNING_TIDES_PERU_ID,
+  'tt_ais-public': serverEnv.TURNING_TIDES_AIS_ID,
+  'tt_ais_v_2_1-public': serverEnv.TURNING_TIDES_AIS_ID,
+  'tt_vms_v_2_1-public': serverEnv.TURNING_TIDES_AIS_ID,
+}
+
+export const loadSpreadsheetDoc = async (id: string | undefined) => {
   if (!id) {
     throw new Error('Spreadsheet id is missing')
   }

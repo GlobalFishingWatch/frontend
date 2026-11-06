@@ -1,3 +1,4 @@
+import { clientEnv } from 'data/env'
 import { getIsBrowser } from 'utils/dom'
 
 const isBrowser = getIsBrowser()
@@ -26,7 +27,8 @@ export {
 } from './cookies.config'
 export type { PanelWidths } from './cookies.config'
 
-const SSR_SUBDOMAIN_SUFFIX =
-  { development: '-dev', staging: '-sta' }[import.meta.env.VITE_WORKSPACE_ENV as string] ?? ''
+const SSR_SUBDOMAIN_SUFFIX = { development: '-dev', staging: '-sta', production: '' }[
+  clientEnv.VITE_WORKSPACE_ENV ?? 'production'
+]
 
 export const SSR_REFERER = `https://ssr${SSR_SUBDOMAIN_SUFFIX}.globalfishingwatch.org`

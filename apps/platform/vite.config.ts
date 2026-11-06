@@ -133,6 +133,8 @@ export default defineConfig(({ command, mode }) => {
       nitro({
         // server.ts is the Vite SSR entry (environments.ssr below), not a Nitro handler
         serverEntry: false,
+        // Validates the server env when the process starts, see server/env.server.ts
+        plugins: ['./server/env.plugin.ts'],
         // baseURL comes from Vite `base` (nitro >= 3.0.261103-rc syncs them)
         sourcemap: true,
         routeRules: staticRouteRules(mode),
@@ -176,7 +178,7 @@ export default defineConfig(({ command, mode }) => {
     build: {
       cssCodeSplit: false,
     },
-    envPrefix: ['VITE_', 'i18n_'],
+    envPrefix: 'VITE_',
     define: {
       __BUILD_ID__: JSON.stringify(
         process.env.BUILD_ID || process.env.GITHUB_SHA?.slice(0, 12) || String(Date.now())

@@ -2,9 +2,6 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import type { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 
-const FEEDBACK_SPREADSHEET_ID = process.env.FEEDBACK_SPREADSHEET_ID || ''
-const ERRORS_SPREADSHEET_ID = process.env.MAP_ERRORS_SPREADSHEET_ID || ''
-const DETECTIONS_FEEDBACK_SPREADSHEET_ID = process.env.DETECTIONS_FEEDBACK_SPREADSHEET_ID || ''
 const FEEDBACK_SHEET_TITLE = 'new feedback'
 const ERRORS_SHEET_TITLE = 'errors'
 const CORRECTIONS_SHEET_TITLE = 'vessels corrections'
@@ -87,12 +84,13 @@ export const Route = createFileRoute('/api/feedback')({
           : { ...data, userId: GUEST_USER_TYPE }
 
         try {
+          const { serverEnv } = await import('server/env.server')
           const spreadsheetId =
             type === 'detections'
-              ? DETECTIONS_FEEDBACK_SPREADSHEET_ID
+              ? serverEnv.DETECTIONS_FEEDBACK_SPREADSHEET_ID
               : type === 'error' || type === 'corrections'
-                ? ERRORS_SPREADSHEET_ID
-                : FEEDBACK_SPREADSHEET_ID
+                ? serverEnv.MAP_ERRORS_SPREADSHEET_ID
+                : serverEnv.FEEDBACK_SPREADSHEET_ID
           const spreadsheetTitle =
             type === 'error'
               ? ERRORS_SHEET_TITLE
