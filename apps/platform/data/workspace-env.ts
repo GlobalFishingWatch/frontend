@@ -1,9 +1,10 @@
-export type WorkspaceEnv = 'development' | 'staging' | 'production'
+import type { ClientEnv } from 'data/env'
+import { clientEnv } from 'data/env'
+
+export type WorkspaceEnv = NonNullable<ClientEnv['VITE_WORKSPACE_ENV']>
 
 export const WORKSPACE_ENV =
-  (import.meta.env.VITE_WORKSPACE_ENV as WorkspaceEnv) ||
-  (import.meta.env.MODE as WorkspaceEnv) ||
-  'production'
+  clientEnv.VITE_WORKSPACE_ENV || (import.meta.env.MODE as WorkspaceEnv) || 'production'
 
 export function getWorkspaceEnv(): WorkspaceEnv {
   return WORKSPACE_ENV

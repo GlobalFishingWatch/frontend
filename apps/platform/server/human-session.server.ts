@@ -1,5 +1,6 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
 
+import { serverEnv } from 'server/env.server'
 import { getRequestUser } from 'server/user.server'
 
 const isProduction = process.env.NODE_ENV === 'production'
@@ -8,11 +9,7 @@ export const HUMAN_SESSION_COOKIE_KEY = 'gfw-human-session'
 // Browsers that restore sessions keep session cookies forever, so the value expires on its own
 const HUMAN_SESSION_MAX_AGE_MS = 24 * 60 * 60 * 1000
 const HUMAN_SESSION_SECRET =
-  process.env.HUMAN_SESSION_SECRET || (isProduction ? '' : 'development-human-session-secret')
-
-if (isProduction && !HUMAN_SESSION_SECRET) {
-  console.error('HUMAN_SESSION_SECRET is not set, no human session will be accepted')
-}
+  serverEnv.HUMAN_SESSION_SECRET || (isProduction ? '' : 'development-human-session-secret')
 
 // No maxAge: a session cookie, gone when the browser closes
 export const humanSessionCookieOptions = {

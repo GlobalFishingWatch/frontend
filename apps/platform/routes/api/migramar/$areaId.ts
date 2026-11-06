@@ -1,7 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-const MIGRAMAR_SPREADSHEET_ID = process.env.MIGRAMAR_SPREADSHEET_ID || ''
-
 export type MigramarRowYear =
   | '2000'
   | '2001'
@@ -61,7 +59,8 @@ export const Route = createFileRoute('/api/migramar/$areaId')({
 
         try {
           const { loadSpreadsheetDoc } = await import('server/api/utils/spreadsheets')
-          const doc = await loadSpreadsheetDoc(MIGRAMAR_SPREADSHEET_ID)
+          const { serverEnv } = await import('server/env.server')
+          const doc = await loadSpreadsheetDoc(serverEnv.MIGRAMAR_SPREADSHEET_ID)
           const sheet = doc.sheetsByTitle['data']
           if (!sheet) {
             return Response.json(

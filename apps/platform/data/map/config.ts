@@ -10,6 +10,7 @@ import {
 import { DEFAULT_VIEWPORT } from '@platform/config/map/app'
 import { DEFAULT_PATH_BASENAME } from '@platform/config/routes'
 
+import { clientEnv } from 'data/env'
 import { WORKSPACE_ENV } from 'data/workspace-env'
 
 import type { AppState, WorkspaceState } from '../../types'
@@ -23,28 +24,22 @@ export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 
 export const IS_DEVELOPMENT_ENV = import.meta.env.DEV
 export const IS_PRODUCTION_BUILD = import.meta.env.PROD
-export const PLATFORM_MODE = import.meta.env.VITE_PLATFORM_MODE === 'true'
+export const PLATFORM_MODE = clientEnv.VITE_PLATFORM_MODE
 
 export const IS_PRODUCTION_WORKSPACE_ENV =
   WORKSPACE_ENV === 'production' || WORKSPACE_ENV === 'staging'
 
-export const SHOW_LEAVE_CONFIRMATION = import.meta.env.VITE_SHOW_LEAVE_CONFIRMATION
-  ? import.meta.env.VITE_SHOW_LEAVE_CONFIRMATION === 'true'
-  : !import.meta.env.DEV
+export const SHOW_LEAVE_CONFIRMATION =
+  clientEnv.VITE_SHOW_LEAVE_CONFIRMATION ?? !import.meta.env.DEV
 
-export const PATH_BASENAME = (import.meta.env.VITE_PUBLIC_URL as string) || DEFAULT_PATH_BASENAME
+export const PATH_BASENAME = clientEnv.VITE_PUBLIC_URL || DEFAULT_PATH_BASENAME
 
-export const REPORT_DAYS_LIMIT =
-  typeof import.meta.env.VITE_REPORT_DAYS_LIMIT !== 'undefined'
-    ? parseInt(import.meta.env.VITE_REPORT_DAYS_LIMIT)
-    : 366 // 1 year
+export const REPORT_DAYS_LIMIT = clientEnv.VITE_REPORT_DAYS_LIMIT ?? 366 // 1 year
 
-export const GOOGLE_TAG_MANAGER_ID = import.meta.env.VITE_GOOGLE_TAG_MANAGER_ID as
-  string | undefined
-export const GOOGLE_MEASUREMENT_ID = import.meta.env.VITE_GOOGLE_MEASUREMENT_ID as
-  string | undefined
+export const GOOGLE_TAG_MANAGER_ID = clientEnv.VITE_GOOGLE_TAG_MANAGER_ID
+export const GOOGLE_MEASUREMENT_ID = clientEnv.VITE_GOOGLE_MEASUREMENT_ID
 
-export const IS_REALTIME_ENABLED = import.meta.env.VITE_REALTIME_ENABLED === 'true'
+export const IS_REALTIME_ENABLED = clientEnv.VITE_REALTIME_ENABLED
 export const IS_CHATBOT_ENABLED = WORKSPACE_ENV === 'development'
 
 // Local storage keys

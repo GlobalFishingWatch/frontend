@@ -1,16 +1,14 @@
 import { CAPTCHA_ERRORS } from '@globalfishingwatch/api-client'
 
+import { serverEnv } from 'server/env.server'
+
 const isProduction = process.env.NODE_ENV === 'production'
 
 // https://developers.cloudflare.com/turnstile/get-started/server-side-validation/
 const SITEVERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
 // Cloudflare's always-pass test secret, pairs with the test sitekey in .env.sample
 const TEST_SECRET = '1x0000000000000000000000000000000AA'
-const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY || (isProduction ? '' : TEST_SECRET)
-
-if (isProduction && !TURNSTILE_SECRET_KEY) {
-  console.error('TURNSTILE_SECRET_KEY is not set, every captcha protected request will fail')
-}
+const TURNSTILE_SECRET_KEY = serverEnv.TURNSTILE_SECRET_KEY || (isProduction ? '' : TEST_SECRET)
 
 type SiteverifyResult = { success: boolean; action?: string; 'error-codes'?: string[] }
 

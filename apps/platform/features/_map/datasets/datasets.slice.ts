@@ -24,6 +24,7 @@ import {
   LEGACY_DATASETS_TO_LATEST_VMS,
 } from '@globalfishingwatch/datasets-client'
 
+import { clientEnv } from 'data/env'
 import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV, PUBLIC_SUFIX } from 'data/map/config'
 import { getAPILocale } from 'features/_map/datasets/datasets.utils'
 import i18n from 'features/i18n/i18n'
@@ -181,7 +182,7 @@ const fetchDatasetsBatch = async ({
   const datasetsDeprecatedDict = parseDeprecatedDatasetsHeader(responseHeaders)
 
   const mockedDatasets =
-    IS_DEVELOPMENT_ENV || import.meta.env.VITE_USE_LOCAL_DATASETS === 'true'
+    IS_DEVELOPMENT_ENV || clientEnv.VITE_USE_LOCAL_DATASETS
       ? await import('./datasets.mock')
       : { default: [] }
   const datasets = uniqBy([...mockedDatasets.default, ...initialDatasets.entries], (d) => d.id)
