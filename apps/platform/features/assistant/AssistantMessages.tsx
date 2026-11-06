@@ -6,15 +6,13 @@ import cx from 'classnames'
 import type { TFunction } from 'i18next'
 import { useAtom } from 'jotai'
 
-import { IconButton, Spinner, TextArea } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
+import { TextArea } from '@globalfishingwatch/ui-components/textarea'
 
 import { pendingPromptAtom } from 'features/assistant/assistant.atoms'
 import type { FeedbackRating } from 'features/assistant/assistant-session.hooks'
-import {
-  getFeedbackState,
-  MAP_URL_CONTEXT_PREFIX,
-  useAssistantSession,
-} from 'features/assistant/assistant-session.hooks'
+import { getFeedbackState, useAssistantSession } from 'features/assistant/assistant-session.hooks'
 import { useSetThreadLoading } from 'features/assistant/assistant-threads.hooks'
 import {
   getNavigateToolAlternatives,
@@ -22,7 +20,7 @@ import {
   isNavigateToolViewActive,
   type NavigateToolNavigation,
   navigateToolOutputSchema,
-  useNavigateToolMapState,
+  useNavigateToolState,
 } from 'features/assistant/navigate-tool'
 import ContentMarkdown from 'features/help/markdown/ContentMarkdown'
 
@@ -106,10 +104,10 @@ function NavigateToolLink({
   label?: string
 }) {
   const { t } = useTranslation()
-  const { markExplicitSettings, applyNavigateMapState } = useNavigateToolMapState()
+  const { markExplicitSettings, applyNavigatePageState } = useNavigateToolState()
   const linkProps = getNavigateToolLinkProps(navigation)
   const isSameViewSearch = useRouterState({
-    select: (s) => isNavigateToolViewActive(s.location.search, linkProps.viewSearch),
+    select: (s) => isNavigateToolViewActive(s.location.search, linkProps.viewSearch, navigation.to),
   })
   return (
     <Link
@@ -119,7 +117,7 @@ function NavigateToolLink({
       activeOptions={{ includeSearch: false }}
       onClick={() => {
         markExplicitSettings(navigation.search)
-        applyNavigateMapState(navigation.search)
+        applyNavigatePageState(navigation.search)
       }}
     >
       {({ isActive }) => {
@@ -200,9 +198,7 @@ function MessageParts({ message }: { message: UIMessage }) {
               </ContentMarkdown>
             )
           }
-          // Strip the injected map-url context from the user bubble display.
-          const display = text.split(MAP_URL_CONTEXT_PREFIX)[0]
-          return <span key={idx}>{display}</span>
+          return <span key={idx}>{text}</span>
         }
         if (part.type === 'reasoning') {
           if (!part.text) return null

@@ -1,5 +1,8 @@
 import { useMemo } from 'react'
+import { Link } from '@tanstack/react-router'
 import { parse } from 'qs'
+
+import { ROUTE_PATHS } from '@platform/config/routes'
 
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import { findSectionForSlug } from 'features/help/userGuide.utils'
@@ -7,6 +10,9 @@ import { useAppSearch, useReplaceQueryParams } from 'router/routes.hook'
 import type { QueryParams } from 'types'
 
 type MarkdownLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement>
+
+/** `#help-and-resources/<sectionSlug>/<itemSlug>` (gfw-agent scripts/sync-user-guide.ts) */
+const HELP_HUB_HASH_REGEX = /^#help-and-resources\/([\w-]+)\/([\w-]+)$/
 
 const MarkdownLink = ({ href, children, ...props }: MarkdownLinkProps) => {
   const { replaceQueryParams } = useReplaceQueryParams()
@@ -24,6 +30,17 @@ const MarkdownLink = ({ href, children, ...props }: MarkdownLinkProps) => {
       return null
     }
   }, [href])
+
+  // Help hub page, as the assistant links use cases and data updates: no base path in the href
+  const helpHubMatch = href?.match(HELP_HUB_HASH_REGEX)
+  if (helpHubMatch) {
+    const [, sectionSlug, itemSlug] = helpHubMatch
+    return (
+      <Link to={ROUTE_PATHS.HELP_HUB_SECTION} params={{ sectionSlug, itemSlug }} {...props}>
+        {children as React.ReactNode}
+      </Link>
+    )
+  }
 
   if (href?.startsWith('#')) {
     const sectionMatch = findSectionForSlug(href.replace(/^#/, ''))

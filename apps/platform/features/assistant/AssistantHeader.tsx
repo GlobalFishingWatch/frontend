@@ -2,8 +2,10 @@ import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
-import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
-import { IconButton, Popover, Spinner } from '@globalfishingwatch/ui-components'
+import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { Popover } from '@globalfishingwatch/ui-components/popover'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 
 import { useAssistantThreads } from 'features/assistant/assistant-threads.hooks'
 import { getTimeAgo } from 'utils/dates'

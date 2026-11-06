@@ -23,7 +23,7 @@ export function newActiveThread(): ActiveThread {
 }
 
 /**
- * A question asked outside the assistant (the onboarding modal), sent as soon as the session mounts.
- * Not persisted: a reload must not resend it.
+ * A question asked outside the assistant (the onboarding modal), sent as soon as the session
+ * mounts. Not persisted: a reload must not resend it.
  */
 export const pendingPromptAtom = atom<string | null>(null)

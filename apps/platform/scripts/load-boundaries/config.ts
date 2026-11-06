@@ -129,6 +129,15 @@ export const CHECKS: Check[] = [
     forbid: EVERY_PAGE,
     why: 'Loads on every content page after a workspace visit.',
   },
+  {
+    // Lazy in SidePanelTabs, which the shell mounts on every page. Page context modules are
+    // dynamic imports in features/assistant/assistant-context.config.ts, never static ones.
+    label: 'assistant',
+    entries: [SHELL, 'features/assistant/AssistantContainer.tsx'],
+    baseline: [SHELL],
+    forbid: CONTENT_PAGE,
+    why: 'The assistant opens on every page, including pages with no map.',
+  },
   // One check per page, so a failure names the page. A page mounts the shell and the _content
   // layout too; the shell is listed so totals are what the page really loads, and is the baseline
   // so it is judged by its own check above.

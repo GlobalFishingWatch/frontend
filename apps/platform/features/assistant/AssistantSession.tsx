@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { type UIMessage } from 'ai'
 import { useGetThreadMessagesQuery } from 'queries/assistant-api'
 
-import { Spinner } from '@globalfishingwatch/ui-components'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 
 import { selectUserId } from 'features/_user/selectors/user.permissions.selectors'
 import { useAssistantThreads } from 'features/assistant/assistant-threads.hooks'
