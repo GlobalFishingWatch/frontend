@@ -5,7 +5,7 @@ import { Link } from '@tanstack/react-router'
 
 import type { Report } from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
-import { HighlightedText } from '@globalfishingwatch/ui-components'
+import { HighlightedText } from '@globalfishingwatch/ui-components/highlighted-text'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { InputText } from '@globalfishingwatch/ui-components/input-text'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'

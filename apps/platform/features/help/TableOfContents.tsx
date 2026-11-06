@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import cx from 'classnames'
 
-import { HighlightedText } from '@globalfishingwatch/ui-components'
+import { HighlightedText } from '@globalfishingwatch/ui-components/highlighted-text'
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 

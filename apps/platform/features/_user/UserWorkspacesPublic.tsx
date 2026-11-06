@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 
-import { HighlightedText } from '@globalfishingwatch/ui-components'
+import { HighlightedText } from '@globalfishingwatch/ui-components/highlighted-text'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { Modal } from '@globalfishingwatch/ui-components/modal'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
