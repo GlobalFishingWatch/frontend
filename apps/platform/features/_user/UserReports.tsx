@@ -5,6 +5,7 @@ import { Link } from '@tanstack/react-router'
 
 import type { Report } from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
+import { HighlightedText } from '@globalfishingwatch/ui-components/highlighted-text'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { InputText } from '@globalfishingwatch/ui-components/input-text'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
@@ -23,7 +24,6 @@ import { selectUserReports } from 'features/_user/selectors/user.permissions.sel
 import { useAppDispatch } from 'features/app/app.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
-import { getHighlightedText } from 'utils/text'
 
 import styles from './User.module.css'
 
@@ -114,7 +114,7 @@ function UserReports() {
                     onClick={() => onReportClick()}
                   >
                     <span className={styles.workspaceTitle} translate="no">
-                      {getHighlightedText(label as string, searchQuery, styles)}
+                      <HighlightedText text={label as string} highlight={searchQuery} />
                     </span>
                     {isOutdated ? (
                       <IconButton

@@ -12,7 +12,7 @@ import { createIsomorphicFn } from '@tanstack/react-start'
 import type { UserData } from '@globalfishingwatch/api-types'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
-import { ROOT_DOM_ELEMENT } from 'data/map/config'
+import { GOOGLE_TAG_MANAGER_ID, ROOT_DOM_ELEMENT } from 'data/map/config'
 import { RouterErrorBoundary } from 'features/app/ErrorBoundaryRouter'
 import { reportRouteError } from 'features/app/sentry'
 import { getActiveI18nLanguage, t } from 'features/i18n/i18n'
@@ -25,8 +25,6 @@ import { resolveUserStateFromRequest } from 'server/user.server'
 import appCss from './styles.css?url'
 
 const CaptchaChallenge = lazy(() => import('features/modals/CaptchaChallenge'))
-
-const GOOGLE_TAG_MANAGER_ID = import.meta.env.VITE_GOOGLE_TAG_MANAGER_ID as string
 
 const defaultDescription =
   'The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.'

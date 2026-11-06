@@ -39,7 +39,7 @@ i18n
     defaultNS: 'translations',
     fallbackLng: Locale.en,
     supportedLngs: Object.values(Locale),
-    debug: process.env.i18n_DEBUG === 'true',
+    debug: import.meta.env.VITE_I18N_DEBUG === 'true',
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default,
       // format: (value, format, lng) => {

@@ -5,7 +5,7 @@ import { uniq } from 'es-toolkit'
 
 import type { Dataview } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import { Button, Icon, IconLogo, Tooltip } from '@globalfishingwatch/ui-components'
+import { Button, HighlightedText, Icon, IconLogo, Tooltip } from '@globalfishingwatch/ui-components'
 import { LAYER_LIBRARY_ID_SEPARATOR } from '@platform/config/map/dataviews'
 
 import type { LibraryLayer } from 'data/map/layer-library'
@@ -31,7 +31,6 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { getEventLabel } from 'utils/analytics'
-import { getHighlightedText } from 'utils/text'
 
 import styles from './LayerLibraryItem.module.css'
 
@@ -118,10 +117,10 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
         <div className={styles.image} style={{ backgroundImage: `url(${previewImageUrl})` }} />
         <div className={styles.content}>
           <h2 className={styles.title} translate="no">
-            {getHighlightedText(name as string, highlightedText, styles)}
+            <HighlightedText text={name as string} highlight={highlightedText} />
           </h2>
           <p className={styles.description} translate="no">
-            {getHighlightedText(description as string, highlightedText, styles)}
+            <HighlightedText text={description as string} highlight={highlightedText} />
           </p>
           <div className={styles.actions}>
             {datasetTypeIcon && <Icon icon={datasetTypeIcon} />}

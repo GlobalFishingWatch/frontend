@@ -7,6 +7,7 @@ import type { StrapiResponse } from 'features/cms/strapi.types'
 import { sdk } from 'features/cms/strapi-sdk'
 import { CMS_MAX_CACHE_AGE_MINUTES } from 'features/help/helpHub.config'
 import { toContentLocale } from 'features/i18n/i18n.config'
+import { serverEnv } from 'server/env.server'
 import { Locale } from 'types'
 
 type StrapiCollection = ReturnType<typeof sdk.collection>
@@ -68,7 +69,7 @@ const getCmsRequestMode = (): ReturnType<typeof resolveCmsRequestMode> => {
   try {
     return resolveCmsRequestMode(
       getRequestUrl().searchParams,
-      process.env.STRAPI_PREVIEW_SECRET,
+      serverEnv.STRAPI_PREVIEW_SECRET,
       IS_DEVELOPMENT_ENV
     )
   } catch {

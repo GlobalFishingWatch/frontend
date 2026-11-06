@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react'
 import cx from 'classnames'
 
+import { HighlightedText } from '@globalfishingwatch/ui-components/highlighted-text'
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 
-import { getHighlightedText, getSearchPreview } from 'utils/text'
+import { getSearchPreview } from 'utils/text'
 
 import styles from './TableOfContents.module.css'
 
@@ -124,7 +125,7 @@ function TableOfContents({
                   className={cx(styles.listItem, { [styles.listItemActive]: activeId == item.id })}
                 >
                   <h3 className={styles.listItemLabel}>
-                    {getHighlightedText(item.label, query, styles)}
+                    <HighlightedText text={item.label} highlight={query} />
                   </h3>
                 </button>
                 {item.matchedSubTopic && (
@@ -136,7 +137,7 @@ function TableOfContents({
                       className={styles.listItem}
                     >
                       <h3 className={styles.listItemLabel}>
-                        {getHighlightedText(item.matchedSubTopic.label, query, styles)}
+                        <HighlightedText text={item.matchedSubTopic.label} highlight={query} />
                       </h3>
                     </button>
                   </>
@@ -178,7 +179,7 @@ function TableOfContents({
                       }
                       className={styles.searchPreview}
                     >
-                      {getHighlightedText(searchPreview, query, styles)}
+                      <HighlightedText text={searchPreview} highlight={query} />
                     </button>
                   )
                 })()}

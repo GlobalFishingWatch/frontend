@@ -9,6 +9,7 @@ import { StartClient } from '@tanstack/react-start/client'
 
 import { createCookieTokenStorage, GFWAPI } from '@globalfishingwatch/api-client'
 
+import { clientEnv } from 'data/env'
 import { USER_TOKEN_COOKIE_KEY } from 'features/app/app.config'
 import { clearAuthCookiesServerFn, refreshTokenServerFn } from 'server/auth.serverfn'
 import { getLocalStorageItem, removeLocalStorageItem, setLocalStorageItem } from 'utils/dom'
@@ -40,7 +41,7 @@ window.addEventListener('vite:preloadError', () => {
 sentryInit({
   dsn: 'https://f093e15df0145c6c0b1b9afe8f15fdba@o4510353401577472.ingest.us.sentry.io/4510462762942464',
   enabled: import.meta.env.PROD,
-  environment: import.meta.env.VITE_WORKSPACE_ENV || 'unknown',
+  environment: clientEnv.VITE_WORKSPACE_ENV || 'unknown',
   // RTK aborted errors doesn't need to be sent
   ignoreErrors: [
     /Aborted due to condition callback returning false/,
@@ -51,6 +52,15 @@ sentryInit({
   dataCollection: { userInfo: true, httpBodies: [] },
   tracesSampleRate: 0.1,
   denyUrls: [/googletagmanager\.com/, /google-analytics\.com/, /\/gtm-extras\//],
+  // Drop errors whose every frame is `<anonymous>`: code injected by extensions or host WebViews
+  // (FRONTEND-YA, FRONTEND-YQ). Our bundle always has file URLs, so any of our frames keeps the event.
+  beforeSend(event) {
+    const frames = event.exception?.values?.flatMap((value) => value.stacktrace?.frames ?? [])
+    if (frames?.length && frames.every((frame) => frame.filename === '<anonymous>')) {
+      return null
+    }
+    return event
+  },
   replaysSessionSampleRate: 0,
   replaysOnErrorSampleRate: 1.0,
 })

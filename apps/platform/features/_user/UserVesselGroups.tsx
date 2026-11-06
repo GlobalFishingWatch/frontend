@@ -5,6 +5,7 @@ import cx from 'classnames'
 
 import type { VesselGroup } from '@globalfishingwatch/api-types'
 import { Button } from '@globalfishingwatch/ui-components/button'
+import { HighlightedText } from '@globalfishingwatch/ui-components/highlighted-text'
 import { Icon } from '@globalfishingwatch/ui-components/icon'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { InputText } from '@globalfishingwatch/ui-components/input-text'
@@ -39,7 +40,6 @@ import {
 import { useAppDispatch } from 'features/app/app.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
-import { getHighlightedText } from 'utils/text'
 
 import styles from './User.module.css'
 
@@ -130,7 +130,7 @@ function UserVesselGroups() {
                         data-test="workspace-name"
                         translate="no"
                       >
-                        {getHighlightedText(label as string, searchQuery, styles)}{' '}
+                        <HighlightedText text={label as string} highlight={searchQuery} />{' '}
                         <span className={cx(styles.secondary, styles.marginLeft)}>
                           ({getVesselGroupVesselsCount(vesselGroup)})
                         </span>

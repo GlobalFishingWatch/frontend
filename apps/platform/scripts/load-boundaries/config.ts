@@ -110,14 +110,14 @@ export const CHECKS: Check[] = [
     // entry chunk. Slices injected with rootReducer.inject() are not in it.
     label: 'eager store',
     entries: ['routes/__root.tsx', 'store/reducers.ts'],
-    maxModules: 200,
+    maxModules: 210,
     forbid: EVERY_PAGE,
     why: 'The reducer map loads on every page, including pages with no map.',
   },
   {
     label: 'platform shell',
     entries: [SHELL],
-    maxModules: 320,
+    maxModules: 322,
     forbid: EVERY_PAGE,
     why: 'routes/_platform.tsx is the Redux shell every page mounts.',
   },

@@ -2,7 +2,6 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import type { DownloadSurveyPayload } from '@globalfishingwatch/ui-components/download-survey'
 
-const SURVEY_SPREADSHEET_ID = process.env.DOWNLOAD_SURVEY_SPREADSHEET_ID || ''
 const SURVEY_SHEET_TITLE = 'answers'
 
 export type ApiResponse = {
@@ -45,7 +44,10 @@ export const Route = createFileRoute('/api/downloadSurvey')({
         try {
           const { loadSpreadsheetDoc } = await import('server/api/utils/spreadsheets')
           const { sanitizeSheetRow } = await import('server/api/utils/sanitize')
-          const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(SURVEY_SPREADSHEET_ID)
+          const { serverEnv } = await import('server/env.server')
+          const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(
+            serverEnv.DOWNLOAD_SURVEY_SPREADSHEET_ID
+          )
           const sheet = feedbackSpreadsheetDoc.sheetsByTitle[SURVEY_SHEET_TITLE]
 
           await sheet.addRow(sanitizeSheetRow(data))

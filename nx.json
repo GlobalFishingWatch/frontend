@@ -214,7 +214,6 @@
       { "env": "API_GATEWAY" },
       { "env": "GOOGLE_MEASUREMENT_ID" },
       { "env": "GOOGLE_TAG_MANAGER_ID" },
-      { "env": "i18n_DEBUG" },
       { "env": "PUBLIC_URL" },
       { "env": "VITE_API_GATEWAY" },
       { "env": "VITE_API_VERSION" },

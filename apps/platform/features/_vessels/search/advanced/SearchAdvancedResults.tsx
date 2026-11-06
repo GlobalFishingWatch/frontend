@@ -26,7 +26,7 @@ import {
   getVesselIdFromInstanceId,
 } from '@globalfishingwatch/dataviews-client'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
-import { Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+import { HighlightedText, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 
 import { FIRST_YEAR_OF_DATA, PRIVATE_ICON } from 'data/map/config'
 import { isPrivateDataset } from 'features/_map/datasets/datasets.utils'
@@ -69,7 +69,6 @@ import {
   getVesselOtherNamesLabel,
   getVesselShipTypeLabel,
 } from 'utils/info'
-import { getHighlightedText } from 'utils/text'
 
 import cellStyles from '../basic/SearchBasicResult.module.css'
 import styles from './SearchAdvancedResults.module.css'
@@ -436,7 +435,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
                 }
               >
                 <span translate="no">
-                  {getHighlightedText(name, searchQuery || '', cellStyles)}{' '}
+                  <HighlightedText text={name} highlight={searchQuery || ''} />{' '}
                   {otherNamesLabel && (
                     <span className={cellStyles.secondary}>{otherNamesLabel}</span>
                   )}
@@ -490,9 +489,11 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const ssvid = getSearchIdentityResolved(row.original).ssvid || EMPTY_FIELD_PLACEHOLDER
           return (
             <span translate="no">
-              {searchFilters.ssvid
-                ? getHighlightedText(ssvid, searchFilters.ssvid || '', cellStyles)
-                : ssvid}
+              {searchFilters.ssvid ? (
+                <HighlightedText text={ssvid} highlight={searchFilters.ssvid || ''} />
+              ) : (
+                ssvid
+              )}
             </span>
           )
         },
@@ -505,9 +506,11 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const imo = getSearchIdentityResolved(row.original).imo || EMPTY_FIELD_PLACEHOLDER
           return (
             <span translate="no">
-              {searchFilters.imo
-                ? getHighlightedText(imo, searchFilters.imo || '', cellStyles)
-                : imo}
+              {searchFilters.imo ? (
+                <HighlightedText text={imo} highlight={searchFilters.imo || ''} />
+              ) : (
+                imo
+              )}
             </span>
           )
         },
@@ -521,9 +524,11 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             getSearchIdentityResolved(row.original).callsign || EMPTY_FIELD_PLACEHOLDER
           return (
             <span translate="no">
-              {searchFilters.callsign
-                ? getHighlightedText(callsign, searchFilters.callsign || '', cellStyles)
-                : callsign}
+              {searchFilters.callsign ? (
+                <HighlightedText text={callsign} highlight={searchFilters.callsign || ''} />
+              ) : (
+                callsign
+              )}
             </span>
           )
         },
@@ -555,7 +560,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
                 content={(label as string[])?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}
               >
                 <span translate="no">
-                  {getHighlightedText(label as string, searchFilters.owner || '', cellStyles)}
+                  <HighlightedText text={label as string} highlight={searchFilters.owner || ''} />
                 </span>
               </Tooltip>
             </AdvancedResultCellWithFilter>

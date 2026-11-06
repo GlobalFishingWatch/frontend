@@ -408,7 +408,14 @@ export class GFW_API_CLASS {
       return pending.promise
     }
     this.debugRateLimit('challenge queued', { dataset })
-    const reset = Promise.withResolvers<void>()
+    // Not Promise.withResolvers: missing before Safari 17.4 / Chrome 119 (FRONTEND-YP)
+    let resolve!: () => void
+    let reject!: (reason?: unknown) => void
+    const promise = new Promise<void>((res, rej) => {
+      resolve = res
+      reject = rej
+    })
+    const reset: PromiseWithResolvers<void> = { promise, resolve, reject }
     reset.promise.catch(() => {})
     this.rateLimitResets.set(dataset, reset)
     // After a failure the queue waits for the user to retry or cancel
