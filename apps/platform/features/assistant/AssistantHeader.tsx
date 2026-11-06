@@ -5,12 +5,12 @@ import cx from 'classnames'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { IconButton, Popover, Spinner } from '@globalfishingwatch/ui-components'
 
-import { useChatThreads } from 'features/_map/content-panel/chat/chat-threads.hooks'
+import { useAssistantThreads } from 'features/assistant/assistant-threads.hooks'
 import { getTimeAgo } from 'utils/dates'
 
-import styles from './Chat.module.css'
+import styles from './Assistant.module.css'
 
-function ChatHistoryItem({
+function AssistantHistoryItem({
   thread,
   active,
   disabled,
@@ -56,7 +56,7 @@ function ChatHistoryItem({
   )
 }
 
-function ChatHeader() {
+function AssistantHeader() {
   const { t } = useTranslation()
   const [historyOpen, setHistoryOpen] = useState(false)
 
@@ -69,7 +69,7 @@ function ChatHeader() {
     setActiveThreadId,
     deleteThread,
     newThread,
-  } = useChatThreads()
+  } = useAssistantThreads()
   const activeThreadTitle = threads.find((thread) => thread.id === activeThreadId)?.title
 
   return (
@@ -90,7 +90,7 @@ function ChatHeader() {
                 <li className={styles.historyEmpty}>{t((t) => t.common.noConversations)}</li>
               )}
               {threads.map((c) => (
-                <ChatHistoryItem
+                <AssistantHistoryItem
                   key={c.id}
                   thread={c}
                   active={c.id === activeThreadId}
@@ -128,4 +128,4 @@ function ChatHeader() {
   )
 }
 
-export default ChatHeader
+export default AssistantHeader

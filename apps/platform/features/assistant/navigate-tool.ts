@@ -53,7 +53,7 @@ export function getNavigateToolLinkProps(navigation: NavigateToolNavigation) {
     stringifyWorkspace((navigation.search ?? {}) as QueryParams)
   ) as Record<string, unknown>
   delete normalizedSearch.tk
-  // panels belong to the viewer, not to the agent's view: keep every open one and the chat
+  // panels belong to the viewer, not to the agent's view: keep every open one and the assistant
   delete normalizedSearch.sidePanels
   delete normalizedSearch.sidePanelActive
   return {
@@ -61,7 +61,7 @@ export function getNavigateToolLinkProps(navigation: NavigateToolNavigation) {
     params: navigation.params ?? {},
     search: (prev: QueryParams) => ({
       ...normalizedSearch,
-      ...withSidePanel(prev, { type: 'chat' }),
+      ...withSidePanel(prev, { type: 'assistant' }),
     }),
     /** Target search without panels, to compare against the current location */
     viewSearch: normalizedSearch,
