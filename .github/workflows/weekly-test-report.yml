@@ -1,0 +1,74 @@
+name: Weekly Test Report
+
+on:
+  schedule:
+    - cron: '0 8 * * 1' # Mondays 08:00 UTC
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: Only print the report in the run summary, do not post to Slack
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    name: Build and post the report
+    runs-on: ubuntu-latest
+    env:
+      # Change the target channel by setting the repository variable TEST_REPORT_SLACK_CHANNEL
+      SLACK_CHANNEL: ${{ vars.TEST_REPORT_SLACK_CHANNEL || '#test-fpacio' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      # Private repo, so the default GITHUB_TOKEN cannot read it
+      - name: Checkout api-tests
+        uses: actions/checkout@v7
+        with:
+          repository: GlobalFishingWatch/api-tests
+          ref: main
+          path: api-tests
+          token: ${{ secrets.GH_PA_TOKEN }}
+
+      - name: Setup pnpm
+        uses: pnpm/setup@v3
+        with:
+          install: false
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Lists the tests without running them or opening a browser
+      - name: List smoke tests
+        working-directory: apps/platform-e2e
+        run: pnpm exec playwright test --list --reporter=json > "$RUNNER_TEMP/smoke-tests.json"
+        env:
+          CI: '1'
+
+      - name: Build report
+        run: |
+          node .github/scripts/weekly-test-report.mjs \
+            --smoke-json "$RUNNER_TEMP/smoke-tests.json" \
+            --api-dir api-tests > "$RUNNER_TEMP/report.txt"
+          cat "$RUNNER_TEMP/report.txt" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo 'message<<REPORT_EOF'
+            cat "$RUNNER_TEMP/report.txt"
+            echo 'REPORT_EOF'
+          } >> "$GITHUB_OUTPUT"
+        id: report
+
+      - name: Post to Slack
+        if: ${{ !inputs.dry-run }}
+        uses: ./.github/actions/notify-slack
+        with:
+          channel: ${{ env.SLACK_CHANNEL }}
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          message: ${{ steps.report.outputs.message }}
