@@ -85,6 +85,10 @@ body:has(.printing) {
   left: 0 !important; /* SplitView sets left to the sidebar width inline */
 }
 
+[data-screenshot-area] #app-main > :not(:has(#map-container)) {
+  pointer-events: none;
+}
+
 #__root__ {
   height: 100dvh;
   width: 100%;
