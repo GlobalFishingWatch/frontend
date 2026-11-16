@@ -78,7 +78,11 @@ export default defineConfig({
       },
       {
         name: 'firefox',
-        use: { ...devices['Desktop Firefox'] },
+        use: {
+          ...devices['Desktop Firefox'],
+          // Unverified on the CI runner: headless Firefox may blocklist its WebGL driver there.
+          launchOptions: { firefoxUserPrefs: { 'webgl.force-enabled': true } },
+        },
       },
       {
         name: 'webkit',
