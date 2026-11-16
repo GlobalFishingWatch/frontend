@@ -137,6 +137,7 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
     visible: config.visible,
     filter: config.filter,
     filterIds: config.filterIds,
+    highlightedSceneId: config.highlightedSceneId,
     minVisibleValue: config.minVisibleValue,
     maxVisibleValue: config.maxVisibleValue,
     vesselGroups: config['vessel-groups'],

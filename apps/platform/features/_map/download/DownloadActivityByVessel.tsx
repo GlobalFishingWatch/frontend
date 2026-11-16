@@ -30,7 +30,7 @@ import {
 } from 'features/_map/download/downloadActivity.slice'
 import DownloadActivityProductsBanner from 'features/_map/download/DownloadActivityProductsBanner'
 import TimelineDatesRange from 'features/_map/map/controls/TimelineDatesRange'
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import { getSourcesSelectedInDataview } from 'features/_map/workspace/activity/activity.utils'
 import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/_reports/report-area/area-reports.config'
 import { selectIsGlobalReport } from 'features/_reports/report-area/area-reports.selectors'

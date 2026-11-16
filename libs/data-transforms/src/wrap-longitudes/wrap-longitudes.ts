@@ -216,13 +216,18 @@ const unwrapCoordinates = (coordinates: any): any => {
   if (typeof coordinates[0]?.[0] === 'number') {
     return unwrapPositions(coordinates)
   }
+  return unwrapEachPart(coordinates)
+}
+
+/** Unwraps every part on its own, returning `parts` itself when none of them moved. */
+const unwrapEachPart = (parts: any[]): any[] => {
   let changed = false
-  const unwrapped = coordinates.map((part: any) => {
+  const unwrapped = parts.map((part) => {
     const next = unwrapCoordinates(part)
     changed ||= next !== part
     return next
   })
-  return changed ? unwrapped : coordinates
+  return changed ? unwrapped : parts
 }
 
 /**
@@ -238,7 +243,13 @@ export const unwrapFeatureLongitudes = <T extends Feature>(featureData: T): T =>
   if (!geometry?.coordinates?.length) {
     return featureData
   }
-  const coordinates = unwrapCoordinates(geometry.coordinates)
+  // A MultiPoint's positions are independent points, not a ring: shifting them together by their
+  // mean leaves a point and its copy from the next world (tile buffers near the antimeridian
+  // produce exactly that pair) 360° apart, which no polygon operation accepts.
+  const coordinates =
+    geometry.type === 'MultiPoint'
+      ? unwrapEachPart(geometry.coordinates)
+      : unwrapCoordinates(geometry.coordinates)
   if (coordinates === geometry.coordinates) {
     // Nothing moved, so hand the caller its own feature back rather than a copy of it.
     return featureData

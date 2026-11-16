@@ -1,27 +1,30 @@
 /// <reference types="vite/client" />
 
 import type { ReactNode } from 'react'
-import { Suspense } from 'react'
+import { lazy, Suspense } from 'react'
 import robotoLatin400 from '@fontsource/roboto/files/roboto-latin-400-normal.woff2?url'
 import robotoLatin500 from '@fontsource/roboto/files/roboto-latin-500-normal.woff2?url'
 // import { TanStackDevtools } from '@tanstack/react-devtools'
 // import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { createRootRoute, HeadContent, Outlet, redirect, Scripts } from '@tanstack/react-router'
+import { createIsomorphicFn } from '@tanstack/react-start'
 
 import type { UserData } from '@globalfishingwatch/api-types'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
-import { ROOT_DOM_ELEMENT } from 'data/map/config'
+import { GOOGLE_TAG_MANAGER_ID, ROOT_DOM_ELEMENT } from 'data/map/config'
 import { RouterErrorBoundary } from 'features/app/ErrorBoundaryRouter'
 import { reportRouteError } from 'features/app/sentry'
 import { getActiveI18nLanguage, t } from 'features/i18n/i18n'
 import { toDocumentLang } from 'features/i18n/i18n.config'
 import { I18nSSRProvider } from 'features/i18n/I18nSSRProvider'
 import { getCanonicalLink, getDefaultMeta } from 'router/router.meta'
+import { getPanelWidthsFromRequest } from 'server/screen-size.server'
+import { resolveUserStateFromRequest } from 'server/user.server'
 
 import appCss from './styles.css?url'
 
-const GOOGLE_TAG_MANAGER_ID = import.meta.env.VITE_GOOGLE_TAG_MANAGER_ID as string
+const CaptchaChallenge = lazy(() => import('features/modals/CaptchaChallenge'))
 
 const defaultDescription =
   'The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.'
@@ -38,21 +41,15 @@ const EMPTY_PANEL_WIDTHS: PanelWidthsState = {
   screenWidth: null,
 }
 
-async function loadPanelWidths(): Promise<PanelWidthsState> {
-  if (!import.meta.env.SSR) {
-    return EMPTY_PANEL_WIDTHS
-  }
-  const { getPanelWidthsFromRequest } = await import('server/screen-size.server')
-  return getPanelWidthsFromRequest()
-}
+// The compiler drops the .server() bodies, and with them the .server.ts imports, from the client
+// bundle — which is what keeps import protection happy.
+const loadPanelWidths = createIsomorphicFn()
+  .server((): Promise<PanelWidthsState> => getPanelWidthsFromRequest())
+  .client(async (): Promise<PanelWidthsState> => EMPTY_PANEL_WIDTHS)
 
-async function loadUser(): Promise<{ user: UserData | null }> {
-  if (!import.meta.env.SSR) {
-    return { user: null as UserData | null }
-  }
-  const { resolveUserStateFromRequest } = await import('server/user.server')
-  return resolveUserStateFromRequest()
-}
+const loadUser = createIsomorphicFn()
+  .server(() => resolveUserStateFromRequest())
+  .client(async () => ({ user: null as UserData | null }))
 
 const fontFaceCss = `
 @font-face {
@@ -123,6 +120,7 @@ function RootComponent() {
       <Suspense fallback={null}>
         <I18nSSRProvider>
           <Outlet />
+          <CaptchaChallenge />
         </I18nSSRProvider>
       </Suspense>
       {/* {import.meta.env.DEV && (

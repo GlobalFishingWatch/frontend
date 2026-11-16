@@ -5,6 +5,8 @@ import { MapView } from '@deck.gl/core'
 import { debounce } from 'es-toolkit'
 import { useAtomValue, useSetAtom } from 'jotai'
 
+import { MAP_VIEW_ID } from '@platform/config/selectors/map'
+
 import { viewStateAtom } from 'features/_map/map/map.atoms'
 import { useDeckMap } from 'features/_map/map/map-context.hooks'
 import { selectIsWorkspaceReady } from 'features/_map/workspace/workspace.selectors'
@@ -39,9 +41,6 @@ export const useMapViewStateUrlSync = () => {
   }, [])
   return synced
 }
-// Moved to map-view-state.hooks so always-loaded callers (MainNav) can set the camera without pulling
-// @deck.gl/core, which this module imports as a value for MAP_VIEW. Re-exported for existing consumers.
-export { useMapSetViewState, useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
 
 const VIEW_STATE_URL_DEBOUNCE = 300
 
@@ -70,7 +69,6 @@ export const useUpdateViewStateUrlParams = () => {
 }
 
 export const MAP_CONTAINER_ID = 'map-container'
-export const MAP_VIEW_ID = 'mapViewport'
 export const MAP_VIEW = new MapView({
   id: MAP_VIEW_ID,
   repeat: true,

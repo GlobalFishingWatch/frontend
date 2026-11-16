@@ -5,7 +5,10 @@ import { area } from '@turf/turf'
 import cx from 'classnames'
 
 import { DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
-import { checkDatasetReportPermission } from '@globalfishingwatch/datasets-client'
+import {
+  checkDatasetGriddedActivityPermission,
+  checkDatasetReportPermission,
+} from '@globalfishingwatch/datasets-client'
 import type { ChoiceOption, TooltipPlacement } from '@globalfishingwatch/ui-components'
 import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components'
 
@@ -38,7 +41,7 @@ import {
 import DownloadActivityProductsBanner from 'features/_map/download/DownloadActivityProductsBanner'
 import { DownloadAreaLabel } from 'features/_map/download/DownloadAreaLabel'
 import TimelineDatesRange from 'features/_map/map/controls/TimelineDatesRange'
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import { getSourcesSelectedInDataview } from 'features/_map/workspace/activity/activity.utils'
 import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/_reports/report-area/area-reports.config'
 import { selectIsGlobalReport } from 'features/_reports/report-area/area-reports.selectors'
@@ -145,23 +148,38 @@ function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: 
     filteredTemporalResolutionOptions[0].id
   )
 
-  const onDownloadClick = async () => {
-    const downloadDataviews = dataviews
-      .map((dataview) => {
-        const datasets = getActiveDatasetsInDataview(dataview)?.flatMap((d) => d.id || []) || []
-        const activityDatasets = datasets.filter((id: string) => {
-          return id ? checkDatasetReportPermission(id, userData!.permissions) : false
+  const downloadDataviews = useMemo(
+    () =>
+      dataviews
+        .map((dataview) => {
+          const datasets = getActiveDatasetsInDataview(dataview)?.flatMap((d) => d.id || []) || []
+          const activityDatasets = datasets.filter((id: string) => {
+            return id ? checkDatasetReportPermission(id, userData?.permissions || []) : false
+          })
+          return {
+            filter: dataview.config?.filter || '',
+            filters: dataview.config?.filters || {},
+            ...(dataview.config?.['vessel-groups']?.length && {
+              'vessel-groups': dataview.config?.['vessel-groups'],
+            }),
+            datasets: activityDatasets,
+          }
         })
-        return {
-          filter: dataview.config?.filter || '',
-          filters: dataview.config?.filters || {},
-          ...(dataview.config?.['vessel-groups']?.length && {
-            'vessel-groups': dataview.config?.['vessel-groups'],
-          }),
-          datasets: activityDatasets,
-        }
-      })
-      .filter((dataview) => dataview.datasets.length > 0)
+        .filter((dataview) => dataview.datasets.length > 0),
+    [dataviews, userData?.permissions]
+  )
+
+  // CSV and JSON without spatial aggregation need gridded-activity on every dataset, see 4wings-tiler
+  const formatOptions = useMemo(() => {
+    const griddedActivityAllowed = downloadDataviews.every(({ datasets }) =>
+      datasets.every((id) => checkDatasetGriddedActivityPermission(id, userData?.permissions || []))
+    )
+    return griddedActivityAllowed
+      ? GRIDDED_FORMAT_OPTIONS
+      : GRIDDED_FORMAT_OPTIONS.filter(({ id }) => id === HeatmapDownloadFormat.GeoTIFF)
+  }, [downloadDataviews, userData?.permissions])
+
+  const onDownloadClick = async () => {
     onDownloadCallback?.()
 
     if (format === HeatmapDownloadFormat.GeoTIFF) {
@@ -246,7 +264,7 @@ function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: 
         <div>
           <label>{t((t) => t.download.format)}</label>
           <Choice
-            options={GRIDDED_FORMAT_OPTIONS}
+            options={formatOptions}
             size="small"
             activeOption={format}
             onSelect={(option) => setFormat(option.id as HeatmapDownloadFormat)}

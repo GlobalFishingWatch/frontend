@@ -1,0 +1,26 @@
+.container {
+  max-width: 115rem;
+  margin: 0 auto;
+  padding: var(--space-L) var(--space-M);
+}
+
+.breadcrumb {
+  margin-bottom: var(--space-M);
+}
+
+.description {
+  max-width: 70rem;
+  margin-bottom: var(--space-M);
+}
+
+.description a,
+.link {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-S);
+}

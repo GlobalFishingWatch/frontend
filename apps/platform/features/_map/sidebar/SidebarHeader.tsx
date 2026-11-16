@@ -35,7 +35,7 @@ import styles from './SidebarHeader.module.css'
  * Lazy: none of these render on /user or /vessel-search, and each statically reaches 45-157 modules
  * across features/_reports, features/vessel and features/workspace. Keeping them static made the
  * map-free shell pull the whole report and vessel graph. Measure with
- * `node scripts/reachable-features.mjs features/_map/sidebar/SidebarHeader.tsx`.
+ * `node apps/platform/scripts/load-boundaries/load-boundaries.ts explain features/_map/sidebar/SidebarHeader.tsx`.
  */
 const ReportTitle = lazy(() => import('features/_reports/report-area/title/ReportTitle'))
 const PortReportHeader = lazy(() => import('features/_reports/report-port/PortReportHeader'))

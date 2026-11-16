@@ -11,6 +11,7 @@ concurrency:
 
 jobs:
   pr-preview:
+    if: github.head_ref != 'i18n_dev' # Crowdin translation PRs
     uses: ./.github/workflows/_pr-preview.yml
     with:
       preview_label: deploy-preview-prod

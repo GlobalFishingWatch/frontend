@@ -2,16 +2,14 @@ import { Fragment, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { useRouter } from '@tanstack/react-router'
 
+import { removeDatasetVersion } from '@globalfishingwatch/datasets-client'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { getIsWorkspaceArchived } from 'features/_map/workspace/workspace.utils'
 import GFWOnly from 'features/_user/GFWOnly'
 import { selectIsGFWUser } from 'features/_user/selectors/user.selectors'
 import { selectVesselInfoStatus } from 'features/_vessels/vessel/selectors/vessel.selectors'
-import {
-  VESSEL_IDENTITY_ID_V4,
-  VESSEL_IDENTITY_ID_V5,
-} from 'features/_vessels/vessel/vessel.config'
+import { getIsPipe5VesselDataset } from 'features/_vessels/vessel/vessel.config'
 import {
   selectIncludeRelatedIdentities,
   selectVesselDatasetId,
@@ -33,6 +31,8 @@ const VesselSubHeader = () => {
   const infoStatus = useSelector(selectVesselInfoStatus)
   const datasetId = useSelector(selectVesselDatasetId)
   const isPipe4Workspace = !!workspaceId && getIsWorkspaceArchived({ id: workspaceId })
+  const isPipe5Dataset = getIsPipe5VesselDataset(datasetId)
+  const otherVersionDatasetId = `${removeDatasetVersion(datasetId)}:${isPipe5Dataset ? 'v4.0' : 'v5.0'}`
 
   const handleFullProfileClick = useCallback(() => {
     replaceQueryParams({
@@ -84,18 +84,13 @@ const VesselSubHeader = () => {
         <div className={styles.fullProfileMessage}>
           <div>
             <GFWOnly className={styles.pipe4Disclaimer}>
-              This vessel profile is using{' '}
-              {datasetId === VESSEL_IDENTITY_ID_V5 ? 'pipe 5' : 'pipe 4'} dataset.
+              This vessel profile is using {isPipe5Dataset ? 'pipe 5' : 'pipe 4'} dataset.
               <a
-                href={getSwitchVersionHref(
-                  datasetId === VESSEL_IDENTITY_ID_V5
-                    ? VESSEL_IDENTITY_ID_V4
-                    : VESSEL_IDENTITY_ID_V5
-                )}
+                href={getSwitchVersionHref(otherVersionDatasetId)}
                 className={styles.pipe4DisclaimerLink}
                 target="_blank"
               >
-                Open in {datasetId === VESSEL_IDENTITY_ID_V5 ? 'pipe 4' : 'pipe 5'}
+                Open in {isPipe5Dataset ? 'pipe 4' : 'pipe 5'}
                 <Icon icon="external-link" />
               </a>
             </GFWOnly>

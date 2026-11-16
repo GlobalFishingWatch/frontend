@@ -416,9 +416,6 @@ export function getDataviewSqlFiltersResolved(dataview: DataviewInstance | UrlDa
     {} as Record<string, any>
   )
   const filters = { ...datasetsConfigFilters, ...(dataview.config?.filters || {}) }
-  if (!Object.keys(filters).length) {
-    return ''
-  }
   const sqlFilters = Object.keys(filters)
     .filter((key) => key !== 'vessel-groups')
     .flatMap((filterKey) => {
@@ -451,6 +448,8 @@ export function getDataviewSqlFiltersResolved(dataview: DataviewInstance | UrlDa
         if (maxSelected !== maxPossible) {
           return `${queryFilterKey} <= ${maxValue}`
         }
+        // Full range selected, nothing to filter
+        return []
       }
 
       const filterOperator = dataview.config?.filterOperators?.[filterKey] || INCLUDE_FILTER_ID
@@ -469,6 +468,14 @@ export function getDataviewSqlFiltersResolved(dataview: DataviewInstance | UrlDa
       }
       return query
     })
+
+  // The API also returns events shorter than the duration schema minimum, but the slider
+  // starts there, so that floor is sent even when no duration filter is selected
+  const eventsDataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Events)
+  const durationSchema = eventsDataset && getDatasetSchemaItem(eventsDataset, 'duration')
+  if (durationSchema?.type === 'range' && durationSchema.enum?.length) {
+    sqlFilters.push(`duration >= ${Number(durationSchema.enum[0])}`)
+  }
 
   return sqlFilters.length ? sqlFilters.join(' AND ') : ''
 }

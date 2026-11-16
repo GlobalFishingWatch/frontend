@@ -13,6 +13,7 @@ import {
   DatasetTypes,
   DataviewCategory,
   EventTypes,
+  Locale,
 } from '@globalfishingwatch/api-types'
 import {
   getDatasetConfigurationProperty,
@@ -25,11 +26,20 @@ import {
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import type { IconType } from '@globalfishingwatch/ui-components'
+import type { IconLogoType } from '@globalfishingwatch/ui-components/icon-logo'
 import { SKYLIGHT_VIIRS_DATASET_ID } from '@platform/config/map/datasets'
 import { AIS_DATAVIEW_INSTANCE_ID, VMS_DATAVIEW_INSTANCE_ID } from '@platform/config/map/dataviews'
 
 import { DEFAULT_TIME_RANGE, FULL_SUFIX, PRIVATE_ICON, PUBLIC_SUFIX } from 'data/map/config'
 import { t } from 'features/i18n/i18n'
+
+// The API answers 422 to `locale=ID` (dev, staging and production, checked 2026-11-03), and the
+// Crowdin pseudo-languages are not API locales either
+const API_LOCALES: string[] = [Locale.en, Locale.es, Locale.fr, Locale.pt]
+
+export function getAPILocale(locale: string) {
+  return (API_LOCALES.includes(locale) ? locale : Locale.en).toUpperCase()
+}
 
 // Datasets ids for vessel instances
 export type VesselInstanceDatasets = {
@@ -213,30 +223,30 @@ export const getGeometryTypeLabel = (geometryType: string): string => {
   }
 }
 
-export const getDatasetSourceIcon = (dataset: Dataset): IconType | null => {
+export const getDatasetSourceIcon = (dataset: Dataset): IconLogoType | null => {
   const source = dataset?.source?.toLowerCase()
   if (!source) {
     return null
   }
   // Activity, Detections & Events
-  if (source === 'global fishing watch' || source === 'gfw') return 'gfw-logo'
+  if (source === 'global fishing watch' || source === 'gfw') return 'gfw'
   // Environment
-  if (source.includes('hycom')) return 'hycom-logo'
-  if (source.includes('copernicus')) return 'copernicus-logo'
-  if (source.includes('nasa')) return 'nasa-logo'
-  if (source.includes('pacioos')) return 'pacioos-logo'
-  if (source.includes('gebco')) return 'gebco-logo'
-  if (source.includes('geospatial conservation atlas')) return 'gca-logo'
-  if (source.includes('unep') || source.includes('oceanplus')) return 'unep-logo'
-  if (source.includes('blue habitats')) return 'blue-habitats-logo'
+  if (source.includes('hycom')) return 'hycom'
+  if (source.includes('copernicus')) return 'copernicus'
+  if (source.includes('nasa')) return 'nasa'
+  if (source.includes('pacioos')) return 'pacioos'
+  if (source.includes('gebco')) return 'gebco'
+  if (source.includes('geospatial conservation atlas')) return 'gca'
+  if (source.includes('unep') || source.includes('oceanplus')) return 'unep'
+  if (source.includes('blue habitats')) return 'blue-habitats'
   // Reference
-  if (source.includes('protectedplanet')) return 'protected-planet-logo'
-  if (source.includes('protectedseas')) return 'protected-seas-logo'
-  if (source.includes('marineregions')) return 'marine-regions-logo'
-  if (source.includes('fao')) return 'fao-logo'
-  if (source.includes('mpatlas')) return 'mci-logo'
-  if (source.includes('duke')) return 'duke-logo'
-  if (source.includes('isa.org.jm')) return 'isa-logo'
+  if (source.includes('protectedplanet')) return 'protected-planet'
+  if (source.includes('protectedseas')) return 'protected-seas'
+  if (source.includes('marineregions')) return 'marine-regions'
+  if (source.includes('fao')) return 'fao'
+  if (source.includes('mpatlas')) return 'mci'
+  if (source.includes('duke')) return 'duke'
+  if (source.includes('isa.org.jm')) return 'isa'
 
   return null
 }

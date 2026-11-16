@@ -9,7 +9,7 @@ import {
   getReportSubCategoryFromDataview,
   isSupportedReportDataview,
 } from 'features/_reports/report-dataview-category.utils'
-import { selectVGRPresenceDataview } from 'features/_reports/report-vessel-group/vessel-group-report.slice'
+import { selectVGRPresenceDataview } from 'features/_reports/report-vessel-group/vessel-group-report.dataviews.selectors'
 import type {
   AnyReportSubCategory,
   ReportActivitySubCategory,

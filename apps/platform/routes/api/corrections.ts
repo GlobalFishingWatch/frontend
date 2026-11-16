@@ -4,8 +4,6 @@ import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 
 import type { InfoCorrectionSendFormat } from 'features/_vessels/vessel/vesselCorrection/VesselCorrection.types'
 
-const IDENTITY_REVIEW_SPREADSHEET_ID = process.env.IDENTITY_REVIEW_SPREADSHEET_ID || ''
-
 const REGISTRY_CORRECTIONS_SHEET_TITLE = 'Vessel Registry Corrections'
 const GFW_SOURCE_CORRECTIONS_SHEET_TITLE = 'Vessel GFW Source Corrections'
 
@@ -67,14 +65,26 @@ export const Route = createFileRoute('/api/corrections')({
   server: {
     handlers: {
       POST: async ({ request }: { request: Request }) => {
-        const { isSameOrigin, forbiddenResponse } = await import('server/api/utils/request')
+        const { isSameOrigin, forbiddenResponse, unauthorizedResponse } =
+          await import('server/api/utils/request')
         if (!isSameOrigin(request)) {
           return forbiddenResponse()
         }
+        const { getRequestUser } = await import('server/user.server')
+        const user = await getRequestUser()
+        if (!user) {
+          return unauthorizedResponse()
+        }
         const body = await request.json().catch(() => null)
-        const rawData = body?.data
+        // Any other source maps every column to '' and appends a blank row that splits the sheet
+        const rawData =
+          body?.data &&
+          (body.data.source === VesselIdentitySourceEnum.Registry ||
+            body.data.source === VesselIdentitySourceEnum.SelfReported)
+            ? { ...body.data, reviewer: user.email }
+            : null
 
-        if (!rawData || !rawData.source) {
+        if (!rawData) {
           return Response.json(
             { success: false, message: 'Correction data with source is required' },
             { status: 400 }
@@ -82,7 +92,8 @@ export const Route = createFileRoute('/api/corrections')({
         }
 
         try {
-          const spreadsheetId: string = IDENTITY_REVIEW_SPREADSHEET_ID
+          const { serverEnv } = await import('server/env.server')
+          const spreadsheetId = serverEnv.IDENTITY_REVIEW_SPREADSHEET_ID
           const spreadsheetTitle: string =
             rawData.source === VesselIdentitySourceEnum.Registry
               ? REGISTRY_CORRECTIONS_SHEET_TITLE

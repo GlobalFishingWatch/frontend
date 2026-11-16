@@ -2,7 +2,6 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import type { DownloadSurveyPayload } from '@globalfishingwatch/ui-components/download-survey'
 
-const SURVEY_SPREADSHEET_ID = process.env.DOWNLOAD_SURVEY_SPREADSHEET_ID || ''
 const SURVEY_SHEET_TITLE = 'answers'
 
 export type ApiResponse = {
@@ -15,23 +14,40 @@ export const Route = createFileRoute('/api/downloadSurvey')({
   server: {
     handlers: {
       POST: async ({ request }: { request: Request }) => {
-        const { isSameOrigin, forbiddenResponse } = await import('server/api/utils/request')
+        const { isSameOrigin, forbiddenResponse, unauthorizedResponse } =
+          await import('server/api/utils/request')
         if (!isSameOrigin(request)) {
           return forbiddenResponse()
         }
-        const data: DownloadSurveyPayload = await request.json().catch(() => null)
+        const { getRequestUser, getUserFullName } = await import('server/user.server')
+        const user = await getRequestUser()
+        if (!user) {
+          return unauthorizedResponse()
+        }
+        const body: DownloadSurveyPayload = await request.json().catch(() => null)
 
-        if (!data || !data.email) {
+        if (!body || typeof body !== 'object') {
           return Response.json(
             { success: false, message: 'Survey data is required' },
             { status: 400 }
           )
         }
 
+        // The verified identity wins over whatever the body claims
+        const data: DownloadSurveyPayload = {
+          ...body,
+          name: getUserFullName(user),
+          email: user.email ?? '',
+          organization: user.organization ?? '',
+        }
+
         try {
           const { loadSpreadsheetDoc } = await import('server/api/utils/spreadsheets')
           const { sanitizeSheetRow } = await import('server/api/utils/sanitize')
-          const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(SURVEY_SPREADSHEET_ID)
+          const { serverEnv } = await import('server/env.server')
+          const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(
+            serverEnv.DOWNLOAD_SURVEY_SPREADSHEET_ID
+          )
           const sheet = feedbackSpreadsheetDoc.sheetsByTitle[SURVEY_SHEET_TITLE]
 
           await sheet.addRow(sanitizeSheetRow(data))

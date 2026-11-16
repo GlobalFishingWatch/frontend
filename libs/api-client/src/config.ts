@@ -19,7 +19,23 @@ export const API_VERSION =
   getEnv('NEXT_PUBLIC_API_VERSION') ||
   'v3'
 
-export const DEBUG_API_REQUESTS: boolean = getEnv('DEBUG_API_REQUESTS') === 'true'
+/**
+ * true logs every scope, a scope name logs only that one:
+ * 'request' fetches, retries and errors,
+ * 'auth' tokens/refresh/login/logout/session ("[auth]"),
+ * 'rate-limit' the rate limit trace ("[rate-limit]"),
+ * 'captcha' the Turnstile trace ("[captcha]")
+ */
+export type DebugMode = boolean | 'request' | 'auth' | 'rate-limit' | 'captcha'
+
+const DEBUG_SCOPES: string[] = ['request', 'auth', 'rate-limit', 'captcha']
+
+const parseDebugMode = (value?: string): DebugMode =>
+  value === 'true' ? true : value && DEBUG_SCOPES.includes(value) ? (value as DebugMode) : false
+
+export const DEBUG_API_REQUESTS: DebugMode = parseDebugMode(
+  getEnv('DEBUG_API_REQUESTS') ?? getEnv('VITE_DEBUG_API_REQUESTS')
+)
 
 export const AUTH_PATH = 'auth'
 export const REGISTER_PATH = 'registration'
@@ -27,6 +43,19 @@ export const SETTINGS_PATH = 'settings'
 export const LOGOUT_SESSION_PATH = 'logout-session'
 export const GUEST_USER_TYPE = 'guest'
 export const CONCURRENT_ERROR_STATUS = 429
+// Resets the track/events limit, protected by the captcha
+export const VISUALIZE_LIMIT_RESET_PATH = 'vessels/tracks/visualize-limit/reset'
+
+// Header the gateway reads on the routes with validateCaptcha
+export const CAPTCHA_HEADER = 'x-captcha-token'
+// Turnstile action of each protected request, must match the action its verifier checks
+// (the gateway captchaAction or an app server function)
+export const CAPTCHA_ACTIONS = {
+  visualizeLimitReset: 'reset-visualize-tracks-limit',
+  refreshToken: 'refresh-token',
+  humanSession: 'human-session',
+  feedback: 'feedback',
+} as const
 
 export const ANONYMOUS_PERMISSIONS = [
   { type: 'dataset', value: '*global*', action: 'basic-search' },

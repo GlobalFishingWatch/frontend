@@ -96,6 +96,22 @@ covered too. A sweep on 2026-09-10 closed the three call sites that were not:
   feature costs one division and no allocation. Asserted with `toBe` in
   `unwrap-feature-longitudes.test.ts`; keep that property if you touch the helper.
 
+### MultiPoints carry both copies in one feature (fixed 2026-10-30)
+
+At low zoom the tile buffer wraps features near the antimeridian, so a point-represented area
+(small MPAs, aggregated `c0/x/y` features with `count`) arrives as one `MultiPoint` holding the
+point **and** its copy one world west: `[[173.76, -35.03], [-186.24, -35.03]]`.
+`unwrapPositions` treated those positions as a ring and shifted them by their mean (-6.24 → no
+shift), so the pair stayed 360° apart. In polygon mode the feature then read as "partially
+overlapping", and coverage clipping threw `Input geometry is not a valid Polygon or MultiPolygon`
+(polyclip-ts only takes polygons). On an MPA report over the NZ antimeridian zone: 91 warnings,
+and 129 areas counted as overlapping instead of contained.
+
+`unwrapFeatureLongitudes` now unwraps each point of a MultiPoint on its own, and
+`getPolygonsCoverage` counts a non-polygon in the overlapping list by `area_km2`, the way the
+contained branch already did. The second guard is still needed: a point that lands on exactly
+±180 sits on the report area's seam and is never "contained".
+
 Still deliberately untouched, both viewport-space consumers rather than report ones:
 `FourwingsPositionsTileLayer._onViewportLoad` and `FourwingsClustersLayer._onViewportLoad`.
 

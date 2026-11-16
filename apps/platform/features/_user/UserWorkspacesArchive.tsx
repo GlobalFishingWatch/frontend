@@ -3,15 +3,15 @@ import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 
 import type { Workspace } from '@globalfishingwatch/api-types'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { HighlightedText } from '@globalfishingwatch/ui-components/highlighted-text'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { DEFAULT_WORKSPACE_CATEGORY } from '@platform/config/map/workspaces'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
-import { useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
+import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
 import { getWorkspaceLabel } from 'features/_map/workspace/workspace.utils'
 import { selectWorkspaceListStatus } from 'features/_map/workspaces-list/workspaces-list.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { getHighlightedText } from 'utils/text'
 
 import { selectUserWorkspacesArchived } from './selectors/user.permissions.selectors'
 
@@ -60,8 +60,8 @@ function UserWorkspacesArchive({ searchQuery }: { searchQuery: string }) {
                 search={{}}
                 onClick={() => onWorkspaceClick(workspace)}
               >
-                <span className={styles.workspaceTitle}>
-                  {getHighlightedText(label as string, searchQuery, styles)}
+                <span className={styles.workspaceTitle} translate="no">
+                  <HighlightedText text={label as string} highlight={searchQuery} />
                 </span>
                 <IconButton icon="arrow-right" />
               </Link>

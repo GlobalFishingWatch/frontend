@@ -24,7 +24,6 @@ import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
   getDatasetVersion,
-  getRelatedDatasetByType,
   getRelatedDatasetsByType,
   removeDatasetVersion,
 } from '@globalfishingwatch/datasets-client'
@@ -38,6 +37,7 @@ import { FourwingsAggregationOperation, LayerGroup } from '@globalfishingwatch/d
 import { LONGLINE_FISHING_EVENTS_DATASET } from '@platform/config/map/datasets'
 import {
   BATHYMETRY_DATAVIEW_PREFIX,
+  CLUSTER_DARK_RENDEZVOUS_EVENTS_DATAVIEW_SLUG,
   ENCOUNTER_EVENTS_SOURCE_ID,
   GAPS_EVENTS_SOURCE_ID,
   getDataviewSlugForPipeVersion,
@@ -210,29 +210,21 @@ export const getVesselDataviewInstanceDatasetConfig = (
 export const resolveVesselTrackConfig = ({
   config,
   datasets,
-  loggedUser,
 }: {
   config: UrlDataviewInstance['config']
   datasets: Dataset[]
-  loggedUser: boolean
 }) => {
   const resolvedConfig = { ...config }
   if (!resolvedConfig.info) {
     return resolvedConfig
   }
   const infoDataset = datasets.find((d) => d.id === resolvedConfig.info)
-  // Vessel pined from not logged user but is logged now and the related dataset is available
-  if (loggedUser && !resolvedConfig.track) {
-    const trackDatasetId = getRelatedDatasetByType(infoDataset, DatasetTypes.Tracks)?.id
-    if (trackDatasetId) {
-      resolvedConfig.track = trackDatasetId
-    }
+  const { track, trackRealTime } = getVesselTrackDatasetIds(infoDataset, datasets)
+  if (!resolvedConfig.track && track) {
+    resolvedConfig.track = track
   }
-  if (!resolvedConfig.trackRealTime && resolvedConfig.ssvid) {
-    const { trackRealTime } = getVesselTrackDatasetIds(infoDataset, datasets)
-    if (trackRealTime) {
-      resolvedConfig.trackRealTime = trackRealTime
-    }
+  if (!resolvedConfig.trackRealTime && resolvedConfig.ssvid && trackRealTime) {
+    resolvedConfig.trackRealTime = trackRealTime
   }
   // Without events in the instance, resolveDataviews falls back to the template default events
   // datasets, which may belong to another pipe or source than the vessel info dataset
@@ -252,12 +244,10 @@ export const resolveVesselDataviewInstance = (
   {
     datasets,
     dataviews,
-    loggedUser,
     trackThinningZoomConfig,
   }: {
     datasets: Dataset[]
     dataviews: Dataview[]
-    loggedUser: boolean
     trackThinningZoomConfig: DataviewConfig['trackThinningZoomConfig']
   }
 ): UrlDataviewInstance => {
@@ -283,7 +273,6 @@ export const resolveVesselDataviewInstance = (
         info: dataviewInstance.config?.info || dataviewInfoDatasetId,
       },
       datasets,
-      loggedUser,
     })
     const datasetsConfig: DataviewDatasetConfig[] = getVesselDataviewInstanceDatasetConfig(
       getVesselIdFromInstanceId(dataviewInstance.id),
@@ -710,6 +699,16 @@ export function hasVesselGroupDatasetsDeprecated(
   return vesselGroupDatasets.some((dataset) => deprecatedDatasets[dataset])
 }
 
+export const getIsVesselGroupDataviewOutdated = (
+  dataview: Pick<UrlDataviewInstance, 'category' | 'vesselGroup'>,
+  deprecatedDatasets: DatasetsMigration
+) =>
+  dataview.category === DataviewCategory.VesselGroups &&
+  hasVesselGroupDatasetsDeprecated(
+    dataview.vesselGroup?.vesselsSummary?.datasets,
+    deprecatedDatasets
+  )
+
 export function hasVesselGroupDatasetsDeleted(
   vesselGroupDatasets: string[] | undefined,
   deletedDatasets: string[] | undefined
@@ -767,7 +766,14 @@ const SUPPORTED_CATEGORIES_REAL_TIME = [
   DataviewCategory.User,
 ]
 
-function isRealTimeActivityDataview(dataview: UrlDataviewInstance) {
+// Activity and events layers are only shown in the time mode their data belongs to
+const TIME_MODE_EXCLUSIVE_CATEGORIES = [DataviewCategory.Activity, DataviewCategory.Events]
+
+export function isDarkRendezvousDataview(dataview: UrlDataviewInstance) {
+  return dataview.dataviewId === CLUSTER_DARK_RENDEZVOUS_EVENTS_DATAVIEW_SLUG
+}
+
+function isRealTimeOnlyDataview(dataview: UrlDataviewInstance) {
   return (
     REAL_TIME_DATAVIEW_SLUGS.includes(dataview.dataviewId as string) ||
     dataview.datasets?.some(isRealTimeDataset) === true
@@ -775,15 +781,15 @@ function isRealTimeActivityDataview(dataview: UrlDataviewInstance) {
 }
 
 export function isRealTimeDataview(dataview: UrlDataviewInstance) {
-  if (dataview.category === DataviewCategory.Activity) {
-    return isRealTimeActivityDataview(dataview)
+  if (dataview.category && TIME_MODE_EXCLUSIVE_CATEGORIES.includes(dataview.category)) {
+    return isRealTimeOnlyDataview(dataview)
   }
   return !dataview.category || SUPPORTED_CATEGORIES_REAL_TIME.includes(dataview.category)
 }
 
 export function isHistoricalDataview(dataview: UrlDataviewInstance) {
-  if (dataview.category === DataviewCategory.Activity) {
-    return !isRealTimeActivityDataview(dataview)
+  if (dataview.category && TIME_MODE_EXCLUSIVE_CATEGORIES.includes(dataview.category)) {
+    return !isRealTimeOnlyDataview(dataview)
   }
   return dataview.datasets ? dataview.datasets?.every((d) => !isRealTimeDataset(d)) : true
 }
@@ -793,7 +799,7 @@ export function isDataviewInTimeMode(dataview: UrlDataviewInstance, timeMode: Ti
 }
 
 export function hasWorkspaceDataviewsDeprecated(
-  workspace: Workspace<any> | undefined,
+  workspace: Pick<Workspace<any>, 'dataviewInstances'> | undefined,
   deprecatedDatasets: DatasetsMigration | undefined
 ) {
   if (!workspace?.dataviewInstances?.length || !deprecatedDatasets) {

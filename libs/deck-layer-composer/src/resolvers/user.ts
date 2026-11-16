@@ -21,6 +21,8 @@ import { getUTCDateTime } from '@globalfishingwatch/deck-layers/utils'
 import type { ResolvedContextDataviewInstance } from '../types/dataviews'
 import type { DeckResolverFunction } from '../types/resolvers'
 
+import { resolvePMTilesUrl } from './basemap'
+
 export const getUserContextTimeFilterProps = ({
   dataset,
   start,
@@ -165,7 +167,10 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
     }
     const datasetContextConfig = getDatasetConfiguration(dataset, 'userContextLayerV1')
 
-    let tilesUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
+    let tilesUrl =
+      dataset.type === DatasetTypes.PMTiles
+        ? resolvePMTilesUrl(dataset)
+        : (resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string)
     if (!tilesUrl) {
       console.warn('No url found for user context')
     }
@@ -229,7 +234,8 @@ export const resolveDeckUserContextLayerProps: DeckResolverFunction<
   UserPolygonsLayerProps,
   ResolvedContextDataviewInstance
 > = (dataview, globalConfig) => {
-  const dataset = findDatasetByType(dataview.datasets, DatasetTypes.UserContext) as Dataset
+  const dataset = (findDatasetByType(dataview.datasets, DatasetTypes.UserContext) ||
+    findDatasetByType(dataview.datasets, DatasetTypes.PMTiles)) as Dataset
   const polygonColor = getUserPolygonColorProps({ dataset })
   return {
     ...resolveDeckUserLayerProps(dataview, globalConfig),

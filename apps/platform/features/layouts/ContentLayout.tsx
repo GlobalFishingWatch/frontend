@@ -1,4 +1,4 @@
-import { Suspense, useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Outlet } from '@tanstack/react-router'
 import cx from 'classnames'
@@ -6,14 +6,18 @@ import cx from 'classnames'
 import { SMALL_PHONE_BREAKPOINT, useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Logo } from '@globalfishingwatch/ui-components/logo'
 
-import NavigationHistoryButton from 'features/_map/sidebar/buttons/NavigationHistoryButton'
 import { SCROLL_CONTAINER_DOM_ID } from 'features/_map/sidebar/sidebar.utils'
-import SearchTypeChoice from 'features/_vessels/search/SearchTypeChoice'
+import { selectWorkspaceHistoryNavigation } from 'features/_map/workspace/workspace.selectors'
 import HelpHubBreadcrumb from 'features/help/HelpHubBreadcrumb'
 import { useIsClientHydrated } from 'hooks/ssr.hooks'
 import { selectIsHelpHubLocation, selectIsStandaloneSearchLocation } from 'router/routes.selectors'
 
 import styles from './layouts.module.css'
+
+const NavigationHistoryButton = lazy(
+  () => import('features/_map/sidebar/buttons/NavigationHistoryButton')
+)
+const SearchTypeChoice = lazy(() => import('features/_vessels/search/SearchTypeChoice'))
 
 /**
  * Layout for platform pages with no map and no sidebar — currently /user, /vessel-search, /ports,
@@ -28,6 +32,7 @@ function ContentLayout() {
   const isClientHydrated = useIsClientHydrated()
   const isStandaloneSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const isHelpHubLocation = useSelector(selectIsHelpHubLocation)
+  const hasLastWorkspace = !!useSelector(selectWorkspaceHistoryNavigation)?.length
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const [isScrolled, setIsScrolled] = useState(false)
 
@@ -42,8 +47,12 @@ function ContentLayout() {
           <Logo className={styles.logo} />
         </a>
         <div className={styles.contentHeaderActions}>
-          {isStandaloneSearchLocation && !isSmallScreen && <SearchTypeChoice />}
-          {isClientHydrated && <NavigationHistoryButton />}
+          <Suspense fallback={null}>
+            {isStandaloneSearchLocation && !isSmallScreen && <SearchTypeChoice />}
+          </Suspense>
+          <Suspense fallback={null}>
+            {isClientHydrated && hasLastWorkspace && <NavigationHistoryButton />}
+          </Suspense>
         </div>
       </div>
       <div

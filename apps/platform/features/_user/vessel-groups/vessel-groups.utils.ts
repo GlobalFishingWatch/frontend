@@ -261,17 +261,19 @@ export const getVesselsWithoutDuplicates = (vessels: VesselGroupVesselIdentity[]
   )
 }
 
+export const getIsVMSVessel = (vessel: VesselGroupVesselIdentity) => {
+  const selfReportedInfo = vessel.identity?.selfReportedInfo
+  if (!Array.isArray(selfReportedInfo)) return false
+
+  return selfReportedInfo.some(
+    (info) => Array.isArray(info.sourceCode) && !info.sourceCode.includes(SelfReportedSource.Ais)
+  )
+}
+
 export function calculateVMSVesselsPercentage(vessels: VesselGroupVesselIdentity[] | null): string {
   if (!vessels || vessels.length === 0) return '0% of vessels with VMS'
 
-  const vesselsWithVMS = vessels.filter((vessel) => {
-    const selfReportedInfo = vessel.identity?.selfReportedInfo
-    if (!Array.isArray(selfReportedInfo)) return false
-
-    return selfReportedInfo.some(
-      (info) => Array.isArray(info.sourceCode) && !info.sourceCode.includes(SelfReportedSource.Ais)
-    )
-  })
+  const vesselsWithVMS = vessels.filter(getIsVMSVessel)
 
   const uniqueSources = Array.from(
     new Set(

@@ -96,7 +96,7 @@ export async function prepare(
         // Parked with the AIS/VMS ports work: tag each port with which pipelines observed it
         // const extraProperties: Record<string, unknown> = {}
         // if (type === 'port') {
-        //   const sources = getPortSources(areaData)
+        //   const sources = getPortSources(areaData.properties)
         //   if (sources.length) {
         //     extraProperties.sources = sources.join(',')
         //   }

@@ -1,6 +1,8 @@
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import { useRateLimitChallengeState } from '@globalfishingwatch/api-client/hooks'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { VesselLayer } from '@globalfishingwatch/deck-layers'
 
@@ -35,6 +37,29 @@ export const useVesselProfileEventsLoading = () => {
 export const useVesselProfileEventsError = () => {
   const vesselInstance = useVesselProfileLayer()
   return vesselInstance?.instance?.getVesselLayersError('events') ?? false
+}
+
+/** Blocked when the track or any events request hit the rate limit, or the user cancelled the challenge */
+export const useVesselProfileRateLimit = () => {
+  const vesselInstance = useVesselProfileLayer()
+  const challengeCancelled = useRateLimitChallengeState() === 'cancelled'
+  const rateLimited = vesselInstance?.instance?.getVesselLayersRateLimited() ?? false
+
+  // Refetch them once any rate limit reset succeeds, wherever the challenge was started from
+  useEffect(() => {
+    if (rateLimited) {
+      return GFWAPI.onRateLimitReset(() => vesselInstance?.instance?.reloadErroredSublayers())
+    }
+  }, [rateLimited, vesselInstance])
+
+  const [verifying, setVerifying] = useState(false)
+  const verify = useCallback(() => {
+    setVerifying(true)
+    GFWAPI.startRateLimitChallenge()
+      .catch(() => {})
+      .finally(() => setVerifying(false))
+  }, [])
+  return { blocked: rateLimited || challengeCancelled || verifying, verifying, verify }
 }
 
 export const useSetVesselProfileEvents = () => {

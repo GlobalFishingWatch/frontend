@@ -35,6 +35,7 @@ export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounters' as const
 export const PORT_VISITS_EVENTS_SOURCE_ID = 'port-visits' as const
 export const LOITERING_EVENTS_SOURCE_ID = 'loitering' as const
 export const GAPS_EVENTS_SOURCE_ID = 'gap' as const
+export const DARK_RENDEZVOUS_EVENTS_SOURCE_ID = 'dark-rendezvous' as const
 
 // Contextual layer dataview slugs
 export const BASEMAP_DATAVIEW_SLUG = 'basemap' as const
@@ -52,11 +53,8 @@ export const MPATLAS_DATAVIEW_SLUG = 'mpatlas' as const
 export const GRATICULES_DATAVIEW_SLUG = 'graticules' as const
 export const FIXED_INFRASTRUCTURE_DATAVIEW_SLUG = 'fixed-infrastructure' as const
 export const PORTS_GLOBAL_DATAVIEW_SLUG = 'global-ports-v-5' as const
-export const PORTS_AIS_DATAVIEW_SLUG = 'ais-ports' as const
-export const PORTS_VMS_DATAVIEW_SLUG = 'vms-ports' as const
 export const FAO_AREAS_DATAVIEW_SLUG = 'fao-areas' as const
-export const PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG = 'ais-ports-footprint' as const
-export const PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG = 'vms-ports-footprint' as const
+export const PORTS_FOOTPRINT_GLOBAL_DATAVIEW_SLUG = 'global-ports-footprint-v-5' as const
 export const CURRENTS_DATAVIEW_SLUG = 'currents' as const
 export const WINDS_DATAVIEW_SLUG = 'winds' as const
 export const BATHYMETRY_CONTOUR_DATAVIEW_SLUG = 'bathymetry-contour' as const
@@ -83,6 +81,7 @@ export const VIIRS_MATCH_DATAVIEW_SLUG = 'viirs-match-v-4' as const
 export const VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG = 'viirs-match-skylight-v-4' as const
 export const SAR_DATAVIEW_SLUG = `sar-v-${PIPE_DATASET_VERSION}` as const
 export const SENTINEL2_DATAVIEW_SLUG = `sentinel-2-v-${PIPE_DATASET_VERSION}` as const
+export const PLANET_DATAVIEW_SLUG = `planet-v-${PIPE_DATASET_VERSION}` as const
 
 // Event cluster dataview slugs
 export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG =
@@ -95,6 +94,8 @@ export const CLUSTER_GAPS_EVENTS_DATAVIEW_SLUG =
   `gaps-cluster-events-v-${PIPE_DATASET_VERSION}` as const
 export const CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG =
   `gaps-ais-off-cluster-events-v-${PIPE_DATASET_VERSION}` as const
+export const CLUSTER_DARK_RENDEZVOUS_EVENTS_DATAVIEW_SLUG =
+  'dark-rendezvous-cluster-events-v-1' as const
 
 // Swaps the `-v-<current pipe>` suffix of a versioned slug for another pipe version.
 // Slugs not tied to the current pipe (e.g. Panama's `-v-4-1`) are returned untouched.
@@ -117,6 +118,7 @@ export const TEMPLATE_ACTIVITY_DATAVIEW_SLUG = 'activity-template' as const
 export const TEMPLATE_CLUSTERS_DATAVIEW_SLUG = 'template-for-bigquery-cluster-events' as const
 export const TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG = 'default-environmental-layer' as const
 export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = 'default-context-layer' as const
+export const TEMPLATE_CONTEXT_PMTILES_DATAVIEW_SLUG = 'context-layer-pmtiles' as const
 export const TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG = 'gfw-environmental-layer' as const
 export const TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG = 'heatmap-environmental-layer' as const
 export const TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG = 'heatmap-static-layer' as const

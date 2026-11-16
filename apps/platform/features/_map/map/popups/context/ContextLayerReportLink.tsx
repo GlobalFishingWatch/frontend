@@ -18,8 +18,11 @@ import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import { cleanCurrentWorkspaceReportState } from 'features/_map/workspace/workspace.slice'
 import { DEFAULT_POINT_BUFFER_VALUE } from 'features/_reports/report-area/area-reports.config'
 import { DEFAULT_BUFFER_OPERATION, DEFAULT_BUFFER_UNIT } from 'features/_reports/reports.config'
-import { selectReportAreaId, selectReportDatasetId } from 'features/_reports/reports.selectors'
-import { resetReportData } from 'features/_reports/tabs/activity/reports-activity.slice'
+import {
+  selectReportAreaId,
+  selectReportDatasetId,
+} from 'features/_reports/reports.current.selectors'
+import { resetReportData } from 'features/_reports/tabs/activity/reports-activity.actions'
 import { useAppDispatch } from 'features/app/app.hooks'
 import type { QueryParams } from 'types'
 

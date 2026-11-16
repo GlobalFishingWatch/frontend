@@ -9,7 +9,7 @@ import { Tabs } from '@globalfishingwatch/ui-components'
 import { selectDeprecatedDatasets } from 'features/_map/datasets/datasets.slice'
 import { hasVesselGroupDatasetsDeprecated } from 'features/_map/dataviews/dataviews.utils'
 import { selectVGRFootprintDataview } from 'features/_map/dataviews/selectors/dataviews.categories.selectors'
-import { useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
+import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
 import {
   useTimebarVesselGroupConnect,
   useTimebarVisualisationConnect,
@@ -25,6 +25,7 @@ import {
   selectReportSubCategory,
   selectReportVesselGraph,
 } from 'features/_reports/reports.selectors'
+import ReportComputation from 'features/_reports/shared/ReportComputation'
 import ReportVessels from 'features/_reports/shared/vessels/ReportVessels'
 import EventsReport from 'features/_reports/tabs/events/EventsReport'
 import VesselGroupReportInsights from 'features/_reports/tabs/vessel-group-insights/VGRInsights'
@@ -195,6 +196,7 @@ function VesselGroupReport() {
         </div>
       )}
 
+      {!showOnlyVessels && <ReportComputation category={reportCategory} />}
       <Tabs
         tabs={sectionTabs}
         activeTab={showOnlyVessels ? ReportCategory.VesselGroup : reportCategory}

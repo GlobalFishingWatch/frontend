@@ -1,0 +1,56 @@
+div.modal {
+  height: auto;
+}
+
+div.modalContentWrapper {
+  max-width: 84rem;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-M);
+  margin-bottom: var(--space-S);
+}
+
+.input {
+  flex: 1;
+}
+
+.footer {
+  margin-top: var(--space-M);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-M);
+}
+
+.textareaRow {
+  position: relative;
+}
+
+.textareaRow textarea {
+  display: block;
+  resize: none;
+
+  /* 6 lines fit ~500 chars */
+  height: calc(6lh + var(--space-XS) + var(--space-L));
+  padding-bottom: var(--space-L);
+}
+
+.charCount {
+  position: absolute;
+  right: var(--space-S);
+  bottom: var(--space-S);
+  font: var(--font-XS);
+  color: var(--color-secondary-blue);
+  pointer-events: none;
+}
+
+.footer button:only-child {
+  margin-left: auto;
+}
+
+.error {
+  color: var(--color-danger-red);
+}

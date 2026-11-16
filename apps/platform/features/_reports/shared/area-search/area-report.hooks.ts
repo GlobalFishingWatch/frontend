@@ -40,8 +40,11 @@ export function useNavigateToAreaReport() {
 
   return useCallback(
     (area: OceanArea) => {
+      const workspaceInstance = contextAreasDataviews?.find((dataview) =>
+        dataview.slug?.includes(area.properties?.type)
+      )
       const dataview: Dataview | UrlDataviewInstance | undefined =
-        contextAreasDataviews?.find((dataview) => dataview.slug?.includes(area.properties?.type)) ||
+        workspaceInstance ||
         allDataviews.find(
           (dataview) =>
             OCEAN_AREAS_DATAVIEWS.includes(dataview.slug as any) &&
@@ -58,7 +61,10 @@ export function useNavigateToAreaReport() {
       }
       const category = workspace?.category || DEFAULT_WORKSPACE_CATEGORY
       const workspaceId = workspace?.id || DEFAULT_WORKSPACE_ID
-      const newDataviewInstance = getDataviewInstanceFromDataview(dataview as Dataview)
+      // Reuse the layer already in the workspace, a new id would add a copy instead of activating it
+      const newDataviewInstance = workspaceInstance
+        ? { id: workspaceInstance.id }
+        : getDataviewInstanceFromDataview(dataview as Dataview)
 
       if (area.properties?.type === 'port') {
         const portId = area.properties.area != null ? String(area.properties.area) : undefined

@@ -207,7 +207,7 @@ const ReportActivityDatasetComparisonGraph = ({
             minTickGap={10}
             tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
             axisLine={{
-              stroke: leftAxisDomain[0] === 0 ? 'var(--color-primary-blue)' : 'transparent',
+              stroke: leftAxisDomain[0] === 0 ? 'var(--color-secondary-blue)' : 'transparent',
             }}
           />
           <YAxis

@@ -6,7 +6,7 @@ import type { DrawFeatureType, DrawLayer } from '@globalfishingwatch/deck-layers
 import { useMapDrawConnect } from 'features/_map/map/map-draw.hooks'
 
 // Using timestamp as workaround to force the CoordinateEditOverlay to re-render when the selected point changes
-const drawLayerInstanceAtom = atom<{ instance: DrawLayer; timestamp: number } | null>(null)
+export const drawLayerInstanceAtom = atom<{ instance: DrawLayer; timestamp: number } | null>(null)
 
 export const useDrawLayerInstance = () => {
   const { isMapDrawing, mapDrawingMode } = useMapDrawConnect()

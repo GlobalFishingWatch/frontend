@@ -152,7 +152,6 @@ export const fetchTrackIssuesThunk = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      // TODO: should we securize this endpoint?
       const response = await fetch(`${PATH_BASENAME}/api/track-corrections/${workspaceId}`, {
         method: 'GET',
         headers: {

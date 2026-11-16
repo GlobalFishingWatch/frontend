@@ -14,4 +14,5 @@ export type EventsReportGraphProps = {
   valueKeys: string[]
   eventType?: EventType
   graphType?: ReportEventsGraph
+  onIndividualSupportedChange?: (isIndividualSupported: boolean) => void
 }

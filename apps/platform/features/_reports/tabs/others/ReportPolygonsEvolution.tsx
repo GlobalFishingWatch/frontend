@@ -131,7 +131,9 @@ export default function ReportPolygonsEvolution({
           minTickGap={10}
           interval="preserveStartEnd"
           tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
-          axisLine={paddedDomain[0] === 0}
+          axisLine={{
+            stroke: paddedDomain[0] === 0 ? 'var(--color-secondary-blue)' : 'transparent',
+          }}
         />
         <YAxis
           scale="linear"

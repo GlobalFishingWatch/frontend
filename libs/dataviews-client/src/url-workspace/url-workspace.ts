@@ -46,6 +46,7 @@ const PARAMS_TO_ABBREVIATED = {
   environmentVisualizationMode: 'eVM',
   featureFlag: 'fF',
   firstTransmissionDate: 'fTD',
+  highlightedSceneId: 'hSI',
   lastTransmissionDate: 'lTD',
   mapAnnotations: 'mA',
   mapAnnotationsVisible: 'mAV',

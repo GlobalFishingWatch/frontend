@@ -43,7 +43,7 @@ test/integration/
 ```typescript
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { WAIT } from 'test/setup/constants'
+import { WAIT } from 'test/setup/config'
 import { defaultState } from 'test/utils/store'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
@@ -67,12 +67,12 @@ describe('Feature Name', () => {
 
 ## Test Utilities Reference
 
-### `test/setup/constants.ts`
+### `test/setup/config.ts`
 
 Shared constants for all specs:
 
 ```typescript
-import { WAIT, TEST_END_DATE } from 'test/setup/constants'
+import { WAIT, TEST_END_DATE } from 'test/setup/config'
 
 // System clock is frozen at TEST_END_DATE in vitest.setup.ts
 // Use WAIT constants instead of magic numbers:
@@ -934,32 +934,7 @@ await waitForLocationType(store, WORKSPACE_REPORT)
 
 ### Local Debugging
 
-```bash
-# Run all tests
-nx test platform
-
-# Run with interactive UI (recommended for debugging)
-nx test:ui platform
-
-# Run specific test file
-nx test platform Vessels.spec.tsx
-
-# Run in CI environment (Docker)
-nx test:ci platform
-```
-
-### Reading Test Artifacts
-
-After a test failure, artifacts are saved to:
-
-- **Screenshots:** `test/integration/__screenshots__/`
-- **Traces:** `test/integration/__traces__/`
-
-**View a trace file:**
-
-```bash
-npx playwright show-trace "apps/platform/test/integration/__traces__/Vessels.spec.tsx/trace-file.trace.zip"
-```
+Commands, artifact locations and trace viewing are in [test/README.md](../README.md#running).
 
 The trace viewer shows:
 

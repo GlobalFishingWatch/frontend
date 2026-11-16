@@ -5,7 +5,7 @@ import { NEW_DATASET_MODAL_ID } from 'data/map/config'
 import {
   useDatasetModalConfigConnect,
   useDatasetModalOpenConnect,
-} from 'features/_map/datasets/datasets.hook'
+} from 'features/modals/modals.hooks'
 import { selectDatasetUploadModalOpen } from 'features/modals/modals.slice'
 import type { RootState } from 'reducers'
 import { selectIsWorkspaceLocation } from 'router/routes.selectors'

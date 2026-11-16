@@ -50,3 +50,13 @@
 .spaceBetween {
   justify-content: space-between;
 }
+
+li.optionsGroupHeader.optionsGroupHeader {
+  cursor: default;
+  align-items: flex-end;
+  min-height: 0;
+  padding-block: 0 var(--space-XS);
+  font: var(--font-XS);
+  text-transform: uppercase;
+  color: var(--color-secondary-blue);
+}

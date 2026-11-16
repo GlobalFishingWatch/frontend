@@ -13,11 +13,16 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { getDatasetLabel, isPrivateDataset } from 'features/_map/datasets/datasets.utils'
 import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
 import { useMigrateToLatestDataview } from 'features/_map/dataviews/dataviews.hooks'
+import { isDarkRendezvousDataview } from 'features/_map/dataviews/dataviews.utils'
 import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import DatasetLoginRequired from 'features/_map/workspace/shared/DatasetLoginRequired'
 import DatasetSchemaField from 'features/_map/workspace/shared/DatasetSchemaField'
 import ExpandedContainer from 'features/_map/workspace/shared/ExpandedContainer'
 import { useLayerPanelDataviewSort } from 'features/_map/workspace/shared/layer-panel-sort.hook'
+import {
+  getLayerMoreIcon,
+  getLayerStatusIcon,
+} from 'features/_map/workspace/shared/layer-status-icon.utils'
 import Remove from 'features/_map/workspace/shared/Remove'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import {
@@ -182,8 +187,7 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
           />
           {!readOnly && layerActive && (layerError || showDeprecatedWarning) && (
             <IconButton
-              icon="warning"
-              type={showDeprecatedWarning ? 'warning-invert' : 'warning'}
+              {...getLayerStatusIcon({ deprecated: showDeprecatedWarning, error: !!layerError })}
               loading={showDeprecatedWarning && isMigrating}
               disabled={showDeprecatedWarning && isMigrating}
               onClick={showDeprecatedWarning ? () => onMigrateDataviewClick(dataview) : undefined}
@@ -210,23 +214,33 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
           )}
         </div>
         <IconButton
-          icon={
-            layerActive ? (layerError || showDeprecatedWarning ? 'warning' : 'more') : undefined
-          }
-          type={
-            layerActive
-              ? showDeprecatedWarning
-                ? 'warning-invert'
-                : layerError
-                  ? 'warning'
-                  : 'default'
-              : 'default'
-          }
+          {...getLayerMoreIcon({
+            layerActive,
+            deprecated: showDeprecatedWarning,
+            error: !!layerError,
+          })}
           loading={!showDeprecatedWarning && layerActive && !layerLoaded}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
         />
       </div>
+      {isDarkRendezvousDataview(dataview) && (
+        <div className={styles.properties}>
+          <span className={styles.dataWarning}>
+            {t((t) => t.dataset.realTimeEventsDelay)}
+            <IconButton
+              icon="info"
+              size="tiny"
+              tooltip={t((t) => t.dataset.realTimeEventsDelayInfo)}
+              tooltipPlacement="top"
+            />
+            <br />
+            <a href="https://www.skylight.global" target="_blank" rel="noopener noreferrer">
+              {t((t) => t.dataset.poweredBySkylight)}
+            </a>
+          </span>
+        </div>
+      )}
       {layerActive && hasSchemaFilterSelection && (
         <div className={styles.properties}>
           <div className={styles.filters}>

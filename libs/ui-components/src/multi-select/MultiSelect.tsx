@@ -27,7 +27,10 @@ export type MultiSelectOption<ID = any, Label = string | JSX.Element> = {
   tooltip?: string
   disableSelection?: boolean
   className?: string
+  height?: number
 }
+
+const OPTION_HEIGHT = 40
 /**
  * Callback on selecting or removing options
  * @param {SelectOption} option - Selected option
@@ -261,7 +264,8 @@ export function MultiSelect(props: MultiSelectProps) {
   const rowVirtualizer = useVirtualizer({
     count: filteredItems.length,
     getScrollElement: () => scrollRef.current,
-    estimateSize: () => 40,
+    estimateSize: (index) => filteredItems[index]?.height ?? OPTION_HEIGHT,
+    getItemKey: (index) => filteredItems[index]?.id ?? index,
     overscan: 5,
   })
 
@@ -373,7 +377,7 @@ export function MultiSelect(props: MultiSelectProps) {
                         }}
                         data-testid={`${testId}-option-${item.id}`}
                         className={cx(styles.optionItem, {
-                          [styles.highlight]: highlight,
+                          [styles.highlight]: highlight && !item.disableSelection,
                           [styles.selected]: isSelected,
                           [item.className || '']: item.className,
                           [styles.notAllowed]: item.disableSelection,

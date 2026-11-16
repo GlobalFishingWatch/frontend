@@ -17,6 +17,8 @@ type TitleProps = {
   dataview: UrlDataviewInstance
   className: string
   classNameActive: string
+  /** Overrides the dataview visibility for the active style, e.g. when the layer can't be shown */
+  active?: boolean
   title: string | ReactNode
   onToggle?: () => void
   toggleVisibility?: boolean
@@ -29,6 +31,7 @@ const Title = (props: TitleProps) => {
     dataview,
     className,
     classNameActive,
+    active,
     title,
     onToggle,
     toggleVisibility = true,
@@ -60,7 +63,7 @@ const Title = (props: TitleProps) => {
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <h3
         className={cx(styles.titleSpan, className, {
-          [classNameActive]: layerActive,
+          [classNameActive]: active ?? layerActive,
         })}
         onClick={onToggleLayerActive}
         {...(toggleVisibility && { [KEEP_MAP_POPUP_ATTRIBUTE]: true })}

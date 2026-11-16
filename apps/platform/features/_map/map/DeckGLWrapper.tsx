@@ -9,6 +9,7 @@ import { useSetAtom } from 'jotai'
 import { useSetDeckLayerLoadedState } from '@globalfishingwatch/deck-layer-composer'
 import { PICK_ONLY_LAYER_ID_SUFFIX } from '@globalfishingwatch/deck-layers/config'
 
+import { DECK_DEVICE_PROPS } from 'data/map/config'
 import { useDatasetDrag } from 'features/_map/map/drag-dataset.hooks'
 import { mapSizeAtom } from 'features/_map/map/map.atoms'
 import { MAP_CANVAS_ID } from 'features/_map/map/map.config'
@@ -21,9 +22,9 @@ import {
   useMapMouseHover,
 } from 'features/_map/map/map-interactions.hooks'
 import { useMapLayers } from 'features/_map/map/map-layers.hooks'
+import { useMapSetViewState } from 'features/_map/map/map-view-state.hooks'
 import {
   MAP_VIEW,
-  useMapSetViewState,
   useMapViewState,
   useMapViewStateUrlSync,
 } from 'features/_map/map/map-viewport.hooks'
@@ -136,7 +137,7 @@ const DeckGLWrapper = () => {
       id={MAP_CANVAS_ID}
       ref={deckRef}
       views={MAP_VIEW}
-      deviceProps={{ debug: process.env.DEBUG_DECK_LUMA === 'true' }}
+      deviceProps={DECK_DEVICE_PROPS}
       layers={deckRef ? layers : []}
       onAfterRender={onAfterRenderHandler}
       style={mapStyles}

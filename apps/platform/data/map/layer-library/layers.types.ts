@@ -17,6 +17,7 @@ export type LibraryLayerConfig = Omit<DataviewInstance, 'id'> & {
   previewImageUrl: string
   moreInfoLink?: string
   onlyGFWUser?: boolean
+  datasetPermission?: string
 }
 
 export type LibraryLayer = LibraryLayerConfig & {

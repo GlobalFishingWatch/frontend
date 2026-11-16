@@ -35,7 +35,12 @@ export function Tag(props: TagProps) {
         {...(color && { style: { color } })}
         {...(testId && { 'data-test': `${testId}` })}
       >
-        <span className={styles.content}>{children}</span>
+        <span
+          className={styles.content}
+          {...(!tooltip && typeof children === 'string' && { title: children })}
+        >
+          {children}
+        </span>
         {onRemove !== undefined && (
           <IconButton
             tooltip="Remove"

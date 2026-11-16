@@ -20,21 +20,15 @@ import {
   selectIsPortReportLocation,
   selectIsVesselGroupReportLocation,
 } from 'router/routes.selectors'
-import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './ReportSummary.module.css'
 
 type ReportSummaryProps = {
   activityUnit?: ReportActivityUnit
-  reportStatus?: AsyncReducerStatus
   showTags?: boolean
 }
 
-export default function ReportSummary({
-  activityUnit,
-  reportStatus = AsyncReducerStatus.Finished,
-  showTags = true,
-}: ReportSummaryProps) {
+export default function ReportSummary({ activityUnit, showTags = true }: ReportSummaryProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const reportCategory = useSelector(selectReportCategory)
@@ -59,10 +53,7 @@ export default function ReportSummary({
       {(reportCategory === ReportCategory.Activity ||
         reportCategory === ReportCategory.Detections) && (
         <div className={styles.summaryContainer}>
-          <ReportSummaryActivity
-            activityUnit={activityUnit || 'hour'}
-            reportStatus={reportStatus}
-          />
+          <ReportSummaryActivity activityUnit={activityUnit || 'hour'} />
         </div>
       )}
       {reportCategory === ReportCategory.Events && (

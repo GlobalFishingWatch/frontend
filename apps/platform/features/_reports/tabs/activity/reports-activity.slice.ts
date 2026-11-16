@@ -1,5 +1,5 @@
 import type { PayloadAction, WithSlice } from '@reduxjs/toolkit'
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
 import { stringify } from 'qs'
 
@@ -21,6 +21,7 @@ import type { AsyncError } from 'utils/async-slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getUTCDateTime } from 'utils/dates'
 
+import { resetReportData } from './reports-activity.actions'
 import type { ReportTimeComparisonValues } from './reports-activity.types'
 
 type PreviewBuffer = {
@@ -199,13 +200,6 @@ const reportSlice = createSlice({
   name: 'report',
   initialState,
   reducers: {
-    resetReportData: (state) => {
-      state.status = AsyncReducerStatus.Idle
-      state.data = null
-      state.error = null
-      state.reportRequestHash = ''
-      state.previewBuffer = { ...previewBufferInitialState }
-    },
     setReportRequestHash: (state, action: PayloadAction<string>) => {
       state.reportRequestHash = action.payload
     },
@@ -217,14 +211,6 @@ const reportSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // Nav inversion: MainNav dispatches one leaf action instead of importing this slice.
-    builder.addCase(workspaceTabClicked, (state) => {
-      state.status = AsyncReducerStatus.Idle
-      state.data = null
-      state.error = null
-      state.reportRequestHash = ''
-      state.previewBuffer = { ...previewBufferInitialState }
-    })
     builder.addCase(fetchReportVesselsThunk.pending, (state) => {
       state.status = AsyncReducerStatus.Loading
     })
@@ -237,11 +223,17 @@ const reportSlice = createSlice({
       state.status = AsyncReducerStatus.Error
       state.error = action.payload as ReportStateError
     })
+    builder.addMatcher(isAnyOf(workspaceTabClicked, resetReportData), (state) => {
+      state.status = AsyncReducerStatus.Idle
+      state.data = null
+      state.error = null
+      state.reportRequestHash = ''
+      state.previewBuffer = { ...previewBufferInitialState }
+    })
   },
 })
 
-export const { resetReportData, setReportRequestHash, setPreviewBuffer, setPinningVessels } =
-  reportSlice.actions
+export const { setReportRequestHash, setPreviewBuffer, setPinningVessels } = reportSlice.actions
 
 const injectedReportSlice = rootReducer.inject(reportSlice)
 

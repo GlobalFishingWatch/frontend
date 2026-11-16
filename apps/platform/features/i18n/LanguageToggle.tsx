@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
+import type { IconButtonType } from '@globalfishingwatch/ui-components/icon-button'
 import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 
 import { IS_DEVELOPMENT_ENV } from 'data/map/config'
@@ -32,34 +33,45 @@ export function CrowdinScripts({ enabled }: { enabled: boolean }) {
 type LanguageToggleProps = {
   className?: string
   position?: 'bottomRight' | 'rightDown' | 'rightUp'
+  buttonType?: IconButtonType
+  languages?: readonly string[]
+  value?: string
+  onChange?: (language: string) => void
 }
 
 const LanguageToggle: React.FC<LanguageToggleProps> = ({
   position = 'bottomRight',
   className = '',
+  buttonType = 'default',
+  languages,
+  value,
+  onChange,
 }: LanguageToggleProps) => {
   const { i18n } = useTranslation()
   const { options, toggleLanguage, isLoading } = useLanguageOptions()
+  const currentLanguage = value ?? i18n.language
+  const showDevWarning = IS_DEVELOPMENT_ENV && !onChange && i18n.language !== 'source'
+  const visibleOptions = languages ? options.filter(({ id }) => languages.includes(id)) : options
 
   return (
     <div className={cx(styles.languageToggle, className)} data-testid="language-toggle-container">
       <div className={styles.languageBtn}>
         <IconButton
-          icon={IS_DEVELOPMENT_ENV && i18n.language !== 'source' ? 'warning' : 'language'}
-          type={IS_DEVELOPMENT_ENV && i18n.language !== 'source' ? 'warning' : 'default'}
+          icon={showDevWarning ? 'warning' : 'language'}
+          type={showDevWarning ? 'warning' : buttonType}
           loading={isLoading}
           disabled={isLoading}
           testId="language-toggle-button"
         />
       </div>
       <ul className={cx(styles.languages, styles[position])} data-testid="language-menu">
-        {options.map(({ id, label, testId }) => (
+        {visibleOptions.map(({ id, label, testId }) => (
           <li key={id}>
             <button
-              onClick={() => toggleLanguage(id)}
+              onClick={() => (onChange ? onChange(id) : toggleLanguage(id))}
               data-testid={testId}
               className={cx(styles.language, {
-                [styles.currentLanguage]: i18n.language === id,
+                [styles.currentLanguage]: currentLanguage === id,
                 [styles.warning]: id === 'source' && i18n.language !== 'source',
               })}
             >

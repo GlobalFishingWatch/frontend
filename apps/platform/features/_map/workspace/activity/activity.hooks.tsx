@@ -32,16 +32,39 @@ import {
   selectDetectionsVisualizationMode,
   selectEnvironmentVisualizationMode,
 } from 'features/_map/workspace/selectors/app.selectors'
+import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { setUserSetting } from 'features/_user/user.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
+
+export const useSetFourwingsVisualizationMode = () => {
+  const { replaceQueryParams } = useReplaceQueryParams()
+  return useCallback(
+    (category: `${DataviewCategory}`, visualizationMode: FourwingsVisualizationMode) => {
+      replaceQueryParams((prev) => ({
+        [`${category}VisualizationMode`]: visualizationMode,
+        ...(category === DataviewCategory.Detections &&
+          visualizationMode !== POSITIONS_ID && {
+            dataviewInstances: prev.dataviewInstances?.map((dataviewInstance) => {
+              if (dataviewInstance.config?.highlightedSceneId === undefined) {
+                return dataviewInstance
+              }
+              const { highlightedSceneId: _, ...config } = dataviewInstance.config
+              return { ...dataviewInstance, config }
+            }),
+          }),
+      }))
+    },
+    [replaceQueryParams]
+  )
+}
 
 export const useVisualizationsOptions = (
   category: DataviewCategory.Activity | DataviewCategory.Detections | DataviewCategory.Environment
 ) => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { replaceQueryParams } = useReplaceQueryParams()
+  const setFourwingsVisualizationMode = useSetFourwingsVisualizationMode()
   const dataviews = useSelector(
     category === DataviewCategory.Activity
       ? selectActiveActivityDataviews
@@ -64,8 +87,10 @@ export const useVisualizationsOptions = (
         ? hasDetectionsDataviewVesselGroups
         : false
 
+  const guestUser = useSelector(selectIsGuestUser)
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(layerId)
-  const isPositionsLayerAvailable = fourwingsActivityLayer?.instance?.getIsPositionsAvailable()
+  const isPositionsLayerAvailable =
+    !guestUser && fourwingsActivityLayer?.instance?.getIsPositionsAvailable()
   const activeVisualizationOption = useSelector(
     category === DataviewCategory.Detections
       ? selectDetectionsVisualizationMode
@@ -80,13 +105,12 @@ export const useVisualizationsOptions = (
 
   const onVisualizationModeChange = useCallback(
     (visualizationMode: FourwingsVisualizationMode) => {
-      const categoryQueryParam = `${category}VisualizationMode`
-      replaceQueryParams({ [categoryQueryParam]: visualizationMode })
+      setFourwingsVisualizationMode(category, visualizationMode)
       if (visualizationMode !== 'positions') {
         dispatch(setUserSetting({ [PREFERRED_FOURWINGS_VISUALISATION_MODE]: visualizationMode }))
       }
     },
-    [category, dispatch]
+    [category, dispatch, setFourwingsVisualizationMode]
   )
 
   const visualizationOptions: ChoiceOption<FourwingsVisualizationMode>[] = useMemo(() => {
@@ -123,9 +147,11 @@ export const useVisualizationsOptions = (
                   {
                     id: POSITIONS_ID,
                     label: <Icon icon={isPositionsLayerAvailable ? 'vessel' : 'vessel-disabled'} />,
-                    tooltip: isPositionsLayerAvailable
-                      ? t((t) => t.map.positions)
-                      : t((t) => t.map.positionsDisabled),
+                    tooltip: guestUser
+                      ? t((t) => t.map.positionsLogin)
+                      : isPositionsLayerAvailable
+                        ? t((t) => t.map.positions)
+                        : t((t) => t.map.positionsDisabled),
                     tooltipPlacement: 'bottom',
                     disabled: !isPositionsLayerAvailable,
                   },
@@ -134,7 +160,7 @@ export const useVisualizationsOptions = (
           ] as ChoiceOption<FourwingsVisualizationMode>[])
         : []),
     ]
-  }, [category, hasVesselGroupsFilter, isPositionsLayerAvailable, positionsSupported, t])
+  }, [category, guestUser, hasVesselGroupsFilter, isPositionsLayerAvailable, positionsSupported, t])
 
   return useMemo(
     () => ({ visualizationOptions, activeVisualizationOption, onVisualizationModeChange }),

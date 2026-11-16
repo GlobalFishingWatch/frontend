@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { getVesselIdFromInstanceId } from '@globalfishingwatch/dataviews-client'
-import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
+import { Button, Icon, IconLogo, Spinner } from '@globalfishingwatch/ui-components'
 
 import { getVesselDataview } from 'features/_map/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
@@ -88,7 +88,7 @@ export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVes
         />
       )}
       {/* TODO remove when GFWOnly is removed */}
-      <Icon icon="gfw-logo" type="original-colors" tooltip={t((t) => t.common.onlyVisibleForGFW)} />
+      <IconLogo icon="gfw" tooltip={t((t) => t.common.onlyVisibleForGFW)} />
       {hasAllVesselsInWorkspace
         ? t((t) => t.analysis.removeVessels)
         : t((t) => t.analysis.pinVessels)}

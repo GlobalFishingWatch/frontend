@@ -26,12 +26,12 @@ import {
   getVesselIdFromInstanceId,
 } from '@globalfishingwatch/dataviews-client'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
-import { Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
+import { HighlightedText, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 
 import { FIRST_YEAR_OF_DATA, PRIVATE_ICON } from 'data/map/config'
 import { isPrivateDataset } from 'features/_map/datasets/datasets.utils'
 import { selectVesselsDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import AdvancedResultCellWithFilter from 'features/_vessels/search/advanced/AdvancedResultCellWithFilter'
 import type { SearchComponentProps } from 'features/_vessels/search/basic/SearchBasic'
 import { selectSearchQuery } from 'features/_vessels/search/search.config.selectors'
@@ -69,7 +69,6 @@ import {
   getVesselOtherNamesLabel,
   getVesselShipTypeLabel,
 } from 'utils/info'
-import { getHighlightedText } from 'utils/text'
 
 import cellStyles from '../basic/SearchBasicResult.module.css'
 import styles from './SearchAdvancedResults.module.css'
@@ -435,8 +434,8 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
                   (label?.length > TOOLTIP_LABEL_CHARACTERS ? label : '')
                 }
               >
-                <span>
-                  {getHighlightedText(name, searchQuery || '', cellStyles)}{' '}
+                <span translate="no">
+                  <HighlightedText text={name} highlight={searchQuery || ''} />{' '}
                   {otherNamesLabel && (
                     <span className={cellStyles.secondary}>{otherNamesLabel}</span>
                   )}
@@ -488,9 +487,15 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         header: t((t) => t.vessel.mmsi),
         cell: ({ row }) => {
           const ssvid = getSearchIdentityResolved(row.original).ssvid || EMPTY_FIELD_PLACEHOLDER
-          return searchFilters.ssvid
-            ? getHighlightedText(ssvid, searchFilters.ssvid || '', cellStyles)
-            : ssvid
+          return (
+            <span translate="no">
+              {searchFilters.ssvid ? (
+                <HighlightedText text={ssvid} highlight={searchFilters.ssvid || ''} />
+              ) : (
+                ssvid
+              )}
+            </span>
+          )
         },
       }),
       columnHelper.display({
@@ -499,9 +504,15 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         header: t((t) => t.vessel.imo),
         cell: ({ row }) => {
           const imo = getSearchIdentityResolved(row.original).imo || EMPTY_FIELD_PLACEHOLDER
-          return searchFilters.imo
-            ? getHighlightedText(imo, searchFilters.imo || '', cellStyles)
-            : imo
+          return (
+            <span translate="no">
+              {searchFilters.imo ? (
+                <HighlightedText text={imo} highlight={searchFilters.imo || ''} />
+              ) : (
+                imo
+              )}
+            </span>
+          )
         },
       }),
       columnHelper.display({
@@ -511,9 +522,15 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         cell: ({ row }) => {
           const callsign =
             getSearchIdentityResolved(row.original).callsign || EMPTY_FIELD_PLACEHOLDER
-          return searchFilters.callsign
-            ? getHighlightedText(callsign, searchFilters.callsign || '', cellStyles)
-            : callsign
+          return (
+            <span translate="no">
+              {searchFilters.callsign ? (
+                <HighlightedText text={callsign} highlight={searchFilters.callsign || ''} />
+              ) : (
+                callsign
+              )}
+            </span>
+          )
         },
       }),
       ...columnsByInfoSource,
@@ -542,8 +559,8 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
               <Tooltip
                 content={(label as string[])?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}
               >
-                <span>
-                  {getHighlightedText(label as string, searchFilters.owner || '', cellStyles)}
+                <span translate="no">
+                  <HighlightedText text={label as string} highlight={searchFilters.owner || ''} />
                 </span>
               </Tooltip>
             </AdvancedResultCellWithFilter>

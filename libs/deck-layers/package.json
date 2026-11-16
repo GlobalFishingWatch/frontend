@@ -74,7 +74,7 @@
     "luxon": "3.x",
     "pmtiles": "4.x",
     "qs": "6.x",
-    "simple-statistics": "7.x",
+    "simple-statistics": "8.x",
     "supercluster": "9.x",
     "tslib": "2.x"
   }

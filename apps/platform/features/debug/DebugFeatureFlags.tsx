@@ -30,24 +30,6 @@ const DebugFeatureFlags: React.FC = () => {
     <section className={styles.container}>
       <div className={styles.header}>
         <Switch
-          id="option_map_stats"
-          active={debugOptions.deckStats}
-          onClick={() => dispatch(toggleDebugOption(DebugOption.DeckStats))}
-        />
-        <label htmlFor="option_map_stats">Deck.gl stats (map and timebar)</label>
-      </div>
-      <p>Show fps and memory stats</p>
-      <div className={styles.header}>
-        <Switch
-          id="option_debug_tiles"
-          active={debugOptions.debugTiles}
-          onClick={() => dispatch(toggleDebugOption(DebugOption.DebugTiles))}
-        />
-        <label htmlFor="option_debug_tiles">Debug tiles</label>
-      </div>
-      <p>Displays info on tiles useful for debugging.</p>
-      <div className={styles.header}>
-        <Switch
           id="option_thinning"
           active={isTurningTidesWorkspace ? false : debugOptions.thinning}
           disabled={isTurningTidesWorkspace}
@@ -93,15 +75,43 @@ const DebugFeatureFlags: React.FC = () => {
       <p>Show the gaps threshold filter by hours in the vessel layer filters</p>
       <div className={styles.header}>
         <Switch
-          id="option_disable_dataset_hash"
-          active={debugOptions.addDatasetIdHash}
-          onClick={() => dispatch(toggleDebugOption(DebugOption.DatasetIdHash))}
+          id="option_log_clicked_features"
+          active={debugOptions.logClickedFeatures}
+          onClick={() => dispatch(toggleDebugOption(DebugOption.LogClickedFeatures))}
         />
-        <label htmlFor="option_disable_dataset_hash">Include dataset hash in IDs</label>
+        <label htmlFor="option_log_clicked_features">Log clicked features</label>
       </div>
-      <p>Dataset IDs includes a hash suffix. Disable to use cleaner IDs without hashes.</p>
+      <p>Log to the console the picked features of every layer on map click</p>
       {isGFWDeveloper && (
         <Fragment>
+          <div className={styles.header}>
+            <Switch
+              id="option_map_stats"
+              active={debugOptions.deckStats}
+              onClick={() => dispatch(toggleDebugOption(DebugOption.DeckStats))}
+            />
+            <label htmlFor="option_map_stats">Deck.gl stats (map and timebar)</label>
+          </div>
+          <p>Show fps and memory stats</p>
+          <div className={styles.header}>
+            <Switch
+              id="option_debug_tiles"
+              active={debugOptions.debugTiles}
+              onClick={() => dispatch(toggleDebugOption(DebugOption.DebugTiles))}
+            />
+            <label htmlFor="option_debug_tiles">Debug tiles</label>
+          </div>
+          <p>Displays info on tiles useful for debugging.</p>
+
+          <div className={styles.header}>
+            <Switch
+              id="option_disable_dataset_hash"
+              active={debugOptions.addDatasetIdHash}
+              onClick={() => dispatch(toggleDebugOption(DebugOption.DatasetIdHash))}
+            />
+            <label htmlFor="option_disable_dataset_hash">Include dataset hash in IDs</label>
+          </div>
+          <p>Dataset IDs includes a hash suffix. Disable to use cleaner IDs without hashes.</p>
           <div className={styles.header}>
             <Switch
               id="option_hotspot_button"
@@ -113,6 +123,17 @@ const DebugFeatureFlags: React.FC = () => {
             </label>
           </div>
           <p>Show the hotspot zone button in the report activity graph</p>
+          <div className={styles.header}>
+            <Switch
+              id="option_slow_report_tips"
+              active={featureFlags.slowReportTips}
+              onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.SlowReportTips))}
+            />
+            <label htmlFor="option_slow_report_tips">
+              <strong>Feature flag:</strong> Slow report tips
+            </label>
+          </div>
+          <p>Show the "Did you know?" tips while a slow report loads</p>
           <div className={styles.header}>
             <Switch
               id="option_areas_on_screen"

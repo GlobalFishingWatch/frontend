@@ -33,6 +33,7 @@ export type BaseResponsiveChartProps = {
   getIndividualData?: () => Promise<ResponsiveVisualizationData<'individual'> | undefined>
   individualValueKey?: ResponsiveVisualizationIndividualValueKey
   individualIcon?: ReactElement
+  onIndividualSupportedChange?: (isIndividualSupported: boolean) => void
 }
 
 // Mirrors recharts' AxisInterval without importing recharts into the public types

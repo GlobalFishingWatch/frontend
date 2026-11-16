@@ -16,11 +16,6 @@
   margin: 0 0.2rem;
 }
 
-.link {
-  text-decoration: underline;
-  flex: 1;
-}
-
 .updateContainer label {
   display: flex;
   padding: var(--space-M);

@@ -4,8 +4,8 @@ import type { ViteUserConfig } from 'vitest/config'
 import { defineConfig } from 'vitest/config'
 import type { BrowserProviderOption } from 'vitest/node'
 
-import { authTokensPlugin, publicAssetsPlugin } from './test/utils/vitest/plugins'
-import { basePath, plugins } from './vite.config'
+import { authTokensPlugin, publicAssetsPlugin } from './test/utils/vitest/plugins.ts'
+import { basePath, plugins } from './vite.config.ts'
 
 const DEFAULT_VIEWPORT = { width: 1280, height: 720 }
 
@@ -51,8 +51,15 @@ const tsconfigPathAliases = [
   })),
 ]
 
+// The persistent profile keeps the browser HTTP cache (tiles) warm across spec files. Chromium
+// refuses a profile another process already holds, so:
+// - CI shares one profile per worker. integration-tests.yml runs `integration-ci` with
+//   --parallel=1, so a worker's specs run one after another and each reuses the tiles the
+//   previous ones fetched.
+// - Locally, split tasks may run in parallel, so each Nx task gets its own profile.
+const profileName = process.env.CI ? 'ci' : (process.env.NX_TASK_TARGET_TARGET ?? 'default')
 const playwrightProvider: BrowserProviderOption = playwright({
-  persistentContext: true,
+  persistentContext: `./node_modules/.cache/vitest-playwright-user-data/${profileName.replace(/[^\w.-]+/g, '_')}`,
 })
 
 export default defineConfig(({ mode }): ViteUserConfig => {
@@ -106,6 +113,8 @@ export default defineConfig(({ mode }): ViteUserConfig => {
         'tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       ],
       fileParallelism: false,
+      // Expected with real API data: datasets without geometryType are hidden on purpose.
+      onConsoleLog: (log) => !log.includes('Dataset hidden from the layer library'),
       // maxWorkers: '50%',
       reporters: ['default'],
       coverage: {

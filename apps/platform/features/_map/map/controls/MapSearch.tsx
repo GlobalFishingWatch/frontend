@@ -17,7 +17,7 @@ import {
   selectMapSearchOpenRequested,
   setMapSearchOpenRequested,
 } from 'features/_map/map/controls/map-controls.slice'
-import { useMapSetViewState } from 'features/_map/map/map-viewport.hooks'
+import { useMapSetViewState } from 'features/_map/map/map-view-state.hooks'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import { useNavigateToAreaReport } from 'features/_reports/shared/area-search/area-report.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'

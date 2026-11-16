@@ -4,7 +4,7 @@ import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import TimeRangeDates from 'features/_map/map/controls/TimeRangeDates'
 import type { ExtendedFeatureVessel } from 'features/_map/map/map.slice'
-import { useTimerangeConnect } from 'features/_map/timebar/timebar.hooks'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import { t } from 'features/i18n/i18n'
 import I18nDate from 'features/i18n/i18nDate'
 import { getUTCDateTime } from 'utils/dates'

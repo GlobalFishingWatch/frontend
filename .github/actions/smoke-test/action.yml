@@ -68,7 +68,9 @@ runs:
     - name: Run the image
       shell: bash
       run: |
+        # No secrets here, so let the server boot without them (server/env.plugin.ts)
         docker run -d --name smoke-target \
+          -e ALLOW_MISSING_SERVER_ENV=true \
           -p ${{ inputs.port }}:3000 \
           "${{ inputs.image }}"
         # Wait until Nitro accepts connections. No -f: any HTTP status means it is listening.

@@ -9,7 +9,8 @@ import { getHelpHubArticleContent } from 'features/help/helpHub.serverfn'
 import type { HelpHubArticleData } from 'features/help/helpHub.types'
 import { findHelpHubSection } from 'features/help/helpHub.utils'
 import HelpHubSectionPage from 'features/help/HelpHubSectionPage'
-import { getCanonicalLink, getRouteHead } from 'router/router.meta'
+import { getArticleHead, getRouteHead } from 'router/router.meta'
+import { redirectToMapUnlessPlatformMode } from 'router/routes.guards'
 
 /**
  * One route serves both `/help-and-resources/$sectionSlug` and `.../$itemSlug`. The loader fetches
@@ -22,6 +23,7 @@ export const Route = createFileRoute(
   component: HelpHubSectionPage,
   ...helpHubRouteCache,
   beforeLoad: ({ params }) => {
+    redirectToMapUnlessPlatformMode()
     if (!findHelpHubSection(params.sectionSlug)) {
       throw redirect({
         to: ROUTE_PATHS.HELP_HUB,
@@ -44,16 +46,17 @@ export const Route = createFileRoute(
     }
     const { title, description } = getHelpHubSectionCopy(section.id)
     const item = loaderData?.item
-    return {
-      ...getRouteHead({
-        category: params.itemSlug ? (item?.title ?? startCase(params.itemSlug)) : title,
-        description: item?.description ?? description,
-      }),
-      links: [
-        getCanonicalLink(
-          `/help-and-resources/${section.slug}${params.itemSlug ? `/${params.itemSlug}` : ''}`
-        ),
-      ],
+    if (params.itemSlug && item) {
+      return getArticleHead({
+        title: item.title,
+        description: item.description ?? description,
+        pathname: `/help-and-resources/${section.slug}/${params.itemSlug}`,
+        datePublished: item.publicationDate,
+      })
     }
+    return getRouteHead({
+      category: params.itemSlug ? startCase(params.itemSlug) : title,
+      description,
+    })
   },
 })

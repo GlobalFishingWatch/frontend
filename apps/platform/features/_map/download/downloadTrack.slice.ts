@@ -2,8 +2,8 @@ import type { PayloadAction, WithSlice } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { stringify } from 'qs'
 
-import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
-import type { DownloadRateLimit, ThinningConfig } from '@globalfishingwatch/api-types'
+import { GFWAPI, parseAPIError, parseRateLimit } from '@globalfishingwatch/api-client'
+import type { RateLimit, ThinningConfig } from '@globalfishingwatch/api-types'
 
 import type { DateRange } from 'features/_map/download/downloadActivity.slice'
 import { logoutUserThunk } from 'features/_user/user.slice'
@@ -26,7 +26,7 @@ interface DownloadTrackState {
   datasets: string
   status: AsyncReducerStatus
   error: AsyncError | null
-  rateLimit: DownloadRateLimit
+  rateLimit: RateLimit
 }
 
 const initialState: DownloadTrackState = {
@@ -35,7 +35,7 @@ const initialState: DownloadTrackState = {
   datasets: '',
   status: AsyncReducerStatus.Idle,
   error: null,
-  rateLimit: {} as DownloadRateLimit,
+  rateLimit: {} as RateLimit,
 }
 
 export type DownloadTrackParams = {
@@ -47,18 +47,9 @@ export type DownloadTrackParams = {
   thinning?: ThinningConfig
 }
 
-const parseRateLimit = (response: Response) => {
-  return {
-    remaining: parseInt(response.headers.get('Ratelimit-Remaining') || ''),
-    limit: parseInt(response.headers.get('Ratelimit-Limit') || '10'),
-    retryAfter: parseInt(response.headers.get('Retry-After') || '0'),
-    reset: response.headers.get('Ratelimit-Reset'),
-  } as DownloadRateLimit
-}
-
-type RejectValueType = { error: AsyncError; rateLimit?: DownloadRateLimit }
+type RejectValueType = { error: AsyncError; rateLimit?: RateLimit }
 export const downloadTrackThunk = createAsyncThunk<
-  DownloadRateLimit,
+  RateLimit,
   DownloadTrackParams,
   {
     rejectValue: RejectValueType
@@ -167,7 +158,7 @@ const downloadTrackSlice = createSlice({
     })
     builder.addCase(logoutUserThunk.fulfilled, (state) => {
       state.error = null
-      state.rateLimit = {} as DownloadRateLimit
+      state.rateLimit = {} as RateLimit
     })
   },
 })

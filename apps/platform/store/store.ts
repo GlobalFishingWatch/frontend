@@ -7,7 +7,7 @@ import type {
 } from '@reduxjs/toolkit'
 import { configureStore } from '@reduxjs/toolkit'
 import { logoutUserMiddleware } from 'middlewares'
-import { queriesDynamicMiddleware, QUERY_REDUCER_PATHS } from 'queries/inject-api'
+import { queriesMiddleware, QUERY_REDUCER_PATHS } from 'queries/inject-api'
 
 import { rootReducer } from './reducers'
 
@@ -64,7 +64,7 @@ export const makeStore = (
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware(defaultMiddlewareOptions).concat(
-        queriesDynamicMiddleware.middleware,
+        queriesMiddleware,
         logoutUserMiddleware,
         ...(middlewares || [])
       ),

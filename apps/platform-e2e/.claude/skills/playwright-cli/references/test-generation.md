@@ -58,11 +58,17 @@ test('login flow', async ({ page }) => {
 
 ### Use semantic locators
 
-The generated code uses role-based locators when possible, which are more resilient:
+Follow the locator priority in [SKILL.md → Locator priority](../SKILL.md#locator-priority):
+`getByRole` → `getByText` → `getByLabel` → `getByPlaceholder` → `getByAltText` → `getByTitle`
+→ `getByTestId` → CSS. Generated code is not always at the top of that list — if it emitted
+`getByTestId` and the snapshot shows a role with a name, rewrite it as `getByRole`.
 
 ```typescript
-// Generated (good - semantic)
+// Good - semantic
 await page.getByRole('button', { name: 'Submit' }).click()
+
+// Fallback only - no readable locator was unique
+await page.getByTestId('submit-button').click()
 
 // Avoid (fragile - CSS selectors)
 await page.locator('#submit-btn').click()
@@ -91,7 +97,7 @@ Generated code captures actions but not assertions. Add expectations in your tes
 
 Use `playwright-cli generate-locator <target>` to produce the locator expression for the assertion, and the snapshot/eval commands to capture the expected value.
 
-When asserting text content, make sure that generated locator does not contain text from the element itself. `getByTestId()` or `getByLabel()` usually work well with asserting text. When locator is text-based, prefer `toBeVisible()` instead.
+When asserting text content, make sure that generated locator does not contain text from the element itself. Locate the element by something other than the text you assert: a role with a meaningful stable name, `getByLabel()`, or a descriptive `getByTestId()`. Don't pick a generic role locator (`getByRole('heading', { level: 1 })`) over a test id that names the element — readability beats hierarchy (see SKILL.md → Locator priority). When locator is text-based, prefer `toBeVisible()` instead.
 
 Snapshot to be matched does not have to contain all the information - only capture what's necessary for the assertion. You can use regular expressions for unstable values.
 

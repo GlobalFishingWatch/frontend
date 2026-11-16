@@ -3,7 +3,10 @@ import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-import { Icon, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
+import { Modal } from '@globalfishingwatch/ui-components/modal'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
+import { Tooltip } from '@globalfishingwatch/ui-components/tooltip'
 
 import ambassadorImg from 'assets/images/badges/ambassador.webp'
 import ambassadorPlaceholderImg from 'assets/images/badges/ambassador-placeholder.webp'

@@ -1,7 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-const MIGRAMAR_SPREADSHEET_ID = process.env.MIGRAMAR_SPREADSHEET_ID || ''
-
 export type MigramarSpecies = {
   id: string
   label_en: string
@@ -27,7 +25,8 @@ export const Route = createFileRoute('/api/migramar/options')({
       GET: async () => {
         try {
           const { loadSpreadsheetDoc } = await import('server/api/utils/spreadsheets')
-          const doc = await loadSpreadsheetDoc(MIGRAMAR_SPREADSHEET_ID)
+          const { serverEnv } = await import('server/env.server')
+          const doc = await loadSpreadsheetDoc(serverEnv.MIGRAMAR_SPREADSHEET_ID)
 
           const [speciesSheet, indicatorsSheet] = [
             doc.sheetsByTitle['species'],

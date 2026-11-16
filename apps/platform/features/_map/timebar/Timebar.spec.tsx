@@ -7,9 +7,9 @@ import { makeStore } from 'store'
 import { TimebarVisualisations } from 'types'
 
 import Timebar from './Timebar'
-import * as timebarHooks from './timebar.hooks'
+import * as timerangeHooks from './timerange.hooks'
 
-vi.mock('./timebar.hooks', { spy: true })
+vi.mock('./timerange.hooks', { spy: true })
 
 describe('Timebar', () => {
   beforeEach(() => {
@@ -33,7 +33,7 @@ describe('Timebar', () => {
 
     const onTimebarChangeSpy = vi.fn()
 
-    vi.mocked(timebarHooks.useTimerangeConnect).mockReturnValue({
+    vi.mocked(timerangeHooks.useTimerangeConnect).mockReturnValue({
       start: '2020-01-01',
       end: '2020-01-02',
       onTimebarChange: onTimebarChangeSpy,

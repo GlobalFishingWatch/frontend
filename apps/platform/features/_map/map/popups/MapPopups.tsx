@@ -32,9 +32,12 @@ function MapPopups() {
   const onClickOutside = useCallback(
     (e?: MouseEvent) => {
       const mapContainer = getSafeElementById(MAP_CONTAINER_ID)
-      // e.g. layer toggles refresh the popup content instead of closing it, and the chat
-      // assistant keeps it open so the user can ask about the clicked point
-      const keepsPopup = (e?.target as HTMLElement)?.closest?.(`[${KEEP_MAP_POPUP_ATTRIBUTE}]`)
+      // e.g. layer toggles refresh the popup content instead of closing it, the chat
+      // assistant keeps it open so the user can ask about the clicked point, and modals
+      // (often opened from the popup) are portaled outside it but keep the map context
+      const keepsPopup = (e?.target as HTMLElement)?.closest?.(
+        `[${KEEP_MAP_POPUP_ATTRIBUTE}], [data-modal-overlay]`
+      )
       if (e && !keepsPopup && !mapContainer?.contains(e.target as Node)) {
         dispatchClickedEvent(null)
         cancelPendingInteractionRequests()

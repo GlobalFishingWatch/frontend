@@ -1,45 +1,64 @@
 import type { Locator, Page } from 'playwright/test'
 import { expect } from 'playwright/test'
 
-import { clickMapCenterUntilVisible } from '../helpers/map'
-import { TIMEOUTS } from '../helpers/timeouts'
+import { REPORT_VESSELS_TABLE_TESTID } from '@platform/config/selectors/report'
+import { VESSEL_PROFILE_LINK_TESTID } from '@platform/config/selectors/vessels'
+import { SOURCE_TAG_TESTID } from '@platform/config/selectors/workspace'
 
-const EEZ_DATAVIEW_ID = 'context-layer-eez'
-const MAP_POPUP_TESTID = 'map-popup-wrapper'
-const SEE_FULL_ANALYSIS_LINK_NAME = 'See full analysis for this area'
+import { waitForHydration } from '../helpers/hydration'
+import { TIMEOUTS } from '../helpers/timeouts'
+import { appPath } from '../paths'
+
+const SEE_VESSELS_BUTTON_NAME = 'See vessels'
+const VESSELS_LOGIN_GATE_NAME = 'Register or log in to see the active vessels in this area'
+
+export type AreaReport = {
+  title: RegExp
+  path: string
+  start: string
+  end: string
+}
+
+export const CANARY_ISLANDS_EEZ: AreaReport = {
+  title: /Canary Islands/,
+  path: appPath('/map/fishing-activity/default-public/report/public-eez-areas/8364'),
+  start: '2025-07-01T00:00:00.000Z',
+  end: '2026-07-01T00:00:00.000Z',
+}
 
 export class ReportPage {
   private page: Page
-  readonly openAnalysisButton: Locator
   readonly reportTitle: Locator
+  readonly vesselsTable: Locator
+  readonly seeVesselsButton: Locator
+  readonly vesselsLoginGate: Locator
 
   constructor(page: Page) {
     this.page = page
-    const mapPopup = page.getByTestId(MAP_POPUP_TESTID)
-    this.openAnalysisButton = mapPopup.getByRole('link', { name: SEE_FULL_ANALYSIS_LINK_NAME })
+    this.vesselsTable = page.getByTestId(REPORT_VESSELS_TABLE_TESTID)
     this.reportTitle = page.getByRole('heading', { level: 1 })
+    this.seeVesselsButton = page.getByRole('button', { name: SEE_VESSELS_BUTTON_NAME })
+    this.vesselsLoginGate = page.getByRole('heading', { name: VESSELS_LOGIN_GATE_NAME })
   }
 
-  private contextLayerToggle(dataviewId: string) {
-    return this.page.getByTestId(`context-layer-${dataviewId}`)
-  }
-
-  private sourceTagChip(datasetId?: string) {
+  private sourceTag(datasetId?: string) {
     return datasetId
-      ? this.page.locator(`[data-test="source-tag-item-${datasetId}"]`)
-      : this.page.locator('[data-test^="source-tag-item-"]')
+      ? this.page.locator(`[data-test="${SOURCE_TAG_TESTID}-${datasetId}"]`)
+      : this.page.locator(`[data-test^="${SOURCE_TAG_TESTID}-"]`)
   }
 
-  async toggleEezLayer() {
-    const contextLayerToggle = this.contextLayerToggle(EEZ_DATAVIEW_ID)
-    await contextLayerToggle.scrollIntoViewIfNeeded()
-    await contextLayerToggle.click()
+  async open({ path, start, end }: AreaReport) {
+    await this.page.goto(`${path}?${new URLSearchParams({ start, end })}`)
+    await waitForHydration(this.page)
   }
 
-  async openAnalysisFromMap() {
-    await clickMapCenterUntilVisible(this.page, this.openAnalysisButton, { timeout: TIMEOUTS.TEST })
-    await this.openAnalysisButton.click()
-    await this.page.waitForURL(/\/report\//)
+  async loadVesselTable() {
+    await expect(async () => {
+      if (await this.seeVesselsButton.isVisible()) {
+        await this.seeVesselsButton.click()
+      }
+      await expect(this.vesselsTable).toBeVisible({ timeout: TIMEOUTS.LONG })
+    }).toPass({ timeout: TIMEOUTS.TEST })
   }
 
   async expectReportTitleVisible(pattern: RegExp) {
@@ -48,7 +67,18 @@ export class ReportPage {
   }
 
   async expectSourceTagVisible() {
-    await expect(this.sourceTagChip().first()).toBeVisible()
+    await expect(this.sourceTag().first()).toBeVisible()
+  }
+
+  async expectVesselsLoginGate() {
+    await expect(this.vesselsLoginGate).toBeVisible({ timeout: TIMEOUTS.LONG })
+    await expect(this.vesselsTable).toBeHidden()
+    await expect(this.seeVesselsButton).toBeHidden()
+  }
+
+  async expectVesselTableVisible() {
+    await expect(this.vesselsTable).toBeVisible()
+    await expect(this.vesselsTable.getByTestId(VESSEL_PROFILE_LINK_TESTID).first()).toBeVisible()
   }
 
   expectReportUrl() {

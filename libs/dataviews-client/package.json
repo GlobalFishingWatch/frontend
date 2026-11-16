@@ -38,7 +38,6 @@
     "tslib": "2.x"
   },
   "devDependencies": {
-    "@nx/vite": "23.x",
     "esbuild": "0.x",
     "vite": "8.x",
     "vitest": "5.x"

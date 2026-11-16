@@ -12,6 +12,7 @@ import {
 } from '@globalfishingwatch/api-client'
 import type { APIPagination, Dataview } from '@globalfishingwatch/api-types'
 
+import { clientEnv } from 'data/env'
 import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV } from 'data/map/config'
 import type { AsyncError, AsyncReducer } from 'utils/async-slice'
 import { createAsyncSlice } from 'utils/async-slice'
@@ -32,8 +33,7 @@ export const fetchDataviewByIdThunk = createAsyncThunk(
   }
 )
 
-const USE_MOCKED_DATAVIEWS =
-  IS_DEVELOPMENT_ENV || import.meta.env.VITE_USE_LOCAL_DATAVIEWS === 'true'
+const USE_MOCKED_DATAVIEWS = IS_DEVELOPMENT_ENV || clientEnv.VITE_USE_LOCAL_DATAVIEWS
 const mockedDataviewsImported = false
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',

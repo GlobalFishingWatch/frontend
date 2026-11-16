@@ -5,12 +5,12 @@ import { useParams, useRouterState } from '@tanstack/react-router'
 
 import { trackEvent as trackEventBase, useAnalyticsInit } from '@globalfishingwatch/react-hooks'
 
+import { clientEnv } from 'data/env'
 import { GOOGLE_MEASUREMENT_ID, GOOGLE_TAG_MANAGER_ID } from 'data/map/config'
 import { selectIsGuestUser, selectUserData } from 'features/_user/selectors/user.selectors'
 import { mapRoutePathToType } from 'router/routes.utils'
 
-const GOOGLE_ANALYTICS_DEBUG_MODE =
-  (import.meta.env.VITE_GOOGLE_ANALYTICS_TEST_MODE || 'false').toLowerCase() === 'true'
+const GOOGLE_ANALYTICS_DEBUG_MODE = clientEnv.VITE_GOOGLE_ANALYTICS_TEST_MODE
 
 export enum TrackCategory {
   General = 'general',

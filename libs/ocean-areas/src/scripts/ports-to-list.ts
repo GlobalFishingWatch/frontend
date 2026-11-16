@@ -2,6 +2,8 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { fileURLToPath } from 'url'
 
+import { getPortSources, type PortSource } from './lib/port-sources.ts'
+
 type PortFeature = {
   type: 'Feature'
   properties: {
@@ -19,7 +21,9 @@ type PortListData = {
   id: string
   name: string
   flag: string
+  sources: PortSource[]
 }
+type PortSourceListItem = { id: string; encounters?: string; loitering?: string }
 
 const NUMERIC_NAME = /^\d+$/
 const HEX_NAME = /^[0-9a-f]+$/i
@@ -48,16 +52,20 @@ function toTsModule(ports: PortListData[]) {
     id: ${quote(port.id)},
     name: ${quote(port.name)},
     flag: ${quote(port.flag)},
+    sources: [${port.sources.map(quote).join(', ')}],
   },`
   })
   return `const ports = [\n${entries.join('\n')}\n]\n\nexport default ports\n`
 }
 
-function convertPortsToList(inputPath: string, outputPath: string): void {
+function convertPortsToList(inputPath: string, sourceListPath: string, outputPath: string): void {
   console.log(`Reading ports data from: ${inputPath}`)
 
   const rawData = fs.readFileSync(inputPath, 'utf-8')
   const ports: PortFeature[] = JSON.parse(rawData)
+  // ports.json drops the encounters/loitering tags, the downloaded source list keeps them
+  const sourceList: PortSourceListItem[] = JSON.parse(fs.readFileSync(sourceListPath, 'utf-8'))
+  const sourcesById = new Map(sourceList.map((port) => [port.id, getPortSources(port)]))
 
   console.log(`Found ${ports.length} ports`)
   let invalidPorts = 0
@@ -75,7 +83,9 @@ function convertPortsToList(inputPath: string, outputPath: string): void {
       return []
     }
 
-    return { id: area, name, flag }
+    // The source list replaces "/" in ids with "_" (they are file names)
+    const sources = sourcesById.get(area.replaceAll('/', '_')) ?? []
+    return { id: area, name, flag, sources }
   })
 
   if (invalidPorts > 0) {
@@ -94,5 +104,6 @@ const platformDataDir = path.resolve(oceanAreasRoot, '../../apps/platform/data')
 
 convertPortsToList(
   path.join(oceanAreasRoot, 'src/data/ports.json'),
+  path.join(oceanAreasRoot, 'src/source/ports-v5/list.json'),
   path.join(platformDataDir, 'ports.ts')
 )

@@ -18,7 +18,7 @@ vi.mock('@loaders.gl/core', () => ({
   }),
 }))
 
-const { fetchWithGFWAPI } = await import('./api')
+const { fetchWithGFWAPI, getTileErrorMessage } = await import('./api')
 
 const trackLayer = { props: { loaders: [{ id: 'vessel-tracks' }], loadOptions: {} } }
 
@@ -57,5 +57,31 @@ describe('fetchWithGFWAPI track timestampBase', () => {
     await fetchWithGFWAPI('/track', { layer: trackLayer })
     expect(error).not.toHaveBeenCalled()
     error.mockRestore()
+  })
+})
+
+describe('getTileErrorMessage', () => {
+  it('skips 404s and keeps other messages', () => {
+    expect(getTileErrorMessage(new Error('404 Not Found'))).toBeUndefined()
+    expect(getTileErrorMessage(new Error('500 Boom'))).toBe('500 Boom')
+  })
+})
+
+describe('fetchWithGFWAPI errors', () => {
+  it('rethrows an HTTP failure as an Error carrying the status', async () => {
+    const response = new Response(null, { status: 404, statusText: 'Not Found' })
+    fetchMock.mockRejectedValue(response)
+    const error = (await fetchWithGFWAPI('/tile').catch((e) => e)) as Error & { status: number }
+    expect(error).toBeInstanceOf(Error)
+    // user tile layers skip empty tiles with error.message.includes('404')
+    expect(error.message).toBe('404 Not Found')
+    expect(error.status).toBe(404)
+    expect(error.cause).toBe(response)
+  })
+
+  it('passes other rejections through untouched', async () => {
+    const abort = new DOMException('aborted', 'AbortError')
+    fetchMock.mockRejectedValue(abort)
+    await expect(fetchWithGFWAPI('/tile')).rejects.toBe(abort)
   })
 })

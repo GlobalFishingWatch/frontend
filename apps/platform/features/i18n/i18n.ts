@@ -3,6 +3,7 @@ import i18n, { type Resource } from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import Backend from 'i18next-http-backend'
 
+import { clientEnv } from 'data/env'
 import { PATH_BASENAME } from 'data/map/config'
 import {
   CLIENT_LANGUAGE_DETECTION,
@@ -58,7 +59,7 @@ if (!import.meta.env.SSR) {
       defaultNS: DEFAULT_NAMESPACE,
       fallbackLng: ssrState?.initialLanguage ?? FALLBACK_LNG,
       supportedLngs: SUPPORTED_LANGUAGES,
-      debug: import.meta.env.VITE_I18N_DEBUG === 'true',
+      debug: clientEnv.VITE_I18N_DEBUG,
       interpolation: {
         escapeValue: false, // not needed for react as it escapes by default,
       },

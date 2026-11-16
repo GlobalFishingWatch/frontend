@@ -6,13 +6,7 @@ import {
   selectActiveEventsReportSubCategories,
   selectActiveReportCategories,
 } from 'features/_map/dataviews/selectors/dataviews.reports.selectors'
-import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/_reports/report-area/area-reports.config'
-import {
-  selectIsVesselGroupReportLocation,
-  selectLocationAreaId,
-  selectLocationDatasetId,
-  selectReportId,
-} from 'router/routes.selectors'
+import { selectIsVesselGroupReportLocation } from 'router/routes.selectors'
 
 import {
   selectReportActivitySubCategorySelector,
@@ -22,7 +16,6 @@ import {
   selectReportVesselGraphSelector,
   selectReportVesselsSubCategory,
 } from './reports.config.selectors'
-import { selectReportById } from './reports.slice'
 import type {
   AnyReportSubCategory,
   ReportActivitySubCategory,
@@ -32,31 +25,6 @@ import type {
   ReportVesselsSubCategory,
 } from './reports.types'
 import { ReportCategory } from './reports.types'
-
-export const selectCurrentReport = createSelector(
-  [selectReportId, (state) => state.reports],
-  (reportId, reports) => {
-    const report = reportId ? selectReportById(reportId)({ reports }) : undefined
-    return report
-  }
-)
-
-export const selectReportDatasetId = createSelector(
-  [selectLocationDatasetId, selectCurrentReport],
-  (locationDatasetId, report) => {
-    return locationDatasetId || report?.datasetId || ''
-  }
-)
-
-export const selectReportAreaId = createSelector(
-  [selectLocationAreaId, selectCurrentReport, selectIsVesselGroupReportLocation],
-  (locationAreaId, report, isVesselGroupReportLocation) => {
-    if (isVesselGroupReportLocation) {
-      return ENTIRE_WORLD_REPORT_AREA_ID
-    }
-    return locationAreaId || report?.areaId || ''
-  }
-)
 
 export const selectReportActiveCategories = createSelector(
   [selectActiveReportCategories, selectIsVesselGroupReportLocation],

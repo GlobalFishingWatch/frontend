@@ -9,20 +9,30 @@ packages:
 
 overrides:
   adm-zip@0.5: 0.6.0
-  axios@1: 1.19.0
-  brace-expansion@1: 1.1.18
-  brace-expansion@2: 2.1.4
-  brace-expansion@5: 5.0.9
-  fast-uri@3: 3.1.5
+  axios@1: 1.20.0
+  brace-expansion@1: 1.1.21
+  brace-expansion@2: 2.1.7
+  brace-expansion@5: 5.0.12
+  fast-uri@3: 3.1.9
+  fflate@0.7: 0.7.5
+  glob@13: 14.0.3
   http-proxy-middleware@3: 3.0.7
-  minimatch@9: 9.0.9
+  minimatch@10: 11.0.4
+  minimatch@9: 11.0.4
+  # nx 24 calls minimatch.makeRe, removed in 11: forcing 11 crashes `nx --exclude` globs.
+  # GHSA-g3hv-75wg-m249 has no 10.x fix, but nx only matches our own config globs.
+  # Drop once nx depends on minimatch >= 11.0.1.
+  nx>minimatch: 10.2.5
   nanoid@3: 3.3.18
-  piscina@4: 4.9.3
+  piscina@4: 4.9.4
   postcss@8: 8.5.25
   protobufjs@7: 7.6.5
+  qs@6: 6.17.1
   serialize-javascript@6: 7.0.7
+  seroval-plugins@1: 1.6.12
+  seroval@1: 1.6.12
   svgo@3: 3.3.4
-  undici@7: 7.29.0
+  undici@7: 7.30.1
 
 allowBuilds:
   '@parcel/watcher': true
@@ -38,13 +48,10 @@ allowBuilds:
   unrs-resolver: true
 
 patchedDependencies:
-  # Moves SIGINT/SIGTERM handlers outside watch-mode so vitest exits cleanly in
-  # non-watch CI runs. Remove once @nx/vitest ships the upstream fix.
-  '@nx/vitest@23.2.1': patches/@nx__vitest@23.2.1.patch
-  # Adds an import.meta.dirname fallback + exports map so h3-js resolves __dirname in
-  # the ESM (Vite/Nitro) server bundle. Remove once h3-js publishes ESM-safe builds.
-  h3-js@4.4.0: patches/h3-js@4.4.0.patch
   # Removes a lookbehind from the email-autolink regex. Safari/iOS <16.4 can't parse
   # lookbehind regex literals, so the whole bundle chunk fails to load and crashes the
   # app for those users. Remove once we drop support for Safari <16.4.
   mdast-util-gfm-autolink-literal@2.0.1: patches/mdast-util-gfm-autolink-literal@2.0.1.patch
+
+minimumReleaseAgeExclude:
+  - i18next-cli@1.82.2

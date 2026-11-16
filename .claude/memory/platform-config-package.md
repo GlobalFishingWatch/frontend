@@ -5,7 +5,7 @@ description: apps/platform/config is a build-less source-only pnpm package (@pla
 
 # @platform/config is a build-less source-only package
 
-`@platform/config` (`apps/platform/config`) is a build-less pnpm workspace package: `exports` point straight at TS source, no nx build target. Exports are subpaths only: `./routes` → `routes.ts` and `./map/*` → `map/*.ts`. There is no root `.` entry and no `index.ts` barrel.
+`@platform/config` (`apps/platform/config`) is a build-less pnpm workspace package: `exports` point straight at TS source, no nx build target. Exports are subpaths only: `./routes` → `routes.ts`, `./user-guide` → `user-guide.ts`, `./map/*` → `map/*.ts` and `./selectors/*` → `selectors/*.ts`. There is no root `.` entry and no `index.ts` barrel.
 
 Single source of truth for `WorkspaceCategory`, dataview slugs / instance ids, and `ROUTE_PATHS`. Consumers import it directly (`@platform/config/routes` in `router.tsx`, `features/nav/*`, `routes/_platform/**`).
 
@@ -17,6 +17,14 @@ Single source of truth for `WorkspaceCategory`, dataview slugs / instance ids, a
 
 Each constant is imported from the subpath of the file that defines it (`@platform/config/map/dataviews`, `@platform/config/routes`, …) and from nowhere else. The root barrel was deleted on 2026-09-24 and must not come back, and no app file re-exports these constants. Before, the same constant was reachable from `@platform/config`, `@platform/config/map/dataviews` and `features/_map/dataviews/dataviews.utils`. The editor's auto-import offered all three paths, so each file picked a different one.
 
-A new file under `map/` is exported automatically by the `./map/*` pattern. Only a new top-level file needs its own `exports` entry.
+A new file under `map/` or `selectors/` is exported automatically by its `/*` pattern. Only a new top-level file needs its own `exports` entry.
 
 When you move a constant into this package, update its consumers to import it from the subpath. Do not add a re-export in the file that owned it before.
+
+## Test ids live in `selectors/`
+
+Every `data-testid` / `data-test` / DOM id that `apps/platform-e2e` queries is a constant in `selectors/<area>.ts`, imported by **both** the component that renders it and the e2e page or helper that queries it.
+
+**Why:** with a string literal on each side, renaming a test id in the app broke e2e silently and showed up only as a red e2e run. A shared constant makes the rename a typecheck error.
+
+**How to apply:** when an e2e test needs a new test id, add the constant here first and use it in the component — never a literal on either side. `apps/platform-e2e/package.json` depends on `@platform/config` (`workspace:*`) for this; Playwright transpiles these `.ts` files because the pnpm symlink resolves outside `node_modules`. Out of scope on purpose: ids owned by `libs/ui-components` (`SPLIT_VIEW_DOM_ID`, its `Header`), which a published lib cannot import from app config, and i18n text used in role/label selectors.

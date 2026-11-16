@@ -16,7 +16,7 @@ import {
 } from 'features/_reports/report-dataview-category.utils'
 import { isVesselGroupActivityDataview } from 'features/_reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectReportComparisonDataviewIds } from 'features/_reports/reports.config.selectors'
-import { selectReportDatasetId } from 'features/_reports/reports.selectors'
+import { selectReportDatasetId } from 'features/_reports/reports.current.selectors'
 import { selectReportVesselGroupId } from 'router/routes.selectors'
 
 import { dataviewHasUserTimeRange, dataviewHasVesselGroupId } from '../dataviews.utils'

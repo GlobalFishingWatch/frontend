@@ -3,8 +3,13 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 
+import { getAvailableIntervalsInDataviews } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { FOURWINGS_INTERVALS_ORDER, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import {
+  FOURWINGS_INTERVALS_ORDER,
+  FOURWINGS_REAL_TIME_INTERVALS,
+  getFourwingsInterval,
+} from '@globalfishingwatch/deck-loaders'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import type {
   HighlightedChunks,
@@ -13,6 +18,7 @@ import type {
 } from '@globalfishingwatch/timebar'
 import { Timebar } from '@globalfishingwatch/timebar'
 
+import { DECK_DEVICE_PROPS } from 'data/map/config'
 import { selectHasVectorDataviews } from 'features/_map/dataviews/selectors/dataviews.instances.selectors'
 import { useMapDrawConnect } from 'features/_map/map/map-draw.hooks'
 import { useTimebarTracksGraphSteps } from 'features/_map/map/timebar-graph.hooks'
@@ -22,7 +28,6 @@ import {
   useHighlightedEventsConnect,
   useTimebarVisualisation,
   useTimebarVisualisationConnect,
-  useTimerangeConnect,
 } from 'features/_map/timebar/timebar.hooks'
 import {
   useOnTimebarRangeChange,
@@ -36,13 +41,14 @@ import {
   useTimebarVesselTracksGraph,
 } from 'features/_map/timebar/timebar-vessel.hooks'
 import TimebarClusterEventsGraph from 'features/_map/timebar/TimebarClusterEventsGraph'
+import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
 import { selectLatestAvailableDataDate } from 'features/_map/workspace/selectors/app.data-date.selectors'
 import { selectScreenshotMode } from 'features/_map/workspace/selectors/app.selectors'
 import {
   selectTimebarGraph,
   selectTimebarVisualisation,
 } from 'features/_map/workspace/selectors/app.timebar.selectors'
-import { selectTimeMode } from 'features/_map/workspace/workspace.selectors'
+import { selectIsRealTimeMode, selectTimeMode } from 'features/_map/workspace/workspace.selectors'
 import { selectShowTimeComparison } from 'features/_reports/report-area/area-reports.selectors'
 import { selectIsVessselGroupsFiltering } from 'features/_user/vessel-groups/vessel-groups.selectors'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -59,6 +65,7 @@ import { upperFirst } from 'utils/info'
 import {
   selectAvailableEnd,
   selectAvailableStart,
+  selectTimebarSelectedDataviews,
   selectTimebarSelectedVisualizationMode,
 } from './timebar.selectors'
 import { selectHighlightedTime } from './timebar.slice'
@@ -97,7 +104,15 @@ const TimebarHighlighterWrapper = memo(
     const highlightedTime = useSelector(selectHighlightedTime)
     const visualizationMode = useSelector(selectTimebarSelectedVisualizationMode)
     const { start, end } = useTimerangeConnect()
-    const interval = getFourwingsInterval(start, end)
+    const isRealTimeMode = useSelector(selectIsRealTimeMode)
+    const dataviews = useSelector(selectTimebarSelectedDataviews)
+    const dataviewsIntervals = getAvailableIntervalsInDataviews(dataviews)
+    const availableIntervals = isRealTimeMode
+      ? FOURWINGS_REAL_TIME_INTERVALS
+      : dataviewsIntervals.length
+        ? dataviewsIntervals
+        : FOURWINGS_INTERVALS_ORDER
+    const interval = getFourwingsInterval(start, end, availableIntervals)
 
     const onHighlightChunks = useCallback(
       (chunks?: HighlightedChunks) => {
@@ -386,6 +401,7 @@ const TimebarWrapper = () => {
           onMouseMove={onMouseMove}
           onGraphClick={onGraphClick}
           showDeckStats={debugOptions.deckStats}
+          deviceProps={DECK_DEVICE_PROPS}
         >
           {!isSmallScreen ? timebarGraphComponent : null}
         </Timebar.Charts.Wrapper>

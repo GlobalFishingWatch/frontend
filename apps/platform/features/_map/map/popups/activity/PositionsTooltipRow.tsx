@@ -15,6 +15,7 @@ import {
 } from '@globalfishingwatch/datasets-client'
 import type { FourwingsPositionsPickingObject } from '@globalfishingwatch/deck-layers'
 import {
+  getDetectionSceneId,
   getIsActivityPositionMatched,
   getIsDetectionsPositionMatched,
 } from '@globalfishingwatch/deck-layers'
@@ -28,6 +29,7 @@ import { selectAllDataviewInstancesResolved } from 'features/_map/dataviews/sele
 import type { PositionRealTimeVessel } from 'features/_map/map/map.slice'
 import { fetchDetectionThumbnailsThunk } from 'features/_map/map/map.slice'
 import { interactionPromisesAtom } from 'features/_map/map/map-interactions.atoms'
+import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
 import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import VesselLink from 'features/_vessels/vessel/VesselLink'
 import VesselPin from 'features/_vessels/vessel/VesselPin'
@@ -35,8 +37,11 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import I18nDate from 'features/i18n/i18nDate'
+import { openDetectionFeedbackModal } from 'features/modals/modals.slice'
 import { pickDateFormatByPrecision } from 'utils/dates'
 import { formatInfoField, upperFirst } from 'utils/info'
+
+import { getPositionsDataviewInstanceId } from '../map-popups.utils'
 
 import popupStyles from '../Popup.module.css'
 
@@ -64,13 +69,24 @@ function DetectionThumbnails({
   thumbnails,
   scale,
   datasetId,
+  detectionId,
+  dataviewInstanceId,
+  highlightedSceneId,
 }: {
   thumbnails: DetectionThumbnail[]
   scale?: number
   datasetId?: string
+  detectionId?: string
+  dataviewInstanceId?: string
+  highlightedSceneId?: string
 }) {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
+
   const [selectedName, setSelectedName] = useState<string>()
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const sceneId = getDetectionSceneId(detectionId)
+  const isSceneHighlighted = sceneId !== undefined && highlightedSceneId === sceneId
   if (!thumbnails.length) {
     return null
   }
@@ -98,15 +114,42 @@ function DetectionThumbnails({
           datasetId={datasetId}
         />
       </Suspense>
-      {options.length > 1 && (
-        <Choice
+      <div className={popupStyles.thumbnailControls}>
+        {sceneId && dataviewInstanceId && (
+          <IconButton
+            icon={isSceneHighlighted ? 'satellite-off' : 'satellite'}
+            size="small"
+            className={popupStyles.thumbnailSceneButton}
+            tooltip={
+              isSceneHighlighted
+                ? t((t) => t.detectionScene.removeHighlight)
+                : t((t) => t.detectionScene.addHighlight)
+            }
+            onClick={() =>
+              upsertDataviewInstance({
+                id: dataviewInstanceId,
+                config: { highlightedSceneId: isSceneHighlighted ? undefined : sceneId },
+              })
+            }
+          />
+        )}
+        <IconButton
+          icon="feedback"
           size="small"
-          options={options}
-          activeOption={thumbnail.name}
-          onSelect={({ id }) => setSelectedName(id)}
-          containerClassName={popupStyles.thumbnailBands}
+          className={popupStyles.thumbnailSceneButton}
+          tooltip={t((t) => t.detectionFeedback.title)}
+          onClick={() => dispatch(openDetectionFeedbackModal({ datasetId, detectionId }))}
         />
-      )}
+        {options.length > 1 && (
+          <Choice
+            size="small"
+            options={options}
+            activeOption={thumbnail.name}
+            onSelect={({ id }) => setSelectedName(id)}
+            containerClassName={popupStyles.thumbnailBands}
+          />
+        )}
+      </div>
     </div>
   )
 }
@@ -126,7 +169,8 @@ function PositionsTooltipRow({
   const workspace = useSelector(selectWorkspace)
   const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
   const dataviewInstances = useSelector(selectAllDataviewInstancesResolved)
-  const featureDataview = dataviewInstances?.find((instance) => instance.id === feature.layerId)
+  const dataviewInstanceId = getPositionsDataviewInstanceId(feature)
+  const featureDataview = dataviewInstances?.find((instance) => instance.id === dataviewInstanceId)
   const thumbnailsDatasetId = getRelatedDatasetByType(
     featureDataview?.datasets?.[0],
     DatasetTypes.Thumbnails
@@ -311,6 +355,9 @@ function PositionsTooltipRow({
             thumbnails={feature.properties.thumbnails}
             scale={getDatasetConfiguration(thumbnailsDataset, 'thumbnailsV1')?.scale}
             datasetId={datasetId}
+            detectionId={feature.properties.id}
+            dataviewInstanceId={dataviewInstanceId}
+            highlightedSceneId={featureDataview?.config?.highlightedSceneId}
           />
         )}
     </Fragment>

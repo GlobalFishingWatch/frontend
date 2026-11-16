@@ -7,7 +7,8 @@
   "exports": {
     "./routes": "./routes.ts",
     "./user-guide": "./user-guide.ts",
-    "./map/*": "./map/*.ts"
+    "./map/*": "./map/*.ts",
+    "./selectors/*": "./selectors/*.ts"
   },
   "dependencies": {
     "@globalfishingwatch/datasets-client": "workspace:^"

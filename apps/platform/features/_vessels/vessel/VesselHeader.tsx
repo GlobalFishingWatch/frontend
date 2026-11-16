@@ -8,6 +8,7 @@ import type { RegistryImage } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { IconButton } from '@globalfishingwatch/ui-components'
+import { VESSEL_NAME_TESTID } from '@platform/config/selectors/vessels'
 
 import { useSidePanel } from 'features/_map/content-panel/contentPanel.hooks'
 import {
@@ -18,6 +19,7 @@ import {
 import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import VesselDownload from 'features/_map/workspace/vessels/VesselDownload'
 import { selectIsWorkspaceOwnerOrDefault } from 'features/_map/workspace/workspace.selectors'
+import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import VesselGroupAddButton, {
   VesselGroupAddActionButton,
 } from 'features/_user/vessel-groups/VesselGroupAddButton'
@@ -55,6 +57,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
   const vesselProfileDataviewIntance = useSelector(selectVesselProfileDataviewIntanceResolved)
   const vessel = useSelector(selectVesselInfoData)
+  const guestUser = useSelector(selectIsGuestUser)
   const vesselColor = useSelector(selectVesselProfileColor)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
   const vesselProfileDataview = useSelector(selectVesselProfileDataview)
@@ -208,7 +211,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
         </div>
       )}
       <div className={styles.titleContainer}>
-        <h1 data-testid="vv-vessel-name" className={styles.title}>
+        <h1 data-testid={VESSEL_NAME_TESTID} className={styles.title}>
           <svg className={styles.vesselIcon} width="16" height="16">
             <path
               fill={vesselColor || COLOR_PRIMARY_BLUE}
@@ -227,8 +230,14 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
         </h1>
 
         <div className={styles.actionsContainer}>
-          {showDeprecatedWarning && <VesselDeprecatedLink vesselIdentity={vessel} />}
-          {vesselProfileDataview ? (
+          {showDeprecatedWarning && (
+            <VesselDeprecatedLink
+              vesselIdentity={vessel}
+              dataview={vesselProfileDataviewIntance}
+              isVesselProfile
+            />
+          )}
+          {vesselProfileDataview && (
             <VesselDownload
               dataview={vesselProfileDataview}
               vesselIds={vessel.identities
@@ -238,26 +247,19 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
               datasetId={vessel.track as string}
               iconType="border"
             />
-          ) : (
-            // Placeholder while the dataview resolves to avoid SSR flickering
+          )}
+          {!guestUser && (
             <IconButton
               className="print-hidden"
               type="border"
-              icon="download"
+              icon="target"
+              tooltip={t((t) => t.layer.vessel_fit_bounds)}
+              tooltipPlacement="bottom"
               size="medium"
-              disabled
+              disabled={!isClientHydrated || !boundsReady}
+              onClick={onVesselFitBoundsClick}
             />
           )}
-          <IconButton
-            className="print-hidden"
-            type="border"
-            icon="target"
-            tooltip={t((t) => t.layer.vessel_fit_bounds)}
-            tooltipPlacement="bottom"
-            size="medium"
-            disabled={!isClientHydrated || !boundsReady}
-            onClick={onVesselFitBoundsClick}
-          />
           <IconButton
             className="print-hidden"
             type="border"

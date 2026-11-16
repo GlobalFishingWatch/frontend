@@ -1,4 +1,5 @@
 import {
+  PLANET_DATAVIEW_SLUG,
   SAR_DATAVIEW_SLUG,
   SENTINEL2_DATAVIEW_SLUG,
   VIIRS_DATAVIEW_INSTANCE_ID,
@@ -42,6 +43,17 @@ export const LAYERS_LIBRARY_DETECTIONS: LibraryLayerConfig[] = [
     id: 'sentinel2',
     dataviewId: SENTINEL2_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/sentinel2.jpg`,
+    config: {
+      color: '#00EEFF',
+      colorRamp: 'sky',
+    },
+  },
+  {
+    id: 'planet',
+    dataviewId: PLANET_DATAVIEW_SLUG,
+    // TODO: replace with a Planet-specific preview image
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/sentinel2.jpg`,
+    datasetPermission: 'private-global-planet-presence:v5.0',
     config: {
       color: '#00EEFF',
       colorRamp: 'sky',

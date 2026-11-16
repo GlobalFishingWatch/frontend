@@ -13,10 +13,12 @@ import {
   BATHYMETRY_CONTOUR_DATAVIEW_INSTANCE_ID,
   BATHYMETRY_CONTOUR_DATAVIEW_SLUG,
   BATHYMETRY_DATAVIEW_PREFIX,
+  CLUSTER_DARK_RENDEZVOUS_EVENTS_DATAVIEW_SLUG,
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG,
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
+  DARK_RENDEZVOUS_EVENTS_SOURCE_ID,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   ENCOUNTER_EVENTS_SOURCE_ID,
   FISHING_AIS_DATAVIEW_SLUG,
@@ -26,8 +28,7 @@ import {
   GRATICULES_DATAVIEW_SLUG,
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
-  PORTS_AIS_DATAVIEW_SLUG,
-  PORTS_VMS_DATAVIEW_SLUG,
+  PORTS_GLOBAL_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_INSTANCE_ID,
   PRESENCE_DATAVIEW_SLUG,
   PRESENCE_REALTIME_DATAVIEW_SLUG,
@@ -76,15 +77,16 @@ const workspace: Workspace<WorkspaceState> = {
             id: REAL_TIME_DATAVIEW_INSTANCE_ID,
             dataviewId: PRESENCE_REALTIME_DATAVIEW_SLUG,
           },
+          {
+            id: DARK_RENDEZVOUS_EVENTS_SOURCE_ID,
+            dataviewId: CLUSTER_DARK_RENDEZVOUS_EVENTS_DATAVIEW_SLUG,
+          },
         ]
       : []),
     {
       id: AIS_DATAVIEW_INSTANCE_ID,
       config: {
         visible: true,
-        filters: {
-          distance_from_port_km: '3',
-        },
       },
       dataviewId: FISHING_AIS_DATAVIEW_SLUG,
     },
@@ -184,20 +186,12 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: FIXED_INFRASTRUCTURE_DATAVIEW_SLUG,
     },
     {
-      id: `${PORTS_LAYER_ID}-ais`,
+      id: PORTS_LAYER_ID,
       config: {
         visible: false,
         color: '#9AEEFF',
       },
-      dataviewId: PORTS_AIS_DATAVIEW_SLUG,
-    },
-    {
-      id: `${PORTS_LAYER_ID}-vms`,
-      config: {
-        visible: false,
-        color: '#9AEEFF',
-      },
-      dataviewId: PORTS_VMS_DATAVIEW_SLUG,
+      dataviewId: PORTS_GLOBAL_DATAVIEW_SLUG,
     },
     {
       id: BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,

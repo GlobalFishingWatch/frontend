@@ -139,6 +139,12 @@ export const useHeatmapActivityGraph = () => {
   })
 
   const sublayersVisibleValuesHash = getSublayersVisibleValuesHash(instance?.props.sublayers)
+  // read from the rendered sublayer: the atom instance gets new props before deck updates it, and
+  // the layer cacheHash change re-renders this hook once the filtered positions are ready
+  const highlightedScenesHash = instance
+    ?.getLayer()
+    ?.props.sublayers?.map((sublayer) => sublayer.highlightedSceneId)
+    .join(',')
 
   useEffect(() => {
     onViewportDataChange()
@@ -153,6 +159,7 @@ export const useHeatmapActivityGraph = () => {
     chunk.bufferedEnd,
     chunk.interval,
     sublayersVisibleValuesHash,
+    highlightedScenesHash,
   ])
 
   return useMemo(

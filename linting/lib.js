@@ -2,6 +2,7 @@
 import eslint from '@eslint/js'
 import { defineConfig } from 'eslint/config'
 import prettierConfig from 'eslint-config-prettier'
+import { defaultConditionNames } from 'eslint-import-resolver-typescript'
 import packageJson from 'eslint-package-json'
 import importPlugin from 'eslint-plugin-import'
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y'
@@ -33,7 +34,12 @@ export const config = {
       version: 'detect',
     },
     'import/resolver': {
-      typescript: {},
+      typescript: {
+        // jotai 3 (and other packages) declare TS-version types conditions like `"types@>=5.5"`,
+        // which the resolver does not evaluate. It fell through to the plain `"types"` stub shared by every subpath
+        // so `jotai` and `jotai/utils` resolved to one file and `import/no-duplicates --fix` merged them into an invalid import.
+        conditionNames: ['types@>=5.5', ...defaultConditionNames],
+      },
     },
     'import/parsers': {
       '@typescript-eslint/parser': ['.ts', '.tsx'],

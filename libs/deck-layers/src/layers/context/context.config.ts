@@ -6,3 +6,6 @@ export const EEZ_SETTLED_BOUNDARIES = [
   'Connection Line',
   'Unilateral claim (undisputed)',
 ]
+
+// RFMO features present in the tilesets that are never drawn, listed nor searchable, matched by their ID property
+export const HIDDEN_RFMO_IDS = ['IWC', 'ACAP', 'EIFAAC', 'NACA', 'CACFISH']

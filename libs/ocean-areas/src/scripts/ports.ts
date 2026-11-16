@@ -19,6 +19,6 @@ prepare({
       return false
     }
     return true
-    // return getPortSources(port).length > 0
+    // return getPortSources(port.properties).length > 0
   },
 })

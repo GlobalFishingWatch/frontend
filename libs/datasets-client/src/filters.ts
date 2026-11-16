@@ -54,6 +54,6 @@ export type SupportedEnvDatasetFilter =
   | 'genus' // species-mm
   | 'period' // species-mm
   | 'scenario' // species-mm
-type SupportedContextDatasetFilter = 'removal_of' | 'vessel_id'
+type SupportedContextDatasetFilter = 'removal_of' | 'vessel_id' | 'port_sources'
 type SupportedEventsDatasetFilter = 'duration' | 'encounter_type' | 'type' | 'next_port_id'
 type SupportedVesselDatasetFilter = AdvancedSearchQueryFieldKey

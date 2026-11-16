@@ -30,7 +30,8 @@ import { mapSizeAtom } from 'features/_map/map/map.atoms'
 import type { FitBoundsParams } from 'features/_map/map/map-bounds.hooks'
 import { getMapCoordinatesFromBounds } from 'features/_map/map/map-bounds.hooks'
 import { useDeckMap } from 'features/_map/map/map-context.hooks'
-import { useMapViewState, useSetMapCoordinates } from 'features/_map/map/map-viewport.hooks'
+import { useSetMapCoordinates } from 'features/_map/map/map-view-state.hooks'
+import { useMapViewState } from 'features/_map/map/map-viewport.hooks'
 import { selectScreenshotMode } from 'features/_map/workspace/selectors/app.selectors'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
 import type { LastReportStorage } from 'features/_reports/report-area/area-reports.config'
@@ -43,7 +44,6 @@ import {
   selectIsGlobalReport,
   selectReportArea,
   selectReportAreaDataviews,
-  selectReportAreaIds,
   selectReportAreaStatus,
   selectReportBufferOperation,
   selectReportBufferUnit,
@@ -56,7 +56,10 @@ import {
   selectPortReportFootprintArea,
   selectPortReportFootprintDatasetId,
 } from 'features/_reports/report-port/ports-report.selectors'
-import { selectCurrentReport } from 'features/_reports/reports.selectors'
+import {
+  selectCurrentReport,
+  selectReportAreaIds,
+} from 'features/_reports/reports.current.selectors'
 import {
   fetchReportVesselsThunk,
   getReportQuery,
@@ -325,7 +328,9 @@ const COARSE_SIMPLIFY_TOLERANCE = 0.1
 const FINE_SIMPLIFY_TOLERANCE = 0.001
 
 export function getSimplificationByDataview(dataview: UrlDataviewInstance | Dataview) {
-  return dataview?.slug === RFMO_DATAVIEW_SLUG ? COARSE_SIMPLIFY_TOLERANCE : FINE_SIMPLIFY_TOLERANCE
+  return dataview.id === 'seabird-risk-zones' || dataview?.slug === RFMO_DATAVIEW_SLUG
+    ? COARSE_SIMPLIFY_TOLERANCE
+    : FINE_SIMPLIFY_TOLERANCE
 }
 
 export function useFetchReportArea() {

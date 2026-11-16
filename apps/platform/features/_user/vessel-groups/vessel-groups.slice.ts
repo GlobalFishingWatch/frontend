@@ -10,6 +10,7 @@ import type { APIPagination, VesselGroup, VesselGroupUpsert } from '@globalfishi
 
 import { DEFAULT_PAGINATION_PARAMS } from 'data/map/config'
 import { getDatasetByIdsThunk } from 'features/_map/datasets/datasets.slice'
+import { selectUserData } from 'features/_user/selectors/user.selectors'
 import type { RootState } from 'store'
 import type { AsyncError, AsyncReducer } from 'utils/async-slice'
 import { asyncInitialState, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
@@ -309,6 +310,12 @@ export const { resetVesselGroupStatus } = vesselGroupsSlice.actions
 
 export const { selectAll: selectAllVesselGroups, selectById } =
   entityAdapter.getSelectors<VesselGroupSliceState>((state) => state.vesselGroups)
+
+// Kept here, not in vessel-groups.selectors, which pulls the map dataview selectors into /user.
+export const selectUserVesselGroups = createSelector(
+  [selectAllVesselGroups, selectUserData],
+  (vesselGroups, userData) => vesselGroups?.filter((d) => d.ownerId === userData?.id)
+)
 
 export const selectVesselGroupById = memoize((id: string) =>
   createSelector([(state: VesselGroupSliceState) => state], (state) => selectById(state, id))

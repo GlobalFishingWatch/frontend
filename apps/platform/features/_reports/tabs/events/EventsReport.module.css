@@ -106,5 +106,5 @@
 }
 
 .graphSelector {
-  width: calc(100% - 12rem - var(--space-S));
+  flex: 1;
 }

@@ -73,6 +73,7 @@ type UseResponsiveVisualizationDataProps = {
   getIndividualData?: BaseResponsiveChartProps['getIndividualData']
   getIsIndividualSupported:
     typeof getIsIndividualBarChartSupported | typeof getIsIndividualTimeseriesSupported
+  onIndividualSupportedChange?: BaseResponsiveChartProps['onIndividualSupportedChange']
 }
 
 type AggregatedDataGetter = NonNullable<BaseResponsiveChartProps['getAggregatedData']>
@@ -227,6 +228,11 @@ export function useResponsiveVisualization(
       loadData({ width, height })
     }
   }, [width, height, loadData])
+
+  const { onIndividualSupportedChange } = params
+  useEffect(() => {
+    onIndividualSupportedChange?.(isIndividualSupported)
+  }, [isIndividualSupported, onIndividualSupportedChange])
 
   return useMemo(
     () => ({ ...dimensions, data, isIndividualSupported, individualItemSize }),

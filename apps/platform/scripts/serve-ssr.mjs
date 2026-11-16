@@ -53,7 +53,8 @@ process.on('SIGTERM', () => shutdown('SIGTERM'))
 child = spawn(process.execPath, [serverEntry], {
   cwd: appRoot,
   stdio: 'inherit',
-  env: process.env,
+  // Local builds have no production secrets (server/env.plugin.ts)
+  env: { ALLOW_MISSING_SERVER_ENV: 'true', ...process.env },
 })
 
 child.on('exit', (code, signal) => {

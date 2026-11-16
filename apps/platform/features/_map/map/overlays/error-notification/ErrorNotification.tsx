@@ -6,10 +6,10 @@ import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import { Button, Icon, InputText } from '@globalfishingwatch/ui-components'
 
-import { PATH_BASENAME } from 'data/map/config'
 import { WORKSPACE_ENV } from 'data/workspace-env'
 import PopupWrapper from 'features/_map/map/popups/PopupWrapper'
-import { selectUserData } from 'features/_user/selectors/user.selectors'
+import { selectIsGuestUser, selectUserData } from 'features/_user/selectors/user.selectors'
+import { postFeedback } from 'features/feedback/feedback.utils'
 import { getCurrentAppUrl } from 'router/routes.utils'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
@@ -24,6 +24,7 @@ const ErrorNotification = (): React.ReactNode | null => {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const userData = useSelector(selectUserData)
+  const isGuest = useSelector(selectIsGuestUser)
 
   const onClose = () => {
     resetErrorNotification()
@@ -51,18 +52,7 @@ const ErrorNotification = (): React.ReactNode | null => {
           ? `${userData.firstName} ${userData.lastName}`
           : EMPTY_FIELD_PLACEHOLDER,
       }
-      const response = await fetch(`${PATH_BASENAME}/api/feedback`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ type: 'error', data: finalErrorData }),
-      })
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Something went wrong')
-      }
+      await postFeedback({ type: 'error', data: finalErrorData, isGuest })
       setLoading(false)
       setSuccess(true)
       setTimeout(onClose, 1000)

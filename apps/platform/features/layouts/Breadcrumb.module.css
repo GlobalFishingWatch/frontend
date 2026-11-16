@@ -1,0 +1,28 @@
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-XS);
+  font: var(--font-L);
+}
+
+.crumb {
+  color: var(--color-secondary-blue);
+}
+
+.crumbCurrent {
+  color: var(--color-primary-blue);
+}
+
+.crumbLink {
+  color: inherit;
+}
+
+.crumbLink:hover {
+  color: var(--color-primary-blue);
+}
+
+.separator {
+  font-size: 2.6rem;
+  color: var(--color-secondary-blue);
+}

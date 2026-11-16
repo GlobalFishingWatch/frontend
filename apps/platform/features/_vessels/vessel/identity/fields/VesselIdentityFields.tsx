@@ -6,7 +6,6 @@ import cx from 'classnames'
 import type {
   CombinedSourceInfo,
   RegistryExtraFieldValue,
-  SelfReportedInfo,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 import { API_LOGIN_REQUIRED } from '@globalfishingwatch/api-types'
@@ -16,7 +15,6 @@ import { getIsCombinedSourceInTimerange } from 'features/_vessels/vessel/identit
 import VesselIdentityField from 'features/_vessels/vessel/identity/fields/VesselIdentityField'
 import VesselTypesField from 'features/_vessels/vessel/identity/fields/VesselTypesField'
 import {
-  AIS_SELF_REPORTED_SHIPTYPE,
   COMBINED_SOURCE_VALUE_FIELDS,
   type IdentitySection,
   type VesselRenderField,
@@ -47,9 +45,6 @@ const resolveFieldValue = (
 ): string | number => {
   const key = field.key as keyof VesselLastIdentity
   if (isChileanVMS && key === 'ssvid') return EMPTY_FIELD_PLACEHOLDER
-  if (field.key === AIS_SELF_REPORTED_SHIPTYPE) {
-    return (vesselIdentity as SelfReportedInfo)?.onFishingListSr?.[0]?.value ? 'fishing' : 'other'
-  }
   if (COMBINED_SOURCE_VALUE_FIELDS.includes(key as CombinedSourceValueField)) {
     const sources =
       vesselIdentity?.combinedSourcesInfo?.[key as CombinedSourceValueField] ||
@@ -57,10 +52,7 @@ const resolveFieldValue = (
     const source = sources.find((s) => getIsCombinedSourceInTimerange(vesselIdentity, s))
     const value = source?.value
     if (value === API_LOGIN_REQUIRED) return API_LOGIN_REQUIRED
-    // an explicit placeholder, otherwise formatInfoField formats the empty value as NaN
     if (value === undefined) return EMPTY_FIELD_PLACEHOLDER
-    // numbers must stay numbers: formatInfoField only routes those through formatI18nNumber,
-    // which rounds to 2 decimals and adds thousands separators. Strings pass through raw.
     return typeof value === 'boolean' ? value.toString() : value
   }
   if (key === 'depthM' || key === 'builtYear') {

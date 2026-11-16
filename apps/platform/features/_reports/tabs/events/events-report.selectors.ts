@@ -21,7 +21,6 @@ import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.s
 import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/_reports/report-area/area-reports.config'
 import {
   type ReportVesselWithDatasets,
-  selectReportAreaIds,
   selectReportBufferOperation,
   selectReportBufferUnit,
   selectReportBufferValue,
@@ -39,6 +38,7 @@ import {
   selectReportEventsPortsPage,
   selectReportEventsPortsResultsPerPage,
 } from 'features/_reports/reports.config.selectors'
+import { selectReportAreaIds } from 'features/_reports/reports.current.selectors'
 import { getAggregatedDataWithOthers } from 'features/_reports/shared/utils/reports.utils'
 import type { DatasetArea } from 'features/data/areas/areas.slice'
 import { selectAreas } from 'features/data/areas/areas.slice'

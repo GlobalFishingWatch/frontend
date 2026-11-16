@@ -22,11 +22,7 @@ import type { ColorBarOption, ThicknessSelectorOption } from '@globalfishingwatc
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { HIDDEN_DATAVIEW_FILTERS, ONLY_GFW_STAFF_DATAVIEW_SLUGS } from 'data/map/dataviews'
-import {
-  useAutoRefreshImportingDataset,
-  useDatasetModalConfigConnect,
-  useDatasetModalOpenConnect,
-} from 'features/_map/datasets/datasets.hook'
+import { useAutoRefreshImportingDataset } from 'features/_map/datasets/datasets.hook'
 import {
   getDatasetImportLogs,
   getDatasetLabel,
@@ -50,6 +46,10 @@ import GFWOnly from 'features/_user/GFWOnly'
 import { selectUserId } from 'features/_user/selectors/user.permissions.selectors'
 import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import { COLOR_SECONDARY_BLUE } from 'features/app/app.config'
+import {
+  useDatasetModalConfigConnect,
+  useDatasetModalOpenConnect,
+} from 'features/modals/modals.hooks'
 
 import DatasetNotFound from '../shared/DatasetNotFound'
 import DatasetSchemaField from '../shared/DatasetSchemaField'

@@ -1,11 +1,13 @@
 import { useEffect, useSyncExternalStore } from 'react'
 import memoizeOne from 'memoize-one'
 
+import type { PortSource } from '@globalfishingwatch/api-types'
+
 import i18n, { t } from 'features/i18n/i18n'
 import { formatInfoField } from 'utils/info'
 
 type Port = { id: string; label: string }
-type PortData = { id: string; name: string; flag: string }
+type PortData = { id: string; name: string; flag: string; sources: string[] }
 
 let ports: PortData[] | null = null
 let portsPromise: Promise<void> | null = null
@@ -60,6 +62,10 @@ export const getPortsByIds = (ids: string[], lng = i18n.language): Port[] => {
   })
 }
 
-const buildPorts = memoizeOne((lng: string): Port[] => ports!.map((port) => parsePort(port, lng)))
+const buildPorts = memoizeOne((lng: string, source?: PortSource): Port[] =>
+  ports!.flatMap((port) => (!source || port.sources.includes(source) ? parsePort(port, lng) : []))
+)
 
-export const getPorts = (lng = i18n.language): Port[] => (ports ? buildPorts(lng) : [])
+// source: only the ports where that source saw encounters or loitering
+export const getPorts = (source?: PortSource, lng = i18n.language): Port[] =>
+  ports ? buildPorts(lng, source) : []

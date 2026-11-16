@@ -1,10 +1,15 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type { VesselGroup } from '@globalfishingwatch/api-types'
-import { Button, Icon, IconButton, InputText, Spinner } from '@globalfishingwatch/ui-components'
+import { Button } from '@globalfishingwatch/ui-components/button'
+import { HighlightedText } from '@globalfishingwatch/ui-components/highlighted-text'
+import { Icon } from '@globalfishingwatch/ui-components/icon'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { InputText } from '@globalfishingwatch/ui-components/input-text'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 
 import {
   selectDatasetsStatus,
@@ -13,9 +18,10 @@ import {
 } from 'features/_map/datasets/datasets.slice'
 import { useEditVesselGroupModal } from 'features/_reports/report-vessel-group/vessel-group-report.hooks'
 import VesselGroupReportLink from 'features/_reports/report-vessel-group/VesselGroupReportLink'
-import { selectUserVesselGroups } from 'features/_user/vessel-groups/vessel-groups.selectors'
 import {
   deleteVesselGroupThunk,
+  fetchVesselGroupsThunk,
+  selectUserVesselGroups,
   selectVesselGroupsStatus,
   selectVesselGroupsStatusId,
 } from 'features/_user/vessel-groups/vessel-groups.slice'
@@ -34,7 +40,6 @@ import {
 import { useAppDispatch } from 'features/app/app.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
-import { getHighlightedText } from 'utils/text'
 
 import styles from './User.module.css'
 
@@ -47,6 +52,7 @@ function UserVesselGroups() {
   const datasetsStatus = useSelector(selectDatasetsStatus)
   const loading =
     datasetsStatus === AsyncReducerStatus.Loading ||
+    vesselGroupStatus === AsyncReducerStatus.Idle ||
     vesselGroupStatus === AsyncReducerStatus.Loading
   const editingGroupId = useSelector(selectVesselGroupEditId)
   const onEditClick = useEditVesselGroupModal()
@@ -54,6 +60,10 @@ function UserVesselGroups() {
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const deletedDatasets = useSelector(selectDeletedDatasets)
   const { loadingGroupId, migrateToLatestVesselGroup } = useMigrateToLatestVesselGroup()
+
+  useEffect(() => {
+    dispatch(fetchVesselGroupsThunk())
+  }, [dispatch])
 
   const onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
@@ -115,8 +125,12 @@ function UserVesselGroups() {
                 return (
                   <li className={styles.dataset} key={vesselGroup.id}>
                     <VesselGroupReportLink vesselGroupId={vesselGroup.id}>
-                      <span className={styles.workspaceLink} data-test="workspace-name">
-                        {getHighlightedText(label as string, searchQuery, styles)}{' '}
+                      <span
+                        className={styles.workspaceLink}
+                        data-test="workspace-name"
+                        translate="no"
+                      >
+                        <HighlightedText text={label as string} highlight={searchQuery} />{' '}
                         <span className={cx(styles.secondary, styles.marginLeft)}>
                           ({getVesselGroupVesselsCount(vesselGroup)})
                         </span>
@@ -134,7 +148,7 @@ function UserVesselGroups() {
                         <Button
                           type="border-secondary"
                           size="small"
-                          icon={<Icon icon="warning" />}
+                          icon={<Icon icon="update-required" />}
                           tooltip={
                             hasDeletedDatasets
                               ? t((t) => t.workspace.deletedVesselGroupLayer)

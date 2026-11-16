@@ -3,10 +3,7 @@ import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import type { IssueType } from 'features/_vessels/track-correction/track-correction.slice'
 import { t } from 'features/i18n/i18n'
 
-export {
-  TURNING_TIDES_WORKSPACES_IDS,
-  TRACK_CORRECTION_SPREADSHEET_ID_BY_WORKSPACE,
-} from './track-correction.constants'
+export { TURNING_TIDES_WORKSPACES_IDS } from './track-correction.constants'
 export type { TurningTidesWorkspaceId } from './track-correction.constants'
 
 export function getTrackCorrectionIssueOptions() {

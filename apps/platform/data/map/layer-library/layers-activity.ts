@@ -16,9 +16,6 @@ export const LAYERS_LIBRARY_ACTIVITY: LibraryLayerConfig[] = [
     config: {
       color: '#00FFBC',
       colorRamp: 'teal',
-      filters: {
-        distance_from_port_km: '3',
-      },
     },
   },
   {

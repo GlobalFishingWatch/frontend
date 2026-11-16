@@ -147,14 +147,9 @@ export const LAYERS_DICTIONARY: Record<string, LayerInfo> = {
     dataviewId: WORKSPACE_CONFIG.FIXED_INFRASTRUCTURE_DATAVIEW_SLUG,
   },
   'port-locations': {
-    name: 'Port locations (AIS)',
+    name: 'Port locations',
     category: 'context',
-    dataviewId: WORKSPACE_CONFIG.PORTS_AIS_DATAVIEW_SLUG,
-  },
-  'port-locations-vms': {
-    name: 'Port locations (VMS)',
-    category: 'context',
-    dataviewId: WORKSPACE_CONFIG.PORTS_VMS_DATAVIEW_SLUG,
+    dataviewId: WORKSPACE_CONFIG.PORTS_GLOBAL_DATAVIEW_SLUG,
   },
   'paa-duke': {
     name: 'Preferential access areas (Duke)',

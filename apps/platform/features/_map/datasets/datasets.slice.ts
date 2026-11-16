@@ -14,31 +14,27 @@ import type {
   APIPagination,
   Dataset,
   DatasetsMigration,
+  Locale,
   UploadResponse,
 } from '@globalfishingwatch/api-types'
-import { DATASET_TYPE_TO_CONFIG_TYPE, DatasetTypes, Locale } from '@globalfishingwatch/api-types'
+import { DATASET_TYPE_TO_CONFIG_TYPE, DatasetTypes } from '@globalfishingwatch/api-types'
 import {
   getDatasetConfiguration,
   getIsDatasetVersionDowngrade,
   LEGACY_DATASETS_TO_LATEST_VMS,
 } from '@globalfishingwatch/datasets-client'
 
+import { clientEnv } from 'data/env'
 import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV, PUBLIC_SUFIX } from 'data/map/config'
+import { getAPILocale } from 'features/_map/datasets/datasets.utils'
 import i18n from 'features/i18n/i18n'
 import type { i18nSupportedLocale } from 'features/i18n/i18n.config'
-import { CROWDIN_IN_CONTEXT_LANG, CROWDIN_SOURCE_LANG } from 'features/i18n/i18n.config'
 import type { RootState } from 'store'
 import type { AsyncError, AsyncReducer } from 'utils/async-slice'
 import { asyncInitialState, createAsyncSlice } from 'utils/async-slice'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
 export const DEPRECATED_DATASETS_HEADER = 'X-Deprecated-Dataset'
-
-function getAPILocale(locale: i18nSupportedLocale) {
-  return locale === CROWDIN_SOURCE_LANG || locale === CROWDIN_IN_CONTEXT_LANG
-    ? Locale.en.toUpperCase()
-    : locale.toUpperCase()
-}
 
 export interface DatasetsState extends AsyncReducer<Dataset> {
   deprecatedDatasets: DatasetsMigration
@@ -53,6 +49,21 @@ const initialState: DatasetsState = {
   deletedDatasets: [],
 }
 
+const parseDeprecatedDatasetsHeader = (headers: Headers): DatasetsMigration => {
+  const deprecatedDatasetsHeader = headers.get(DEPRECATED_DATASETS_HEADER)
+  if (!deprecatedDatasetsHeader) {
+    return {}
+  }
+  return deprecatedDatasetsHeader.split(',').reduce((acc, id) => {
+    const [deprecatedId, latestId] = id.split('=')
+    if (getIsDatasetVersionDowngrade(deprecatedId, latestId)) {
+      return acc
+    }
+    acc[deprecatedId] = latestId
+    return acc
+  }, {} as DatasetsMigration)
+}
+
 export const fetchDatasetByIdThunk = createAsyncThunk<
   Dataset,
   { id: string; locale?: i18nSupportedLocale; useApiCache?: boolean },
@@ -61,14 +72,25 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
   }
 >(
   'datasets/fetchById',
-  async ({ id, locale = i18n.language as Locale, useApiCache = false }, { rejectWithValue }) => {
+  async (
+    { id, locale = i18n.language as Locale, useApiCache = false },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const includesParam = stringify({
         cache: useApiCache,
         locale: getAPILocale(locale),
         includes: ['DESCRIPTION'],
       })
-      const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${id}?${includesParam}`)
+      const { data: dataset, headers } = await GFWAPI.fetch<{ data: Dataset; headers: Headers }>(
+        `/datasets/${id}?${includesParam}`,
+        { responseType: 'withHeaders' }
+      )
+      // Datasets fetched here are skipped by the batch fetch, so it would never see their migration
+      const datasetsDeprecated = parseDeprecatedDatasetsHeader(headers)
+      if (Object.keys(datasetsDeprecated).length) {
+        dispatch(setDeprecatedDatasets(datasetsDeprecated))
+      }
       return dataset
     } catch (e: any) {
       console.warn(e)
@@ -157,22 +179,10 @@ const fetchDatasetsBatch = async ({
   }
   const { data: initialDatasets, headers: responseHeaders } = response
 
-  let datasetsDeprecatedDict: DatasetsMigration = {}
-  const deprecatedDatasetsHeader = responseHeaders.get(DEPRECATED_DATASETS_HEADER)
-  if (deprecatedDatasetsHeader) {
-    datasetsDeprecatedDict = deprecatedDatasetsHeader.split(',').reduce((acc, id) => {
-      const [deprecatedId, latestId] = id.split('=')
-      // Pre-released datasets are reported as deprecated by an older version until they go live
-      if (getIsDatasetVersionDowngrade(deprecatedId, latestId)) {
-        return acc
-      }
-      acc[deprecatedId] = latestId
-      return acc
-    }, {} as DatasetsMigration)
-  }
+  const datasetsDeprecatedDict = parseDeprecatedDatasetsHeader(responseHeaders)
 
   const mockedDatasets =
-    IS_DEVELOPMENT_ENV || import.meta.env.VITE_USE_LOCAL_DATASETS === 'true'
+    IS_DEVELOPMENT_ENV || clientEnv.VITE_USE_LOCAL_DATASETS
       ? await import('./datasets.mock')
       : { default: [] }
   const datasets = uniqBy([...mockedDatasets.default, ...initialDatasets.entries], (d) => d.id)

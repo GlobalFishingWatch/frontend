@@ -3,9 +3,13 @@ import { createServerFn } from '@tanstack/react-start'
 import { getIsUnauthorizedError, GFWAPI } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
 
-import { SSR_HEADERS, USER_REFRESH_TOKEN_COOKIE_KEY } from 'features/app/app.config'
+import { USER_REFRESH_TOKEN_COOKIE_KEY } from 'features/app/app.config'
 import type { Tokens } from 'server/auth.server'
 import { clearAuthCookies, refreshAuthTokens, setAuthCookies } from 'server/auth.server'
+import { SSR_HEADERS } from 'server/ssr-headers.server'
+
+// Turnstile's longest token, printable ASCII only: it goes into a gateway request header
+const CAPTCHA_TOKEN_REGEX = /^[\x21-\x7e]{1,2048}$/
 
 export const loginServerFn = createServerFn({ method: 'POST' })
   .validator((data: { accessToken?: string | null }) => data)
@@ -22,12 +26,26 @@ export const loginServerFn = createServerFn({ method: 'POST' })
     }
   })
 
-export const refreshTokenServerFn = createServerFn({ method: 'POST' }).handler(
-  async (): Promise<Tokens> => {
+// The captcha token is solved in the browser, the gateway protects the refresh route with it
+export const refreshTokenServerFn = createServerFn({ method: 'POST' })
+  .validator((data: { captchaToken?: unknown } = {}): { captchaToken?: string } => {
+    const { captchaToken } = data
+    if (
+      captchaToken !== undefined &&
+      (typeof captchaToken !== 'string' || !CAPTCHA_TOKEN_REGEX.test(captchaToken))
+    ) {
+      throw new Error('Invalid captcha token')
+    }
+    return { captchaToken }
+  })
+  .handler(async ({ data }): Promise<Tokens> => {
     const { getCookie, setCookie } = await import('@tanstack/react-start/server')
-    return refreshAuthTokens(getCookie(USER_REFRESH_TOKEN_COOKIE_KEY), setCookie)
-  }
-)
+    return refreshAuthTokens({
+      refreshToken: getCookie(USER_REFRESH_TOKEN_COOKIE_KEY),
+      setCookie,
+      fromBrowser: { captchaToken: data.captchaToken },
+    })
+  })
 
 export const clearAuthCookiesServerFn = createServerFn({ method: 'POST' }).handler(
   async (): Promise<boolean> => {

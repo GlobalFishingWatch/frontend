@@ -34,11 +34,11 @@ import {
 import type { RowComponentProps } from 'react-window'
 import { List } from 'react-window'
 import { useParams } from '@tanstack/react-router'
-import escapeRegExp from 'lodash/escapeRegExp'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import { HighlightedText } from '@globalfishingwatch/ui-components'
 
 import IconArrowDown from '../../assets/icons/arrow-down.svg'
 import IconArrowUp from '../../assets/icons/arrow-up.svg'
@@ -153,18 +153,9 @@ type HighlightedCellProps = {
 }
 
 function HighlightedCell({ cell, state }: HighlightedCellProps) {
-  if (!state.globalFilter || !state.globalFilter.trim()) {
-    return <span>{cell.value}</span>
-  }
-  const regex = new RegExp(`(${escapeRegExp(state.globalFilter)})`, 'gi')
-  const parts = cell.value.split(regex)
   return (
     <span>
-      {parts
-        .filter((part) => part)
-        .map((part, i) =>
-          regex.test(part) ? <mark key={i}>{part}</mark> : <span key={i}>{part}</span>
-        )}
+      <HighlightedText text={cell.value} highlight={state.globalFilter} />
     </span>
   )
 }

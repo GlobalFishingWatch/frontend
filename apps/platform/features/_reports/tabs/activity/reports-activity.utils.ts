@@ -13,7 +13,7 @@ export function getReportSubCategoryLabel(
     case 'presence':
       return tFunc((t) => t.common.vesselPresence)
     case 'viirs':
-      return tFunc((t) => t.common.viirs)
+      return tFunc((t) => t.common.nightLightDetections)
     case 'sar':
       return tFunc((t) => t.common.sar)
     case 'sentinel-2':

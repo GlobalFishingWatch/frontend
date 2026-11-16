@@ -9,6 +9,8 @@ export default defineConfig(() => ({
     watch: false,
     globals: true,
     environment: 'jsdom',
+    // Reverts every vi.stubGlobal before each test, replacing per-file afterEach cleanups
+    unstubGlobals: true,
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts}'],
     reporters: ['default'],
     coverage: {

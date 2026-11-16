@@ -5,7 +5,7 @@ import { uniq } from 'es-toolkit'
 
 import type { Dataview } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import { Button, Icon, Tooltip } from '@globalfishingwatch/ui-components'
+import { Button, HighlightedText, Icon, IconLogo, Tooltip } from '@globalfishingwatch/ui-components'
 import { LAYER_LIBRARY_ID_SEPARATOR } from '@platform/config/map/dataviews'
 
 import type { LibraryLayer } from 'data/map/layer-library'
@@ -31,7 +31,6 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { getEventLabel } from 'utils/analytics'
-import { getHighlightedText } from 'utils/text'
 
 import styles from './LayerLibraryItem.module.css'
 
@@ -117,11 +116,11 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
       <div className={styles.container}>
         <div className={styles.image} style={{ backgroundImage: `url(${previewImageUrl})` }} />
         <div className={styles.content}>
-          <h2 className={styles.title}>
-            {getHighlightedText(name as string, highlightedText, styles)}
+          <h2 className={styles.title} translate="no">
+            <HighlightedText text={name as string} highlight={highlightedText} />
           </h2>
-          <p className={styles.description}>
-            {getHighlightedText(description as string, highlightedText, styles)}
+          <p className={styles.description} translate="no">
+            <HighlightedText text={description as string} highlight={highlightedText} />
           </p>
           <div className={styles.actions}>
             {datasetTypeIcon && <Icon icon={datasetTypeIcon} />}
@@ -129,11 +128,11 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
               moreInfoLink ? (
                 <Tooltip content={t((t) => t.common.seeMore)}>
                   <a href={moreInfoLink} target="_blank" rel="noreferrer" style={{ lineHeight: 1 }}>
-                    <Icon icon={datasetSourceIcon} type="original-colors" />
+                    <IconLogo icon={datasetSourceIcon} />
                   </a>
                 </Tooltip>
               ) : (
-                <Icon icon={datasetSourceIcon} type="original-colors" />
+                <IconLogo icon={datasetSourceIcon} />
               )
             ) : null}
             {onlyGFWUser && <GFWOnly userGroup="gfw" />}

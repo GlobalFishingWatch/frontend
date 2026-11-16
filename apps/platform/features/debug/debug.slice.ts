@@ -5,6 +5,7 @@ import type { RootState } from 'reducers'
 
 export enum FeatureFlag {
   HotspotButton = 'hotspotButton',
+  SlowReportTips = 'slowReportTips',
 }
 
 export enum DebugOption {
@@ -16,6 +17,7 @@ export enum DebugOption {
   VesselsAsPositions = 'vesselsAsPositions',
   HideVesselNames = 'hideVesselNames',
   VesselGapsThresholdFilter = 'vesselGapsThresholdFilter',
+  LogClickedFeatures = 'logClickedFeatures',
 }
 
 export const FAKE_VESSEL_NAME = 'vessel:387609'
@@ -32,6 +34,7 @@ export const debugInitialState: DebugState = {
   active: false,
   featureFlags: {
     hotspotButton: false,
+    slowReportTips: false,
   },
   options: {
     debugTiles: false,
@@ -42,6 +45,7 @@ export const debugInitialState: DebugState = {
     vesselsAsPositions: false,
     hideVesselNames: false,
     vesselGapsThresholdFilter: false,
+    logClickedFeatures: false,
   },
 }
 

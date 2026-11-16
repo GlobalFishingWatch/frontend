@@ -8,6 +8,7 @@ import type { RootState } from 'reducers'
 type ModalId =
   | 'feedback'
   | 'vesselCorrection'
+  | 'detectionFeedback'
   | 'screenshot'
   | 'layerLibrary'
   | 'datasetUpload'
@@ -15,6 +16,7 @@ type ModalId =
   | 'createWorkspace'
   | 'downloadTrack'
   | 'onboarding'
+  | 'updateVideo'
 
 /**
  * Which GFW-only secret menu is open.
@@ -35,10 +37,15 @@ export type DatasetUploadConfig = {
   style?: DatasetUploadStyle
   fileRejected?: boolean
 }
+export type DetectionFeedbackConfig = {
+  datasetId?: string
+  detectionId?: string
+}
 
 type ModalsOpenState = {
   feedback: boolean
   vesselCorrection: boolean
+  detectionFeedback: { open: boolean } & DetectionFeedbackConfig
   screenshot: boolean
   layerLibrary: {
     open: LayerLibraryMode
@@ -52,11 +59,13 @@ type ModalsOpenState = {
   bigQuery: BigQueryModalMode | false
   downloadTrack: boolean
   onboarding: boolean
+  updateVideo: boolean | 'withSound'
 }
 
 const initialState: ModalsOpenState = {
   feedback: false,
   vesselCorrection: false,
+  detectionFeedback: { open: false },
   screenshot: false,
   layerLibrary: {
     open: false,
@@ -74,6 +83,7 @@ const initialState: ModalsOpenState = {
   bigQuery: false,
   downloadTrack: false,
   onboarding: false,
+  updateVideo: false,
 }
 
 const modals = createSlice({
@@ -84,7 +94,7 @@ const modals = createSlice({
       state,
       action: PayloadAction<{
         id: ModalId
-        open: boolean | LayerLibraryMode
+        open: boolean | LayerLibraryMode | 'withSound'
         singleCategory?: boolean
         userGeometries?: DatasetGeometryType[]
       }>
@@ -96,12 +106,19 @@ const modals = createSlice({
         state[id].userGeometries = userGeometries
       } else if (id === 'datasetUpload') {
         state[id].open = open as boolean
+      } else if (id === 'detectionFeedback') {
+        state[id] = { open: open as boolean }
+      } else if (id === 'updateVideo') {
+        state[id] = open as boolean | 'withSound'
       } else {
         state[id] = open as boolean
       }
     },
     setDatasetUploadConfig: (state, action: PayloadAction<DatasetUploadConfig>) => {
       state.datasetUpload = { ...state.datasetUpload, ...action.payload }
+    },
+    openDetectionFeedbackModal: (state, action: PayloadAction<DetectionFeedbackConfig>) => {
+      state.detectionFeedback = { open: true, ...action.payload }
     },
     toggleEditorMenu: (state) => {
       state.editor = !state.editor
@@ -125,6 +142,7 @@ const modals = createSlice({
 
 export const {
   closeBigQueryModal,
+  openDetectionFeedbackModal,
   setDatasetUploadConfig,
   setModalOpen,
   toggleBigQueryModal,
@@ -146,9 +164,15 @@ export const selectEditWorkspaceModalOpen = (state: RootState) => state.modals.e
 export const selectCreateWorkspaceModalOpen = (state: RootState) => state.modals.createWorkspace
 export const selectScreenshotModalOpen = (state: RootState) => state.modals.screenshot
 export const selectVesselCorrectionModalOpen = (state: RootState) => state.modals.vesselCorrection
+export const selectDetectionFeedbackModal = (state: RootState) => state.modals.detectionFeedback
+export const selectDetectionFeedbackModalOpen = (state: RootState) =>
+  state.modals.detectionFeedback.open
 export const selectEditorMenuOpen = (state: RootState) => state.modals.editor
 export const selectDownloadTrackModalOpen = (state: RootState) => state.modals.downloadTrack
 export const selectOnboardingModalOpen = (state: RootState) => state.modals.onboarding
+export const selectUpdateVideoModalOpen = (state: RootState) => state.modals.updateVideo !== false
+export const selectUpdateVideoWithSound = (state: RootState) =>
+  state.modals.updateVideo === 'withSound'
 export const selectBigQueryModalOpen = (state: RootState) => state.modals.bigQuery === 'default'
 export const selectTurningTidesModalOpen = (state: RootState) =>
   state.modals.bigQuery === 'turning-tides'

@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './__root'
 import { Route as PlatformRouteImport } from './_platform'
+import { Route as LlmsDottxtRouteImport } from './llms[.]txt'
 import { Route as LoginRouteImport } from './login'
 import { Route as PlatformIndexRouteImport } from './_platform/index'
 import { Route as PlatformContentRouteImport } from './_platform/_content'
@@ -28,6 +29,7 @@ import { Route as ApiOceanAreasNameRouteImport } from './api/ocean-areas/name'
 import { Route as ApiOceanAreasSearchRouteImport } from './api/ocean-areas/search'
 import { Route as PlatformContentAreasIndexRouteImport } from './_platform/_content/areas/index'
 import { Route as PlatformContentAreasPlaceTypeRouteImport } from './_platform/_content/areas/$placeType'
+import { Route as PlatformContentDatasetsAndApiApiTokensRouteRouteImport } from './_platform/_content/datasets-and-api/api-tokens/route'
 import { Route as PlatformContentHelpAndResourcesIndexRouteImport } from './_platform/_content/help-and-resources/index'
 import { Route as PlatformMapMapIndexRouteImport } from './_platform/_map/map/index'
 import { Route as PlatformMapMapUserRouteImport } from './_platform/_map/map/user'
@@ -37,6 +39,8 @@ import { Route as PlatformMapReportReportIdRouteImport } from './_platform/_map/
 import { Route as PlatformMapVesselVesselIdRouteImport } from './_platform/_map/vessel.$vesselId'
 import { Route as ApiTrackCorrectionsWorkspaceIdIndexRouteImport } from './api/track-corrections/$workspaceId/index'
 import { Route as ApiTrackCorrectionsWorkspaceIdIssueIdRouteImport } from './api/track-corrections/$workspaceId/$issueId'
+import { Route as PlatformContentDatasetsAndApiApiTokensIndexRouteImport } from './_platform/_content/datasets-and-api/api-tokens/index'
+import { Route as PlatformContentDatasetsAndApiApiTokensTokenIdRouteImport } from './_platform/_content/datasets-and-api/api-tokens/$tokenId'
 import { Route as PlatformContentHelpAndResourcesSectionSlugChar123ItemSlugChar125RouteImport } from './_platform/_content/help-and-resources/$sectionSlug.{-$itemSlug}'
 import { Route as PlatformMapMapCategoryIndexRouteImport } from './_platform/_map/map/$category/index'
 import { Route as PlatformMapMapCategoryWorkspaceIdRouteImport } from './_platform/_map/map/$category/$workspaceId'
@@ -51,6 +55,11 @@ import { Route as PlatformMapMapCategoryWorkspaceIdReportChar123DatasetIdChar125
 
 const PlatformRoute = PlatformRouteImport.update({
   id: '/_platform',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
+  id: '/llms.txt',
+  path: '/llms.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -144,6 +153,12 @@ const PlatformContentAreasPlaceTypeRoute =
     path: '/areas/$placeType',
     getParentRoute: () => PlatformContentRoute,
   } as any)
+const PlatformContentDatasetsAndApiApiTokensRouteRoute =
+  PlatformContentDatasetsAndApiApiTokensRouteRouteImport.update({
+    id: '/datasets-and-api/api-tokens',
+    path: '/datasets-and-api/api-tokens',
+    getParentRoute: () => PlatformContentRoute,
+  } as any)
 const PlatformContentHelpAndResourcesIndexRoute =
   PlatformContentHelpAndResourcesIndexRouteImport.update({
     id: '/help-and-resources/',
@@ -194,6 +209,18 @@ const ApiTrackCorrectionsWorkspaceIdIssueIdRoute =
     id: '/api/track-corrections/$workspaceId/$issueId',
     path: '/api/track-corrections/$workspaceId/$issueId',
     getParentRoute: () => rootRouteImport,
+  } as any)
+const PlatformContentDatasetsAndApiApiTokensIndexRoute =
+  PlatformContentDatasetsAndApiApiTokensIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => PlatformContentDatasetsAndApiApiTokensRouteRoute,
+  } as any)
+const PlatformContentDatasetsAndApiApiTokensTokenIdRoute =
+  PlatformContentDatasetsAndApiApiTokensTokenIdRouteImport.update({
+    id: '/$tokenId',
+    path: '/$tokenId',
+    getParentRoute: () => PlatformContentDatasetsAndApiApiTokensRouteRoute,
   } as any)
 const PlatformContentHelpAndResourcesSectionSlugChar123ItemSlugChar125Route =
   PlatformContentHelpAndResourcesSectionSlugChar123ItemSlugChar125RouteImport.update(
@@ -270,6 +297,7 @@ const PlatformMapMapCategoryWorkspaceIdReportChar123DatasetIdChar125Char123AreaI
 
 export interface FileRoutesByFullPath {
   '/': typeof PlatformIndexRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/login': typeof LoginRoute
   '/api/corrections': typeof ApiCorrectionsRoute
   '/api/downloadSurvey': typeof ApiDownloadSurveyRoute
@@ -283,6 +311,7 @@ export interface FileRoutesByFullPath {
   '/api/ocean-areas/name': typeof ApiOceanAreasNameRoute
   '/api/ocean-areas/search': typeof ApiOceanAreasSearchRoute
   '/api/ocean-areas/': typeof ApiOceanAreasIndexRoute
+  '/datasets-and-api/api-tokens': typeof PlatformContentDatasetsAndApiApiTokensRouteRouteWithChildren
   '/areas/$placeType': typeof PlatformContentAreasPlaceTypeRoute
   '/map/user': typeof PlatformMapMapUserRoute
   '/map/vessel-search': typeof PlatformMapMapVesselSearchRoute
@@ -294,10 +323,12 @@ export interface FileRoutesByFullPath {
   '/help-and-resources/': typeof PlatformContentHelpAndResourcesIndexRoute
   '/map/': typeof PlatformMapMapIndexRoute
   '/api/track-corrections/$workspaceId/': typeof ApiTrackCorrectionsWorkspaceIdIndexRoute
+  '/datasets-and-api/api-tokens/$tokenId': typeof PlatformContentDatasetsAndApiApiTokensTokenIdRoute
   '/help-and-resources/$sectionSlug/{-$itemSlug}': typeof PlatformContentHelpAndResourcesSectionSlugChar123ItemSlugChar125Route
   '/map/$category/$workspaceId': typeof PlatformMapMapCategoryWorkspaceIdRouteWithChildren
   '/map/report/$reportId': typeof PlatformMapMapReportReportIdRoute
   '/map/vessel/$vesselId': typeof PlatformMapMapVesselVesselIdRoute
+  '/datasets-and-api/api-tokens/': typeof PlatformContentDatasetsAndApiApiTokensIndexRoute
   '/map/$category/': typeof PlatformMapMapCategoryIndexRoute
   '/map/$category/$workspaceId/vessel-search': typeof PlatformMapMapCategoryWorkspaceIdVesselSearchRoute
   '/map/$category/$workspaceId/': typeof PlatformMapMapCategoryWorkspaceIdIndexRoute
@@ -307,6 +338,7 @@ export interface FileRoutesByFullPath {
   '/map/$category/$workspaceId/report/{-$datasetId}/{-$areaId}': typeof PlatformMapMapCategoryWorkspaceIdReportChar123DatasetIdChar125Char123AreaIdChar125Route
 }
 export interface FileRoutesByTo {
+  '/llms.txt': typeof LlmsDottxtRoute
   '/login': typeof LoginRoute
   '/': typeof PlatformIndexRoute
   '/api/corrections': typeof ApiCorrectionsRoute
@@ -331,9 +363,11 @@ export interface FileRoutesByTo {
   '/help-and-resources': typeof PlatformContentHelpAndResourcesIndexRoute
   '/map': typeof PlatformMapMapIndexRoute
   '/api/track-corrections/$workspaceId': typeof ApiTrackCorrectionsWorkspaceIdIndexRoute
+  '/datasets-and-api/api-tokens/$tokenId': typeof PlatformContentDatasetsAndApiApiTokensTokenIdRoute
   '/help-and-resources/$sectionSlug/{-$itemSlug}': typeof PlatformContentHelpAndResourcesSectionSlugChar123ItemSlugChar125Route
   '/map/report/$reportId': typeof PlatformMapMapReportReportIdRoute
   '/map/vessel/$vesselId': typeof PlatformMapMapVesselVesselIdRoute
+  '/datasets-and-api/api-tokens': typeof PlatformContentDatasetsAndApiApiTokensIndexRoute
   '/map/$category': typeof PlatformMapMapCategoryIndexRoute
   '/map/$category/$workspaceId/vessel-search': typeof PlatformMapMapCategoryWorkspaceIdVesselSearchRoute
   '/map/$category/$workspaceId': typeof PlatformMapMapCategoryWorkspaceIdIndexRoute
@@ -345,6 +379,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_platform': typeof PlatformRouteWithChildren
+  '/llms.txt': typeof LlmsDottxtRoute
   '/login': typeof LoginRoute
   '/_platform/_content': typeof PlatformContentRouteWithChildren
   '/_platform/_map': typeof PlatformMapRouteWithChildren
@@ -361,6 +396,7 @@ export interface FileRoutesById {
   '/api/ocean-areas/name': typeof ApiOceanAreasNameRoute
   '/api/ocean-areas/search': typeof ApiOceanAreasSearchRoute
   '/api/ocean-areas/': typeof ApiOceanAreasIndexRoute
+  '/_platform/_content/datasets-and-api/api-tokens': typeof PlatformContentDatasetsAndApiApiTokensRouteRouteWithChildren
   '/_platform/_content/areas/$placeType': typeof PlatformContentAreasPlaceTypeRoute
   '/_platform/_map/map/user': typeof PlatformMapMapUserRoute
   '/_platform/_map/map/vessel-search': typeof PlatformMapMapVesselSearchRoute
@@ -372,10 +408,12 @@ export interface FileRoutesById {
   '/_platform/_content/help-and-resources/': typeof PlatformContentHelpAndResourcesIndexRoute
   '/_platform/_map/map/': typeof PlatformMapMapIndexRoute
   '/api/track-corrections/$workspaceId/': typeof ApiTrackCorrectionsWorkspaceIdIndexRoute
+  '/_platform/_content/datasets-and-api/api-tokens/$tokenId': typeof PlatformContentDatasetsAndApiApiTokensTokenIdRoute
   '/_platform/_content/help-and-resources/$sectionSlug/{-$itemSlug}': typeof PlatformContentHelpAndResourcesSectionSlugChar123ItemSlugChar125Route
   '/_platform/_map/map/$category/$workspaceId': typeof PlatformMapMapCategoryWorkspaceIdRouteWithChildren
   '/_platform/_map/map/report/$reportId': typeof PlatformMapMapReportReportIdRoute
   '/_platform/_map/map/vessel/$vesselId': typeof PlatformMapMapVesselVesselIdRoute
+  '/_platform/_content/datasets-and-api/api-tokens/': typeof PlatformContentDatasetsAndApiApiTokensIndexRoute
   '/_platform/_map/map/$category/': typeof PlatformMapMapCategoryIndexRoute
   '/_platform/_map/map/$category/$workspaceId/vessel-search': typeof PlatformMapMapCategoryWorkspaceIdVesselSearchRoute
   '/_platform/_map/map/$category/$workspaceId/': typeof PlatformMapMapCategoryWorkspaceIdIndexRoute
@@ -388,6 +426,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/llms.txt'
     | '/login'
     | '/api/corrections'
     | '/api/downloadSurvey'
@@ -401,6 +440,7 @@ export interface FileRouteTypes {
     | '/api/ocean-areas/name'
     | '/api/ocean-areas/search'
     | '/api/ocean-areas/'
+    | '/datasets-and-api/api-tokens'
     | '/areas/$placeType'
     | '/map/user'
     | '/map/vessel-search'
@@ -412,10 +452,12 @@ export interface FileRouteTypes {
     | '/help-and-resources/'
     | '/map/'
     | '/api/track-corrections/$workspaceId/'
+    | '/datasets-and-api/api-tokens/$tokenId'
     | '/help-and-resources/$sectionSlug/{-$itemSlug}'
     | '/map/$category/$workspaceId'
     | '/map/report/$reportId'
     | '/map/vessel/$vesselId'
+    | '/datasets-and-api/api-tokens/'
     | '/map/$category/'
     | '/map/$category/$workspaceId/vessel-search'
     | '/map/$category/$workspaceId/'
@@ -425,6 +467,7 @@ export interface FileRouteTypes {
     | '/map/$category/$workspaceId/report/{-$datasetId}/{-$areaId}'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/llms.txt'
     | '/login'
     | '/'
     | '/api/corrections'
@@ -449,9 +492,11 @@ export interface FileRouteTypes {
     | '/help-and-resources'
     | '/map'
     | '/api/track-corrections/$workspaceId'
+    | '/datasets-and-api/api-tokens/$tokenId'
     | '/help-and-resources/$sectionSlug/{-$itemSlug}'
     | '/map/report/$reportId'
     | '/map/vessel/$vesselId'
+    | '/datasets-and-api/api-tokens'
     | '/map/$category'
     | '/map/$category/$workspaceId/vessel-search'
     | '/map/$category/$workspaceId'
@@ -462,6 +507,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_platform'
+    | '/llms.txt'
     | '/login'
     | '/_platform/_content'
     | '/_platform/_map'
@@ -478,6 +524,7 @@ export interface FileRouteTypes {
     | '/api/ocean-areas/name'
     | '/api/ocean-areas/search'
     | '/api/ocean-areas/'
+    | '/_platform/_content/datasets-and-api/api-tokens'
     | '/_platform/_content/areas/$placeType'
     | '/_platform/_map/map/user'
     | '/_platform/_map/map/vessel-search'
@@ -489,10 +536,12 @@ export interface FileRouteTypes {
     | '/_platform/_content/help-and-resources/'
     | '/_platform/_map/map/'
     | '/api/track-corrections/$workspaceId/'
+    | '/_platform/_content/datasets-and-api/api-tokens/$tokenId'
     | '/_platform/_content/help-and-resources/$sectionSlug/{-$itemSlug}'
     | '/_platform/_map/map/$category/$workspaceId'
     | '/_platform/_map/map/report/$reportId'
     | '/_platform/_map/map/vessel/$vesselId'
+    | '/_platform/_content/datasets-and-api/api-tokens/'
     | '/_platform/_map/map/$category/'
     | '/_platform/_map/map/$category/$workspaceId/vessel-search'
     | '/_platform/_map/map/$category/$workspaceId/'
@@ -504,6 +553,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   PlatformRoute: typeof PlatformRouteWithChildren
+  LlmsDottxtRoute: typeof LlmsDottxtRoute
   LoginRoute: typeof LoginRoute
   ApiCorrectionsRoute: typeof ApiCorrectionsRoute
   ApiDownloadSurveyRoute: typeof ApiDownloadSurveyRoute
@@ -524,6 +574,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof PlatformRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/llms.txt': {
+      id: '/llms.txt'
+      path: '/llms.txt'
+      fullPath: '/llms.txt'
+      preLoaderRoute: typeof LlmsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -652,6 +709,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlatformContentAreasPlaceTypeRouteImport
       parentRoute: typeof PlatformContentRoute
     }
+    '/_platform/_content/datasets-and-api/api-tokens': {
+      id: '/_platform/_content/datasets-and-api/api-tokens'
+      path: '/datasets-and-api/api-tokens'
+      fullPath: '/datasets-and-api/api-tokens'
+      preLoaderRoute: typeof PlatformContentDatasetsAndApiApiTokensRouteRouteImport
+      parentRoute: typeof PlatformContentRoute
+    }
     '/_platform/_content/help-and-resources/': {
       id: '/_platform/_content/help-and-resources/'
       path: '/help-and-resources'
@@ -714,6 +778,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/track-corrections/$workspaceId/$issueId'
       preLoaderRoute: typeof ApiTrackCorrectionsWorkspaceIdIssueIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_platform/_content/datasets-and-api/api-tokens/': {
+      id: '/_platform/_content/datasets-and-api/api-tokens/'
+      path: '/'
+      fullPath: '/datasets-and-api/api-tokens/'
+      preLoaderRoute: typeof PlatformContentDatasetsAndApiApiTokensIndexRouteImport
+      parentRoute: typeof PlatformContentDatasetsAndApiApiTokensRouteRoute
+    }
+    '/_platform/_content/datasets-and-api/api-tokens/$tokenId': {
+      id: '/_platform/_content/datasets-and-api/api-tokens/$tokenId'
+      path: '/$tokenId'
+      fullPath: '/datasets-and-api/api-tokens/$tokenId'
+      preLoaderRoute: typeof PlatformContentDatasetsAndApiApiTokensTokenIdRouteImport
+      parentRoute: typeof PlatformContentDatasetsAndApiApiTokensRouteRoute
     }
     '/_platform/_content/help-and-resources/$sectionSlug/{-$itemSlug}': {
       id: '/_platform/_content/help-and-resources/$sectionSlug/{-$itemSlug}'
@@ -795,10 +873,29 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface PlatformContentDatasetsAndApiApiTokensRouteRouteChildren {
+  PlatformContentDatasetsAndApiApiTokensTokenIdRoute: typeof PlatformContentDatasetsAndApiApiTokensTokenIdRoute
+  PlatformContentDatasetsAndApiApiTokensIndexRoute: typeof PlatformContentDatasetsAndApiApiTokensIndexRoute
+}
+
+const PlatformContentDatasetsAndApiApiTokensRouteRouteChildren: PlatformContentDatasetsAndApiApiTokensRouteRouteChildren =
+  {
+    PlatformContentDatasetsAndApiApiTokensTokenIdRoute:
+      PlatformContentDatasetsAndApiApiTokensTokenIdRoute,
+    PlatformContentDatasetsAndApiApiTokensIndexRoute:
+      PlatformContentDatasetsAndApiApiTokensIndexRoute,
+  }
+
+const PlatformContentDatasetsAndApiApiTokensRouteRouteWithChildren =
+  PlatformContentDatasetsAndApiApiTokensRouteRoute._addFileChildren(
+    PlatformContentDatasetsAndApiApiTokensRouteRouteChildren,
+  )
+
 interface PlatformContentRouteChildren {
   PlatformContentPortsRoute: typeof PlatformContentPortsRoute
   PlatformContentUserRoute: typeof PlatformContentUserRoute
   PlatformContentVesselSearchRoute: typeof PlatformContentVesselSearchRoute
+  PlatformContentDatasetsAndApiApiTokensRouteRoute: typeof PlatformContentDatasetsAndApiApiTokensRouteRouteWithChildren
   PlatformContentAreasPlaceTypeRoute: typeof PlatformContentAreasPlaceTypeRoute
   PlatformContentAreasIndexRoute: typeof PlatformContentAreasIndexRoute
   PlatformContentHelpAndResourcesIndexRoute: typeof PlatformContentHelpAndResourcesIndexRoute
@@ -809,6 +906,8 @@ const PlatformContentRouteChildren: PlatformContentRouteChildren = {
   PlatformContentPortsRoute: PlatformContentPortsRoute,
   PlatformContentUserRoute: PlatformContentUserRoute,
   PlatformContentVesselSearchRoute: PlatformContentVesselSearchRoute,
+  PlatformContentDatasetsAndApiApiTokensRouteRoute:
+    PlatformContentDatasetsAndApiApiTokensRouteRouteWithChildren,
   PlatformContentAreasPlaceTypeRoute: PlatformContentAreasPlaceTypeRoute,
   PlatformContentAreasIndexRoute: PlatformContentAreasIndexRoute,
   PlatformContentHelpAndResourcesIndexRoute:
@@ -912,6 +1011,7 @@ const PlatformRouteWithChildren = PlatformRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   PlatformRoute: PlatformRouteWithChildren,
+  LlmsDottxtRoute: LlmsDottxtRoute,
   LoginRoute: LoginRoute,
   ApiCorrectionsRoute: ApiCorrectionsRoute,
   ApiDownloadSurveyRoute: ApiDownloadSurveyRoute,

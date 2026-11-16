@@ -75,16 +75,22 @@ export class VesselEventsLayer extends CompositeLayer<_VesselEventsLayerProps> {
       },
     }
 
+    // Keeps only the events that overlap the [startTime, endTime] range
+    const timeFilterProps = {
+      getFilterValue: (d: VesselDeckLayersEventData) => [d.start, d.end],
+      filterRange: [
+        [Number.MIN_SAFE_INTEGER, endTime],
+        [startTime, Number.MAX_SAFE_INTEGER],
+      ] as any,
+    }
+    const timeFilterExtension = new DataFilterExtension({ filterSize: 2 })
+
     const chunkLayers: (VesselEventIconLayer | PathLayer)[] = [
       new VesselEventIconLayer({
         ...baseLayerProps,
         pickable: true,
-        getFilterValue: (d: VesselDeckLayersEventData) => [d.start, d.end],
-        filterRange: [
-          [Number.MIN_SAFE_INTEGER, endTime] as any,
-          [startTime, Number.MAX_SAFE_INTEGER],
-        ],
-        extensions: [new DataFilterExtension({ filterSize: 2 })],
+        ...timeFilterProps,
+        extensions: [timeFilterExtension],
         updateTriggers: {
           getFillColor: [color, highlightEventIds],
           getLineColor: [color, highlightEventIds],
@@ -136,6 +142,9 @@ export class VesselEventsLayer extends CompositeLayer<_VesselEventsLayerProps> {
           widthUnits: 'pixels',
           widthMinPixels: 1,
           pickable: false,
+          ...timeFilterProps,
+          extensions: [timeFilterExtension],
+          updateTriggers: { getFilterValue: [endTime, startTime] },
         })
       )
       chunkLayers.push(
@@ -149,7 +158,12 @@ export class VesselEventsLayer extends CompositeLayer<_VesselEventsLayerProps> {
           widthUnits: 'pixels',
           widthMinPixels: 1,
           pickable: false,
-          extensions: [new PathStyleExtension({ dash: true, highPrecisionDash: true })],
+          ...timeFilterProps,
+          extensions: [
+            timeFilterExtension,
+            new PathStyleExtension({ dash: true, highPrecisionDash: true }),
+          ],
+          updateTriggers: { getFilterValue: [endTime, startTime] },
           getDashArray: [4, 8],
           dashJustified: true,
         })

@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "@globalfishingwatch/dataviews-client": "workspace:^",
+    "@globalfishingwatch/deck-layers": "workspace:^",
     "@platform/config": "workspace:^",
     "@types/node": "26.x",
     "playwright": "1.x",

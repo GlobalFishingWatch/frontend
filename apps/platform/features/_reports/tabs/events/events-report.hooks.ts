@@ -30,10 +30,9 @@ import {
 import { selectReportEventsGraph } from 'features/_reports/reports.config.selectors'
 import {
   selectReportAreaId,
-  selectReportCategory,
   selectReportDatasetId,
-  selectReportSubCategory,
-} from 'features/_reports/reports.selectors'
+} from 'features/_reports/reports.current.selectors'
+import { selectReportCategory, selectReportSubCategory } from 'features/_reports/reports.selectors'
 import { selectEventsGraphDatasetAreas } from 'features/_reports/tabs/events/events-report.selectors'
 import { selectReportPortId, selectReportVesselGroupId } from 'router/routes.selectors'
 import { formatInfoField } from 'utils/info'

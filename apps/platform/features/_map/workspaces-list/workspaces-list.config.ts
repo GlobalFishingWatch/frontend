@@ -16,7 +16,7 @@ import type workspaceTranslations from '../../../public/locales/source/workspace
  * Split out of workspaces-list.selectors so consumers that only need the constants don't pay for the
  * selector graph: that module statically reaches 109 modules (user permissions, reports, router
  * selectors), and `MainNav` — the platform's global navigation — imported it purely for
- * AVAILABLE_WORKSPACES_CATEGORIES. Measure with `node scripts/reachable-features.mjs`.
+ * AVAILABLE_WORKSPACES_CATEGORIES. Measure with `load-boundaries.ts explain` (apps/platform/scripts/load-boundaries).
  */
 export type HighlightedWorkspaceCategory = keyof typeof workspaceTranslations
 

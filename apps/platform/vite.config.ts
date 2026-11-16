@@ -1,3 +1,4 @@
+import { nxReadySignal } from '@nx/vite/plugins/nx-ready-signal.plugin'
 import { sentryTanstackStart } from '@sentry/tanstackstart-react/vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import react from '@vitejs/plugin-react'
@@ -7,6 +8,8 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import type { Plugin } from 'vite'
 import { defineConfig, loadEnv } from 'vite'
 import svgr from 'vite-plugin-svgr'
+
+import { chunkGraph } from './scripts/load-boundaries/chunk-graph.plugin.ts'
 
 export const basePath =
   import.meta.env?.VITE_PUBLIC_URL || process.env.VITE_PUBLIC_URL || '/platform'
@@ -23,14 +26,13 @@ const NO_CACHE_HEADERS = {
   'cache-control': 'no-store',
 } as const
 
-function staticRouteRules(basePath: string, mode: string) {
+// Nitro matches route rules against the path with baseURL stripped, so no basePath prefix here
+function staticRouteRules(mode: string) {
   const headers = mode === 'production' ? LOCALE_JSON_CACHE_HEADERS : NO_CACHE_HEADERS
   const imageHeaders = mode === 'production' ? IMAGE_CACHE_HEADERS : NO_CACHE_HEADERS
   return {
     '/locales/**': { headers },
-    [`${basePath}/locales/**`]: { headers },
     '/images/**': { headers: imageHeaders },
-    [`${basePath}/images/**`]: { headers: imageHeaders },
   }
 }
 
@@ -115,6 +117,7 @@ export default defineConfig(({ command, mode }) => {
     },
     plugins: [
       ...plugins,
+      nxReadySignal(),
       command === 'serve' &&
         ({
           name: 'deck-layers-full-reload',
@@ -126,28 +129,32 @@ export default defineConfig(({ command, mode }) => {
           },
         } satisfies Plugin),
       command === 'build' && env.VITE_PLATFORM_MODE === 'true' && placesSitemap(),
-      command === 'build' &&
-        nitro({
-          baseURL: basePath,
-          sourcemap: true,
-          routeRules: staticRouteRules(basePath, mode),
-          compressPublicAssets: {
-            gzip: true,
-            brotli: true,
+      command === 'build' && chunkGraph(),
+      nitro({
+        // server.ts is the Vite SSR entry (environments.ssr below), not a Nitro handler
+        serverEntry: false,
+        // Validates the server env when the process starts, see server/env.server.ts
+        plugins: ['./server/env.plugin.ts'],
+        // baseURL comes from Vite `base` (nitro >= 3.0.261103-rc syncs them)
+        sourcemap: true,
+        routeRules: staticRouteRules(mode),
+        compressPublicAssets: {
+          gzip: true,
+          brotli: true,
+        },
+        rollupConfig: {
+          // Only Node.js built-ins — npm packages cannot be external because the
+          // production Docker image copies only .output/ with no node_modules.
+          external: ['assert', 'fsevents', 'chokidar', /^@vitejs\//, '@opentelemetry/api-logs'],
+          output: {
+            // Prevents Rolldown from reordering inlined SSR chunks in a way that places
+            // __exportAll() calls before the var declaration runs.
+            // Track: https://github.com/vitejs/vite/issues/22291
+            //        https://github.com/rolldown/rolldown/issues/9441
+            hoistTransitiveImports: false,
           },
-          rollupConfig: {
-            // Only Node.js built-ins — npm packages cannot be external because the
-            // production Docker image copies only .output/ with no node_modules.
-            external: ['assert', 'fsevents', 'chokidar', /^@vitejs\//, '@opentelemetry/api-logs'],
-            output: {
-              // Prevents Rolldown from reordering inlined SSR chunks in a way that places
-              // __exportAll() calls before the var declaration runs.
-              // Track: https://github.com/vitejs/vite/issues/22291
-              //        https://github.com/rolldown/rolldown/issues/9441
-              hoistTransitiveImports: false,
-            },
-          },
-        }),
+        },
+      }),
       process.env.ANALYZE === 'true' &&
         visualizer({
           // Written to the app root so it's easy to open after the build
@@ -171,7 +178,7 @@ export default defineConfig(({ command, mode }) => {
     build: {
       cssCodeSplit: false,
     },
-    envPrefix: ['VITE_', 'i18n_'],
+    envPrefix: 'VITE_',
     define: {
       __BUILD_ID__: JSON.stringify(
         process.env.BUILD_ID || process.env.GITHUB_SHA?.slice(0, 12) || String(Date.now())
@@ -180,6 +187,11 @@ export default defineConfig(({ command, mode }) => {
     environments: {
       client: {
         build: {
+          // Vite 8 defaults to baseline-widely-available (chrome111/safari16.4) and emits
+          // ES2022 class static blocks (react-stately's Color), a SyntaxError on Chrome < 94 —
+          // FRONTEND-NE. Floors are the oldest browsers seen failing there (2026-11): Chrome
+          // Mobile 87 / Android WebViews and iOS 15. Firefox and Edge were not affected.
+          target: ['chrome87', 'safari15', 'firefox115', 'edge111'],
           chunkSizeWarningLimit: 1500,
           rolldownOptions: {
             output: {
@@ -192,31 +204,41 @@ export default defineConfig(({ command, mode }) => {
               // Ensures CJS-heavy chunks (recharts → es-toolkit/compat) execute in import order.
               // Track: https://github.com/rolldown/rolldown/issues/8803
               strictExecutionOrder: true,
-              manualChunks(id) {
-                if (
-                  id.includes('/libs/timebar/src/icons/') ||
-                  id.includes('/apps/platform/assets/icons/')
-                ) {
-                  return 'icons-bundle'
-                }
-                if (
-                  id.includes('/node_modules/@reduxjs/') ||
-                  id.includes('/node_modules/redux/') ||
-                  id.includes('/node_modules/react-redux/') ||
-                  id.includes('/node_modules/immer/') ||
-                  id.includes('/node_modules/reselect/')
-                ) {
-                  return 'vendor-redux'
-                }
-                if (
-                  id.includes('/node_modules/es-toolkit/compat/') ||
-                  id.includes('/node_modules/es-toolkit/')
-                ) {
-                  return 'vendor-es-toolkit'
-                }
-                if (id.includes('/node_modules/jsts/')) {
-                  return 'vendor-jsts'
-                }
+              codeSplitting: {
+                groups: [
+                  {
+                    name: 'platform-icons',
+                    test: /[\\/]apps[\\/]platform[\\/]assets[\\/]icons[\\/]/,
+                    priority: 3,
+                  },
+                  {
+                    name: 'ui-components-icons',
+                    test: /[\\/]libs[\\/]ui-components[\\/]dist[\\/]icon[\\/]icons[\\/]/,
+                    priority: 3,
+                  },
+                  {
+                    name: 'vendor-core',
+                    test: /[\\/]node_modules[\\/](react|react-dom|@sentry|zod|@tanstack[\\/](react-router|react-start[a-z-]*|zod-adapter)|luxon|i18next|i18next-http-backend|i18next-browser-languagedetector|react-i18next|qs|jotai|usehooks-ts|classnames)[\\/]/,
+                    priority: 2,
+                  },
+                  {
+                    name: 'vendor-redux-es-toolkit',
+                    test: /[\\/]node_modules[\\/](@reduxjs|redux|react-redux|immer|reselect|es-toolkit)[\\/]/,
+                    priority: 2,
+                  },
+                  { name: 'vendor-jsts', test: /[\\/]node_modules[\\/]jsts[\\/]/, priority: 2 },
+                  {
+                    name: 'vendor-heavy',
+                    test: /[\\/](node_modules[\\/](@deck\.gl|@luma\.gl|@loaders\.gl|@turf|@strapi|simple-statistics|match-sorter|recharts|d3-[a-z-]+|topojson-client)|libs[\\/](deck-layers|deck-layer-composer|deck-loaders|timebar))[\\/]/,
+                    priority: 1,
+                    entriesAware: true,
+                  },
+                  {
+                    name: 'vendor',
+                    test: /[\\/](node_modules|libs)[\\/]/,
+                    entriesAware: true,
+                  },
+                ],
               },
             },
           },
@@ -246,6 +268,10 @@ export default defineConfig(({ command, mode }) => {
         // desync an already-constructed instance from the freshly reloaded prototype.
         'i18next',
         'react-i18next',
+        // sentryTanstackStart (11.10+) forces this into noExternal, so Nitro stops tracing it into
+        // .output/server/node_modules. instrument.server.mjs is copied there unbundled and imports
+        // it at boot (`node --import`), so without this the container dies with ERR_MODULE_NOT_FOUND.
+        '@sentry/tanstackstart-react',
       ],
     },
   }

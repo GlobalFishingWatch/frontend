@@ -157,6 +157,13 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     )
   }
 
+  // Edit modes set their cursor ('cell', 'move'…) on the EditableGeoJsonLayer state; deck only
+  // applies it when the app's getCursor returns it
+  getCursor = ({ isDragging }: { isDragging: boolean }): string => {
+    const editableLayer = this.getSubLayers()[0] as EditableGeoJsonLayer | undefined
+    return editableLayer?.getCursor({ isDragging }) || (isDragging ? 'grabbing' : 'grab')
+  }
+
   getClickSequence = () => {
     return this.state?.mode?.getClickSequence()?.length || 0
   }
