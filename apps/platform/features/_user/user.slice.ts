@@ -24,9 +24,15 @@ export type ReportGraphScreenshotSettings = {
   width?: number
 }
 
+export type MapScreenshotSettings = {
+  areaId?: string
+  aspectRatio?: string
+}
+
 export interface UserSettings {
   [PREFERRED_FOURWINGS_VISUALISATION_MODE]?: FourwingsVisualizationMode
   reportGraphScreenshot?: ReportGraphScreenshotSettings
+  mapScreenshot?: MapScreenshotSettings
 }
 
 interface UserState {

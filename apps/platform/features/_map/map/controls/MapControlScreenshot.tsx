@@ -8,6 +8,7 @@ import { useWindowSize } from 'usehooks-ts'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, IconButton, Select, SPLIT_VIEW_DOM_ID } from '@globalfishingwatch/ui-components'
 
+import { setUserSetting } from 'features/_user/user.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { useDOMElement } from 'hooks/dom.hooks'
@@ -25,8 +26,6 @@ import {
   selectScreenshotAreaId,
   selectScreenshotAspectRatio,
   setLabelSizeScale,
-  setScreenshotAreaId,
-  setScreenshotAspectRatio,
 } from './screenshot.slice'
 import { applyScreenshotLayout, resetScreenshotLayout } from './screenshot.utils'
 
@@ -143,19 +142,27 @@ const MapControlScreenshot = ({
 
   const onSelectScreenshotArea = useCallback(
     (option: SelectOption<ScrenshotDOMArea>) => {
-      dispatch(setScreenshotAreaId(option.id))
+      dispatch(
+        setUserSetting({
+          mapScreenshot: { areaId: option.id, aspectRatio: screenshotAspectRatio },
+        })
+      )
       if (option.id === ScrenshotAreaIds.withTimebarAndLegend) {
         replaceQueryParams({ sidebarOpen: true })
       }
     },
-    [dispatch, replaceQueryParams]
+    [dispatch, replaceQueryParams, screenshotAspectRatio]
   )
 
   const onSelectAspectRatio = useCallback(
     (option: SelectOption<ScreenshotAspectRatio>) => {
-      dispatch(setScreenshotAspectRatio(option.id))
+      dispatch(
+        setUserSetting({
+          mapScreenshot: { areaId: screenshotAreaId, aspectRatio: option.id },
+        })
+      )
     },
-    [dispatch]
+    [dispatch, screenshotAreaId]
   )
 
   const onDownloadClick = useCallback(async () => {
