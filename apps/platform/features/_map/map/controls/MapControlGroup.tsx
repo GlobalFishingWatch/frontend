@@ -40,6 +40,7 @@ function MapControlGroup({
           disabled={disabled}
           type="map-tool"
           tooltip={editTooltip}
+          tooltipPlacement="left"
           onClick={onClick}
         />
       </li>
@@ -50,6 +51,7 @@ function MapControlGroup({
             disabled={disabled}
             type="map-tool"
             tooltip={t((t) => t.common.toggleVisibility)}
+            tooltipPlacement="left"
             onClick={onVisibilityClick}
           />
         </li>
@@ -61,6 +63,7 @@ function MapControlGroup({
             disabled={disabled}
             type="map-tool"
             tooltip={deleteTooltip || t((t) => t.common.delete)}
+            tooltipPlacement="left"
             onClick={onDeleteClick}
           />
         </li>

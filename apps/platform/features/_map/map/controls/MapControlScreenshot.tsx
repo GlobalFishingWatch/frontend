@@ -182,6 +182,7 @@ const MapControlScreenshot = ({
           loading={loading}
           disabled={captureDisabled}
           tooltip={captureDisabled ? t((t) => t.map.mapLoadingWait) : t((t) => t.map.captureMap)}
+          tooltipPlacement="left"
           onClick={openEditor}
         />
       )}
