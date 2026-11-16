@@ -91,6 +91,18 @@
   z-index: 1;
 }
 
+:global(.printing) .platformContainer {
+  transform: none;
+}
+
+:global(.printing) .platformContent {
+  z-index: auto;
+}
+
+:global(.printing) .main {
+  height: 100%;
+}
+
 :global(#__root__:not(.printing)) .withTimebar {
   height: 100%;
 }

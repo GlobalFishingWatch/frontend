@@ -18,12 +18,16 @@ export const ScrenshotAreaIds: Record<ScrenshotArea, ScrenshotDOMArea> = {
   withTimebarAndLegend: SPLIT_VIEW_DOM_ID,
 }
 
-export type ScreenshotAspectRatio = 'current' | '4:3' | '9:16'
+export type ScreenshotAspectRatio = 'current' | '2:1' | '16:9' | '3:2' | '1:1' | '2:3' | '9:16'
 
 // width / height; null keeps the capture area at whatever size the window gives it
 export const SCREENSHOT_ASPECT_RATIOS: Record<ScreenshotAspectRatio, number | null> = {
   current: null,
-  '4:3': 4 / 3,
+  '2:1': 2,
+  '16:9': 16 / 9,
+  '3:2': 3 / 2,
+  '1:1': 1,
+  '2:3': 2 / 3,
   '9:16': 9 / 16,
 }
 

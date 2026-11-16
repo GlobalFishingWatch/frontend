@@ -74,6 +74,17 @@ body:has(.printing) {
   display: none !important;
 }
 
+[data-screenshot-area='app-main'] aside:has(~ #app-main),
+[data-screenshot-area='map-container'] aside:has(~ #app-main),
+[data-screenshot-area='map-container'] #app-main > :not(:has(#map-container)) {
+  display: none;
+}
+
+[data-screenshot-area='app-main'] #app-main,
+[data-screenshot-area='map-container'] #app-main {
+  left: 0 !important; /* SplitView sets left to the sidebar width inline */
+}
+
 #__root__ {
   height: 100dvh;
   width: 100%;
