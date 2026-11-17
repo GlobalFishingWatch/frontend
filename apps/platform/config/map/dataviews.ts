@@ -144,6 +144,9 @@ export const VESSEL_VMS_NORWAY_DATAVIEW_SLUG =
   `private-nor-fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const
 export const VESSEL_VMS_PALAU_DATAVIEW_SLUG =
   `private-plw-fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const
+
+export const VESSEL_PUBLIC_VMS_PALAU_DATAVIEW_SLUG =
+  `public-plw-fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const
 export const VESSEL_VMS_PAPUA_NEW_GUINEA_DATAVIEW_SLUG =
   `private-png-fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const
 export const VESSEL_VMS_ECUADOR_DATAVIEW_SLUG =
