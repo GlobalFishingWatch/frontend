@@ -100,6 +100,8 @@ const MapControlScreenshot = ({
     dispatch(setModalOpen({ id: 'screenshot', open: false }))
   }, [dispatch])
 
+  useEffect(() => closeEditor, [closeEditor])
+
   // .printing restyles the app for capture; the area attribute hides what falls outside it
   useEffect(() => {
     if (!editorOpen || !rootElement) {
