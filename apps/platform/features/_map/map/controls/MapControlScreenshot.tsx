@@ -7,6 +7,7 @@ import type { Entries } from 'type-fest'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, IconButton, Select, SPLIT_VIEW_DOM_ID } from '@globalfishingwatch/ui-components'
 
+import { selectUserSettings } from 'features/_user/selectors/user.selectors'
 import { setUserSetting } from 'features/_user/user.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.slice'
@@ -43,6 +44,7 @@ const MapControlScreenshot = ({
   const editorOpen = useSelector(selectScreenshotModalOpen)
   const screenshotAreaId = useSelector(selectScreenshotAreaId)
   const screenshotAspectRatio = useSelector(selectScreenshotAspectRatio)
+  const savedScreenshotSettings = useSelector(selectUserSettings).mapScreenshot
   const interactionLoading = useSelector(selectIsMapInteractionLoading)
   const rootElement = useDOMElement()
   const { loading, downloadImage } = useDownloadDomElementAsImage()
@@ -174,22 +176,22 @@ const MapControlScreenshot = ({
     (option: SelectOption<ScrenshotDOMArea>) => {
       dispatch(
         setUserSetting({
-          mapScreenshot: { areaId: option.id, aspectRatio: screenshotAspectRatio },
+          mapScreenshot: { ...savedScreenshotSettings, areaId: option.id },
         })
       )
     },
-    [dispatch, screenshotAspectRatio]
+    [dispatch, savedScreenshotSettings]
   )
 
   const onSelectAspectRatio = useCallback(
     (option: SelectOption<ScreenshotAspectRatio>) => {
       dispatch(
         setUserSetting({
-          mapScreenshot: { areaId: screenshotAreaId, aspectRatio: option.id },
+          mapScreenshot: { ...savedScreenshotSettings, aspectRatio: option.id },
         })
       )
     },
-    [dispatch, screenshotAreaId]
+    [dispatch, savedScreenshotSettings]
   )
 
   const onDownloadClick = useCallback(async () => {
