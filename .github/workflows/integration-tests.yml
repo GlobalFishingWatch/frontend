@@ -2,7 +2,8 @@ name: Integration Tests
 
 # Lib unit tests run as `test`. The platform vitest suite runs as `integration-ci`, which the
 # @nx/vitest plugin splits into one `integration-ci--<file>` task per spec. All of them are
-# distributed to Nx Cloud workers (.nx/ci-config.yaml, launch template in .nx/workflows/agents.yaml).
+# run on the runner, one spec at a time. Nx Cloud is disabled (NX_NO_CLOUD): no remote cache and no
+# distributed workers.
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review, closed]
@@ -20,14 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-    # Job-level so every nx step reads the Nx Cloud remote cache (nxCloudId in nx.json)
+    # Job-level so every nx step skips Nx Cloud (nxCloudId in nx.json)
     env:
-      NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN_READ_ONLY }}
-      # Each GitHub workflow is its own Nx Cloud pipeline execution (CIPE), and a new CIPE on a
-      # branch cancels the running one ("One or more workflows were cancelled"). E2E Tests keeps
-      # the PR number for the Nx Cloud GitHub integration; this workflow posts its own comment.
-      NX_BRANCH: ${{ github.event.pull_request.number }}-integration
-      # Forwarded to the workers by .nx/ci-config.integration.yaml (workers.with-env-vars)
+      NX_NO_CLOUD: 'true'
       CI: '1'
       VITE_API_GATEWAY: https://gateway.api.${{ github.event.pull_request.base.ref == 'main' && 'staging' || 'dev' }}.globalfishingwatch.org
       VITE_WORKSPACE_ENV: development
@@ -46,7 +42,7 @@ jobs:
           fetch-depth: 0
           filter: tree:0
 
-      # --- Setting up dependencies and workers -------------------------------
+      # --- Setting up dependencies -------------------------------------------
 
       - name: Setup pnpm
         uses: pnpm/setup@v3
@@ -64,9 +60,9 @@ jobs:
       - name: Check load boundaries
         run: pnpm exec nx affected -t check-load-boundaries --base=origin/${{ github.event.pull_request.base.ref }} --head=HEAD
 
-      # Only the platform suite needs a browser, the test user's login and Nx Cloud workers (lib
-      # tests run in jsdom/node). Task-based affected (`-t`) selects a target only when its inputs
-      # changed, so a PR that does not touch what platform's specs read skips all three.
+      # Only the platform suite needs a browser and the test user's login (lib tests run in
+      # jsdom/node). Task-based affected (`-t`) selects a target only when its inputs changed, so a
+      # PR that does not touch what platform's specs read skips both.
       # The platform suite is off until its specs are fixed: set the repository variable
       # PLATFORM_INTEGRATION_TESTS=true to turn it back on. Lib tests always run.
       - name: Detect affected tests
@@ -82,7 +78,7 @@ jobs:
           echo "libs=$([ "$libs" = "[]" ] && echo false || echo true)" >> "$GITHUB_OUTPUT"
           echo "Affected: platform $platform, libs $libs"
 
-      # --- Logging in once, for every worker ---------------------------------
+      # --- Logging in once ---------------------------------------------------
       - name: Cache Playwright browsers
         if: steps.affected.outputs.platform == 'true'
         id: playwright-cache
@@ -109,23 +105,12 @@ jobs:
             echo "::warning::Login failed; integration tests run unauthenticated"
           fi
 
-      # `start-workers` reads only .nx/ci-config.yaml, which is the e2e config (stops after
-      # `test-ci`), and `start-ci-run` refuses to run while that file exists. So this job swaps in
-      # its own config first. Browsers are installed on the workers by the launch template.
-      # Without workers (platform not affected) the lib tests below run on this runner: they take
-      # seconds, less than booting workers.
-      - name: Start Nx Cloud workers
-        if: steps.affected.outputs.platform == 'true'
-        run: |
-          cp .nx/ci-config.integration.yaml .nx/ci-config.yaml
-          pnpm dlx nx-cloud start-workers
-
       # --- Running tests -----------------------------------------------------
 
       # Two commands, because `-t test integration-ci` would also run platform:test, the unsplit
-      # suite. Libs go first: `integration-ci` is the stop-after target in .nx/ci-config.integration.yaml.
-      # --parallel=1 runs one spec at a time per worker, so the specs on a worker share one browser
-      # profile and its tile cache (see vitest.config.ts).
+      # suite.
+      # --parallel=1 runs one spec at a time, so the specs share one browser profile and its tile
+      # cache (see vitest.config.ts).
       - name: Run affected tests
         id: run-tests
         if: steps.affected.outputs.platform == 'true' || steps.affected.outputs.libs == 'true'
@@ -143,23 +128,16 @@ jobs:
         env:
           NX_DAEMON: 'false'
 
-      # In CI the Nx Cloud task runner prints only a summary table per command: "│ ✔ │ <task> │ …" for
-      # a pass, a row with "✖" for a failure. Keep the test task rows, ignore their build dependencies.
+      # Without Nx Cloud there is no per-task summary table to parse, so report the step outcome.
       - name: Write test summary
         if: always()
         run: |
-          sed 's/\x1b\[[0-9;]*m//g' test-output.txt 2>/dev/null \
-            | sed -nE 's/.*(✔|✖).*[ │]([[:alnum:]_-]+:(test|integration-ci--[^ │]+))[ │].*/\1 `\2`/p' \
-            | sed 's/^✔/- ✅/; s/^✖/- ❌/' > results.md || true
           echo -e "## Test Results\n" > summary.md
-          if [ -s results.md ]; then
-            cat results.md >> summary.md
-            echo -e "\n**Summary:** $(grep -c ✅ results.md) passed, $(grep -c ❌ results.md) failed" >> summary.md
-          elif [ "${{ steps.run-tests.outcome }}" = failure ]; then
-            echo "Could not read the test results, see the job log" >> summary.md
-          else
-            echo "No tests were run" >> summary.md
-          fi
+          case "${{ steps.run-tests.outcome }}" in
+            success) echo "All affected tests passed" >> summary.md ;;
+            failure) echo "Some tests failed, see the job log" >> summary.md ;;
+            *) echo "No tests were run" >> summary.md ;;
+          esac
           echo -e "\n[Job log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> summary.md
 
       - name: Comment on PR with test results
