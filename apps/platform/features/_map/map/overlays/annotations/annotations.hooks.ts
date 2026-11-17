@@ -28,13 +28,14 @@ export const useMapAnnotation = () => {
 
   const addMapAnnotation = useCallback(
     (coords: Position) => {
+      resetMapControlValue()
       setMapControlValue({
         lon: coords[0],
         lat: coords[1],
         color: DEFAUL_ANNOTATION_COLOR,
       } as MapAnnotation)
     },
-    [setMapControlValue]
+    [resetMapControlValue, setMapControlValue]
   )
 
   return useMemo(

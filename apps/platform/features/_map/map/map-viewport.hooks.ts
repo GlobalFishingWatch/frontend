@@ -7,7 +7,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 
 import { MAP_VIEW_ID } from '@platform/config/selectors/map'
 
-import { viewStateAtom } from 'features/_map/map/map.atoms'
+import { mapSizeAtom, viewStateAtom } from 'features/_map/map/map.atoms'
 import { useDeckMap } from 'features/_map/map/map-context.hooks'
 import { selectIsWorkspaceReady } from 'features/_map/workspace/workspace.selectors'
 import { useReplaceQueryParams } from 'router/routes.hook'
@@ -89,5 +89,7 @@ export function getMapViewport(deckMap: Deck | undefined) {
 
 export function useMapViewport() {
   const deckMap = useDeckMap()
+  // Subscribing to the map size forces a fresh read
+  useAtomValue(mapSizeAtom)
   return getMapViewport(deckMap)
 }

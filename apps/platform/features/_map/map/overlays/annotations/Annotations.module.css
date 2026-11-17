@@ -16,3 +16,24 @@
 .confirmBtn {
   margin-left: auto;
 }
+
+.sizeSelector {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-XS);
+  margin-left: var(--space-S);
+  font: var(--font-L);
+}
+
+.sizeBtn {
+  line-height: 1;
+  color: var(--color-secondary-blue);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.sizeBtn[aria-pressed='true'] {
+  color: var(--color-primary-blue);
+}
