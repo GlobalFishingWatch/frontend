@@ -75,15 +75,22 @@ const MapAnnotations = (): React.ReactNode | null => {
     (annotation: MapAnnotation) => {
       if (!viewport || !newCoords) return
       setOverlaysCursor('')
-      upsertMapAnnotations({
-        ...annotation,
-        id: annotation.id || Date.now(),
-        lon: newCoords[0],
-        lat: newCoords[1],
-      })
+      const coords = { lon: newCoords[0], lat: newCoords[1] }
+      if (draftAnnotation?.id === annotation.id) {
+        setMapAnnotation({ ...draftAnnotation, ...coords })
+      } else {
+        upsertMapAnnotations({ ...annotation, id: annotation.id || Date.now(), ...coords })
+      }
       setNewCoords(null)
     },
-    [newCoords, setOverlaysCursor, upsertMapAnnotations, viewport]
+    [
+      draftAnnotation,
+      newCoords,
+      setMapAnnotation,
+      setOverlaysCursor,
+      upsertMapAnnotations,
+      viewport,
+    ]
   )
 
   const visibleAnnotations = (mapAnnotations || []).map((a) =>
