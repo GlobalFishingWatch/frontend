@@ -29,10 +29,13 @@ export type MapScreenshotSettings = {
   aspectRatio?: string
 }
 
+export type MapScaleUnit = 'km' | 'nm'
+
 export interface UserSettings {
   [PREFERRED_FOURWINGS_VISUALISATION_MODE]?: FourwingsVisualizationMode
   reportGraphScreenshot?: ReportGraphScreenshotSettings
   mapScreenshot?: MapScreenshotSettings
+  mapScaleUnit?: MapScaleUnit
 }
 
 interface UserState {

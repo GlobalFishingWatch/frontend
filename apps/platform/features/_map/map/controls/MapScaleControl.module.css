@@ -21,4 +21,7 @@
 
 :global(.printing) .scale {
   bottom: 3.2rem;
+  font: var(--font-S);
+  color: var(--color-white);
+  border-bottom: 2px solid var(--color-white);
 }

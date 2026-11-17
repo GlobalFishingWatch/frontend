@@ -223,7 +223,7 @@ const MapControlScreenshot = ({
               <Button
                 id="image-preview-download"
                 loading={loading}
-                disabled={captureDisabled}
+                disabled={mapLoading || interactionLoading}
                 onClick={onDownloadClick}
               >
                 {t((t) => t.map.screenshotDownload)}

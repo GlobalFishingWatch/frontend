@@ -80,6 +80,7 @@ import {
   getNewClickedFeatures,
   getSliceInteractionEvent,
   getUpdatedClickedFeatures,
+  isRulerLayerLabel,
   isRulerLayerPoint,
   isTilesClusterLayer,
   isTilesClusterLayerCluster,
@@ -268,7 +269,7 @@ export const useClickedEventConnect = () => {
   const fitMapBounds = useMapFitBounds()
   const { isMapAnnotating, addMapAnnotation } = useMapAnnotation()
   const { isErrorNotificationEditing, addErrorNotification } = useMapErrorNotification()
-  const { rulersEditing, onRulerMapClick } = useRulers()
+  const { rulersEditing, onRulerMapClick, toggleRulersUnit } = useRulers()
   const getAreClusterTilesLoading = useGetAreClusterTilesLoading()
   const { replaceQueryParams } = useReplaceQueryParams()
   const {
@@ -298,6 +299,10 @@ export const useClickedEventConnect = () => {
       }
       if (rulersEditing) {
         onRulerMapClick([deckEvent.longitude, deckEvent.latitude])
+        return
+      }
+      if (deckEvent.features?.some(isRulerLayerLabel)) {
+        toggleRulersUnit()
         return
       }
       // TODO: identify if clicked on a track correction overlay and return to stop propagation from opening events popup
@@ -384,6 +389,7 @@ export const useClickedEventConnect = () => {
       addMapAnnotation,
       addErrorNotification,
       onRulerMapClick,
+      toggleRulersUnit,
       getAreClusterTilesLoading,
       eventsDataviews,
       setMapCoordinates,
@@ -791,6 +797,9 @@ export const useMapCursor = () => {
       }
       if (features?.some(isRulerLayerPoint)) {
         return 'move'
+      }
+      if (features?.some(isRulerLayerLabel)) {
+        return 'pointer'
       }
       if (features?.some(isTilesClusterLayer)) {
         // Mirrors useClickedEventConnect: 'default' clusters always zoom on click

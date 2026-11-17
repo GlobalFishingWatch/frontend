@@ -1013,6 +1013,7 @@
     "rulersDelete": "Delete all measures",
     "rulersHover": "Drag to move or click to see more",
     "rulersStop": "Stop measures",
+    "rulersUnitToggle": "Click to switch units",
     "screenshotArea": {
       "map": "Only map",
       "withTimebar": "With timebar",

@@ -1,6 +1,11 @@
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { distance as turfDistance } from '@turf/turf'
+
+import { selectMapScaleUnit } from 'features/_user/selectors/user.selectors'
+import type { MapScaleUnit } from 'features/_user/user.slice'
+import { setUserSetting } from 'features/_user/user.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 
 import { useMapViewport } from '../map-viewport.hooks'
 
@@ -27,9 +32,7 @@ function getRoundNum(num: number) {
   return pow10 * d
 }
 
-type ScaleUnit = 'km' | 'nm'
-
-const UNIT_METERS: Record<ScaleUnit, number> = {
+const UNIT_METERS: Record<MapScaleUnit, number> = {
   nm: 1852,
   km: 1000,
 }
@@ -37,14 +40,15 @@ const UNIT_METERS: Record<ScaleUnit, number> = {
 const MapScaleControl = ({ maxWidth = 100 }: ScaleControlProps) => {
   const { t } = useTranslation()
   const mapViewport = useMapViewport()
-  const [scaleUnit, setScaleUnit] = useState<ScaleUnit>('nm')
+  const dispatch = useAppDispatch()
+  const scaleUnit = useSelector(selectMapScaleUnit)
 
   if (!mapViewport) {
     return null
   }
 
   const toggleMeasurement = () => {
-    setScaleUnit((prev) => (prev === 'km' ? 'nm' : 'km'))
+    dispatch(setUserSetting({ mapScaleUnit: scaleUnit === 'km' ? 'nm' : 'km' }))
   }
 
   const y = mapViewport.height / 2
