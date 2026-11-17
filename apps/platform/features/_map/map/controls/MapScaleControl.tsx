@@ -1,13 +1,10 @@
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import { distance as turfDistance } from '@turf/turf'
 
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
-import { selectMapScaleUnit } from 'features/_user/selectors/user.selectors'
+import useRulers from 'features/_map/map/overlays/rulers/rulers.hooks'
 import type { MapScaleUnit } from 'features/_user/user.slice'
-import { setUserSetting } from 'features/_user/user.slice'
-import { useAppDispatch } from 'features/app/app.hooks'
 
 import { useMapViewport } from '../map-viewport.hooks'
 
@@ -42,15 +39,10 @@ const UNIT_METERS: Record<MapScaleUnit, number> = {
 const MapScaleControl = ({ maxWidth = 100 }: ScaleControlProps) => {
   const { t } = useTranslation()
   const mapViewport = useMapViewport()
-  const dispatch = useAppDispatch()
-  const scaleUnit = useSelector(selectMapScaleUnit)
+  const { unit: scaleUnit, toggleRulersUnit } = useRulers()
 
   if (!mapViewport) {
     return null
-  }
-
-  const toggleMeasurement = () => {
-    dispatch(setUserSetting({ mapScaleUnit: scaleUnit === 'km' ? 'nm' : 'km' }))
   }
 
   const y = mapViewport.height / 2
@@ -68,9 +60,7 @@ const MapScaleControl = ({ maxWidth = 100 }: ScaleControlProps) => {
       <button
         className={styles.scale}
         style={{ width: `${maxWidth * ratio}px` }}
-        onClick={() => {
-          toggleMeasurement()
-        }}
+        onClick={toggleRulersUnit}
       >
         {distance} {unitLabel}
       </button>

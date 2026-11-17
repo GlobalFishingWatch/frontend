@@ -102,12 +102,16 @@ const MapControlScreenshot = ({
 
   // .printing restyles the app for capture; the area attribute hides what falls outside it
   useEffect(() => {
-    if (!editorOpen || !rootElement) return
+    if (!editorOpen || !rootElement) {
+      return
+    }
     const areaKey = (Object.keys(ScrenshotAreaIds) as ScrenshotArea[]).find(
       (key) => ScrenshotAreaIds[key] === screenshotAreaId
     )
     rootElement.classList.add('printing')
-    if (areaKey) rootElement.setAttribute('data-screenshot-area', areaKey)
+    if (areaKey) {
+      rootElement.setAttribute('data-screenshot-area', areaKey)
+    }
     return () => {
       rootElement.classList.remove('printing')
       rootElement.removeAttribute('data-screenshot-area')
@@ -123,7 +127,9 @@ const MapControlScreenshot = ({
   // reshape the live app container to the ratio and scale it into the centre of the screen
   useEffect(() => {
     const container = editorOpen ? getSafeElementById(SPLIT_VIEW_DOM_ID) : null
-    if (!container) return
+    if (!container) {
+      return
+    }
     const applyLayout = () => {
       const labelSizeScale = applyScreenshotLayout(
         container,

@@ -51,10 +51,9 @@ export class BaseMapLabelsLayer extends CompositeLayer<BaseMapLabelsLayerProps> 
         maxZoom: 12,
         maxRequests: 100,
         debounceTime: 200,
-        locale: this.props.locale,
-        // renderSubLayers isn't compared by deck, so passing this as a plain prop is what makes
-        // the tile layer rebuild its cached label sub layers when the scale changes
-        labelSizeScale,
+        updateTriggers: {
+          renderSubLayers: [this.props.locale, labelSizeScale],
+        },
         renderSubLayers: (props: any) => {
           return [
             new LabelLayer<BasemapLayerFeature>({
