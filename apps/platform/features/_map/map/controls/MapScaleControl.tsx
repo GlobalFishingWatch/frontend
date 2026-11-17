@@ -2,6 +2,8 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { distance as turfDistance } from '@turf/turf'
 
+import { Tooltip } from '@globalfishingwatch/ui-components'
+
 import { selectMapScaleUnit } from 'features/_user/selectors/user.selectors'
 import type { MapScaleUnit } from 'features/_user/user.slice'
 import { setUserSetting } from 'features/_user/user.slice'
@@ -62,15 +64,17 @@ const MapScaleControl = ({ maxWidth = 100 }: ScaleControlProps) => {
   const unitLabel = scaleUnit === 'nm' ? t((t) => t.map.nauticalMilesAbbr) : t((t) => t.common.km)
 
   return (
-    <div
-      className={styles.scale}
-      style={{ width: `${maxWidth * ratio}px` }}
-      onClick={() => {
-        toggleMeasurement()
-      }}
-    >
-      {distance} {unitLabel}
-    </div>
+    <Tooltip content={t((t) => t.map.rulersUnitToggle)}>
+      <button
+        className={styles.scale}
+        style={{ width: `${maxWidth * ratio}px` }}
+        onClick={() => {
+          toggleMeasurement()
+        }}
+      >
+        {distance} {unitLabel}
+      </button>
+    </Tooltip>
   )
 }
 
