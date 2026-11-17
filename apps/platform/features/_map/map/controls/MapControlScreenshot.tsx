@@ -14,7 +14,7 @@ import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.
 import { useDOMElement } from 'hooks/dom.hooks'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
-import { selectIsAnyReportLocation, selectIsAnyVesselLocation } from 'router/routes.selectors'
+import { selectIsWorkspaceLocation } from 'router/routes.selectors'
 import { getSafeElementById } from 'utils/dom'
 
 import { selectIsMapInteractionLoading } from '../map.slice'
@@ -41,9 +41,6 @@ const MapControlScreenshot = ({
   const dispatch = useAppDispatch()
   const { replaceQueryParams } = useReplaceQueryParams()
   const editorOpen = useSelector(selectScreenshotModalOpen)
-  const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
-  const isVesselLocation = useSelector(selectIsAnyVesselLocation)
-  const showScreenshot = !isVesselLocation && !isAnyReportLocation
   const screenshotAreaId = useSelector(selectScreenshotAreaId)
   const screenshotAspectRatio = useSelector(selectScreenshotAspectRatio)
   const interactionLoading = useSelector(selectIsMapInteractionLoading)
@@ -53,15 +50,16 @@ const MapControlScreenshot = ({
     initializeWithValue: false,
   })
 
+  const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const SCREENSHOT_AREA_OPTIONS: SelectOption<ScrenshotDOMArea>[] = useMemo(
     () =>
-      (Object.entries(ScrenshotAreaIds) as Entries<typeof ScrenshotAreaIds>).map(
-        ([key, value]) => ({
+      (Object.entries(ScrenshotAreaIds) as Entries<typeof ScrenshotAreaIds>)
+        .filter(([key]) => isWorkspaceLocation || key !== 'withTimebarAndLegend')
+        .map(([key, value]) => ({
           id: value,
           label: t((t) => t.map.screenshotArea[key], { defaultValue: key }),
-        })
-      ),
-    [t]
+        })),
+    [isWorkspaceLocation, t]
   )
 
   const ASPECT_RATIO_OPTIONS: SelectOption<ScreenshotAspectRatio>[] = useMemo(
@@ -175,17 +173,15 @@ const MapControlScreenshot = ({
 
   return (
     <Fragment>
-      {showScreenshot && (
-        <IconButton
-          icon="camera"
-          type="map-tool"
-          loading={loading}
-          disabled={captureDisabled}
-          tooltip={captureDisabled ? t((t) => t.map.mapLoadingWait) : t((t) => t.map.captureMap)}
-          tooltipPlacement="left"
-          onClick={openEditor}
-        />
-      )}
+      <IconButton
+        icon="camera"
+        type="map-tool"
+        loading={loading}
+        disabled={captureDisabled}
+        tooltip={captureDisabled ? t((t) => t.map.mapLoadingWait) : t((t) => t.map.captureMap)}
+        tooltipPlacement="left"
+        onClick={openEditor}
+      />
       {/* portaled: this button lives inside the app container the editor scales down */}
       {editorOpen &&
         createPortal(

@@ -85,6 +85,8 @@ body:has(.printing) {
   left: 0 !important; /* SplitView sets left to the sidebar width inline */
 }
 
+/* sidebar and timebar are part of the picture, not controls, in the screenshot editor */
+[data-screenshot-area] aside:has(~ #app-main),
 [data-screenshot-area] #app-main > :not(:has(#map-container)) {
   pointer-events: none;
 }

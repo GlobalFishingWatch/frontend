@@ -2,6 +2,7 @@ import type { ReactNode, RefObject } from 'react'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Button } from '@globalfishingwatch/ui-components/button'
@@ -214,7 +215,7 @@ function ReportGraphScreenshot({
         icon="camera"
         type="border"
         size="medium"
-        className={styles.button}
+        className={cx(styles.button, 'print-hidden')}
         tooltip={t((t) => t.analysis.graphScreenshot)}
         tooltipPlacement="top"
         disabled={disabled}

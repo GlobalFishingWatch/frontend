@@ -5,6 +5,7 @@ import { MAIN_DOM_ID, SPLIT_VIEW_DOM_ID } from '@globalfishingwatch/ui-component
 
 import { selectUserSettings } from 'features/_user/selectors/user.selectors'
 import { rootReducer } from 'reducers'
+import { selectIsWorkspaceLocation } from 'router/routes.selectors'
 
 import { MAP_CONTAINER_ID } from '../map-viewport.hooks'
 
@@ -31,7 +32,7 @@ export const SCREENSHOT_ASPECT_RATIOS: Record<ScreenshotAspectRatio, number | nu
   '9:16': 9 / 16,
 }
 
-const DEFAULT_SCREENSHOT_AREA = ScrenshotAreaIds.withTimebarAndLegend
+const DEFAULT_SCREENSHOT_AREA = ScrenshotAreaIds.map
 const DEFAULT_SCREENSHOT_ASPECT_RATIO: ScreenshotAspectRatio = 'current'
 
 interface ScreenshotState {
@@ -64,10 +65,14 @@ declare module 'reducers' {
 }
 
 export const selectScreenshotAreaId = createSelector(
-  [selectUserSettings],
-  (settings): ScrenshotDOMArea => {
+  [selectUserSettings, selectIsWorkspaceLocation],
+  (settings, isWorkspaceLocation): ScrenshotDOMArea => {
     const areaId = settings.mapScreenshot?.areaId
-    return Object.values(ScrenshotAreaIds).find((id) => id === areaId) ?? DEFAULT_SCREENSHOT_AREA
+    const area =
+      Object.values(ScrenshotAreaIds).find((id) => id === areaId) ?? DEFAULT_SCREENSHOT_AREA
+    return !isWorkspaceLocation && area === ScrenshotAreaIds.withTimebarAndLegend
+      ? ScrenshotAreaIds.withTimebar
+      : area
   }
 )
 
