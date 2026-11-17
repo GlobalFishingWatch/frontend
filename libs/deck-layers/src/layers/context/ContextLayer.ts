@@ -1,6 +1,6 @@
 import type { Color, DefaultProps, LayerContext, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import { DataFilterExtension, PathStyleExtension } from '@deck.gl/extensions'
+import { DataFilterExtension } from '@deck.gl/extensions'
 import type {
   _Tile2DHeader as Tile2DHeader,
   GeoBoundingBox,
@@ -31,7 +31,6 @@ import {
 import { PMTilesLayer } from '#layers/pm-tiles/index'
 import { getLayerGroupOffset, hexToDeckColor } from '#utils'
 
-import { EEZ_SETTLED_BOUNDARIES } from './context.config'
 import type {
   ContextFeature,
   ContextLayerProps,
@@ -46,9 +45,11 @@ import {
   getContextFiltersHash,
   getContextId,
   getContextLink,
+  getEEZBoundaryHighlightIds,
   getSelectedTilesFeatures,
   groupPickedFeatures,
 } from './context.utils'
+import { EEZBoundariesLayer } from './EEZBoundariesLayer'
 
 type _ContextLayerProps = TileLayerProps & ContextLayerProps
 
@@ -127,10 +128,6 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
       : COLOR_TRANSPARENT
   }
 
-  getDashArray(d: ContextFeature): [number, number] {
-    return EEZ_SETTLED_BOUNDARIES.includes(d.properties?.LINE_TYPE) ? [0, 0] : [8, 8]
-  }
-
   getPickingInfo = ({
     info,
   }: {
@@ -187,6 +184,10 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
     const pickedFeatures: PickingInfo[] = []
     this.getSubLayers().forEach((tileLayer, index) => {
       const layer = this.props.layers[index] || this.props.layers[0]
+      // Boundary lines are not areas: never list, count or report them
+      if (layer?.id === ContextLayerId.EEZBoundaries) {
+        return
+      }
       const sublayer = layer?.sublayers?.[0]
       if (!sublayer) return
       // Tile content is not filtered by the DataFilterExtension the way rendered features are,
@@ -238,6 +239,13 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
 
     const highlightedFeatures = this._getHighlightedFeatures()
     const highlightedFeaturesHash = highlightedFeatures.map((f) => f.id).join(',')
+    // EEZ boundary lines draw the EEZ highlight so it keeps their dashed/solid style
+    const hasEEZBoundaries = layers.some((l) => l.id === ContextLayerId.EEZBoundaries)
+    const eezBoundaryHighlightIds = hasEEZBoundaries
+      ? getEEZBoundaryHighlightIds(highlightedFeatures, {
+          datasetId: layers.find((l) => l.id === ContextLayerId.EEZ)?.datasetId,
+        })
+      : []
     return layers.map((layer) => {
       const isPMTiles = isPMTilesUrl(layer.tilesUrl)
       const TilesLayer = (isPMTiles ? PMTilesLayer : TileLayer) as typeof TileLayer
@@ -255,47 +263,19 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
         .join(',')
 
       if (layer.id === ContextLayerId.EEZBoundaries) {
-        return new TilesLayer<ContextFeature>({
-          id: `${layer.id}-boundaries-layer`,
-          data: layer.tilesUrl,
-          ...tilesLoadProps,
-          maxZoom: 8,
-          updateTriggers: {
-            renderSubLayers: [sublayersHash],
-          },
-          renderSubLayers: (props: any) => {
-            const mvtSublayerProps = { ...props, ...getSublayerProps(props) }
-            return layer.sublayers.map((sublayer) => {
-              const thickness = sublayer.thickness ?? 1
-              return [
-                new GeoJsonLayer(mvtSublayerProps, {
-                  id: `${props.id}-${sublayer.dataviewId}-boundaries`,
-                  onViewportLoad: this.props.onViewportLoad,
-                  lineWidthMinPixels: 1,
-                  filled: false,
-                  getPolygonOffset: (params: { layerIndex: number }) =>
-                    getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
-                  getLineColor: hexToDeckColor(sublayer.color),
-                  getLineWidth: thickness,
-                  lineWidthUnits: 'pixels',
-                  lineJointRounded: true,
-                  lineCapRounded: true,
-                  extensions: [
-                    ...mvtSublayerProps.extensions,
-                    new PathStyleExtension({ dash: true, highPrecisionDash: true }),
-                  ],
-                  getDashArray: (d: ContextFeature) => this.getDashArray(d),
-                  pointType: '',
-                  updateTriggers: {
-                    getLineWidth: thickness,
-                  },
-                } as any),
-              ]
-            })
-          },
-        })
+        return new EEZBoundariesLayer(
+          this.getSubLayerProps({
+            id: `${layer.id}-boundaries-layer`,
+            layer,
+            highlightedIds: eezBoundaryHighlightIds,
+            debounceTime,
+            maxRequests,
+          })
+        )
       }
 
+      const showOutlineHighlight =
+        highlightedFeatures.length > 0 && !(layer.id === ContextLayerId.EEZ && hasEEZBoundaries)
       return new TilesLayer<ContextFeature>({
         id: `${layer.id}-base-layer`,
         data: layer.tilesUrl,
@@ -386,7 +366,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                 filled: false,
                 lineJointRounded: true,
                 lineCapRounded: true,
-                visible: highlightedFeatures && highlightedFeatures?.length > 0,
+                visible: showOutlineHighlight,
                 getPolygonOffset: (params) =>
                   getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
                 getLineWidth: (d) =>
@@ -408,7 +388,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                 filled: false,
                 lineJointRounded: true,
                 lineCapRounded: true,
-                visible: highlightedFeatures && highlightedFeatures?.length > 0,
+                visible: showOutlineHighlight,
                 getPolygonOffset: (params) =>
                   getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
                 getLineWidth: (d) =>

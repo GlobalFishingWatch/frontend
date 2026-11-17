@@ -3,7 +3,7 @@ export const EEZ_SETTLED_BOUNDARIES = [
   'Treaty',
   'Median line',
   'Joint regime',
-  'Connection Line',
+  'Connection line',
   'Unilateral claim (undisputed)',
 ]
 
