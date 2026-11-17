@@ -1,20 +1,21 @@
 const RESIZED_ATTRIBUTE = 'data-screenshot-resized'
 const MIN_LABEL_SIZE_SCALE = 0.5
-// px reserved around the scaled app for the editor header, footer and side padding
+
 const STAGE_TOP = 64
 const STAGE_BOTTOM = 96
 const STAGE_SIDE = 32
 
-/**
- * Lays the live app container out at the largest box of `ratio` (width / height, null = window
- * shape) that fits the window, then CSS-scales it to fit between the editor header and footer.
- * Nothing is remounted: the map keeps running and stays interactive while scaled.
- * Returns how much the container shrank vs the window, used to scale map labels in step.
- */
-export const applyScreenshotLayout = (element: HTMLElement, ratio: number | null): number => {
+export type ElementSize = { width: number; height: number }
+
+export const applyScreenshotLayout = (
+  element: HTMLElement,
+  ratio: number | null,
+  initialSize?: ElementSize
+): number => {
   const { innerWidth: width, innerHeight: height } = window
-  const baseWidth = ratio ? Math.min(width, height * ratio) : width
-  const baseHeight = ratio ? baseWidth / ratio : height
+  const size = initialSize?.width && initialSize.height ? initialSize : { width, height }
+  const baseWidth = ratio ? Math.min(width, height * ratio) : size.width
+  const baseHeight = ratio ? baseWidth / ratio : size.height
 
   const stageWidth = width - STAGE_SIDE * 2
   const stageHeight = height - STAGE_TOP - STAGE_BOTTOM
@@ -32,9 +33,8 @@ export const applyScreenshotLayout = (element: HTMLElement, ratio: number | null
   })
   element.setAttribute(RESIZED_ATTRIBUTE, '')
 
-  // area-based so a tall 9:16 crop of a wide screen, which keeps its full height, isn't
-  // treated as shrinking by its width alone
-  return Math.max(MIN_LABEL_SIZE_SCALE, Math.sqrt((baseWidth * baseHeight) / (width * height)))
+  const shrink = Math.sqrt((baseWidth * baseHeight) / (size.width * size.height))
+  return Math.min(1, Math.max(MIN_LABEL_SIZE_SCALE, shrink))
 }
 
 export const resetScreenshotLayout = () => {

@@ -1,9 +1,8 @@
-import { Fragment, useCallback, useEffect, useMemo } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { Entries } from 'type-fest'
-import { useWindowSize } from 'usehooks-ts'
 
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, IconButton, Select, SPLIT_VIEW_DOM_ID } from '@globalfishingwatch/ui-components'
@@ -27,6 +26,7 @@ import {
   selectScreenshotAspectRatio,
   setLabelSizeScale,
 } from './screenshot.slice'
+import type { ElementSize } from './screenshot.utils'
 import { applyScreenshotLayout, resetScreenshotLayout } from './screenshot.utils'
 
 import styles from './MapControls.module.css'
@@ -46,9 +46,10 @@ const MapControlScreenshot = ({
   const interactionLoading = useSelector(selectIsMapInteractionLoading)
   const rootElement = useDOMElement()
   const { loading, downloadImage } = useDownloadDomElementAsImage()
-  const { width: windowWidth = 0, height: windowHeight = 0 } = useWindowSize({
-    initializeWithValue: false,
-  })
+  const [initialSizes, setInitialSizes] = useState<Partial<Record<ScrenshotDOMArea, ElementSize>>>(
+    {}
+  )
+  const screenshotAreaInitialSize = initialSizes[screenshotAreaId]
 
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const SCREENSHOT_AREA_OPTIONS: SelectOption<ScrenshotDOMArea>[] = useMemo(
@@ -66,9 +67,11 @@ const MapControlScreenshot = ({
     () =>
       (Object.keys(SCREENSHOT_ASPECT_RATIOS) as ScreenshotAspectRatio[]).map((id) => {
         const labelString = id === 'current' ? t((t) => t.map.screenshotAspectRatio.current) : id
-        // 'current' previews the window's shape
         const ratio =
-          SCREENSHOT_ASPECT_RATIOS[id] ?? (windowHeight ? windowWidth / windowHeight : 16 / 10)
+          SCREENSHOT_ASPECT_RATIOS[id] ??
+          (screenshotAreaInitialSize?.height
+            ? screenshotAreaInitialSize.width / screenshotAreaInitialSize.height
+            : 16 / 10)
         return {
           id,
           labelString,
@@ -88,7 +91,7 @@ const MapControlScreenshot = ({
           ),
         }
       }),
-    [t, windowWidth, windowHeight]
+    [t, screenshotAreaInitialSize]
   )
 
   const closeEditor = useCallback(() => {
@@ -113,7 +116,8 @@ const MapControlScreenshot = ({
     const applyLayout = () => {
       const labelSizeScale = applyScreenshotLayout(
         container,
-        SCREENSHOT_ASPECT_RATIOS[screenshotAspectRatio]
+        SCREENSHOT_ASPECT_RATIOS[screenshotAspectRatio],
+        screenshotAreaInitialSize
       )
       dispatch(setLabelSizeScale(labelSizeScale))
     }
@@ -129,9 +133,17 @@ const MapControlScreenshot = ({
       resetScreenshotLayout()
       dispatch(setLabelSizeScale(1))
     }
-  }, [closeEditor, dispatch, editorOpen, screenshotAspectRatio])
+  }, [closeEditor, dispatch, editorOpen, screenshotAreaInitialSize, screenshotAspectRatio])
 
   const openEditor = useCallback(() => {
+    setInitialSizes(
+      Object.fromEntries(
+        Object.values(ScrenshotAreaIds).map((id) => {
+          const element = getSafeElementById(id)
+          return [id, { width: element?.offsetWidth ?? 0, height: element?.offsetHeight ?? 0 }]
+        })
+      )
+    )
     if (screenshotAreaId === ScrenshotAreaIds.withTimebarAndLegend) {
       replaceQueryParams({ sidebarOpen: true })
     }
