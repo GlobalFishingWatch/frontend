@@ -111,7 +111,7 @@ function Workspace() {
       <Fragment>
         <ActivitySection />
         {timeMode === 'historical' && <DetectionsSection />}
-        {timeMode === 'historical' && <EventsSection />}
+        <EventsSection />
         <VesselsSection />
         {timeMode === 'historical' && <VesselGroupSection />}
         {timeMode === 'historical' && <EnvironmentalSection />}

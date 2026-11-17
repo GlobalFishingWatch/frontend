@@ -13,6 +13,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { getDatasetLabel, isPrivateDataset } from 'features/_map/datasets/datasets.utils'
 import { getFiltersInDataview } from 'features/_map/dataviews/dataviews.filters'
 import { useMigrateToLatestDataview } from 'features/_map/dataviews/dataviews.hooks'
+import { isDarkRendezvousDataview } from 'features/_map/dataviews/dataviews.utils'
 import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import DatasetLoginRequired from 'features/_map/workspace/shared/DatasetLoginRequired'
 import DatasetSchemaField from 'features/_map/workspace/shared/DatasetSchemaField'
@@ -223,6 +224,23 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
           size="small"
         />
       </div>
+      {isDarkRendezvousDataview(dataview) && (
+        <div className={styles.properties}>
+          <span className={styles.dataWarning}>
+            {t((t) => t.dataset.realTimeEventsDelay)}
+            <IconButton
+              icon="info"
+              size="tiny"
+              tooltip={t((t) => t.dataset.realTimeEventsDelayInfo)}
+              tooltipPlacement="top"
+            />
+            <br />
+            <a href="https://www.skylight.global" target="_blank" rel="noopener noreferrer">
+              {t((t) => t.dataset.poweredBySkylight)}
+            </a>
+          </span>
+        </div>
+      )}
       {layerActive && hasSchemaFilterSelection && (
         <div className={styles.properties}>
           <div className={styles.filters}>

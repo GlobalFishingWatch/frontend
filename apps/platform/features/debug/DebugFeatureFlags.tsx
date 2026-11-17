@@ -30,24 +30,6 @@ const DebugFeatureFlags: React.FC = () => {
     <section className={styles.container}>
       <div className={styles.header}>
         <Switch
-          id="option_map_stats"
-          active={debugOptions.deckStats}
-          onClick={() => dispatch(toggleDebugOption(DebugOption.DeckStats))}
-        />
-        <label htmlFor="option_map_stats">Deck.gl stats (map and timebar)</label>
-      </div>
-      <p>Show fps and memory stats</p>
-      <div className={styles.header}>
-        <Switch
-          id="option_debug_tiles"
-          active={debugOptions.debugTiles}
-          onClick={() => dispatch(toggleDebugOption(DebugOption.DebugTiles))}
-        />
-        <label htmlFor="option_debug_tiles">Debug tiles</label>
-      </div>
-      <p>Displays info on tiles useful for debugging.</p>
-      <div className={styles.header}>
-        <Switch
           id="option_thinning"
           active={isTurningTidesWorkspace ? false : debugOptions.thinning}
           disabled={isTurningTidesWorkspace}
@@ -100,17 +82,36 @@ const DebugFeatureFlags: React.FC = () => {
         <label htmlFor="option_log_clicked_features">Log clicked features</label>
       </div>
       <p>Log to the console the picked features of every layer on map click</p>
-      <div className={styles.header}>
-        <Switch
-          id="option_disable_dataset_hash"
-          active={debugOptions.addDatasetIdHash}
-          onClick={() => dispatch(toggleDebugOption(DebugOption.DatasetIdHash))}
-        />
-        <label htmlFor="option_disable_dataset_hash">Include dataset hash in IDs</label>
-      </div>
-      <p>Dataset IDs includes a hash suffix. Disable to use cleaner IDs without hashes.</p>
       {isGFWDeveloper && (
         <Fragment>
+          <div className={styles.header}>
+            <Switch
+              id="option_map_stats"
+              active={debugOptions.deckStats}
+              onClick={() => dispatch(toggleDebugOption(DebugOption.DeckStats))}
+            />
+            <label htmlFor="option_map_stats">Deck.gl stats (map and timebar)</label>
+          </div>
+          <p>Show fps and memory stats</p>
+          <div className={styles.header}>
+            <Switch
+              id="option_debug_tiles"
+              active={debugOptions.debugTiles}
+              onClick={() => dispatch(toggleDebugOption(DebugOption.DebugTiles))}
+            />
+            <label htmlFor="option_debug_tiles">Debug tiles</label>
+          </div>
+          <p>Displays info on tiles useful for debugging.</p>
+
+          <div className={styles.header}>
+            <Switch
+              id="option_disable_dataset_hash"
+              active={debugOptions.addDatasetIdHash}
+              onClick={() => dispatch(toggleDebugOption(DebugOption.DatasetIdHash))}
+            />
+            <label htmlFor="option_disable_dataset_hash">Include dataset hash in IDs</label>
+          </div>
+          <p>Dataset IDs includes a hash suffix. Disable to use cleaner IDs without hashes.</p>
           <div className={styles.header}>
             <Switch
               id="option_hotspot_button"

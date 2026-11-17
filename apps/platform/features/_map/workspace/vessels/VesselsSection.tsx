@@ -20,7 +20,7 @@ import { selectVesselsDataviews } from 'features/_map/dataviews/selectors/datavi
 import { selectReadOnly } from 'features/_map/workspace/selectors/app.selectors'
 import LayerPanelContainer from 'features/_map/workspace/shared/LayerPanelContainer'
 import { useDataviewInstancesConnect } from 'features/_map/workspace/workspace.hook'
-import { selectWorkspace } from 'features/_map/workspace/workspace.selectors'
+import { selectIsRealTimeMode, selectWorkspace } from 'features/_map/workspace/workspace.selectors'
 import LoginLink from 'features/_user/LoginLink'
 import { selectIsGuestUser } from 'features/_user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/_user/UserLoggedIconButton'
@@ -71,6 +71,7 @@ function VesselsSection(): React.ReactElement<any> {
   const dataviews = useSelector(selectVesselsDataviews)
   const activeDataviews = useSelector(selectActiveVesselsDataviews)
   const workspace = useSelector(selectWorkspace)
+  const isRealTimeMode = useSelector(selectIsRealTimeMode)
   const guestUser = useSelector(selectIsGuestUser)
   const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
   const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
@@ -314,7 +315,7 @@ function VesselsSection(): React.ReactElement<any> {
             </Trans>
           </p>
         )}
-        <VesselEventsLegend dataviews={dataviews} />
+        {!isRealTimeMode && <VesselEventsLegend dataviews={dataviews} />}
         <VesselsFromPositions />
       </>
     </Section>

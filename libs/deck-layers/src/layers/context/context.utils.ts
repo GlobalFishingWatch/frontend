@@ -237,3 +237,45 @@ export function groupPickedFeatures<T extends Feature>(
 
   return [...featureGroups.values()]
 }
+
+/**
+ * Ids of the EEZ areas to highlight, read from features that belong to the areas layer.
+ * Mirrors getPickedFeatureToHighlight: the feature id, plus the areaIds of multi-area reports
+ * whose datasetIds entry is the areas dataset.
+ */
+export function getEEZBoundaryHighlightIds(
+  highlightedFeatures: ContextPickingObject[],
+  { datasetId }: { datasetId?: string } = {}
+): string[] {
+  const ids = new Set<string>()
+  for (const feature of highlightedFeatures) {
+    if (feature.id != null) {
+      ids.add(String(feature.id))
+    }
+    const datasetIds = feature.properties?.datasetIds as string[] | undefined
+    const areaIds = feature.properties?.areaIds as string[] | undefined
+    datasetIds?.forEach((id, index) => {
+      if (datasetId && id === datasetId && areaIds?.[index] != null) {
+        ids.add(String(areaIds[index]))
+      }
+    })
+  }
+  return [...ids]
+}
+
+/** A boundary line belongs to every EEZ listed in its comma-separated MRGID_EEZ property */
+export function isEEZBoundaryHighlighted(
+  properties: ContextFeature['properties'] | undefined,
+  highlightedIds: Set<string>
+): boolean {
+  if (!highlightedIds.size) {
+    return false
+  }
+  const eezIds = properties?.MRGID_EEZ
+  if (eezIds == null) {
+    return false
+  }
+  return String(eezIds)
+    .split(',')
+    .some((id) => highlightedIds.has(id.trim()))
+}

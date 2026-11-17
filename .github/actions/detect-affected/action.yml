@@ -50,14 +50,16 @@ runs:
       run: |
         set -euo pipefail
 
-        AFFECTED=$(pnpm exec nx show projects \
+        # Run nx outside the pipe: a crash must fail the job, not read as "nothing affected".
+        NX_OUTPUT=$(pnpm exec nx show projects \
           --affected \
           -t build \
           --base=${{ inputs.base }} \
           --head=${{ inputs.head }} \
           --type app \
           --exclude='linting,*-e2e' \
-          --plain | grep -E '^[a-zA-Z][a-zA-Z0-9_-]*$' || true)
+          --plain)
+        AFFECTED=$(printf '%s\n' "$NX_OUTPUT" | grep -E '^[a-zA-Z][a-zA-Z0-9_-]*$' || true)
 
         if [ -z "$AFFECTED" ]; then
           APPS_JSON="[]"
