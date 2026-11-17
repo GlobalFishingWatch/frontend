@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -18,7 +18,7 @@ import { getSafeElementById } from 'utils/dom'
 
 import { selectIsMapInteractionLoading } from '../map.slice'
 
-import type { ScreenshotAspectRatio, ScrenshotDOMArea } from './screenshot.slice'
+import type { ScreenshotAspectRatio, ScrenshotArea, ScrenshotDOMArea } from './screenshot.slice'
 import {
   SCREENSHOT_ASPECT_RATIOS,
   ScrenshotAreaIds,
@@ -50,6 +50,8 @@ const MapControlScreenshot = ({
     {}
   )
   const screenshotAreaInitialSize = initialSizes[screenshotAreaId]
+  const headerRef = useRef<HTMLElement>(null)
+  const footerRef = useRef<HTMLElement>(null)
 
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const SCREENSHOT_AREA_OPTIONS: SelectOption<ScrenshotDOMArea>[] = useMemo(
@@ -101,13 +103,22 @@ const MapControlScreenshot = ({
   // .printing restyles the app for capture; the area attribute hides what falls outside it
   useEffect(() => {
     if (!editorOpen || !rootElement) return
+    const areaKey = (Object.keys(ScrenshotAreaIds) as ScrenshotArea[]).find(
+      (key) => ScrenshotAreaIds[key] === screenshotAreaId
+    )
     rootElement.classList.add('printing')
-    rootElement.setAttribute('data-screenshot-area', screenshotAreaId)
+    if (areaKey) rootElement.setAttribute('data-screenshot-area', areaKey)
     return () => {
       rootElement.classList.remove('printing')
       rootElement.removeAttribute('data-screenshot-area')
     }
   }, [editorOpen, rootElement, screenshotAreaId])
+
+  useEffect(() => {
+    if (editorOpen && screenshotAreaId === ScrenshotAreaIds.withTimebarAndLegend) {
+      replaceQueryParams({ sidebarOpen: true })
+    }
+  }, [editorOpen, replaceQueryParams, screenshotAreaId])
 
   // reshape the live app container to the ratio and scale it into the centre of the screen
   useEffect(() => {
@@ -117,6 +128,10 @@ const MapControlScreenshot = ({
       const labelSizeScale = applyScreenshotLayout(
         container,
         SCREENSHOT_ASPECT_RATIOS[screenshotAspectRatio],
+        {
+          top: headerRef.current?.offsetHeight ?? 0,
+          bottom: footerRef.current?.offsetHeight ?? 0,
+        },
         screenshotAreaInitialSize
       )
       dispatch(setLabelSizeScale(labelSizeScale))
@@ -130,7 +145,7 @@ const MapControlScreenshot = ({
     return () => {
       window.removeEventListener('resize', applyLayout)
       window.removeEventListener('keydown', onKeyDown)
-      resetScreenshotLayout()
+      resetScreenshotLayout(container)
       dispatch(setLabelSizeScale(1))
     }
   }, [closeEditor, dispatch, editorOpen, screenshotAreaInitialSize, screenshotAspectRatio])
@@ -144,11 +159,8 @@ const MapControlScreenshot = ({
         })
       )
     )
-    if (screenshotAreaId === ScrenshotAreaIds.withTimebarAndLegend) {
-      replaceQueryParams({ sidebarOpen: true })
-    }
     dispatch(setModalOpen({ id: 'screenshot', open: true }))
-  }, [dispatch, replaceQueryParams, screenshotAreaId])
+  }, [dispatch])
 
   const onSelectScreenshotArea = useCallback(
     (option: SelectOption<ScrenshotDOMArea>) => {
@@ -157,11 +169,8 @@ const MapControlScreenshot = ({
           mapScreenshot: { areaId: option.id, aspectRatio: screenshotAspectRatio },
         })
       )
-      if (option.id === ScrenshotAreaIds.withTimebarAndLegend) {
-        replaceQueryParams({ sidebarOpen: true })
-      }
     },
-    [dispatch, replaceQueryParams, screenshotAspectRatio]
+    [dispatch, screenshotAspectRatio]
   )
 
   const onSelectAspectRatio = useCallback(
@@ -199,11 +208,11 @@ const MapControlScreenshot = ({
         createPortal(
           <Fragment>
             <div className={styles.screenshotBackdrop} />
-            <header className={styles.screenshotHeader}>
+            <header ref={headerRef} className={styles.screenshotHeader}>
               <label>{t((t) => t.map.screenshotPreview)}</label>
               <IconButton icon="close" tooltip={t((t) => t.common.close)} onClick={closeEditor} />
             </header>
-            <footer className={styles.screenshotFooter}>
+            <footer ref={footerRef} className={styles.screenshotFooter}>
               <Select
                 label={t((t) => t.map.screenshotAreaLabel)}
                 options={SCREENSHOT_AREA_OPTIONS}

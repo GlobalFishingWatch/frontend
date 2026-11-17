@@ -66,17 +66,12 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
 
     const rulersLines = getRulersLines(rulers)
     const rulersLabels = getRulersLinesLabels(rulersLines, unit)
-    const data = {
-      type: 'FeatureCollection',
-      features: rulersLines,
-    }
-
     const rulersPoints = rulers.flatMap((ruler) => getRulerStartAndEndPoints(ruler, unit))
 
     const lineLayer = new GeoJsonLayer(
       this.getSubLayerProps({
         id: 'ruler-layer',
-        data,
+        data: rulersLines,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
         pickable: false,
         stroked: true,

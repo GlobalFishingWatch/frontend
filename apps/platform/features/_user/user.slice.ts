@@ -8,7 +8,7 @@ import type {
   UserGroupId,
 } from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
-import type { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
+import type { FourwingsVisualizationMode, RulerUnit } from '@globalfishingwatch/deck-layers'
 
 import type { PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/map/config'
 import { USER_SETTINGS } from 'data/map/config'
@@ -29,7 +29,7 @@ export type MapScreenshotSettings = {
   aspectRatio?: string
 }
 
-export type MapScaleUnit = 'km' | 'nm'
+export type MapScaleUnit = RulerUnit
 
 export interface UserSettings {
   [PREFERRED_FOURWINGS_VISUALISATION_MODE]?: FourwingsVisualizationMode

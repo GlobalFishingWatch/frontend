@@ -74,21 +74,18 @@ body:has(.printing) {
   display: none !important;
 }
 
-[data-screenshot-area='app-main'] aside:has(~ #app-main),
-[data-screenshot-area='map-container'] aside:has(~ #app-main),
-[data-screenshot-area='map-container'] #app-main > :not(:has(#map-container)) {
-  display: none;
-}
-
-[data-screenshot-area='app-main'] #app-main,
-[data-screenshot-area='map-container'] #app-main {
-  left: 0 !important; /* SplitView sets left to the sidebar width inline */
-}
-
-/* sidebar and timebar are part of the picture, not controls, in the screenshot editor */
 [data-screenshot-area] aside:has(~ #app-main),
 [data-screenshot-area] #app-main > :not(:has(#map-container)) {
   pointer-events: none;
+}
+
+[data-screenshot-area]:not([data-screenshot-area='withTimebarAndLegend']) aside:has(~ #app-main),
+[data-screenshot-area='map'] #app-main > :not(:has(#map-container)) {
+  display: none;
+}
+
+[data-screenshot-area]:not([data-screenshot-area='withTimebarAndLegend']) #app-main {
+  left: 0 !important;
 }
 
 #__root__ {

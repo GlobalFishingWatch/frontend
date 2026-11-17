@@ -18,11 +18,7 @@ export const useDownloadDomElementAsImage = () => {
         setLoading(true)
         map?.redraw('screenshot')
         const { snapdom } = await import('@zumer/snapdom')
-        const capture = await snapdom(domElement, {
-          exclude: ['[data-modal-overlay]'],
-          dpr: 2,
-          scale: 2,
-        })
+        const capture = await snapdom(domElement, { dpr: 2, scale: 2 })
         await capture.download({ format: 'png', filename, scale: 4 })
         return true
       } catch (e) {
