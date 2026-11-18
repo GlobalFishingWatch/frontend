@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-# Mirrors .github/actions/build-and-push for platform locally.
+# Mirrors .github/actions/build-image for platform locally.
 # Default: build + load into local Docker (no push). Use --push to match CI fully.
 #
 # Usage:
 #   ./scripts/test-ci-build-platform.sh
 #   ./scripts/test-ci-build-platform.sh --push
 #   ./scripts/test-ci-build-platform.sh --env staging
-#   NX_CLOUD_ACCESS_TOKEN=... ./scripts/test-ci-build-platform.sh
 #
 # Prerequisites: docker (buildx), jq, python3 + PyYAML
 # Optional: gcloud (to fetch SENTRY_AUTH_TOKEN from Secret Manager)
@@ -27,7 +26,7 @@ usage() {
 Usage: $(basename "$0") [options]
 
 Build the platform Docker image the same way GitHub Actions does
-(.github/actions/build-and-push + root Dockerfile).
+(.github/actions/build-image): nx build on the host, then the root Dockerfile copies the output.
 
 Options:
   --env <name>     development (default) | staging | production
@@ -36,7 +35,6 @@ Options:
   -h, --help       Show this help
 
 Environment:
-  NX_CLOUD_ACCESS_TOKEN   Optional; empty is fine for a local smoke build
   SENTRY_AUTH_TOKEN       Used if set; otherwise fetched from GCP when not --skip-secrets
 EOF
 }
@@ -81,7 +79,7 @@ IMAGE="us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${APP}:latest-
 LOCAL_TAG="${APP}:ci-local-${ENV_NAME}"
 COMMIT_SHA="$(git rev-parse HEAD)"
 
-for cmd in docker jq python3; do
+for cmd in docker jq python3 pnpm; do
   command -v "$cmd" >/dev/null || { echo "Missing required command: $cmd" >&2; exit 1; }
 done
 
@@ -106,13 +104,10 @@ print(json.dumps(app))
 TARGET=$(echo "$APP_CONFIG" | jq -r '.target')
 echo "==> Target: $TARGET"
 
-BUILD_ARGS=(
-  --build-arg "APP_NAME=${APP}"
-  --build-arg "COMMIT_SHA=${COMMIT_SHA}"
-)
+export COMMIT_SHA
 while IFS= read -r line; do
   [[ -z "$line" ]] && continue
-  BUILD_ARGS+=(--build-arg "$line")
+  export "$line"
 done < <(echo "$APP_CONFIG" | jq -r '.build.env_vars | to_entries[] | "\(.key)=\(.value)"')
 
 # Fetch build secrets from Secret Manager (same mappings as CI)
@@ -140,36 +135,27 @@ else
   echo "==> Skipping Secret Manager (--skip-secrets)"
 fi
 
-# NX token is always mounted in the Dockerfile; empty is ok for a smoke build
-export NX_CLOUD_ACCESS_TOKEN="${NX_CLOUD_ACCESS_TOKEN:-}"
+echo "==> Building ${APP} with Nx…"
+CI=true NODE_ENV=production NX_DAEMON=false NODE_OPTIONS=--max-old-space-size=6144 \
+  pnpm exec nx run "${APP}:build" --parallel=4 --output-style=stream
 
-SECRET_FLAGS=(
-  --secret id=NX_CLOUD_ACCESS_TOKEN,env=NX_CLOUD_ACCESS_TOKEN
-)
-while IFS= read -r name; do
-  [[ -z "$name" ]] && continue
-  if [[ -n "${!name:-}" ]]; then
-    SECRET_FLAGS+=(--secret "id=${name},env=${name}")
-  else
-    echo "==> Warning: build secret $name is empty (Sentry upload may be skipped)"
-  fi
-done < <(echo "$APP_CONFIG" | jq -r '(.build.secrets // {}) | keys[]')
+TAG="$LOCAL_TAG"
+[[ "$PUSH" == true ]] && TAG="$IMAGE"
 
-OUTPUT_FLAGS=(--load --tag "$LOCAL_TAG")
+echo "==> Packaging the build output (docker build)…"
+docker build \
+  --target "$TARGET" \
+  --build-arg "APP_NAME=${APP}" \
+  --build-arg "COMMIT_SHA=${COMMIT_SHA}" \
+  --build-arg "VITE_WORKSPACE_ENV=${VITE_WORKSPACE_ENV:-}" \
+  --tag "$TAG" \
+  .
+
 if [[ "$PUSH" == true ]]; then
   echo "==> Configuring Docker for Artifact Registry"
   gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
-  OUTPUT_FLAGS=(--push --tag "$IMAGE")
+  docker push "$IMAGE"
 fi
-
-echo "==> Building (Docker BuildKit)…"
-DOCKER_BUILDKIT=1 docker buildx build \
-  --target "$TARGET" \
-  "${OUTPUT_FLAGS[@]}" \
-  "${BUILD_ARGS[@]}" \
-  "${SECRET_FLAGS[@]}" \
-  -f Dockerfile \
-  .
 
 echo
 if [[ "$PUSH" == true ]]; then

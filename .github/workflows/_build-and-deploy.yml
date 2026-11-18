@@ -46,8 +46,7 @@ on:
         default: ''
       build-args:
         description: |
-          Newline-separated KEY=VALUE build args overriding the config's.
-          Every KEY needs a matching ARG in the Dockerfile or docker drops it.
+          Newline-separated KEY=VALUE build env overriding the config's env_vars.
         type: string
         required: false
         default: ''
@@ -155,23 +154,25 @@ jobs:
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
       - name: Build image
+        id: build-image
         uses: ./.github/actions/build-image
         with:
           app: ${{ matrix.app }}
           image: ${{ env.IMAGE }}
           config: ${{ inputs.config }}
-          nx-cloud-access-token: ${{ env.NX_CLOUD_CI_TOKEN }}
           extra-build-args: ${{ inputs.build-args }}
-          export-stage: ${{ matrix.app == 'platform' && 'load-boundaries-report' || '' }}
+          cache-scope: ${{ matrix.app }}-${{ inputs.image-tag || format('latest-{0}', inputs.env-suffix) }}
 
       # Report only: what each page loads in the real build. Never blocks the deploy.
       - name: Load boundaries summary
         if: matrix.app == 'platform'
+        env:
+          REPORT: ${{ steps.build-image.outputs.load-boundaries-report }}
         run: |
-          if [ -f docker-export/load-boundaries.md ]; then
-            cat docker-export/load-boundaries.md >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "$REPORT" ] && [ -f "$REPORT" ]; then
+            cat "$REPORT" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "::warning::No load-boundaries report was exported from the image build"
+            echo "::warning::The platform build wrote no load-boundaries report"
           fi
 
       - name: Run smoke tests

@@ -31,9 +31,9 @@ redeployed every dependent app and republished libs with no runtime change.
 - Inside an AI agent session Nx prints `--plain` output as a JSON array. CI gets one name per
   line, which is what the `grep` in `detect-affected` expects. Unset `CLAUDECODE` / `AI_AGENT`
   to reproduce CI output locally.
-- The Nx cache lives in `~/.nx/<workspace-hash>/cache` since Nx 23.2, not `.nx/cache`. CI does
-  not cache it with `actions/cache` (removed 2026-10-28): the Nx Cloud remote cache covers it, and
-  a per-SHA Actions cache entry competed with the Docker layer cache for the 10 GB repo quota.
+- The Nx cache lives in `~/.nx/<workspace-hash>/cache` since Nx 23.2, not `.nx/cache`. Copying
+  that directory between runners does not work (Nx rejects it). Deploy builds use a local
+  remote-cache server instead ([[ci-nx-cache-server]]).
 
 ## Dependency bumps select only the projects that use the package (since 2026-10-25)
 

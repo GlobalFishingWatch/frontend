@@ -1,88 +1,6 @@
-# syntax=docker/dockerfile:1.7-labs
-FROM node:24-slim AS builder
-
-WORKDIR /app
-
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates procps git && rm -rf /var/lib/apt/lists/*
-
-ENV NODE_ENV=production
-ENV NX_DAEMON=false
-ENV NX_PARALLEL=1
-ENV NX_ISOLATE_PLUGINS=false
-ENV CI=true
-ENV HUSKY=0
-# Nx Cloud's default CI style only prints a summary + cloud URL. Stream so a
-# failed task's tsc/vite output shows up in the GitHub Actions job log.
-ENV NX_DEFAULT_OUTPUT_STYLE=stream
-
-# Copy only what pnpm needs to install — no source files.
-# patches/ is required because pnpm-workspace.yaml references patch files
-# at install time. Workspace package.json files are needed for pnpm to
-# resolve the workspace graph.
-# ARGs are declared after install so different APP_NAME values across
-# parallel matrix jobs share the same cached install layer.
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY patches/ patches/
-COPY linting/package.json linting/
-COPY apps/platform/package.json apps/platform/
-# libs/* are workspace members too — without their manifests pnpm skips the
-# per-lib node_modules/@globalfishingwatch/* links a lib needs to import a sibling.
-COPY --parents libs/*/package.json ./
-ENV PNPM_HOME=/usr/local/share/pnpm
-ENV PATH="$PNPM_HOME/bin:$PATH"
-RUN SHELL=/bin/sh ENV=/root/.shrc npx --yes get-pnpm 12
-RUN pnpm install --frozen-lockfile
-
-# All possible build args — each app uses what it needs, unused ones are empty
-ARG APP_NAME
-ARG API_GATEWAY
-ARG VITE_API_GATEWAY
-ARG VITE_API_VERSION
-ARG VITE_GOOGLE_MEASUREMENT_ID
-ARG VITE_GOOGLE_TAG_MANAGER_ID
-ARG PUBLIC_URL
-ARG VITE_USE_LOCAL_DATASETS
-ARG VITE_USE_LOCAL_DATAVIEWS
-ARG VITE_WORKSPACE_ENV
-ARG VITE_REPORT_DAYS_LIMIT
-ARG VITE_REALTIME_ENABLED
-ARG VITE_PIPE_DATASET_VERSION
-ARG VITE_PLATFORM_MODE
-ARG VITE_TURNSTILE_SITE_KEY
-ARG COMMIT_SHA
-
-ENV API_GATEWAY=$API_GATEWAY \
-    VITE_API_GATEWAY=$VITE_API_GATEWAY \
-    VITE_API_VERSION=$VITE_API_VERSION \
-    VITE_GOOGLE_MEASUREMENT_ID=$VITE_GOOGLE_MEASUREMENT_ID \
-    VITE_GOOGLE_TAG_MANAGER_ID=$VITE_GOOGLE_TAG_MANAGER_ID \
-    PUBLIC_URL=$PUBLIC_URL \
-    VITE_USE_LOCAL_DATASETS=$VITE_USE_LOCAL_DATASETS \
-    VITE_USE_LOCAL_DATAVIEWS=$VITE_USE_LOCAL_DATAVIEWS \
-    VITE_WORKSPACE_ENV=$VITE_WORKSPACE_ENV \
-    VITE_REPORT_DAYS_LIMIT=$VITE_REPORT_DAYS_LIMIT \
-    VITE_REALTIME_ENABLED=$VITE_REALTIME_ENABLED \
-    VITE_PIPE_DATASET_VERSION=$VITE_PIPE_DATASET_VERSION \
-    VITE_PLATFORM_MODE=$VITE_PLATFORM_MODE \
-    VITE_TURNSTILE_SITE_KEY=$VITE_TURNSTILE_SITE_KEY \
-    COMMIT_SHA=$COMMIT_SHA
-
-COPY . .
-RUN --mount=type=secret,id=NX_CLOUD_ACCESS_TOKEN \
-    --mount=type=secret,id=SENTRY_AUTH_TOKEN,required=false \
-    --mount=type=secret,id=VITE_TURNSTILE_SITE_KEY,required=false \
-    NX_CLOUD_ACCESS_TOKEN="$(cat /run/secrets/NX_CLOUD_ACCESS_TOKEN 2>/dev/null || true)" \
-    NX_NO_CLOUD="$([ -s /run/secrets/NX_CLOUD_ACCESS_TOKEN ] && echo false || echo true)" \
-    SENTRY_AUTH_TOKEN="$(cat /run/secrets/SENTRY_AUTH_TOKEN 2>/dev/null || true)" \
-    VITE_TURNSTILE_SITE_KEY="$(cat /run/secrets/VITE_TURNSTILE_SITE_KEY 2>/dev/null || echo "$VITE_TURNSTILE_SITE_KEY")" \
-    NODE_OPTIONS='--max-old-space-size=6144' \
-    pnpm exec nx run ${APP_NAME}:build --output-style=stream
-
-
-# ── platform only: the load-boundaries build report, exported by CI into the job summary ──
-# Never deployed. Built after the image with the same args, so the builder stage is a cache hit.
-FROM scratch AS load-boundaries-report
-COPY --from=builder /app/apps/platform/dist/load-boundaries.md /
+# Runtime images only. The app is built on the host first (`nx run <app>:build`, see
+# .github/actions/build-image), so the Nx cache works and the image build only copies files.
+# .dockerignore admits nothing but the build outputs below.
 
 
 # ── Production: nginx (api-portal, data-download-portal, image-labeler, track-labeler, user-groups-admin) ──
@@ -91,9 +9,9 @@ FROM nginx:stable-alpine AS production-nginx
 RUN apk update && apk upgrade
 
 ARG APP_NAME
-COPY --from=builder /app/dist/apps/${APP_NAME}/nginx.conf           /etc/nginx/nginx.template
-COPY --from=builder /app/dist/apps/${APP_NAME}/config/entrypoint.sh ./entrypoint.sh
-COPY --from=builder /app/dist/apps/${APP_NAME}/                     /usr/share/nginx/www/
+COPY dist/apps/${APP_NAME}/nginx.conf           /etc/nginx/nginx.template
+COPY dist/apps/${APP_NAME}/config/entrypoint.sh ./entrypoint.sh
+COPY dist/apps/${APP_NAME}/                     /usr/share/nginx/www/
 
 ENTRYPOINT ["./entrypoint.sh"]
 
@@ -111,6 +29,6 @@ ARG VITE_WORKSPACE_ENV
 ENV SENTRY_RELEASE=$COMMIT_SHA \
     SENTRY_ENVIRONMENT=$VITE_WORKSPACE_ENV
 
-COPY --from=builder /app/apps/${APP_NAME}/.output ./output
+COPY apps/${APP_NAME}/.output ./output
 
 CMD ["node", "--import", "./output/server/instrument.server.mjs", "--max-http-header-size=40000", "output/server/index.mjs"]

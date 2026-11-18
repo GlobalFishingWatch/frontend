@@ -1,48 +1,6 @@
-.git
-.gitignore
-.github
-.cursor
-.vscode
-
-# dependency/build artifacts (root + nested workspaces)
-node_modules
-**/node_modules
-dist
-**/dist
-.nx
-**/.nx
-.output
-*.tsbuildinfo
-
-coverage
-**/coverage
-tmp
-**/tmp
-temp
-**/temp
-.cache
-**/.cache
-**/.next
-**/.nuxt
-**/.svelte-kit
-**/.turbo
-**/.vite
-**/.vitest
-**/.vitest-attachments
-**/.playwright
-**/.pytest_cache
-**/playwright-report
-
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# Yarn v4 zero-install cache is heavy; keep only runtime files
-.yarn/*
-!.yarn/releases
-!.yarn/plugins
-!.yarn/patches
-
+# The image is built from host build outputs only (see Dockerfile). Everything else stays out,
+# so the context upload is the app output and nothing more.
+*
+!dist/apps/
+!apps/*/.output/
 **/.DS_Store

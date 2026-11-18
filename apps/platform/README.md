@@ -57,19 +57,23 @@ inventory.
 
 ## Docker
 
-CI builds every app image from the root [Dockerfile](../../Dockerfile). The same command works
-locally:
+CI builds the app on the runner with Nx, then the root [Dockerfile](../../Dockerfile) copies the
+output into the image. The Dockerfile builds nothing. Locally:
 
 ```bash
+NODE_ENV=production \
+VITE_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org \
+VITE_WORKSPACE_ENV=development \
+  pnpm exec nx run platform:build
+
 docker build --target production-node \
   --build-arg APP_NAME=platform \
-  --build-arg VITE_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org \
   --build-arg VITE_WORKSPACE_ENV=development \
   --build-arg COMMIT_SHA=local-test \
   -t platform:local .
 ```
 
-The root Dockerfile lists the other build args it accepts as `ARG` lines.
+`./scripts/print-docker-build.sh <env>` prints both commands with that environment's full env.
 
 ### Run
 

@@ -1,5 +1,7 @@
 name: Build Docker Image
-description: Reads build config, fetches secrets, and builds a Docker image, loaded into the local Docker daemon. Never pushes — the caller pushes explicitly once it's ready to.
+description: |
+  Builds the app on the runner with Nx (cached), then packages its output into a Docker image
+  loaded into the local daemon. Never pushes — the caller pushes explicitly once it's ready to.
 
 inputs:
   app:
@@ -12,33 +14,39 @@ inputs:
     description: Path to the app config YAML file
     required: false
     default: .github/apps/development.yml
-  nx-cloud-access-token:
-    description: NX Cloud access token passed as a Docker BuildKit secret
-    required: false
-    default: ''
   extra-build-args:
     description: |
-      Newline-separated KEY=VALUE build args appended after the ones from the
-      config, so they override it. Every KEY still needs an ARG in the Dockerfile.
+      Newline-separated KEY=VALUE build env appended after the config's env_vars, so they
+      override it. Exported to the Nx build, not passed to docker.
     required: false
     default: ''
-  export-stage:
+  cache-scope:
     description: |
-      Optional Dockerfile stage built after the image, with the same args, and
-      exported to the export-dest directory instead of loaded.
-      For build reports; failing to export never fails the build.
+      Nx cache entry name. Builds that differ only in env (flag environments) need their own
+      scope, or concurrent jobs race to save the same key. Defaults to the app name.
     required: false
     default: ''
-  export-dest:
-    description: Directory the export-stage files are written to
-    required: false
-    default: docker-export
+
+outputs:
+  load-boundaries-report:
+    description: Path of the platform load-boundaries report, empty when the build wrote none
+    value: ${{ steps.build.outputs.load-boundaries-report }}
 
 runs:
   using: composite
   steps:
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v4
+    - name: Setup pnpm
+      uses: pnpm/setup@v3
+      with:
+        install: false # the explicit --frozen-lockfile step below owns installing
+    - name: Setup Node.js
+      uses: actions/setup-node@v7
+      with:
+        node-version-file: .nvmrc
+        cache: 'pnpm'
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile
 
     - name: Configure Docker for Artifact Registry
       shell: bash
@@ -61,8 +69,7 @@ runs:
         print(json.dumps(app))
         ")
 
-        ARGS="APP_NAME=${{ inputs.app }}"
-        ARGS+=$'\n'"COMMIT_SHA=${{ github.sha }}"
+        ARGS="COMMIT_SHA=${{ github.sha }}"
 
         while IFS= read -r line; do
           ARGS+=$'\n'"$line"
@@ -73,70 +80,123 @@ runs:
           [ -n "$line" ] && ARGS+=$'\n'"$line"
         done <<< "$EXTRA_BUILD_ARGS"
 
-        # Collapse repeated keys to their last value rather than leaning on docker
-        # to pick a winner: an override of a key already in the config (say
-        # VITE_REALTIME_ENABLED) silently flips app behaviour, so make it explicit.
+        # Collapse repeated keys to their last value: an override of a key already in the
+        # config (say VITE_REALTIME_ENABLED) silently flips app behaviour, so make it explicit.
         ARGS=$(awk -F= '
           { if (!($1 in seen)) order[++n] = $1; seen[$1] = $0 }
           END { for (i = 1; i <= n; i++) print seen[order[i]] }
         ' <<< "$ARGS")
 
         SECRET_MAPPINGS=$(echo "$APP_CONFIG" | jq -r '(.build.secrets // {}) | to_entries[] | "\(.key):\(.value)"')
-        SECRET_NAMES=$(echo "$APP_CONFIG" | jq -c '(.build.secrets // {}) | keys')
         TARGET=$(echo "$APP_CONFIG" | jq -r '.target')
+        WORKSPACE_ENV=$(awk -F= '$1 == "VITE_WORKSPACE_ENV" { sub(/^[^=]*=/, ""); print }' <<< "$ARGS")
 
         {
-          echo "args<<EOF"
+          echo "env<<EOF"
           echo "$ARGS"
           echo "EOF"
           echo "secret_mappings<<EOF"
           echo "$SECRET_MAPPINGS"
           echo "EOF"
-          echo "secret_names=$SECRET_NAMES"
           echo "target=$TARGET"
+          echo "workspace_env=$WORKSPACE_ENV"
         } >> "$GITHUB_OUTPUT"
+
+    # Exported to the job env, where the Nx build below reads them
     - name: Fetch build secrets
-      id: build-secrets
       if: steps.prepare.outputs.secret_mappings != ''
       uses: google-github-actions/get-secretmanager-secrets@v3
       with:
         secrets: ${{ steps.prepare.outputs.secret_mappings }}
         export_to_environment: true
 
-    - name: Assemble docker secrets
-      id: docker-secrets
+    # Nx rejects artifacts copied into its local cache dir on another machine, so the restored
+    # directory is served to it through the self-hosted remote cache protocol instead.
+    # Only develop and main save it; every other ref (PRs, release tags) only reads.
+    - name: Restore Nx cache
+      id: nx-cache
+      uses: actions/cache/restore@v6
+      with:
+        path: ${{ runner.temp }}/nx-remote-cache
+        key: nx-${{ runner.os }}-${{ inputs.cache-scope || inputs.app }}-${{ github.sha }}
+        restore-keys: |
+          nx-${{ runner.os }}-${{ inputs.cache-scope || inputs.app }}-
+          nx-${{ runner.os }}-${{ inputs.app }}-
+
+    - name: Start Nx cache server
+      id: nx-cache-server
+      shell: bash
+      env:
+        NX_CACHE_SERVER_DIR: ${{ runner.temp }}/nx-remote-cache
+        NX_CACHE_SERVER_PORT: '4911'
+        NX_CACHE_SERVER_READ_ONLY: ${{ github.ref != 'refs/heads/develop' && github.ref != 'refs/heads/main' }}
+      run: |
+        set -euo pipefail
+        TOKEN=$(openssl rand -hex 16)
+        echo "::add-mask::$TOKEN"
+        # Anything older than this marker after the build was not used by it, and is pruned
+        touch "$RUNNER_TEMP/nx-cache-marker"
+        NX_CACHE_SERVER_TOKEN="$TOKEN" nohup node "$GITHUB_ACTION_PATH/nx-cache-server.mjs" \
+          > "$RUNNER_TEMP/nx-cache-server.log" 2>&1 &
+        echo "pid=$!" >> "$GITHUB_OUTPUT"
+        echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
+        echo "url=http://127.0.0.1:$NX_CACHE_SERVER_PORT" >> "$GITHUB_OUTPUT"
+        # Any HTTP status means it is listening
+        curl -s -o /dev/null --retry 20 --retry-delay 1 --retry-all-errors "http://127.0.0.1:$NX_CACHE_SERVER_PORT/"
+        cat "$RUNNER_TEMP/nx-cache-server.log"
+
+    - name: Build ${{ inputs.app }}
+      id: build
+      shell: bash
+      env:
+        BUILD_ENV: ${{ steps.prepare.outputs.env }}
+        NODE_ENV: production
+        NODE_OPTIONS: --max-old-space-size=6144
+        NX_DAEMON: 'false'
+        NX_ISOLATE_PLUGINS: 'false'
+        NX_NO_CLOUD: 'true'
+        NX_SELF_HOSTED_REMOTE_CACHE_SERVER: ${{ steps.nx-cache-server.outputs.url }}
+        NX_SELF_HOSTED_REMOTE_CACHE_ACCESS_TOKEN: ${{ steps.nx-cache-server.outputs.token }}
+        HUSKY: '0'
+      run: |
+        set -euo pipefail
+        while IFS= read -r line; do
+          [ -n "$line" ] && export "$line"
+        done <<< "$BUILD_ENV"
+        pnpm exec nx run "${{ inputs.app }}:build" --parallel=4 --output-style=stream
+        REPORT="apps/${{ inputs.app }}/dist/load-boundaries.md"
+        if [ -f "$REPORT" ]; then echo "load-boundaries-report=$REPORT" >> "$GITHUB_OUTPUT"; fi
+
+    - name: Stop Nx cache server
+      if: always() && steps.nx-cache-server.outputs.pid != ''
       shell: bash
       run: |
-        SECRETS="NX_CLOUD_ACCESS_TOKEN=${{ inputs.nx-cloud-access-token }}"
-        while IFS= read -r name; do
-          val=$(printenv "$name" || true)
-          [ -n "$val" ] && SECRETS+=$'\n'"$name=$val"
-        done < <(echo '${{ steps.prepare.outputs.secret_names }}' | jq -r '.[]')
-        { echo "value<<EOF"; echo "$SECRETS"; echo "EOF"; } >> "$GITHUB_OUTPUT"
+        kill "${{ steps.nx-cache-server.outputs.pid }}" 2>/dev/null || true
+        sleep 1
+        cat "$RUNNER_TEMP/nx-cache-server.log" || true
 
+    - name: Prune unused Nx cache entries
+      if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
+      shell: bash
+      run: |
+        find "$RUNNER_TEMP/nx-remote-cache" -type f ! -newer "$RUNNER_TEMP/nx-cache-marker" -delete
+        du -sh "$RUNNER_TEMP/nx-remote-cache"
+
+    - name: Save Nx cache
+      if: (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main') && steps.nx-cache.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v6
+      with:
+        path: ${{ runner.temp }}/nx-remote-cache
+        key: nx-${{ runner.os }}-${{ inputs.cache-scope || inputs.app }}-${{ github.sha }}
+
+    # The context is only the build output (.dockerignore), so this copies files and nothing more
     - name: Build Docker image
-      uses: docker/build-push-action@v7
-      with:
-        context: .
-        target: ${{ steps.prepare.outputs.target }}
-        push: false
-        load: true
-        tags: ${{ inputs.image }}
-        build-args: ${{ steps.prepare.outputs.args }}
-        secrets: ${{ steps.docker-secrets.outputs.value }}
-        cache-from: type=gha,scope=frontend
-        cache-to: type=gha,scope=frontend,mode=max
-
-    # Same context, args and secrets as above, so every builder layer is a cache hit.
-    - name: Export ${{ inputs.export-stage }}
-      if: inputs.export-stage != ''
-      continue-on-error: true
-      uses: docker/build-push-action@v7
-      with:
-        context: .
-        target: ${{ inputs.export-stage }}
-        push: false
-        outputs: type=local,dest=${{ inputs.export-dest }}
-        build-args: ${{ steps.prepare.outputs.args }}
-        secrets: ${{ steps.docker-secrets.outputs.value }}
-        cache-from: type=gha,scope=frontend
+      shell: bash
+      run: |
+        docker build \
+          --target "${{ steps.prepare.outputs.target }}" \
+          --build-arg APP_NAME="${{ inputs.app }}" \
+          --build-arg COMMIT_SHA="${{ github.sha }}" \
+          --build-arg VITE_WORKSPACE_ENV="${{ steps.prepare.outputs.workspace_env }}" \
+          --tag "${{ inputs.image }}" \
+          .
