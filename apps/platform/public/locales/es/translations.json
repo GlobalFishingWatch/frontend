@@ -1013,12 +1013,19 @@
     "rulersDelete": "Eliminar todas las medidas",
     "rulersHover": "Arrastre para mover o haga clic para ver más",
     "rulersStop": "Detener medidas",
+    "rulersUnitToggle": "Click to switch units",
     "screenshotArea": {
       "map": "Solo mapa",
       "withTimebar": "Con barra temporal",
       "withTimebarAndLegend": "Con barra temporal y leyenda"
     },
+    "screenshotAreaLabel": "Area",
+    "screenshotAspectRatio": {
+      "current": "Current"
+    },
+    "screenshotAspectRatioLabel": "Aspect ratio",
     "screenshotDownload": "Descargar imagen",
+    "screenshotError": "The screenshot could not be generated, please try again or contact us",
     "screenshotPreview": "Vista previa de captura de pantalla",
     "search": "Busque un área de interés, por ejemplo: océano, mar, puerto, AMP, ZEE u ORP",
     "zoom_in": "Acercarse",

@@ -1013,12 +1013,19 @@
     "rulersDelete": "Hapus semua anontasi",
     "rulersHover": "Seret untuk memindahkan atau klik untuk melihat lebih banyak",
     "rulersStop": "Berhenti mengukur",
+    "rulersUnitToggle": "Click to switch units",
     "screenshotArea": {
       "map": "Only map",
       "withTimebar": "With timebar",
       "withTimebarAndLegend": "With timebar and legend"
     },
+    "screenshotAreaLabel": "Area",
+    "screenshotAspectRatio": {
+      "current": "Current"
+    },
+    "screenshotAspectRatioLabel": "Aspect ratio",
     "screenshotDownload": "Download image",
+    "screenshotError": "The screenshot could not be generated, please try again or contact us",
     "screenshotPreview": "Screenshot preview",
     "search": "Mencari wilayah laut dan samudra, KKP/MPA, atau ZEE",
     "zoom_in": "Perbesar",

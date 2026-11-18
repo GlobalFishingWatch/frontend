@@ -1013,12 +1013,19 @@
     "rulersDelete": "Delete all measures",
     "rulersHover": "Drag to move or click to see more",
     "rulersStop": "Stop measures",
+    "rulersUnitToggle": "Click to switch units",
     "screenshotArea": {
       "map": "Only map",
       "withTimebar": "With timebar",
       "withTimebarAndLegend": "With timebar and legend"
     },
+    "screenshotAreaLabel": "Area",
+    "screenshotAspectRatio": {
+      "current": "Current"
+    },
+    "screenshotAspectRatioLabel": "Aspect ratio",
     "screenshotDownload": "Download image",
+    "screenshotError": "The screenshot could not be generated, please try again or contact us",
     "screenshotPreview": "Screenshot preview",
     "search": "Search an area of interest e.g. ocean, sea, port, MPA, EEZ, RFMO",
     "zoom_in": "Zoom in",
