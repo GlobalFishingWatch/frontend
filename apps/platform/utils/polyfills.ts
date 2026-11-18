@@ -39,6 +39,13 @@ if (typeof Array.prototype.findLastIndex !== 'function') {
   }
 }
 
+// Chrome < 110 / Safari < 16, both inside the client build target (see vite.config.ts)
+if (typeof Array.prototype.toReversed !== 'function') {
+  Array.prototype.toReversed = function () {
+    return Array.prototype.slice.call(this).reverse()
+  }
+}
+
 // Chrome < 92 / Safari < 15.4, both inside the client build target (see vite.config.ts)
 if (typeof Array.prototype.at !== 'function') {
   Array.prototype.at = function (index: number) {

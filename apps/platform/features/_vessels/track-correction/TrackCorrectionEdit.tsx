@@ -28,6 +28,7 @@ import { useGetVesselInfoByDataviewId } from 'features/_vessels/vessel/vessel.ho
 import { getVesselShipNameLabel } from 'features/_vessels/vessel/vessel-label.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import I18nDate from 'features/i18n/i18nDate'
+import { isImeComposing } from 'utils/dom'
 
 import TrackCommentsList from './TrackCommentsList'
 import TrackSlider from './TrackSlider'
@@ -253,7 +254,7 @@ const TrackCorrectionEdit = () => {
                   dispatch(setTrackIssueComment(e.target.value))
                 }}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
+                  if (e.key === 'Enter' && !isImeComposing(e)) {
                     e.preventDefault()
                     onConfirmClick(ActionType.Comment)
                   }
