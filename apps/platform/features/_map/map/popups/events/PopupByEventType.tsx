@@ -1,5 +1,6 @@
 import { DataviewType, EventTypes } from '@globalfishingwatch/api-types'
 import {
+  DARK_RENDEZVOUS_EVENTS_SOURCE_ID,
   GAPS_EVENTS_SOURCE_ID,
   LAYER_LIBRARY_ID_SEPARATOR,
   LOITERING_EVENTS_SOURCE_ID,
@@ -16,6 +17,7 @@ import type {
 } from '../../map.slice'
 
 import EventsClusterTooltipRow from './EventsClusterTooltipRow'
+import EventsDarkRendezvousTooltipRow from './EventsDarkRendezvousTooltipRow'
 import EventsEncounterTooltipRow from './EventsEncounterTooltipRow'
 import EventsGapTooltipRow from './EventsGapTooltipRow'
 import EventsGenericClusterTooltipRow from './EventsGenericClusterTooltipRow'
@@ -35,6 +37,7 @@ const GFW_CLUSTER_LAYERS = [
   PORT_VISITS_EVENTS_SOURCE_ID,
   LOITERING_EVENTS_SOURCE_ID,
   GAPS_EVENTS_SOURCE_ID,
+  DARK_RENDEZVOUS_EVENTS_SOURCE_ID,
   ...VESSEL_GROUP_EVENTS_DATAVIEW_IDS,
 ]
 
@@ -60,6 +63,17 @@ function PopupByEventType({ feature, showFeaturesDetails, loading, error }: Popu
     if (feature.layerId.includes(EventTypes.Encounter) || feature.layerId.includes('encounters')) {
       return (
         <EventsEncounterTooltipRow
+          key={key}
+          loading={loading}
+          error={error}
+          feature={eventFeature}
+          showFeaturesDetails={showFeaturesDetails}
+        />
+      )
+    }
+    if (feature.layerId.includes(DARK_RENDEZVOUS_EVENTS_SOURCE_ID)) {
+      return (
+        <EventsDarkRendezvousTooltipRow
           key={key}
           loading={loading}
           error={error}

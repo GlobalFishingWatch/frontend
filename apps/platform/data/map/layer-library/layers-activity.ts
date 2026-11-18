@@ -41,6 +41,7 @@ export const LAYERS_LIBRARY_ACTIVITY: LibraryLayerConfig[] = [
         {
           id: 'presence-realtime' as const,
           dataviewId: PRESENCE_REALTIME_DATAVIEW_SLUG,
+          onlyGFWUser: true,
           previewImageUrl: `${PATH_BASENAME}/images/layer-library/presence.jpg`,
           config: {
             color: '#00EEFF',

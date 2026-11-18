@@ -71,6 +71,7 @@ Durable facts about this repo live in a `.claude/memory/` folder, one fact per f
 @.claude/memory/task-based-affected.md
 @.claude/memory/split-e2e-directives.md
 @.claude/memory/libs-release-scope.md
+@.claude/memory/modern-web-guidance-skill.md
 
 ### Project-scoped knowledge lives with the project
 
@@ -78,12 +79,12 @@ The eight facts below are **not** imported here. Each project's own `CLAUDE.md` 
 they load only once a file in that project is opened. A cross-link above pointing at one of these
 names resolves to the paths listed here.
 
-| Project                                          | Facts                                                                               |
-| ------------------------------------------------ | ----------------------------------------------------------------------------------- |
-| [apps/platform](apps/platform/CLAUDE.md)         | `platform-testing`, `locales-source-is-the-only-editable`, `popup-component-naming` |
-| [libs/deck-layers](libs/deck-layers/CLAUDE.md)   | `deck-collision-priority-range`, `label-layer-sdf-outline-opacity`                  |
-| [libs/deck-loaders](libs/deck-loaders/CLAUDE.md) | `deck-loaders-parsers-run-in-prebuilt-workers`                                      |
-| [libs/skills](libs/skills/CLAUDE.md)             | `skills-lib`, `encode-url-skill-maintenance`                                        |
+| Project                                          | Facts                                                                                                         |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| [apps/platform](apps/platform/CLAUDE.md)         | `platform-testing`, `locales-source-is-the-only-editable`, `popup-component-naming`, `platform-browser-floor` |
+| [libs/deck-layers](libs/deck-layers/CLAUDE.md)   | `deck-collision-priority-range`, `label-layer-sdf-outline-opacity`                                            |
+| [libs/deck-loaders](libs/deck-loaders/CLAUDE.md) | `deck-loaders-parsers-run-in-prebuilt-workers`                                                                |
+| [libs/skills](libs/skills/CLAUDE.md)             | `skills-lib`, `encode-url-skill-maintenance`                                                                  |
 
 **Why the split:** `@` imports are inlined into the session prompt at startup, in full, every
 session — so a flat root import list charges every session for facts about projects it never
