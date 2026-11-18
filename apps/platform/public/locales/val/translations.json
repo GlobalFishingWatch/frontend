@@ -731,6 +731,8 @@
     "workspaceNotFound": "crwdns132845:0crwdne132845:0"
   },
   "event": {
+    "darkRendezvous_one": "crwdns139027:0crwdne139027:0",
+    "darkRendezvous_other": "crwdns139029:0crwdne139029:0",
     "dayAbbreviated": "crwdns132847:0{{count}}crwdne132847:0",
     "dayAbbreviated_one": "crwdns132849:0{{count}}crwdne132849:0",
     "dayAbbreviated_other": "crwdns132853:0{{count}}crwdne132853:0",
