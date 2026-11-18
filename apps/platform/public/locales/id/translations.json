@@ -731,6 +731,8 @@
     "workspaceNotFound": "Tampilan yang Anda minta tidak ditemukan"
   },
   "event": {
+    "darkRendezvous_one": "Dark rendezvous event",
+    "darkRendezvous_other": "Dark rendezvous events",
     "dayAbbreviated": "{{count}}hari",
     "dayAbbreviated_one": "{{count}}hari",
     "dayAbbreviated_other": "{{count}}hari",
