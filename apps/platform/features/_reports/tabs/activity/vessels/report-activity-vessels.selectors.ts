@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { groupBy, uniqBy } from 'es-toolkit'
+import { groupBy, sum, uniqBy } from 'es-toolkit'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
@@ -58,9 +58,9 @@ export const selectReportVesselsNumber = createSelector(
   }
 )
 
-export const selectReportVesselsHours = createSelector([selectReportActivityFlatten], (vessels) => {
+export const selectReportVesselsHours = createSelector([selectReportVesselsList], (vessels) => {
   if (!vessels?.length) return null
-  return vessels.map((vessel) => vessel?.value || 0).reduce((acc, value) => acc + value, 0)
+  return sum(vessels.map((vessel) => (vessel.value as number) || 0))
 })
 
 export const selectReportActivityDatasetIdsWithVessels = createSelector(

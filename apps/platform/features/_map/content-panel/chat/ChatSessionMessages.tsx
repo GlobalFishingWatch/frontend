@@ -25,6 +25,7 @@ import {
   useNavigateToolMapState,
 } from 'features/_map/content-panel/chat/navigate-tool'
 import ContentMarkdown from 'features/help/markdown/ContentMarkdown'
+import { isImeComposing } from 'utils/dom'
 
 import styles from './Chat.module.css'
 
@@ -375,7 +376,7 @@ function ChatSessionMessages({
           rows={1}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey && !loading) {
+            if (e.key === 'Enter' && !e.shiftKey && !loading && !isImeComposing(e)) {
               e.preventDefault()
               onSend()
             }

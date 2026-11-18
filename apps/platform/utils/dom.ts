@@ -46,3 +46,9 @@ export const getCSSVarValue = (property: string) => {
   }
   return ''
 }
+
+// Enter that confirms an IME candidate (Japanese, Chinese, Korean input) must not submit.
+// Safari fires that keydown with isComposing false, so keyCode 229 is the only signal there.
+export function isImeComposing(e: { nativeEvent: KeyboardEvent }): boolean {
+  return e.nativeEvent.isComposing || e.nativeEvent.keyCode === 229
+}
