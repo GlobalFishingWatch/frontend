@@ -56,6 +56,7 @@ import {
 } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
+import { selectLabelSizeScale } from './controls/screenshot.slice'
 import { useDrawLayerInstance } from './overlays/draw/draw.hooks'
 import { usePendingDrawOverlayLayer } from './overlays/draw/draw-pending.hooks'
 import { useMapRulerInstance } from './overlays/rulers/rulers.hooks'
@@ -101,6 +102,7 @@ export const useGlobalConfigConnect = () => {
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const skipColorDomainSampling = useSelector(selectSkipColorDomainSampling)
   const timeMode = useSelector(selectTimeMode)
+  const labelSizeScale = useSelector(selectLabelSizeScale)
 
   const onPositionsMaxPointsError = useCallback(
     (layer: FourwingsLayer) => {
@@ -150,6 +152,7 @@ export const useGlobalConfigConnect = () => {
           : 'track',
       visibleEvents,
       timeMode,
+      labelSizeScale,
     }
     if (showTimeComparison && timeComparisonValues) {
       globalConfig = {
@@ -177,6 +180,7 @@ export const useGlobalConfigConnect = () => {
     timeComparisonValues,
     timeMode,
     realTimeTimerange,
+    labelSizeScale,
   ])
 }
 

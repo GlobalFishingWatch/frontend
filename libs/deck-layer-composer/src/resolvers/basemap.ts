@@ -40,7 +40,8 @@ export function resolvePMTilesDatasetTilesUrl(dataview: ResolvedDataviewInstance
 }
 
 export const resolveDeckBasemapLabelsLayerProps: DeckResolverFunction<BaseMapLabelsLayerProps> = (
-  dataview
+  dataview,
+  globalConfig
 ) => {
   const tilesUrl = resolvePMTilesDatasetTilesUrl(dataview)
   return {
@@ -49,6 +50,7 @@ export const resolveDeckBasemapLabelsLayerProps: DeckResolverFunction<BaseMapLab
     category: dataview.category!,
     visible: dataview.config?.visible ?? true,
     locale: dataview.config?.locale,
+    labelSizeScale: globalConfig?.labelSizeScale,
   }
 }
 

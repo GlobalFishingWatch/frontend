@@ -16,6 +16,11 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 
 import { useMapAnnotation, useMapAnnotations } from './annotations.hooks'
+import {
+  MAP_ANNOTATION_BTN_BASE_REM,
+  MAP_ANNOTATION_FONT_SCALE,
+  MAP_ANNOTATION_SIZES,
+} from './annotations.types'
 
 import styles from './Annotations.module.css'
 
@@ -77,6 +82,23 @@ const MapAnnotationsDialog = (): React.ReactNode | null => {
           {mapAnnotation?.id && (
             <IconButton icon="delete" type="warning-border" onClick={onDeleteClick} />
           )}
+          <div className={styles.sizeSelector}>
+            {MAP_ANNOTATION_SIZES.map((size) => (
+              <button
+                key={size}
+                type="button"
+                aria-label={size}
+                aria-pressed={(mapAnnotation?.size || 'small') === size}
+                className={styles.sizeBtn}
+                style={{
+                  fontSize: `${MAP_ANNOTATION_FONT_SCALE[size] * MAP_ANNOTATION_BTN_BASE_REM}rem`,
+                }}
+                onClick={() => setMapAnnotation({ size })}
+              >
+                A
+              </button>
+            ))}
+          </div>
           <Button
             onClick={onConfirmClick}
             className={styles.confirmBtn}

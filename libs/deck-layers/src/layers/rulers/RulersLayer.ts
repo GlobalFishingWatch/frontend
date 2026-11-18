@@ -1,7 +1,7 @@
 import type { Color, DefaultProps, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import { GeoJsonLayer, ScatterplotLayer } from '@deck.gl/layers'
+import { GeoJsonLayer, ScatterplotLayer, TextLayer } from '@deck.gl/layers'
 import type { Feature, LineString, MultiLineString, Point } from 'geojson'
 
 import { COLOR_TRANSPARENT } from '#config/colors.config'
@@ -15,6 +15,7 @@ import type {
   RulerPickingObject,
   RulerPointProperties,
   RulersLayerProps,
+  RulerUnit,
 } from './rulers.types'
 import {
   getGreatCircleMultiLine,
@@ -36,9 +37,9 @@ const getRulersLines = (rulers: RulerData[]) => {
   })
 }
 
-const getRulersLinesLabels = (lines: Feature<LineString | MultiLineString>[]) => {
+const getRulersLinesLabels = (lines: Feature<LineString | MultiLineString>[], unit?: RulerUnit) => {
   return lines.flatMap((line) => {
-    return getRulerCenterPointWithLabel(line)
+    return getRulerCenterPointWithLabel(line, unit)
   })
 }
 
@@ -59,23 +60,18 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
     }
   }
   renderLayers() {
-    const { rulers, color, visible } = this.props
+    const { rulers, color, visible, unit } = this.props
 
     if (!hasRulerStartAndEnd(rulers)) return null
 
     const rulersLines = getRulersLines(rulers)
-    const rulersLabels = getRulersLinesLabels(rulersLines)
-    const data = {
-      type: 'FeatureCollection',
-      features: [...rulersLines, ...rulersLabels],
-    }
-
-    const rulersPoints = rulers.flatMap((ruler) => getRulerStartAndEndPoints(ruler))
+    const rulersLabels = getRulersLinesLabels(rulersLines, unit)
+    const rulersPoints = rulers.flatMap((ruler) => getRulerStartAndEndPoints(ruler, unit))
 
     const lineLayer = new GeoJsonLayer(
       this.getSubLayerProps({
         id: 'ruler-layer',
-        data,
+        data: rulersLines,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Tool, params),
         pickable: false,
         stroked: true,
@@ -83,14 +79,6 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
         visible,
         getFillColor: color,
         getLineColor: color,
-        pointType: 'circle+text',
-        pointRadiusUnits: 'pixels',
-        getPointRadius: 0,
-        getText: (d: Feature<Point, RulerPointProperties>) => d.properties?.text,
-        getTextAngle: (d: Feature<Point, RulerPointProperties>) => d.properties?.bearing,
-        getTextSize: 12,
-        getTextColor: color,
-        getTextAlignmentBaseline: 'bottom',
         lineWidthMinPixels: 2,
         lineWidthUnits: 'pixels',
         lineWidthScale: 1,
@@ -114,6 +102,21 @@ export class RulersLayer extends CompositeLayer<RulersLayerProps> {
       lineWidthMinPixels: 5,
       getRadius: 6,
     })
-    return [lineLayer, pointsLayer]
+    const labelsLayer = new TextLayer<Feature<Point, RulerPointProperties>>(
+      this.getSubLayerProps({
+        id: 'ruler-layer-labels',
+        data: rulersLabels,
+        pickable: true,
+        visible,
+        getPosition: (d: Feature<Point, RulerPointProperties>) =>
+          d.geometry.coordinates as [number, number],
+        getText: (d: Feature<Point, RulerPointProperties>) => d.properties.text || '',
+        getAngle: (d: Feature<Point, RulerPointProperties>) => d.properties.bearing || 0,
+        getSize: 12,
+        getColor: color,
+        getAlignmentBaseline: 'bottom',
+      })
+    )
+    return [lineLayer, labelsLayer, pointsLayer]
   }
 }

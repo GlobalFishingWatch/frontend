@@ -62,7 +62,12 @@ function UserGuideLink({
   }
 
   return (
-    <span className={cx(styles.link, className)} onClick={handleClick} role="button" tabIndex={0}>
+    <span
+      className={cx(styles.link, 'print-hidden', className)}
+      onClick={handleClick}
+      role="button"
+      tabIndex={0}
+    >
       <IconButton size="small" icon="help" className={styles.icon} />
       <span className={styles.labelContainer}>
         <span className={styles.label}>{label}</span>

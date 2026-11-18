@@ -1,10 +1,11 @@
 import type { PayloadAction, WithSlice } from '@reduxjs/toolkit'
-import { createSlice } from '@reduxjs/toolkit'
+import { createSelector, createSlice } from '@reduxjs/toolkit'
 
 import { MAIN_DOM_ID, SPLIT_VIEW_DOM_ID } from '@globalfishingwatch/ui-components'
 
+import { selectUserSettings } from 'features/_user/selectors/user.selectors'
 import { rootReducer } from 'reducers'
-import { getLocalStorageItem, setLocalStorageItem } from 'utils/dom'
+import { selectIsWorkspaceLocation } from 'router/routes.selectors'
 
 import { MAP_CONTAINER_ID } from '../map-viewport.hooks'
 
@@ -18,37 +19,37 @@ export const ScrenshotAreaIds: Record<ScrenshotArea, ScrenshotDOMArea> = {
   withTimebarAndLegend: SPLIT_VIEW_DOM_ID,
 }
 
-const DEFAULT_SCREENSHOT_AREA = ScrenshotAreaIds.withTimebarAndLegend
-const SCREENSHOT_AREA_KEY_ID = 'screenShotAreaId'
+export type ScreenshotAspectRatio = 'current' | '2:1' | '16:9' | '3:2' | '1:1' | '2:3' | '9:16'
 
-interface ScreenshotState {
-  screenshotAreaId: ScrenshotDOMArea
+// width / height; null keeps the capture area at whatever size the window gives it
+export const SCREENSHOT_ASPECT_RATIOS: Record<ScreenshotAspectRatio, number | null> = {
+  current: null,
+  '2:1': 2,
+  '16:9': 16 / 9,
+  '3:2': 3 / 2,
+  '1:1': 1,
+  '2:3': 2 / 3,
+  '9:16': 9 / 16,
 }
 
-const getInitialState = (): ScreenshotState => {
-  const storedValue = getLocalStorageItem(SCREENSHOT_AREA_KEY_ID)
-  if (!storedValue) return { screenshotAreaId: DEFAULT_SCREENSHOT_AREA }
+const DEFAULT_SCREENSHOT_AREA = ScrenshotAreaIds.map
+const DEFAULT_SCREENSHOT_ASPECT_RATIO: ScreenshotAspectRatio = 'current'
 
-  try {
-    const parsedValue = JSON.parse(storedValue) as ScrenshotDOMArea
-    return { screenshotAreaId: parsedValue }
-  } catch {
-    return { screenshotAreaId: DEFAULT_SCREENSHOT_AREA }
-  }
+interface ScreenshotState {
+  labelSizeScale: number
 }
 
 export const screenshotSlice = createSlice({
   name: 'screenshot',
-  initialState: getInitialState(),
+  initialState: { labelSizeScale: 1 } as ScreenshotState,
   reducers: {
-    setScreenshotAreaId: (state, action: PayloadAction<ScrenshotDOMArea>) => {
-      state.screenshotAreaId = action.payload
-      setLocalStorageItem(SCREENSHOT_AREA_KEY_ID, JSON.stringify(action.payload))
+    setLabelSizeScale: (state, action: PayloadAction<number>) => {
+      state.labelSizeScale = action.payload
     },
   },
 })
 
-export const { setScreenshotAreaId } = screenshotSlice.actions
+export const { setLabelSizeScale } = screenshotSlice.actions
 
 /**
  * Lazily registered: this slice is only reachable from features/_map/map/Map.tsx, which lives in the map
@@ -63,8 +64,30 @@ declare module 'reducers' {
   export interface LazyLoadedSlices extends WithSlice<typeof screenshotSlice> {}
 }
 
-export const selectScreenshotAreaId = injectedScreenshotSlice.selector(
-  (state) => state.screenshot.screenshotAreaId
+export const selectScreenshotAreaId = createSelector(
+  [selectUserSettings, selectIsWorkspaceLocation],
+  (settings, isWorkspaceLocation): ScrenshotDOMArea => {
+    const areaId = settings.mapScreenshot?.areaId
+    const area =
+      Object.values(ScrenshotAreaIds).find((id) => id === areaId) ?? DEFAULT_SCREENSHOT_AREA
+    return !isWorkspaceLocation && area === ScrenshotAreaIds.withTimebarAndLegend
+      ? ScrenshotAreaIds.withTimebar
+      : area
+  }
+)
+
+export const selectScreenshotAspectRatio = createSelector(
+  [selectUserSettings],
+  (settings): ScreenshotAspectRatio => {
+    const aspectRatio = settings.mapScreenshot?.aspectRatio
+    return aspectRatio && Object.hasOwn(SCREENSHOT_ASPECT_RATIOS, aspectRatio)
+      ? (aspectRatio as ScreenshotAspectRatio)
+      : DEFAULT_SCREENSHOT_ASPECT_RATIO
+  }
+)
+
+export const selectLabelSizeScale = injectedScreenshotSlice.selector(
+  (state) => state.screenshot.labelSizeScale
 )
 
 export default screenshotSlice.reducer

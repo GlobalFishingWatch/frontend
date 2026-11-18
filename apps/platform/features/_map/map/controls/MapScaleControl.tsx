@@ -1,6 +1,10 @@
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { distance as turfDistance } from '@turf/turf'
+
+import { Tooltip } from '@globalfishingwatch/ui-components'
+
+import useRulers from 'features/_map/map/overlays/rulers/rulers.hooks'
+import type { MapScaleUnit } from 'features/_user/user.slice'
 
 import { useMapViewport } from '../map-viewport.hooks'
 
@@ -27,9 +31,7 @@ function getRoundNum(num: number) {
   return pow10 * d
 }
 
-type ScaleUnit = 'km' | 'nm'
-
-const UNIT_METERS: Record<ScaleUnit, number> = {
+const UNIT_METERS: Record<MapScaleUnit, number> = {
   nm: 1852,
   km: 1000,
 }
@@ -37,14 +39,10 @@ const UNIT_METERS: Record<ScaleUnit, number> = {
 const MapScaleControl = ({ maxWidth = 100 }: ScaleControlProps) => {
   const { t } = useTranslation()
   const mapViewport = useMapViewport()
-  const [scaleUnit, setScaleUnit] = useState<ScaleUnit>('nm')
+  const { unit: scaleUnit, toggleRulersUnit } = useRulers()
 
   if (!mapViewport) {
     return null
-  }
-
-  const toggleMeasurement = () => {
-    setScaleUnit((prev) => (prev === 'km' ? 'nm' : 'km'))
   }
 
   const y = mapViewport.height / 2
@@ -58,15 +56,15 @@ const MapScaleControl = ({ maxWidth = 100 }: ScaleControlProps) => {
   const unitLabel = scaleUnit === 'nm' ? t((t) => t.map.nauticalMilesAbbr) : t((t) => t.common.km)
 
   return (
-    <div
-      className={styles.scale}
-      style={{ width: `${maxWidth * ratio}px` }}
-      onClick={() => {
-        toggleMeasurement()
-      }}
-    >
-      {distance} {unitLabel}
-    </div>
+    <Tooltip content={t((t) => t.map.rulersUnitToggle)}>
+      <button
+        className={styles.scale}
+        style={{ width: `${maxWidth * ratio}px` }}
+        onClick={toggleRulersUnit}
+      >
+        {distance} {unitLabel}
+      </button>
+    </Tooltip>
   )
 }
 

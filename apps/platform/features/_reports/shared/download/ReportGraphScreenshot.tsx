@@ -2,6 +2,7 @@ import type { ReactNode, RefObject } from 'react'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { Button } from '@globalfishingwatch/ui-components/button'
@@ -22,6 +23,7 @@ import type { ReportGraphScreenshotSettings } from 'features/_user/user.slice'
 import { setUserSetting } from 'features/_user/user.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { SCREENSHOT_SCALE } from 'hooks/screen.hooks'
 
 import ReportGraphLegend from './ReportGraphLegend'
 import ReportGraphSummary from './ReportGraphSummary'
@@ -180,11 +182,10 @@ function ReportGraphScreenshot({
           `${filename}.svg`
         )
       } else {
-        // download() always writes at dpr 1, scale keeps the PNG sharp
         await snapdom.download(imageRef.current, {
           format,
           filename,
-          scale: 2,
+          scale: SCREENSHOT_SCALE,
           embedFonts: true,
         })
       }
@@ -214,7 +215,7 @@ function ReportGraphScreenshot({
         icon="camera"
         type="border"
         size="medium"
-        className={styles.button}
+        className={cx(styles.button, 'print-hidden')}
         tooltip={t((t) => t.analysis.graphScreenshot)}
         tooltipPlacement="top"
         disabled={disabled}

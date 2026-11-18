@@ -5,6 +5,7 @@
   min-width: max-content;
   min-height: 1.5rem;
   font: var(--font-XS);
+  text-align: left;
   background: none;
   color: rgba(var(--white-rgb), 0.65);
   border-bottom: 1px solid rgba(var(--white-rgb), 0.65);
@@ -21,4 +22,7 @@
 
 :global(.printing) .scale {
   bottom: 3.2rem;
+  font: var(--font-S);
+  color: var(--color-white);
+  border-bottom: 2px solid var(--color-white);
 }

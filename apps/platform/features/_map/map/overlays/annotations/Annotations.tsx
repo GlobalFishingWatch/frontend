@@ -13,6 +13,7 @@ import { getIsBrowser } from 'utils/dom'
 
 import { useMapAnnotation, useMapAnnotations } from './annotations.hooks'
 import type { MapAnnotation } from './annotations.types'
+import { MAP_ANNOTATION_FONT_SCALE } from './annotations.types'
 // This blank image is needed to hide the default drag preview icon
 // https://stackoverflow.com/questions/27989602/hide-drag-preview-html-drag-and-drop#comment136906877_27990218
 let blankImage: HTMLImageElement | undefined
@@ -27,7 +28,7 @@ const MapAnnotations = (): React.ReactNode | null => {
   const xOffset = 390 // sidebar width
   const yOffset = 116 // timebar + map attribution + font height
   const { upsertMapAnnotations, mapAnnotations, areMapAnnotationsVisible } = useMapAnnotations()
-  const { setMapAnnotation } = useMapAnnotation()
+  const { mapAnnotation: draftAnnotation, setMapAnnotation } = useMapAnnotation()
   const selectedAnnotationRef = useRef<number | null>(null)
   const [newCoords, setNewCoords] = useState<number[] | null>(null)
   const viewport = useMapViewport()
@@ -74,18 +75,32 @@ const MapAnnotations = (): React.ReactNode | null => {
     (annotation: MapAnnotation) => {
       if (!viewport || !newCoords) return
       setOverlaysCursor('')
-      upsertMapAnnotations({
-        ...annotation,
-        id: annotation.id || Date.now(),
-        lon: newCoords[0],
-        lat: newCoords[1],
-      })
+      const coords = { lon: newCoords[0], lat: newCoords[1] }
+      if (draftAnnotation?.id === annotation.id) {
+        setMapAnnotation({ ...draftAnnotation, ...coords })
+      } else {
+        upsertMapAnnotations({ ...annotation, id: annotation.id || Date.now(), ...coords })
+      }
       setNewCoords(null)
     },
-    [newCoords, setOverlaysCursor, upsertMapAnnotations, viewport]
+    [
+      draftAnnotation,
+      newCoords,
+      setMapAnnotation,
+      setOverlaysCursor,
+      upsertMapAnnotations,
+      viewport,
+    ]
   )
 
-  if (!mapAnnotations || !areMapAnnotationsVisible || !viewport) {
+  const visibleAnnotations = (mapAnnotations || []).map((a) =>
+    draftAnnotation?.id === a.id ? { ...a, ...draftAnnotation } : a
+  )
+  if (draftAnnotation && !draftAnnotation.id && draftAnnotation.label) {
+    visibleAnnotations.push(draftAnnotation)
+  }
+
+  if (!visibleAnnotations.length || !areMapAnnotationsVisible || !viewport) {
     return null
   }
 
@@ -93,7 +108,7 @@ const MapAnnotations = (): React.ReactNode | null => {
     <div onPointerUp={(event) => event.preventDefault()}>
       <HtmlOverlay viewport={viewport} key="1">
         {/* eslint-disable-next-line react-hooks/refs */}
-        {mapAnnotations.map((annotation) => {
+        {visibleAnnotations.map((annotation) => {
           const coordinates =
             selectedAnnotationRef?.current === annotation.id && newCoords
               ? toLngLatCoordinates(newCoords[0], newCoords[1])
@@ -105,7 +120,7 @@ const MapAnnotations = (): React.ReactNode | null => {
 
           return (
             <HtmlOverlayItem
-              key={annotation.id}
+              key={annotation.id || 'draft'}
               style={{
                 pointerEvents: 'all',
                 transform: 'translate(-50%,-50%)',
@@ -124,8 +139,11 @@ const MapAnnotations = (): React.ReactNode | null => {
                 }}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                style={{ color: annotation.color }}
-                draggable={true}
+                style={{
+                  color: annotation.color,
+                  fontSize: `${MAP_ANNOTATION_FONT_SCALE[annotation.size || 'small']}em`,
+                }}
+                draggable={!!annotation.id}
                 onDragStart={(event) => handleDragStart({ event, annotation })}
                 onDrag={handleDrag}
                 onDragEnd={() => handleDragEnd(annotation)}
