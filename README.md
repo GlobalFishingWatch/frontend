@@ -115,16 +115,30 @@ nx build [app-name]
 
 ### Building using Docker
 
-These are the commands the [build-image](.github/actions/build-image/action.yml) action runs in CI: Nx builds the app with the environment's `build.env_vars`, then the `Dockerfile` copies the output into the image. Needs bash or zsh and [yq](https://github.com/mikefarah/yq) (`brew install yq`).
+These are the steps the [build-image](.github/actions/build-image/action.yml) action runs in CI: load the environment's `build.env_vars` and `build.secrets`, build the app with Nx, then let the `Dockerfile` copy the output into the image. Needs bash or zsh, [yq](https://github.com/mikefarah/yq) (`brew install yq`) and `gcloud` logged in with access to the secrets.
 
 ```bash
-export APP=platform CONFIG=.github/apps/development.yml
-export $(yq 'explode(.) | .[env(APP)].build.env_vars | to_entries | .[] | .key + "=" + .value' "$CONFIG")
-NODE_ENV=production pnpm nx run "${APP}:build"
-docker build . --target "$(yq '.[env(APP)].target' "$CONFIG")" --build-arg APP_NAME="$APP" --build-arg VITE_WORKSPACE_ENV --tag "${APP}:local"
-```
+export APP=platform
+export CONFIG=.github/apps/development.yml
 
-CI also exports the config's `build.secrets` (Sentry token, Turnstile site key); export them yourself for an identical build.
+export $(
+  yq 'explode(.) | .[env(APP)].build.env_vars | to_entries | .[] | .key + "=" + .value' "$CONFIG"
+)
+
+for secret in $(
+  yq 'explode(.) | .[env(APP)].build.secrets | to_entries | .[] | .key + "=" + .value' "$CONFIG"
+); do
+  export "${secret%%=*}=$(gcloud secrets versions access "${secret#*=}")"
+done
+
+NODE_ENV=production pnpm nx run "${APP}:build"
+
+docker build . \
+  --target "$(yq '.[env(APP)].target' "$CONFIG")" \
+  --build-arg APP_NAME="$APP" \
+  --build-arg VITE_WORKSPACE_ENV \
+  --tag "${APP}:local"
+```
 
 ```bash
 docker run -p 3003:3000 -e ALLOW_MISSING_SERVER_ENV=true platform:local
