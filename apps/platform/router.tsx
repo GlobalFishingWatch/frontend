@@ -93,3 +93,4 @@ export function getRouter() {
 
   return router
 }
+// ci: trigger tests for #4602, drop before merge
