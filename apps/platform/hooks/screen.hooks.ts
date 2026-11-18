@@ -5,7 +5,7 @@ import { useDeckMap } from 'features/_map/map/map-context.hooks'
 import { getSafeElementById } from 'utils/dom'
 
 // output pixels per CSS pixel of the captured area; download() ignores dpr
-const SCREENSHOT_SCALE = 2
+export const SCREENSHOT_SCALE = 2
 
 // 2026-11-17T10-23-45: sortable, locale independent and safe in file names
 const getFileTimestamp = () => new Date().toISOString().slice(0, 19).replace(/:/g, '-')

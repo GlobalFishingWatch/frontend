@@ -23,6 +23,7 @@ import type { ReportGraphScreenshotSettings } from 'features/_user/user.slice'
 import { setUserSetting } from 'features/_user/user.slice'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { SCREENSHOT_SCALE } from 'hooks/screen.hooks'
 
 import ReportGraphLegend from './ReportGraphLegend'
 import ReportGraphSummary from './ReportGraphSummary'
@@ -181,11 +182,10 @@ function ReportGraphScreenshot({
           `${filename}.svg`
         )
       } else {
-        // download() always writes at dpr 1, scale keeps the PNG sharp
         await snapdom.download(imageRef.current, {
           format,
           filename,
-          scale: 2,
+          scale: SCREENSHOT_SCALE,
           embedFonts: true,
         })
       }
