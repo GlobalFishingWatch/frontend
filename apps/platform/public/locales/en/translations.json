@@ -731,6 +731,8 @@
     "workspaceNotFound": "The workspace you requested was not found."
   },
   "event": {
+    "darkRendezvous_one": "Dark rendezvous event",
+    "darkRendezvous_other": "Dark rendezvous events",
     "dayAbbreviated": "{{count}}d",
     "dayAbbreviated_one": "{{count}}d",
     "dayAbbreviated_other": "{{count}}d",

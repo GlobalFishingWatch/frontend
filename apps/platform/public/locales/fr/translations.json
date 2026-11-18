@@ -731,6 +731,8 @@
     "workspaceNotFound": "La vue demandée n'a pas été trouvée"
   },
   "event": {
+    "darkRendezvous_one": "Dark rendezvous event",
+    "darkRendezvous_other": "Dark rendezvous events",
     "dayAbbreviated": "{{count}}j",
     "dayAbbreviated_one": "{{count}}j",
     "dayAbbreviated_other": "{{count}}j",

@@ -731,6 +731,8 @@
     "workspaceNotFound": "A visualização solicitada não foi encontrada"
   },
   "event": {
+    "darkRendezvous_one": "Dark rendezvous event",
+    "darkRendezvous_other": "Dark rendezvous events",
     "dayAbbreviated": "{{count}}d",
     "dayAbbreviated_one": "{{count}}d",
     "dayAbbreviated_other": "{{count}}d",
