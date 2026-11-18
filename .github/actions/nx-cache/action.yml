@@ -1,0 +1,21 @@
+name: Nx cache
+description: Serves the cached Nx task outputs for this key to Nx as a remote cache, and saves the ones the job used.
+
+inputs:
+  key:
+    description: Cache name. Jobs that run the same tasks with different env need different keys.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/cache@v6
+      with:
+        path: ${{ runner.temp }}/nx-cache
+        key: nx-${{ inputs.key }}-${{ github.sha }}
+        restore-keys: nx-${{ inputs.key }}-
+
+    - shell: bash
+      run: |
+        node "$GITHUB_ACTION_PATH/server.mjs" "$RUNNER_TEMP/nx-cache" > "$RUNNER_TEMP/nx-cache.log" 2>&1 &
+        echo "NX_SELF_HOSTED_REMOTE_CACHE_SERVER=http://localhost:4911" >> "$GITHUB_ENV"

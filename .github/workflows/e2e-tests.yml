@@ -1,8 +1,8 @@
 name: E2E Tests
 
-# Runs the affected Playwright suite on the runner with `test:local`, which starts the platform
-# server itself. Nx Cloud is disabled (NX_NO_CLOUD): no remote cache and no distributed workers, and
-# the split `test-ci--<file>` tasks refuse to run without it.
+# Runs the affected Playwright suite on the runner against the platform production build. Nx Cloud
+# is disabled (NX_NO_CLOUD): no distributed workers, and the split `test-ci--<file>` tasks refuse to
+# run without it.
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
@@ -44,14 +44,46 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: 'pnpm'
+
+      - uses: ./.github/actions/nx-cache
+        with:
+          key: e2e-${{ github.event.pull_request.base.ref }}
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Check if e2e specs are affected
+        id: affected
+        run: echo "projects=$(pnpm nx show projects --affected -t test --projects=platform-e2e --base=origin/${{ github.event.pull_request.base.ref }} --head=HEAD --json)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        if: steps.affected.outputs.projects != '[]'
+        id: playwright-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
+
       - name: Install Playwright browsers
+        if: steps.affected.outputs.projects != '[]' && steps.playwright-cache.outputs.cache-hit != 'true'
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: Run affected e2e specs
-        run: pnpm exec nx affected -t test:local --base=origin/${{ github.event.pull_request.base.ref }} --head=HEAD
+      - name: Build platform
+        if: steps.affected.outputs.projects != '[]'
+        run: pnpm nx run platform:build:app
+
+      - name: Start platform
+        if: steps.affected.outputs.projects != '[]'
+        env:
+          PORT: '3003'
+          ALLOW_MISSING_SERVER_ENV: 'true'
+        run: |
+          node apps/platform/.output/server/index.mjs &
+          curl --silent --output /dev/null --retry 30 --retry-delay 1 --retry-connrefused http://localhost:3003
+
+      - name: Run e2e specs
+        if: steps.affected.outputs.projects != '[]'
+        run: pnpm nx run platform-e2e:test
 
       - name: Upload Playwright reports
         if: failure()

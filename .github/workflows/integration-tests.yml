@@ -2,8 +2,7 @@ name: Integration Tests
 
 # Lib unit tests run as `test`. The platform vitest suite runs as `integration-ci`, which the
 # @nx/vitest plugin splits into one `integration-ci--<file>` task per spec. All of them are
-# run on the runner, one spec at a time. Nx Cloud is disabled (NX_NO_CLOUD): no remote cache and no
-# distributed workers.
+# run on the runner, one spec at a time. Nx Cloud is disabled (NX_NO_CLOUD): no distributed workers.
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review, closed]
@@ -54,6 +53,11 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: 'pnpm'
+
+      - uses: ./.github/actions/nx-cache
+        with:
+          key: integration-${{ github.event.pull_request.base.ref }}
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 

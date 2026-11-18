@@ -2,16 +2,21 @@ import {
   createReadStream,
   createWriteStream,
   existsSync,
+  linkSync,
   mkdirSync,
   renameSync,
-  utimesSync,
+  rmSync,
 } from 'node:fs'
 import { createServer } from 'node:http'
 import { join } from 'node:path'
 import { argv } from 'node:process'
 
 const dir = argv[2]
+const restored = `${dir}.restored`
+rmSync(restored, { recursive: true, force: true })
 mkdirSync(dir, { recursive: true })
+renameSync(dir, restored)
+mkdirSync(dir)
 
 createServer((req, res) => {
   const hash = /^\/v1\/cache\/(\w+)$/.exec(req.url)?.[1]
@@ -19,8 +24,8 @@ createServer((req, res) => {
   const file = join(dir, hash)
 
   if (req.method === 'GET') {
+    if (!existsSync(file) && existsSync(join(restored, hash))) linkSync(join(restored, hash), file)
     if (!existsSync(file)) return res.writeHead(404).end()
-    utimesSync(file, new Date(), new Date())
     return createReadStream(file).pipe(res)
   }
 
