@@ -1013,12 +1013,19 @@
     "rulersDelete": "Supprimer toutes les mesures",
     "rulersHover": "Faites glisser pour vous déplacer ou cliquez pour en voir plus",
     "rulersStop": "Arrêter les mesures",
+    "rulersUnitToggle": "Click to switch units",
     "screenshotArea": {
       "map": "Carte uniquement",
       "withTimebar": "Avec barre de temps",
       "withTimebarAndLegend": "Avec barre de temps et légende"
     },
+    "screenshotAreaLabel": "Area",
+    "screenshotAspectRatio": {
+      "current": "Current"
+    },
+    "screenshotAspectRatioLabel": "Aspect ratio",
     "screenshotDownload": "Télécharger l'image",
+    "screenshotError": "The screenshot could not be generated, please try again or contact us",
     "screenshotPreview": "Aperçu de la capture d'écran",
     "search": "Recherchez des zones maritimes, les AMP ou les ZEE",
     "zoom_in": "Zoomer",

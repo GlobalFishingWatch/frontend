@@ -1,7 +1,8 @@
 name: E2E Tests
 
-# Runs each affected Playwright spec as its own Nx task (`test-ci--<file>`) on the runner.
-# Nx Cloud is disabled (NX_NO_CLOUD): no remote cache and no distributed workers.
+# Runs the affected Playwright suite on the runner with `test:local`, which starts the platform
+# server itself. Nx Cloud is disabled (NX_NO_CLOUD): no remote cache and no distributed workers, and
+# the split `test-ci--<file>` tasks refuse to run without it.
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
@@ -50,7 +51,7 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Run affected e2e specs
-        run: pnpm exec nx affected -t test-ci --base=origin/${{ github.event.pull_request.base.ref }} --head=HEAD
+        run: pnpm exec nx affected -t test:local --base=origin/${{ github.event.pull_request.base.ref }} --head=HEAD
 
       - name: Upload Playwright reports
         if: failure()

@@ -1013,12 +1013,19 @@
     "rulersDelete": "crwdns133321:0crwdne133321:0",
     "rulersHover": "crwdns133323:0crwdne133323:0",
     "rulersStop": "crwdns133325:0crwdne133325:0",
+    "rulersUnitToggle": "crwdns139015:0crwdne139015:0",
     "screenshotArea": {
       "map": "crwdns133327:0crwdne133327:0",
       "withTimebar": "crwdns133329:0crwdne133329:0",
       "withTimebarAndLegend": "crwdns133331:0crwdne133331:0"
     },
+    "screenshotAreaLabel": "crwdns139017:0crwdne139017:0",
+    "screenshotAspectRatio": {
+      "current": "crwdns139019:0crwdne139019:0"
+    },
+    "screenshotAspectRatioLabel": "crwdns139021:0crwdne139021:0",
     "screenshotDownload": "crwdns133333:0crwdne133333:0",
+    "screenshotError": "crwdns139023:0crwdne139023:0",
     "screenshotPreview": "crwdns133335:0crwdne133335:0",
     "search": "crwdns133337:0crwdne133337:0",
     "zoom_in": "crwdns133349:0crwdne133349:0",
