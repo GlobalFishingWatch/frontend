@@ -30,6 +30,16 @@ runs:
     - shell: bash
       run: pnpm install --frozen-lockfile
 
+    - name: Read build env
+      shell: bash
+      env:
+        APP: ${{ inputs.app }}
+        CONFIG: ${{ inputs.config }}
+        EXTRA_BUILD_ENV: ${{ inputs.extra-build-args }}
+      run: |
+        yq 'explode(.) | .[env(APP)].build.env_vars | to_entries | .[] | .key + "=" + .value' "$CONFIG" >> "$GITHUB_ENV"
+        echo "$EXTRA_BUILD_ENV" >> "$GITHUB_ENV"
+
     - name: Read build secrets
       id: secrets
       shell: bash
@@ -60,16 +70,11 @@ runs:
         APP: ${{ inputs.app }}
         CONFIG: ${{ inputs.config }}
         IMAGE: ${{ inputs.image }}
-        EXTRA_BUILD_ENV: ${{ inputs.extra-build-args }}
         COMMIT_SHA: ${{ github.sha }}
         NODE_ENV: production
         NODE_OPTIONS: --max-old-space-size=6144
         NX_NO_CLOUD: 'true'
       run: |
-        set -a
-        source <(yq -o shell 'explode(.) | .[env(APP)].build.env_vars' "$CONFIG")
-        source <(echo "$EXTRA_BUILD_ENV")
-        set +a
         pnpm nx run "$APP:build" --parallel=4
         docker build . \
           --target "$(yq '.[env(APP)].target' "$CONFIG")" \
