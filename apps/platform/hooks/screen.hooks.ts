@@ -1,14 +1,21 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import * as Sentry from '@sentry/tanstackstart-react'
 
 import { useDeckMap } from 'features/_map/map/map-context.hooks'
 import { getSafeElementById } from 'utils/dom'
+
+// output pixels per CSS pixel of the captured area; download() ignores dpr
+const SCREENSHOT_SCALE = 2
+
+// 2026-11-17T10-23-45: sortable, locale independent and safe in file names
+const getFileTimestamp = () => new Date().toISOString().slice(0, 19).replace(/:/g, '-')
 
 export const useDownloadDomElementAsImage = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const map = useDeckMap()
 
   const downloadImage = useCallback(
-    async (domId: string, filename = `GFW-fishingmap-${new Date().toLocaleString()}.png`) => {
+    async (domId: string, filename = `GFW-map-${getFileTimestamp()}`) => {
       const domElement = getSafeElementById(domId)
       if (!domElement) {
         console.warn('Dom element needed for image download')
@@ -16,13 +23,15 @@ export const useDownloadDomElementAsImage = () => {
       }
       try {
         setLoading(true)
-        map?.redraw('screenshot')
         const { snapdom } = await import('@zumer/snapdom')
-        const capture = await snapdom(domElement, { dpr: 2, scale: 2 })
-        await capture.download({ format: 'png', filename, scale: 4 })
+        // the deck canvas has no preserveDrawingBuffer, so redraw right before snapdom reads it
+        map?.redraw('screenshot')
+        const capture = await snapdom(domElement, { scale: SCREENSHOT_SCALE })
+        await capture.download({ format: 'png', filename })
         return true
       } catch (e) {
         console.warn('Something went wrong generating the screenshot', e)
+        Sentry.captureException(e, { tags: { feature: 'map-screenshot' } })
         return false
       } finally {
         setLoading(false)

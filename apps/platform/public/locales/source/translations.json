@@ -1025,6 +1025,7 @@
     },
     "screenshotAspectRatioLabel": "Aspect ratio",
     "screenshotDownload": "Download image",
+    "screenshotError": "The screenshot could not be generated, please try again or contact us",
     "screenshotPreview": "Screenshot preview",
     "search": "Search ocean and sea areas, MPAs or EEZs",
     "zoom_in": "Zoom in",

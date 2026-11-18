@@ -2,6 +2,7 @@ import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'rea
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
 import type { Entries } from 'type-fest'
 
 import type { SelectOption } from '@globalfishingwatch/ui-components'
@@ -195,9 +196,16 @@ const MapControlScreenshot = ({
   )
 
   const onDownloadClick = useCallback(async () => {
-    await downloadImage(screenshotAreaId)
-    closeEditor()
-  }, [closeEditor, downloadImage, screenshotAreaId])
+    const downloaded = await downloadImage(screenshotAreaId)
+    if (downloaded) {
+      closeEditor()
+    } else {
+      toast(
+        t((t) => t.map.screenshotError),
+        { type: 'error', toastId: 'screenshotError' }
+      )
+    }
+  }, [closeEditor, downloadImage, screenshotAreaId, t])
 
   // capturing mid-fetch freezes a popup showing its spinner instead of its contents
   const captureDisabled = mapLoading || interactionLoading || loading
