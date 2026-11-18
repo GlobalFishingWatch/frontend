@@ -268,7 +268,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
             />
           )}
           {!isSticky && (
-            <div className={styles.actions}>
+            <div className={cx(styles.actions, 'print-hidden')}>
               {!isGlobalReport && (
                 <Popover
                   open={showBufferTooltip}

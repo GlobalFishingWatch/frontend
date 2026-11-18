@@ -1,7 +1,8 @@
 name: E2E Tests
 
-# Runs each affected Playwright spec as its own Nx task (`test-ci--<file>`) on Nx Cloud workers.
-# Specs whose inputs did not change replay from the cache (Ultracache records what each one reads).
+# Runs the affected Playwright suite on the runner with `test:local`, which starts the platform
+# server itself. Nx Cloud is disabled (NX_NO_CLOUD): no remote cache and no distributed workers, and
+# the split `test-ci--<file>` tasks refuse to run without it.
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
@@ -18,8 +19,7 @@ jobs:
     if: github.head_ref != 'i18n_dev' && github.event.pull_request.draft == false && github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     env:
-      NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN_READ_ONLY }}
-      # Forwarded to the workers by .nx/ci-config.yaml (workers.with-env-vars)
+      NX_NO_CLOUD: 'true'
       PLAYWRIGHT_BROWSER: chromium
       VITE_API_GATEWAY: https://gateway.api.${{ github.event.pull_request.base.ref == 'main' && 'staging' || 'dev' }}.globalfishingwatch.org
       VITE_WORKSPACE_ENV: development
@@ -39,10 +39,6 @@ jobs:
         with:
           install: false # the explicit --frozen-lockfile step below owns installing
 
-      # Before the install, so the workers boot while this job installs
-      - name: Start Nx Cloud workers
-        run: pnpm dlx nx-cloud start-workers
-
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
@@ -51,8 +47,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
       - name: Run affected e2e specs
-        run: pnpm exec nx affected -t test-ci --base=origin/${{ github.event.pull_request.base.ref }} --head=HEAD
+        run: pnpm exec nx affected -t test:local --base=origin/${{ github.event.pull_request.base.ref }} --head=HEAD
 
       - name: Upload Playwright reports
         if: failure()

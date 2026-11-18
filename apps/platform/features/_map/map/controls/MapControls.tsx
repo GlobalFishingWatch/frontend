@@ -153,6 +153,7 @@ const MapControls = ({
               icon="plus"
               type="map-tool"
               tooltip={t((t) => t.map.zoom_in)}
+              tooltipPlacement="left"
               onClick={onZoomInClick}
               data-testid="map-control-zoom-in"
             />
@@ -160,6 +161,7 @@ const MapControls = ({
               icon="minus"
               type="map-tool"
               tooltip={t((t) => t.map.zoom_out)}
+              tooltipPlacement="left"
               onClick={onZoomOutClick}
               data-testid="map-control-zoom-out"
             />
@@ -183,6 +185,7 @@ const MapControls = ({
               testId={MAP_LOADING_SPINNER_TESTID}
               type="map-tool"
               tooltip={t((t) => t.map.loading)}
+              tooltipPlacement="left"
               loading={mapLoading}
               className={cx(styles.loadingBtn, { [styles.visible]: mapLoading })}
             />

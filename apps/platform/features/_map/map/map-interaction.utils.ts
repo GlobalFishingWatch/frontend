@@ -5,6 +5,7 @@ import type {
   DeckLayerPickingObject,
   FourwingsClusterPickingObject,
   FourwingsPositionsPickingObject,
+  RulerPickingObject,
   VesselEventPickingObject,
   VesselTrackPickingObject,
 } from '@globalfishingwatch/deck-layers'
@@ -78,7 +79,12 @@ export const isTilesClusterLayerCluster = (pickingObject: FourwingsClusterPickin
   pickingObject?.properties?.value > 1 && pickingObject?.properties?.cluster_id !== undefined
 
 export const isRulerLayerPoint = (pickingObject: DeckLayerPickingObject) =>
-  pickingObject.category === 'rulers'
+  pickingObject.category === 'rulers' &&
+  (pickingObject as RulerPickingObject).properties?.order !== 'center'
+
+export const isRulerLayerLabel = (pickingObject: DeckLayerPickingObject) =>
+  pickingObject.category === 'rulers' &&
+  (pickingObject as RulerPickingObject).properties?.order === 'center'
 
 export const isBathymetryContour = (pickingObject: DeckLayerPickingObject) =>
   pickingObject.subcategory === DataviewType.Bathymetry

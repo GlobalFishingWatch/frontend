@@ -105,6 +105,9 @@ function ActivityReport() {
   const reportLoadVessels = useSelector(selectReportLoadVessels)
   // TODO get this from datasets config
   const activityUnit = reportCategory === ReportCategory.Activity ? 'hour' : 'detection'
+  const hasValuesFiltered = dataviews?.some(
+    (d) => d.config?.minVisibleValue !== undefined || d.config?.maxVisibleValue !== undefined
+  )
 
   const reportLoading = reportStatus === AsyncReducerStatus.Loading
   const reportError = reportStatus === AsyncReducerStatus.Error
@@ -296,6 +299,16 @@ function ActivityReport() {
         <ReportVesselsPlaceholder animate={false} className="print-hidden">
           <div className={cx(styles.cover, styles.center, styles.top)}>
             <p>{htmlSafeParse(t((t) => t.analysis.onlyEvolutionSupported))}</p>
+          </div>
+        </ReportVesselsPlaceholder>
+      )
+    }
+
+    if (hasValuesFiltered) {
+      return (
+        <ReportVesselsPlaceholder animate={false} className="print-hidden">
+          <div className={cx(styles.cover, styles.center, styles.top)}>
+            <p>{htmlSafeParse(t((t) => t.analysis.noFilterValuesSupported))}</p>
           </div>
         </ReportVesselsPlaceholder>
       )

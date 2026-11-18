@@ -85,6 +85,7 @@
     "newTimeRange": "Click the button to see the vessels active in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
     "noDataByArea": "No data available for the selected area",
     "noDataByComparedDataset": "No data available for the selected compared dataset, adjust your timerange or change the selection.",
+    "noFilterValuesSupported": "Remove visible values filter to see vessels active in this area",
     "noLayersActive": "No active layers to report on, turn on a layer to see its report",
     "noPolygonsContainedOrOverlapping": "No polygons inside or overlapping your area",
     "noTimeComparisonAllowed": "Time comparison modes are not available when layers have different filters",
@@ -1013,12 +1014,19 @@
     "rulersDelete": "Delete all measures",
     "rulersHover": "Drag to move or click to see more",
     "rulersStop": "Stop measures",
+    "rulersUnitToggle": "Click to switch units",
     "screenshotArea": {
       "map": "Only map",
       "withTimebar": "With timebar",
       "withTimebarAndLegend": "With timebar and legend"
     },
+    "screenshotAreaLabel": "Area",
+    "screenshotAspectRatio": {
+      "current": "Current"
+    },
+    "screenshotAspectRatioLabel": "Aspect ratio",
     "screenshotDownload": "Download image",
+    "screenshotError": "The screenshot could not be generated, please try again or contact us",
     "screenshotPreview": "Screenshot preview",
     "search": "Search an area of interest e.g. ocean, sea, port, MPA, EEZ, RFMO",
     "zoom_in": "Zoom in",

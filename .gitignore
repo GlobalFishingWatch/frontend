@@ -174,9 +174,17 @@ playwright-report/
 local.globalfishingwatch.org-key.pem
 local.globalfishingwatch.org.pem
 
-# Claude — everything local except shared team memory (imported from CLAUDE.md)
+# Claude project level files
 .claude/*
 !.claude/memory/
+!.claude/skills/
+!.claude/agents/
+!.claude/settings.json
+# Claude local files
+**/CLAUDE.local.md
+**/.claude/skills/local-*
+**/.claude/agents/local-*
+**/.claude/settings.local.json
 
 # NX
 .nx/cache

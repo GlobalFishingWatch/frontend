@@ -305,7 +305,7 @@
 
 :global(.printing) .name {
   font: var(--font-M);
-  line-height: 1;
+  line-height: 1.3;
 }
 
 :global(.printing) .tagList {
@@ -327,7 +327,6 @@
 }
 
 :global(.printing) .switch {
-  transform: translateY(-0.4rem);
   width: 1.4rem !important;
   transition: none;
 }
