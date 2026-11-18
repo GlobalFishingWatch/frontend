@@ -85,6 +85,7 @@
     "newTimeRange": "Clique o botão para ver as embarcações ativas na área entre <strong>{{start}}</strong> e <strong>{{end}}</strong>",
     "noDataByArea": "Não há dados disponíveis para a área selecionada",
     "noDataByComparedDataset": "No data available for the selected compared dataset, adjust your timerange or change the selection.",
+    "noFilterValuesSupported": "Remove visible values filter to see vessels active in this area",
     "noLayersActive": "No active layers to report on, turn on a layer to see its report",
     "noPolygonsContainedOrOverlapping": "No polygons inside or overlapping your area",
     "noTimeComparisonAllowed": "Os modos de comparação de tempo não ficam disponíveis quando as camadas têm filtros diferentes",
