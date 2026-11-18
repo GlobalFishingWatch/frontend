@@ -13,11 +13,12 @@ const selectMapInstance = selectAtom(mapInstanceAtom, mapInstanceAtomSelector as
 export function useSetMapInstance(mapRef: RefObject<DeckGLRef<MapView> | null> | undefined) {
   const setMapInstance = useSetAtom(mapInstanceAtom)
   useEffect(() => {
-    if (mapRef?.current?.deck) {
-      setMapInstance(mapRef?.current?.deck)
+    const deck = mapRef?.current?.deck
+    if (deck) {
+      setMapInstance(deck)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/refs
-  }, [mapRef?.current])
+  })
+  useEffect(() => () => setMapInstance(undefined), [setMapInstance])
 }
 
 export function useDeckMap(): Deck {
