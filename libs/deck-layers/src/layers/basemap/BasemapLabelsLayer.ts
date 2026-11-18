@@ -19,6 +19,7 @@ export class BaseMapLabelsLayer extends CompositeLayer<BaseMapLabelsLayerProps> 
   static layerName = 'BasemapLabelsLayer'
   static defaultProps = {
     locale: Locale.en,
+    labelSizeScale: 1,
   }
 
   _getColor(d: BasemapLayerFeature): Color {
@@ -37,6 +38,7 @@ export class BaseMapLabelsLayer extends CompositeLayer<BaseMapLabelsLayerProps> 
     if (!this.props.tilesUrl?.length) {
       return []
     }
+    const labelSizeScale = this.props.labelSizeScale ?? 1
     const Layer = (this.props.tilesUrl as string)?.includes('.pmtile')
       ? this.getSubLayerClass('pmTiles', PMTilesLayer)
       : this.getSubLayerClass('tile', TileLayer)
@@ -49,7 +51,9 @@ export class BaseMapLabelsLayer extends CompositeLayer<BaseMapLabelsLayerProps> 
         maxZoom: 12,
         maxRequests: 100,
         debounceTime: 200,
-        locale: this.props.locale,
+        updateTriggers: {
+          renderSubLayers: [this.props.locale, labelSizeScale],
+        },
         renderSubLayers: (props: any) => {
           return [
             new LabelLayer<BasemapLayerFeature>({
@@ -73,7 +77,10 @@ export class BaseMapLabelsLayer extends CompositeLayer<BaseMapLabelsLayerProps> 
                 }
                 return [0, 0]
               },
-              collisionTestProps: { sizeScale: 5 },
+              // sizeScale is a uniform, so changing it doesn't recompute label attributes;
+              // the collision boxes are scaled by the same factor to stay in step with the text
+              sizeScale: labelSizeScale,
+              collisionTestProps: { sizeScale: 5 * labelSizeScale },
               getColor: (d) => this._getColor(d),
               maxWidth: 8,
               getSize: (d) => d.properties?.size,

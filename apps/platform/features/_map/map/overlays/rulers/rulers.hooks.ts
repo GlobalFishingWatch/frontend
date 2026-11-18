@@ -12,12 +12,16 @@ import {
   selectAreMapRulersVisible,
   selectMapRulers,
 } from 'features/_map/workspace/selectors/app.selectors'
+import { selectMapScaleUnit } from 'features/_user/selectors/user.selectors'
+import { setUserSetting } from 'features/_user/user.slice'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
 
 const useRulers = () => {
   const rulers = useSelector(selectMapRulers)
   const rulersVisible = useSelector(selectAreMapRulersVisible)
   const { replaceQueryParams } = useReplaceQueryParams()
+  const dispatch = useAppDispatch()
   const {
     value,
     isEditing,
@@ -87,6 +91,11 @@ const useRulers = () => {
     [replaceQueryParams, resetMapControlValue, rulers, setRuleStart, value]
   )
 
+  const unit = useSelector(selectMapScaleUnit)
+  const toggleRulersUnit = useCallback(() => {
+    dispatch(setUserSetting({ mapScaleUnit: unit === 'km' ? 'nm' : 'km' }))
+  }, [dispatch, unit])
+
   const toggleRulersVisibility = useCallback(() => {
     replaceQueryParams({ mapRulersVisible: !rulersVisible })
   }, [replaceQueryParams, rulersVisible])
@@ -111,8 +120,12 @@ const useRulers = () => {
       resetEditingRule: resetMapControlValue,
       setRulersEditing: setMapControl,
       toggleRulersVisibility,
+      unit,
+      toggleRulersUnit,
     }),
     [
+      unit,
+      toggleRulersUnit,
       deleteMapRuler,
       isEditing,
       onRulerMapClick,
@@ -130,16 +143,17 @@ const useRulers = () => {
 }
 
 export const useMapRulerInstance = () => {
-  const { rulers, editingRuler, rulersVisible } = useRulers()
+  const { rulers, editingRuler, rulersVisible, unit } = useRulers()
   return useMemo(() => {
     const currentRuler = editingRuler ? [editingRuler] : []
     if (editingRuler || rulers) {
       return new RulersLayer({
         rulers: [...(rulers || []), ...currentRuler],
         visible: rulersVisible,
+        unit,
       })
     }
-  }, [editingRuler, rulers, rulersVisible])
+  }, [editingRuler, rulers, rulersVisible, unit])
 }
 
 export default useRulers

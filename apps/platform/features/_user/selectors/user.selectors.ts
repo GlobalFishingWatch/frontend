@@ -9,12 +9,15 @@ import {
   JAC_GROUP_ID,
 } from '@globalfishingwatch/datasets-client'
 
+import type { MapScaleUnit } from 'features/_user/user.slice'
 import type { RootState } from 'reducers'
 
 export const selectUserData = (state: RootState) => state.user.data
 export const selectUserLogged = (state: RootState) => state.user.logged
 export const selectIsUserExpired = (state: RootState) => state.user.expired
 export const selectUserSettings = (state: RootState) => state.user.settings
+export const selectMapScaleUnit = (state: RootState): MapScaleUnit =>
+  state.user.settings.mapScaleUnit === 'km' ? 'km' : 'nm'
 export const selectUserLanguage = (state: RootState) => state.user.language
 export const selectLoginSource = (state: RootState) => state.user.loginSource
 

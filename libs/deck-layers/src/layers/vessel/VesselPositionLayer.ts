@@ -74,6 +74,7 @@ export class VesselTrackPositionLayer extends CompositeLayer<
             stroked: false,
             pickable: this.props.pickable,
             getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
+            parameters: { depthCompare: 'always' },
           })
         ),
         new LabelLayer({
@@ -99,6 +100,7 @@ export class VesselTrackPositionLayer extends CompositeLayer<
           getSize: iconSize + 3,
           pickable: this.props.pickable,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
+          parameters: { depthCompare: 'always' },
         })
       ),
       new IconLayer(
@@ -113,6 +115,7 @@ export class VesselTrackPositionLayer extends CompositeLayer<
           getColor,
           getSize: iconSize,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
+          parameters: { depthCompare: 'always' },
         })
       ),
       ...(iconBorder
@@ -130,6 +133,7 @@ export class VesselTrackPositionLayer extends CompositeLayer<
                 getColor: [255, 255, 255, 255],
                 getSize: iconSize,
                 getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
+                parameters: { depthCompare: 'always' },
               })
             ),
           ]

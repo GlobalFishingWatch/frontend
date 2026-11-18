@@ -57,6 +57,7 @@ import BathymetryContourTooltipSection from './environment/BathymetryContourTool
 import GriddedValueTooltipSection from './environment/GriddedValueTooltipSection'
 import VectorsTooltipRow from './environment/VectorsTooltipRow'
 import EventsClusterTooltipSection from './events/EventsClusterTooltipSection'
+import PopupSectionLayout from './shared/PopupSectionLayout'
 import HotspotTooltipSection from './tools/HotspotTooltipSection'
 import ReportBufferTooltipSection from './tools/ReportBufferTooltipSection'
 import RulerTooltipSection from './tools/RulerTooltipSection'
@@ -426,6 +427,13 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             const rulersFeatures = (features as RulerPickingObject[]).filter(
               (f) => f.properties.order === 'start' || f.properties.order === 'end'
             )
+            if (!rulersFeatures.length) {
+              return type === 'hover' ? (
+                <PopupSectionLayout key={featureCategory} className={styles.withoutIcon}>
+                  <span className={styles.rowText}>{t((t) => t.map.rulersUnitToggle)}</span>
+                </PopupSectionLayout>
+              ) : null
+            }
             return (
               <RulerTooltipSection
                 key={featureCategory}

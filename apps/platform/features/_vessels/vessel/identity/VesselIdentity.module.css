@@ -124,7 +124,7 @@
 
 .externalToolLinks a {
   display: flex;
-  align-self: center;
+  align-items: center;
   height: 3rem;
 }
 

@@ -41,6 +41,7 @@ export type ResolverGlobalConfig = {
   vectorsTemporalAggregation?: boolean
   skipColorDomainSampling?: boolean
   timeMode: TimeMode
+  labelSizeScale?: number
 }
 
 export type DeckResolverFunction<

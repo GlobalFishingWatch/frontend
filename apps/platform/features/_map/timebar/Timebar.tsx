@@ -55,6 +55,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import Hint from 'features/hints/Hint'
 import { formatI18nDate } from 'features/i18n/i18nDate.utils'
+import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { useDOMElement } from 'hooks/dom.hooks'
 import { selectIsAnyReportLocation } from 'router/routes.selectors'
 import type { Locale } from 'types'
@@ -189,6 +190,7 @@ const TimebarWrapper = () => {
   const timebarGraph = useSelector(selectTimebarGraph)
   const { isMapDrawing } = useMapDrawConnect()
   const screenshotMode = useSelector(selectScreenshotMode)
+  const screenshotEditorOpen = useSelector(selectScreenshotModalOpen)
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
   const hasVectorDataviews = useSelector(selectHasVectorDataviews)
@@ -294,11 +296,21 @@ const TimebarWrapper = () => {
         <TimebarTracksEventsWrapper
           tracks={tracks}
           data={events || []}
-          onEventClick={onEventClick}
+          onEventClick={screenshotEditorOpen ? undefined : onEventClick}
         />
       </Fragment>
     )
-  }, [events, hasTrackError, onEventClick, showGraph, t, trackGraphSteps, tracks, tracksGraphsData])
+  }, [
+    events,
+    hasTrackError,
+    onEventClick,
+    screenshotEditorOpen,
+    showGraph,
+    t,
+    trackGraphSteps,
+    tracks,
+    tracksGraphsData,
+  ])
 
   const timebarGraphComponent = useMemo(() => {
     return (
@@ -398,8 +410,8 @@ const TimebarWrapper = () => {
           showLast30DaysBtn={timeMode === 'historical'}
           shortestTimeRange={timeMode === 'realTime' ? 'minute' : 'hour'}
           locale={i18n.language as Locale}
-          onMouseMove={onMouseMove}
-          onGraphClick={onGraphClick}
+          onMouseMove={screenshotEditorOpen ? undefined : onMouseMove}
+          onGraphClick={screenshotEditorOpen ? undefined : onGraphClick}
           showDeckStats={debugOptions.deckStats}
           deviceProps={DECK_DEVICE_PROPS}
         >

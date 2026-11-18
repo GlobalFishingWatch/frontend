@@ -25,9 +25,12 @@ export type RulerData = {
   }
 }
 
+export type RulerUnit = 'km' | 'nm'
+
 export type RulersLayerProps = GeoJsonLayerProps & {
   rulers: RulerData[]
   color?: Color
+  unit?: RulerUnit
 }
 
 export type RulerFeature = Feature<Point, RulerPointProperties>

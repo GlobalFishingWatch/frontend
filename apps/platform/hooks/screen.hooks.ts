@@ -1,115 +1,46 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import type { CaptureResult } from '@zumer/snapdom'
+import * as Sentry from '@sentry/tanstackstart-react'
 
 import { useDeckMap } from 'features/_map/map/map-context.hooks'
 import { getSafeElementById } from 'utils/dom'
 
+// output pixels per CSS pixel of the captured area; download() ignores dpr
+const SCREENSHOT_SCALE = 2
+
+// 2026-11-17T10-23-45: sortable, locale independent and safe in file names
+const getFileTimestamp = () => new Date().toISOString().slice(0, 19).replace(/:/g, '-')
+
 export const useDownloadDomElementAsImage = () => {
-  const [error, setError] = useState<string | null>('')
   const [loading, setLoading] = useState<boolean>(false)
-  const [capture, setCapture] = useState<CaptureResult | null>(null)
-  const [previewImage, setPreviewImage] = useState<string>('')
-  const [previewImageLoading, setPreviewImageLoading] = useState(false)
-  const [finished, setFinished] = useState<boolean>(false)
   const map = useDeckMap()
 
-  const getCapture = useCallback(async (domId: string) => {
-    try {
-      const domElement = getSafeElementById(domId)
-      if (domElement) {
-        const { snapdom } = await import('@zumer/snapdom')
-        const capture = await snapdom(domElement, {
-          exclude: ['[data-modal-overlay]'],
-          dpr: 2,
-          scale: 2,
-        })
-        setCapture(capture)
-        if (capture) {
-          return capture
-        }
-        throw new Error('no capture element found')
-      } else {
-        throw new Error('no DOM element to use in snapdom')
-      }
-    } catch (e: any) {
-      console.warn(e)
-      setError(e.message)
-      throw e
-    }
-  }, [])
-
-  const resetPreviewImage = useCallback(() => {
-    setPreviewImage('')
-    setCapture(null)
-  }, [])
-
-  const generatePreviewImage = useCallback(
-    async (domId: string) => {
-      try {
-        setPreviewImageLoading(true)
-        map?.redraw('previewImage')
-        const capture = await getCapture(domId)
-        const img = await capture.toPng()
-        setPreviewImage(img.src)
-        setPreviewImageLoading(false)
-      } catch {
-        setPreviewImageLoading(false)
-      }
-    },
-    [getCapture, map]
-  )
-
   const downloadImage = useCallback(
-    async (domId: string, filename = `GFW-fishingmap-${new Date().toLocaleString()}.png`) => {
-      const domElement = document.getElementById(domId)
-      if (domElement) {
-        try {
-          setLoading(true)
-          if (capture) {
-            capture.download({ format: 'png', filename, scale: 4 })
-            setLoading(false)
-            setFinished(true)
-            return true
-          } else {
-            setLoading(false)
-            setFinished(true)
-            setError('No blob canvas')
-            return false
-          }
-        } catch {
-          setError('Something went wrong generating the screenshot, please try again')
-          setLoading(false)
-          return false
-        }
-      } else {
+    async (domId: string, filename = `GFW-map-${getFileTimestamp()}`) => {
+      const domElement = getSafeElementById(domId)
+      if (!domElement) {
         console.warn('Dom element needed for image download')
+        return false
+      }
+      try {
+        setLoading(true)
+        const { snapdom } = await import('@zumer/snapdom')
+        // the deck canvas has no preserveDrawingBuffer, so redraw right before snapdom reads it
+        map?.redraw('screenshot')
+        const capture = await snapdom(domElement, { scale: SCREENSHOT_SCALE })
+        await capture.download({ format: 'png', filename })
+        return true
+      } catch (e) {
+        console.warn('Something went wrong generating the screenshot', e)
+        Sentry.captureException(e, { tags: { feature: 'map-screenshot' } })
+        return false
+      } finally {
+        setLoading(false)
       }
     },
-    [capture]
+    [map]
   )
 
-  return useMemo(
-    () => ({
-      downloadImage,
-      error,
-      finished,
-      generatePreviewImage,
-      loading,
-      previewImage,
-      previewImageLoading,
-      resetPreviewImage,
-    }),
-    [
-      downloadImage,
-      error,
-      finished,
-      generatePreviewImage,
-      loading,
-      previewImage,
-      previewImageLoading,
-      resetPreviewImage,
-    ]
-  )
+  return useMemo(() => ({ downloadImage, loading }), [downloadImage, loading])
 }
 
 export const useOnScreen = (ref: any, rootMargin = '0px') => {

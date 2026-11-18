@@ -74,6 +74,20 @@ body:has(.printing) {
   display: none !important;
 }
 
+[data-screenshot-area] aside:has(~ #app-main),
+[data-screenshot-area] #app-main > :not(:has(#map-container)) {
+  pointer-events: none;
+}
+
+[data-screenshot-area]:not([data-screenshot-area='withTimebarAndLegend']) aside:has(~ #app-main),
+[data-screenshot-area='map'] #app-main > :not(:has(#map-container)) {
+  display: none;
+}
+
+[data-screenshot-area]:not([data-screenshot-area='withTimebarAndLegend']) #app-main {
+  left: 0 !important;
+}
+
 #__root__ {
   height: 100dvh;
   width: 100%;
