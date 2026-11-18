@@ -119,7 +119,7 @@ These are the commands the [build-image](.github/actions/build-image/action.yml)
 
 ```bash
 export APP=platform CONFIG=.github/apps/development.yml
-set -a; source <(yq -o shell 'explode(.) | .[env(APP)].build.env_vars' "$CONFIG"); set +a
+export $(yq 'explode(.) | .[env(APP)].build.env_vars | to_entries | .[] | .key + "=" + .value' "$CONFIG")
 NODE_ENV=production pnpm nx run "${APP}:build"
 docker build . --target "$(yq '.[env(APP)].target' "$CONFIG")" --build-arg APP_NAME="$APP" --build-arg VITE_WORKSPACE_ENV --tag "${APP}:local"
 ```
