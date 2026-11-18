@@ -60,6 +60,10 @@ const tsconfigPathAliases = [
 const profileName = process.env.CI ? 'ci' : (process.env.NX_TASK_TARGET_TARGET ?? 'default')
 const playwrightProvider: BrowserProviderOption = playwright({
   persistentContext: `./node_modules/.cache/vitest-playwright-user-data/${profileName.replace(/[^\w.-]+/g, '_')}`,
+  // Without this the browser inherits the OS UI language, so on a pt-BR machine i18next detects
+  // `pt` from navigator.language and Intl/Luxon format numbers and dates in Portuguese. Pin it so
+  // local runs match CI. Also applies to the persistent context (passed to launchPersistentContext).
+  contextOptions: { locale: 'en-US' },
 })
 
 export default defineConfig(({ mode }): ViteUserConfig => {

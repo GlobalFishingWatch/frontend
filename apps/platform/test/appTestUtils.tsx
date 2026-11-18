@@ -7,6 +7,7 @@ import type { RenderOptions } from 'vitest-browser-react'
 import { render as vitestRender } from 'vitest-browser-react'
 
 import { getGuestUser, GFWAPI } from '@globalfishingwatch/api-client'
+import type { UserData } from '@globalfishingwatch/api-types'
 import { stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
@@ -47,10 +48,27 @@ export async function withGuestUser(store: AppStore) {
   return store
 }
 
+// The root loader resolves the user on the server only (`loadUser` in routes/__root.tsx returns
+// null on the client), so `useInitAppStore` logs in a guest when the app boots in vitest. Re-apply
+// the real user right after that one dispatch: setting it before render() gets overwritten, and
+// setting it after render() races the async root loader.
+function keepUserLoggedIn(store: AppStore, user: UserData) {
+  const dispatch = store.dispatch
+  store.dispatch = ((action: Parameters<typeof dispatch>[0]) => {
+    const result = dispatch(action)
+    if (setLoggedUser.match(action) && action.payload.id !== user.id) {
+      store.dispatch = dispatch
+      dispatch(setLoggedUser(user))
+    }
+    return result
+  }) as typeof dispatch
+}
+
 export async function render(options: AppRenderOptions = {}) {
   const { store, jotaiStore, authenticated, ...renderOptions } = options
 
   return page.mark('render app', async () => {
+    let user: UserData | null = null
     if (authenticated) {
       try {
         const response = await fetch('/.auth/tokens.json').catch(() => null)
@@ -58,6 +76,10 @@ export async function render(options: AppRenderOptions = {}) {
           const tokens = await response.json()
           localStorage.setItem('GFW_API_USER_TOKEN', tokens?.token)
           localStorage.setItem('GFW_API_USER_REFRESH_TOKEN', tokens?.refreshToken)
+          user = await GFWAPI.fetchUser({ token: tokens?.token }).catch(() => {
+            console.warn('Authentication requested but the user could not be fetched')
+            return null
+          })
         } else {
           throw new Error('Authentication requested but tokens not available')
         }
@@ -76,6 +98,7 @@ export async function render(options: AppRenderOptions = {}) {
     }
 
     const storeToUse = store || makeStore()
+    if (user) keepUserLoggedIn(storeToUse, user)
     const jotaiStoreToUse = jotaiStore || createJotaiStore()
 
     const location = storeToUse.getState().location

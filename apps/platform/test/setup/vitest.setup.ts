@@ -26,6 +26,14 @@ import '@globalfishingwatch/timebar/timebar-settings.css'
 //   }
 // }
 
+// Force English before any spec imports features/i18n/i18n.ts. The client detector reads
+// querystring → cookie → navigator (CLIENT_LANGUAGE_DETECTION) and caches to the cookie, which the
+// persistent Playwright profile keeps between runs — so a `pt` detected once would stick forever.
+// localStorage is only a write cache there, so setting `i18nextLng` has no effect on detection.
+if (getIsBrowser()) {
+  document.cookie = 'i18next=en; path=/; SameSite=Lax'
+}
+
 // Set the system time to February 18th, 2026 at 12:00 PM UTC
 const mockDate = new Date(TEST_END_DATE)
 vi.setSystemTime(mockDate)
@@ -76,7 +84,6 @@ beforeAll(async () => {
     localStorage.setItem('OnboardingPanelDismissed', 'true')
     localStorage.setItem('UpdateVideoSeen', 'true')
     localStorage.setItem('HighlightPopup', `"${HIGHLIGHT_DATAVIEW_INSTANCE_ID}"`)
-    localStorage.setItem('i18nextLng', '"en"')
     localStorage.setItem(
       'hints',
       '{"fishingEffortHeatmap":true,"filterActivityLayers":true,"clickingOnAGridCellToShowVessels":true,"changingTheTimeRange":true,"areaSearch":true,"periodComparisonBaseline":true,"reportAreaSearch":true,"userContextLayers":true}'

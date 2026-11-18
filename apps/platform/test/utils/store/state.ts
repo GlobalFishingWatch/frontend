@@ -11046,6 +11046,7 @@ export const REDUX_STORE_DEFAULT_STATE = {
     bigQuery: false,
     createWorkspace: false,
     datasetUpload: { open: false, style: 'default' },
+    detectionFeedback: { open: false },
     downloadTrack: false,
     editWorkspace: false,
     editor: false,

@@ -22,7 +22,7 @@ import { UserTab } from 'types'
 const defaultState = getDefaultStateWithDatasets([USER_POLYGON_DATASET])
 
 describe('Polygon', () => {
-  it.only('should be able to navigate to the polygon editor', async () => {
+  it('should be able to navigate to the polygon editor', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
 
