@@ -45,7 +45,7 @@ Libs are consumed via built `dist/`, not src paths. Each `libs/*/package.json` e
 | Build app          | `pnpm nx build platform`                           |
 | e2e                | `pnpm nx test platform-e2e`                        |
 
-Vitest suites are currently broken in `platform` — don't run them to validate changes. Verify with typecheck + lint, e2e, or a real SSR build. See `apps/platform/.claude/memory/platform-testing.md`.
+`platform` integration specs run offline against recorded API responses (as of 2026-11-19): `TEST_CHROME_ONLY=true pnpm nx test platform -- test/integration/<Spec>.spec.tsx`. Anything needing the real backend goes to `platform-e2e`. See `apps/platform/.claude/memory/platform-testing.md`.
 
 ## Team knowledge
 
@@ -74,16 +74,16 @@ Durable facts about this repo live in a `.claude/memory/` folder, one fact per f
 
 ### Project-scoped knowledge lives with the project
 
-The eight facts below are **not** imported here. Each project's own `CLAUDE.md` imports them, so
+The nine facts below are **not** imported here. Each project's own `CLAUDE.md` imports them, so
 they load only once a file in that project is opened. A cross-link above pointing at one of these
 names resolves to the paths listed here.
 
-| Project                                          | Facts                                                                               |
-| ------------------------------------------------ | ----------------------------------------------------------------------------------- |
-| [apps/platform](apps/platform/CLAUDE.md)         | `platform-testing`, `locales-source-is-the-only-editable`, `popup-component-naming` |
-| [libs/deck-layers](libs/deck-layers/CLAUDE.md)   | `deck-collision-priority-range`, `label-layer-sdf-outline-opacity`                  |
-| [libs/deck-loaders](libs/deck-loaders/CLAUDE.md) | `deck-loaders-parsers-run-in-prebuilt-workers`                                      |
-| [libs/skills](libs/skills/CLAUDE.md)             | `skills-lib`, `encode-url-skill-maintenance`                                        |
+| Project                                          | Facts                                                                                                           |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| [apps/platform](apps/platform/CLAUDE.md)         | `platform-testing`, `integration-network-stub`, `locales-source-is-the-only-editable`, `popup-component-naming` |
+| [libs/deck-layers](libs/deck-layers/CLAUDE.md)   | `deck-collision-priority-range`, `label-layer-sdf-outline-opacity`                                              |
+| [libs/deck-loaders](libs/deck-loaders/CLAUDE.md) | `deck-loaders-parsers-run-in-prebuilt-workers`                                                                  |
+| [libs/skills](libs/skills/CLAUDE.md)             | `skills-lib`, `encode-url-skill-maintenance`                                                                    |
 
 **Why the split:** `@` imports are inlined into the session prompt at startup, in full, every
 session — so a flat root import list charges every session for facts about projects it never
