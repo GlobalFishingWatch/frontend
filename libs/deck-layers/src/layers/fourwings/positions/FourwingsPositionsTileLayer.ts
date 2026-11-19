@@ -27,7 +27,7 @@ import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 
 import { BLEND_BACKGROUND } from '#config/colorRamps.config'
 import { COLOR_TRANSPARENT } from '#config/colors.config'
-import { PATH_BASENAME } from '#config/layers.config'
+import { PATH_BASENAME, withTestLoadOptions } from '#config/layers.config'
 import { LayerGroup } from '#config/sort.config'
 import { GFWMVTLoader } from '#layers/_shared/api'
 import { transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
@@ -548,7 +548,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         method: 'GET',
         responseType: 'arrayBuffer',
       })
-      return await parse(response, GFWMVTLoader, loadOptions)
+      return await parse(response, GFWMVTLoader, withTestLoadOptions(loadOptions))
     } catch (error: any) {
       if ((error as ParsedAPIError).status === 404) {
         return null

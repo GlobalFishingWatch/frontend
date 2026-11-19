@@ -18,6 +18,15 @@ export function getEnv(key: string, fallback?: string): string | undefined {
 
 export const IS_TEST_ENV = getEnv('NODE_ENV') === 'test' || getEnv('VITEST') === 'true'
 
+/**
+ * loaders.gl parses MVT in a worker that it downloads from unpkg.com through `importScripts`.
+ * A test's `fetch` stub cannot see that request, so tests parse on the main thread instead.
+ * Outside tests the options are returned untouched.
+ */
+export function withTestLoadOptions<T extends object>(loadOptions: T | undefined): T | undefined {
+  return IS_TEST_ENV ? ({ ...loadOptions, worker: false } as T) : loadOptions
+}
+
 const DEFAULT_PATH_BASENAME = getEnv('VITE_PUBLIC_URL') || getEnv('NEXT_PUBLIC_URL') || '/platform/'
 export const PATH_BASENAME = DEFAULT_PATH_BASENAME.endsWith('/')
   ? DEFAULT_PATH_BASENAME
