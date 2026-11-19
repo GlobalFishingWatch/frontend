@@ -1,0 +1,13 @@
+{
+  "method": "GET",
+  "key": "GET /v3/datasets?cache=true&ids=public-vms-pan-vessel-identity%3Av4.1%2Cpublic-vms-ecu-vessel-identity%3Av4.0%2Cpublic-vms-cri-vessel-identity%3Av4.0%2Cpublic-vms-per-vessel-identity%3Av4.0%2Cpublic-vms-bra-vessel-identity%3Av4.0%2Cpublic-vms-png-vessel-identity%3Av4.0%2Cpublic-vms-nor-vessel-identity%3Av4.0%2Cpublic-vms-cri-vessel-identity%3Av4.0%2Cpublic-vms-blz-vessel-identity%3Av4.0%2Cpublic-vms-per-vessel-identity%3Av4.0%2Cpublic-vms-nor-vessel-identity%3Av4.0%2Cpublic-vms-pan-vessel-identity%3Av4.1%2Cpublic-vms-png-vessel-identity%3Av4.0%2Cpublic-vms-chl-vessel-identity%3Av4.0%2Cpublic-vms-chl-vessel-identity%3Av4.0&includes%5B0%5D=I18N&includes%5B1%5D=DESCRIPTION&limit=999999&locale=EN&offset=0",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8",
+    "x-deprecated-dataset": "public-vms-ecu-vessel-identity:v4.0=public-vms-ecu-vessel-identity:v5.0,public-vms-cri-vessel-identity:v4.0=public-vms-cri-vessel-identity:v5.0,public-vms-blz-vessel-identity:v4.0=public-vms-blz-vessel-identity:v5.0,public-vms-chl-vessel-identity:v4.0=public-vms-chl-vessel-identity:v5.0,public-vms-nor-vessel-identity:v4.0=public-vms-nor-vessel-identity:v5.0,public-vms-pan-vessel-identity:v4.1=public-vms-pan-vessel-identity:v5.0,public-vms-png-vessel-identity:v4.0=public-vms-png-vessel-identity:v5.0,public-vms-per-vessel-identity:v4.0=public-vms-per-vessel-identity:v5.0,public-vms-bra-vessel-identity:v4.0=public-vms-bra-vessel-identity:v5.0",
+    "x-ratelimit-ip-limit": "600",
+    "x-ratelimit-ip-remaining": "582",
+    "x-ratelimit-ip-reset": "24"
+  },
+  "body": "json"
+}

@@ -1,0 +1,12 @@
+{
+  "method": "GET",
+  "key": "GET /v3/vessel-groups?cache=false&exclude%5B0%5D=vessels&ids%5B0%5D=endurance_zodiac-user-public&limit=999999&offset=0",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8",
+    "x-ratelimit-ip-limit": "600",
+    "x-ratelimit-ip-remaining": "585",
+    "x-ratelimit-ip-reset": "25"
+  },
+  "body": "json"
+}

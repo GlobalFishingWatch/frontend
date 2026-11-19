@@ -1,0 +1,13 @@
+{
+  "method": "GET",
+  "key": "GET /v3/datasets?cache=true&ids=public-global-sar-presence%3Av4.0%2Cpublic-global-sentinel2-presence%3Av4.0%2Cpublic-ports-v1%2Cpublic-vms-bra-fishing-effort%3Av4.0%2Cpublic-vms-chl-fishing-effort%3Av4.1%2Cpublic-vms-cri-fishing-effort%3Av4.0%2Cpublic-vms-ecu-fishing-effort%3Av4.0%2Cpublic-vms-nor-fishing-effort%3Av4.0%2Cpublic-vms-pan-fishing-effort%3Av4.1%2Cpublic-vms-per-fishing-effort%3Av4.0%2Cpublic-vms-png-fishing-effort%3Av4.0%2Cpublic-global-presence%3Av4.0%2Cpublic-vms-chl-presence%3Av4.1%2Cpublic-vms-per-presence%3Av4.0%2Cpublic-vms-pan-presence%3Av4.1%2Cpublic-vms-cri-presence%3Av4.0%2Cpublic-vms-nor-presence%3Av4.0%2Cpublic-vms-png-presence%3Av4.0%2Cpublic-vms-blz-presence%3Av4.0%2Cpublic-global-fishing-effort%3Av4.0&includes%5B0%5D=I18N&includes%5B1%5D=DESCRIPTION&limit=999999&locale=EN&offset=0",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8",
+    "x-deprecated-dataset": "public-vms-blz-presence:v4.0=public-vms-blz-presence:v5.0,public-vms-nor-fishing-effort:v4.0=public-vms-nor-fishing-effort:v5.0,public-global-presence:v4.0=public-global-presence:v5.0,public-vms-per-presence:v4.0=public-vms-per-presence:v5.0,public-vms-pan-presence:v4.1=public-vms-pan-presence:v5.0,public-vms-ecu-fishing-effort:v4.0=public-vms-ecu-fishing-effort:v5.0,public-vms-cri-presence:v4.0=public-vms-cri-presence:v5.0,public-vms-nor-presence:v4.0=public-vms-nor-presence:v5.0,public-global-sar-presence:v4.0=public-global-sar-presence:v5.0,public-vms-pan-fishing-effort:v4.1=public-vms-pan-fishing-effort:v5.0,public-vms-bra-fishing-effort:v4.0=public-vms-bra-fishing-effort:v5.0,public-vms-cri-fishing-effort:v4.0=public-vms-cri-fishing-effort:v5.0,public-vms-per-fishing-effort:v4.0=public-vms-per-fishing-effort:v5.0,public-vms-png-presence:v4.0=public-vms-png-presence:v5.0,public-global-fishing-effort:v4.0=public-global-fishing-effort:v5.0,public-vms-chl-presence:v4.1=public-vms-chl-presence:v5.0,public-global-sentinel2-presence:v4.0=public-global-sentinel2-presence:v5.0,public-vms-png-fishing-effort:v4.0=public-vms-png-fishing-effort:v5.0,public-vms-chl-fishing-effort:v4.1=public-vms-chl-fishing-effort:v5.0",
+    "x-ratelimit-ip-limit": "600",
+    "x-ratelimit-ip-remaining": "584",
+    "x-ratelimit-ip-reset": "25"
+  },
+  "body": "json"
+}

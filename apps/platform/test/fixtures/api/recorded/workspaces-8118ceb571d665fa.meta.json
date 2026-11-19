@@ -1,0 +1,12 @@
+{
+  "method": "GET",
+  "key": "GET /v3/workspaces?app=fishing-map&ids=seabird_safe_longline_sets-public%2Cdeep-sea-mining-public%2Cactivity-report%2Cdetections-report%2Cevents-report&limit=999999&offset=0",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8",
+    "x-ratelimit-ip-limit": "600",
+    "x-ratelimit-ip-remaining": "595",
+    "x-ratelimit-ip-reset": "36"
+  },
+  "body": "json"
+}

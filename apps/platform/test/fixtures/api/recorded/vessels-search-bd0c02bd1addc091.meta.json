@@ -1,0 +1,12 @@
+{
+  "method": "GET",
+  "key": "GET /v3/vessels/search?datasets%5B0%5D=public-global-vessel-identity%3Av5.0&includes%5B0%5D=MATCH_CRITERIA&includes%5B1%5D=OWNERSHIP&query=Gabu+Reefer&since=",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8",
+    "x-ratelimit-ip-limit": "600",
+    "x-ratelimit-ip-remaining": "592",
+    "x-ratelimit-ip-reset": "15"
+  },
+  "body": "json"
+}

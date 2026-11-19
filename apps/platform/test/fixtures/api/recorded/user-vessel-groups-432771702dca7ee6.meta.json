@@ -1,0 +1,9 @@
+{
+  "method": "GET",
+  "key": "GET [user] /v3/vessel-groups?cache=false&exclude%5B0%5D=vessels&limit=999999&logged-user=true&offset=0",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  },
+  "body": "json"
+}

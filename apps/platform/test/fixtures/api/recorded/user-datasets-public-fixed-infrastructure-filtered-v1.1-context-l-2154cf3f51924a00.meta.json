@@ -1,0 +1,9 @@
+{
+  "method": "GET",
+  "key": "GET [user] /v3/datasets/public-fixed-infrastructure-filtered:v1.1/context-layers/1/0/1?properties%5B0%5D=label&properties%5B1%5D=structure_start_date&properties%5B2%5D=structure_end_date&properties%5B3%5D=structure_id&properties%5B4%5D=label_confidence",
+  "status": 200,
+  "headers": {
+    "content-type": "application/vnd.mapbox-vector-tile"
+  },
+  "body": "bin"
+}

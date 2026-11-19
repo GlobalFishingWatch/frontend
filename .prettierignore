@@ -16,6 +16,11 @@ libs/ocean-areas/src/data/**
 libs/ocean-areas/src/source/**
 libs/ui-components/src/miniglobe/ne_110m_land.json
 
+# API responses recorded by VITEST_RECORD=true. Reformatting would bloat ~8 MB of JSON and bury a
+# re-record's real changes in whitespace churn
+apps/platform/test/fixtures/api/recorded/**
+apps/platform/test/fixtures/api/heatmap-grid/**
+
 # One area per line on purpose: a grep hit must carry datasetId + areaId + label together
 libs/skills/src/encode-url/references/areas/*.json
 

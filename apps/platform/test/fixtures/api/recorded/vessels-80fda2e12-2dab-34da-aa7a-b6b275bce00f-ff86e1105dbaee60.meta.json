@@ -1,0 +1,13 @@
+{
+  "method": "GET",
+  "key": "GET /v3/vessels/80fda2e12-2dab-34da-aa7a-b6b275bce00f?cache=false&dataset=public-vms-bra-vessel-identity%3Av4.0&includes%5B0%5D=POTENTIAL_RELATED_SELF_REPORTED_INFO&registries-info-data=ALL",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8",
+    "x-deprecated-dataset": "public-vms-bra-vessel-identity:v4.0=public-vms-bra-vessel-identity:v5.0",
+    "x-ratelimit-ip-limit": "600",
+    "x-ratelimit-ip-remaining": "596",
+    "x-ratelimit-ip-reset": "40"
+  },
+  "body": "json"
+}

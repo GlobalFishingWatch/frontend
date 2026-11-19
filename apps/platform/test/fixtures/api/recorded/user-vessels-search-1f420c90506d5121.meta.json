@@ -1,0 +1,9 @@
+{
+  "method": "GET",
+  "key": "GET [user] /v3/vessels/search?datasets%5B0%5D=public-global-vessel-identity%3Av5.0&datasets%5B1%5D=public-vms-bra-vessel-identity%3Av5.0&datasets%5B2%5D=public-vms-chl-vessel-identity%3Av5.0&datasets%5B3%5D=public-vms-ecu-vessel-identity%3Av5.0&datasets%5B4%5D=public-vms-nor-vessel-identity%3Av5.0&datasets%5B5%5D=public-vms-pan-vessel-identity%3Av5.0&datasets%5B6%5D=public-vms-per-vessel-identity%3Av5.0&datasets%5B7%5D=public-vms-png-vessel-identity%3Av5.0&includes%5B0%5D=MATCH_CRITERIA&includes%5B1%5D=OWNERSHIP&query=Gabu+Reefer&since=",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  },
+  "body": "json"
+}

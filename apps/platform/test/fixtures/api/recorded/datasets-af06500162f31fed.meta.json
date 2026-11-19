@@ -1,0 +1,13 @@
+{
+  "method": "GET",
+  "key": "GET /v3/datasets?cache=true&ids=public-vms-ecu-tracks%3Av4.0%2Cpublic-vms-nor-tracks%3Av4.0%2Cpublic-vms-png-tracks%3Av4.0%2Cpublic-vms-chl-tracks%3Av4.0%2Cpublic-vms-cri-tracks%3Av4.0%2Cpublic-vms-blz-tracks%3Av4.0%2Cpublic-vms-bra-tracks%3Av4.0%2Cpublic-vms-per-tracks%3Av4.0%2Cpublic-vms-pan-tracks%3Av4.1&includes%5B0%5D=I18N&includes%5B1%5D=DESCRIPTION&limit=999999&locale=EN&offset=0",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8",
+    "x-deprecated-dataset": "public-vms-png-tracks:v4.0=public-vms-png-tracks:v5.0,public-vms-chl-tracks:v4.0=public-vms-chl-tracks:v5.0,public-vms-cri-tracks:v4.0=public-vms-cri-tracks:v5.0,public-vms-bra-tracks:v4.0=public-vms-bra-tracks:v5.0,public-vms-ecu-tracks:v4.0=public-vms-ecu-tracks:v5.0,public-vms-blz-tracks:v4.0=public-vms-blz-tracks:v5.0,public-vms-per-tracks:v4.0=public-vms-per-tracks:v5.0,public-vms-pan-tracks:v4.1=public-vms-pan-tracks:v5.0,public-vms-nor-tracks:v4.0=public-vms-nor-tracks:v5.0",
+    "x-ratelimit-ip-limit": "600",
+    "x-ratelimit-ip-remaining": "580",
+    "x-ratelimit-ip-reset": "22"
+  },
+  "body": "json"
+}

@@ -1,0 +1,12 @@
+{
+  "method": "GET",
+  "key": "GET /v3/vessels?datasets%5B0%5D=public-global-vessel-identity%3Av5.0&ids%5B0%5D=9375434a0-0b91-7247-5a95-57a10d2b08df&ids%5B1%5D=5201c49d4-4fc1-ea11-6c36-45df471a2328&ids%5B2%5D=07dc71da9-9994-1249-c37e-108c745abc4f&includes%5B0%5D=POTENTIAL_RELATED_SELF_REPORTED_INFO",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8",
+    "x-ratelimit-ip-limit": "600",
+    "x-ratelimit-ip-remaining": "598",
+    "x-ratelimit-ip-reset": "59"
+  },
+  "body": "json"
+}
