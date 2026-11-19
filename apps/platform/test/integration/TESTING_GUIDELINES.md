@@ -72,14 +72,13 @@ describe('Feature Name', () => {
 Shared constants for all specs:
 
 ```typescript
-import { WAIT, TEST_END_DATE } from 'test/setup/config'
+import { TEST_END_DATE } from 'test/setup/config'
 
 // System clock is frozen at TEST_END_DATE in vitest.setup.ts
-// Use WAIT constants instead of magic numbers:
-await new Promise((resolve) => setTimeout(resolve, WAIT.MAP_INIT)) // 3000ms – full map bootstrap
-await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD)) // 2000ms – layer + tile fetch
-await new Promise((resolve) => setTimeout(resolve, WAIT.DEBOUNCE)) // 1500ms – debounced URL update
 ```
+
+There are no fixed waits. Wait for the state the next step needs instead — see
+[Wait for Async Operations](#2-wait-for-async-operations).
 
 ### `test/utils/store/`
 
@@ -144,19 +143,16 @@ it('should open vessel popup on vessel click', async () => {
   const jotaiStore = createJotaiStore()
   const { getByTestId } = await render({ store, jotaiStore })
 
-  // WHY: Wait WAIT.MAP_INIT (3000ms) for map initialization and vessel data to fully load
-  // Map must: initialize deck.gl, fetch tiles, render layers, and position vessels
-  // This is longer than layer loading (WAIT.LAYER_LOAD) because it includes full map bootstrap
-  // ⚠️ IMPORTANT: This wait is REQUIRED because we're about to interact with map features
-  // that depend on tiles being loaded. Without it, the click coordinates won't find any vessels.
-  await new Promise((resolve) => setTimeout(resolve, WAIT.MAP_INIT))
+  // WHY: the click only picks a vessel once its layer and tiles are loaded. waitForLayersLoaded
+  // (test/utils/map.ts) waits for every deck layer to report loaded — the same state the map
+  // spinner shows — and for that to hold briefly, so it does not pass before a load starts.
+  await waitForLayersLoaded(jotaiStore)
 
-  const mapInstance = jotaiStore.get(mapInstanceAtom)
-  const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
   // WHY: Convert geographic coordinates [longitude, latitude] to screen pixels [x, y]
   // The map uses geographic coordinates, but user interactions (clicks) require screen coordinates
-  // viewport.project() handles the transformation based on current zoom/pan state
-  const [x, y] = viewport?.project([-17.3, 26.4]) || [0, 0]
+  // projectToMap() uses the deck viewport for the current zoom/pan state.
+  // clickMapAtCoordinates() does both and hovers before clicking.
+  const { x, y } = await projectToMap(jotaiStore, -17.3, 26.4)
 
   // WHY: Hovering before clicking ensures the map's hover state is properly set
   // This makes feature selection more reliable, especially with overlapping features
@@ -190,16 +186,15 @@ Testing adding, removing, and configuring data layers.
 ```typescript
 it('should add reference data layer', async () => {
   const store = makeStore(defaultState)
-  const { getByTestId } = await render({ store })
+  // render() also returns the Jotai store it used
+  const { getByTestId, jotaiStore } = await render({ store })
 
   await getByTestId('activity-add-layer-button').click()
   await getByTestId('add-layer-eez-button').click()
 
-  // WHY: Wait WAIT.LAYER_LOAD (2000ms) for layer data to load and tiles to be fetched from the API
-  // Layer addition triggers async operations: API calls, tile loading, and deck.gl layer creation
-  // ⚠️ IMPORTANT: This wait is ONLY needed if we're going to interact with the map after this
-  // (e.g., clicking on a feature that depends on the loaded tiles)
-  await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD))
+  // WHY: Layer addition triggers async operations: API calls, tile loading, and deck.gl layer
+  // creation. Only needed if the test then interacts with the map (e.g. clicks a feature).
+  await waitForLayersLoaded(jotaiStore)
 
   await expect
     .poll(() => store.getState().location.query)
@@ -602,20 +597,27 @@ await getByText('AIS Layer').click()
 
 ### 2. **Wait for Async Operations**
 
-⚠️ **Use waits sparingly** - Only add them when tests fail due to timing issues.
+⚠️ **Never sleep (`setTimeout`).** A fixed wait is too short on a slow machine and wasted time on a
+fast one. Wait for the state the next step depends on:
 
-Many assertions don't need explicit waits because `expect.element()` has built-in retry logic. Add waits only when:
+| Waiting for                       | Use                                                                 |
+| --------------------------------- | ------------------------------------------------------------------- |
+| an element to appear              | `await expect.element(locator).toBeVisible()` (retries on its own)  |
+| map layers / tiles to load        | `await waitForLayersLoaded(jotaiStore)` from `test/utils/map.ts`    |
+| a specific layer to appear        | `await waitForLayersLoaded(jotaiStore, { layerIds: ['presence'] })` |
+| a click/hover on a map position   | `clickMapAtCoordinates` / `hoverThenClickMap` from `test/utils/map` |
+| a hover-revealed layer row button | `clickLayerAction` from `test/utils/layers.ts`                      |
+| debounced or async store state    | `await expect.poll(() => store.getState()…).toBe(…)`                |
 
-- Testing behavior that occurs AFTER an async operation completes
-- Interacting with elements that appear after data loads
-- Asserting state changes from debounced operations
+Don't wait for the map spinner to be hidden right after an action: the new load may not have
+started yet, so the spinner is still hidden and the wait passes too early. `waitForLayersLoaded`
+requires the loaded state to hold for a moment, which covers that gap.
 
 ```typescript
-// ✅ Good - Wait only when needed (e.g., for debounced URL updates)
+// ✅ Good - Poll the debounced state until it arrives
 await getByTestId('map-control-zoom-in').click()
-// WHY: URL updates are debounced 1000ms, so we wait 1500ms (1000ms + buffer)
-await new Promise((resolve) => setTimeout(resolve, 1500))
-expect(store.getState().location.query.zoom).toBe(2.49)
+// WHY: URL updates are debounced; poll instead of guessing how long the debounce takes
+await expect.poll(() => store.getState().location.query.zoom).toBe(2.49)
 
 // ✅ Also Good - No wait needed when expect.element() can retry
 await getByTestId('open-modal-button').click()
