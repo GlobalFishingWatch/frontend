@@ -1,13 +1,14 @@
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { WAIT } from 'test/setup/config'
 import {
   USER_POLYGON_DATASET,
   USER_POLYGON_DATASET_ID,
   USER_POLYGON_LAYER_ID,
 } from 'test/utils/fixtures'
+import { clickLayerAction } from 'test/utils/layers'
+import { waitForLayersLoaded } from 'test/utils/map'
 import { navigateToPolygonEditor } from 'test/utils/navigation/navigateToPolygonEditor'
-import { createTestingMiddleware, getDefaultStateWithDatasets } from 'test/utils/store'
+import { getDefaultStateWithDatasets } from 'test/utils/store'
 import { describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
@@ -23,12 +24,7 @@ const defaultState = getDefaultStateWithDatasets([USER_POLYGON_DATASET])
 
 describe('Polygon', () => {
   it('should be able to navigate to the polygon editor', async () => {
-    const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
-
-    // await render(<App />, { authenticated: true, store })
-
-    // store.dispatch(navigateToPolygonEditorAction)
+    const store = makeStore(defaultState)
 
     const { getByTestId } = await render({ authenticated: true, store })
 
@@ -42,13 +38,19 @@ describe('Polygon', () => {
 
     await userEvent.click(getByTestId('user-context-layer:v1-add-to-map-0').first())
 
-    await userEvent.hover(getByTestId(`context-layer-${USER_POLYGON_LAYER_ID}-1771416000000`))
-    await new Promise((resolve) => setTimeout(resolve, 300))
-    await userEvent.click(getByTestId(`user-layer-edit-${USER_POLYGON_DATASET_ID}`))
+    await clickLayerAction(getByTestId, {
+      // The suffix is Date.now() when the layer is added, and the test clock moves
+      row: new RegExp(`^context-layer-${USER_POLYGON_LAYER_ID}-\\d+$`),
+      action: `user-layer-edit-${USER_POLYGON_DATASET_ID}`,
+    })
 
-    const navigateAction = testingMiddleware.getLastActionByType('MAP')
-
-    expect(navigateAction.query).toMatchObject(navigateToPolygonEditor().search as object)
+    const { mapDrawing, mapDrawingEditId } = navigateToPolygonEditor().search as {
+      mapDrawing: string
+      mapDrawingEditId: string
+    }
+    await expect
+      .poll(() => store.getState().location.query)
+      .toMatchObject({ mapDrawing, mapDrawingEditId })
   })
 
   it('should load the polygon in the map', async () => {
@@ -58,8 +60,6 @@ describe('Polygon', () => {
     const { router } = await render({ store, jotaiStore })
 
     await router.navigate(navigateToPolygonEditor())
-
-    await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD))
 
     await expect
       .poll(
@@ -122,10 +122,9 @@ describe('Polygon', () => {
       await userEvent.click(getByTestId('app-main'), { position: { x: vertex1[0], y: vertex1[1] } })
       await userEvent.fill(getByTestId('input-layer-name'), 'Polygon drawing test')
       await userEvent.click(getByTestId('draw-save-polygon'))
-      await new Promise((resolve) => setTimeout(resolve, 500))
 
-      // Wait for all layers to be loaded
-      await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
+      // The saved polygon is added as a new layer
+      await waitForLayersLoaded(jotaiStore)
 
       //Delete layer after test
       // await cleanupExistingTestPolygon(store)

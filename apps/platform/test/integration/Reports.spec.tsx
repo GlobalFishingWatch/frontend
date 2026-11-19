@@ -18,9 +18,8 @@ import { userEvent } from 'vitest/browser'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
 import { ROUTE_PATHS } from '@platform/config/routes'
-import { MAP_VIEW_ID } from '@platform/config/selectors/map'
+import { getLayerSchemaFilterTestId } from '@platform/config/selectors/map'
 
-import { mapInstanceAtom } from 'features/_map/map/map.atoms'
 import { timerangeState } from 'features/_map/timebar/timerange.hooks'
 import { ReportCategory } from 'features/_reports/reports.types'
 import type { ReportGraphProps } from 'features/_reports/reports-timeseries.hooks'
@@ -36,7 +35,9 @@ import type { AppStore } from 'store'
 import { makeStore } from 'store'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-import { waitForMapLoaded } from '../utils/map'
+import { hoverThenClickMap, projectToMap, waitForLayersLoaded } from '../utils/map'
+import { mockApi } from '../utils/network/mock-network'
+import { heatmapTile } from '../utils/network/tiles'
 
 /**
  * Polls until `store.getState().location.type` matches — use in integration specs
@@ -137,27 +138,12 @@ describe('Reports', () => {
 
     const { getByTestId } = await render({ store, jotaiStore })
 
-    const mapElement = getByTestId('app-main')
     await userEvent.click(getByTestId('context-layer-context-layer-eez'))
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    await waitForMapLoaded(getByTestId)
+    // The EEZ layer has to be loaded for the click to pick an area
+    await waitForLayersLoaded(jotaiStore)
 
-    await expect
-      .poll(() => jotaiStore.get(mapInstanceAtom), {
-        timeout: 10000,
-        interval: 500,
-      })
-      .toBeDefined()
-    const mapInstance = jotaiStore.get(mapInstanceAtom)
-    const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
-    if (!viewport) {
-      throw new Error('Map viewport not found - cannot project coordinates')
-    }
-    const [x, y] = viewport?.project([-28, 38]) || [0, 0]
-
-    await userEvent.hover(mapElement, { position: { x, y } })
-    await userEvent.click(mapElement, { position: { x, y } })
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    const position = await projectToMap(jotaiStore, -28, 38)
+    await hoverThenClickMap(getByTestId, position)
 
     await expect.element(getByTestId('open-analysis-link')).toBeVisible()
     await userEvent.click(getByTestId('open-analysis-link'))
@@ -169,10 +155,10 @@ describe('Reports', () => {
     const store = makeStore(defaultState)
     const jotaiStore = createJotaiStore()
 
-    const { getByTestId, router } = await render({ store, jotaiStore })
+    const { router } = await render({ store, jotaiStore })
     await router.navigate(navigateToReportByArea('eez'))
     await waitForLocationType(store, WORKSPACE_REPORT, 60000)
-    await waitForMapLoaded(getByTestId)
+    await waitForLayersLoaded(jotaiStore)
 
     const timerange = jotaiStore.get(timerangeState)
     expect(timerange).toBeDefined()
@@ -211,6 +197,13 @@ describe('Reports', () => {
   })
 
   it('should update report data when timebar changes', async () => {
+    // Synthetic tiles are uniform, so make the value depend on the interval: more hours only
+    // appear if the MONTH interval reaches the tile request and the report recomputes from it.
+    mockApi.use(
+      heatmapTile({
+        value: ({ url }) => (url.searchParams.get('interval') === 'MONTH' ? 10 : 1),
+      })
+    )
     const store = makeStore(defaultState)
     const jotaiStore = createJotaiStore()
     const { getByTestId, router } = await render({ store, jotaiStore })
@@ -226,7 +219,10 @@ describe('Reports', () => {
     expect(initialHours).toBeDefined()
 
     await getByTestId('interval-btn-month').click()
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    // Wait for the report to recompute at the new interval, not for the previous one to be "loaded"
+    await expect
+      .poll(() => jotaiStore.get(reportStateAtom)?.timeseries?.[0]?.interval, { timeout: 30000 })
+      .not.toBe(initialTimeseries?.[0]?.interval)
     await waitForReportFeaturesLoaded(jotaiStore)
 
     const updatedReportData = jotaiStore.get(reportStateAtom)
@@ -244,9 +240,17 @@ describe('Reports', () => {
   })
 
   it('should update report data when filter changes', async () => {
+    // Fewer hours only appear if the flag filter reaches the tile request and the report
+    // recomputes from it.
+    mockApi.use(
+      heatmapTile({
+        value: ({ url }) =>
+          [...url.searchParams.keys()].some((k) => k.startsWith('filters')) ? 1 : 10,
+      })
+    )
     const store = makeStore(defaultState)
     const jotaiStore = createJotaiStore()
-    const { getByTestId, getByText, router } = await render({ store, jotaiStore })
+    const { getByTestId, router } = await render({ store, jotaiStore })
     await router.navigate(navigateToReportByArea('eez'))
     await expect.poll(() => store.getState().location.type).toBe(WORKSPACE_REPORT)
     await waitForReportFeaturesLoaded(jotaiStore)
@@ -258,14 +262,14 @@ describe('Reports', () => {
 
     await expect.element(getByTestId('reports-summary-expanded-container')).toBeVisible()
 
-    const filterInput = getByTestId('multi-select-input').first()
-    await userEvent.click(filterInput)
+    const flagFilter = getLayerSchemaFilterTestId('flag')
+    await userEvent.click(getByTestId(`${flagFilter}-input`))
     await userEvent.keyboard('portugal')
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    const option = getByText(/portugal/i)
-    await userEvent.click(option)
+    await userEvent.click(getByTestId(`${flagFilter}-option-PRT`))
     await userEvent.tab()
     await getByTestId('confirm-filters-button').click()
+    // The filter reloads the activity tiles; the report recomputes from them
+    await waitForLayersLoaded(jotaiStore)
     await waitForReportFeaturesLoaded(jotaiStore, 60000)
 
     const updatedHours = getCalculatedReportHours(jotaiStore)
@@ -278,14 +282,14 @@ describe('Reports', () => {
   it('should show no data message when no data', async () => {
     const store = makeStore(defaultState)
     const jotaiStore = createJotaiStore()
-    const { getByTestId, getByText, router } = await render({ store, jotaiStore })
+    const { getByText, router } = await render({ store, jotaiStore })
 
     jotaiStore.set(timerangeState, {
       start: '2025-12-17T00:00:00.000Z',
       end: '2025-12-18T00:00:00.000Z',
     })
     await router.navigate(navigateToNoDataReport())
-    await waitForMapLoaded(getByTestId)
+    await waitForLayersLoaded(jotaiStore)
     await waitForReportFeaturesLoaded(jotaiStore)
     await expect.element(getByText(/No data available for the selected area/)).toBeVisible()
   })
@@ -356,13 +360,14 @@ describe('Global reports', () => {
 
   it('should have activity, events and detections tabs', async () => {
     const store = makeStore(defaultState)
-    const { getByText, router } = await render({ store })
+    const { getByRole, router } = await render({ store })
     await router.navigate(navigateToGlobalReport())
     await waitForLocationType(store, WORKSPACE_REPORT)
 
-    expect(getByText('Activity')).toBeDefined()
-    expect(getByText('Events')).toBeDefined()
-    expect(getByText('Detections')).toBeDefined()
+    // A locator object always exists, so `expect(getByText(...)).toBeDefined()` could not fail.
+    for (const name of ['Activity', 'Events', 'Detections']) {
+      await expect.element(getByRole('button', { name, exact: true })).toBeVisible()
+    }
   })
 
   it('should display the same number in the graph as in the timeseries', async () => {
@@ -371,7 +376,7 @@ describe('Global reports', () => {
     const { getByTestId, getByRole, router } = await render({ store, jotaiStore })
     await router.navigate(navigateToGlobalReport())
     await waitForLocationType(store, WORKSPACE_REPORT)
-    await waitForMapLoaded(getByTestId)
+    await waitForLayersLoaded(jotaiStore)
 
     await clickReportTab(getByRole, 'Events')
 
@@ -382,11 +387,10 @@ describe('Global reports', () => {
     const latestStatsData = (await waitForStatsQueryLoaded(store))?.data
     await expect.element(getByTestId('evolution-timeseries-chart')).toBeVisible()
     const timeseries = latestStatsData?.[0]?.timeseries
-    if (!timeseries?.length) {
-      // Some environments return empty stats for this report; keep the test checking chart render.
-      return
-    }
-    const lastStatsValue = timeseries[timeseries.length - 1]
+    // The stats come from a recording, so they are known to be non-empty. An early return here
+    // used to let the test pass without comparing anything when the live API sent no stats.
+    expect(timeseries?.length).toBeGreaterThan(0)
+    const lastStatsValue = timeseries![timeseries!.length - 1]
     expect(lastStatsValue).toBeDefined()
     const eventsGraph = getByTestId('evolution-timeseries-chart')
     const graphElement = eventsGraph.element()
@@ -400,10 +404,9 @@ describe('Global reports', () => {
       },
     })
 
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    const tooltip = getByTestId('aggregated-graph-tooltip')
-    const tooltipValues = tooltip.getByRole('listitem').element().textContent
-    expect(tooltipValues).toContain(lastStatsValue!.value.toString())
+    await expect
+      .element(getByTestId('aggregated-graph-tooltip').getByRole('listitem').first())
+      .toHaveTextContent(lastStatsValue!.value.toString())
   })
 
   it('should change dataviews when changing tabs', async () => {
@@ -418,8 +421,8 @@ describe('Global reports', () => {
 
     const presenceButton = getByTestId('report-subsection-selector-presence')
     await userEvent.click(presenceButton)
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    await waitForMapLoaded(getByTestId)
+    // The presence layer replaces the previous one; the report recomputes once it has loaded
+    await waitForLayersLoaded(jotaiStore, { layerIds: ['presence'] })
 
     await waitForReportFeaturesLoaded(jotaiStore)
     await expect
@@ -456,8 +459,7 @@ describe('Global reports', () => {
     const detectionsTab = getByText('Detections')
     await userEvent.click(detectionsTab)
 
-    await new Promise((resolve) => setTimeout(resolve, 100))
-    await waitForMapLoaded(getByTestId)
+    await waitForLayersLoaded(jotaiStore)
 
     const subselector = getByTestId('report-subsection-selector')
     await expect.element(subselector).toBeVisible()
@@ -551,7 +553,7 @@ describe('Data Comparison', () => {
     const { getByTestId, getByText, router } = await render({ store, jotaiStore })
     await router.navigate(navigateToReportByArea('mpa'))
 
-    await waitForMapLoaded(getByTestId)
+    await waitForLayersLoaded(jotaiStore)
     await waitForReportFeaturesLoaded(jotaiStore)
 
     const graphTypeSelector = getByTestId('graph-type-selector')
@@ -559,7 +561,6 @@ describe('Data Comparison', () => {
     await graphTypeSelector.click()
     const comparisonOption = getByText(/data comparison/i)
     await comparisonOption.click()
-    await new Promise((resolve) => setTimeout(resolve, 100))
 
     await expect.element(getByTestId('comparison-dataset-select')).toBeVisible()
   })
@@ -575,7 +576,6 @@ describe('Data Comparison', () => {
     await userEvent.click(getByTestId('graph-type-selector'))
     const comparisonOption = getByText(/data comparison/i)
     await userEvent.click(comparisonOption)
-    await new Promise((resolve) => setTimeout(resolve, 1000))
 
     const dataComparisonSelect = getByTestId('comparison-dataset-select')
     await userEvent.click(dataComparisonSelect)

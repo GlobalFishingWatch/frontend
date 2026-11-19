@@ -1,13 +1,11 @@
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { WAIT } from 'test/setup/config'
+import { projectToMap, waitForLayersLoaded } from 'test/utils/map'
 import { createTestingMiddleware, defaultState } from 'test/utils/store'
+import { getDataDayTimebarX } from 'test/utils/timebar'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
-import { MAP_VIEW_ID } from '@platform/config/selectors/map'
-
-import { mapInstanceAtom } from 'features/_map/map/map.atoms'
 import { makeStore } from 'store'
 
 describe('App Timebar Integration', () => {
@@ -25,14 +23,15 @@ describe('App Timebar Integration', () => {
     })
 
     const timebarWrapper = getByTestId('timebar-wrapper')
-    const mapElement = getByTestId('app-main')
-    expect(mapElement).toBeDefined()
 
-    await new Promise((resolve) => setTimeout(resolve, WAIT.MAP_INIT))
+    await waitForLayersLoaded(jotaiStore)
 
+    // Highlight a stretch around the day the synthetic tiles hold data, so the map cell clicked
+    // below has a value in the highlighted time
+    const dataDayX = await getDataDayTimebarX(getByTestId, jotaiStore)
     await userEvent.dragAndDrop(timebarWrapper, timebarWrapper, {
-      sourcePosition: { x: 400, y: 35 },
-      targetPosition: { x: 700, y: 35 },
+      sourcePosition: { x: dataDayX - 40, y: 35 },
+      targetPosition: { x: dataDayX + 40, y: 35 },
       steps: 5, // This is needed to trigger the drag event, as a single step is not captured
     })
 
@@ -41,48 +40,36 @@ describe('App Timebar Integration', () => {
     expect(timebarAction?.payload?.start).toBeDefined()
     expect(timebarAction?.payload?.end).toBeDefined()
 
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    // The highlighted time reloads the activity tiles
+    await waitForLayersLoaded(jotaiStore)
 
-    await expect
-      .poll(() => jotaiStore.get(mapInstanceAtom), {
-        timeout: 10000,
-        interval: 500,
-      })
-      .toBeDefined()
-    const mapInstance = jotaiStore.get(mapInstanceAtom)
-    const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
-    if (!viewport) {
-      throw new Error('Map viewport not found - cannot project coordinates')
-    }
-    const [x, y] = viewport?.project([-15, 28]) || [0, 0]
-
-    await userEvent.click(mapElement, { position: { x, y } })
+    const position = await projectToMap(jotaiStore, -15, 28)
+    await userEvent.click(getByTestId('app-main'), { position })
 
     await expect.element(getByTestId('map-popup-wrapper')).toBeVisible()
   })
 
   it('events should be visible on timebar', async () => {
     const store = makeStore(defaultState)
-    const { getByTestId, getByText } = await render({
+    const { getByTestId, getByText, jotaiStore } = await render({
       store,
     })
 
     await getByTestId('events-layer-switch-encounters').click()
-
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    await waitForLayersLoaded(jotaiStore)
 
     const timebarWrapper = getByTestId('timebar-wrapper')
 
-    await userEvent.hover(timebarWrapper, { position: { x: 300, y: 35 } })
-
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    // Hover where there is data: a fixed pixel lands on a day with none
+    const x = await getDataDayTimebarX(getByTestId, jotaiStore)
+    await userEvent.hover(timebarWrapper, { position: { x, y: 35 } })
 
     await expect.element(getByText(/\d+\.?\d* events on screen/)).toBeVisible()
   })
 
   it('detections should be visible on timebar', async () => {
     const store = makeStore(defaultState)
-    const { getByTestId, getByText } = await render({
+    const { getByTestId, getByText, jotaiStore } = await render({
       store,
     })
 
@@ -90,14 +77,12 @@ describe('App Timebar Integration', () => {
     await getByTestId('activity-layer-panel-switch-vms').click()
 
     await getByTestId('activity-layer-panel-switch-sentinel2').click()
-
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    await waitForLayersLoaded(jotaiStore)
 
     const timebarWrapper = getByTestId('timebar-wrapper')
 
-    await userEvent.hover(timebarWrapper, { position: { x: 300, y: 35 } })
-
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    const x = await getDataDayTimebarX(getByTestId, jotaiStore)
+    await userEvent.hover(timebarWrapper, { position: { x, y: 35 } })
 
     await expect.element(getByText(/\d+\.?\d* detections on screen/)).toBeVisible()
   })
