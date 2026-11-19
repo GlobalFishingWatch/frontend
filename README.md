@@ -140,6 +140,8 @@ docker build . \
   --tag "${APP}:local"
 ```
 
+For platform, `./scripts/test-ci-build-platform.sh` runs the same steps (`--env staging|production`, `--push`, `--skip-secrets`).
+
 ```bash
 docker run -p 3003:3000 -e ALLOW_MISSING_SERVER_ENV=true platform:local
 docker run -p 8080:8080 -e PORT=8080 -e BASIC_AUTH=off api-portal:local
