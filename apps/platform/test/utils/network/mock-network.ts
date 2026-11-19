@@ -582,6 +582,11 @@ async function recordResponse(url: URL, requestHeaders: Headers, pending: Promis
       for (const field of USER_PERSONAL_FIELDS) {
         if (field in user) user[field] = field === 'email' ? 'test-user@example.org' : 'Test'
       }
+      // Grants on private datasets name partner dataset families; no integration spec needs them
+      // (the ones that did moved to platform-e2e), so they never reach a committed file.
+      user.permissions = (user.permissions ?? []).filter(
+        (permission: { value?: string }) => !String(permission.value ?? '').includes('private-')
+      )
       text = JSON.stringify(user)
     }
     await commands.writeFile(`${path}.json`, text)
