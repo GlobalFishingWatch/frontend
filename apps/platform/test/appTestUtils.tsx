@@ -21,6 +21,8 @@ import { getCreateRouterOptions } from '../router'
 import type { AppStore } from '../store/store'
 import { makeStore } from '../store/store'
 
+import { INTEGRATION_TEST_TOKEN, IS_RECORD_MODE } from './utils/network/mock-network'
+
 export type JotaiStore = ReturnType<typeof createJotaiStore>
 
 export interface AppRenderOptions extends Omit<RenderOptions, 'wrapper'> {
@@ -69,7 +71,21 @@ export async function render(options: AppRenderOptions = {}) {
 
   return page.mark('render app', async () => {
     let user: UserData | null = null
-    if (authenticated) {
+    if (authenticated && !IS_RECORD_MODE) {
+      // No login: the network stub answers /auth/me from the recordings. The token only has to
+      // exist so GFWAPI treats the session as logged in.
+      localStorage.setItem('GFW_API_USER_TOKEN', INTEGRATION_TEST_TOKEN)
+      localStorage.setItem('GFW_API_USER_REFRESH_TOKEN', INTEGRATION_TEST_TOKEN)
+      user = await GFWAPI.fetchUser({ token: INTEGRATION_TEST_TOKEN }).catch(() => {
+        console.warn('Authentication requested but /auth/me is not recorded')
+        return null
+      })
+      vi.spyOn(GFWAPI, 'logout').mockImplementation(async () => {
+        localStorage.removeItem('GFW_API_USER_TOKEN')
+        localStorage.removeItem('GFW_API_USER_REFRESH_TOKEN')
+        return true
+      })
+    } else if (authenticated) {
       try {
         const response = await fetch('/.auth/tokens.json').catch(() => null)
         if (response?.ok) {
@@ -130,6 +146,6 @@ export async function render(options: AppRenderOptions = {}) {
       ...renderOptions,
     })
 
-    return Object.assign(renderResult, { router, store: storeToUse })
+    return Object.assign(renderResult, { router, store: storeToUse, jotaiStore: jotaiStoreToUse })
   })
 }

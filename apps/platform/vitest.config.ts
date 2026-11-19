@@ -1,13 +1,46 @@
 import { playwright } from '@vitest/browser-playwright'
 import { loadEnv } from 'vite'
 import type { ViteUserConfig } from 'vitest/config'
-import { defineConfig } from 'vitest/config'
+import { configDefaults, defineConfig } from 'vitest/config'
 import type { BrowserProviderOption } from 'vitest/node'
 
 import { authTokensPlugin, publicAssetsPlugin } from './test/utils/vitest/plugins.ts'
 import { basePath, plugins } from './vite.config.ts'
 
 const DEFAULT_VIEWPORT = { width: 1280, height: 720 }
+
+// Pinned so a local .env cannot swap the nav the specs drive (PlatformNav vs LegacyNav). CI has
+// no .env and production builds without the flag, so the specs are written against LegacyNav.
+// It has to be process.env: Vite gives variables already in the environment priority over .env
+// files, while a `define` for `import.meta.env.VITE_PLATFORM_MODE` does not reach the env object
+// that data/env.ts parses.
+// Specs for platform-only pages (Help Hub, Areas, Ports…) cannot run under this pin and stay in
+// LEGACY_SPECS. Mocking `PLATFORM_MODE` per file closes the browser page — see HelpHub.spec.tsx.
+process.env.VITE_PLATFORM_MODE = 'false'
+// Every dataset and dataview id the app requests carries this version, so the recordings in
+// test/fixtures/api depend on it. Pinned for the same reason as above; when the app's default
+// (libs/datasets-client/src/constants.ts) moves on, change it here and re-record.
+process.env.VITE_PIPE_DATASET_VERSION = '5'
+
+// Specs not yet moved onto the network stub (test/utils/network). They still depend on the live
+// API, so they are kept out of every run, CI included: @nx/vitest infers the integration-ci--*
+// tasks from `include` minus `exclude`. Remove a spec from this list in the PR that converts it.
+const LEGACY_SPECS = [
+  // Needs platform mode, which the suite pins off (see the VITE_PLATFORM_MODE pin).
+  'test/integration/HelpHub.spec.tsx',
+  'test/integration/Datasets.spec.tsx',
+  'test/integration/MarineManager.spec.tsx',
+  'test/integration/Map.spec.tsx',
+  'test/integration/Polygon.spec.tsx',
+  'test/integration/PrivateWorkspace.spec.tsx',
+  'test/integration/Reports.spec.tsx',
+  'test/integration/Timebar.spec.tsx',
+  'test/integration/UserDatasets.spec.tsx',
+  'test/integration/Vessels.spec.tsx',
+  'test/integration/VesselSearch.spec.tsx',
+  'test/integration/VesselsVMSBrazil.spec.tsx',
+  'test/integration/VesselViewer.spec.tsx',
+]
 
 // Mirrors compilerOptions.paths in tsconfig.json.
 //
@@ -73,6 +106,9 @@ export default defineConfig(({ mode }): ViteUserConfig => {
   const isUiTarget = env.NX_TASK_TARGET_TARGET === 'test:ui'
   const isUiMode = mode === 'ui' || env.VITEST_UI === 'true' || isUiTarget
   const isCoverageMode = mode === 'coverage' || env.VITEST_COVERAGE === 'true'
+  // Record mode forwards stubbed requests to the real API and saves the responses as fixtures
+  // (test/utils/network/mock-network.ts). Only it needs a real login.
+  const isRecordMode = env.VITEST_RECORD === 'true'
 
   return {
     root: import.meta.dirname,
@@ -99,6 +135,8 @@ export default defineConfig(({ mode }): ViteUserConfig => {
       'process.env.TEST_USER_EMAIL': JSON.stringify(env.TEST_USER_EMAIL),
       'process.env.TEST_USER_PASSWORD': JSON.stringify(env.TEST_USER_PASSWORD),
       'process.env.VITEST': JSON.stringify('true'),
+      'import.meta.env.VITEST_RECORD': JSON.stringify(String(isRecordMode)),
+      'import.meta.env.VITEST_NETWORK_DEBUG': JSON.stringify(env.VITEST_NETWORK_DEBUG ?? 'false'),
     },
     optimizeDeps: {
       include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
@@ -116,6 +154,12 @@ export default defineConfig(({ mode }): ViteUserConfig => {
         '**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
         'tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       ],
+      // Spread the defaults: setting `exclude` replaces them, and node_modules would be globbed.
+      // INTEGRATION_INCLUDE_LEGACY=true runs them anyway, e.g. to see what a spec still needs stubbed.
+      exclude: [
+        ...configDefaults.exclude,
+        ...(env.INTEGRATION_INCLUDE_LEGACY === 'true' ? [] : LEGACY_SPECS),
+      ],
       fileParallelism: false,
       // Expected with real API data: datasets without geometryType are hidden on purpose.
       onConsoleLog: (log) => !log.includes('Dataset hidden from the layer library'),
@@ -128,7 +172,7 @@ export default defineConfig(({ mode }): ViteUserConfig => {
       },
       testTimeout: 30000,
       setupFiles: './test/setup/vitest.setup.ts',
-      globalSetup: './test/setup/vitest.setup-global.ts',
+      globalSetup: isRecordMode ? './test/setup/vitest.setup-global.ts' : undefined,
       retry: 0,
       browser: {
         enabled: true,
