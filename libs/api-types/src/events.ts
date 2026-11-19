@@ -192,6 +192,24 @@ export type FishingEvent = {
   averageDurationHours: number
 }
 
+export type DarkRendezvousVessel = {
+  flag: string
+  id: string | null
+  name: string
+  ssvid: string
+  type: string
+  imo: string | null
+  length: number | null
+  skylightId: string
+  trackId: string
+}
+
+export type DarkRendezvousEvent = {
+  osrScore: number
+  durationHours: number
+  vessels: DarkRendezvousVessel[]
+}
+
 export type Distances = {
   startDistanceFromShoreKm?: number
   endDistanceFromShoreKm: number
@@ -200,6 +218,7 @@ export type Distances = {
 }
 
 export type ApiEvent<Vessel = EventVessel> = {
+  dark_rendezvous?: DarkRendezvousEvent
   distances?: Distances
   encounter?: EncounterEvent<Vessel>
   end: number | string // Depends on timestamp format API param

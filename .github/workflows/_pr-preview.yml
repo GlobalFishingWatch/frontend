@@ -69,7 +69,6 @@ jobs:
           app: ${{ env.APP }}
           image: ${{ inputs.image }}
           config: ${{ inputs.config }}
-          nx-cloud-access-token: ${{ secrets.NX_CLOUD_ACCESS_TOKEN_READ_ONLY }}
 
       - name: Push image
         run: docker push "${{ inputs.image }}"

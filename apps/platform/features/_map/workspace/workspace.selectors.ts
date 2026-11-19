@@ -6,12 +6,17 @@ import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from '@platform/conf
 
 import {
   DEFAULT_WORKSPACE,
+  IS_REALTIME_ENABLED,
   PREFERRED_FOURWINGS_VISUALISATION_MODE,
   VALID_PASSWORD,
 } from 'data/map/config'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE } from 'data/map/dataviews'
 import { cleanVesselProfileDataviewInstances } from 'features/_map/sidebar/sidebar-header.hooks'
-import { selectUserData, selectUserSettings } from 'features/_user/selectors/user.selectors'
+import {
+  selectIsGFWUser,
+  selectUserData,
+  selectUserSettings,
+} from 'features/_user/selectors/user.selectors'
 import type { UserSettings } from 'features/_user/user.slice'
 import { EMPTY_SEARCH_FILTERS } from 'features/_vessels/search/search.config'
 import type { TurningTidesWorkspaceId } from 'features/_vessels/track-correction/track-correction.config'
@@ -215,7 +220,13 @@ export function selectWorkspaceStateProperty<P extends WorkspaceStateProperty>(p
 
 export const selectDaysFromLatest = selectWorkspaceStateProperty('daysFromLatest')
 export const selectCollapsedSections = selectWorkspaceStateProperty('collapsedSections')
-export const selectTimeMode = selectWorkspaceStateProperty('timeMode')
+const selectTimeModeProperty = selectWorkspaceStateProperty('timeMode')
+
+// Real time is behind the feature flag and restricted to GFW users, whatever the URL says
+export const selectTimeMode = createSelector(
+  [selectTimeModeProperty, selectIsGFWUser],
+  (timeMode, isGFWUser) => (IS_REALTIME_ENABLED && isGFWUser ? timeMode : 'historical')
+)
 
 export const selectMigramarLayer = selectWorkspaceStateProperty('migramarLayer')
 

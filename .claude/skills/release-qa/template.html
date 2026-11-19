@@ -1,0 +1,675 @@
+<title>5.0.25 → Develop QA</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  /* Layout: release sweep board, ranked tiers of checklist rows, sticky progress bar. Same system as the Develop → Main QA board. */
+  :root {
+    --ground: #eceff1;
+    --surface: #ffffff;
+    --surface-2: #f4f7f8;
+    --ink: #0b1a22;
+    --ink-2: #4a5d67;
+    --ink-3: #7d8f99;
+    --line: #d5dde1;
+    --line-strong: #b8c5cb;
+    --accent: #0a6d7a;
+    --accent-soft: #dbeef1;
+    --p1: #b5384a;
+    --p2: #a9691b;
+    --p3: #2f7d5f;
+    --pass: #2f7d5f;
+    --pass-soft: #dff0e8;
+    --fail: #b5384a;
+    --fail-soft: #fadfe3;
+    --shadow: 0 1px 2px rgba(11, 26, 34, 0.06), 0 8px 24px -16px rgba(11, 26, 34, 0.4);
+    --f-display: 'Archivo', system-ui, sans-serif;
+    --f-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --f-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --ground: #08141c; --surface: #0f212c; --surface-2: #142b38; --ink: #e2edf1; --ink-2: #9ab0ba;
+      --ink-3: #6b838e; --line: #1e3846; --line-strong: #2c4c5c; --accent: #3fc3d2; --accent-soft: #0f333c;
+      --p1: #e2697a; --p2: #dfa14b; --p3: #5bb694; --pass: #5bb694; --pass-soft: #12332a; --fail: #e2697a;
+      --fail-soft: #34161d; --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -16px rgba(0, 0, 0, 0.8);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme='dark'] {
+    --ground: #08141c; --surface: #0f212c; --surface-2: #142b38; --ink: #e2edf1; --ink-2: #9ab0ba;
+    --ink-3: #6b838e; --line: #1e3846; --line-strong: #2c4c5c; --accent: #3fc3d2; --accent-soft: #0f333c;
+    --p1: #e2697a; --p2: #dfa14b; --p3: #5bb694; --pass: #5bb694; --pass-soft: #12332a; --fail: #e2697a;
+    --fail-soft: #34161d; --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -16px rgba(0, 0, 0, 0.8);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30;
+    background: var(--ground);
+  }
+  .wrap {
+    max-width: 62rem;
+    margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 0 72px;
+  }
+
+  .masthead { padding-block: 44px 28px; }
+  .eyebrow {
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); margin: 0 0 14px;
+  }
+  h1 {
+    font-family: var(--f-display); font-weight: 700; font-size: clamp(2rem, 6vw, 3rem); line-height: 1.02;
+    letter-spacing: -0.028em; text-wrap: balance; margin: 0 0 16px;
+  }
+  .lede { margin: 0; max-width: 62ch; color: var(--ink-2); font-size: 1.0625rem; }
+  .refs { display: flex; flex-wrap: wrap; gap: 8px 10px; margin-top: 20px; font-family: var(--f-mono); font-size: 12px; }
+  .ref {
+    display: inline-flex; align-items: baseline; gap: 7px; padding: 5px 10px; border: 1px solid var(--line);
+    border-radius: 3px; background: var(--surface); color: var(--ink-2);
+  }
+  .ref b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+  .bar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--ground);
+    border-bottom: 1px solid var(--line); padding-block: 12px 10px;
+  }
+  .bar-inner { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; }
+  .meter { flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+  .meter-track { height: 7px; border-radius: 4px; background: var(--line); overflow: hidden; display: flex; }
+  .meter-pass { background: var(--pass); }
+  .meter-fail { background: var(--fail); }
+  .meter-track > span { transition: width 0.25s ease; }
+  .meter-label {
+    font-family: var(--f-mono); font-size: 11.5px; color: var(--ink-2); font-variant-numeric: tabular-nums;
+    display: flex; gap: 14px; flex-wrap: wrap;
+  }
+  .meter-label i { font-style: normal; color: var(--ink); }
+  .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 5px; vertical-align: 1px; }
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip {
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 11px;
+    border-radius: 3px; border: 1px solid var(--line-strong); background: transparent; color: var(--ink-2); cursor: pointer;
+  }
+  .chip[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: var(--ground); }
+  .chip:focus-visible, .state-btn:focus-visible, .reset:focus-visible, a:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+  .reset {
+    font-family: var(--f-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; background: none;
+    border: none; color: var(--ink-3); cursor: pointer; padding: 6px 2px;
+  }
+  .reset:hover, .reset[data-armed='true'] { color: var(--fail); }
+  .sync { font-family: var(--f-mono); font-size: 11px; color: var(--ink-3); flex-basis: 100%; }
+
+  .tier { margin-top: 44px; }
+  .tier-head {
+    display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; padding-bottom: 10px;
+    border-bottom: 2px solid var(--tier-color);
+  }
+  .tier-rank {
+    font-family: var(--f-display); font-weight: 700; font-size: 2rem; letter-spacing: -0.03em; color: var(--tier-color);
+    font-variant-numeric: tabular-nums; line-height: 1;
+  }
+  .tier-head h2 {
+    font-family: var(--f-display); font-weight: 600; font-size: 1.3rem; letter-spacing: -0.015em; margin: 0;
+    flex: 1 1 auto; text-wrap: balance;
+  }
+  .tier-count { font-family: var(--f-mono); font-size: 11.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+  .tier-note { margin: 12px 0 0; color: var(--ink-2); max-width: 64ch; font-size: 14px; }
+
+  .group { margin-top: 26px; }
+  .group-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+  h3 { font-family: var(--f-display); font-weight: 600; font-size: 1.0625rem; letter-spacing: -0.008em; margin: 0; }
+  .group-path { font-family: var(--f-mono); font-size: 11.5px; color: var(--ink-3); word-break: break-all; }
+  .group-note { margin: 0 0 10px; font-size: 13.5px; color: var(--ink-2); max-width: 66ch; }
+  .rows {
+    border: 1px solid var(--line); border-left: 3px solid var(--tier-color); border-radius: 3px;
+    background: var(--surface); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .row {
+    display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: start; gap: 12px;
+    padding: 10px 14px; border-top: 1px solid var(--line);
+  }
+  .row:first-child { border-top: none; }
+  .row[data-state='pass'] { background: var(--pass-soft); }
+  .row[data-state='fail'] { background: var(--fail-soft); }
+  .row.hidden { display: none; }
+  .states { display: flex; gap: 4px; padding-top: 1px; }
+  .state-btn {
+    width: 26px; height: 26px; display: grid; place-items: center; border: 1px solid var(--line-strong);
+    border-radius: 3px; background: var(--surface-2); color: var(--ink-3); cursor: pointer; font-size: 13px;
+    line-height: 1; padding: 0;
+  }
+  .state-btn:hover { border-color: var(--ink-3); color: var(--ink); }
+  .row[data-state='pass'] .state-btn[data-set='pass'] { background: var(--pass); border-color: var(--pass); color: var(--surface); }
+  .row[data-state='fail'] .state-btn[data-set='fail'] { background: var(--fail); border-color: var(--fail); color: var(--surface); }
+  .label { min-width: 0; }
+  .label p { margin: 0; }
+  .row[data-state='pass'] .label p { color: var(--ink-2); }
+  .why { display: block; margin-top: 2px; font-size: 12.5px; color: var(--ink-3); }
+  .commits { display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; padding-top: 3px; max-width: 16rem; }
+  a.sha {
+    font-family: var(--f-mono); font-size: 11px; color: var(--accent); text-decoration: none;
+    border-bottom: 1px solid transparent; white-space: nowrap;
+  }
+  a.sha:hover { border-bottom-color: var(--accent); }
+  .badge {
+    font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 6px;
+    border-radius: 2px; background: var(--accent-soft); color: var(--accent); white-space: nowrap;
+  }
+
+  .untouched { margin-top: 48px; padding: 20px 22px; border: 1px dashed var(--line-strong); border-radius: 3px; }
+  .untouched h2 { font-family: var(--f-display); font-size: 1.0625rem; font-weight: 600; margin: 0 0 6px; }
+  .untouched p { margin: 0 0 12px; color: var(--ink-2); font-size: 14px; max-width: 64ch; }
+  .untouched ul { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+  .untouched li {
+    font-size: 12.5px; color: var(--ink-2); border: 1px solid var(--line); border-radius: 2px; padding: 3px 9px;
+    background: var(--surface);
+  }
+  footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--ink-3); font-size: 13px; max-width: 68ch; }
+  footer code { font-family: var(--f-mono); font-size: 12px; color: var(--ink-2); }
+
+  @media (max-width: 620px) {
+    .row { grid-template-columns: auto minmax(0, 1fr); }
+    .commits { grid-column: 2; justify-content: flex-start; padding-top: 0; max-width: none; }
+    .bar { position: static; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <p class="eyebrow">Global Fishing Watch · platform · release sweep</p>
+    <h1>5.0.25 → Develop QA</h1>
+    <p class="lede">
+      Test scope for releasing everything on <b>develop</b> since the last deployed tag,
+      <b>@gfw/platform@5.0.25</b>. It is derived from the diff and mapped onto the standing platform features list.
+      Items are ranked by how much the code underneath them moved. Start at Tier 1.
+    </p>
+    <div class="refs">
+      <span class="ref">base <b>@gfw/platform@5.0.25</b></span>
+      <span class="ref">head <b>develop 6cb74d54f3</b></span>
+      <span class="ref">commits <b>709</b> (550 excl. Crowdin)</span>
+      <span class="ref">files changed <b>992</b></span>
+      <span class="ref">+108 247 / −64 249</span>
+      <span class="ref">diffed <b>2026-10-19</b></span>
+    </div>
+  </header>
+
+  <div class="bar">
+    <div class="bar-inner">
+      <div class="meter">
+        <div class="meter-track" role="img" aria-label="Test progress">
+          <span class="meter-pass" id="meter-pass" style="width:0%"></span>
+          <span class="meter-fail" id="meter-fail" style="width:0%"></span>
+        </div>
+        <div class="meter-label">
+          <span><span class="dot" style="background:var(--pass)"></span>pass <i id="n-pass">0</i></span>
+          <span><span class="dot" style="background:var(--fail)"></span>fail <i id="n-fail">0</i></span>
+          <span><span class="dot" style="background:var(--line-strong)"></span>untested <i id="n-open">0</i></span>
+        </div>
+      </div>
+      <div class="filters" role="group" aria-label="Filter by state">
+        <button class="chip" id="f-all" data-filter="all" aria-pressed="true">All</button>
+        <button class="chip" id="f-open" data-filter="open" aria-pressed="false">Untested</button>
+        <button class="chip" id="f-pass" data-filter="pass" aria-pressed="false">Pass</button>
+        <button class="chip" id="f-fail" data-filter="fail" aria-pressed="false">Fail</button>
+      </div>
+      <button class="reset" id="reset">Clear all</button>
+      <span class="sync" id="sync">Connecting…</span>
+    </div>
+  </div>
+
+  <main id="board"></main>
+
+  <section class="untouched">
+    <h2>Barely touched by this diff</h2>
+    <p>Only file moves or one-line changes landed here. Smoke-test if time allows. Regressions from this release are unlikely to come from these areas.</p>
+    <ul>
+      <li>Workspace password</li>
+      <li>Rulers (tooltip file moved only)</li>
+      <li>Annotations (tooltip file moved only)</li>
+      <li>Basemap switcher</li>
+      <li>Feedback modal</li>
+      <li>Login popup / redirect</li>
+      <li>New vessel group search flow</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>
+      Scope was derived from <code>git diff @gfw/platform@5.0.25..develop</code>, using file paths and commit subjects.
+      It is not a hunk-by-hunk read of every change. Commit links are the source: open one to confirm an item before
+      ruling it in or out. Items from August and early September were already on the Develop → Main board but never
+      shipped, since 5.0.25 was cut from main without them.
+    </p>
+    <p>
+      Per Global Fishing Watch AI policy: review and verify this board before circulating it. The team owns this
+      content, not the tool that drafted it.
+    </p>
+  </footer>
+</div>
+
+<script>
+  const REPO = 'https://github.com/GlobalFishingWatch/frontend/commit/'
+
+  const TIERS = [
+    {
+      rank: '01',
+      color: 'var(--p1)',
+      title: 'New or rewritten — test exhaustively',
+      note: 'These areas were restructured or are shipping for the first time. Treat every checklist line underneath them as untested behaviour rather than a regression check.',
+      groups: [
+        {
+          title: 'Pipe 5 data and archived workspaces',
+          path: 'config/map/workspaces.ts, features/_map/workspace/, features/_vessels/',
+          note: 'The default pipeline moved to v5. Pipe 4 and country workspaces are now archives that open read-only. This touches every dataset version the app requests.',
+          commits: ['04b2c00364', '102fa807c3'],
+          items: [
+            { id: 'p5-def', text: 'Default workspace loads the new pipe 5 dataviews; activity, detections and events render', commits: ['7e9fdb3fb6', '04b2c00364'] },
+            { id: 'p5-v4', text: 'The pipe 4 archive workspace (default_v4_archive-public) loads and searches v4 data', commits: ['6ff50ca9b6', 'c9784ee2c2'] },
+            { id: 'p5-ctry', text: 'Country workspaces are archived and each one searches only its own layers', commits: ['fb48544656', 'f900b3f2aa'] },
+            { id: 'p5-ro', text: 'Read-only workspace: disclaimer toast shows once and closes when you leave the workspace', badge: 'new', commits: ['f9ec099166', '4a0ad3335b'] },
+            { id: 'p5-ro2', text: 'Read-only workspace hides edit actions in every sidebar section but keeps navigation; works on small screens', commits: ['220866af4e', '24b9bb8000', 'c76172aa00', 'a458ab47c4', '5e5efe831c'] },
+            { id: 'p5-ro3', text: 'Read-only limits in the vessel profile and the user section', commits: ['6357fa28ad', '5aeb3056d7'] },
+            { id: 'p5-srch', text: 'Vessel search requests the right dataset version suffix', why: 'Vessel Search → Basic / Advanced', commits: ['e909e97e03', 'a95b0acd59'] },
+            { id: 'p5-priv', text: 'Private workspaces search only their own datasets', commits: ['22f090b64a', '21e2c1ea64'] },
+            { id: 'p5-priv2', text: 'A user workspace with "private" in its id or name is not treated as private', commits: ['af0b4e7926', '3594fbdb90', 'ecd4d922ec'] },
+            { id: 'p5-perm', text: 'Private datasets follow real user permissions, not user groups', why: 'Prioritise private VMS sources if user has access', commits: ['5bd5a5e053'] },
+            { id: 'p5-gear', text: 'Pipe 5 gear and vessel types have labels in every language, with no duplicated terms', commits: ['ba427161e4', '63a1609be0', '482bfc1e32'] },
+            { id: 'p5-pred', text: 'GFW Predictions identity fields and data terminology appear for JAC users only', why: 'Vessel Profile → Identity: GFW users see extra gear type info', commits: ['3936ed59ee', 'b81e7eb12e', '529e2d249d', 'b3bd4a2265', 'd2ef6263bb'] },
+            { id: 'p5-corr', text: 'Suggest a correction is still visible to JAC users', why: 'GFWOnly restricted to the jac group', commits: ['529e2d249d'] },
+            { id: 'p5-vms', text: 'VMS vessel profile redirect resolves', commits: ['616fc7f941'] },
+            { id: 'p5-misc', text: 'Panama and Brazil profiles show the right dataset version and fields', commits: ['842d15d70e', 'c0fd82e4cc'] },
+          ],
+        },
+        {
+          title: 'Places pages: areas and ports',
+          path: 'features/_places/, routes/_platform/_content/{areas,ports}',
+          note: 'New public content pages, server-rendered, with their own map. The standing checklist has no section for these, so write one as you test.',
+          items: [
+            { id: 'pl-load', text: '/areas, /areas/<type> and /ports load server-rendered, with no /dataviews or /datasets request from the browser', badge: 'new', commits: ['77e25f800f'] },
+            { id: 'pl-sub', text: 'Area sub-routes work; an unknown area redirects to the default one', commits: ['0e7b0ca84a', '59199f6d0c'] },
+            { id: 'pl-srch', text: 'Search, including translated names, load more results, claims and joint EEZs', commits: ['103e782228', '034a6acf87'] },
+            { id: 'pl-sort', text: 'Sort by area and by activity; the sort arrow is right on first selection', commits: ['32d0114dc0', '240fb5fbb0', '4bd17a902b'] },
+            { id: 'pl-map', text: 'The list filters as the map moves; the placeholder shows when the map filter empties it', commits: ['7525983e4e', 'be3aed4f56'] },
+            { id: 'pl-hov', text: 'Thumbnails load and hovering a row highlights the area on the map', commits: ['6856e2eaa7'] },
+            { id: 'pl-url', text: 'Page state survives refresh via the URL', commits: ['f36dc95f9e', '8fb151e249'] },
+            { id: 'pl-link', text: 'Links go to the area report, the map and /ports/<id>, including ports with unusual characters', commits: ['b2b4ca5be7', 'd12094793b', 'f4aa2f3354', '5dd3e7327d'] },
+            { id: 'pl-ctry', text: 'Countries show on ports and MPAs; areas that share a name all appear', commits: ['32d0114dc0', '5868d65dfd', '0bae683837'] },
+            { id: 'pl-am', text: 'Areas crossing the antimeridian render and fit correctly', commits: ['1611007aeb', '2c73b8346e'] },
+            { id: 'pl-seo', text: 'Page titles, meta tags and /llms.txt are correct', commits: ['6e420dea38'] },
+          ],
+        },
+        {
+          title: 'Side panel: user guide, assistant chat and tabs',
+          path: 'features/_map/content-panel/, features/onboarding/, features/hints/',
+          items: [
+            { id: 'sp-tabs', text: 'Several panels open as tabs, each with its own close button', badge: 'new', commits: ['ac41e888e0'] },
+            { id: 'sp-url', text: 'An invalid side panel value in the URL does not break the page', commits: ['1fa965538b'] },
+            { id: 'sp-ug', text: 'User guide: index, search, subsection navigation from results', commits: ['dbf82e1dcd', '623cef4c57', '042a243ad1'] },
+            { id: 'sp-ugl', text: 'User guide links in hints close their popup; "see more" links resolve', why: 'General → Help hints', commits: ['b1b5c6631e', '8477696700', '7488fb8562'] },
+            { id: 'sp-chat', text: 'Chat is shown only to GFW users: thread list refreshes, header shows the conversation title', commits: ['3d7ce54cda', '339940e5ab'] },
+            { id: 'sp-chatn', text: 'Chat "navigate to view" links and user guide links work', commits: ['32a16d6d74', '2c4eb98571'] },
+            { id: 'sp-chatm', text: 'Chat receives map view context; the map popup stays open when you click into the assistant', why: 'first commit was marked wip — confirm it is release-ready', commits: ['ffd736d0fc', '009a7f6ecf'] },
+            { id: 'sp-onb', text: 'Onboarding opens as a modal with chat and the login banner; dismissal sticks across reloads', commits: ['e3cebe662f', '7037071472'] },
+            { id: 'sp-onbr', text: 'Onboarding report card opens the global report, without opening the user guide', commits: ['2608afbfd7', 'cedfa75b67'] },
+            { id: 'sp-hint', text: 'Hint popups follow their hint when the window resizes', commits: ['de04fe469d'] },
+          ],
+        },
+        {
+          title: 'Map tooltips',
+          path: 'features/_map/map/popups/',
+          note: 'New tooltip layout and a full folder restructure. Every tooltip line in the standing checklist is in scope.',
+          commits: ['f88f6e5f29', '4ca7bb69d3'],
+          items: [
+            { id: 't-act', text: 'Activity / Detections / Vessel groups click: vessel table, pin and link to vessel profile' },
+            { id: 't-pos', text: 'Positions tooltips: layout, icon, most granular time format', commits: ['865f7bb77c', '2405054c16', 'b7a25ba007', 'dba848d8ca'] },
+            { id: 't-det', text: 'Detection thumbnails render; only the visible detection is fetched', commits: ['5fcc61a84a'] },
+            { id: 't-clus', text: 'Event cluster tooltips show correct dates on monthly and yearly layers', commits: ['c2dbc39c96'] },
+            { id: 't-coord', text: 'Clicked coordinates are kept in the URL, cleared on save, and never stale', commits: ['178c7ddaa9', '78b6dcb941', 'df79c065be'] },
+            { id: 't-vis', text: 'Tooltip updates when a layer is toggled; clears when the point leaves the viewport; hides when every row is empty', commits: ['7ebb516ec8', '7fd360b784', 'a9715189c9'] },
+            { id: 't-world', text: 'Tooltip is placed correctly on a repeated world copy', commits: ['9630eff110'] },
+            { id: 't-spark', text: 'Reference layer sparkline: kept once calculated, correct near the poles and in positions mode', commits: ['9867322e6a', 'd52fc889f1', 'de7a7ae1ca'] },
+            { id: 't-fit', text: 'Single-area tooltip fits the map to that area', commits: ['851da01449'] },
+            { id: 't-btn', text: 'Multi-line tooltip buttons, centred spinners, no literal 0 for empty cells', commits: ['3876b63b5e', '168071c80f', '5b4d4cd464'] },
+            { id: 't-port', text: 'Ports section and port-visit row against v5 port data', commits: ['b30b0aa0d2'] },
+            { id: 't-new', text: 'New tooltip types: bathymetry contour, gridded value, hotspot, pending draw', badge: 'new' },
+          ],
+        },
+        {
+          title: 'Layer filters and legend brush',
+          path: 'libs/ui-components/src/map-legend/, features/_map/workspace/shared/',
+          note: 'New ColorRampBrush with a second UX pass, plus histogram filters on activity layers. Touches the sidebar filter block and every report legend.',
+          items: [
+            { id: 'l-brush', text: 'Drag the brush handles on a colour ramp to filter values; handle tooltips and end affordances', badge: 'new', commits: ['370be4099d', '2606e24b8c', '5c799283af'] },
+            { id: 'l-hist', text: 'Histogram range filter on activity and detection layers', why: 'Sidebar → Filter layers → Number range → Histogram', badge: 'new', commits: ['3d7ddc1f3a'] },
+            { id: 'l-exp', text: 'Switch to expand the colour scale to the filtered values; max step shows as latest', commits: ['eadf4e7df3', '6077533899'] },
+            { id: 'l-sum', text: 'Min and max show only for SUM aggregation; gridded heatmaps have no SUM', commits: ['308dff9b43', 'c8cc5f47ab'] },
+            { id: 'l-vsl', text: 'Vessel brush filters on speed and depth', why: 'Sidebar → Vessels → Filter by speed / depth', commits: ['a14313825e', '1935c713f9'] },
+            { id: 'l-tags', text: 'Filters appear as tags (a range splits into two) in sidebar and reports; removing one updates the report', commits: ['05c9879655', '81a5290202', '3c2fe7cca5'] },
+            { id: 'l-grad', text: 'Legends paint as gradients everywhere except vessels', commits: ['9927b31114'] },
+            { id: 'l-pop', text: 'Filter popover closes without applying changes', commits: ['bfda38544b'] },
+            { id: 'l-ph', text: 'Legend placeholder does not spin forever when the viewport is outside the layer data', commits: ['00a8189a73'] },
+            { id: 'l-err', text: 'No legend crash on bivariate switch; legend is removed when its layer errors', commits: ['0a55fe4c70', '297b2d6eed'] },
+            { id: 'l-cells', text: 'Cells repaint after scale changes; static layers do not recompute their domain on filter changes', commits: ['e7c337f003', '4ca358669b', '438764be53'] },
+          ],
+        },
+        {
+          title: 'Dataset upload: NetCDF, GeoTIFF, gridded heatmaps',
+          path: 'features/_map/datasets/upload/, libs/data-transforms/src/files/',
+          note: 'New upload types. The feature flags were removed, so these are on for every user.',
+          items: [
+            { id: 'u-nc', text: 'NetCDF upload, including variable selection', badge: 'new', commits: ['e100bea567'] },
+            { id: 'u-tif', text: 'GeoTIFF upload: band selection, bbox, unit, max zoom, filters', badge: 'new', commits: ['dd2984326c', 'cb9fb61d05', '7d7769a834'] },
+            { id: 'u-zip', text: 'ZIP upload works; a ZIP with several files raises a clear error', commits: ['7eba0b2d98', 'd64c2684fe'] },
+            { id: 'u-size', text: 'An oversized file shows a size error', commits: ['69d11219af'] },
+            { id: 'u-err', text: 'Import error state, loading status, no duplicate fetches, no false error while dragging', commits: ['5d5e0af7fe', 'd60749bdbe', 'ec3a861e77'] },
+            { id: 'u-leg', text: 'User heatmap: legend brush, colour change, sorting, and use in reports', commits: ['23df0baec5', 'e187fd39a1', '5a3af1581c'] },
+          ],
+        },
+      ],
+    },
+    {
+      rank: '02',
+      color: 'var(--p2)',
+      title: 'Significant changes — targeted testing',
+      note: 'Existing features with real behavioural changes underneath. Test the named behaviour rather than the whole area.',
+      groups: [
+        {
+          title: 'Positions mode, real-time and timebar',
+          path: 'libs/deck-layers/src/layers/fourwings/positions/, features/_map/timebar/',
+          items: [
+            { id: 'rt-pos', text: 'Positions mode: tracks split at gaps over 1 hour; only the last position has a highlight border', why: 'Activity → See positions mode', commits: ['ab955c75f0', '33cfc301ce', '6c58764e5c'] },
+            { id: 'rt-tracks', text: 'Confirm whether tracks inside positions mode are on or off for this release', why: 'added, then "disable tracks in positions for now", then reworked', commits: ['9bc01bde54', 'b5ff461032', '46e35d0cbd'] },
+            { id: 'rt-switch', text: 'Positions switch is enabled from the points on screen, with filters, and never past the supported max', commits: ['ddb82c1953', '3f640f8d0a', 'b71a2291aa'] },
+            { id: 'rt-lib', text: 'Real-time presence in the Layer Library disables non-real-time layers', why: 'behind VITE_REALTIME_ENABLED — confirm the production value', commits: ['3357fe4d1d', '33eb87a67a'] },
+            { id: 'rt-tb', text: 'Real-time timebar: ends at the current hour, shows minutes, has the right intervals and range selector', commits: ['7392e0cd4a', '73b7c91008', 'df4a1cae5d', '86990e309c'] },
+            { id: 'rt-hist', text: 'Historical timebar: ranges under one day, improved quick select', why: 'Timebar → Calendar selection', commits: ['12d9f1f22d', '2df9da4a74'] },
+            { id: 'rt-play', text: 'Timebar graph position and extent are correct; playback works again', why: 'Timebar → Playback', commits: ['5c10d3a4fc', 'b28530e2d3'] },
+          ],
+        },
+        {
+          title: 'Reports',
+          path: 'features/_reports/',
+          items: [
+            { id: 'r-top', text: 'Top largest areas block and its actions', commits: ['d52fe44b67', '1b8f7f1e3d'] },
+            { id: 'r-lib', text: 'Layer Library opened from a report shows only report-supported layers; Others tab has "+ Add layer"', commits: ['de9dd4a3e3', '8ae6d37808', '83967974b4'] },
+            { id: 'r-oth', text: 'Others tab is on for everyone: point stats by property, timeseries, polygon graph', why: 'polygonsReport and reportPreview flags removed', commits: ['52ca577c7e'] },
+            { id: 'r-fit', text: 'Map centres on the area on load and after filters, without recalculating the report', why: 'Reports → General → Maps centers to area', commits: ['9d2acdbb04', '37432f092c', '8bc07c982b'] },
+            { id: 'r-glob', text: 'Refreshing a global report (e.g. period comparison) does not hang on loading', commits: ['9c974cf7e3'] },
+            { id: 'r-buf', text: 'Changing the buffer updates the report; buffer resets on history back; buffer near 180° splits', commits: ['78e933d5b0', 'e68cee602a', 'ccf4e3763e'] },
+            { id: 'r-am', text: 'Report areas crossing the antimeridian count every feature', commits: ['186adde055'] },
+            { id: 'r-load', text: 'Initial and vessel loading states are right', commits: ['ceb4fb27c3', 'a27481ebcc'] },
+            { id: 'r-cmp', text: 'Period comparison totals row; change shown as a dot', commits: ['052f75f55c', 'ca46fbcf3b'] },
+            { id: 'r-hdr', text: 'Header button shows only when responsive graphs show individual data', commits: ['3a17c46351'] },
+            { id: 'r-dyn', text: 'A re-saved dynamic report still saves as dynamic', commits: ['762adda16d'] },
+            { id: 'r-usr', text: 'User datasets with import errors show an error in the report', commits: ['2bf293967e'] },
+            { id: 'r-col', text: 'Vessel graph colours in multi-layer reports; vessel selector does not overflow', commits: ['6a7a77c842', '7e35aed196'] },
+          ],
+        },
+        {
+          title: 'Vessel profile',
+          path: 'features/_vessels/vessel/',
+          items: [
+            { id: 'v-ll', text: 'Longline sets: map, timebar, Insights graph, for every user', why: 'longlineSetsInsight flag removed', badge: 'new', commits: ['9fa3cedc4c', '2bbd3b2744'] },
+            { id: 'v-lldl', text: 'Longline CSV download includes local dataset and identity fields', commits: ['1b25dca9cd', '213cfefd15', '0c66c15c41'] },
+            { id: 'v-time', text: 'Insight chart local-time toggle', commits: ['ede50e9b1e'] },
+            { id: 'v-tabs', text: 'Activity tables collapse; tabs show loading state; insight tools hide when empty', commits: ['d875f840c7', 'c96f1bb7c7', '5ad7ce6ae7'] },
+            { id: 'v-pin', text: 'A pinned vessel is detected across all its identities', commits: ['c163124109'] },
+            { id: 'v-rt', text: 'Real-time vessel: last position in track, no events, track does not reload on every change', commits: ['993697029e', '21a240d5af', '3119be7d7b'] },
+            { id: 'v-gap', text: 'Gap identifier in the summary; disabled tabs explain themselves', commits: ['501bf590b8', '1dfc5c9cde'] },
+            { id: 'v-dep', text: 'Depth reads as a positive value everywhere', commits: ['46e8105ace', '4b31a3a585'] },
+            { id: 'v-fit', text: 'Center map on track, with no re-render loop', commits: ['b5bf085747', 'ab84270f00'] },
+          ],
+        },
+        {
+          title: 'Vessel search',
+          path: 'features/_vessels/search/',
+          items: [
+            { id: 's-adv', text: 'Advanced search stays responsive while typing; AIS has gear and ship type filters', commits: ['456e593f50', '2373f403cd', 'c2376cfea5'] },
+            { id: 's-nav', text: 'A second search click stays in place; results do not leak between workspaces', commits: ['6c0b73c0ed', '592f73fddd'] },
+            { id: 's-url', text: 'Query and search terms are kept in the URL', commits: ['1e5f659e8a', '4f8f7f2870'] },
+          ],
+        },
+        {
+          title: 'Map rendering and performance',
+          path: 'libs/deck-layers/, libs/deck-loaders/',
+          note: 'Regression risk rather than new features. Watch for visual and interaction regressions.',
+          items: [
+            { id: 'm-clus', text: 'Event clusters zoom in to single cells and sit at cell centres', why: 'Map → Events → Zoom in on clusters', commits: ['08e400eccc', '750757a225'] },
+            { id: 'm-tiles', text: 'Heatmap tiles refine smoothly with fewer duplicate PMTiles requests', commits: ['7481c29a04', 'ad97aa1e22'] },
+            { id: 'm-trk', text: 'Large vessel tracks render, hover and highlight correctly', commits: ['ba47086967', 'fdc026fd54', '7e4c14ab2a'] },
+            { id: 'm-bat', text: 'Bathymetry contour layer renders and highlights', badge: 'new', commits: ['d84573d214', '1041aac3c8'] },
+            { id: 'm-mbt', text: 'mbtiles reference layers load and show their name', commits: ['f3e5602a35', '3d963f8fcf'] },
+            { id: 'm-env', text: 'Environment layers after static MVT was replaced with fourwings', commits: ['bc55a085b0'] },
+            { id: 'm-hov', text: 'No hover flicker, no re-paint flashes, no overlapping labels', commits: ['5baba7d042', 'ab10dca4d1', '60476d9bea'] },
+            { id: 'm-ord', text: 'Layers render in the correct order' },
+          ],
+        },
+        {
+          title: 'User section and workspace tools',
+          path: 'features/_user/, features/_map/workspace/',
+          items: [
+            { id: 'w-arch', text: 'User → Workspaces shows the Archive list', badge: 'new', commits: ['c9784ee2c2'] },
+            { id: 'w-tabs', text: 'Workspaces and vessel groups load inside their own tabs', commits: ['9d2558c84e'] },
+            { id: 'w-grp', text: 'User groups listed separately; badges and logos load', commits: ['1d877f9eee', 'bb530e2dec'] },
+            { id: 'w-draw', text: 'Pending-draw notice; a drawn layer is kept until the API responds', commits: ['ef57bdedbe', '778ceec6fa'] },
+            { id: 'w-save', text: 'Create workspace modal opens without error', commits: ['f1af1d7de1'] },
+            { id: 'w-hot', text: 'Hotspot area is stored in the URL; still behind the hotspotButton flag', commits: ['33f303ba5a'] },
+          ],
+        },
+      ],
+    },
+    {
+      rank: '03',
+      color: 'var(--p3)',
+      title: 'Touched incidentally — smoke test',
+      note: 'Small or indirect changes. A quick pass is enough unless something looks off.',
+      groups: [
+        {
+          title: 'Smoke pass',
+          items: [
+            { id: 'x-deps', text: 'General pass after TanStack Start 1.0, React 19.3, Jotai 3, Redux Toolkit, deck.gl and Nx upgrades', commits: ['75190e2b4c', '61fab753f0', 'dc26f7f1cf', '15e44937e9', '3565667c99'] },
+            { id: 'x-chunk', text: 'Content pages load fast and do not pull map or report code', commits: ['68e931d1fd', 'ff122bf47d', 'ae0c95b05b'] },
+            { id: 'x-sentry', text: 'Sentry fixes batch: storage access errors, malformed URIs, invalid dates, missing refresh token', why: 'General → Login → Expired token', commits: ['1c09234b10', '79e3cef221', '52b43de827', 'e54229dd59'] },
+            { id: 'x-lang', text: 'Language change waits only for workspace datasets; all six languages render', commits: ['d5aee20b7f'] },
+            { id: 'x-redir', text: 'An old fishing-map URL without a workspace id redirects to the root', commits: ['d7bf3e4468'] },
+            { id: 'x-hyd', text: 'Refresh keeps state with a clean URL, with no hydration errors', commits: ['c43fb7df71', '3710ebf2f5', 'edaf29a1f0'] },
+            { id: 'x-shot', text: 'Screenshot waits for the popup and hides tooltip actions', why: 'Map tools → Screenshot', commits: ['3099c01cfb', '4e808277dd'] },
+            { id: 'x-ws', text: 'Workspace description icon; seabird-longline highlighted workspace', commits: ['86e329b213', '1eacf4e498'] },
+            { id: 'x-cms', text: 'Help & resources content comes from the right CMS in each environment', commits: ['816b14134a', '53c1b02a27'] },
+            { id: 'x-ga', text: 'Google Analytics still records page views after being deferred to idle', commits: ['3daf06d016'] },
+            { id: 'x-lib', text: 'Layer Library: user datasets fetch, user block UX', commits: ['4030c656e5', '07f12d7abe'] },
+          ],
+        },
+      ],
+    },
+  ]
+
+  /* ---------- render ---------- */
+  const board = document.getElementById('board')
+  const allIds = []
+  const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c])
+  const shas = (list) =>
+    (list || [])
+      .map((h) => `<a class="sha" href="${REPO}${h}" target="_blank" rel="noopener">${h.slice(0, 7)}</a>`)
+      .join(' ')
+
+  board.innerHTML = TIERS.map((tier) => {
+    const count = tier.groups.reduce((n, g) => n + g.items.length, 0)
+    const groups = tier.groups
+      .map((g) => {
+        const rows = g.items
+          .map((it) => {
+            allIds.push(it.id)
+            return `<div class="row" data-id="${it.id}" data-state="open">
+              <div class="states">
+                <button class="state-btn" data-set="pass" aria-label="Mark pass">✓</button>
+                <button class="state-btn" data-set="fail" aria-label="Mark fail">✕</button>
+              </div>
+              <div class="label">
+                <p>${esc(it.text)}${it.badge ? ` <span class="badge">${esc(it.badge)}</span>` : ''}</p>
+                ${it.why ? `<span class="why">${esc(it.why)}</span>` : ''}
+              </div>
+              <div class="commits">${shas(it.commits)}</div>
+            </div>`
+          })
+          .join('')
+        return `<section class="group">
+          <div class="group-head">
+            <h3>${esc(g.title)}</h3>
+            ${g.path ? `<span class="group-path">${esc(g.path)}</span>` : ''}
+          </div>
+          ${g.note ? `<p class="group-note">${esc(g.note)} ${shas(g.commits)}</p>` : ''}
+          <div class="rows">${rows}</div>
+        </section>`
+      })
+      .join('')
+    return `<section class="tier" style="--tier-color:${tier.color}">
+      <div class="tier-head">
+        <span class="tier-rank">${tier.rank}</span>
+        <h2>${esc(tier.title)}</h2>
+        <span class="tier-count">${count} checks</span>
+      </div>
+      <p class="tier-note">${esc(tier.note)}</p>
+      ${groups}
+    </section>`
+  }).join('')
+
+  /* ---------- state ---------- */
+  const rows = new Map([...document.querySelectorAll('.row')].map((r) => [r.dataset.id, r]))
+  const state = {}
+  let store = null // db namespace, or null -> localStorage
+  let filter = 'all'
+  const LS = 'gfw-qa-5.0.25-develop'
+
+  function paint() {
+    let pass = 0
+    let fail = 0
+    for (const [id, row] of rows) {
+      const s = state[id] || 'open'
+      row.dataset.state = s
+      if (s === 'pass') pass++
+      if (s === 'fail') fail++
+      row.classList.toggle('hidden', filter !== 'all' && s !== filter)
+    }
+    const total = rows.size
+    document.getElementById('n-pass').textContent = pass
+    document.getElementById('n-fail').textContent = fail
+    document.getElementById('n-open').textContent = total - pass - fail
+    document.getElementById('meter-pass').style.width = (pass / total) * 100 + '%'
+    document.getElementById('meter-fail').style.width = (fail / total) * 100 + '%'
+  }
+
+  function persist(id, s) {
+    if (store) {
+      const doc = store.doc('checks/' + id)
+      ;(s === 'open' ? doc.delete() : doc.set({ state: s, at: Date.now() })).catch(() => {
+        sync.textContent = 'Could not save that tick — check your connection and try again.'
+      })
+    } else {
+      try {
+        localStorage.setItem(LS, JSON.stringify(state))
+      } catch (e) {
+        /* private window, blocked storage — board still works for this session */
+      }
+    }
+  }
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.state-btn')
+    if (btn) {
+      const row = btn.closest('.row')
+      const want = btn.dataset.set
+      const next = state[row.dataset.id] === want ? 'open' : want
+      state[row.dataset.id] = next
+      paint()
+      persist(row.dataset.id, next)
+      return
+    }
+    const chip = e.target.closest('.chip')
+    if (chip) {
+      filter = chip.dataset.filter
+      document.querySelectorAll('.chip').forEach((c) => c.setAttribute('aria-pressed', String(c === chip)))
+      paint()
+    }
+  })
+
+  // Two-step clear: confirm() is not available inside the viewer.
+  const reset = document.getElementById('reset')
+  let armTimer = null
+  reset.addEventListener('click', () => {
+    if (reset.dataset.armed !== 'true') {
+      reset.dataset.armed = 'true'
+      reset.textContent = 'Click again to clear every tick'
+      armTimer = setTimeout(() => {
+        reset.dataset.armed = 'false'
+        reset.textContent = 'Clear all'
+      }, 4000)
+      return
+    }
+    clearTimeout(armTimer)
+    reset.dataset.armed = 'false'
+    reset.textContent = 'Clear all'
+    for (const id of allIds) {
+      if (state[id]) {
+        delete state[id]
+        persist(id, 'open')
+      }
+    }
+    paint()
+  })
+
+  try {
+    Object.assign(state, JSON.parse(localStorage.getItem(LS) || '{}'))
+  } catch (e) {
+    /* ignore */
+  }
+  paint()
+
+  const sync = document.getElementById('sync')
+  const LOCAL_ONLY = 'Local only — ticks are saved in this browser, not shared.'
+  Promise.resolve(window.claude?.use('db'))
+    .then((db) => {
+      if (!db) {
+        sync.textContent = LOCAL_ONLY
+        return
+      }
+      store = db
+      sync.textContent = 'Shared board — everyone testing sees the same ticks.'
+      db.collection('checks').onSnapshot(
+        (snap) => {
+          for (const id of allIds) delete state[id]
+          for (const doc of snap.docs) {
+            const s = doc.data()?.state
+            if (s === 'pass' || s === 'fail') state[doc.id] = s
+          }
+          paint()
+        },
+        () => {
+          sync.textContent = 'Lost sync with the shared board — reload to reconnect.'
+        }
+      )
+    })
+    .catch(() => {
+      sync.textContent = LOCAL_ONLY
+    })
+</script>

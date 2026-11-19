@@ -1,31 +1,37 @@
-import { Fragment, useCallback, useMemo, useRef } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
+import { toast } from 'react-toastify'
 import type { Entries } from 'type-fest'
 
-import type {
-  MAIN_DOM_ID,
-  SelectOption,
-  SPLIT_VIEW_DOM_ID,
-} from '@globalfishingwatch/ui-components'
-import { Button, Choice, IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
+import { Button, IconButton, Select, SPLIT_VIEW_DOM_ID } from '@globalfishingwatch/ui-components'
 
+import { selectUserSettings } from 'features/_user/selectors/user.selectors'
+import { setUserSetting } from 'features/_user/user.slice'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { useDOMElement } from 'hooks/dom.hooks'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
 import { useReplaceQueryParams } from 'router/routes.hook'
-import { selectIsAnyReportLocation, selectIsAnyVesselLocation } from 'router/routes.selectors'
+import { selectIsWorkspaceLocation } from 'router/routes.selectors'
+import { getSafeElementById } from 'utils/dom'
 
 import { selectIsMapInteractionLoading } from '../map.slice'
-import type { MAP_CONTAINER_ID } from '../map-viewport.hooks'
 
-import { ScrenshotAreaIds, selectScreenshotAreaId, setScreenshotAreaId } from './screenshot.slice'
+import type { ScreenshotAspectRatio, ScrenshotArea, ScrenshotDOMArea } from './screenshot.slice'
+import {
+  SCREENSHOT_ASPECT_RATIOS,
+  ScrenshotAreaIds,
+  selectScreenshotAreaId,
+  selectScreenshotAspectRatio,
+  setLabelSizeScale,
+} from './screenshot.slice'
+import type { ElementSize } from './screenshot.utils'
+import { applyScreenshotLayout, resetScreenshotLayout } from './screenshot.utils'
 
 import styles from './MapControls.module.css'
-
-type ScrenshotDOMArea = typeof SPLIT_VIEW_DOM_ID | typeof MAP_CONTAINER_ID | typeof MAIN_DOM_ID
 
 const MapControlScreenshot = ({
   mapLoading,
@@ -36,135 +42,223 @@ const MapControlScreenshot = ({
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { replaceQueryParams } = useReplaceQueryParams()
-  const modalOpen = useSelector(selectScreenshotModalOpen)
-  const timeoutRef = useRef<NodeJS.Timeout>(undefined)
-  const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
-  const isVesselLocation = useSelector(selectIsAnyVesselLocation)
-  const showScreenshot = !isVesselLocation && !isAnyReportLocation
+  const editorOpen = useSelector(selectScreenshotModalOpen)
   const screenshotAreaId = useSelector(selectScreenshotAreaId)
+  const screenshotAspectRatio = useSelector(selectScreenshotAspectRatio)
+  const savedScreenshotSettings = useSelector(selectUserSettings).mapScreenshot
   const interactionLoading = useSelector(selectIsMapInteractionLoading)
   const rootElement = useDOMElement()
+  const { loading, downloadImage } = useDownloadDomElementAsImage()
+  const [initialSizes, setInitialSizes] = useState<Partial<Record<ScrenshotDOMArea, ElementSize>>>(
+    {}
+  )
+  const screenshotAreaInitialSize = initialSizes[screenshotAreaId]
+  const headerRef = useRef<HTMLElement>(null)
+  const footerRef = useRef<HTMLElement>(null)
 
+  const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const SCREENSHOT_AREA_OPTIONS: SelectOption<ScrenshotDOMArea>[] = useMemo(
     () =>
-      (Object.entries(ScrenshotAreaIds) as Entries<typeof ScrenshotAreaIds>).map(
-        ([key, value]) => ({
-          id: value as ScrenshotDOMArea,
+      (Object.entries(ScrenshotAreaIds) as Entries<typeof ScrenshotAreaIds>)
+        .filter(([key]) => isWorkspaceLocation || key !== 'withTimebarAndLegend')
+        .map(([key, value]) => ({
+          id: value,
           label: t((t) => t.map.screenshotArea[key], { defaultValue: key }),
-        })
-      ),
-    [t]
+        })),
+    [isWorkspaceLocation, t]
   )
 
-  const {
-    loading,
-    previewImage,
-    downloadImage,
-    resetPreviewImage,
-    previewImageLoading,
-    generatePreviewImage,
-  } = useDownloadDomElementAsImage()
-
-  const generateImage = useCallback(
-    (domId: string) => {
-      resetPreviewImage()
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
-      timeoutRef.current = setTimeout(() => {
-        if (rootElement && domId) {
-          rootElement.classList.add('printing')
-          // leave some time to
-          // 1. apply the styles + timebar to re - render
-          timeoutRef.current = setTimeout(() => {
-            generatePreviewImage(domId)
-          }, 400)
+  const ASPECT_RATIO_OPTIONS: SelectOption<ScreenshotAspectRatio>[] = useMemo(
+    () =>
+      (Object.keys(SCREENSHOT_ASPECT_RATIOS) as ScreenshotAspectRatio[]).map((id) => {
+        const labelString = id === 'current' ? t((t) => t.map.screenshotAspectRatio.current) : id
+        const ratio =
+          SCREENSHOT_ASPECT_RATIOS[id] ??
+          (screenshotAreaInitialSize?.height
+            ? screenshotAreaInitialSize.width / screenshotAreaInitialSize.height
+            : 16 / 10)
+        return {
+          id,
+          labelString,
+          label: (
+            <span className={styles.aspectRatioOption}>
+              <span className={styles.aspectRatioBoxSlot}>
+                <span
+                  className={styles.aspectRatioBox}
+                  style={{
+                    width: `${ratio >= 1 ? 1.6 : 1.6 * ratio}rem`,
+                    height: `${ratio >= 1 ? 1.6 / ratio : 1.6}rem`,
+                  }}
+                />
+              </span>
+              {labelString}
+            </span>
+          ),
         }
-      }, 100)
-    },
-    [generatePreviewImage, resetPreviewImage, rootElement]
+      }),
+    [t, screenshotAreaInitialSize]
   )
 
-  const onScreenshotClick = useCallback(() => {
-    if (screenshotAreaId === ScrenshotAreaIds.withTimebarAndLegend) {
+  const closeEditor = useCallback(() => {
+    dispatch(setModalOpen({ id: 'screenshot', open: false }))
+  }, [dispatch])
+
+  useEffect(() => closeEditor, [closeEditor])
+
+  // .printing restyles the app for capture; the area attribute hides what falls outside it
+  useEffect(() => {
+    if (!editorOpen || !rootElement) {
+      return
+    }
+    const areaKey = (Object.keys(ScrenshotAreaIds) as ScrenshotArea[]).find(
+      (key) => ScrenshotAreaIds[key] === screenshotAreaId
+    )
+    rootElement.classList.add('printing')
+    if (areaKey) {
+      rootElement.setAttribute('data-screenshot-area', areaKey)
+    }
+    return () => {
+      rootElement.classList.remove('printing')
+      rootElement.removeAttribute('data-screenshot-area')
+    }
+  }, [editorOpen, rootElement, screenshotAreaId])
+
+  useEffect(() => {
+    if (editorOpen && screenshotAreaId === ScrenshotAreaIds.withTimebarAndLegend) {
       replaceQueryParams({ sidebarOpen: true })
     }
+  }, [editorOpen, replaceQueryParams, screenshotAreaId])
+
+  // reshape the live app container to the ratio and scale it into the centre of the screen
+  useEffect(() => {
+    const container = editorOpen ? getSafeElementById(SPLIT_VIEW_DOM_ID) : null
+    if (!container) {
+      return
+    }
+    const applyLayout = () => {
+      const labelSizeScale = applyScreenshotLayout(
+        container,
+        SCREENSHOT_ASPECT_RATIOS[screenshotAspectRatio],
+        {
+          top: headerRef.current?.offsetHeight ?? 0,
+          bottom: footerRef.current?.offsetHeight ?? 0,
+        },
+        screenshotAreaInitialSize
+      )
+      dispatch(setLabelSizeScale(labelSizeScale))
+    }
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeEditor()
+    }
+    applyLayout()
+    window.addEventListener('resize', applyLayout)
+    window.addEventListener('keydown', onKeyDown)
+    return () => {
+      window.removeEventListener('resize', applyLayout)
+      window.removeEventListener('keydown', onKeyDown)
+      resetScreenshotLayout(container)
+      dispatch(setLabelSizeScale(1))
+    }
+  }, [closeEditor, dispatch, editorOpen, screenshotAreaInitialSize, screenshotAspectRatio])
+
+  const openEditor = useCallback(() => {
+    setInitialSizes(
+      Object.fromEntries(
+        Object.values(ScrenshotAreaIds).map((id) => {
+          const element = getSafeElementById(id)
+          return [id, { width: element?.offsetWidth ?? 0, height: element?.offsetHeight ?? 0 }]
+        })
+      )
+    )
     dispatch(setModalOpen({ id: 'screenshot', open: true }))
-    generateImage(screenshotAreaId)
-  }, [dispatch, generateImage, screenshotAreaId])
-
-  const handleModalClose = useCallback(() => {
-    resetPreviewImage()
-    if (rootElement) {
-      rootElement.classList.remove('printing')
-    }
-    dispatch(setModalOpen({ id: 'screenshot', open: false }))
-  }, [dispatch, resetPreviewImage, rootElement])
-
-  const onImageDownloadClick = useCallback(async () => {
-    if (screenshotAreaId) {
-      await downloadImage(screenshotAreaId)
-    }
-    handleModalClose()
-  }, [downloadImage, handleModalClose, screenshotAreaId])
+  }, [dispatch])
 
   const onSelectScreenshotArea = useCallback(
-    (area: ScrenshotDOMArea) => {
-      dispatch(setScreenshotAreaId(area))
-      if (area === ScrenshotAreaIds.withTimebarAndLegend) {
-        replaceQueryParams({ sidebarOpen: true })
-      }
-      generateImage(area)
+    (option: SelectOption<ScrenshotDOMArea>) => {
+      dispatch(
+        setUserSetting({
+          mapScreenshot: { ...savedScreenshotSettings, areaId: option.id },
+        })
+      )
     },
-    [dispatch, generateImage]
+    [dispatch, savedScreenshotSettings]
   )
+
+  const onSelectAspectRatio = useCallback(
+    (option: SelectOption<ScreenshotAspectRatio>) => {
+      dispatch(
+        setUserSetting({
+          mapScreenshot: { ...savedScreenshotSettings, aspectRatio: option.id },
+        })
+      )
+    },
+    [dispatch, savedScreenshotSettings]
+  )
+
+  const onDownloadClick = useCallback(async () => {
+    const downloaded = await downloadImage(screenshotAreaId)
+    if (downloaded) {
+      closeEditor()
+    } else {
+      toast(
+        t((t) => t.map.screenshotError),
+        { type: 'error', toastId: 'screenshotError' }
+      )
+    }
+  }, [closeEditor, downloadImage, screenshotAreaId, t])
 
   // capturing mid-fetch freezes a popup showing its spinner instead of its contents
   const captureDisabled = mapLoading || interactionLoading || loading
-  const previewPending = previewImageLoading || !previewImage
 
   return (
     <Fragment>
-      {showScreenshot && (
-        <IconButton
-          icon="camera"
-          type="map-tool"
-          loading={loading}
-          disabled={captureDisabled}
-          tooltip={captureDisabled ? t((t) => t.map.mapLoadingWait) : t((t) => t.map.captureMap)}
-          onClick={onScreenshotClick}
-        />
-      )}
-      <Modal
-        title={t((t) => t.map.screenshotPreview)}
-        isOpen={modalOpen}
-        onClose={handleModalClose}
-        className={cx({ [styles.screenshotModal]: !previewImageLoading && previewImage })}
-        contentClassName={styles.previewContainer}
-      >
-        <div className={styles.previewPlaceholder}>
-          {previewPending ? (
-            <Spinner />
-          ) : (
-            <img className={styles.previewImage} src={previewImage} alt="screenshot preview" />
-          )}
-        </div>
-        <div className={styles.previewFooter}>
-          <Choice
-            options={SCREENSHOT_AREA_OPTIONS}
-            onSelect={(option) => onSelectScreenshotArea(option.id)}
-            activeOption={screenshotAreaId}
-          />
-          <Button
-            id="image-preview-download"
-            loading={loading}
-            disabled={previewPending}
-            onClick={onImageDownloadClick}
-          >
-            {t((t) => t.map.screenshotDownload)}
-          </Button>
-        </div>
-      </Modal>
+      <IconButton
+        icon="camera"
+        type="map-tool"
+        loading={loading}
+        disabled={captureDisabled}
+        tooltip={captureDisabled ? t((t) => t.map.mapLoadingWait) : t((t) => t.map.captureMap)}
+        tooltipPlacement="left"
+        onClick={openEditor}
+      />
+      {/* portaled: this button lives inside the app container the editor scales down */}
+      {editorOpen &&
+        createPortal(
+          <Fragment>
+            <div className={styles.screenshotBackdrop} />
+            <header ref={headerRef} className={styles.screenshotHeader}>
+              <label>{t((t) => t.map.screenshotPreview)}</label>
+              <IconButton icon="close" tooltip={t((t) => t.common.close)} onClick={closeEditor} />
+            </header>
+            <footer ref={footerRef} className={styles.screenshotFooter}>
+              <Select
+                label={t((t) => t.map.screenshotAreaLabel)}
+                options={SCREENSHOT_AREA_OPTIONS}
+                selectedOption={SCREENSHOT_AREA_OPTIONS.find((o) => o.id === screenshotAreaId)}
+                onSelect={onSelectScreenshotArea}
+                direction="top"
+                containerClassName={styles.screenshotSelect}
+              />
+              <Select
+                label={t((t) => t.map.screenshotAspectRatioLabel)}
+                options={ASPECT_RATIO_OPTIONS}
+                selectedOption={ASPECT_RATIO_OPTIONS.find((o) => o.id === screenshotAspectRatio)}
+                onSelect={onSelectAspectRatio}
+                direction="top"
+                containerClassName={styles.screenshotSelect}
+              />
+              <Button
+                id="image-preview-download"
+                loading={loading}
+                disabled={mapLoading || interactionLoading}
+                onClick={onDownloadClick}
+              >
+                {t((t) => t.map.screenshotDownload)}
+              </Button>
+            </footer>
+          </Fragment>,
+          document.body
+        )}
     </Fragment>
   )
 }

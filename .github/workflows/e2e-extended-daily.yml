@@ -18,6 +18,8 @@ jobs:
       CI: '1'
       PLAYWRIGHT_BASE_URL: https://globalfishingwatch.org
       PLAYWRIGHT_BROWSER: all
+      # Headless Firefox has no WebGL on a GPU-less runner, so the map never renders
+      PLAYWRIGHT_FIREFOX_HEADED: 'true'
       TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
       TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
       TEST_USER_NAME: ${{ secrets.TEST_USER_NAME }}
@@ -46,7 +48,10 @@ jobs:
 
       - name: Run extended e2e suite
         working-directory: apps/platform-e2e
-        run: pnpm exec playwright test --workers=1 --grep "@smoke|@extended"
+        # xvfb-run starts a virtual X display (Xvfb) and sets DISPLAY, which headed Firefox
+        # needs to launch on a runner with no screen. -a picks a free display number.
+        # Chromium and WebKit stay headless and ignore it.
+        run: xvfb-run -a pnpm exec playwright test --workers=1 --grep "@smoke|@extended"
 
       - name: Upload Playwright report
         if: failure()

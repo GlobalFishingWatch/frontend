@@ -85,6 +85,7 @@
     "newTimeRange": "Cliquez sur le bouton pour voir les navires actifs dans la zone située entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
     "noDataByArea": "Aucune donnée disponible pour la zone sélectionnée",
     "noDataByComparedDataset": "No data available for the selected compared dataset, adjust your timerange or change the selection.",
+    "noFilterValuesSupported": "Remove visible values filter to see vessels active in this area",
     "noLayersActive": "No active layers to report on, turn on a layer to see its report",
     "noPolygonsContainedOrOverlapping": "No polygons inside or overlapping your area",
     "noTimeComparisonAllowed": "Les modes de comparaison temporelle ne sont pas disponibles lorsque des filtres différents ont été appliqués aux calques",
@@ -730,6 +731,8 @@
     "workspaceNotFound": "La vue demandée n'a pas été trouvée"
   },
   "event": {
+    "darkRendezvous_one": "Dark rendezvous event",
+    "darkRendezvous_other": "Dark rendezvous events",
     "dayAbbreviated": "{{count}}j",
     "dayAbbreviated_one": "{{count}}j",
     "dayAbbreviated_other": "{{count}}j",
@@ -1013,12 +1016,19 @@
     "rulersDelete": "Supprimer toutes les mesures",
     "rulersHover": "Faites glisser pour vous déplacer ou cliquez pour en voir plus",
     "rulersStop": "Arrêter les mesures",
+    "rulersUnitToggle": "Click to switch units",
     "screenshotArea": {
       "map": "Carte uniquement",
       "withTimebar": "Avec barre de temps",
       "withTimebarAndLegend": "Avec barre de temps et légende"
     },
+    "screenshotAreaLabel": "Area",
+    "screenshotAspectRatio": {
+      "current": "Current"
+    },
+    "screenshotAspectRatioLabel": "Aspect ratio",
     "screenshotDownload": "Télécharger l'image",
+    "screenshotError": "The screenshot could not be generated, please try again or contact us",
     "screenshotPreview": "Aperçu de la capture d'écran",
     "search": "Recherchez des zones maritimes, les AMP ou les ZEE",
     "zoom_in": "Zoomer",

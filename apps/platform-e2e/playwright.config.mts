@@ -80,8 +80,8 @@ export default defineConfig({
         name: 'firefox',
         use: {
           ...devices['Desktop Firefox'],
-          // Unverified on the CI runner: headless Firefox may blocklist its WebGL driver there.
-          launchOptions: { firefoxUserPrefs: { 'webgl.force-enabled': true } },
+          // Headless Firefox on a GPU-less Linux box cannot create a WebGL context
+          headless: process.env.PLAYWRIGHT_FIREFOX_HEADED !== 'true',
         },
       },
       {

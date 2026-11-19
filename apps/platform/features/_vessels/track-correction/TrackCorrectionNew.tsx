@@ -35,6 +35,7 @@ import { getVesselProperty } from 'features/_vessels/vessel/vessel.utils'
 import { getVesselShipNameLabel } from 'features/_vessels/vessel/vessel-label.utils'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getCurrentAppUrl } from 'router/routes.utils'
+import { isImeComposing } from 'utils/dom'
 import { getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
 
 import styles from './TrackCorrection.module.css'
@@ -274,7 +275,7 @@ const TrackCorrectionNew = () => {
           className={styles.input}
           onChange={(e) => dispatch(setTrackIssueComment(e.target.value))}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !isImeComposing(e)) {
               e.preventDefault()
               onConfirmClick(trackCorrectionTimerange)
             }

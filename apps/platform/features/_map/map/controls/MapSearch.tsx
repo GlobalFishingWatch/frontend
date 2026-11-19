@@ -153,6 +153,7 @@ const MapSearch = () => {
         type="map-tool"
         testId="map-search-button"
         tooltip={isOpen ? t((t) => t.search.close) : t((t) => t.map.search)}
+        tooltipPlacement="left"
         className={cx({ [styles.active]: isOpen })}
       />
       <Hint id="areaSearch" className={styles.helpHint} />

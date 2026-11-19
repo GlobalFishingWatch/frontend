@@ -71,6 +71,7 @@ Durable facts about this repo live in a `.claude/memory/` folder, one fact per f
 @.claude/memory/task-based-affected.md
 @.claude/memory/split-e2e-directives.md
 @.claude/memory/libs-release-scope.md
+@.claude/memory/modern-web-guidance-skill.md
 
 ### Project-scoped knowledge lives with the project
 
@@ -80,7 +81,7 @@ names resolves to the paths listed here.
 
 | Project                                          | Facts                                                                                                           |
 | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| [apps/platform](apps/platform/CLAUDE.md)         | `platform-testing`, `integration-network-stub`, `locales-source-is-the-only-editable`, `popup-component-naming` |
+| [apps/platform](apps/platform/CLAUDE.md)         | `platform-testing`, `integration-network-stub`, `locales-source-is-the-only-editable`, `popup-component-naming` | `platform-browser-floor` |
 | [libs/deck-layers](libs/deck-layers/CLAUDE.md)   | `deck-collision-priority-range`, `label-layer-sdf-outline-opacity`                                              |
 | [libs/deck-loaders](libs/deck-loaders/CLAUDE.md) | `deck-loaders-parsers-run-in-prebuilt-workers`                                                                  |
 | [libs/skills](libs/skills/CLAUDE.md)             | `skills-lib`, `encode-url-skill-maintenance`                                                                    |
