@@ -1,11 +1,36 @@
 import { render } from 'test/appTestUtils'
 import { clickLayerAction } from 'test/utils/layers'
-import { waitForLayersLoaded } from 'test/utils/map'
+import {
+  clickMapAtCoordinates,
+  findLayerObjectPosition,
+  GABU_REEFER_VIEWER_COORDS,
+  waitForLayersLoaded,
+} from 'test/utils/map'
 import { createTestingMiddleware, defaultState } from 'test/utils/store'
 import { describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
+import {
+  CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
+  PRESENCE_DATAVIEW_SLUG,
+} from '@platform/config/map/dataviews'
+
 import { makeStore } from 'store'
+
+// Off the Canary Islands: inside an EEZ and on the ocean, where every activity layer has data.
+// A lon/lat, not a pixel: the camera can settle at a different latitude than defaultState's, so
+// a fixed pixel lands on a different place (and a different, unrecorded 4wings cell) per run.
+const [OCEAN_LONGITUDE, OCEAN_LATITUDE] = GABU_REEFER_VIEWER_COORDS
+const clickOcean = (
+  jotaiStore: Parameters<typeof clickMapAtCoordinates>[0]['jotaiStore'],
+  getByTestId: Parameters<typeof clickMapAtCoordinates>[0]['getByTestId']
+) =>
+  clickMapAtCoordinates({
+    jotaiStore,
+    getByTestId,
+    longitude: OCEAN_LONGITUDE,
+    latitude: OCEAN_LATITUDE,
+  })
 
 type ExpectedInstance = { id: unknown; config?: Record<string, unknown>; [key: string]: unknown }
 
@@ -46,7 +71,6 @@ describe('Datasets', () => {
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const { getByTestId, getByText, jotaiStore } = await render({ store })
     const openLayerModalButton = getByTestId('activity-add-layer-button')
-    const mapElement = getByTestId('app-main')
     const addLayerButton = getByTestId('add-layer-eez-button')
 
     await openLayerModalButton.click()
@@ -57,7 +81,7 @@ describe('Datasets', () => {
 
     await waitForLayersLoaded(jotaiStore)
 
-    await userEvent.click(mapElement, { position: { x: 6, y: 400 } })
+    await clickOcean(jotaiStore, getByTestId)
 
     expect(store.getState().location.query).toMatchObject(
       withInstances({
@@ -77,7 +101,6 @@ describe('Datasets', () => {
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const { getByTestId, getByText, jotaiStore } = await render({ store })
     const openLayerModalButton = getByTestId('activity-add-layer-button')
-    const mapElement = getByTestId('app-main')
     const addLayerButton = getByTestId('add-layer-bathymetry-button')
 
     await openLayerModalButton.click()
@@ -86,7 +109,7 @@ describe('Datasets', () => {
 
     await addLayerButton.click()
     await waitForLayersLoaded(jotaiStore)
-    await userEvent.click(mapElement, { position: { x: 200, y: 200 } })
+    await clickOcean(jotaiStore, getByTestId)
 
     expect(store.getState().location.query).toMatchObject(
       withInstances({
@@ -117,13 +140,17 @@ describe('Datasets', () => {
 
     await waitForLayersLoaded(jotaiStore)
 
-    await userEvent.hover(mapElement, { position: { x: 40, y: 350 } })
+    // Clusters are drawn where the events are; a fixed pixel lands between them
+    const clusterPosition = await findLayerObjectPosition(jotaiStore, (id) =>
+      id.startsWith('port-visits')
+    )
+    await userEvent.hover(mapElement, { position: clusterPosition })
 
     expect(store.getState().location.query).toMatchObject(
       withInstances({
         id: generatedId('port-visits'),
         category: 'events',
-        dataviewId: 'port-visit-cluster-events-v-4',
+        dataviewId: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
         config: { color: '#9AEEFF' },
       })
     )
@@ -200,7 +227,6 @@ describe('Datasets', () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const { getByTestId, getByText, jotaiStore } = await render({ store })
-    const mapElement = getByTestId('app-main')
     const openLayerModalButton = getByTestId('activity-add-layer-button')
     const addLayerButton = getByTestId('add-layer-presence-button')
 
@@ -216,20 +242,18 @@ describe('Datasets', () => {
 
     await waitForLayersLoaded(jotaiStore)
 
-    await userEvent.click(mapElement, { position: { x: 4, y: 453 } })
+    await clickOcean(jotaiStore, getByTestId)
 
     expect(store.getState().location.query).toMatchObject({
       ...withInstances(
         {
           id: generatedId('presence'),
           category: 'activity',
-          dataviewId: 'presence-activity-v-4',
+          dataviewId: PRESENCE_DATAVIEW_SLUG,
           config: { color: '#FF64CE' },
         },
         { id: 'presence', deleted: true }
       ),
-      latitude: 19,
-      longitude: 26,
       zoom: 1.49,
     })
 
@@ -240,7 +264,7 @@ describe('Datasets', () => {
     await expect
       .element(
         getByTestId('map-popup-wrapper')
-          .getByText(/[\d.]+\s+hours/)
+          .getByText(/[\d.,]+\s+hours?/)
           .first()
       )
       .toBeVisible()
@@ -250,7 +274,6 @@ describe('Datasets', () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const { getByTestId, jotaiStore } = await render({ store })
-    const mapElement = getByTestId('app-main')
     const vesselPresenceSwitch = getByTestId('activity-layer-panel-switch-presence')
 
     await userEvent.click(vesselPresenceSwitch)
@@ -265,7 +288,7 @@ describe('Datasets', () => {
 
     await waitForLayersLoaded(jotaiStore)
 
-    await userEvent.click(mapElement, { position: { x: 5, y: 402 } })
+    await clickOcean(jotaiStore, getByTestId)
 
     expect(store.getState().location.query).toMatchObject(
       withInstances(
@@ -281,6 +304,6 @@ describe('Datasets', () => {
 
     const valueElement = getByTestId('map-popup-wrapper').getByTestId('activity-tooltip-row-value')
     await expect.element(valueElement).toBeVisible()
-    await expect.element(valueElement).toMatchTextContent(/[\d,]+\s+hours/)
+    await expect.element(valueElement).toMatchTextContent(/[\d.,]+\s+hours?/)
   })
 })

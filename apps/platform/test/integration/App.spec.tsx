@@ -1,4 +1,5 @@
 import { render } from 'test/appTestUtils'
+import { waitForMapViewport } from 'test/utils/map'
 import { createTestingMiddleware, defaultState } from 'test/utils/store'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -9,7 +10,7 @@ const AIS_HIDDEN_INSTANCE = expect.objectContaining({
   config: expect.objectContaining({ visible: false }),
 })
 
-describe('Fishing Map App', () => {
+describe('Platform App', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
@@ -38,11 +39,14 @@ describe('Fishing Map App', () => {
   it('should preserve map previous state on layer toggle', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
-    const { getByTestId } = await render({ store })
+    const { getByTestId, jotaiStore } = await render({ store })
 
+    await waitForMapViewport(jotaiStore)
     await getByTestId('map-control-zoom-in').click()
 
-    await expect.poll(() => store.getState().location.query.zoom).toBe(2.49)
+    await expect.poll(() => store.getState().location.query.zoom, { timeout: 5000 }).toBe(2.49)
+
+    const { latitude, longitude } = store.getState().location.query
 
     await getByTestId('activity-layer-panel-switch-ais').click()
     const actions = testingMiddleware.getActions()
@@ -52,8 +56,8 @@ describe('Fishing Map App', () => {
 
     const expectedResult = {
       dataviewInstances: expect.arrayContaining([AIS_HIDDEN_INSTANCE]),
-      latitude: 19,
-      longitude: 26,
+      latitude,
+      longitude,
       zoom: 2.49,
     }
     expect(toggleAction?.payload?.query).toMatchObject(expectedResult)

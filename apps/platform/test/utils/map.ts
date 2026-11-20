@@ -150,6 +150,37 @@ export async function waitForViewportSettled(
   }
 }
 
+/**
+ * Pixels (relative to the map element) of some object drawn by the layer whose id passes
+ * `matchLayerId`, found by asking deck what is under a grid of points.
+ *
+ * For layers whose objects sit where the data puts them, such as event clusters: a spec that needs
+ * "a cluster" cannot know where one is drawn, and a fixed pixel lands between them.
+ */
+export async function findLayerObjectPosition(
+  jotaiStore: JotaiStore,
+  matchLayerId: (layerId: string) => boolean,
+  { step = 24, timeout = 10000 }: { step?: number; timeout?: number } = {}
+) {
+  await waitForMapViewport(jotaiStore)
+  await waitForViewportSettled(jotaiStore)
+  return vi.waitFor(
+    () => {
+      const deck = jotaiStore.get(mapInstanceAtom)
+      const viewport = deck?.getViewports?.().find((v: { id?: string }) => v.id === MAP_VIEW_ID)
+      if (!deck || !viewport) throw new Error('Map viewport not ready')
+      for (let y = step / 2; y < viewport.height; y += step) {
+        for (let x = step / 2; x < viewport.width; x += step) {
+          const info = deck.pickObject({ x, y, radius: 0 })
+          if (info?.layer && matchLayerId(info.layer.id)) return { x, y }
+        }
+      }
+      throw new Error('No object of the layer on screen yet')
+    },
+    { timeout, interval: 500 }
+  )
+}
+
 /** Projects a lon/lat to pixels relative to the map element, once the camera has settled. */
 export async function projectToMap(jotaiStore: JotaiStore, longitude: number, latitude: number) {
   await waitForMapViewport(jotaiStore)

@@ -5,6 +5,7 @@ import { clickMapAtCoordinates, projectToMap, waitForLayersLoaded } from 'test/u
 import { addVesselToWorkspace } from 'test/utils/navigation/addVesselToWorkspace'
 import { GFWAPITestUtils } from 'test/utils/network/gfw-api-test'
 import { defaultState } from 'test/utils/store'
+import { getTimebarX } from 'test/utils/timebar'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
@@ -18,9 +19,9 @@ import { makeStore } from 'store'
 /** Dataset version the app pins vessels with */
 const V = `v${PIPE_DATASET_VERSION}.0`
 
-/** On the Gabu Reefer track at the default workspace zoom */
 const GABU_REEFER_TRACK: [number, number] = [-17.3, 26.4]
 const GABU_REEFER_CELL: [number, number] = [-15, 28]
+const GABU_REEFER_BANJUL_VISIT_DATE = Date.parse('2026-02-01T00:00:00.000Z')
 
 const filterPresenceBySpain = async (
   getByTestId: Awaited<ReturnType<typeof render>>['getByTestId'],
@@ -68,8 +69,10 @@ describe('Vessel map popup', () => {
 
     const mapPopup = getByTestId('map-popup-wrapper')
     await expect.element(mapPopup.getByText('Gabu Reefer')).toBeVisible()
-    await expect.element(mapPopup.getByText(/Speed: [\d.]+ knots/)).toBeVisible()
-    await expect.element(mapPopup.getByText(/Depth: -?[\d.]+ meters/)).toBeVisible()
+    await expect.element(mapPopup.getByText('Speed', { exact: true })).toBeVisible()
+    await expect.element(mapPopup.getByText(/^[\d.]+ knots$/)).toBeVisible()
+    await expect.element(mapPopup.getByText('Depth', { exact: true })).toBeVisible()
+    await expect.element(mapPopup.getByText(/^[\d.]+ meters$/)).toBeVisible()
   })
 
   it('should be able to close an opened popup', async () => {
@@ -116,14 +119,18 @@ describe('Vessel map popup', () => {
     const GFWAPITest = new GFWAPITestUtils()
     const store = makeStore(defaultState, [])
 
-    const { getByTestId, getByText, router } = await render({ authenticated: true, store })
+    const { getByTestId, getByText, router, jotaiStore } = await render({
+      authenticated: true,
+      store,
+    })
     await router.navigate(addVesselToWorkspace())
 
     const timebarElement = getByTestId('timebar-wrapper')
 
     await GFWAPITest.waitForRequest('/events')
 
-    await userEvent.hover(timebarElement, { position: { x: 305, y: 35 } })
+    const x = await getTimebarX(getByTestId, jotaiStore, GABU_REEFER_BANJUL_VISIT_DATE)
+    await userEvent.hover(timebarElement, { position: { x, y: 35 } })
 
     // This check is not showing on webkit right now, need to investigate why, skipping for now to unblock other tests
     // await expect
