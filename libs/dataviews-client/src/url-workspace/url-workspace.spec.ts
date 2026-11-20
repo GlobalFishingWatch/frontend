@@ -424,6 +424,20 @@ describe('url-workspace', () => {
       expect(() => stringifyWorkspace(workspace)).toThrow()
     })
 
+    test('should drop non-plain objects instead of recursing into them', () => {
+      class Node {
+        self: Node = this
+      }
+      const workspace: any = {
+        zoom: 3,
+        node: new Node(),
+        fn: () => {},
+        nested: { node: new Node() },
+      }
+
+      expect(stringifyWorkspace(workspace)).toBe('zoom=3')
+    })
+
     test('should handle very long repeated values', () => {
       const longValue = 'a'.repeat(1000)
       const workspace: any = {
