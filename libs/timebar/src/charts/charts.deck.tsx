@@ -15,6 +15,9 @@ import styles from './charts.module.css'
 
 const VIEW = new OrthographicView({ id: '2d-scene', controller: false })
 const WRAPPER_STYLE = { position: 'absolute', top: 0, left: 0 } as const
+// With no layers the canvas stays mounted (see below) but must not catch pointer events
+// meant for the timeline underneath, as it did not exist before.
+const EMPTY_WRAPPER_STYLE = { ...WRAPPER_STYLE, pointerEvents: 'none' } as const
 
 const TimebarDeckglWrapper = ({
   showDeckStats = false,
@@ -40,12 +43,15 @@ const TimebarDeckglWrapper = ({
     } as OrthographicViewState
   }, [outerScale, outerWidth, graphHeight, origin])
 
-  if (!outerWidth || !graphHeight || !layers.length) {
+  if (!outerWidth || !graphHeight) {
     return null
   }
 
   return (
-    <div style={WRAPPER_STYLE} className={cx(styles.charts, { [styles.loading]: loading })}>
+    <div
+      style={layers.length ? WRAPPER_STYLE : EMPTY_WRAPPER_STYLE}
+      className={cx(styles.charts, { [styles.loading]: loading })}
+    >
       <DeckGL
         views={VIEW}
         deviceProps={deviceProps}

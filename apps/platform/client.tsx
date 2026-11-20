@@ -48,6 +48,9 @@ sentryInit({
     /^Script error\.?$/,
     /^uncaught exception: undefined$/,
     /WeakRef is not defined/,
+    // GPU blocklisted/disabled or out of contexts. deck.gl rethrows it from an internal promise we
+    // cannot catch; DeckGLWrapper's onError shows the user a message instead (FRONTEND-G5, FRONTEND-XM).
+    /Failed to create WebGL context/,
   ],
   dataCollection: { userInfo: true, httpBodies: [] },
   tracesSampleRate: 0.1,
