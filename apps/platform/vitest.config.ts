@@ -4,42 +4,19 @@ import type { ViteUserConfig } from 'vitest/config'
 import { configDefaults, defineConfig } from 'vitest/config'
 import type { BrowserProviderOption } from 'vitest/node'
 
+import { listRecordings } from './test/utils/vitest/commands.ts'
 import { authTokensPlugin, publicAssetsPlugin } from './test/utils/vitest/plugins.ts'
 import { basePath, plugins } from './vite.config.ts'
 
 const DEFAULT_VIEWPORT = { width: 1280, height: 720 }
 
-// Pinned so a local .env cannot swap the nav the specs drive (PlatformNav vs LegacyNav). CI has
-// no .env and production builds without the flag, so the specs are written against LegacyNav.
-// It has to be process.env: Vite gives variables already in the environment priority over .env
-// files, while a `define` for `import.meta.env.VITE_PLATFORM_MODE` does not reach the env object
-// that data/env.ts parses.
-// Specs for platform-only pages (Help Hub, Areas, Ports…) cannot run under this pin and stay in
-// LEGACY_SPECS. Mocking `PLATFORM_MODE` per file closes the browser page — see HelpHub.spec.tsx.
 process.env.VITE_PLATFORM_MODE = 'false'
-// Every dataset and dataview id the app requests carries this version, so the recordings in
-// test/fixtures/api depend on it. Pinned for the same reason as above; when the app's default
-// (libs/datasets-client/src/constants.ts) moves on, change it here and re-record.
 process.env.VITE_PIPE_DATASET_VERSION = '5'
 
-// Specs not yet moved onto the network stub (test/utils/network). They still depend on the live
-// API, so they are kept out of every run, CI included: @nx/vitest infers the integration-ci--*
-// tasks from `include` minus `exclude`. Remove a spec from this list in the PR that converts it.
 const LEGACY_SPECS = [
   // Needs platform mode, which the suite pins off (see the VITE_PLATFORM_MODE pin).
   'test/integration/HelpHub.spec.tsx',
-  'test/integration/Datasets.spec.tsx',
-  'test/integration/MarineManager.spec.tsx',
-  'test/integration/Map.spec.tsx',
-  'test/integration/Polygon.spec.tsx',
-  'test/integration/PrivateWorkspace.spec.tsx',
-  'test/integration/Reports.spec.tsx',
-  'test/integration/Timebar.spec.tsx',
   'test/integration/UserDatasets.spec.tsx',
-  'test/integration/Vessels.spec.tsx',
-  'test/integration/VesselSearch.spec.tsx',
-  'test/integration/VesselsVMSBrazil.spec.tsx',
-  'test/integration/VesselViewer.spec.tsx',
 ]
 
 // Mirrors compilerOptions.paths in tsconfig.json.
@@ -140,6 +117,7 @@ export default defineConfig(({ mode }): ViteUserConfig => {
     },
     optimizeDeps: {
       include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
+      entries: ['routes/**/*.tsx', 'features/**/*.tsx'],
     },
     test: {
       watch: false,
@@ -180,6 +158,7 @@ export default defineConfig(({ mode }): ViteUserConfig => {
         ui: isUiMode,
         headless: !isUiMode,
         viewport: DEFAULT_VIEWPORT,
+        commands: { listRecordings },
         locators: {
           // vitest 5 flipped this to `true`.
           exact: false,

@@ -18,6 +18,10 @@ import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
 import { InputText } from '@globalfishingwatch/ui-components/input-text'
 import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { ROUTE_PATHS } from '@platform/config/routes'
+import {
+  getDeleteDatasetTestId,
+  USER_DATASETS_SPINNER_TESTID,
+} from '@platform/config/selectors/user'
 
 import {
   deleteDatasetThunk,
@@ -193,7 +197,7 @@ function UserDatasets() {
           </Button>
         </div>
         {loading ? (
-          <div className={styles.placeholder} data-testid="datasets-spinner">
+          <div className={styles.placeholder} data-testid={USER_DATASETS_SPINNER_TESTID}>
             <Spinner size="small" />
           </div>
         ) : (
@@ -261,7 +265,7 @@ function UserDatasets() {
                           />
                         )}
                         <IconButton
-                          testId={`delete-dataset-${dataset.id}`}
+                          testId={getDeleteDatasetTestId(dataset.id)}
                           icon="delete"
                           type="warning"
                           loading={dataset.id === datasetStatusId}
