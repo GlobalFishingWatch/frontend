@@ -6,12 +6,21 @@ import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
 
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
 import type { ReportVesselWithDatasets } from 'features/_reports/report-area/area-reports.selectors'
-import { selectReportActivityFlatten } from 'features/_reports/report-area/area-reports.selectors'
+import {
+  selectReportActivityFlatten,
+  selectReportDataviewsWithPermissions,
+} from 'features/_reports/report-area/area-reports.selectors'
+import {
+  getFiltersByDataview,
+  getUnmatchedDetections,
+  getVesselValue,
+} from 'features/_reports/tabs/activity/vessels/report-activity-vessels.utils'
 
 export const selectReportVesselsList = createSelector(
-  [selectReportActivityFlatten, selectAllDatasets],
-  (vessels, datasets) => {
+  [selectReportActivityFlatten, selectAllDatasets, selectReportDataviewsWithPermissions],
+  (vessels, datasets, dataviews) => {
     if (!vessels?.length) return null
+    const filtersByDataview = getFiltersByDataview(dataviews)
     return Object.values(groupBy(vessels, (v) => v.vesselId))
       .flatMap((vesselActivity) => {
         if (!vesselActivity[0]?.vesselId) {
@@ -35,7 +44,8 @@ export const selectReportVesselsList = createSelector(
           flag: vesselActivity[0]?.flag,
           geartype: vesselActivity[0]?.geartype,
           vesselType: vesselActivity[0]?.vesselType,
-          value: vesselActivity[0]?.value,
+          // A vessel in several sublayers counts once: see getVesselValue
+          value: getVesselValue(vesselActivity, filtersByDataview),
           infoDataset,
           trackDataset,
           color: vesselActivity[0]?.color,
@@ -58,10 +68,16 @@ export const selectReportVesselsNumber = createSelector(
   }
 )
 
-export const selectReportVesselsHours = createSelector([selectReportVesselsList], (vessels) => {
-  if (!vessels?.length) return null
-  return sum(vessels.map((vessel) => (vessel.value as number) || 0))
-})
+export const selectReportVesselsHours = createSelector(
+  [selectReportVesselsList, selectReportActivityFlatten, selectReportDataviewsWithPermissions],
+  (vessels, rows, dataviews) => {
+    if (!rows?.length) {
+      return null
+    }
+    const vesselsHours = sum((vessels || []).map((vessel) => (vessel.value as number) || 0))
+    return vesselsHours + getUnmatchedDetections(rows, dataviews)
+  }
+)
 
 export const selectReportActivityDatasetIdsWithVessels = createSelector(
   [selectReportActivityFlatten],

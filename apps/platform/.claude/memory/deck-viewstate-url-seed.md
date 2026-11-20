@@ -32,3 +32,16 @@ report sits on `ReportActivityPlaceholder loading` forever. Found 2026-09-22 on 
 - Reproduce with `platform-e2e`: load a report URL, `page.reload()`, wait — see
   [[browser-testing-uses-platform-e2e]]. A stuck report shows the placeholder while the map sits
   at 26/19/1.49.
+
+## Second clobber: fitting before deck sizes its canvas (fixed 2026-11-20)
+
+Same symptom, different cause, on an EEZ report refresh. `getMapCoordinatesFromBounds` measures
+`#map` from the DOM. Right after deck mounts that canvas still has the HTML default **300×150**
+until deck's first `onResize`. `useFitAreaInViewport` fitted in that window (zoom 2.15 instead of
+5.38 for Italy), then `useReportAreaCenter` recomputed with the real size on `mapSizeAtom` and
+nothing re-fitted. `canFit` now also waits for `mapSizeAtom`.
+
+**How to apply:** anything that derives a camera from the map's size must wait for `mapSizeAtom`,
+not just for `deckMap`. Reproduce with a report URL and repeated reloads — `playwright-cli`
+(global `@playwright/cli`) with a fixed viewport in a `--config` file works; resizing after load
+masks the bug because it triggers a fresh fit.
