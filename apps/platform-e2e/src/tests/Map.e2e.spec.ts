@@ -6,13 +6,17 @@ import { TAGS } from '../tags'
 
 const VESSEL_NAME = 'Rocio Un'
 
-// Mid-Atlantic, at the zoom the old integration test reached (default 1.49 + 8 zoom-ins). The
-// vessel below is real data under the default time range (the last 3 months of data), so it can
-// drop out as that window moves. Moved here from the platform integration specs (Map.spec.tsx).
+// Mid-Atlantic, at the zoom the old integration test reached (default 1.49 + 8 zoom-ins). Moved
+// here from the platform integration specs (Map.spec.tsx). The time range is pinned to the one
+// that spec ran with (3 months ending at its TEST_END_DATE): under the app's default range, which
+// follows today's date, this spot is empty and the click opens no popup. The map is centred on
+// the vessel's position in that range, because clickMapCenterUntilVisible clicks the view centre.
 const ATLANTIC_POSITIONS: MapViewport = {
-  latitude: 19.0776,
-  longitude: -37.0458,
+  latitude: 19.2818,
+  longitude: -36.9255,
   zoom: 9.49,
+  start: '2025-11-18T12:00:00.000Z',
+  end: '2026-02-18T12:00:00.000Z',
 }
 const POSITIONS_VESSEL_NAME = /No\.805 Oryong/i
 

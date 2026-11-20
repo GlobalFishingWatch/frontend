@@ -15,6 +15,9 @@ export type MapViewport = {
   latitude: number
   longitude: number
   zoom: number
+  /** Without start/end the app uses its default range, which moves with today's date */
+  start?: string
+  end?: string
 }
 
 export type MapViewportWithClick = MapViewport & {
@@ -61,11 +64,12 @@ export class MapPage {
     await this.page.goto(`${MAP_PATH}?${params}`)
   }
 
-  async goToViewport({ latitude, longitude, zoom }: MapViewport) {
+  async goToViewport({ latitude, longitude, zoom, start, end }: MapViewport) {
     const params = new URLSearchParams({
       latitude: String(latitude),
       longitude: String(longitude),
       zoom: String(zoom),
+      ...(start && end && { start, end }),
     })
     await this.page.goto(`${MAP_PATH}?${params}`)
   }
