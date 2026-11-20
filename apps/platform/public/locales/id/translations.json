@@ -1032,6 +1032,7 @@
     "screenshotError": "The screenshot could not be generated, please try again or contact us",
     "screenshotPreview": "Screenshot preview",
     "search": "Mencari wilayah laut dan samudra, KKP/MPA, atau ZEE",
+    "webglUnavailable": "The map can't be displayed because your browser couldn't start WebGL.",
     "zoom_in": "Perbesar",
     "zoom_out": "Perkecil",
     "zoomToArea": "Zoom to area"
