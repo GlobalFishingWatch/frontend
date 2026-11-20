@@ -1,24 +1,15 @@
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import {
-  USER_POLYGON_DATASET,
-  USER_POLYGON_DATASET_ID,
-  USER_POLYGON_LAYER_ID,
-} from 'test/utils/fixtures'
+import { USER_POLYGON_DATASET, USER_POLYGON_DATASET_ID } from 'test/utils/fixtures'
 import { clickLayerAction } from 'test/utils/layers'
-import { waitForLayersLoaded } from 'test/utils/map'
 import { navigateToPolygonEditor } from 'test/utils/navigation/navigateToPolygonEditor'
 import { getDefaultStateWithDatasets } from 'test/utils/store'
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
 import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
-import { ROUTE_PATHS } from '@platform/config/routes'
-import { MAP_VIEW_ID } from '@platform/config/selectors/map'
 
-import { mapInstanceAtom } from 'features/_map/map/map.atoms'
 import { makeStore } from 'store'
-import { UserTab } from 'types'
 
 const defaultState = getDefaultStateWithDatasets([USER_POLYGON_DATASET])
 
@@ -39,8 +30,9 @@ describe('Polygon', () => {
     await userEvent.click(getByTestId('user-context-layer:v1-add-to-map-0').first())
 
     await clickLayerAction(getByTestId, {
-      // The suffix is Date.now() when the layer is added, and the test clock moves
-      row: new RegExp(`^context-layer-${USER_POLYGON_LAYER_ID}-\\d+$`),
+      // The instance id is `user-polygons-${Date.now()}-${Date.now()}` (getUserPolygonsDataviewInstance,
+      // then LayerLibraryUserPanel), and the test clock moves, so neither timestamp is fixed
+      row: /^context-layer-user-polygons-\d+-\d+$/,
       action: `user-layer-edit-${USER_POLYGON_DATASET_ID}`,
     })
 
@@ -82,79 +74,5 @@ describe('Polygon', () => {
           cacheHash: '',
         },
       })
-  })
-
-  it('should be able to draw a new polygon, see it in the map and delete it', async () => {
-    const testTimestamp = 1771416000000 + Math.floor(Math.random() * 1000000000)
-    const dateNowSpy = vi.spyOn(Date, 'now').mockReturnValue(testTimestamp)
-
-    try {
-      const jotaiStore = createJotaiStore()
-      const store = makeStore(defaultState)
-      const { getByTestId, getByText, router } = await render({
-        store,
-        jotaiStore,
-        authenticated: true,
-      })
-
-      await userEvent.click(getByTestId('draw-polygon-button'))
-
-      // Define triangle vertices in [longitude, latitude] format
-      await expect
-        .poll(() => jotaiStore.get(mapInstanceAtom), {
-          timeout: 10000,
-          interval: 500,
-        })
-        .toBeDefined()
-      const mapInstance = jotaiStore.get(mapInstanceAtom)
-      const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
-      if (!viewport) {
-        throw new Error('Map viewport not found - cannot project coordinates')
-      }
-      const vertex1 = viewport?.project([-57.85, 49]) || [300, 200]
-      const vertex2 = viewport?.project([-32.8, 49.09]) || [400, 200]
-      const vertex3 = viewport?.project([-45.34, 29.9]) || [350, 300]
-
-      // Draw a triangle polygon
-      await userEvent.click(getByTestId('app-main'), { position: { x: vertex1[0], y: vertex1[1] } })
-      await userEvent.click(getByTestId('app-main'), { position: { x: vertex2[0], y: vertex2[1] } })
-      await userEvent.click(getByTestId('app-main'), { position: { x: vertex3[0], y: vertex3[1] } })
-      await userEvent.click(getByTestId('app-main'), { position: { x: vertex1[0], y: vertex1[1] } })
-      await userEvent.fill(getByTestId('input-layer-name'), 'Polygon drawing test')
-      await userEvent.click(getByTestId('draw-save-polygon'))
-
-      // The saved polygon is added as a new layer
-      await waitForLayersLoaded(jotaiStore)
-
-      //Delete layer after test
-      // await cleanupExistingTestPolygon(store)
-      window.confirm = () => true
-      await router.navigate({
-        to: ROUTE_PATHS.USER,
-        search: {
-          ...store.getState().location.query,
-          userTab: UserTab.Datasets,
-        },
-      })
-
-      await expect.poll(() => getByTestId('datasets-spinner')).not.toBeInTheDocument()
-
-      await expect
-        .poll(() => getByTestId(/delete-dataset-.*polygon-drawing-test/).all().length, {
-          timeout: 30000,
-        })
-        .toBeGreaterThan(0)
-
-      const deleteButtons = getByTestId(/delete-dataset-.*polygon-drawing-test/).all()
-
-      for (const button of deleteButtons) {
-        await expect.element(button).toBeVisible()
-        await userEvent.click(button)
-      }
-
-      expect(getByText('Polygon drawing test')).not.toBeInTheDocument()
-    } finally {
-      dateNowSpy.mockRestore()
-    }
   })
 })

@@ -1,15 +1,23 @@
 import type { Locator, Page } from 'playwright/test'
 import { expect } from 'playwright/test'
 
-import { MAP_POPUP_TESTID } from '@platform/config/selectors/map'
+import {
+  ACTIVITY_SECTION_TESTID,
+  ACTIVITY_VISUALIZATIONS_CHANGE_TESTID,
+  MAP_POPUP_TESTID,
+} from '@platform/config/selectors/map'
 
+import { MAP_VIEWPORT, waitForMapIdle } from '../helpers/map'
 import { TIMEOUTS } from '../helpers/timeouts'
 import { MAP_PATH } from '../paths'
 
-export type MapViewportWithClick = {
+export type MapViewport = {
   latitude: number
   longitude: number
   zoom: number
+}
+
+export type MapViewportWithClick = MapViewport & {
   start: string
   end: string
   clickCoordinates: [number, number]
@@ -51,6 +59,51 @@ export class MapPage {
       'cCo[1]': String(clickLatitude),
     })
     await this.page.goto(`${MAP_PATH}?${params}`)
+  }
+
+  async goToViewport({ latitude, longitude, zoom }: MapViewport) {
+    const params = new URLSearchParams({
+      latitude: String(latitude),
+      longitude: String(longitude),
+      zoom: String(zoom),
+    })
+    await this.page.goto(`${MAP_PATH}?${params}`)
+  }
+
+  /** Needs a logged-in user and a zoom where the activity layer reports positions available. */
+  async switchActivityToPositions() {
+    await waitForMapIdle(this.page)
+    const positionsButton = this.page
+      .getByTestId(ACTIVITY_SECTION_TESTID)
+      .getByTestId(`${ACTIVITY_VISUALIZATIONS_CHANGE_TESTID}-positions`)
+    // disabled until the fourwings layer has loaded and allows positions at this zoom
+    await expect(positionsButton).toBeEnabled({ timeout: TIMEOUTS.LONG })
+    await positionsButton.click()
+    await waitForMapIdle(this.page)
+  }
+
+  /**
+   * Draws a triangle around the map centre and closes it by clicking its first vertex again.
+   * Needs the draw dialog open. Where it lands on the globe does not matter.
+   */
+  async drawTriangle() {
+    await waitForMapIdle(this.page)
+    const viewport = this.page.locator(MAP_VIEWPORT)
+    const box = await viewport.boundingBox()
+    if (!box) {
+      throw new Error('Map viewport is not rendered')
+    }
+    const centerX = box.width / 2
+    const centerY = box.height / 2
+    const vertices = [
+      { x: centerX - 100, y: centerY - 80 },
+      { x: centerX + 100, y: centerY - 80 },
+      { x: centerX, y: centerY + 90 },
+    ]
+    for (const position of [...vertices, vertices[0]]) {
+      // The view div is pointer-events: none, so force sends the click to the canvas under it
+      await viewport.click({ position, force: true })
+    }
   }
 
   async waitForPopupLoaded() {
