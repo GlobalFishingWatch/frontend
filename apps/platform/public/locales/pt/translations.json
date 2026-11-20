@@ -1032,6 +1032,7 @@
     "screenshotError": "The screenshot could not be generated, please try again or contact us",
     "screenshotPreview": "Pré-visualizar imagem",
     "search": "Busque por uma área de interesse, por exemplo: mar, porto, ZEE, OROP",
+    "webglUnavailable": "The map can't be displayed because your browser couldn't start WebGL.",
     "zoom_in": "Aumentar zoom",
     "zoom_out": "Diminuir zoom",
     "zoomToArea": "Zoom to area"
