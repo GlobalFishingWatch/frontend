@@ -61,7 +61,7 @@
       "tooltip": "This is the portion of {{area}} {{unit}} with the most activity in your area",
       "tooltipAmmount": "{{ammount}} hours ({{percentage}}% of total)"
     },
-    "hoursByLayerDisclaimer": "Some activity is included in more than one of your layers, so adding their values would count it twice.",
+    "hoursByLayerDisclaimer": "Some activity could be included in more than one of your layers, so adding their values could count it multiple times",
     "inNamedArea": "in <strong>{{area}}</strong>",
     "insideYourArea": "inside your area",
     "inTheArea": "dans la zone située",
