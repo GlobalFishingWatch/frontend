@@ -51,15 +51,18 @@ sentryInit({
     // GPU blocklisted/disabled or out of contexts. deck.gl rethrows it from an internal promise we
     // cannot catch; DeckGLWrapper's onError shows the user a message instead (FRONTEND-G5, FRONTEND-XM).
     /Failed to create WebGL context/,
+    // Injected by the Google app's in-app browser on iOS, not our code (FRONTEND-ZN).
+    /window\.webkit\.messageHandlers/,
   ],
   dataCollection: { userInfo: true, httpBodies: [] },
   tracesSampleRate: 0.1,
   denyUrls: [/googletagmanager\.com/, /google-analytics\.com/, /\/gtm-extras\//],
-  // Drop errors whose every frame is `<anonymous>`: code injected by extensions or host WebViews
-  // (FRONTEND-YA, FRONTEND-YQ). Our bundle always has file URLs, so any of our frames keeps the event.
+  // Drop errors with no frame in a .js file: code injected by extensions or host WebViews shows up
+  // as `<anonymous>` (FRONTEND-YA, FRONTEND-YQ) or as the page URL itself (Google iOS app,
+  // FRONTEND-Z1). Our bundle always runs from .js assets, so any of our frames keeps the event.
   beforeSend(event) {
     const frames = event.exception?.values?.flatMap((value) => value.stacktrace?.frames ?? [])
-    if (frames?.length && frames.every((frame) => frame.filename === '<anonymous>')) {
+    if (frames?.length && frames.every((frame) => !/\.m?js(\?|#|$)/.test(frame.filename ?? ''))) {
       return null
     }
     return event
