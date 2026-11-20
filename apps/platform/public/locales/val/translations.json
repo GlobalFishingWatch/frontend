@@ -61,6 +61,7 @@
       "tooltip": "crwdns131801:0{{area}}crwdnd131801:0{{unit}}crwdne131801:0",
       "tooltipAmmount": "crwdns131803:0{{ammount}}crwdnd131803:0{{percentage}}crwdne131803:0"
     },
+    "hoursByLayerDisclaimer": "crwdns139031:0crwdne139031:0",
     "inNamedArea": "crwdns138893:0{{area}}crwdne138893:0",
     "insideYourArea": "crwdns131805:0crwdne131805:0",
     "inTheArea": "crwdns138409:0crwdne138409:0",
