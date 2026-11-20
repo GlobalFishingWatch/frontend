@@ -1,0 +1,12 @@
+{
+  "method": "GET",
+  "key": "GET /v3/events/stats?buffer-operation=DISSOLVE&buffer-unit=NAUTICALMILES&datasets%5B0%5D=public-global-encounters-events%3Av5.0&encounter-types%5B0%5D=CARRIER-FISHING&encounter-types%5B1%5D=FISHING-CARRIER&encounter-types%5B2%5D=FISHING-SUPPORT&encounter-types%5B3%5D=SUPPORT-FISHING&end-date=2026-02-18T12%3A00%3A00.000Z&group-by=FLAG&includes%5B0%5D=TIME_SERIES&includes%5B1%5D=EVENTS_GROUPED&includes%5B2%5D=TOTAL_COUNT&start-date=2025-11-18T12%3A00%3A00.000Z&time-filter-mode=START-DATE&timeseries-interval=DAY",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8",
+    "x-ratelimit-ip-limit": "600",
+    "x-ratelimit-ip-remaining": "562",
+    "x-ratelimit-ip-reset": "15"
+  },
+  "body": "json"
+}

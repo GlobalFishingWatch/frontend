@@ -92,6 +92,10 @@ were cancelled`, even when Integration Tests only read the remote cache and star
 - Split tasks do not inherit `test`'s `dependsOn`. `targetDefaults["integration-ci--**/**"]`
   adds `prepare-loaders`. `clean-test-artifacts` is left out on purpose: it would delete
   `__traces__` while sibling specs are writing to them.
+- **The login below is only needed in record mode (since 2026-11-19).** The specs now replay
+  recorded API responses with a fake token ([[integration-network-stub]]); `globalSetup`, and so
+  the login, runs only when `VITEST_RECORD=true`. The workflow's `platform:test:login` step and
+  `TEST_AUTH_TOKENS` are now redundant for the integration job and can be removed.
 - **One login per CI run.** The API keeps one token per user, and a new login invalidates the
   previous one, so parallel workers must never log in separately. The main job runs
   `platform:test:login` (jiti, because lib `dist` uses extensionless imports that plain Node ESM

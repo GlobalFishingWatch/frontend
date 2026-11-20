@@ -1,13 +1,23 @@
 import { playwright } from '@vitest/browser-playwright'
 import { loadEnv } from 'vite'
 import type { ViteUserConfig } from 'vitest/config'
-import { defineConfig } from 'vitest/config'
+import { configDefaults, defineConfig } from 'vitest/config'
 import type { BrowserProviderOption } from 'vitest/node'
 
+import { listRecordings } from './test/utils/vitest/commands.ts'
 import { authTokensPlugin, publicAssetsPlugin } from './test/utils/vitest/plugins.ts'
 import { basePath, plugins } from './vite.config.ts'
 
 const DEFAULT_VIEWPORT = { width: 1280, height: 720 }
+
+process.env.VITE_PLATFORM_MODE = 'false'
+process.env.VITE_PIPE_DATASET_VERSION = '5'
+
+const LEGACY_SPECS = [
+  // Needs platform mode, which the suite pins off (see the VITE_PLATFORM_MODE pin).
+  'test/integration/HelpHub.spec.tsx',
+  'test/integration/UserDatasets.spec.tsx',
+]
 
 // Mirrors compilerOptions.paths in tsconfig.json.
 //
@@ -60,6 +70,10 @@ const tsconfigPathAliases = [
 const profileName = process.env.CI ? 'ci' : (process.env.NX_TASK_TARGET_TARGET ?? 'default')
 const playwrightProvider: BrowserProviderOption = playwright({
   persistentContext: `./node_modules/.cache/vitest-playwright-user-data/${profileName.replace(/[^\w.-]+/g, '_')}`,
+  // Without this the browser inherits the OS UI language, so on a pt-BR machine i18next detects
+  // `pt` from navigator.language and Intl/Luxon format numbers and dates in Portuguese. Pin it so
+  // local runs match CI. Also applies to the persistent context (passed to launchPersistentContext).
+  contextOptions: { locale: 'en-US' },
 })
 
 export default defineConfig(({ mode }): ViteUserConfig => {
@@ -69,6 +83,9 @@ export default defineConfig(({ mode }): ViteUserConfig => {
   const isUiTarget = env.NX_TASK_TARGET_TARGET === 'test:ui'
   const isUiMode = mode === 'ui' || env.VITEST_UI === 'true' || isUiTarget
   const isCoverageMode = mode === 'coverage' || env.VITEST_COVERAGE === 'true'
+  // Record mode forwards stubbed requests to the real API and saves the responses as fixtures
+  // (test/utils/network/mock-network.ts). Only it needs a real login.
+  const isRecordMode = env.VITEST_RECORD === 'true'
 
   return {
     root: import.meta.dirname,
@@ -95,9 +112,12 @@ export default defineConfig(({ mode }): ViteUserConfig => {
       'process.env.TEST_USER_EMAIL': JSON.stringify(env.TEST_USER_EMAIL),
       'process.env.TEST_USER_PASSWORD': JSON.stringify(env.TEST_USER_PASSWORD),
       'process.env.VITEST': JSON.stringify('true'),
+      'import.meta.env.VITEST_RECORD': JSON.stringify(String(isRecordMode)),
+      'import.meta.env.VITEST_NETWORK_DEBUG': JSON.stringify(env.VITEST_NETWORK_DEBUG ?? 'false'),
     },
     optimizeDeps: {
       include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
+      entries: ['routes/**/*.tsx', 'features/**/*.tsx'],
     },
     test: {
       watch: false,
@@ -112,6 +132,12 @@ export default defineConfig(({ mode }): ViteUserConfig => {
         '**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
         'tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       ],
+      // Spread the defaults: setting `exclude` replaces them, and node_modules would be globbed.
+      // INTEGRATION_INCLUDE_LEGACY=true runs them anyway, e.g. to see what a spec still needs stubbed.
+      exclude: [
+        ...configDefaults.exclude,
+        ...(env.INTEGRATION_INCLUDE_LEGACY === 'true' ? [] : LEGACY_SPECS),
+      ],
       fileParallelism: false,
       // Expected with real API data: datasets without geometryType are hidden on purpose.
       onConsoleLog: (log) => !log.includes('Dataset hidden from the layer library'),
@@ -124,7 +150,7 @@ export default defineConfig(({ mode }): ViteUserConfig => {
       },
       testTimeout: 30000,
       setupFiles: './test/setup/vitest.setup.ts',
-      globalSetup: './test/setup/vitest.setup-global.ts',
+      globalSetup: isRecordMode ? './test/setup/vitest.setup-global.ts' : undefined,
       retry: 0,
       browser: {
         enabled: true,
@@ -132,6 +158,7 @@ export default defineConfig(({ mode }): ViteUserConfig => {
         ui: isUiMode,
         headless: !isUiMode,
         viewport: DEFAULT_VIEWPORT,
+        commands: { listRecordings },
         locators: {
           // vitest 5 flipped this to `true`.
           exact: false,

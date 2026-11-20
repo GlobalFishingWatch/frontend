@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { Button, InputText } from '@globalfishingwatch/ui-components'
+import { WORKSPACE_PASSWORD_INPUT_TESTID } from '@platform/config/selectors/workspace'
 
 import { VALID_PASSWORD } from 'data/map/config'
 import {
@@ -61,7 +62,7 @@ export default function WorkspacePassword() {
             className={styles.password}
             type="password"
             invalid={!!error || !!workspacePassword}
-            testId="create-workspace-password"
+            testId={WORKSPACE_PASSWORD_INPUT_TESTID}
             onChange={handlePasswordChange}
           />
           {error && <p className={styles.error}>{error}</p>}

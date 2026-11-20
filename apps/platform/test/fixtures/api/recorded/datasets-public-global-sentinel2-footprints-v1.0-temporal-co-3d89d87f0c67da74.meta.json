@@ -1,0 +1,12 @@
+{
+  "method": "GET",
+  "key": "GET /v3/datasets/public-global-sentinel2-footprints:v1.0/temporal-context-layers?end-date=2026-02-15T00%3A00%3A00.000Z&start-date=2025-11-15T00%3A00%3A00.000Z",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8",
+    "x-ratelimit-ip-limit": "600",
+    "x-ratelimit-ip-remaining": "561",
+    "x-ratelimit-ip-reset": "2"
+  },
+  "body": "json"
+}

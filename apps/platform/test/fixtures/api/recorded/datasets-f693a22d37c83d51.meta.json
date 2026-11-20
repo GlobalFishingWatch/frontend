@@ -1,0 +1,12 @@
+{
+  "method": "GET",
+  "key": "GET /v3/datasets?cache=true&ids=public-vms-plw-vessel-identity%3Av5.0%2Cpublic-vms-plw-loitering-events%3Av5.0%2Cpublic-vms-plw-encounters-events%3Av5.0%2Cpublic-vms-plw-port-visits-events%3Av5.0&includes%5B0%5D=I18N&includes%5B1%5D=DESCRIPTION&limit=999999&locale=EN&offset=0",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8",
+    "x-ratelimit-ip-limit": "600",
+    "x-ratelimit-ip-remaining": "564",
+    "x-ratelimit-ip-reset": "13"
+  },
+  "body": "json"
+}

@@ -19,13 +19,38 @@ import { defaultState } from 'test/utils/store'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { page, userEvent } from 'vitest/browser'
 
+import type { HelpHubSectionId } from 'features/help/helpHub.types'
 import { HELP_HUB, HELP_HUB_SECTION } from 'router/routes'
 import { makeStore } from 'store'
+import type { Locale } from 'types'
 
-// WHY: the Help Hub renders Strapi content through three RTK Query endpoints, each of which
-// dynamically imports its CMS loader. Stubbing the loaders — rather than the query hooks — keeps the
-// query lifecycle real, which is what the loading and error specs assert on. `vi.hoisted` gives a
-// mutable holder the hoisted `vi.mock` factories can close over, so each spec can swap the response.
+// NOT RUNNING: this spec is in LEGACY_SPECS (vitest.config.ts). The Help Hub only exists in
+// platform mode — outside it, its routes redirect to the map (router/routes.guards.ts) — and the
+// suite pins VITE_PLATFORM_MODE=false. Switching it on for this file with
+// `vi.mock('data/map/config', …PLATFORM_MODE: true)` was tried on 2026-11-19 and closed the
+// browser page ("Browser connection was closed"), hanging the whole run. Re-enable once the
+// suite has a platform-mode project or platform mode is public.
+
+// WHY: the Help Hub route loaders call two server functions (helpHub.serverfn.ts), which wrap the
+// three CMS loaders. Server functions cannot run in vitest — the browser build turns them into RPC
+// calls to a server that does not exist here — so the wrappers are replaced by the real loading
+// logic (helpHub.content.ts), and only the CMS loaders underneath are stubbed. That keeps the
+// section/article assembly and its error handling real, which the loading and error specs assert
+// on. `vi.hoisted` gives a mutable holder the hoisted `vi.mock` factories can close over, so each
+// spec can swap the response.
+vi.mock('features/help/helpHub.serverfn', async () => {
+  const { loadHelpHubArticle, loadHelpHubSections } = await import('features/help/helpHub.content')
+  return {
+    getHelpHubSectionsContent: ({ data }: { data: { locale: Locale } }) =>
+      loadHelpHubSections(data.locale),
+    getHelpHubArticleContent: ({
+      data,
+    }: {
+      data: { sectionId: HelpHubSectionId; locale: Locale; itemSlug?: string }
+    }) => loadHelpHubArticle(data.sectionId, data.locale, data.itemSlug),
+  }
+})
+
 const cms = vi.hoisted(() => ({
   userGuide: (() => Promise.resolve({ data: [] })) as () => Promise<unknown>,
   useCases: (() => Promise.resolve({ data: [] })) as () => Promise<unknown>,

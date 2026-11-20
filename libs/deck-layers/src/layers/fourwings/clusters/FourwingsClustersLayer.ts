@@ -39,7 +39,7 @@ import {
   DEFAULT_BACKGROUND_COLOR,
   DEFAULT_LINE_COLOR,
 } from '#config/colors.config'
-import { IS_TEST_ENV, PATH_BASENAME } from '#config/layers.config'
+import { IS_TEST_ENV, PATH_BASENAME, withTestLoadOptions } from '#config/layers.config'
 import { LayerGroup } from '#config/sort.config'
 import { GFWMVTLoader } from '#layers/_shared/api'
 import { transformTileCoordsToWGS84 } from '#layers/_shared/tiles.utils'
@@ -430,7 +430,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
         method: 'GET',
         responseType: 'arrayBuffer',
       })
-      return await parse(response, GFWMVTLoader, loadOptions)
+      return await parse(response, GFWMVTLoader, withTestLoadOptions(loadOptions))
     } catch (error: any) {
       if ((error as ParsedAPIError).status === 404) {
         return null

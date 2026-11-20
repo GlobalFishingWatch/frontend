@@ -1,0 +1,1 @@
+{"statusCode":422,"error":"Unprocessable Entity","messages":[{"title":"These","detail":"These properties [query,where] can not be used together"},{"title":"query","detail":"query must be longer than or equal to 3 characters"}]}

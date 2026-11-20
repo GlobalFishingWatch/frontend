@@ -1,0 +1,9 @@
+{
+  "method": "GET",
+  "key": "GET [user] /v3/insights/vessels?datasets%5B0%5D=public-global-vessel-identity%3Av5.0&datasets%5B1%5D=public-global-vessel-identity%3Av5.0&datasets%5B2%5D=public-global-vessel-identity%3Av5.0&datasets%5B3%5D=public-global-vessel-identity%3Av5.0&end-date=2026-02-18T12%3A00%3A00.000Z&includes%5B0%5D=VESSEL-IDENTITY-IUU-VESSEL-LIST&start-date=2025-11-18T12%3A00%3A00.000Z&vessels%5B0%5D=9827ea1ea-a120-f374-0cc6-138b38bd8130&vessels%5B1%5D=1da8dbc23-3c48-d5ce-95f1-1ffb6cc00161&vessels%5B2%5D=0b7047cb5-58c8-6e63-4bfd-96a6af515c91&vessels%5B3%5D=58cf536b1-1fca-dac3-ad31-7411a3708dcd",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  },
+  "body": "json"
+}

@@ -1,6 +1,5 @@
-import { Provider } from 'react-redux'
+import { renderComponent } from 'test/appTestUtils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render } from 'vitest-browser-react'
 
 import { selectTimebarVisualisation } from 'features/_map/workspace/selectors/app.timebar.selectors'
 import { makeStore } from 'store'
@@ -18,16 +17,12 @@ describe('Timebar', () => {
 
   it('should render Timebar component with heatmap visualization by default', async () => {
     const store = makeStore()
-    await render(
-      <Provider store={store}>
-        <Timebar />
-      </Provider>
-    )
+    const { getByTestId } = await renderComponent(<Timebar />, { store })
 
+    await expect.element(getByTestId('timebar-wrapper')).toBeInTheDocument()
     expect(selectTimebarVisualisation(store.getState())).toBe(TimebarVisualisations.HeatmapActivity)
   })
 
-  //skipping as we removed the interval buttons
   it('should call onTimebarChange with new time interval on yearly data button click', async () => {
     const store = makeStore()
 
@@ -41,11 +36,7 @@ describe('Timebar', () => {
       timerange: { start: '2025-01-01', end: '2025-01-02' },
     })
 
-    const { getByTestId } = await render(
-      <Provider store={store}>
-        <Timebar />
-      </Provider>
-    )
+    const { getByTestId } = await renderComponent(<Timebar />, { store })
 
     const yearButton = getByTestId('interval-btn-year')
     await yearButton.click()
@@ -53,7 +44,8 @@ describe('Timebar', () => {
     // Now you can assert on the spy
     expect(onTimebarChangeSpy).toHaveBeenCalledWith(
       '2012-01-01T00:00:00.000Z',
-      '2026-12-31T23:59:59.999Z'
+      '2026-12-31T23:59:59.999Z',
+      'YEAR_INTERVAL_BUTTON'
     )
   })
 })

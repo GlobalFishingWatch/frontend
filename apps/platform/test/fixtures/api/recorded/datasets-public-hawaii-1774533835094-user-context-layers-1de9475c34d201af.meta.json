@@ -1,0 +1,12 @@
+{
+  "method": "GET",
+  "key": "GET /v3/datasets/public-hawaii-1774533835094/user-context-layers/1/1/1?cache=dataset-upload-tmp%2Fd3477389-d453-402b-b048-274bc0247b87",
+  "status": 204,
+  "headers": {
+    "content-type": "text/html",
+    "x-ratelimit-ip-limit": "600",
+    "x-ratelimit-ip-remaining": "589",
+    "x-ratelimit-ip-reset": "16"
+  },
+  "body": "bin"
+}

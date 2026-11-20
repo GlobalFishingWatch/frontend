@@ -7,6 +7,12 @@ import {
   DRAW_DATASET_SOURCE,
 } from '@globalfishingwatch/api-types'
 
+/**
+ * Gabu Reefer's name depends on the identity source shown: "Gabu Reefer" from AIS, "Gabureefer"
+ * from its registry record (GABUREEFER), which the profile prefers when the user can see it.
+ */
+export const GABU_REEFER_NAME = /Gabu ?reefer/i
+
 export const USER_POLYGON_DATASET_ID = 'public-hawaii-1774533835094'
 export const USER_NEW_POLYGON_DATASET_ID = 'public-polygon-drawing-test'
 export const USER_POLYGON_LAYER_ID = `user-polygons-1771416000000`

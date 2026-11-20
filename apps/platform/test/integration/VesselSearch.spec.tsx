@@ -19,16 +19,18 @@ describe('Vessel search', async () => {
     const store = makeStore(defaultState)
     const jotaiStore = createJotaiStore()
 
+    // Vessel tracks are only drawn for logged-in users (vesselTracksAndEventsAllowed: !guestUser)
     const { getByTestId, router } = await render({
       store,
       jotaiStore,
+      authenticated: true,
     })
     await router.navigate(navigateToVesselSearch())
 
     await userEvent.type(getByTestId('search-vessels-basic-input'), 'Gabu Reefer')
     await userEvent.click(getByTestId('link-vessel-profile'))
 
-    await waitForVesselTrackReady(jotaiStore, getByTestId)
+    await waitForVesselTrackReady(jotaiStore)
     await clickMapAtCoordinates({
       jotaiStore,
       getByTestId,
