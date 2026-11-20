@@ -3,6 +3,15 @@ import { commands } from 'vitest/browser'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 
+import type { RecordingIndexEntry } from '../vitest/commands'
+
+declare module 'vitest/browser' {
+  interface BrowserCommands {
+    /** test/utils/vitest/commands.ts, registered in vitest.config.ts */
+    listRecordings: (dir: string) => Promise<RecordingIndexEntry[]>
+  }
+}
+
 /**
  * Network stub for the integration specs.
  *
@@ -151,8 +160,9 @@ function rejectOnAbort(promise: Promise<Response>, signal?: AbortSignal | null) 
  * tiles the animation passes through, which depends on its timing and so differs between the live
  * recording and a replay. No spec asserts on those intermediate tiles.
  *
- * Everything else stays strict — including `/4wings/interaction/…/{col}/{row}`, whose path also ends
- * in numbers but whose response (the vessels in a clicked cell) is what specs assert on.
+ * `/4wings/interaction/…/{col}/{row}` also ends in numbers but is not a tile: its response (the
+ * vessels in a clicked cell) is what specs assert on, so it gets a near match instead of an empty
+ * answer (see nearMatchResponse).
  */
 function isMapTileRequest(url: URL) {
   return (
@@ -447,12 +457,16 @@ const TRACK_THINNING_PARAM = /^(distance|bearing-val|change-speed|min-accuracy)-
  * - `[user]` for a logged-in request (a private workspace is 403 for a guest, 200 for its owner);
  * - a hash of each header in VARYING_REQUEST_HEADERS — hashed so a password never reaches a file.
  */
-function getRecordingKey(url: URL, requestHeaders: Headers, { withoutThinning = false } = {}) {
+function getRecordingKey(
+  url: URL,
+  requestHeaders: Headers,
+  { withoutThinning = false, asGuest = false } = {}
+) {
   const params = [...url.searchParams.entries()]
     .filter(([name]) => !(withoutThinning && TRACK_THINNING_PARAM.test(name)))
     .sort(([a, av], [b, bv]) => (a === b ? av.localeCompare(bv) : a.localeCompare(b)))
   const query = new URLSearchParams(params).toString()
-  const scope = isLoggedInRequest() ? '[user] ' : ''
+  const scope = !asGuest && isLoggedInRequest() ? '[user] ' : ''
   const variants = VARYING_REQUEST_HEADERS.filter((name) => requestHeaders.has(name))
     .map((name) => ` [${name} #${hashString(requestHeaders.get(name) ?? '')}]`)
     .join('')
@@ -503,7 +517,10 @@ function isPrivateRequest(url: URL) {
 const replayCache = new Map<string, Promise<{ meta: RecordingMeta; body: string } | null>>()
 
 async function loadRecording(key: string) {
-  const path = await getRecordingPath(key)
+  return loadRecordingAt(await getRecordingPath(key))
+}
+
+async function loadRecordingAt(path: string) {
   try {
     let meta = JSON.parse(await commands.readFile(`${path}.meta.json`)) as
       RecordingMeta | RecordingAlias
@@ -527,18 +544,163 @@ function loadCachedRecording(key: string) {
   return replayCache.get(key)!
 }
 
+// --- Near matches -------------------------------------------------------------------------------
+//
+// Some requests depend on timing as well as on the test: which 4wings cell a click lands in when
+// the camera settles a fraction differently, which EEZ a hover passes over, how the app batches the
+// dataview and dataset ids it is missing. The live recording saw one variant; a replay can ask for another.
+// When the exact key is missing, these answer with a recording of the same kind. Specs assert on
+// what such a response shows (a popup opens, a value has a unit), never on which cell or feature it
+// came from. Anything else stays strict.
+
+/** Cell coordinates are the only part of an interaction request a near match ignores */
+const INTERACTION_CELL_PATH = /^(.*\/4wings\/interaction)\/\d+\/\d+\/\d+\/\d+\/\d+$/
+/** One feature of a context dataset, by id (`…/context-layers/8364`); z/x/y tiles do not match */
+const CONTEXT_FEATURE_PATH = /^(.*\/(?:user-)?context-layers)\/[^/]+$/
+
+type ParsedKey = { scope: string; pathname: string; query: string; variants: string }
+
+function parseRecordingKey(key: string): ParsedKey | undefined {
+  const match = /^GET (\[user\] )?([^ ?]*)(?:\?([^ ]*))?(.*)$/.exec(key)
+  if (!match) return undefined
+  const [, scope = '', pathname, query = '', variants] = match
+  return { scope, pathname, query, variants }
+}
+
+let recordingIndex: Promise<RecordingIndexEntry[]> | undefined
+
+/** Every recording's key, listed once per spec file (the folder does not change during a replay) */
+function getRecordingIndex() {
+  recordingIndex ??= commands.listRecordings(RECORDINGS_DIR).catch((error: unknown) => {
+    console.warn('[network] could not list recordings, near matches disabled', error)
+    return []
+  })
+  return recordingIndex
+}
+
+async function findRecordings(match: (parsed: ParsedKey) => boolean) {
+  return (await getRecordingIndex())
+    .filter((entry) => {
+      const parsed = parseRecordingKey(entry.key)
+      return parsed !== undefined && match(parsed)
+    })
+    .sort((a, b) => a.key.localeCompare(b.key))
+}
+
+/** Same request apart from the part `pathPattern` captures around (a cell, a feature id) */
+async function findSamePathFamily(request: ParsedKey, pathPattern: RegExp) {
+  const prefix = pathPattern.exec(request.pathname)?.[1]
+  if (!prefix) return undefined
+  const [first] = await findRecordings(
+    (recorded) =>
+      recorded.scope === request.scope &&
+      recorded.variants === request.variants &&
+      recorded.query === request.query &&
+      pathPattern.exec(recorded.pathname)?.[1] === prefix
+  )
+  return first
+}
+
+/**
+ * Collections the app fetches in batches of ids — which ids end up in one batch depends on what
+ * has loaded so far — and the field that identifies an entry.
+ */
+const BATCHED_COLLECTIONS: { path: RegExp; idField: 'slug' | 'id' }[] = [
+  { path: /\/dataviews$/, idField: 'slug' },
+  { path: /\/datasets$/, idField: 'id' },
+]
+
+/**
+ * `?ids=a,b,c` rebuilt from every recorded response of the same collection, by id. Guest batches
+ * count for a logged-in request (only 200s are read, so no private data). An id no recording
+ * returned is left out, as the API leaves out ids it does not know — it only comes from a batch
+ * the live run never made, and is warned about. When no id was ever recorded the request is a miss
+ * (undefined), so it is reported as unmocked.
+ */
+async function nearBatchResponse(request: ParsedKey, idField: 'slug' | 'id') {
+  const ids = new URLSearchParams(request.query).get('ids')?.split(',').filter(Boolean)
+  if (!ids?.length) return undefined
+  const candidates = await findRecordings(
+    (recorded) =>
+      (recorded.scope === request.scope || recorded.scope === '') &&
+      recorded.pathname === request.pathname &&
+      recorded.query.includes('ids=')
+  )
+  const responses = (
+    await Promise.all(candidates.map((candidate) => loadRecordingAt(candidate.path)))
+  ).flatMap((recording) =>
+    recording?.meta.status === 200 && recording.meta.body === 'json'
+      ? [JSON.parse(recording.body) as { entries?: Record<string, unknown>[] }]
+      : []
+  )
+  if (!responses.length) return undefined
+  const byId = new Map(
+    responses
+      .flatMap((response) => response.entries ?? [])
+      .map((entry) => [String(entry[idField]), entry])
+  )
+  const entries = ids.flatMap((id) => {
+    const entry = byId.get(id)
+    return entry ? [entry] : []
+  })
+  // None of the ids was ever recorded: this is a batch the live run never made, not a different
+  // split of one it did. An empty 200 here let the app carry on with no dataviews or datasets and
+  // fail later on an unrelated request (the all-datasets fetch an empty `relatedIds` triggers), so
+  // report the real miss instead.
+  if (!entries.length) return undefined
+  const missing = ids.filter((id) => !byId.has(id))
+  if (missing.length) {
+    console.warn(`[network] ${request.pathname}: never recorded, left out: ${missing.join(', ')}`)
+  }
+  return new Response(JSON.stringify({ ...responses[0], total: entries.length, entries }), {
+    headers: { 'content-type': 'application/json' },
+  })
+}
+
+async function nearMatchResponse(url: URL, requestHeaders: Headers) {
+  const request = parseRecordingKey(getRecordingKey(url, requestHeaders))
+  if (!request) return undefined
+  const batched = BATCHED_COLLECTIONS.find(({ path }) => path.test(request.pathname))
+  if (batched) return nearBatchResponse(request, batched.idField)
+  const pattern = [INTERACTION_CELL_PATH, CONTEXT_FEATURE_PATH].find((p) =>
+    p.test(request.pathname)
+  )
+  if (!pattern) return undefined
+  const entry = await findSamePathFamily(request, pattern)
+  const recording = entry && (await loadRecordingAt(entry.path))
+  if (!recording) return undefined
+  console.warn(`[network] near match for ${url.pathname}: answered with ${entry.key}`)
+  return recordingToResponse(recording)
+}
+
+// Statuses the Response constructor refuses a body for, even an empty one. Empty tiles are
+// recorded as 204: passing their '' body threw, and the layer reported it as a tile error.
+const NULL_BODY_STATUSES = new Set([101, 204, 205, 304])
+
+function recordingToResponse({ meta, body }: { meta: RecordingMeta; body: string }) {
+  if (NULL_BODY_STATUSES.has(meta.status)) {
+    return new Response(null, { status: meta.status, headers: meta.headers })
+  }
+  return new Response(meta.body === 'bin' ? base64ToArrayBuffer(body) : body, {
+    status: meta.status,
+    headers: meta.headers,
+  })
+}
+
 async function replayResponse(url: URL, requestHeaders: Headers) {
   let recording = await loadCachedRecording(getRecordingKey(url, requestHeaders))
   if (!recording && isTrackRequest(url)) {
     // A simplification level the live run never requested: any recorded level of the same track
     recording = await loadCachedRecording(trackAliasKey(url, requestHeaders))
   }
-  if (!recording) return undefined
-  const { meta, body } = recording
-  return new Response(meta.body === 'bin' ? base64ToArrayBuffer(body) : body, {
-    status: meta.status,
-    headers: meta.headers,
-  })
+  if (!recording && isLoggedInRequest() && !url.pathname.includes('/auth/')) {
+    // A logged-in request only a guest test recorded. Public data answers both the same, so a
+    // guest 200 is reused. A guest 401/403 is not: that is private data, which differs by user.
+    const guest = await loadCachedRecording(getRecordingKey(url, requestHeaders, { asGuest: true }))
+    if (guest?.meta.status === 200) recording = guest
+  }
+  if (recording) return recordingToResponse(recording)
+  return nearMatchResponse(url, requestHeaders)
 }
 
 /**

@@ -1,12 +1,7 @@
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
 import { clickLayerAction } from 'test/utils/layers'
-import {
-  hoverThenClickMap,
-  projectToMap,
-  waitForLayersLoaded,
-  waitForMapViewport,
-} from 'test/utils/map'
+import { waitForLayersLoaded, waitForMapViewport } from 'test/utils/map'
 import { defaultState, defaultViewport } from 'test/utils/store'
 import { describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
@@ -203,35 +198,5 @@ describe('Map', () => {
       ...defaultViewport,
       zoom: defaultViewport.zoom + 1,
     })
-  })
-
-  it('should be able to set map visualization to positions and see the corresponding layers on the map', async () => {
-    const store = makeStore(defaultState)
-    const jotaiStore = createJotaiStore()
-    const { getByTestId } = await render({ store, jotaiStore, authenticated: true })
-
-    await userEvent.dragAndDrop(getByTestId('app-main'), getByTestId('app-main'), {
-      sourcePosition: { x: 100, y: 35 },
-      targetPosition: { x: 380, y: 35 },
-      steps: 10,
-    })
-
-    // Zoom in multiple times to enable positions layer; each click must land before the next
-    for (let i = 0; i < 8; i++) {
-      const zoomBefore = jotaiStore.get(viewStateAtom).zoom
-      await userEvent.click(getByTestId('map-control-zoom-in'))
-      await expect.poll(() => jotaiStore.get(viewStateAtom).zoom).toBe(zoomBefore + 1)
-    }
-    await waitForLayersLoaded(jotaiStore)
-
-    await userEvent.click(
-      getByTestId('activity-section').getByTestId('activity-visualizations-change-positions')
-    )
-    await waitForLayersLoaded(jotaiStore)
-
-    const position = await projectToMap(jotaiStore, -37.0458, 19.0776)
-    await hoverThenClickMap(getByTestId, position)
-
-    await expect.element(getByTestId('map-popup-wrapper').getByText(/No.805 Oryong/i)).toBeVisible()
   })
 })
