@@ -67,14 +67,15 @@ export const getMapCoordinatesFromBounds = (bounds: Bbox, params: FitBoundsParam
     mapHeight ||
     mapRect?.height ||
     (isBrowser ? window.innerHeight - DEFAULT_TIMEBAR_HEIGHT - FOOTER_HEIGHT : 600)
+  const safePadding = Math.max(0, Math.min(padding, (Math.min(width, height) - 1) / 2))
   const { latitude, longitude, zoom } = fitBounds({
     bounds: [
       [bounds[0], bounds[1]],
       [bounds[2], bounds[3]],
     ],
-    width,
-    height,
-    padding,
+    width: Math.max(width, 1),
+    height: Math.max(height, 1),
+    padding: safePadding,
   })
   const wrappedLongitude = ((((longitude + 180) % 360) + 360) % 360) - 180
   return { latitude, longitude: wrappedLongitude, zoom }
