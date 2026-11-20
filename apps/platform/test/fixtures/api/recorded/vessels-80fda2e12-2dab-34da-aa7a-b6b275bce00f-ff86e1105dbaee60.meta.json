@@ -6,8 +6,8 @@
     "content-type": "application/json; charset=utf-8",
     "x-deprecated-dataset": "public-vms-bra-vessel-identity:v4.0=public-vms-bra-vessel-identity:v5.0",
     "x-ratelimit-ip-limit": "600",
-    "x-ratelimit-ip-remaining": "596",
-    "x-ratelimit-ip-reset": "40"
+    "x-ratelimit-ip-remaining": "549",
+    "x-ratelimit-ip-reset": "2"
   },
   "body": "json"
 }

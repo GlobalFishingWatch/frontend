@@ -1,0 +1,12 @@
+{
+  "method": "GET",
+  "key": "GET /v3/4wings/interaction/0/0/0/51/35?datasets%5B0%5D=public-global-presence%3Av5.0&datasets%5B1%5D=public-global-fishing-effort%3Av5.0&datasets%5B2%5D=public-belize-fishing-effort%3Av20220304%2Cpublic-indonesia-fishing-effort%3Av20200320%2Cpublic-vms-bra-fishing-effort%3Av5.0%2Cpublic-vms-chl-fishing-effort%3Av5.0%2Cpublic-vms-cri-fishing-effort%3Av5.0%2Cpublic-vms-ecu-fishing-effort%3Av5.0%2Cpublic-vms-nor-fishing-effort%3Av5.0%2Cpublic-vms-pan-fishing-effort%3Av5.0%2Cpublic-vms-per-fishing-effort%3Av5.0%2Cpublic-vms-png-fishing-effort%3Av5.0&date-range=2025-11-15T00%3A00%3A00.000Z%2C2026-02-15T00%3A00%3A00.000Z&filters%5B0%5D=&filters%5B1%5D=&filters%5B2%5D=",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8",
+    "x-ratelimit-ip-limit": "600",
+    "x-ratelimit-ip-remaining": "588",
+    "x-ratelimit-ip-reset": "49"
+  },
+  "body": "json"
+}

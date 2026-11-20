@@ -27,6 +27,16 @@ a service worker to a vitest browser page that already routes module requests th
   login: `vesselTracksAndEventsAllowed: !guestUser`), so without `[user]` one overwrote the other.
   Track requests also get an alias without the thinning params, used only when the exact key is
   missing. Dropping thinning from the key outright broke track clicks.
+- **Near matches for timing-dependent requests** (added 2026-11-19). A clean replay of a spec that
+  passed failed on the next run because a click landed in the neighbouring 4wings cell, a hover
+  crossed another EEZ, or the app batched `/dataviews?ids=` differently. Re-recording does not fix
+  that; it only records another variant. On a missing key the stub now answers an interaction with
+  another cell's recording, a context feature with another feature's, and dataviews by slug from
+  every recorded batch. A logged-in request also reuses the guest recording when that was a 200.
+  A batch where **no** id was ever recorded is a miss, not an empty 200: the empty answer once let
+  the app load a workspace with no datasets and fail later on an unrelated all-datasets request.
+  Do not widen these to other endpoints without the same argument: a near match on data a spec
+  asserts on hides a real regression.
 - **Pending, not failing, on a miss.** The app cancels requests it no longer needs (a search
   replaced by the next keystroke, the cells a hover passes over). A live recording never saves
   those, so failing on the spot reported false leaks.
@@ -43,6 +53,12 @@ a service worker to a vitest browser page that already routes module requests th
   the app. `vi.mock` of `PLATFORM_MODE` in a spec closed the browser page and hung the run.
 - **Waits, never sleeps:** `waitForLayersLoaded` requires the loaded state to hold for a settle
   window, because right after an action the next load may not have started. It ignores the basemap.
+- **Recordings are refreshed daily** (since 2026-11-19) by `record-integration-fixtures` in
+  `e2e-extended-daily.yml`. It runs after the e2e job, never alongside it, because both log in as
+  `TEST_USER_EMAIL` and a second login invalidates the first token. It checks out `develop`, clears
+  `recorded/` (record mode never deletes a file), records, greps for `private-` and the test user's
+  email, replays, and force-pushes one draft PR from `chore/integration-fixtures`. Local recording
+  stays allowed: a new spec's PR needs its recordings before that job sees it on `develop`.
 - Static map tiles on Google Cloud Storage (basemap, area PMTiles) still go to the network as of
   2026-11-19. Removing that would need an empty basemap fixture and Range headers in the key.
 - **Don't edit `vitest.config.ts` or a spec mid-run:** Vite restarts, the browser session is lost,

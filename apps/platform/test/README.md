@@ -86,10 +86,28 @@ Details that explain most surprises:
 - **Recordings are keyed** by path and sorted query (host ignored), plus `[user]` for logged-in
   requests and a hash of the workspace password header. Track requests also get an alias without
   the simplification parameters, used only when the exact level was never recorded.
+- **When the exact key is missing**, a few fallbacks apply, each logged as a warning:
+  - a logged-in request reuses the **guest** recording of the same URL, if that was a 200 (public
+    data is the same for both; a guest 401/403 is never reused, and `/auth/` is excluded);
+  - a 4wings **interaction** gets the recording for another cell with the same datasets and query,
+    and a context **feature** (`…/context-layers/<id>`) another feature of the same dataset. Which
+    cell a click lands in, or which area a hover crosses, depends on where the camera settles;
+  - `/dataviews?ids=…` and `/datasets?ids=…` are rebuilt from every recorded batch, by id. The app batches
+    the ids it is missing differently run to run. An id never recorded is left out.
+
+  The fallbacks need the list of recordings, which the browser cannot read itself: the
+  `listRecordings` command (`test/utils/vitest/commands.ts`) lists them from Node.
 
 ## Re-recording the API responses
 
-Re-record after an API change, a pipe dataset version change, or when a spec needs new requests:
+A daily job (`record-integration-fixtures` in `.github/workflows/e2e-extended-daily.yml`) re-records
+every spec from `develop` after the extended e2e run. It replays them offline, then opens or updates
+one draft PR from `chore/integration-fixtures` when the recordings changed. Review that PR's diff for
+private data before merging; Integration Tests does not run on it, so its body carries the job's
+recording and replay results.
+
+Record locally when you write a new spec or change which requests one makes, so its PR can pass
+before the daily job runs:
 
 ```bash
 TEST_CHROME_ONLY=true VITEST_RECORD=true pnpm nx test platform --skip-nx-cache -- test/integration/<Spec>.spec.tsx

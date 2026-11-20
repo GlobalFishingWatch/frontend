@@ -5,8 +5,8 @@
   "headers": {
     "content-type": "text/html",
     "x-ratelimit-ip-limit": "600",
-    "x-ratelimit-ip-remaining": "591",
-    "x-ratelimit-ip-reset": "7"
+    "x-ratelimit-ip-remaining": "589",
+    "x-ratelimit-ip-reset": "16"
   },
   "body": "bin"
 }

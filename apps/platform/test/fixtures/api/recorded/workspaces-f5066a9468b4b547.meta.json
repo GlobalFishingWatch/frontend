@@ -5,8 +5,8 @@
   "headers": {
     "content-type": "application/json; charset=utf-8",
     "x-ratelimit-ip-limit": "600",
-    "x-ratelimit-ip-remaining": "575",
-    "x-ratelimit-ip-reset": "4"
+    "x-ratelimit-ip-remaining": "588",
+    "x-ratelimit-ip-reset": "55"
   },
   "body": "json"
 }

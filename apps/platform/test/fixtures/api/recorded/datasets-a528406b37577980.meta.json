@@ -3,10 +3,7 @@
   "key": "GET /v3/datasets?cache=false&includes%5B0%5D=I18N&includes%5B1%5D=DESCRIPTION&limit=999999&locale=EN&logged-user=true&offset=0",
   "status": 200,
   "headers": {
-    "content-type": "application/json; charset=utf-8",
-    "x-ratelimit-ip-limit": "600",
-    "x-ratelimit-ip-remaining": "595",
-    "x-ratelimit-ip-reset": "19"
+    "content-type": "application/json; charset=utf-8"
   },
   "body": "json"
 }
