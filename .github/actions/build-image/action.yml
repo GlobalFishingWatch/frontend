@@ -90,7 +90,7 @@ runs:
         NODE_ENV: production
         NODE_OPTIONS: --max-old-space-size=6144
         NX_NO_CLOUD: 'true'
-        NX_SELF_HOSTED_REMOTE_CACHE_SERVER: http://localhost:4911
+        NX_SELF_HOSTED_REMOTE_CACHE_SERVER: http://127.0.0.1:4911
       run: |
         pnpm nx run "$APP:build" --parallel=4
         docker build . \
