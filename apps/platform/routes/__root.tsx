@@ -84,7 +84,6 @@ function RootDocument({ children, lang = 'en' }: Readonly<{ children: ReactNode;
         ))}
         <style>{fontFaceCss}</style>
         <HeadContent />
-        <Scripts />
       </head>
       <body suppressHydrationWarning>
         <div id={ROOT_DOM_ELEMENT}>{children}</div>
@@ -98,6 +97,10 @@ function RootDocument({ children, lang = 'en' }: Readonly<{ children: ReactNode;
             }}
           />
         )}
+        {/* Must stay in <body>: the client entry is an async module that runs as soon as it
+            loads. From <head> it can run before the streamed <body> arrives, and
+            hydrateRoot(document) then crashes on a null document.body (FRONTEND-YH). */}
+        <Scripts />
       </body>
     </html>
   )
