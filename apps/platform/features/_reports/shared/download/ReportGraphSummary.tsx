@@ -15,6 +15,10 @@ import {
 } from 'features/_reports/reports.config.selectors'
 import { selectReportCategory, selectReportSubCategory } from 'features/_reports/reports.selectors'
 import { ReportCategory } from 'features/_reports/reports.types'
+import {
+  getByLayerHtml,
+  getImprecisionHtml,
+} from 'features/_reports/shared/summary/report-summary.utils'
 import { useReportActivitySummaryData } from 'features/_reports/shared/summary/report-summary-activity.hooks'
 import ReportSummaryEvents from 'features/_reports/shared/summary/ReportSummaryEvents'
 import {
@@ -64,6 +68,8 @@ function ReportGraphSummaryActivity({ vesselsFiltered, hideSources }: ReportGrap
     }
   )
 
+  const activityQuantity = summary.byLayer ? getByLayerHtml(summary.byLayer) : summary.quantity
+
   if (summary.type === 'vessels') {
     const groupedSources = groupVmsSources(
       summary.sources.map((label) => ({ id: label, label })),
@@ -75,7 +81,7 @@ function ReportGraphSummaryActivity({ vesselsFiltered, hideSources }: ReportGrap
     return htmlSafeParse(
       t((t) => t.analysis.summary, {
         vessels: summary.vessels,
-        activityQuantity: summary.quantity,
+        activityQuantity,
         activityUnit: unit,
         activityType,
         area,
@@ -88,9 +94,9 @@ function ReportGraphSummaryActivity({ vesselsFiltered, hideSources }: ReportGrap
 
   return htmlSafeParse(
     t((t) => t.analysis.summaryNoVessels, {
-      activityQuantity: summary.quantity,
+      activityQuantity,
       activityUnit: summary.isActivity
-        ? `<strong>${unit}</strong> ${summary.imprecision ? `± ${summary.imprecision}% ` : ''}${t((t) => t.common.of)}`
+        ? `<strong>${unit}</strong> ${summary.imprecision ? `${getImprecisionHtml(summary.imprecision)} ` : ''}${t((t) => t.common.of)}`
         : '',
       activityType,
       area,

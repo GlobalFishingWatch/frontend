@@ -15,6 +15,23 @@
   color: var(--color-primary-blue);
 }
 
+.disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-S);
+  margin-top: var(--space-S);
+  padding: var(--space-S);
+  border: var(--border);
+  border-radius: var(--border-radius-1);
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+}
+
+.disclaimer svg {
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+}
+
 .tagsContainer {
   padding: var(--space-M);
   padding-top: var(--space-XS);
