@@ -4,10 +4,10 @@
   "status": 200,
   "headers": {
     "content-type": "application/json; charset=utf-8",
-    "x-deprecated-dataset": "public-vms-ecu-tracks:v4.0=public-vms-ecu-tracks:v5.0,public-vms-bra-tracks:v4.0=public-vms-bra-tracks:v5.0,public-vms-nor-tracks:v4.0=public-vms-nor-tracks:v5.0,public-vms-png-tracks:v4.0=public-vms-png-tracks:v5.0,public-vms-chl-tracks:v4.0=public-vms-chl-tracks:v5.0,public-vms-cri-tracks:v4.0=public-vms-cri-tracks:v5.0,public-vms-per-tracks:v4.0=public-vms-per-tracks:v5.0,public-vms-pan-tracks:v4.1=public-vms-pan-tracks:v5.0,public-vms-blz-tracks:v4.0=public-vms-blz-tracks:v5.0",
+    "x-deprecated-dataset": "public-vms-per-tracks:v4.0=public-vms-per-tracks:v5.0,public-vms-pan-tracks:v4.1=public-vms-pan-tracks:v5.0,public-vms-nor-tracks:v4.0=public-vms-nor-tracks:v5.0,public-vms-ecu-tracks:v4.0=public-vms-ecu-tracks:v5.0,public-vms-png-tracks:v4.0=public-vms-png-tracks:v5.0,public-vms-chl-tracks:v4.0=public-vms-chl-tracks:v5.0,public-vms-cri-tracks:v4.0=public-vms-cri-tracks:v5.0,public-vms-blz-tracks:v4.0=public-vms-blz-tracks:v5.0,public-vms-bra-tracks:v4.0=public-vms-bra-tracks:v5.0",
     "x-ratelimit-ip-limit": "600",
-    "x-ratelimit-ip-remaining": "590",
-    "x-ratelimit-ip-reset": "4"
+    "x-ratelimit-ip-remaining": "580",
+    "x-ratelimit-ip-reset": "33"
   },
   "body": "json"
 }
