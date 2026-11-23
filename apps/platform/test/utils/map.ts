@@ -1,6 +1,6 @@
 import type { NavigateOptions } from '@tanstack/react-router'
 import { expect, vi } from 'vitest'
-import { userEvent } from 'vitest/browser'
+import { page, userEvent } from 'vitest/browser'
 
 import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
 import { MAP_POPUP_TESTID, MAP_VIEW_ID } from '@platform/config/selectors/map'
@@ -217,11 +217,13 @@ export async function openMapPopupAt({
   router,
   longitude,
   latitude,
+  timeout = 10000,
 }: {
   jotaiStore: JotaiStore
   router: MapRouter
   longitude: number
   latitude: number
+  timeout?: number
 }) {
   await waitForMapViewport(jotaiStore)
   await waitForLayersLoaded(jotaiStore)
@@ -234,6 +236,7 @@ export async function openMapPopupAt({
     search: (prev: QueryParams) => ({ ...prev, clickedCoordinates }),
   }
   await router.navigate(options)
+  await expect.element(page.getByTestId(MAP_POPUP_TESTID).first(), { timeout }).toBeVisible()
 }
 
 type MapRouter = Awaited<ReturnType<typeof render>>['router']
