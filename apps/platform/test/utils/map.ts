@@ -1,3 +1,4 @@
+import type { NavigateOptions } from '@tanstack/react-router'
 import { expect, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
@@ -5,6 +6,7 @@ import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
 import { MAP_POPUP_TESTID, MAP_VIEW_ID } from '@platform/config/selectors/map'
 
 import { mapInstanceAtom, viewStateAtom } from 'features/_map/map/map.atoms'
+import type { QueryParams } from 'types'
 
 import type { JotaiStore, render } from '../appTestUtils'
 
@@ -209,6 +211,32 @@ export async function clickMapAtCoordinates({
   await hoverThenClickMap(getByTestId, position)
   return position
 }
+
+export async function openMapPopupAt({
+  jotaiStore,
+  router,
+  longitude,
+  latitude,
+}: {
+  jotaiStore: JotaiStore
+  router: MapRouter
+  longitude: number
+  latitude: number
+}) {
+  await waitForMapViewport(jotaiStore)
+  await waitForLayersLoaded(jotaiStore)
+  await waitForViewportSettled(jotaiStore)
+  const clickedCoordinates: [number, number] = [longitude, latitude]
+  const options: NavigateOptions & {
+    search?: QueryParams | ((prev: QueryParams) => QueryParams)
+  } = {
+    replace: true,
+    search: (prev: QueryParams) => ({ ...prev, clickedCoordinates }),
+  }
+  await router.navigate(options)
+}
+
+type MapRouter = Awaited<ReturnType<typeof render>>['router']
 
 export async function openVesselOnMap({
   jotaiStore,
