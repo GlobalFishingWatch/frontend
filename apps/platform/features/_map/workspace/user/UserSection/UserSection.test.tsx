@@ -1,4 +1,4 @@
-import { renderComponent, withGuestUser } from 'test/appTestUtils'
+import { renderComponent, withGuestUser } from 'test/componentTestUtils'
 import { describe, expect, it } from 'vitest'
 
 import { makeStore } from 'store'

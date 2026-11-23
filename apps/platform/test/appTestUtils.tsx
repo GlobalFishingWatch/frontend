@@ -1,18 +1,12 @@
 import type { ReactNode } from 'react'
-import { Provider as ReduxProvider } from 'react-redux'
-import {
-  createMemoryHistory,
-  createRootRouteWithContext,
-  createRouter,
-  RouterProvider,
-} from '@tanstack/react-router'
+import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { createStore as createJotaiStore, Provider as JotaiProvider } from 'jotai'
 import { vi } from 'vitest'
 import { page } from 'vitest/browser'
 import type { RenderOptions } from 'vitest-browser-react'
 import { render as vitestRender } from 'vitest-browser-react'
 
-import { getGuestUser, GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
 import { stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 import { ROUTE_PATHS } from '@platform/config/routes'
@@ -51,11 +45,6 @@ function seedBrowserHistory(location?: LocationState) {
   window.history.replaceState(null, '', buildInitialHref(location))
 }
 
-export async function withGuestUser(store: AppStore) {
-  store.dispatch(setLoggedUser(getGuestUser()))
-  return store
-}
-
 // The root loader resolves the user on the server only (`loadUser` in routes/__root.tsx returns
 // null on the client), so `useInitAppStore` logs in a guest when the app boots in vitest. Re-apply
 // the real user right after that one dispatch: setting it before render() gets overwritten, and
@@ -70,42 +59,6 @@ function keepUserLoggedIn(store: AppStore, user: UserData) {
     }
     return result
   }) as typeof dispatch
-}
-
-export interface ComponentRenderOptions extends Omit<RenderOptions, 'wrapper'> {
-  store?: AppStore
-  jotaiStore?: JotaiStore
-}
-
-/**
- * Renders one component instead of the app: Redux, Jotai and a memory router whose only route
- * renders `ui`. For component tests next to the code.
- */
-export async function renderComponent(ui: ReactNode, options: ComponentRenderOptions = {}) {
-  const { store = makeStore(), jotaiStore = createJotaiStore(), ...renderOptions } = options
-
-  const rootRoute = createRootRouteWithContext<AppRouterContext>()({ component: () => ui })
-  const router = createRouter({
-    routeTree: rootRoute,
-    history: createMemoryHistory({ initialEntries: ['/'] }),
-    context: { store },
-    defaultOnCatch: (error) => reportError(error),
-  })
-  await router.load()
-
-  function Wrapper({ children }: { children: ReactNode }) {
-    return (
-      <ReduxProvider store={store}>
-        <JotaiProvider store={jotaiStore}>{children}</JotaiProvider>
-      </ReduxProvider>
-    )
-  }
-
-  const renderResult = await vitestRender(<RouterProvider router={router} />, {
-    wrapper: Wrapper,
-    ...renderOptions,
-  })
-  return Object.assign(renderResult, { router, store, jotaiStore })
 }
 
 export async function render(options: AppRenderOptions = {}) {

@@ -1,4 +1,4 @@
-import { renderComponent } from 'test/appTestUtils'
+import { renderComponent } from 'test/componentTestUtils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { selectTimebarVisualisation } from 'features/_map/workspace/selectors/app.timebar.selectors'
