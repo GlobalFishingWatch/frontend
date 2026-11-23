@@ -15,6 +15,7 @@ type GetOceanAreaNameParams = {
   viewport: MapCoordinates
   locale: OceanAreaLocale
   combineWithEEZ?: boolean
+  signal?: AbortSignal
 }
 
 const API_CALL_TIMEOUT = 300
@@ -43,13 +44,14 @@ const searchOceanAreasFn = async (params: SearchOceanAreasParams): Promise<Ocean
   return data.data || []
 }
 
-const getOceanAreaNameFn = async (params: GetOceanAreaNameParams): Promise<string> => {
-  const { viewport, locale, combineWithEEZ } = params || {}
+export const getOceanAreaNameFn = async (params: GetOceanAreaNameParams): Promise<string> => {
+  const { viewport, locale, combineWithEEZ, signal } = params || {}
   if (!viewport) {
     return ''
   }
   const response = await fetch(`${PATH_BASENAME}/api/ocean-areas/name`, {
     method: 'POST',
+    signal,
     headers: {
       'Content-Type': 'application/json',
     },
