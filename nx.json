@@ -75,7 +75,18 @@
       }
     },
     "integration-ci--**/**": {
-      "dependsOn": ["prepare-loaders", "^proto:generate"]
+      "dependsOn": ["prepare-loaders", "^proto:generate"],
+      "inputs": [
+        "default",
+        "!{projectRoot}/**/*.md",
+        "^production",
+        { "fileset": "{projectRoot}/tsconfig.spec.json", "dependencies": true },
+        { "fileset": "{projectRoot}/tsconfig.storybook.json", "dependencies": true },
+        { "json": "{workspaceRoot}/apps/tsconfig.apps.base.json", "fields": ["compilerOptions"] },
+        { "externalDependencies": ["vitest"] },
+        { "env": "CI" },
+        { "dependentTasksOutputFiles": "**/*.js", "transitive": true }
+      ]
     },
     "test": {
       "dependsOn": ["proto:generate", "^proto:generate"]
