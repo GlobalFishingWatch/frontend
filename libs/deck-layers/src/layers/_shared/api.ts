@@ -6,7 +6,7 @@ import { toFiniteNumber } from '@globalfishingwatch/data-transforms'
 import type { VesselTrackData } from '@globalfishingwatch/deck-loaders'
 import { VESSEL_TRACKS_LOADER_ID } from '@globalfishingwatch/deck-loaders'
 
-import { getEnv, withTestLoadOptions } from '#config/layers.config'
+import { getEnv } from '#config/layers.config'
 
 export const GFWMVTLoader = {
   ...MVTLoader,
@@ -124,7 +124,7 @@ export async function fetchWithGFWAPI(
 
   const loadOptions = layer?.props?.loadOptions as any
   if (loader.id !== VESSEL_TRACKS_LOADER_ID) {
-    return parse(await response.arrayBuffer(), loader, withTestLoadOptions(loadOptions))
+    return parse(await response.arrayBuffer(), loader, loadOptions)
   }
 
   const timestampBase = getResponseHeader({ response, header: 'timestamp-base', type: 'number' })

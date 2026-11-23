@@ -12,6 +12,9 @@ const DEFAULT_VIEWPORT = { width: 1280, height: 720 }
 
 process.env.VITE_PLATFORM_MODE = 'false'
 process.env.VITE_PIPE_DATASET_VERSION = '5'
+// The recordings come from the dev API with this value, and it picks request URLs: the i18n-labels
+// tag on jsDelivr is `@latest` here and `@stable` for production, which no handler answers.
+process.env.VITE_WORKSPACE_ENV = 'development'
 
 const LEGACY_SPECS = [
   // Needs platform mode, which the suite pins off (see the VITE_PLATFORM_MODE pin).

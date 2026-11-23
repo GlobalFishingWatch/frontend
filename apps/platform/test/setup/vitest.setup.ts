@@ -1,3 +1,4 @@
+import { setLoaderOptions } from '@loaders.gl/core'
 import i18n from 'i18next'
 import { Settings } from 'luxon'
 import { afterEach, beforeAll, vi } from 'vitest'
@@ -25,6 +26,8 @@ import '@globalfishingwatch/timebar/timebar-settings.css'
 // (i18n requests its labels on import) can call fetch.
 installNetworkStub()
 setDefaultHandlers(...defaultHandlers)
+
+setLoaderOptions({ core: { worker: false } })
 
 afterEach(() => {
   resetTestHandlers()
