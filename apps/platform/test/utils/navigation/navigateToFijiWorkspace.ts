@@ -47,8 +47,6 @@ export function getRouteToFijiWorkspaceWithAllLayers(): NavigationConfig<
         { id: 'global-water-salinity', config: { visible: true } },
         { id: 'global-chlorophyl', config: { visible: true } },
         { id: 'encounter-events', config: { visible: true } },
-        { id: 'sar-match', config: { visible: true } },
-        { id: 'viirs-match', config: { visible: true } },
         { id: 'sentinel2', config: { visible: true } },
         { id: 'presence', config: { visible: true } },
       ],
