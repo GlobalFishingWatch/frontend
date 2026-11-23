@@ -255,7 +255,7 @@ function ReportGraphScreenshot({
                 <div className={styles.footer}>
                   <a
                     className={styles.noLink}
-                    href={window.location.href}
+                    href={open ? window.location.href : undefined}
                     tabIndex={-1}
                     onClick={(e) => e.preventDefault()}
                   >
