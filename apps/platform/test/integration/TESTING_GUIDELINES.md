@@ -688,9 +688,9 @@ For elements with hover states, hover first to ensure consistent behavior.
 
 ```typescript
 // ✅ Good
-// WHY: layer panel buttons only show while their row is hovered, and the sidebar can reflow
-// between a hover and a click. clickLayerAction (test/utils/layers.ts) hovers and clicks in one
-// retried step instead of sleeping in between
+// WHY: layer panel buttons only show while their row is hovered, and they slide in over each
+// other. clickLayerAction (test/utils/layers.ts) waits for the button and clicks it once through
+// the DOM, so Playwright's hit-target check cannot fail a click the app already handled
 await clickLayerAction(getByTestId, {
   row: 'activity-layer-panel-switch-presence',
   action: 'activity-layer-panel-remove-presence',
@@ -957,8 +957,9 @@ Common races found in this suite:
 
 - **Spinner already hidden:** right after an action the new load may not have started, so "spinner
   hidden" passes too early. `waitForLayersLoaded` requires the loaded state to hold for a moment.
-- **Sidebar reflow:** a layer row moves while legends load, so a hover lands on the wrong row. Hover
-  and act in one retried step (`clickLayerAction`, or `vi.waitFor` around hover + check).
+- **Sidebar reflow:** a layer row moves while legends load, so a hover lands on the wrong row. For
+  row actions use `clickLayerAction`; elsewhere wrap hover + check in `vi.waitFor`. Never retry a
+  click that changes state: if it landed, the retry acts twice or fails on the new UI.
 - **Camera still moving:** a lon/lat projected mid-animation hits a different pixel and 4wings cell.
   `projectToMap` / `clickMapAtCoordinates` wait for the viewport to settle.
 

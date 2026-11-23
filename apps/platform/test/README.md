@@ -38,8 +38,8 @@ Run everything from the workspace root, through Nx. `--` passes the rest to `vit
   the browser session is lost, and vitest waits on it for a long time before failing.
 
 CI: `.github/workflows/integration-tests.yml` runs `nx affected -t integration-ci --parallel=1`
-(one Nx task per spec file) with `TEST_CHROME_ONLY=true`, behind the repository variable
-`PLATFORM_INTEGRATION_TESTS`, and posts the result as a sticky PR comment.
+(one Nx task per spec file) with `TEST_CHROME_ONLY=true`, offline and without logging in, and
+posts the result as a sticky PR comment.
 
 ## What happens during a run
 
@@ -54,9 +54,10 @@ CI: `.github/workflows/integration-tests.yml` runs `nx affected -t integration-c
    Redux `store`, the `router` and the `jotaiStore` it used.
 3. **After each test** the stub fails the test if any API request was left unanswered.
 
-The app runs with two values pinned in `vitest.config.ts`, whatever your `.env` says:
-`VITE_PLATFORM_MODE=false` (production's legacy nav) and `VITE_PIPE_DATASET_VERSION=5` (every
-recorded URL carries it).
+The app runs with three values pinned in `vitest.config.ts`, whatever your `.env` says:
+`VITE_PLATFORM_MODE=false` (production's legacy nav), `VITE_PIPE_DATASET_VERSION=5` (every
+recorded URL carries it) and `VITE_WORKSPACE_ENV=development` (the recordings come from the dev
+API, and `production` would request i18n labels at `@stable` instead of `@latest`).
 
 ## The network stub
 
@@ -100,9 +101,8 @@ Details that explain most surprises:
 
 ## Re-recording the API responses
 
-A daily job (`record-integration-fixtures` in `.github/workflows/e2e-extended-daily.yml`) re-records
-every spec from `develop` after the extended e2e run. It replays them offline, then opens or updates
-one draft PR from `chore/integration-fixtures` when the recordings changed. Review that PR's diff for
+A daily workflow (`.github/workflows/record-integration-fixtures.yml`, or a manual dispatch) re-records every spec from `develop`. It replays them offline, then opens or updates one draft PR from `chore/integration-fixtures` when the
+recordings changed. Review that PR's diff for
 private data before merging; Integration Tests does not run on it, so its body carries the job's
 recording and replay results.
 
@@ -111,6 +111,13 @@ before the daily job runs:
 
 ```bash
 TEST_CHROME_ONLY=true VITEST_RECORD=true pnpm nx test platform --skip-nx-cache -- test/integration/<Spec>.spec.tsx
+```
+
+Then check the recordings before committing. Integration Tests runs the same script on every PR and
+fails it when a recording mentions a private dataset, a token or the test user's email:
+
+```bash
+TEST_USER_EMAIL=<test user email> apps/platform/scripts/check-recordings.sh
 ```
 
 Record mode needs `TEST_USER_EMAIL` / `TEST_USER_PASSWORD` in `apps/platform/.env`: global setup
