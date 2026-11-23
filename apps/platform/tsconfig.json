@@ -26,14 +26,5 @@
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "exported",
-    ".output",
-    ".tanstack",
-    "**/__traces__/**",
-    "**/*.test.ts",
-    "**/*.test.tsx"
-  ]
+  "exclude": ["node_modules", "dist", "exported", ".output", ".tanstack", "**/__traces__/**"]
 }
