@@ -1,10 +1,6 @@
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import {
-  clickMapAtCoordinates,
-  GABU_REEFER_VIEWER_COORDS,
-  waitForVesselTrackReady,
-} from 'test/utils/map'
+import { GABU_REEFER_VIEWER_COORDS, openMapPopupAt, waitForVesselTrackReady } from 'test/utils/map'
 import { navigateToVesselSearch } from 'test/utils/navigation/navigateToVesselSearch'
 import { defaultState } from 'test/utils/store'
 import { describe, expect, it } from 'vitest'
@@ -31,9 +27,9 @@ describe('Vessel search', async () => {
     await userEvent.click(getByTestId('link-vessel-profile'))
 
     await waitForVesselTrackReady(jotaiStore)
-    await clickMapAtCoordinates({
+    await openMapPopupAt({
       jotaiStore,
-      getByTestId,
+      router,
       longitude: GABU_REEFER_VIEWER_COORDS[0],
       latitude: GABU_REEFER_VIEWER_COORDS[1],
     })

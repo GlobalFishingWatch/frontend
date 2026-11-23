@@ -1,9 +1,9 @@
 import { render } from 'test/appTestUtils'
 import { clickLayerAction } from 'test/utils/layers'
 import {
-  clickMapAtCoordinates,
   findLayerObjectPosition,
   GABU_REEFER_VIEWER_COORDS,
+  openMapPopupAt,
   waitForLayersLoaded,
 } from 'test/utils/map'
 import { createTestingMiddleware, defaultState } from 'test/utils/store'
@@ -21,13 +21,13 @@ import { makeStore } from 'store'
 // A lon/lat, not a pixel: the camera can settle at a different latitude than defaultState's, so
 // a fixed pixel lands on a different place (and a different, unrecorded 4wings cell) per run.
 const [OCEAN_LONGITUDE, OCEAN_LATITUDE] = GABU_REEFER_VIEWER_COORDS
-const clickOcean = (
-  jotaiStore: Parameters<typeof clickMapAtCoordinates>[0]['jotaiStore'],
-  getByTestId: Parameters<typeof clickMapAtCoordinates>[0]['getByTestId']
+const openOceanPopup = (
+  jotaiStore: Parameters<typeof openMapPopupAt>[0]['jotaiStore'],
+  router: Parameters<typeof openMapPopupAt>[0]['router']
 ) =>
-  clickMapAtCoordinates({
+  openMapPopupAt({
     jotaiStore,
-    getByTestId,
+    router,
     longitude: OCEAN_LONGITUDE,
     latitude: OCEAN_LATITUDE,
   })
@@ -69,7 +69,7 @@ describe('Datasets', () => {
   it('should add reference data layer', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
-    const { getByTestId, getByText, jotaiStore } = await render({ store })
+    const { getByTestId, getByText, jotaiStore, router } = await render({ store })
     const openLayerModalButton = getByTestId('activity-add-layer-button')
     const addLayerButton = getByTestId('add-layer-eez-button')
 
@@ -81,7 +81,7 @@ describe('Datasets', () => {
 
     await waitForLayersLoaded(jotaiStore)
 
-    await clickOcean(jotaiStore, getByTestId)
+    await openOceanPopup(jotaiStore, router)
 
     expect(store.getState().location.query).toMatchObject(
       withInstances({
@@ -99,7 +99,7 @@ describe('Datasets', () => {
   it('should add environment data layer', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
-    const { getByTestId, getByText, jotaiStore } = await render({ store })
+    const { getByTestId, getByText, jotaiStore, router } = await render({ store })
     const openLayerModalButton = getByTestId('activity-add-layer-button')
     const addLayerButton = getByTestId('add-layer-bathymetry-button')
 
@@ -109,7 +109,7 @@ describe('Datasets', () => {
 
     await addLayerButton.click()
     await waitForLayersLoaded(jotaiStore)
-    await clickOcean(jotaiStore, getByTestId)
+    await openOceanPopup(jotaiStore, router)
 
     expect(store.getState().location.query).toMatchObject(
       withInstances({
@@ -226,7 +226,7 @@ describe('Datasets', () => {
   it('should add activity data layer', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
-    const { getByTestId, getByText, jotaiStore } = await render({ store })
+    const { getByTestId, getByText, jotaiStore, router } = await render({ store })
     const openLayerModalButton = getByTestId('activity-add-layer-button')
     const addLayerButton = getByTestId('add-layer-presence-button')
 
@@ -242,7 +242,7 @@ describe('Datasets', () => {
 
     await waitForLayersLoaded(jotaiStore)
 
-    await clickOcean(jotaiStore, getByTestId)
+    await openOceanPopup(jotaiStore, router)
 
     expect(store.getState().location.query).toMatchObject({
       ...withInstances(
@@ -273,7 +273,7 @@ describe('Datasets', () => {
   it('should preserve other layers when removing layer', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
-    const { getByTestId, jotaiStore } = await render({ store })
+    const { getByTestId, jotaiStore, router } = await render({ store })
     const vesselPresenceSwitch = getByTestId('activity-layer-panel-switch-presence')
 
     await userEvent.click(vesselPresenceSwitch)
@@ -288,7 +288,7 @@ describe('Datasets', () => {
 
     await waitForLayersLoaded(jotaiStore)
 
-    await clickOcean(jotaiStore, getByTestId)
+    await openOceanPopup(jotaiStore, router)
 
     expect(store.getState().location.query).toMatchObject(
       withInstances(
