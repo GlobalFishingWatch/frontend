@@ -1,0 +1,15 @@
+span.inlineDot {
+  margin-block: 0;
+  vertical-align: calc(0.355em - 0.5rem);
+}
+
+a.imprecision,
+span.imprecision {
+  font-weight: 400;
+  color: var(--color-secondary-blue);
+}
+
+svg.inlineIcon {
+  height: 0.9em;
+  vertical-align: calc(0.355em - 0.45em);
+}

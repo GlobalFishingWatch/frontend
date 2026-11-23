@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Prints the docker build command for platform in a given environment.
+# Prints the build commands for platform in a given environment.
 # Usage: ./scripts/print-docker-build.sh [development|staging|production]
 
 set -euo pipefail
@@ -12,8 +12,11 @@ CONFIG=".github/apps/${ENV_NAME}.yml"
 python3 -c "
 import yaml
 app = yaml.safe_load(open('$CONFIG'))['platform']
-lines = ['docker build \\\\', f'  --target {app[\"target\"]} \\\\', '  --build-arg APP_NAME=platform \\\\']
-lines += [f'  --build-arg {k}={v} \\\\' for k, v in app['build']['env_vars'].items()]
+env = app['build']['env_vars']
+lines = [f'{k}={v} \\\\' for k, v in env.items()]
+lines.append('NODE_ENV=production pnpm nx run platform:build')
+lines += ['docker build \\\\', f'  --target {app[\"target\"]} \\\\', '  --build-arg APP_NAME=platform \\\\']
+lines.append(f'  --build-arg VITE_WORKSPACE_ENV={env.get(\"VITE_WORKSPACE_ENV\", \"\")} \\\\')
 lines.append('  -t platform:$ENV_NAME .')
 print('\n'.join(lines))
 "

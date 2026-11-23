@@ -26,14 +26,18 @@ redeployed every dependent app and republished libs with no runtime change.
   cache hit. That is why `{workspaceRoot}/Dockerfile` moved from `sharedGlobals` into the `build`
   target default (and `@nx/js:tsc` builds gained `production` inputs). Add new build-time files
   to `build` inputs, not to `sharedGlobals`.
+- `{workspaceRoot}/.dockerignore` sits next to the Dockerfile in those inputs (since 2026-11-20).
+  Apps are built on the runner and Docker only packages the output, so `.dockerignore` is an
+  allowlist that decides what reaches the image. Changing it alone has to redeploy.
 - Check a selection with `nx show projects --affected -t build --files=<path>` or
   `nx affected -t build --explain`.
 - Inside an AI agent session Nx prints `--plain` output as a JSON array. CI gets one name per
   line, which is what the `grep` in `detect-affected` expects. Unset `CLAUDECODE` / `AI_AGENT`
   to reproduce CI output locally.
 - The Nx cache lives in `~/.nx/<workspace-hash>/cache` since Nx 23.2, not `.nx/cache`. CI does
-  not cache it with `actions/cache` (removed 2026-10-28): the Nx Cloud remote cache covers it, and
-  a per-SHA Actions cache entry competed with the Docker layer cache for the 10 GB repo quota.
+  not copy that directory with `actions/cache`. Nx rejects a copied cache directory, so app builds
+  use a local remote-cache server instead ([[nx-ci-cache-server]], since 2026-11-20). The Docker
+  layer cache that used to fill the 10 GB quota is gone, because apps now build on the runner.
 
 ## Dependency bumps select only the projects that use the package (since 2026-10-25)
 

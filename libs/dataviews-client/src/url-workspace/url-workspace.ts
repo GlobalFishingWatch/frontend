@@ -1,4 +1,4 @@
-import { invert } from 'es-toolkit'
+import { invert, isPlainObject } from 'es-toolkit'
 import { isObject, isString, transform } from 'es-toolkit/compat'
 import { parse, stringify } from 'qs'
 
@@ -255,7 +255,13 @@ const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
 const deepReplaceKeys = (obj: Dictionary<any>, keysMap: Dictionary<string>) => {
   return transform(obj, (result: any, value, key) => {
     const newKey = keysMap[key] || key
-    result[newKey] = isObject(value) ? deepReplaceKeys(value, keysMap) : value
+    if (Array.isArray(value) || isPlainObject(value)) {
+      result[newKey] = deepReplaceKeys(value, keysMap)
+    } else if (!isObject(value) || value instanceof Date) {
+      result[newKey] = value
+    } else {
+      console.warn(`url-workspace: dropped non-serializable value at "${key}"`)
+    }
   })
 }
 

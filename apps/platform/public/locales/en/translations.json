@@ -61,6 +61,7 @@
       "tooltip": "This is the portion of {{area}} {{unit}} with the most activity in your area",
       "tooltipAmmount": "{{ammount}} hours ({{percentage}}% of total)"
     },
+    "hoursByLayerDisclaimer": "Some activity could be included in more than one of your layers, so adding their values could count it multiple times",
     "inNamedArea": "in <strong>{{area}}</strong>",
     "insideYourArea": "inside your area",
     "inTheArea": "in the area",
@@ -1031,6 +1032,7 @@
     "screenshotError": "The screenshot could not be generated, please try again or contact us",
     "screenshotPreview": "Screenshot preview",
     "search": "Search an area of interest e.g. ocean, sea, port, MPA, EEZ, RFMO",
+    "webglUnavailable": "The map can't be displayed because your browser couldn't start WebGL.",
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out",
     "zoomToArea": "Zoom to area"

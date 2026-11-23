@@ -1,14 +1,23 @@
+import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+
+import { Icon } from '@globalfishingwatch/ui-components'
 
 import { groupVmsSources } from 'features/_map/workspace/activity/activity.utils'
 import { selectReportSubCategory } from 'features/_reports/reports.selectors'
 import ReportSummaryPlaceholder from 'features/_reports/shared/placeholders/ReportSummaryPlaceholder'
+import {
+  getByLayerHtml,
+  getImprecisionHtml,
+} from 'features/_reports/shared/summary/report-summary.utils'
 import { useReportActivitySummaryData } from 'features/_reports/shared/summary/report-summary-activity.hooks'
 import type { ReportActivityUnit } from 'features/_reports/tabs/activity/reports-activity.types'
 import { getReportSubCategoryLabel } from 'features/_reports/tabs/activity/reports-activity.utils'
 import { htmlSafeParse } from 'utils/html-parser'
 import { listAsSentence } from 'utils/shared'
+
+import styles from './ReportSummary.module.css'
 
 export default function ReportSummaryActivity({
   activityUnit,
@@ -34,7 +43,12 @@ export default function ReportSummaryActivity({
         ? getReportSubCategoryLabel(reportSubCategory).toLowerCase()
         : '')
   const unit = t((t) => t.common[activityUnit], { defaultValue: 'hours', count: summary.count })
+  const learnMoreTitle = t((t) => t.common.learnMore)
+  const activityQuantity = summary.byLayer
+    ? getByLayerHtml(summary.byLayer, { learnMoreTitle })
+    : summary.quantity
 
+  let sentence: string
   if (summary.type === 'vessels') {
     // Same VMS grouping as the layer source tags, the full list goes in a tooltip
     const groupedSources = groupVmsSources(
@@ -46,36 +60,43 @@ export default function ReportSummaryActivity({
           tooltip ? `<span data-tooltip="${tooltip}">${label}</span>` : label
         )
       : summary.sources
-    return htmlSafeParse(
-      t((t) => t.analysis.summary, {
-        vessels: summary.vessels,
-        activityQuantity: summary.quantity,
-        activityUnit: unit,
-        activityType,
-        area,
-        start: summary.start,
-        end: summary.end,
-        sources: ` (${listAsSentence(sources)})`,
-      })
-    )
-  }
-
-  const activityUnitLabel = summary.isActivity
-    ? `<strong>${unit}</strong> ${
-        summary.imprecision
-          ? `<a href="https://globalfishingwatch.org/faqs/calculating-fishing-effort-estimates-in-dynamic-analysis-reports/" target="_blank"
-                rel="noopener noreferrer" style="cursor: help" title="${t((t) => t.common.learnMore)}">± ${summary.imprecision}%</a> `
-          : ''
-      }${t((t) => t.common.of)}`
-    : ''
-  return htmlSafeParse(
-    t((t) => t.analysis.summaryNoVessels, {
-      activityQuantity: `<span>${summary.quantity}</span>`,
+    sentence = t((t) => t.analysis.summary, {
+      vessels: summary.vessels,
+      activityQuantity,
+      activityUnit: unit,
+      activityType,
+      area,
+      start: summary.start,
+      end: summary.end,
+      sources: ` (${listAsSentence(sources)})`,
+    })
+  } else {
+    const activityUnitLabel = summary.isActivity
+      ? `<strong>${unit}</strong> ${
+          summary.imprecision
+            ? `${getImprecisionHtml(summary.imprecision, { learnMoreTitle })} `
+            : ''
+        }${t((t) => t.common.of)}`
+      : ''
+    sentence = t((t) => t.analysis.summaryNoVessels, {
+      activityQuantity: `<span>${activityQuantity}</span>`,
       activityUnit: activityUnitLabel,
       activityType,
       area,
       start: summary.start,
       end: summary.end,
     })
+  }
+
+  return (
+    <Fragment>
+      {htmlSafeParse(sentence)}
+      {summary.byLayer && (
+        <div className={styles.disclaimer}>
+          <Icon icon="warning" type="warning" />
+          {t((t) => t.analysis.hoursByLayerDisclaimer)}
+        </div>
+      )}
+    </Fragment>
   )
 }

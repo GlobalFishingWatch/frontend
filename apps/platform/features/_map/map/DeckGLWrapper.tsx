@@ -1,4 +1,5 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { FilterContext, MapView, ViewStateChangeParameters } from '@deck.gl/core'
 import type { DeckGLRef } from '@deck.gl/react'
@@ -36,6 +37,8 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { DebugOption, selectDebugOptions, setDebugOption } from 'features/debug/debug.slice'
 import { selectIsAnyReportLocation } from 'router/routes.selectors'
 
+import styles from './Map.module.css'
+
 const DeckGLWrapper = () => {
   const viewStateSynced = useMapViewStateUrlSync()
   const deckRef = useRef<DeckGLRef<MapView>>(null)
@@ -48,6 +51,18 @@ const DeckGLWrapper = () => {
   const showDeckStats = useSelector(selectDebugOptions)?.deckStats
   const areReportFeaturesLoading = useReportFeaturesLoading()
   const setMapSize = useSetAtom(mapSizeAtom)
+  const { t } = useTranslation()
+  const [webglUnavailable, setWebglUnavailable] = useState(false)
+
+  // The GPU is blocklisted, disabled or out of contexts (FRONTEND-G5, FRONTEND-XM). Nothing in the
+  // app can recover from that, so tell the user instead of leaving a blank map.
+  const onDeckError = useCallback((error: Error) => {
+    if (error.message.startsWith('Failed to create WebGL context')) {
+      setWebglUnavailable(true)
+    } else {
+      console.error(error)
+    }
+  }, [])
 
   const onViewStateChange = useCallback(
     (params: ViewStateChangeParameters<any>) => {
@@ -132,6 +147,10 @@ const DeckGLWrapper = () => {
     return null
   }
 
+  if (webglUnavailable) {
+    return <p className={styles.webglUnavailable}>{t((t) => t.map.webglUnavailable)}</p>
+  }
+
   return (
     <DeckGL
       id={MAP_CANVAS_ID}
@@ -152,6 +171,7 @@ const DeckGLWrapper = () => {
       onDrag={onMapDrag}
       onDragEnd={onMapDragEnd}
       onLoad={onMapLoad}
+      onError={onDeckError}
       onResize={setMapSize}
       widgets={
         showDeckStats

@@ -61,6 +61,7 @@
       "tooltip": "crwdns131801:0{{area}}crwdnd131801:0{{unit}}crwdne131801:0",
       "tooltipAmmount": "crwdns131803:0{{ammount}}crwdnd131803:0{{percentage}}crwdne131803:0"
     },
+    "hoursByLayerDisclaimer": "crwdns139031:0crwdne139031:0",
     "inNamedArea": "crwdns138893:0{{area}}crwdne138893:0",
     "insideYourArea": "crwdns131805:0crwdne131805:0",
     "inTheArea": "crwdns138409:0crwdne138409:0",
@@ -1031,6 +1032,7 @@
     "screenshotError": "crwdns139023:0crwdne139023:0",
     "screenshotPreview": "crwdns133335:0crwdne133335:0",
     "search": "crwdns133337:0crwdne133337:0",
+    "webglUnavailable": "crwdns139033:0crwdne139033:0",
     "zoom_in": "crwdns133349:0crwdne133349:0",
     "zoom_out": "crwdns133351:0crwdne133351:0",
     "zoomToArea": "crwdns138407:0crwdne138407:0"

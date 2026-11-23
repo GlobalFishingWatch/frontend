@@ -115,11 +115,36 @@ nx build [app-name]
 
 ### Building using Docker
 
-Reproduces the CI image build locally (same root `Dockerfile` the GitHub Actions workflow uses):
+These are the steps the [build-image](.github/actions/build-image/action.yml) action runs in CI: load the environment's `build.env_vars` and `build.secrets`, build the app with Nx, then let the `Dockerfile` copy the output into the image. Needs bash or zsh, [yq](https://github.com/mikefarah/yq) (`brew install yq`) and `gcloud` logged in with access to the secrets.
 
 ```bash
-./scripts/test-ci-build-platform.sh          # build only
-./scripts/test-ci-build-platform.sh --push   # build and push
+export APP=platform
+export CONFIG=.github/apps/development.yml
+
+export $(
+  yq 'explode(.) | .[env(APP)].build.env_vars | to_entries | .[] | .key + "=" + .value' "$CONFIG"
+)
+
+for secret in $(
+  yq 'explode(.) | .[env(APP)].build.secrets | to_entries | .[] | .key + "=" + .value' "$CONFIG"
+); do
+  export "${secret%%=*}=$(gcloud secrets versions access "${secret#*=}")"
+done
+
+NODE_ENV=production pnpm nx run "${APP}:build"
+
+docker build . \
+  --target "$(yq '.[env(APP)].target' "$CONFIG")" \
+  --build-arg APP_NAME="$APP" \
+  --build-arg VITE_WORKSPACE_ENV \
+  --tag "${APP}:local"
+```
+
+For platform, `./scripts/test-ci-build-platform.sh` runs the same steps (`--env staging|production`, `--push`, `--skip-secrets`).
+
+```bash
+docker run -p 3003:3000 -e ALLOW_MISSING_SERVER_ENV=true platform:local
+docker run -p 8080:8080 -e PORT=8080 -e BASIC_AUTH=off api-portal:local
 ```
 
 ### Publishing
