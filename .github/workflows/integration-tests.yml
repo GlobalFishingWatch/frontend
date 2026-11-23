@@ -117,6 +117,9 @@ jobs:
           exit $status
         env:
           NX_DAEMON: 'false'
+          # Nx refuses atomized tasks (integration-ci--*) when Nx Cloud is off ("should only be run
+          # with Nx Cloud"). Running them serially on the runner is intended, so skip that check.
+          NX_SKIP_ATOMIZER_VALIDATION: 'true'
 
       # Without Nx Cloud there is no per-task summary table to parse, so report the step outcome.
       - name: Write test summary
