@@ -1,6 +1,6 @@
 import { createServerFn } from '@tanstack/react-start'
 
-import { getIsUnauthorizedError, GFWAPI } from '@globalfishingwatch/api-client'
+import { getIsUnauthorizedError, GFWAPI, isCaptchaError } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
 
 import { USER_REFRESH_TOKEN_COOKIE_KEY } from 'features/app/app.config'
@@ -40,11 +40,21 @@ export const refreshTokenServerFn = createServerFn({ method: 'POST' })
   })
   .handler(async ({ data }): Promise<Tokens> => {
     const { getCookie, setCookie } = await import('@tanstack/react-start/server')
-    return refreshAuthTokens({
-      refreshToken: getCookie(USER_REFRESH_TOKEN_COOKIE_KEY),
-      setCookie,
-      fromBrowser: { captchaToken: data.captchaToken },
-    })
+    try {
+      return await refreshAuthTokens({
+        refreshToken: getCookie(USER_REFRESH_TOKEN_COOKIE_KEY),
+        setCookie,
+        fromBrowser: { captchaToken: data.captchaToken },
+      })
+    } catch (e) {
+      const error = e as { status?: number; message?: string }
+      if (error?.status === 401 && !isCaptchaError(error)) {
+        const sessionError = new Error('Invalid refresh token') as Error & { status: number }
+        sessionError.status = 401
+        throw sessionError
+      }
+      throw e
+    }
   })
 
 export const clearAuthCookiesServerFn = createServerFn({ method: 'POST' }).handler(
