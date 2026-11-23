@@ -72,10 +72,9 @@ libs keep a plain `test`. `.github/workflows/integration-tests.yml` distributes 
   stop-after waits for every listed target.
 - **Two commands:** libs `-t test --exclude='*-e2e,platform'`, then `-t integration-ci`. Running
   `-t test integration-ci` together would also run the unsplit `platform:test`.
-- **Off in CI by default (since 2026-10-29).** Most platform specs are outdated and fail, so
-  `integration-ci` runs only when the repository variable `PLATFORM_INTEGRATION_TESTS` is
-  `true`. Otherwise the detect step reports platform as not affected, and only lib tests run.
-  Remove the gate once the specs pass.
+- **On in CI again (since 2026-11-23).** From 2026-10-29 `integration-ci` ran only when the
+  repository variable `PLATFORM_INTEGRATION_TESTS` was `true`, because most specs failed against
+  the live API. The specs now replay recordings, so the gate was removed.
 - **Workers, browsers and login only when `integration-ci` is affected.** A `Detect affected
 tests` step runs `nx show projects -t <target> --affected --json`. When platform is not
   affected, lib tests run on the GitHub runner. They use jsdom/node, never vitest browser mode,
@@ -92,16 +91,13 @@ were cancelled`, even when Integration Tests only read the remote cache and star
 - Split tasks do not inherit `test`'s `dependsOn`. `targetDefaults["integration-ci--**/**"]`
   adds `prepare-loaders`. `clean-test-artifacts` is left out on purpose: it would delete
   `__traces__` while sibling specs are writing to them.
-- **The login below is only needed in record mode (since 2026-11-19).** The specs now replay
-  recorded API responses with a fake token ([[integration-network-stub]]); `globalSetup`, and so
-  the login, runs only when `VITEST_RECORD=true`. The workflow's `platform:test:login` step and
-  `TEST_AUTH_TOKENS` are now redundant for the integration job and can be removed.
-- **One login per CI run.** The API keeps one token per user, and a new login invalidates the
-  previous one, so parallel workers must never log in separately. The main job runs
-  `platform:test:login` (jiti, because lib `dist` uses extensionless imports that plain Node ESM
-  rejects) and forwards `tokens.json` as `TEST_AUTH_TOKENS`. `auth-setup.ts` writes that value and
-  never logs in when it is set. The test user's credentials are not forwarded to workers. Login
-  runs before `start-workers`, which captures the forwarded env values when it starts.
+- **The integration job does not log in (since 2026-11-23).** The specs replay recorded API
+  responses with a fake token ([[integration-network-stub]]); `globalSetup`, and so the login,
+  runs only when `VITEST_RECORD=true`. The `platform:test:login` step and `TEST_AUTH_TOKENS` were
+  removed from `integration-tests.yml`. Only the daily recording job logs in now.
+- **One login at a time per test user.** The API keeps one token per user, and a new login
+  invalidates the previous one. `auth-setup.ts` still honours `TEST_AUTH_TOKENS` (it writes the
+  value and skips the login) for anyone who forwards tokens from a single login.
 - Locally, split tasks run `globalSetup` in parallel processes. An `mkdir` lock in
   `auth-setup.ts` lets one log in while the others reuse its tokens. The login proxy uses fixed
   port 3000, so concurrent logins would also collide there.

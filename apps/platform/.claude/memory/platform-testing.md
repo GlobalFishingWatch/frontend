@@ -30,14 +30,14 @@ nothing about your change. Replayed responses make it deterministic.
 - Typecheck and lint still apply: `pnpm nx typecheck platform`, `pnpm nx lint platform`.
 - Real SSR: `pnpm nx run platform:build:app`, then `node apps/platform/scripts/serve-ssr.mjs` and
   curl `http://localhost:3000/platform/...`.
-- CI runs the split `integration-ci` tasks only when the repository variable
-  `PLATFORM_INTEGRATION_TESTS` is `true` ([[split-e2e-directives]]).
+- CI runs the split `integration-ci` tasks on every PR that affects them, offline and with no
+  login (since 2026-11-23; the `PLATFORM_INTEGRATION_TESTS` gate is gone) ([[split-e2e-directives]]).
 
 ## Component specs next to the code use `renderComponent`, not `render`
 
-`test/appTestUtils.tsx` has two helpers. `render()` boots the whole app, which loads a workspace over
+`render()` (`test/appTestUtils.tsx`) boots the whole app, which loads a workspace over
 the network, so it needs recorded responses — integration specs only. A component spec
-(`features/**/X.test.tsx`) uses `renderComponent(<X />, { store })`: Redux, Jotai and a one-route
+(`features/**/X.test.tsx`) uses `renderComponent(<X />, { store })` from `test/componentTestUtils.tsx`: Redux, Jotai and a one-route
 memory router, no network.
 
 **Why:** on 2026-11-19 `UserSection.test.tsx` used `render()` and failed on an unrecorded

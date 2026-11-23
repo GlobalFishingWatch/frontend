@@ -53,12 +53,15 @@ a service worker to a vitest browser page that already routes module requests th
   the app. `vi.mock` of `PLATFORM_MODE` in a spec closed the browser page and hung the run.
 - **Waits, never sleeps:** `waitForLayersLoaded` requires the loaded state to hold for a settle
   window, because right after an action the next load may not have started. It ignores the basemap.
-- **Recordings are refreshed daily** (since 2026-11-19) by `record-integration-fixtures` in
-  `e2e-extended-daily.yml`. It runs after the e2e job, never alongside it, because both log in as
-  `TEST_USER_EMAIL` and a second login invalidates the first token. It checks out `develop`, clears
-  `recorded/` (record mode never deletes a file), records, greps for `private-` and the test user's
-  email, replays, and force-pushes one draft PR from `chore/integration-fixtures`. Local recording
-  stays allowed: a new spec's PR needs its recordings before that job sees it on `develop`.
+- **Recordings are refreshed daily** by `.github/workflows/record-integration-fixtures.yml`, or by
+  a manual dispatch. Every run force-pushes the same PR, so it is reviewed once, before merging. It
+  runs independently of `e2e-extended-daily.yml`: both log in as `TEST_USER_EMAIL`, but the e2e
+  run uses the production API and the recording the dev API, which keep separate tokens
+  (2026-11-23). Two logins on the **same** API do clash. It checks out `develop`, clears
+  `recorded/` (record mode never deletes a file), records, runs `scripts/check-recordings.sh`, replays, and force-pushes one draft
+  PR from `chore/integration-fixtures`. Local recording stays allowed: a new spec's PR needs its
+  recordings before that job sees it on `develop`. Integration Tests runs the same script on every
+  PR, so a local recording gets the same check.
 - Static map tiles on Google Cloud Storage (basemap, area PMTiles) still go to the network as of
   2026-11-19. Removing that would need an empty basemap fixture and Range headers in the key.
 - **Don't edit `vitest.config.ts` or a spec mid-run:** Vite restarts, the browser session is lost,

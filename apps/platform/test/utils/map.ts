@@ -217,13 +217,11 @@ export async function openMapPopupAt({
   router,
   longitude,
   latitude,
-  timeout = 10000,
 }: {
   jotaiStore: JotaiStore
   router: MapRouter
   longitude: number
   latitude: number
-  timeout?: number
 }) {
   await waitForMapViewport(jotaiStore)
   await waitForLayersLoaded(jotaiStore)
@@ -236,7 +234,7 @@ export async function openMapPopupAt({
     search: (prev: QueryParams) => ({ ...prev, clickedCoordinates }),
   }
   await router.navigate(options)
-  await expect.element(page.getByTestId(MAP_POPUP_TESTID).first(), { timeout }).toBeVisible()
+  await expect.element(page.getByTestId(MAP_POPUP_TESTID).first()).toBeVisible()
 }
 
 type MapRouter = Awaited<ReturnType<typeof render>>['router']
