@@ -55,7 +55,7 @@ function VideoPlayer({
   const togglePlay = () => {
     const video = videoRef.current
     if (!video) return
-    if (video.paused) video.play()
+    if (video.paused) video.play().catch(() => {})
     else video.pause()
   }
 
@@ -89,7 +89,7 @@ function VideoPlayer({
           if (!resume) return
           resumeRef.current = null
           e.currentTarget.currentTime = resume.time
-          if (resume.playing) e.currentTarget.play()
+          if (resume.playing) e.currentTarget.play().catch(() => {})
         }}
       />
       <div className={styles.controls}>
