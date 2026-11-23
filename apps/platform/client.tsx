@@ -48,6 +48,8 @@ sentryInit({
     /^Script error\.?$/,
     /^uncaught exception: undefined$/,
     /WeakRef is not defined/,
+    // Injected by iOS host apps' in-app browsers (e.g. the Google app); we never use it (FRONTEND-ZN)
+    /webkit\.messageHandlers/,
   ],
   dataCollection: { userInfo: true, httpBodies: [] },
   tracesSampleRate: 0.1,
@@ -87,11 +89,23 @@ if (import.meta.env.PROD) {
     })
 }
 
-startTransition(() => {
-  hydrateRoot(
-    document,
-    <StrictMode>
-      <StartClient />
-    </StrictMode>
-  )
-})
+const hydrate = () => {
+  startTransition(() => {
+    hydrateRoot(
+      document,
+      <StrictMode>
+        <StartClient />
+      </StrictMode>
+    )
+  })
+}
+
+// The client entry is an async module script rendered by <Scripts /> in <head>, so a cached bundle
+// can run before the streamed HTML reaches <body>. React's root hydration reads
+// document.body.firstChild and crashes on a null body (FRONTEND-YH). In that race, wait for the
+// parser; otherwise hydrate straight away as before.
+if (document.body) {
+  hydrate()
+} else {
+  document.addEventListener('DOMContentLoaded', hydrate, { once: true })
+}
