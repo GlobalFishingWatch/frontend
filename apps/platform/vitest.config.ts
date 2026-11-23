@@ -152,6 +152,8 @@ export default defineConfig(({ mode }): ViteUserConfig => {
         provider: 'istanbul',
       },
       testTimeout: 30000,
+      // Opening a map popup blocks the test browser for up to ~1.5s; the 1s default is too short.
+      expect: { poll: { timeout: 5000 } },
       setupFiles: './test/setup/vitest.setup.ts',
       globalSetup: isRecordMode ? './test/setup/vitest.setup-global.ts' : undefined,
       retry: 0,
