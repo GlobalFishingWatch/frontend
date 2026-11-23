@@ -1,5 +1,6 @@
 import { atom } from 'jotai'
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
+import { v4 as uuidv4 } from 'uuid'
 
 const CHAT_ACTIVE_THREAD_KEY = 'chatActiveThread'
 
@@ -11,7 +12,7 @@ export type ActiveThread = { id: string; isNew: boolean; isLoading: boolean }
  */
 export const activeThreadAtom = atomWithStorage<ActiveThread>(
   CHAT_ACTIVE_THREAD_KEY,
-  { id: typeof crypto !== 'undefined' ? crypto.randomUUID() : '', isNew: true, isLoading: false },
+  { id: uuidv4(), isNew: true, isLoading: false },
   createJSONStorage<ActiveThread>(() =>
     typeof window === 'undefined' ? (undefined as unknown as Storage) : sessionStorage
   ),
@@ -19,7 +20,7 @@ export const activeThreadAtom = atomWithStorage<ActiveThread>(
 )
 
 export function newActiveThread(): ActiveThread {
-  return { id: crypto.randomUUID(), isNew: true, isLoading: false }
+  return { id: uuidv4(), isNew: true, isLoading: false }
 }
 
 /**

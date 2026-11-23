@@ -77,3 +77,16 @@
 :global(.deck-widget-dropdown-button)::after {
   transform: translate(-50%, -50%) rotate(-45deg);
 }
+
+.webglUnavailable {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  margin: 0;
+  padding: var(--space-L);
+  text-align: center;
+  font: var(--font-M);
+  color: var(--color-white);
+  background-color: var(--color-primary-blue);
+}

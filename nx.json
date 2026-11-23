@@ -141,6 +141,7 @@
         "^production",
         "envVars",
         "{workspaceRoot}/Dockerfile",
+        "{workspaceRoot}/.dockerignore",
         { "externalDependencies": ["vite"] }
       ]
     },

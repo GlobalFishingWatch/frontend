@@ -295,7 +295,8 @@ export function useFitAreaInViewport(params = defaultParams) {
   const isNavigating = useRouterState({ select: (s) => s.status === 'pending' })
   const { id, bbox } = useReportAreaBounds()
   const pendingFitInAreaRef = useRef(false)
-  const canFit = Boolean(deckMap) && !isNavigating
+  const mapSize = useAtomValue(mapSizeAtom)
+  const canFit = Boolean(deckMap) && Boolean(mapSize) && !isNavigating
 
   const fitArea = useCallback(() => {
     if (!bbox) return
