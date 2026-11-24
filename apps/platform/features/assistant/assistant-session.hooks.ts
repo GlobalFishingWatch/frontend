@@ -1,14 +1,24 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useChat } from '@ai-sdk/react'
 import { useNavigate, useRouter } from '@tanstack/react-router'
-import { DefaultChatTransport, getToolName, isToolUIPart, type UIMessage } from 'ai'
+import {
+  DefaultChatTransport,
+  getToolName,
+  isToolUIPart,
+  lastAssistantMessageIsCompleteWithToolCalls,
+  type UIMessage,
+} from 'ai'
 import { useStore as useJotaiStore } from 'jotai'
 import { AGENT_BASE_URL } from 'queries/assistant-api'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 
 import { useAppStore } from 'features/app/app.hooks'
-import { getAssistantRequestContext } from 'features/assistant/assistant-context'
+import {
+  getAssistantRequestContext,
+  isAssistantContextTool,
+  runAssistantContextTool,
+} from 'features/assistant/assistant-context'
 import {
   getNavigateToolLinkProps,
   navigateToolOutputSchema,
@@ -70,6 +80,26 @@ async function assistantFetchWithAuth(
   }
 }
 
+/** Guards against a model that keeps asking: past this, the turn ends without the answer */
+const MAX_CONTEXT_TOOL_CALLS_PER_TURN = 8
+
+const isContextToolPart = (part: UIMessage['parts'][number]) =>
+  isToolUIPart(part) && isAssistantContextTool(getToolName(part))
+
+/**
+ * Resend once every context tool call of the last step has its output. Only for context tools:
+ * `navigate` runs on the server, so a turn that ends on it is already complete.
+ */
+function shouldSendContextToolOutputs({ messages }: { messages: UIMessage[] }) {
+  if (!lastAssistantMessageIsCompleteWithToolCalls({ messages })) return false
+  const parts = messages[messages.length - 1].parts
+  const lastStep = parts.slice(parts.map((part) => part.type).lastIndexOf('step-start') + 1)
+  return (
+    lastStep.some(isContextToolPart) &&
+    parts.filter(isContextToolPart).length <= MAX_CONTEXT_TOOL_CALLS_PER_TURN
+  )
+}
+
 type AssistantSessionArgs = {
   threadId: string
   userId: number | string | undefined
@@ -93,10 +123,13 @@ export function useAssistantSession({
     return new DefaultChatTransport({
       api: `${AGENT_BASE_URL}/chat`,
       fetch: assistantFetchWithAuth,
-      prepareSendMessagesRequest({ messages, body }) {
+      // Every request, continuations too: after `navigate` the url and the page tools change.
+      // Not in the message text: the agent adds it to the prompt without storing it.
+      async prepareSendMessagesRequest({ messages, body }) {
         return {
           body: {
             ...body,
+            requestContext: await getAssistantRequestContext(router.state.matches),
             messages: [messages[messages.length - 1]],
             memory: {
               resource: String(userId),
@@ -106,11 +139,12 @@ export function useAssistantSession({
         }
       },
     })
-  }, [threadId, userId])
+  }, [threadId, userId, router])
 
   const {
     messages,
     sendMessage: sendMessageToSession,
+    addToolOutput,
     status,
     error,
   } = useChat<UIMessage>({
@@ -118,6 +152,22 @@ export function useAssistantSession({
     messages: initialMessages,
     transport,
     onFinish: onFinished,
+    // Context tools have no server `execute`: the run stops at the call and the page answers it
+    onToolCall({ toolCall }) {
+      const tool = toolCall.toolName
+      if (!isAssistantContextTool(tool)) {
+        return
+      }
+      const { toolCallId } = toolCall
+      // Not awaited (AI SDK docs): addToolOutput waits for the stream job that runs onToolCall
+      runAssistantContextTool(tool, router.state.matches, { reduxStore: store, jotaiStore })
+        .then((output) => addToolOutput({ tool, toolCallId, output: output ?? null }))
+        .catch((e) => {
+          console.warn('assistant: context tool failed', tool, e)
+          addToolOutput({ tool, toolCallId, state: 'output-error', errorText: String(e) })
+        })
+    },
+    sendAutomaticallyWhen: shouldSendContextToolOutputs,
   })
 
   const handledNavigateCalls = useRef<Set<string>>(
@@ -154,17 +204,10 @@ export function useAssistantSession({
       if (!trimmed || loading) {
         return false
       }
-      // What assistant-context.config defines for the matched routes, e.g. the map's workspace
-      const requestContext = await getAssistantRequestContext(router.state.matches, {
-        reduxStore: store,
-        jotaiStore,
-      })
-      // Not in the message text: the agent adds the request context to the prompt
-      // without storing it, so the thread history does not repeat the url.
-      await sendMessageToSession({ text: trimmed }, { body: { requestContext } })
+      await sendMessageToSession({ text: trimmed })
       return true
     },
-    [loading, sendMessageToSession, router, store, jotaiStore]
+    [loading, sendMessageToSession]
   )
 
   const sendFeedback = useCallback(

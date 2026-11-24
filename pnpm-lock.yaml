@@ -997,6 +997,9 @@ importers:
       '@globalfishingwatch/responsive-visualizations':
         specifier: workspace:^
         version: link:../../libs/responsive-visualizations
+      '@globalfishingwatch/skills':
+        specifier: workspace:^
+        version: link:../../libs/skills
       '@globalfishingwatch/timebar':
         specifier: workspace:^
         version: link:../../libs/timebar

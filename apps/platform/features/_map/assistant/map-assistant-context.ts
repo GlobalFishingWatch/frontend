@@ -25,6 +25,7 @@ import type {
   FourwingsPositionFeature,
 } from '@globalfishingwatch/deck-loaders'
 import { OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
+import type { AssistantContextToolOutput } from '@globalfishingwatch/skills/context-tools'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
@@ -44,13 +45,17 @@ import { timerangeState } from 'features/_map/timebar/timerange.hooks'
 import { filterFeaturesByDistance } from 'features/_map/workspace/context-areas/context.utils'
 import { selectViewport } from 'features/_map/workspace/selectors/app.viewport.selectors'
 import { selectWorkspaceWithCurrentState } from 'features/_map/workspace/selectors/app.workspace.selectors'
-import type { AssistantContextDeps } from 'features/assistant/assistant-context'
+import type {
+  AssistantContextDeps,
+  AssistantContextModule,
+  AssistantPageMatch,
+} from 'features/assistant/assistant-context'
 import { getOceanAreaNameFn } from 'hooks/ocean-areas'
 import type { MapCoordinates, QueryParams } from 'types'
 
 /**
  * Summary of what the user sees on the map right now, read from the deck layers
- * already loaded for the viewport. Sent to the agent with each assistant message so it
+ * already loaded for the viewport. Read when the agent calls a map context tool, so it
  * can answer "is there any vessel here?", "what areas are visible?" or "where is
  * the activity?". Only what is rendered in the viewport for the current time range:
  * tiles outside the view are not loaded, so this is never a global answer.
@@ -291,14 +296,12 @@ type GetMapViewParams = {
   viewport: MapCoordinates
   datasets: Dataset[]
   areaName?: string
-  clicked: SliceInteractionEvent | null
 }
 
-export function getMapView(params: GetMapViewParams) {
-  const { deckLayers, bounds, areaName, clicked, datasets } = params
+export function getMapView(params: GetMapViewParams): AssistantContextToolOutput<'get_map_view'> {
+  const { deckLayers, bounds, areaName } = params
   return {
     areaName,
-    clicked: getClickedSummary(clicked, datasets),
     bounds: roundBbox([bounds.west, bounds.south, bounds.east, bounds.north]),
     layers: deckLayers.flatMap((layer) => {
       if (layer.instance.props.visible === false) return []
@@ -412,7 +415,10 @@ function getClickedFeatureSummary(feature: SliceExtendedFeature, datasets: Datas
 }
 
 /** The last place the user clicked on the map and what the popup showed there */
-function getClickedSummary(clicked: SliceInteractionEvent | null, datasets: Dataset[]) {
+export function getClickedSummary(
+  clicked: SliceInteractionEvent | null,
+  datasets: Dataset[]
+): AssistantContextToolOutput<'get_clicked_feature'> | undefined {
   if (!clicked) return undefined
   return {
     longitude: round(clicked.longitude),
@@ -472,7 +478,6 @@ async function getCurrentMapView({ reduxStore, jotaiStore }: AssistantContextDep
       viewport,
       datasets: selectAllDatasets(state),
       areaName,
-      clicked: selectClickedEvent(state),
     })
   } catch (e) {
     console.warn('assistant: could not read the map view', e)
@@ -480,20 +485,39 @@ async function getCurrentMapView({ reduxStore, jotaiStore }: AssistantContextDep
   }
 }
 
-export async function getContext(deps: AssistantContextDeps) {
+/** Workspace settings and layers the url does not hold: the agent has the url already */
+function getWorkspace(
+  { reduxStore }: AssistantContextDeps,
+  match: AssistantPageMatch
+): AssistantContextToolOutput<'get_workspace'> {
   const { id, name, state, dataviewInstances } = selectWorkspaceWithCurrentState(
-    deps.reduxStore.getState()
+    reduxStore.getState()
   )
-  const workspace = {
+  const urlState = (match.search ?? {}) as Record<string, unknown>
+  const urlInstances = (urlState.dataviewInstances ?? []) as { id?: string }[]
+  const inUrl = new Set(urlInstances.map((d) => d.id))
+  return {
     id,
     name,
-    state: omitBy(state || {}, isNil),
-    dataviewInstances: dataviewInstances?.filter((d) => d.config?.visible !== false),
+    state: omitBy(state || {}, (value, key) => isNil(value) || key in urlState),
+    dataviewInstances: dataviewInstances?.filter(
+      (d) => d.config?.visible !== false && !inUrl.has(d.id)
+    ),
   }
-  return { workspace, mapView: await getCurrentMapView(deps) }
 }
 
-export type MapAssistantContext = Awaited<ReturnType<typeof getContext>>
+function getClickedFeature({
+  reduxStore,
+}: AssistantContextDeps): AssistantContextToolOutput<'get_clicked_feature'> {
+  const state = reduxStore.getState()
+  return getClickedSummary(selectClickedEvent(state), selectAllDatasets(state)) ?? null
+}
+
+export const tools: AssistantContextModule['tools'] = {
+  get_workspace: getWorkspace,
+  get_map_view: getCurrentMapView,
+  get_clicked_feature: getClickedFeature,
+}
 
 export function onNavigate(search: QueryParams, { jotaiStore }: AssistantContextDeps) {
   const { start, end, latitude, longitude, zoom } = search

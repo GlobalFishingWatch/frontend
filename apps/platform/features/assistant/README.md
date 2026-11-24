@@ -7,87 +7,107 @@ assistant opens on every platform page: map, report, vessel profile, and the con
 
 Two things depend on the page the user is on:
 
-1. **What the agent knows about the page.** Each message carries a `requestContext`.
+1. **What the agent can read about the page.** The agent asks for it with _context tools_, which
+   the browser answers from its stores, only when the agent needs them.
 2. **What the page must do after the agent navigates.** Some state is not driven by the url once
    the page is mounted, so it must be set explicitly.
 
-Both are defined per route in `assistant-context.config.ts`. A page has **one** context at most.
+Both are defined per route in `assistant-context.config.ts`.
 
 ## Page context registry
 
 ```text
 assistant-context.config.ts
-┌──────────────────────────────────────────────────────────────┐
-│ ASSISTANT_CONTEXTS: { [routeId]: () => import(module) }      │
-│                                                              │
-│  '/_platform/_map'                     → map context         │
-│  '/_platform/_content/ports'           → places context      │
-│  '/_platform/_content/areas/$placeType' → places context     │
-│  '/_platform/_content/vessel-search'   → vessel-search       │
-│  '/_platform/_content/help-and-resources/…' → help context   │
-│                                                              │
-│  '<another layout or route>': () => import(...)       ◄─ add │
-└──────────────────────────────┬───────────────────────────────┘
-                               │ loadPageContext(router.state.matches)
-                               │ the deepest matched route with an entry wins,
-                               │ no merging: one context per page
+┌──────────────────────────────────────────────────────────────────────┐
+│ ASSISTANT_CONTEXTS: { [routeId]: () => import(module) }              │
+│                                                                      │
+│  '/_platform/_map'                          → map tools              │
+│  '/_platform/_map/map/$category/'           → workspaces list        │
+│  '…/vessel/$vesselId' (both)                → vessel profile         │
+│  '…/report/…' (both)                        → area report            │
+│  '…/vessel-group-report/$vesselGroupId'     → vessel group report    │
+│  '…/ports/$portId', '…/ports-report/$portId'→ port report            │
+│  '/_platform/_content/ports', '…/areas/…'   → places                 │
+│  '/_platform/_content/vessel-search'        → vessel search          │
+│  '/_platform/_content/help-and-resources/…' → help                   │
+└──────────────────────────────┬───────────────────────────────────────┘
+                               │ loadPageContexts(router.state.matches)
+                               │ EVERY matched route with an entry, parent first:
+                               │ a vessel profile gets the map tools AND its own
                                ▼
 AssistantContextModule  (what the lazily loaded module exports)
-┌──────────────────────────────────────────────────────────────┐
-│ getContext(deps, match)   → keys added to requestContext     │
-│ onNavigate?(search, deps) → state the url does not drive     │
-│                                                              │
-│ deps = { reduxStore, jotaiStore }                            │
-└──────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│ tools: { get_x(deps, match) → what the page shows }                  │
+│ onNavigate?(search, deps)    → state the url does not drive          │
+│                                                                      │
+│ deps = { reduxStore, jotaiStore }                                    │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
-Modules are dynamic imports and load on the first message only. This keeps map code (deck.gl,
-map selectors) out of the assistant chunk on pages that have no map. The `assistant` check in
-`scripts/load-boundaries/config.ts` enforces it, so **never import a context module statically**.
+Modules are dynamic imports. This keeps map, vessel and report code out of the assistant chunk on
+pages that do not have it. The `assistant` check in `scripts/load-boundaries/config.ts` enforces
+it, so **never import a context module statically**.
 
-A module that fails to load or to run is skipped with a `console.warn`: a page context must never
-block a message.
+A module that fails to load, or a tool that throws, is skipped with a `console.warn`: it must
+never break the chat. A tool **never fetches** (except `get_user_resources`): it returns what the
+page shows, from redux, jotai or the RTK Query cache. Data the page has not loaded comes back as
+`{ status: 'loading' }`, and a tool with no data here as `{ available: false }`.
 
-## Sending a message
+## Sending a message and answering context tools
 
 ```text
- user types                AssistantMessages            useAssistantSession.sendMessage
- ───────────► textarea ──► onSend() ──────────────────► │
-                                                        │ getAssistantRequestContext(
-                                                        │   router.state.matches, deps)
-                                                        ▼
-                                  ┌────────── loadPageContext ───────────┐
-                                  │ the page's module, if it has one:    │
-                                  │   module.getContext(deps)            │
-                                  └──────────────────┬───────────────────┘
-                                                     │ { ...context,
-                                                     │   url: location.href }  ◄─ url always wins
-                                                     ▼
-                              POST /chat  { messages: [last], memory, requestContext }
-                                                     │
-                                                     ▼
-                              gfw-agent (src/mastra/workspace-context.ts)
-                              adds requestContext to the prompt, does not store it
+ user types ──► useAssistantSession.sendMessage({ text })
+                      │
+                      ▼ prepareSendMessagesRequest (every request, continuations too)
+                POST /chat { messages: [last], memory,
+                             requestContext: { url, contextTools } }
+                      │       contextTools = the matched modules' tool names
+                      ▼
+                gfw-agent: decodes the url into the prompt, lists contextTools
+                      │
+       model calls a context tool (a Mastra clientTool: no server execute)
+                      │ the run stops, the stream ends on the call
+                      ▼
+                useChat onToolCall ──► runAssistantContextTool(name, matches, deps)
+                      │                 └─ the matched module that has the tool
+                      ▼
+                addToolOutput ──► sendAutomaticallyWhen(shouldSendContextToolOutputs)
+                      │
+                      ▼
+                POST /chat { messages: [the assistant message with the outputs], … }
+                gfw-agent resumes the run with them and answers
 ```
 
-On map routes, `map-assistant-context.getContext` returns:
+Each lookup costs one more request and model step, so the agent only calls the tools a question
+needs. `requestContext` is computed per request, so after `navigate` the continuation already
+carries the new url and tools. `shouldSendContextToolOutputs` only resends for context tools:
+`navigate` runs on the server. It stops after `MAX_CONTEXT_TOOL_CALLS_PER_TURN` calls in one turn.
 
-- `workspace`: id, name, stored state and the visible dataview instances.
-- `mapView`: what the map shows (layers in view, bounds, clicked feature, ocean area name).
+gfw-agent leaves context tool outputs of earlier turns out of the prompt (they are a stale
+snapshot), so the agent calls a tool again when a later message needs it.
 
-Content pages send what they show under a single `page` key, tagged by `page.type`. Query, sort
-and filters are left out because the url already holds them:
+## Context tools
 
-| `page.type`          | Routes                                    | Fields                                                                        |
-| -------------------- | ----------------------------------------- | ----------------------------------------------------------------------------- |
-| `ports` / `areas`    | `/ports`, `/areas/$placeType`             | `placeType`, `count`, `total`, `places` (id, name, flag): loader data         |
-| `vessel-search`      | `/vessel-search`                          | `status`, `total`, first 50 `results` with ids, identity and `selected`       |
-| `help-and-resources` | `/help-and-resources`, `…/$sectionSlug/…` | landing: `sections` with article slugs; section: `article`, `sectionArticles` |
+Names and descriptions (what the model reads about each output) live in
+`@globalfishingwatch/skills/context-tools` (`libs/skills`), shared with gfw-agent, so a
+change reaches the agent only after a skills release and a version bump there.
 
-Modules get the route match as a second argument (`getContext(deps, match)`), so they read
-`match.params` and `match.loaderData` instead of fetching again.
+| Page                | Tools                                                                                                         |
+| ------------------- | ------------------------------------------------------------------------------------------------------------- |
+| any map route       | `get_workspace`, `get_map_view`, `get_clicked_feature`                                                        |
+| workspaces list     | `get_workspaces_list`                                                                                         |
+| vessel profile      | `get_vessel_identity`, `get_vessel_activity`, `get_vessel_areas`, `get_vessel_related`, `get_vessel_insights` |
+| area report         | `get_report_area`, `get_report_activity`, `get_report_vessels`, `get_report_events`                           |
+| vessel group report | `get_vessel_group`, `get_vessel_group_insights`, `get_report_vessels`, `get_report_events`                    |
+| port report         | `get_port_report`, `get_report_events`                                                                        |
+| ports / areas       | `get_places_page` (list state only: the agent has its own place lookup)                                       |
+| vessel search       | `get_vessel_search_results`                                                                                   |
+| help hub            | `get_help_page`                                                                                               |
+| every page          | `get_user_resources`: the user's workspaces, datasets, vessel groups and reports, fetched when asked          |
 
-The agent reads these keys by name. Rename one only together with `gfw-agent`.
+`get_report_vessels` and `get_report_events` live in `_reports/assistant/report-assistant-tools.ts`
+and are spread into each report module. Modules get the route match as a second argument, so they
+read `match.params`, `match.search` and `match.loaderData` instead of fetching.
 
 ## The agent navigates
 
@@ -118,8 +138,8 @@ must be one of `ROUTE_PATHS`. There are two paths into the same steps: the tool 
               └─────────────────┬─────────────────┘
                                 ▼
                 applyAssistantNavigate(matches, search, deps)
-                ┌──────────────── loadPageContext ─────────────────┐
-                │ module?.onNavigate?.(search, deps)               │
+                ┌─────────────── loadPageContexts ─────────────────┐
+                │ the matched module with onNavigate(search, deps) │
                 │ map: set timerange + camera on the mounted map   │
                 └──────────────────────────────────────────────────┘
 ```
@@ -136,26 +156,28 @@ vessel profiles fit the camera themselves, so their url viewport is ignored.
 ## Adding a page
 
 1. Create `features/<feature>/assistant/<feature>-assistant-context.ts` exporting
-   `getContext(deps, match)` and, only if needed, `onNavigate(search, deps)`.
-2. Add `'<routeId>': () => import('…')` to `ASSISTANT_CONTEXTS`. Under the map layout, the new
-   entry replaces the map context on that route, so return the map keys too if the agent still
-   needs them.
-3. Add any new keys to `AssistantRequestContext` in `assistant-context.ts`, and make `gfw-agent`
-   read them.
+   `tools: AssistantContextModule['tools']` and, only if needed, `onNavigate(search, deps)`.
+2. Add `'<routeId>': () => import('…')` to `ASSISTANT_CONTEXTS`. Under the map layout the map
+   tools come along on their own.
+3. A new tool goes in `ASSISTANT_CONTEXT_TOOLS` (`libs/skills/src/context-tools`) with a description
+   of its output. Then release skills and bump it in gfw-agent.
 4. Run `pnpm nx run platform:check-load-boundaries`.
 
 Skip all of this when the url already holds everything the agent needs.
 
 ## Files
 
-| File                                                           | Role                                                          |
-| -------------------------------------------------------------- | ------------------------------------------------------------- |
-| `assistant-context.config.ts`                                  | route → context module registry                               |
-| `assistant-context.ts`                                         | types, `getAssistantRequestContext`, `applyAssistantNavigate` |
-| `assistant-session.hooks.ts`                                   | `useChat` transport, send, feedback, navigate tool effect     |
-| `navigate-tool.ts`                                             | tool output schema, link props, active-view check             |
-| `AssistantMessages.tsx`                                        | message rendering, navigate links, input                      |
-| `_map/assistant/map-assistant-context.ts`                      | map context: workspace, map view, `onNavigate`                |
-| `_places/assistant/places-assistant-context.ts`                | `page`: ports and areas lists                                 |
-| `_vessels/search/assistant/vessel-search-assistant-context.ts` | `page`: vessel search results                                 |
-| `help/assistant/help-assistant-context.ts`                     | `page`: help hub article and links                            |
+| File                                                    | Role                                                                                                        |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `assistant-context.config.ts`                           | route → context module registry                                                                             |
+| `assistant-context.ts`                                  | `isAssistantContextTool`, `getAssistantRequestContext`, `runAssistantContextTool`, `applyAssistantNavigate` |
+| `assistant-session.hooks.ts`                            | `useChat` transport, context tool loop, feedback, navigate effect                                           |
+| `navigate-tool.ts`                                      | tool output schema, link props, active-view check                                                           |
+| `AssistantMessages.tsx`                                 | message rendering, navigate links, tool chips, input                                                        |
+| `_map/assistant/map-assistant-context.ts`               | map tools, `onNavigate`                                                                                     |
+| `_map/workspaces-list/assistant/…`                      | workspaces list                                                                                             |
+| `_vessels/vessel/assistant/vessel-assistant-context.ts` | vessel profile                                                                                              |
+| `_reports/assistant/report-assistant-tools.ts`          | vessels table and events tools shared by the reports                                                        |
+| `_reports/report-{area,vessel-group,port}/assistant/…`  | each report                                                                                                 |
+| `_places/…`, `_vessels/search/…`, `help/…` `assistant/` | content pages                                                                                               |
+| `_user/assistant/user-assistant-context.ts`             | `get_user_resources`                                                                                        |
