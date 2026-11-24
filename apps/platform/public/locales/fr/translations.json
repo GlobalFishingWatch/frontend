@@ -185,23 +185,7 @@
     "tokenNotFound": "Token not found",
     "whoEndUsers": "Who are your end users?"
   },
-  "bigQuery": {
-    "aggregateAvg": "Moyenne",
-    "aggregateSum": "Somme",
-    "aggregationMode": "Mode d'agrégation *",
-    "create": "Créer",
-    "query": "Requête",
-    "queryError": "Il y a une erreur dans la requête",
-    "runCost": "Cette requête déplacera :",
-    "runCostCheck": "Vérifier le coût d'execution",
-    "selectVisualisation": "Sélectionnez d'abord un mode de visualisation",
-    "validationError": "Requête, nom, mode visualisation, mode agrégation et vérification des coûts de création sont requis",
-    "visualiationMode": "Mode de visualisation",
-    "visualisationActivity": "Activité (cartes thermiques)",
-    "visualisationActivityHint": "(Assurez-vous que l'id, les lat et lon, la date, l'heure et la valeur sont présents)",
-    "visualisationEvents": "Événements (regroupements)"
-  },
-  "chat": {
+  "assistant": {
     "couldNotDeleteConversation": "Could not delete conversation",
     "feedbackDown": "This answer was not helpful",
     "feedbackDownReason": "What was wrong with this answer?",
@@ -223,6 +207,22 @@
     "toolReadSkillResource": "Reading skill resource",
     "toolRegionLookup": "Looking up region",
     "toolRunSkillScript": "Running skill script"
+  },
+  "bigQuery": {
+    "aggregateAvg": "Moyenne",
+    "aggregateSum": "Somme",
+    "aggregationMode": "Mode d'agrégation *",
+    "create": "Créer",
+    "query": "Requête",
+    "queryError": "Il y a une erreur dans la requête",
+    "runCost": "Cette requête déplacera :",
+    "runCostCheck": "Vérifier le coût d'execution",
+    "selectVisualisation": "Sélectionnez d'abord un mode de visualisation",
+    "validationError": "Requête, nom, mode visualisation, mode agrégation et vérification des coûts de création sont requis",
+    "visualiationMode": "Mode de visualisation",
+    "visualisationActivity": "Activité (cartes thermiques)",
+    "visualisationActivityHint": "(Assurez-vous que l'id, les lat et lon, la date, l'heure et la valeur sont présents)",
+    "visualisationEvents": "Événements (regroupements)"
   },
   "common": {
     "active": "Actif",
