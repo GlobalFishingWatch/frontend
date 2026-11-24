@@ -20,8 +20,11 @@ assistant-context.config.ts
 ┌──────────────────────────────────────────────────────────────┐
 │ ASSISTANT_CONTEXTS: { [routeId]: () => import(module) }      │
 │                                                              │
-│  '/_platform/_map': () => import('features/_map/assistant/   │
-│                                  map-assistant-context')     │
+│  '/_platform/_map'                     → map context         │
+│  '/_platform/_content/ports'           → places context      │
+│  '/_platform/_content/areas/$placeType' → places context     │
+│  '/_platform/_content/vessel-search'   → vessel-search       │
+│  '/_platform/_content/help-and-resources/…' → help context   │
 │                                                              │
 │  '<another layout or route>': () => import(...)       ◄─ add │
 └──────────────────────────────┬───────────────────────────────┘
@@ -31,7 +34,7 @@ assistant-context.config.ts
                                ▼
 AssistantContextModule  (what the lazily loaded module exports)
 ┌──────────────────────────────────────────────────────────────┐
-│ getContext(deps)          → keys added to requestContext     │
+│ getContext(deps, match)   → keys added to requestContext     │
 │ onNavigate?(search, deps) → state the url does not drive     │
 │                                                              │
 │ deps = { reduxStore, jotaiStore }                            │
@@ -72,8 +75,19 @@ On map routes, `map-assistant-context.getContext` returns:
 - `workspace`: id, name, stored state and the visible dataview instances.
 - `mapView`: what the map shows (layers in view, bounds, clicked feature, ocean area name).
 
-The agent reads these keys by name. Rename one only together with `gfw-agent`. Content pages send
-only `url`, because their url already holds their state.
+Content pages send what they show under a single `page` key, tagged by `page.type`. Query, sort
+and filters are left out because the url already holds them:
+
+| `page.type`          | Routes                                    | Fields                                                                        |
+| -------------------- | ----------------------------------------- | ----------------------------------------------------------------------------- |
+| `ports` / `areas`    | `/ports`, `/areas/$placeType`             | `placeType`, `count`, `total`, `places` (id, name, flag): loader data         |
+| `vessel-search`      | `/vessel-search`                          | `status`, `total`, first 50 `results` with ids, identity and `selected`       |
+| `help-and-resources` | `/help-and-resources`, `…/$sectionSlug/…` | landing: `sections` with article slugs; section: `article`, `sectionArticles` |
+
+Modules get the route match as a second argument (`getContext(deps, match)`), so they read
+`match.params` and `match.loaderData` instead of fetching again.
+
+The agent reads these keys by name. Rename one only together with `gfw-agent`.
 
 ## The agent navigates
 
@@ -122,7 +136,7 @@ vessel profiles fit the camera themselves, so their url viewport is ignored.
 ## Adding a page
 
 1. Create `features/<feature>/assistant/<feature>-assistant-context.ts` exporting
-   `getContext(deps)` and, only if needed, `onNavigate(search, deps)`.
+   `getContext(deps, match)` and, only if needed, `onNavigate(search, deps)`.
 2. Add `'<routeId>': () => import('…')` to `ASSISTANT_CONTEXTS`. Under the map layout, the new
    entry replaces the map context on that route, so return the map keys too if the agent still
    needs them.
@@ -134,11 +148,14 @@ Skip all of this when the url already holds everything the agent needs.
 
 ## Files
 
-| File                                      | Role                                                          |
-| ----------------------------------------- | ------------------------------------------------------------- |
-| `assistant-context.config.ts`             | route → context module registry                               |
-| `assistant-context.ts`                    | types, `getAssistantRequestContext`, `applyAssistantNavigate` |
-| `assistant-session.hooks.ts`              | `useChat` transport, send, feedback, navigate tool effect     |
-| `navigate-tool.ts`                        | tool output schema, link props, active-view check             |
-| `AssistantMessages.tsx`                   | message rendering, navigate links, input                      |
-| `_map/assistant/map-assistant-context.ts` | map context: workspace, map view, `onNavigate`                |
+| File                                                           | Role                                                          |
+| -------------------------------------------------------------- | ------------------------------------------------------------- |
+| `assistant-context.config.ts`                                  | route → context module registry                               |
+| `assistant-context.ts`                                         | types, `getAssistantRequestContext`, `applyAssistantNavigate` |
+| `assistant-session.hooks.ts`                                   | `useChat` transport, send, feedback, navigate tool effect     |
+| `navigate-tool.ts`                                             | tool output schema, link props, active-view check             |
+| `AssistantMessages.tsx`                                        | message rendering, navigate links, input                      |
+| `_map/assistant/map-assistant-context.ts`                      | map context: workspace, map view, `onNavigate`                |
+| `_places/assistant/places-assistant-context.ts`                | `page`: ports and areas lists                                 |
+| `_vessels/search/assistant/vessel-search-assistant-context.ts` | `page`: vessel search results                                 |
+| `help/assistant/help-assistant-context.ts`                     | `page`: help hub article and links                            |
