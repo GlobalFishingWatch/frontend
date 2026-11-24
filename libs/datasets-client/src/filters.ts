@@ -13,6 +13,7 @@ type SupportedActivityDatasetFilter =
   | 'geartype'
   | 'geartypes'
   | 'fleet'
+  | 'fleet_code' // VMS Brazil
   | 'shiptype'
   | 'shiptypes'
   | 'origin'
