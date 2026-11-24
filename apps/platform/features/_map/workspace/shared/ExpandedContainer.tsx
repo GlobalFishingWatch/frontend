@@ -35,6 +35,9 @@ interface ExpandedContainerProps {
   testId?: string
 }
 
+const FLOATING_OFFSET = 5
+const SCROLL_TO_TOP_PADDING = 8
+
 function ExpandedContainer({
   visible,
   children,
@@ -70,7 +73,7 @@ function ExpandedContainer({
     },
   }
   const overflowBoundary = overflowDOMId ? document.getElementById(overflowDOMId) : null
-  const { refs, floatingStyles, context } = useFloating({
+  const { refs, floatingStyles, context, isPositioned } = useFloating({
     open: disabled ? false : isOpen,
     strategy: 'fixed',
     whileElementsMounted: autoUpdate,
@@ -82,7 +85,7 @@ function ExpandedContainer({
       }
     },
     middleware: [
-      offset(5),
+      offset(FLOATING_OFFSET),
       flip({
         fallbackPlacements: ['top'],
         ...(overflowBoundary ? { boundary: overflowBoundary } : {}),
@@ -111,6 +114,30 @@ function ExpandedContainer({
   useEffect(() => {
     setIsOpen(disabled ? false : visible)
   }, [visible, disabled])
+
+  useEffect(() => {
+    if (!isOpen || !isPositioned || !overflowDOMId) return
+    const scrollContainer = document.getElementById(overflowDOMId)
+    const reference = refs.reference.current
+    const floating = refs.floating.current
+    if (!scrollContainer || !floating || !(reference instanceof Element)) return
+
+    const containerRect = scrollContainer.getBoundingClientRect()
+    const referenceRect = reference.getBoundingClientRect()
+    const visibleTop = Math.max(containerRect.top, 0)
+    const visibleBottom = Math.min(containerRect.bottom, window.innerHeight)
+    const neededSpace = floating.offsetHeight + FLOATING_OFFSET
+    const fitsAbove = referenceRect.top - visibleTop >= neededSpace
+    const fitsBelow = visibleBottom - referenceRect.bottom >= neededSpace
+    if (fitsAbove || fitsBelow) return
+
+    const prefersReducedMotion =
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true
+    scrollContainer.scrollBy({
+      top: referenceRect.top - visibleTop - SCROLL_TO_TOP_PADDING,
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+    })
+  }, [isOpen, isPositioned, overflowDOMId, refs])
 
   const click = useClick(context)
   const dismiss = useDismiss(context)

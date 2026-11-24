@@ -24,7 +24,7 @@ import { getActiveDatasetsInDataview } from 'features/_map/datasets/datasets.uti
 import i18n, { t } from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber.utils'
 import { getFlags, getFlagsByIds } from 'utils/flags'
-import { getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
+import { formatInfoField, getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
 import { getPorts, getPortsByIds } from 'utils/ports'
 import { sortFields } from 'utils/shared'
 
@@ -259,6 +259,9 @@ export const getCommonFiltersInDataview = (
             label = getVesselGearTypeLabel({ geartypes: field as string })
           } else if (isShiptypeEventsFilter || filter === 'vessel_type' || filter === 'shiptypes') {
             label = getVesselShipTypeLabel({ shiptypes: field as string })
+          } else if (filter === 'fleet_code') {
+            // Dataset i18n wins when present; otherwise reuse the vessel profile's vessel.fleetCodes
+            label = formatInfoField(field.toString(), 'fleetCode') as string
           } else if (
             dataview.category !== DataviewCategory.Context &&
             filter !== 'vessel_id' &&
