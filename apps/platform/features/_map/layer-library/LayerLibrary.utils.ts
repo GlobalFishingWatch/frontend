@@ -16,7 +16,10 @@ export const resolveLibraryLayers = (
   const layers = LIBRARY_LAYERS.flatMap((layer) => {
     const dataview = dataviews.find((d) => d.slug === layer.dataviewId)
     if (!dataview) {
-      console.warn('Dataview not found for layer library dataview', layer.dataviewId)
+      // Gated layers' dataviews are only fetched for users allowed to see them (workspace.slice)
+      if (!layer.onlyGFWUser && !layer.datasetPermission) {
+        console.warn('Dataview not found for layer library dataview', layer.dataviewId)
+      }
       return []
     }
     const nextColor = getNextColor('fill', avoidColors)

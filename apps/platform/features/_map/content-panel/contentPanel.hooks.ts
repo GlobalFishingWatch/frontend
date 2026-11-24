@@ -9,7 +9,7 @@ export type SidePanelTarget =
   | { type: 'datasets'; id: string; subcontentId?: string }
   | { type: 'userDataset'; id: string; subcontentId?: string }
   | { type: 'dataTerminology'; id: string; subcontentId?: string }
-  | { type: 'chat'; id?: string; subcontentId?: string }
+  | { type: 'assistant'; id?: string; subcontentId?: string }
 
 type SidePanelSearch = Pick<QueryParams, 'sidePanels' | 'sidePanelActive'>
 
@@ -82,7 +82,7 @@ export function useSidePanelLabel() {
   const { t } = useTranslation()
   return (type: SidePanelContent) => {
     if (type === 'userGuide') return t((t) => t.common.userGuide)
-    if (type === 'chat') return t((t) => t.common.assistant)
+    if (type === 'assistant') return t((t) => t.common.assistant)
     if (type === 'dataTerminology') return t((t) => t.common.dataTerminology)
     return t((t) => t.dataset.title)
   }

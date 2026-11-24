@@ -36,15 +36,15 @@ function ContentPanel({
     clampPanelWidth(initialPanelWidth ?? DEFAULT_PANEL_WIDTH)
   )
 
-  const hasChat = sidePanels?.some((panel) => panel.type === 'chat')
+  const hasAssistant = sidePanels?.some((panel) => panel.type === 'assistant')
   const startCursorX = useRef<number | null>(null)
   const startWidth = useRef<number | null>(null)
 
   useEffect(() => {
-    if (hasChat && !IS_CHATBOT_ENABLED) {
-      closeSidePanel('chat')
+    if (hasAssistant && !IS_CHATBOT_ENABLED) {
+      closeSidePanel('assistant')
     }
-  }, [hasChat, closeSidePanel])
+  }, [hasAssistant, closeSidePanel])
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {

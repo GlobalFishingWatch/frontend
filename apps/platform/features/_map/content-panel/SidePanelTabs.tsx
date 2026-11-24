@@ -12,7 +12,7 @@ import type { SidePanelContent, SidePanelState } from 'types'
 
 import styles from './SidePanelTabs.module.css'
 
-const ChatContainer = lazy(() => import('features/_map/content-panel/chat/ChatContainer'))
+const AssistantContainer = lazy(() => import('features/assistant/AssistantContainer'))
 const DataTerminologyContent = lazy(
   () => import('features/_map/content-panel/data-terminology/DataTerminologyContent')
 )
@@ -37,7 +37,7 @@ function SidePanelView({ item }: { item: SidePanelState }) {
       )}
       {item.type === 'userDataset' && <UserDatasetInfoContainer id={item.id} />}
       {item.type === 'dataTerminology' && <DataTerminologyContent id={item.id} />}
-      {item.type === 'chat' && IS_CHATBOT_ENABLED && <ChatContainer />}
+      {item.type === 'assistant' && IS_CHATBOT_ENABLED && <AssistantContainer />}
     </Suspense>
   )
 }

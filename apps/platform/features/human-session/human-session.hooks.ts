@@ -2,6 +2,8 @@ import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { atom, useAtom } from 'jotai'
 
+import { GFWAPI } from '@globalfishingwatch/api-client'
+
 import { selectUserData } from 'features/_user/selectors/user.selectors'
 import { getHumanSessionServerFn, startHumanSessionServerFn } from 'server/human-session.serverfn'
 
@@ -19,6 +21,9 @@ let pending: Promise<boolean> | null = null
 const verifyHumanSession = () => {
   pending ??= (async () => {
     try {
+      if (GFWAPI.isTokenExpired()) {
+        await GFWAPI.refreshAPIToken()
+      }
       return (await getHumanSessionServerFn()) || (await startHumanSessionServerFn())
     } catch (e) {
       console.warn('Human session verification failed', e)

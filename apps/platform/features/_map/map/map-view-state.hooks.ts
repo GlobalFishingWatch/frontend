@@ -3,7 +3,7 @@ import type { MapView, ViewStateMap } from '@deck.gl/core'
 import { throttle } from 'es-toolkit'
 import { useAtomValue, useSetAtom, useStore } from 'jotai'
 
-import { boundsAtom, viewStateAtom } from 'features/_map/map/map.atoms'
+import { boundsAtom, mapInstanceAtom, viewStateAtom } from 'features/_map/map/map.atoms'
 import { useDeckMap } from 'features/_map/map/map-context.hooks'
 
 // Web Mercator is only defined up to ±85.051129°; at ±90 the projection goes to infinity.
@@ -37,6 +37,17 @@ export const useMapSetViewState = () => {
       }, 1),
     [setViewState]
   )
+}
+
+/** useSetMapCoordinates outside React, e.g. from the assistant's navigate tool */
+export function setMapCoordinates(
+  jotaiStore: ReturnType<typeof useStore>,
+  coordinates: Partial<ViewStateMap<MapView>>
+) {
+  if (jotaiStore.get(boundsAtom).isTransitioning) return
+  const viewState = getSafeViewState(coordinates)
+  jotaiStore.set(viewStateAtom, (prev) => ({ ...prev, ...viewState }))
+  jotaiStore.get(mapInstanceAtom)?.setProps({ viewState: viewState as ViewStateMap<MapView> })
 }
 
 // Hook to set only the map coordinates (longitude, latitude and zoom)

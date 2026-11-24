@@ -31,7 +31,8 @@ no source import reached ([[rolldown-lib-app-chunk-colocation]]). Build mode alo
 - Allowlist entries no checked page uses fail the check. Delete them; do not keep them "just in case".
 - Budgets (`maxModules`, source mode only) count modules including lib files and CSS modules.
   Raise one only with a reason in the commit.
-- CI path: the platform `build` target writes `dist/load-boundaries.md`; the Dockerfile stage
-  `load-boundaries-report` exports it; `_build-and-deploy.yml` appends it to the step summary.
+- CI path: the platform `build` target writes `apps/platform/dist/load-boundaries.md` on the
+  runner, and `_build-and-deploy.yml` appends that file to the step summary. Since 2026-11 the
+  build no longer runs inside Docker, so there is no export stage to keep in step.
 
 See [[platform-testing]] for verifying platform changes.

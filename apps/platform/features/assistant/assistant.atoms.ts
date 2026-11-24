@@ -1,0 +1,30 @@
+import { atom } from 'jotai'
+import { atomWithStorage, createJSONStorage } from 'jotai/utils'
+import { v4 as uuidv4 } from 'uuid'
+
+const ASSISTANT_ACTIVE_THREAD_KEY = 'assistantActiveThread'
+
+export type ActiveThread = { id: string; isNew: boolean; isLoading: boolean }
+
+/**
+ * Lives here rather than in assistant-threads.hooks so a component can start a new thread without
+ * pulling the assistant-api queries into its chunk.
+ */
+export const activeThreadAtom = atomWithStorage<ActiveThread>(
+  ASSISTANT_ACTIVE_THREAD_KEY,
+  { id: uuidv4(), isNew: true, isLoading: false },
+  createJSONStorage<ActiveThread>(() =>
+    typeof window === 'undefined' ? (undefined as unknown as Storage) : sessionStorage
+  ),
+  { getOnInit: true }
+)
+
+export function newActiveThread(): ActiveThread {
+  return { id: uuidv4(), isNew: true, isLoading: false }
+}
+
+/**
+ * A question asked outside the assistant (the onboarding modal), sent as soon as the session
+ * mounts. Not persisted: a reload must not resend it.
+ */
+export const pendingPromptAtom = atom<string | null>(null)

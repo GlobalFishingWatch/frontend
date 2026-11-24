@@ -57,22 +57,4 @@ inventory.
 
 ## Docker
 
-CI builds every app image from the root [Dockerfile](../../Dockerfile). The same command works
-locally:
-
-```bash
-docker build --target production-node \
-  --build-arg APP_NAME=platform \
-  --build-arg VITE_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org \
-  --build-arg VITE_WORKSPACE_ENV=development \
-  --build-arg COMMIT_SHA=local-test \
-  -t platform:local .
-```
-
-The root Dockerfile lists the other build args it accepts as `ARG` lines.
-
-### Run
-
-```bash
-docker run -p 3003:3000 platform:local
-```
+See [Building using Docker](../../README.md#building-using-docker) in the root README.
