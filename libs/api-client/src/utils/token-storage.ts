@@ -6,6 +6,17 @@ export interface TokenStorage {
   set(value: string): void
 }
 
+/** `exp` claim (seconds) of a JWT, read without verifying it. Undefined when it is not readable */
+export const getTokenExpiry = (token: string): number | undefined => {
+  try {
+    const payload = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')
+    const { exp } = JSON.parse(atob(payload))
+    return typeof exp === 'number' ? exp : undefined
+  } catch {
+    return undefined
+  }
+}
+
 export const createLocalStorageTokenStorage = (key: string): TokenStorage => ({
   get: () => safeLocalStorage.get(key) || '',
   set: (value: string) => {
