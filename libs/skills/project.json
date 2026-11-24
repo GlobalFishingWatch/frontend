@@ -14,7 +14,8 @@
         "main": "libs/skills/src/index.ts",
         "additionalEntryPoints": [
           "libs/skills/src/encode-url/index.ts",
-          "libs/skills/src/decode-url/index.ts"
+          "libs/skills/src/decode-url/index.ts",
+          "libs/skills/src/context-tools/index.ts"
         ],
         "tsConfig": "libs/skills/tsconfig.lib.json",
         "bundle": true,

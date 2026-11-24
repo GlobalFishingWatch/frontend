@@ -1,11 +1,11 @@
 ---
 name: skills-lib
-description: libs/skills is a publish-only esbuild bundle of encode-url/decode-url; apps never import it
+description: libs/skills is an esbuild bundle published for gfw-agent; only the platform assistant imports it (context-tools)
 ---
 
-# libs/skills is published for other repos, not used by apps
+# libs/skills is published for other repos; apps import only context-tools
 
-`@globalfishingwatch/skills` lives here so esbuild can inline [[platform-config-package]] and `@globalfishingwatch/*`. Nothing in `apps/` imports it. `thirdParty: true` makes the tarball self-contained — workspace packages stay in `devDependencies` (`linting/nx.js` ignores this manifest so `--fix` cannot promote them).
+`@globalfishingwatch/skills` lives here so esbuild can inline [[platform-config-package]] and `@globalfishingwatch/*`. The only app import is `@globalfishingwatch/skills/context-tools` (platform assistant, since 2026-11-24): the context tool names and descriptions live here so the app and gfw-agent share one definition. That subpath has a `development` export condition (src) so the app resolves it like other libs; keep it free of node-only code and of the encode/decode modules. `thirdParty: true` makes the tarball self-contained — workspace packages stay in `devDependencies` (`linting/nx.js` ignores this manifest so `--fix` cannot promote them).
 
 **Why:** URL encoding must go through `stringifyWorkspace` / `parseWorkspace`. An LLM must never hand-build these URLs.
 
