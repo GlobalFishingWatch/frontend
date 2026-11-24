@@ -31,6 +31,7 @@ import {
 } from 'features/_map/workspace/shared/LayerSchemaFilter.utils'
 import { t } from 'features/i18n/i18n'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
+import { sortFields } from 'utils/shared'
 
 import styles from './LayerFilters.module.css'
 
@@ -229,7 +230,7 @@ function LayerSchemaFilter({
   } = schemaFilter
   const sortedOptions = useMemo(() => {
     if (UNSORTED_FILTERS.includes(id) || type === 'range') return options
-    return options.sort((a, b) => a.label.localeCompare(b.label))
+    return [...options].sort(sortFields)
   }, [id, options, type])
 
   const onSliderChange = useCallback(
