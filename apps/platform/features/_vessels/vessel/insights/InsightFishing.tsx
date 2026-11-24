@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -9,7 +9,9 @@ import { useVisibleVesselEvents } from 'features/_map/workspace/vessels/vessel-e
 import InsightError from 'features/_vessels/vessel/insights/InsightErrorMessage'
 import InsightEventDetails from 'features/_vessels/vessel/insights/InsightEventsDetails'
 import { removeNonTunaRFMO } from 'features/_vessels/vessel/insights/insights.utils'
+import { selectLonglineSetsOnMap } from 'features/_vessels/vessel/vessel.config.selectors'
 import DataTerminology from 'features/cms/data-terminology/DataTerminology'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import { selectVesselEventsDataWithVoyages } from '../selectors/vessel.resources.selectors'
 
@@ -26,23 +28,33 @@ const InsightFishing = ({
 }) => {
   const { t } = useTranslation()
   const vesselEvents = useSelector(selectVesselEventsDataWithVoyages)
+  const longlineSetsOnMap = useSelector(selectLonglineSetsOnMap)
+  const { replaceQueryParams } = useReplaceQueryParams()
 
   const { setVesselEventVisibility } = useVisibleVesselEvents()
   const { eventsInNoTakeMpas, eventsInRfmoWithoutKnownAuthorization } =
     insightData?.apparentFishing || {}
 
+  // Event details and longline sets on map are mutually exclusive
   const [eventsInNoTakeMpasDetailsVisibility, setEventsInNoTakeMpasDetailsVisibility] =
     useState(false)
-  const toggleEventsInNoTakeMpasDetailsVisibility = useCallback(() => {
-    setVesselEventVisibility({ event: EventTypes.Fishing, visible: true })
-    setEventsInNoTakeMpasDetailsVisibility((visibility) => !visibility)
-  }, [setVesselEventVisibility])
-
   const [eventsInRfmoDetailsVisibility, setEventsInRfmoDetailsVisibility] = useState(false)
-  const toggleEventsInRfmoDetailsVisibility = useCallback(() => {
+  const [prevLonglineSetsOnMap, setPrevLonglineSetsOnMap] = useState(longlineSetsOnMap)
+  if (prevLonglineSetsOnMap !== longlineSetsOnMap) {
+    setPrevLonglineSetsOnMap(longlineSetsOnMap)
+    if (longlineSetsOnMap) {
+      setEventsInNoTakeMpasDetailsVisibility(false)
+      setEventsInRfmoDetailsVisibility(false)
+    }
+  }
+
+  const toggleDetails = (visible: boolean, setVisible: (visible: boolean) => void) => {
     setVesselEventVisibility({ event: EventTypes.Fishing, visible: true })
-    setEventsInRfmoDetailsVisibility((visibility) => !visibility)
-  }, [setVesselEventVisibility])
+    if (!visible && longlineSetsOnMap) {
+      replaceQueryParams({ longlineSetsOnMap: undefined })
+    }
+    setVisible(!visible)
+  }
 
   const eventsInNoTakeMpasDetails = useMemo(() => {
     return eventsInNoTakeMpas
@@ -83,7 +95,12 @@ const InsightFishing = ({
               <InsightEventDetails
                 events={eventsInNoTakeMpasDetails}
                 visible={eventsInNoTakeMpasDetailsVisibility}
-                toggleVisibility={toggleEventsInNoTakeMpasDetailsVisibility}
+                toggleVisibility={() =>
+                  toggleDetails(
+                    eventsInNoTakeMpasDetailsVisibility,
+                    setEventsInNoTakeMpasDetailsVisibility
+                  )
+                }
               />
             </span>
           ) : (
@@ -99,7 +116,9 @@ const InsightFishing = ({
               <InsightEventDetails
                 events={eventsInRfmoWithoutKnownAuthorizationDetails}
                 visible={eventsInRfmoDetailsVisibility}
-                toggleVisibility={toggleEventsInRfmoDetailsVisibility}
+                toggleVisibility={() =>
+                  toggleDetails(eventsInRfmoDetailsVisibility, setEventsInRfmoDetailsVisibility)
+                }
               />
             </span>
           ) : (

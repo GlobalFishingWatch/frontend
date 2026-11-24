@@ -2,15 +2,17 @@ import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
-import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
-import { IconButton, Popover, Spinner } from '@globalfishingwatch/ui-components'
+import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
+import { IconButton } from '@globalfishingwatch/ui-components/icon-button'
+import { Popover } from '@globalfishingwatch/ui-components/popover'
+import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 
-import { useChatThreads } from 'features/_map/content-panel/chat/chat-threads.hooks'
+import { useAssistantThreads } from 'features/assistant/assistant-threads.hooks'
 import { getTimeAgo } from 'utils/dates'
 
-import styles from './Chat.module.css'
+import styles from './Assistant.module.css'
 
-function ChatHistoryItem({
+function AssistantHistoryItem({
   thread,
   active,
   disabled,
@@ -56,7 +58,7 @@ function ChatHistoryItem({
   )
 }
 
-function ChatHeader() {
+function AssistantHeader() {
   const { t } = useTranslation()
   const [historyOpen, setHistoryOpen] = useState(false)
 
@@ -69,7 +71,7 @@ function ChatHeader() {
     setActiveThreadId,
     deleteThread,
     newThread,
-  } = useChatThreads()
+  } = useAssistantThreads()
   const activeThreadTitle = threads.find((thread) => thread.id === activeThreadId)?.title
 
   return (
@@ -90,7 +92,7 @@ function ChatHeader() {
                 <li className={styles.historyEmpty}>{t((t) => t.common.noConversations)}</li>
               )}
               {threads.map((c) => (
-                <ChatHistoryItem
+                <AssistantHistoryItem
                   key={c.id}
                   thread={c}
                   active={c.id === activeThreadId}
@@ -128,4 +130,4 @@ function ChatHeader() {
   )
 }
 
-export default ChatHeader
+export default AssistantHeader

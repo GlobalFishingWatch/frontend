@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/skills",
-  "version": "0.0.13",
+  "version": "0.0.16",
   "description": "Agent skills for the GFW map: encode/decode app URLs for chatbot navigation",
   "license": "MIT",
   "repository": "github:GlobalFishingWatch/frontend",
@@ -9,7 +9,12 @@
   "exports": {
     ".": "./dist/index.js",
     "./encode-url": "./dist/encode-url/index.js",
-    "./decode-url": "./dist/decode-url/index.js"
+    "./decode-url": "./dist/decode-url/index.js",
+    "./context-tools": {
+      "development": "./src/context-tools/index.ts",
+      "types": "./dist/context-tools/index.d.ts",
+      "default": "./dist/context-tools/index.js"
+    }
   },
   "main": "./dist/index.js",
   "engines": {
