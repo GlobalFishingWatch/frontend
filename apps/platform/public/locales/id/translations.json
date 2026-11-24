@@ -185,23 +185,7 @@
     "tokenNotFound": "Token not found",
     "whoEndUsers": "Who are your end users?"
   },
-  "bigQuery": {
-    "aggregateAvg": "Rata-rata",
-    "aggregateSum": "Jumlah",
-    "aggregationMode": "Mode agregasi *",
-    "create": "Membuat",
-    "query": "Kueri",
-    "queryError": "Ada kesalahan dalam kueri",
-    "runCost": "Kueri ini akan berpindah:",
-    "runCostCheck": "Periksa biaya pembuatan",
-    "selectVisualisation": "Pilih mode visualisasi terlebih dahulu",
-    "validationError": "Kueri, nama, mode visualisasi, mode agregasi, dan pemeriksaan biaya pembuatan yang diperlukan",
-    "visualiationMode": "Mode visualisasi",
-    "visualisationActivity": "Aktivitas (peta panas)",
-    "visualisationActivityHint": "(Pastikan id, lat, lon, timestamp dan nilai semuanya ada)",
-    "visualisationEvents": "Peristiwa (kelompok)"
-  },
-  "chat": {
+  "assistant": {
     "couldNotDeleteConversation": "Could not delete conversation",
     "feedbackDown": "This answer was not helpful",
     "feedbackDownReason": "What was wrong with this answer?",
@@ -223,6 +207,22 @@
     "toolReadSkillResource": "Reading skill resource",
     "toolRegionLookup": "Looking up region",
     "toolRunSkillScript": "Running skill script"
+  },
+  "bigQuery": {
+    "aggregateAvg": "Rata-rata",
+    "aggregateSum": "Jumlah",
+    "aggregationMode": "Mode agregasi *",
+    "create": "Membuat",
+    "query": "Kueri",
+    "queryError": "Ada kesalahan dalam kueri",
+    "runCost": "Kueri ini akan berpindah:",
+    "runCostCheck": "Periksa biaya pembuatan",
+    "selectVisualisation": "Pilih mode visualisasi terlebih dahulu",
+    "validationError": "Kueri, nama, mode visualisasi, mode agregasi, dan pemeriksaan biaya pembuatan yang diperlukan",
+    "visualiationMode": "Mode visualisasi",
+    "visualisationActivity": "Aktivitas (peta panas)",
+    "visualisationActivityHint": "(Pastikan id, lat, lon, timestamp dan nilai semuanya ada)",
+    "visualisationEvents": "Peristiwa (kelompok)"
   },
   "common": {
     "active": "Aktif",

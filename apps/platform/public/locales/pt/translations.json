@@ -185,23 +185,7 @@
     "tokenNotFound": "Token not found",
     "whoEndUsers": "Who are your end users?"
   },
-  "bigQuery": {
-    "aggregateAvg": "Média",
-    "aggregateSum": "Soma",
-    "aggregationMode": "Modo de agregação *",
-    "create": "Criar",
-    "query": "Consulta",
-    "queryError": "Há um erro na consulta",
-    "runCost": "Esta consulta irá mover:",
-    "runCostCheck": "Verificar custo de criação",
-    "selectVisualisation": "Selecione um modo de visualização primeiro",
-    "validationError": "Consulta, nome, modo visualização, modo de agregação e verificação de custo de criação são necessários",
-    "visualiationMode": "Modo de visualização",
-    "visualisationActivity": "Atividade (mapa de calor)",
-    "visualisationActivityHint": "(Garanta que id, lat, lon, timestamp e valor estejam todos presentes)",
-    "visualisationEvents": "Eventos (clusters)"
-  },
-  "chat": {
+  "assistant": {
     "couldNotDeleteConversation": "Could not delete conversation",
     "feedbackDown": "This answer was not helpful",
     "feedbackDownReason": "What was wrong with this answer?",
@@ -223,6 +207,22 @@
     "toolReadSkillResource": "Reading skill resource",
     "toolRegionLookup": "Looking up region",
     "toolRunSkillScript": "Running skill script"
+  },
+  "bigQuery": {
+    "aggregateAvg": "Média",
+    "aggregateSum": "Soma",
+    "aggregationMode": "Modo de agregação *",
+    "create": "Criar",
+    "query": "Consulta",
+    "queryError": "Há um erro na consulta",
+    "runCost": "Esta consulta irá mover:",
+    "runCostCheck": "Verificar custo de criação",
+    "selectVisualisation": "Selecione um modo de visualização primeiro",
+    "validationError": "Consulta, nome, modo visualização, modo de agregação e verificação de custo de criação são necessários",
+    "visualiationMode": "Modo de visualização",
+    "visualisationActivity": "Atividade (mapa de calor)",
+    "visualisationActivityHint": "(Garanta que id, lat, lon, timestamp e valor estejam todos presentes)",
+    "visualisationEvents": "Eventos (clusters)"
   },
   "common": {
     "active": "Ativa",
