@@ -19,6 +19,18 @@ type Field = { id: string | number; label: string | number | JSX.Element }
 
 export const sortStrings = (a: string, b: string) => a.localeCompare(b)
 
+const RANGE_LABEL_REGEX =
+  /^\s*(?:([<>])=?\s*(\d+(?:\.\d+)?)|(\d+(?:\.\d+)?)\s*-\s*\d+(?:\.\d+)?)\s*$/
+
+// [lower bound, tiebreak]: "<2" sorts just before "2-4", ">25" just after anything starting at 25
+const getRangeSortKey = (label: string): [number, number] | undefined => {
+  const match = RANGE_LABEL_REGEX.exec(label)
+  if (!match) return
+  const [, comparator, boundary, start] = match
+  if (comparator) return [Number(boundary), comparator === '<' ? -1 : 1]
+  return [Number(start), 0]
+}
+
 export const sortFields = (a: Field, b: Field) => {
   const aLabel = typeof a.label === 'string' && a.label ? a.label : a.id
   const bLabel = typeof b.label === 'string' && b.label ? b.label : b.id
@@ -34,7 +46,14 @@ export const sortFields = (a: Field, b: Field) => {
   if (typeof aLabel === 'boolean' || typeof bLabel === 'boolean') {
     return 0
   }
-  return aLabel.localeCompare(bLabel)
+
+  const aRange = getRangeSortKey(aLabel)
+  const bRange = getRangeSortKey(bLabel)
+  if (aRange && bRange) {
+    return aRange[0] - bRange[0] || aRange[1] - bRange[1]
+  }
+  // numeric: digit runs compare by value, so "1.9" < "1.10" and "2" < "10"
+  return aLabel.localeCompare(bLabel, undefined, { numeric: true })
 }
 
 export const listAsSentence = (list: string[], andOr: 'and' | 'or' = 'and') => {
