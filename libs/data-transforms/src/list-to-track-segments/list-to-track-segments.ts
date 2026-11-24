@@ -74,34 +74,34 @@ export const listToTrackSegments = ({
           const record = normalizePropertiesKeys(dirtyRecord)
           const recordId =
             lineId && record[lineId] ? record[lineId] : `${NO_RECORD_ID}-${lineIndex}`
-          if (isValidLngLat(record[longitude], record[latitude])) {
-            const { [latitude]: latitudeValue, [longitude]: longitudeValue, ...properties } = record
-            const coords = parseCoords(latitudeValue, longitudeValue)
-            if (coords) {
-              const startTimeMs = startTime ? getUTCDate(record[startTime]).getTime() : undefined
-              if (startTimeMs !== undefined && isNaN(startTimeMs)) {
-                hasDatesError = true
-              }
-              const lineProperties = {
-                ...(hasIdGroup && {
-                  [lineId]: properties[lineId],
-                  color: lineColorBarOptions[lineIndex % lineColorBarOptions.length].value,
-                }),
-                ...(hasSegmentId && { [segmentId]: properties[segmentId] }),
-              }
-              return [
-                {
-                  properties: lineProperties,
-                  // We need the property at the root level for sidebar lines leyend
-                  [COORDINATES_PROPERTIES_ID]: properties,
-                  latitude: coords.latitude as number,
-                  longitude: coords.longitude as number,
-                  ...(startTimeMs && { timestamp: startTimeMs }),
-                  id: recordId,
-                },
-              ]
-            } else return []
-          } else return []
+          const { [latitude]: latitudeValue, [longitude]: longitudeValue, ...properties } = record
+          // Parse before validating: parseCoords accepts text coordinates (decimal commas such as
+          // "-41,7616", degrees-minutes-seconds) that Number() alone rejects. Validating the
+          // parsed numbers still keeps NaN and out-of-range latitudes out of the antimeridian split.
+          const coords = parseCoords(latitudeValue, longitudeValue)
+          if (!coords || !isValidLngLat(coords.longitude, coords.latitude)) return []
+          const startTimeMs = startTime ? getUTCDate(record[startTime]).getTime() : undefined
+          if (startTimeMs !== undefined && isNaN(startTimeMs)) {
+            hasDatesError = true
+          }
+          const lineProperties = {
+            ...(hasIdGroup && {
+              [lineId]: properties[lineId],
+              color: lineColorBarOptions[lineIndex % lineColorBarOptions.length].value,
+            }),
+            ...(hasSegmentId && { [segmentId]: properties[segmentId] }),
+          }
+          return [
+            {
+              properties: lineProperties,
+              // We need the property at the root level for sidebar lines leyend
+              [COORDINATES_PROPERTIES_ID]: properties,
+              latitude: coords.latitude,
+              longitude: coords.longitude,
+              ...(startTimeMs && { timestamp: startTimeMs }),
+              id: recordId,
+            },
+          ]
         })
       })
       .flatMap(splitSegmentAtAntimeridian)

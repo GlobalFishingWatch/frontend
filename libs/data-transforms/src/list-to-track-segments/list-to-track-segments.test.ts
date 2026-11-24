@@ -219,3 +219,44 @@ describe('Meridian handling', () => {
     expect(segments[0][1].map((point) => point.longitude)).toEqual([-179.5])
   })
 })
+
+describe('Coordinate formats', () => {
+  const columns = { latitude: 'lat', longitude: 'lon', startTime: 't', lineId: 'id' }
+  const toPoints = (records: Record<string, any>[]) =>
+    listToTrackSegments({
+      records,
+      ...columns,
+      lineColorBarOptions: LINE_COLOR_BAR_OPTIONS,
+    })
+      .segments.flat(2)
+      .map(({ latitude, longitude }) => [latitude, longitude])
+
+  // Spreadsheets in Spanish/Portuguese locales export quoted decimal commas, which papaparse
+  // leaves as strings. Number('-41,7616') is NaN, so validating before parsing dropped them all.
+  it('keeps coordinates written with a decimal comma', () => {
+    expect(
+      toPoints([
+        { id: 'a', lat: '-41,7616', lon: '-71,5003', t: '2015-04-13T19:31:00Z' },
+        { id: 'a', lat: '-42,1281', lon: '-73,2994', t: '2015-04-13T20:42:00Z' },
+      ])
+    ).toEqual([
+      [-41.7616, -71.5003],
+      [-42.1281, -73.2994],
+    ])
+  })
+
+  it('drops non-numeric and out-of-range coordinates', () => {
+    expect(
+      toPoints([
+        { id: 'a', lat: 1, lon: 1, t: '2025-01-01T00:00:00Z' },
+        { id: 'a', lat: 'ggg', lon: 1, t: '2025-01-02T00:00:00Z' },
+        { id: 'a', lat: 95, lon: 1, t: '2025-01-03T00:00:00Z' },
+        { id: 'a', lat: '', lon: 1, t: '2025-01-04T00:00:00Z' },
+        { id: 'a', lat: 2, lon: 2, t: '2025-01-05T00:00:00Z' },
+      ])
+    ).toEqual([
+      [1, 1],
+      [2, 2],
+    ])
+  })
+})
