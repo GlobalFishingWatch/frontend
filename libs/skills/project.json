@@ -6,6 +6,14 @@
   "tags": ["lib"],
   "targets": {
     "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["bundle"],
+      "outputs": ["{projectRoot}/dist/context-tools/**/*.d.ts"],
+      "options": {
+        "command": "tsc libs/skills/src/context-tools/index.ts --declaration --emitDeclarationOnly --strict --target es2022 --module nodenext --outDir libs/skills/dist/context-tools"
+      }
+    },
+    "bundle": {
       "executor": "@nx/esbuild:esbuild",
       "dependsOn": ["^build", "sync-areas", "sync-dataset-filters"],
       "outputs": ["{options.outputPath}"],

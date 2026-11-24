@@ -12,6 +12,7 @@
     "./decode-url": "./dist/decode-url/index.js",
     "./context-tools": {
       "development": "./src/context-tools/index.ts",
+      "types": "./dist/context-tools/index.d.ts",
       "default": "./dist/context-tools/index.js"
     }
   },

@@ -1,12 +1,80 @@
 /**
  * Context tools of the assistant: the agent calls them when it needs to know what the page shows,
- * and the browser answers from its stores (apps/platform/features/assistant). Name → description
- * the model reads.
+ * and the browser answers from its stores (apps/platform/features/assistant).
+ *
+ * - `AssistantContextToolOutputs` (below): what each tool returns, with the shapes in
+ *   `types/<page>-context-tool.types.ts`. The app's tool functions are typed against it.
+ * - `ASSISTANT_CONTEXT_TOOLS`: name → description the model reads. Every tool takes no input.
  *
  * gfw-agent declares them from here (src/mastra/tools/context-tools.ts): a change only reaches the
  * agent after a skills release and a version bump there.
- * Every tool takes no input. Describe the output the page returns.
+ *
+ * Type-only imports with `.js` extensions, no other runtime code: the `.d.ts` files are published
+ * as they are, and gfw-agent resolves them with `nodenext`.
  */
+
+import type {
+  AssistantClickedFeature,
+  AssistantContextToolUnavailable,
+  AssistantHelpPage,
+  AssistantMapView,
+  AssistantPlacesPage,
+  AssistantPortReport,
+  AssistantReportActivity,
+  AssistantReportArea,
+  AssistantReportEvents,
+  AssistantReportVessels,
+  AssistantUserResources,
+  AssistantVesselActivity,
+  AssistantVesselAreas,
+  AssistantVesselGroup,
+  AssistantVesselGroupInsights,
+  AssistantVesselIdentityContext,
+  AssistantVesselInsights,
+  AssistantVesselRelated,
+  AssistantVesselSearchResults,
+  AssistantWorkspace,
+  AssistantWorkspacesList,
+} from './types/index.js'
+
+export type * from './types/index.js'
+
+/** Tool name → what it returns when the page has data */
+export type AssistantContextToolOutputs = {
+  get_workspace: AssistantWorkspace
+  get_map_view: AssistantMapView
+  get_clicked_feature: AssistantClickedFeature
+  get_workspaces_list: AssistantWorkspacesList
+  get_vessel_identity: AssistantVesselIdentityContext
+  get_vessel_activity: AssistantVesselActivity
+  get_vessel_areas: AssistantVesselAreas
+  get_vessel_related: AssistantVesselRelated
+  get_vessel_insights: AssistantVesselInsights
+  get_report_area: AssistantReportArea
+  get_report_activity: AssistantReportActivity
+  get_report_vessels: AssistantReportVessels
+  get_report_events: AssistantReportEvents
+  get_vessel_group: AssistantVesselGroup
+  get_vessel_group_insights: AssistantVesselGroupInsights
+  get_port_report: AssistantPortReport
+  get_places_page: AssistantPlacesPage
+  get_vessel_search_results: AssistantVesselSearchResults
+  get_help_page: AssistantHelpPage
+  get_user_resources: AssistantUserResources
+}
+
+export type AssistantContextToolName = keyof AssistantContextToolOutputs
+
+export type AssistantContextToolOutput<Name extends AssistantContextToolName> =
+  AssistantContextToolOutputs[Name]
+
+/** What the browser sends back to the agent for a tool call */
+export type AssistantContextToolResult<Name extends AssistantContextToolName> =
+  AssistantContextToolOutput<Name> | AssistantContextToolUnavailable
+
+// ---------------------------------------------------------------------------------------------
+// Descriptions
+// ---------------------------------------------------------------------------------------------
 
 const MAP_RULES =
   'Numbers are what the map renders, not report values: call them approximate and send the user to a report for exact figures. It only covers this viewport, never the rest of the world.'
@@ -78,6 +146,4 @@ export const ASSISTANT_CONTEXT_TOOLS = {
     '- `visibility`: `public` (anyone with the link), `password` (workspaces: link + password) or `private` (only the user). Before suggesting to share a link, check it: a private resource, or a view using a private dataset, is not visible to others.',
     'Use it to resolve "my workspace", "my vessel group", "the dataset I uploaded" by name and open them by `id`. Never invent a resource that is not listed.',
   ].join('\n'),
-} as const satisfies Record<string, string>
-
-export type AssistantContextToolName = keyof typeof ASSISTANT_CONTEXT_TOOLS
+} as const satisfies Record<AssistantContextToolName, string>
