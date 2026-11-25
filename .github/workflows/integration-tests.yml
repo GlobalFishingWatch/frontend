@@ -31,6 +31,7 @@ jobs:
     steps:
       - name: Notify the developer about integration tests running
         uses: marocchino/sticky-pull-request-comment@v3
+        continue-on-error: true
         with:
           message: |
             ## ⏳ Integration tests are running...
