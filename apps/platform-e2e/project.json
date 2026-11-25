@@ -28,7 +28,18 @@
       }
     },
     "test:local": {
-      "cache": false,
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/**/*",
+        "sharedGlobals",
+        "^production",
+        "^{projectRoot}/tsconfig*.json",
+        { "externalDependencies": ["@playwright/test"] },
+        { "env": "CI" },
+        { "env": "PLAYWRIGHT_BROWSER" },
+        { "env": "PLAYWRIGHT_BASE_URL" },
+        { "env": "VITE_API_GATEWAY" }
+      ],
       "parallelism": true,
       "configurations": {
         "ui": {

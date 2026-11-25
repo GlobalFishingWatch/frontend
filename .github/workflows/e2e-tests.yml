@@ -1,8 +1,11 @@
 name: E2E Tests
 
 # Runs the affected Playwright suite on the runner with `test:local`, which starts the platform
-# server itself. Nx Cloud is disabled (NX_NO_CLOUD): no remote cache and no distributed workers, and
-# the split `test-ci--<file>` tasks refuse to run without it.
+# server itself. Nx Cloud is disabled (NX_NO_CLOUD): no distributed workers, and the
+# split `test-ci--<file>` tasks refuse to run without it. Task results, `test:local` included, are
+# cached per PR through the same local cache server as app builds
+# (.github/actions/build-image/nx-cache-server.mjs), so a re-push that changes no e2e or platform
+# input replays the last pass.
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
@@ -20,6 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NX_NO_CLOUD: 'true'
+      NX_SELF_HOSTED_REMOTE_CACHE_SERVER: http://127.0.0.1:4911
       PLAYWRIGHT_BROWSER: chromium
       VITE_API_GATEWAY: https://gateway.api.${{ github.event.pull_request.base.ref == 'main' && 'staging' || 'dev' }}.globalfishingwatch.org
       VITE_WORKSPACE_ENV: development
@@ -44,6 +48,19 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: 'pnpm'
+
+      # Cache entries are scoped to this PR's ref, so they only help later pushes to the same PR
+      - name: Restore Nx cache
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ runner.temp }}/nx-cache
+          key: nx-e2e-${{ github.event.pull_request.number }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: nx-e2e-${{ github.event.pull_request.number }}-
+      - name: Start Nx cache server
+        run: |
+          touch "$RUNNER_TEMP/nx-cache-start"
+          node .github/actions/build-image/nx-cache-server.mjs "$RUNNER_TEMP/nx-cache" > "$RUNNER_TEMP/nx-cache.log" 2>&1 &
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -52,6 +69,17 @@ jobs:
 
       - name: Run affected e2e specs
         run: pnpm exec nx affected -t test:local --base=origin/${{ github.event.pull_request.base.ref }} --head=HEAD
+
+      # Nx only stores successful tasks, so saving after a failure keeps the ones that passed
+      - name: Drop Nx cache entries this run did not use
+        if: ${{ !cancelled() }}
+        run: find "$RUNNER_TEMP/nx-cache" -type f ! -newer "$RUNNER_TEMP/nx-cache-start" -delete
+      - name: Save Nx cache
+        if: ${{ !cancelled() }}
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ runner.temp }}/nx-cache
+          key: nx-e2e-${{ github.event.pull_request.number }}-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Upload Playwright reports
         if: failure()

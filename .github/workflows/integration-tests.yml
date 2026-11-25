@@ -2,8 +2,9 @@ name: Integration Tests
 
 # Lib unit tests run as `test`. The platform vitest suite runs as `integration-ci`, which the
 # @nx/vitest plugin splits into one `integration-ci--<file>` task per spec. All of them are
-# run on the runner, one spec at a time. Nx Cloud is disabled (NX_NO_CLOUD): no remote cache and no
-# distributed workers.
+# run on the runner, one spec at a time. Nx Cloud is disabled (NX_NO_CLOUD): no distributed workers.
+# Task results are cached per PR through the same local cache server as app builds
+# (.github/actions/build-image/nx-cache-server.mjs), so a re-push reruns only changed tasks.
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review, closed]
@@ -24,6 +25,7 @@ jobs:
     # Job-level so every nx step skips Nx Cloud (nxCloudId in nx.json)
     env:
       NX_NO_CLOUD: 'true'
+      NX_SELF_HOSTED_REMOTE_CACHE_SERVER: http://127.0.0.1:4911
       CI: '1'
       VITE_API_GATEWAY: https://gateway.api.${{ github.event.pull_request.base.ref == 'main' && 'staging' || 'dev' }}.globalfishingwatch.org
       VITE_WORKSPACE_ENV: development
@@ -56,6 +58,19 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: 'pnpm'
+
+      # Cache entries are scoped to this PR's ref, so they only help later pushes to the same PR
+      - name: Restore Nx cache
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ runner.temp }}/nx-cache
+          key: nx-integration-${{ github.event.pull_request.number }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: nx-integration-${{ github.event.pull_request.number }}-
+      - name: Start Nx cache server
+        run: |
+          touch "$RUNNER_TEMP/nx-cache-start"
+          node .github/actions/build-image/nx-cache-server.mjs "$RUNNER_TEMP/nx-cache" > "$RUNNER_TEMP/nx-cache.log" 2>&1 &
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -134,6 +149,17 @@ jobs:
             *) echo "No tests were run" >> summary.md ;;
           esac
           echo -e "\n[Job log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> summary.md
+
+      # Nx only stores successful tasks, so saving after a failure keeps the ones that passed
+      - name: Drop Nx cache entries this run did not use
+        if: ${{ !cancelled() }}
+        run: find "$RUNNER_TEMP/nx-cache" -type f ! -newer "$RUNNER_TEMP/nx-cache-start" -delete
+      - name: Save Nx cache
+        if: ${{ !cancelled() }}
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ runner.temp }}/nx-cache
+          key: nx-integration-${{ github.event.pull_request.number }}-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Comment on PR with test results
         if: always()
