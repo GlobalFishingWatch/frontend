@@ -1,0 +1,25 @@
+name: Nx cache
+description: Restores the Nx cache and serves it to Nx as a self-hosted remote cache. At the end of a successful job, saves only the entries the job used.
+
+inputs:
+  key:
+    description: Cache key prefix. The commit SHA is appended.
+    required: true
+  restore-keys:
+    description: Newline-separated fallback prefixes, tried after the key prefix
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    # Post steps run in reverse order, so the server's post (stop + prune) runs before this one saves.
+    - uses: actions/cache@v6
+      with:
+        path: ${{ runner.temp }}/nx-cache
+        key: ${{ inputs.key }}-${{ github.sha }}
+        restore-keys: |
+          ${{ inputs.key }}-
+          ${{ inputs.restore-keys }}
+
+    - uses: ./.github/actions/nx-cache/server
