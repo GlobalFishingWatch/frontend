@@ -2,8 +2,8 @@ name: Integration Tests
 
 # Lib unit tests run as `test`. The platform vitest suite runs as `integration-ci`, which the
 # @nx/vitest plugin splits into one `integration-ci--<file>` task per spec. All of them are
-# run on the runner, one spec at a time. Nx Cloud is disabled (NX_NO_CLOUD): no remote cache and no
-# distributed workers.
+# run on the runner, one spec at a time. Nx Cloud is disabled (NX_NO_CLOUD): no distributed workers.
+# Task results are cached per PR by the nx-cache action.
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review, closed]
@@ -58,6 +58,14 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      # A PR's caches are visible only to that PR, so each push restores the previous push's
+      # results. Tasks whose inputs did not change come from the cache. A failed job still saves
+      # the specs that passed.
+      - name: Nx cache
+        uses: ./.github/actions/nx-cache
+        with:
+          key: nx-integration-tests
 
       - name: Check load boundaries
         run: pnpm exec nx affected -t check-load-boundaries --base=origin/${{ github.event.pull_request.base.ref }} --head=HEAD
