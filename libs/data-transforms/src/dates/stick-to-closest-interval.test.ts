@@ -17,3 +17,5 @@ describe('stickToClosestInterval', () => {
     expect(new Date(end).getTime()).toBeGreaterThan(new Date(start).getTime())
   })
 })
+
+// cache probe 1, throwaway
