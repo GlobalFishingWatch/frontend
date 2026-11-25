@@ -27,6 +27,10 @@ const PASSWORD_WORKSPACE_PATH = appPath(
 const WORKSPACE_02_PASSWORD = 'test1234'
 
 test('WS01 - Save workspace', async ({ page, loginPage }) => {
+  // Unique per run: the test user is shared by every CI run, and a run that is cancelled between
+  // create and delete leaves its workspace behind. With a fixed name, that leftover failed the
+  // final assertion on every later run, on every branch.
+  const workspaceName = `E2E Test Workspace ${Date.now()}`
   // Set a fixed time for the test
   await page.clock.setFixedTime(new Date('2026-01-07T12:00:00'))
 
@@ -45,9 +49,10 @@ test('WS01 - Save workspace', async ({ page, loginPage }) => {
 
   await page.getByText('Save as a new workspace').click()
 
-  await expect(page.getByText('Save the current workspace')).toBeVisible()
+  // The save button's tooltip has the same text, so match the modal heading only
+  await expect(page.getByRole('heading', { name: 'Save the current workspace' })).toBeVisible()
 
-  await page.getByTestId(CREATE_WORKSPACE_NAME_TESTID).fill('E2E Test Workspace')
+  await page.getByTestId(CREATE_WORKSPACE_NAME_TESTID).fill(workspaceName)
 
   await expect(page.getByText('Dynamic')).toBeVisible()
 
@@ -64,17 +69,20 @@ test('WS01 - Save workspace', async ({ page, loginPage }) => {
 
   await page.getByTestId(USER_WORKSPACES_TAB_TESTID).click()
 
+  const workspaceRow = page.getByRole('listitem').filter({ hasText: workspaceName })
+  await expect(workspaceRow).toBeVisible()
+
   page.on('dialog', async (dialog) => {
     await dialog.accept()
   })
 
-  await page.getByTestId(REMOVE_WORKSPACE_BUTTON_TESTID).first().click()
+  await workspaceRow.getByTestId(REMOVE_WORKSPACE_BUTTON_TESTID).click()
 
   await page.waitForLoadState('networkidle')
 
-  await page.waitForTimeout(5000) // Wait for the workspace to be removed
+  await page.waitForTimeout(TIMEOUTS.SHORT) // Wait for the workspace to be removed
 
-  await expect(page.getByText('E2E Test Workspace')).not.toBeVisible()
+  await expect(page.getByText(workspaceName)).not.toBeVisible()
 })
 
 test(
