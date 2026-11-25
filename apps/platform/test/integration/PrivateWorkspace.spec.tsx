@@ -5,6 +5,8 @@ import { defaultState } from 'test/utils/store'
 import { describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
+import { WORKSPACE_PASSWORD_INPUT_TESTID } from '@platform/config/selectors/workspace'
+
 import { makeStore } from 'store'
 
 describe('PrivateWorkspace', async () => {
@@ -18,14 +20,9 @@ describe('PrivateWorkspace', async () => {
     await expect.element(getByText(/This is a private workspace/)).toBeVisible()
   })
 
-  it('should be able to navigate to the private workspace if authenticated', async () => {
-    const store = makeStore(defaultState)
-
-    const { getByText, router } = await render({ store, authenticated: true })
-    await router.navigate(navigateToWorkspace01())
-
-    await expect.element(getByText(/Workspace01/)).toBeVisible()
-  })
+  // Opening it as its owner is checked in apps/platform-e2e (Workspace.e2e.spec.ts, WS02): the
+  // grant is decided by the real API and the workspace's datasets are private, so it cannot be
+  // replayed from committed fixtures. The real password check also lives there (WS03).
 
   it('should be able to navigate to a password-protected workspace if correct password is used', async () => {
     const store = makeStore(defaultState)
@@ -33,9 +30,9 @@ describe('PrivateWorkspace', async () => {
     const { getByTestId, getByText, router } = await render({ store })
     await router.navigate(navigateToWorkspace02())
 
-    await expect.element(getByTestId('create-workspace-password')).toBeVisible()
+    await expect.element(getByTestId(WORKSPACE_PASSWORD_INPUT_TESTID)).toBeVisible()
 
-    await userEvent.type(getByTestId('create-workspace-password'), 'test1234')
+    await userEvent.type(getByTestId(WORKSPACE_PASSWORD_INPUT_TESTID), 'test1234')
 
     await userEvent.click(getByText('Send'))
 
@@ -48,9 +45,9 @@ describe('PrivateWorkspace', async () => {
     const { getByTestId, getByText, router } = await render({ store })
     await router.navigate(navigateToWorkspace02())
 
-    await expect.element(getByTestId('create-workspace-password')).toBeVisible()
+    await expect.element(getByTestId(WORKSPACE_PASSWORD_INPUT_TESTID)).toBeVisible()
 
-    await userEvent.type(getByTestId('create-workspace-password'), 'wrongpassword')
+    await userEvent.type(getByTestId(WORKSPACE_PASSWORD_INPUT_TESTID), 'wrongpassword')
 
     await userEvent.click(getByText('Send'))
 

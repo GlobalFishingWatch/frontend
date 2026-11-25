@@ -7,14 +7,12 @@ import { userEvent } from 'vitest/browser'
 
 import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
 
+import { WORKSPACE } from 'router/routes'
 import { makeStore } from 'store'
-
-import { createTestingMiddleware } from '../utils/store/testing-store-middleware'
 
 describe('Marine Manager', () => {
   it('should be able to navigate to marine manager workspace through sidebar', async () => {
-    const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
+    const store = makeStore(defaultState)
 
     const { getByTestId, getByText, getByRole } = await render({ store })
 
@@ -22,29 +20,12 @@ describe('Marine Manager', () => {
 
     await userEvent.click(getByRole('link', { name: 'Fiji' }).first())
 
-    const action = testingMiddleware.getLastActionByType('WORKSPACE')
-
-    expect(action).toMatchObject({
-      type: 'WORKSPACE',
-      payload: {
-        category: 'marine-manager',
-        workspaceId: 'fiji-public',
-      },
-      replaceQuery: true,
-      meta: {
-        location: {
-          kind: expect.stringMatching(/redirect|push/),
-          current: {
-            pathname: '/marine-manager/fiji-public',
-            payload: {
-              category: 'marine-manager',
-              workspaceId: 'fiji-public',
-            },
-          },
-          prev: expect.any(Object),
-        },
-      },
-    })
+    await expect
+      .poll(() => store.getState().location)
+      .toMatchObject({
+        type: WORKSPACE,
+        payload: { category: 'marine-manager', workspaceId: 'fiji-public' },
+      })
     await expect.element(getByText('Fiji')).toBeInTheDocument()
   })
 

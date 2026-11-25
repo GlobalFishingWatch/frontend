@@ -1,0 +1,10 @@
+{
+  "method": "GET",
+  "key": "GET /v3/vessels/9827ea1ea-a120-f374-0cc6-138b38bd8130,1da8dbc23-3c48-d5ce-95f1-1ffb6cc00161,0b7047cb5-58c8-6e63-4bfd-96a6af515c91,58cf536b1-1fca-dac3-ad31-7411a3708dcd/tracks?bearing-val-transit=20&binary=true&change-speed-transit=1000&dataset=public-global-all-tracks%3Av5.0&distance-transit=20&end-date=2027-01-01T00%3A00%3A00.000Z&fields%5B0%5D=ELEVATION&fields%5B1%5D=LONLAT&fields%5B2%5D=SPEED&fields%5B3%5D=TIMESTAMP&format=DECKGL&min-accuracy-transit=800&start-date=2026-01-01T00%3A00%3A00.000Z&wrap-longitudes=false",
+  "status": 200,
+  "headers": {
+    "content-type": "application/protobuf",
+    "timestamp-base": "1767225617000"
+  },
+  "body": "bin"
+}

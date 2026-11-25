@@ -5,6 +5,7 @@ convention as the workspace root — see the root `CLAUDE.md` for the rules and 
 workspace-wide facts (lib resolution, build target names, dependency layout, TypeScript setup).
 
 @.claude/memory/platform-testing.md
+@.claude/memory/integration-network-stub.md
 @.claude/memory/locales-source-is-the-only-editable.md
 @.claude/memory/popup-component-naming.md
 @.claude/memory/report-area-antimeridian.md

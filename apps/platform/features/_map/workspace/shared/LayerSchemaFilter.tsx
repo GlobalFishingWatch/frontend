@@ -19,6 +19,7 @@ import {
   SliderRange,
   Tooltip,
 } from '@globalfishingwatch/ui-components'
+import { getLayerSchemaFilterTestId } from '@platform/config/selectors/map'
 
 import type { DataviewFilterConfig } from 'features/_map/dataviews/dataviews.filters'
 import type { OnSelectFilterArgs } from 'features/_map/workspace/shared/LayerFilters.utils'
@@ -379,6 +380,7 @@ function LayerSchemaFilter({
       ) : (
         <MultiSelect
           key={id}
+          testId={getLayerSchemaFilterTestId(id)}
           disabled={disabled}
           placeholder={getPlaceholderBySelections({
             selection: optionsSelected.map(({ id }) => id),

@@ -1,0 +1,9 @@
+{
+  "method": "GET",
+  "key": "GET /v3/vessels?datasets%5B0%5D=public-global-vessel-identity%3Av5.0&ids%5B0%5D=fc560d253-3b54-bdf4-780e-f4a4f0715fa5&ids%5B1%5D=6bde0249d-d49c-84a1-65c5-dcfdf4241841&ids%5B2%5D=bc427dae4-415a-8334-91d7-7044c5f7f66a&ids%5B3%5D=6d1039056-6309-4f4f-9577-9aeda7bd21b6&ids%5B4%5D=0d8ceffba-ad12-3c41-8556-8d3acdffe699&includes%5B0%5D=POTENTIAL_RELATED_SELF_REPORTED_INFO",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  },
+  "body": "json"
+}

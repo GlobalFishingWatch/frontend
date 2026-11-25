@@ -27,14 +27,16 @@ jobs:
       CI: '1'
       VITE_API_GATEWAY: https://gateway.api.${{ github.event.pull_request.base.ref == 'main' && 'staging' || 'dev' }}.globalfishingwatch.org
       VITE_WORKSPACE_ENV: development
-      TEST_CHROME_ONLY: 'true'
 
     steps:
       - name: Notify the developer about integration tests running
         uses: marocchino/sticky-pull-request-comment@v3
+        continue-on-error: true
         with:
           message: |
             ## ⏳ Integration tests are running...
+
+            [Follow the run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
       - name: Checkout code
         uses: actions/checkout@v7
         with:
@@ -60,25 +62,30 @@ jobs:
       - name: Check load boundaries
         run: pnpm exec nx affected -t check-load-boundaries --base=origin/${{ github.event.pull_request.base.ref }} --head=HEAD
 
-      # Only the platform suite needs a browser and the test user's login (lib tests run in
-      # jsdom/node). Task-based affected (`-t`) selects a target only when its inputs changed, so a
-      # PR that does not touch what platform's specs read skips both.
-      # The platform suite is off until its specs are fixed: set the repository variable
-      # PLATFORM_INTEGRATION_TESTS=true to turn it back on. Lib tests always run.
+      # Recordings made locally reach a PR with no other check. A grep over ~10 MB, so it always
+      # runs. The test user's email is only checked where secrets are available (not on forks).
+      - name: Check recorded API responses for private data
+        env:
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+        run: apps/platform/scripts/check-recordings.sh
+
+      # Only the platform suite needs a browser (lib tests run in jsdom/node). Task-based affected
+      # (`-t`) selects a target only when its inputs changed, so a PR that does not touch what
+      # platform's specs read skips it.
       - name: Detect affected tests
         id: affected
         run: |
           AFFECTED="--affected --base=origin/${{ github.event.pull_request.base.ref }} --head=HEAD --json"
-          platform='[]'
-          if [ "${{ vars.PLATFORM_INTEGRATION_TESTS }}" = "true" ]; then
-            platform=$(pnpm exec nx show projects -t integration-ci $AFFECTED)
-          fi
+          platform=$(pnpm exec nx show projects -t integration-ci $AFFECTED)
           libs=$(pnpm exec nx show projects -t test --exclude='*-e2e,platform' $AFFECTED)
           echo "platform=$([ "$platform" = "[]" ] && echo false || echo true)" >> "$GITHUB_OUTPUT"
           echo "libs=$([ "$libs" = "[]" ] && echo false || echo true)" >> "$GITHUB_OUTPUT"
           echo "Affected: platform $platform, libs $libs"
 
-      # --- Logging in once ---------------------------------------------------
+      # --- Browser -----------------------------------------------------------
+      # No login: the platform specs replay recorded API responses with a fake token
+      # (apps/platform/test/utils/network/mock-network.ts). Logging in here also invalidated the
+      # token of any e2e run using the same test user.
       - name: Cache Playwright browsers
         if: steps.affected.outputs.platform == 'true'
         id: playwright-cache
@@ -89,21 +96,6 @@ jobs:
       - name: Install Playwright browsers
         if: steps.affected.outputs.platform == 'true' && steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
-      - name: Log in the test user
-        if: steps.affected.outputs.platform == 'true'
-        env:
-          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
-          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
-        run: |
-          pnpm exec nx run platform:test:login
-          TOKENS_FILE=apps/platform/test/.auth/tokens.json
-          if [ -f "$TOKENS_FILE" ]; then
-            echo "::add-mask::$(jq -r .token "$TOKENS_FILE")"
-            echo "::add-mask::$(jq -r .refreshToken "$TOKENS_FILE")"
-            echo "TEST_AUTH_TOKENS=$(jq -c . "$TOKENS_FILE")" >> "$GITHUB_ENV"
-          else
-            echo "::warning::Login failed; integration tests run unauthenticated"
-          fi
 
       # --- Running tests -----------------------------------------------------
 
@@ -127,6 +119,9 @@ jobs:
           exit $status
         env:
           NX_DAEMON: 'false'
+          # Nx refuses atomized tasks (integration-ci--*) when Nx Cloud is off ("should only be run
+          # with Nx Cloud"). Running them serially on the runner is intended, so skip that check.
+          NX_SKIP_ATOMIZER_VALIDATION: 'true'
 
       # Without Nx Cloud there is no per-task summary table to parse, so report the step outcome.
       - name: Write test summary

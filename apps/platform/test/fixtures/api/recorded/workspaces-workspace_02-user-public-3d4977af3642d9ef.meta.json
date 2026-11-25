@@ -1,0 +1,12 @@
+{
+  "method": "GET",
+  "key": "GET /v3/workspaces/workspace_02-user-public [x-workspace-password #c2ce2b48]",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8",
+    "x-ratelimit-ip-limit": "600",
+    "x-ratelimit-ip-remaining": "574",
+    "x-ratelimit-ip-reset": "32"
+  },
+  "body": "json"
+}

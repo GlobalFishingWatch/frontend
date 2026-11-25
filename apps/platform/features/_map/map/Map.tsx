@@ -26,7 +26,7 @@ import PendingDrawNotice from './overlays/draw/PendingDrawNotice'
 import LayersComposer from './LayersComposer'
 import { useMapDrawConnect } from './map-draw.hooks'
 import { useClickedEventUrlSync } from './map-interactions.hooks'
-import { MAP_CONTAINER_ID, useUpdateViewStateUrlParams } from './map-viewport.hooks'
+import { MAP_CONTAINER_ID } from './map-viewport.hooks'
 import TimeComparisonLegend from './TimeComparisonLegend'
 
 import styles from './Map.module.css'
@@ -36,7 +36,6 @@ const Hint = lazy(() => import('features/hints/Hint'))
 const DeckGLWrapper = lazy(() => import('./DeckGLWrapper'))
 
 const MapWrapper = () => {
-  useUpdateViewStateUrlParams()
   useClickedEventUrlSync()
   const { isMapDrawing } = useMapDrawConnect()
 

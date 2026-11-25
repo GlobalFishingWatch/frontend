@@ -28,6 +28,7 @@ import {
   MAP_VIEW,
   useMapViewState,
   useMapViewStateUrlSync,
+  useUpdateViewStateUrlParams,
 } from 'features/_map/map/map-viewport.hooks'
 import MapAnnotations from 'features/_map/map/overlays/annotations/Annotations'
 import TrackCorrectionsOverlay from 'features/_map/map/overlays/track-corrections/TrackCorrectionsOverlay'
@@ -41,6 +42,7 @@ import styles from './Map.module.css'
 
 const DeckGLWrapper = () => {
   const viewStateSynced = useMapViewStateUrlSync()
+  useUpdateViewStateUrlParams(viewStateSynced)
   const deckRef = useRef<DeckGLRef<MapView>>(null)
   useSetMapInstance(deckRef)
   // drag-and-drop dataset upload — only while the map is mounted

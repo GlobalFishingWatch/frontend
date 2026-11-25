@@ -6,7 +6,19 @@ import { describe, expect, it } from 'vitest'
 import { makeStore } from 'store'
 
 const PUBLIC_BRAZIL_VMS_VESSEL_ID = '80fda2e12-2dab-34da-aa7a-b6b275bce00f'
-const PRIVATE_BRAZIL_VMS_VESSEL_ID = '1cb06bd01-1bd9-befb-75b8-b9178581ebe8'
+
+const VMS_BRA_FIELDS = [
+  'Vessel registration number',
+  'Fleet code',
+  'Fishing license code',
+  'Fishing license status',
+  'Fishing license start date',
+  'Fishing license end date',
+  'Year built',
+  'Length',
+  'Gross tonnage',
+  'Horse power',
+]
 
 const navigateToPublicBrazilVMSViewer = () =>
   navigateToVesselViewer({
@@ -16,47 +28,29 @@ const navigateToPublicBrazilVMSViewer = () =>
     vesselSelfReportedId: PUBLIC_BRAZIL_VMS_VESSEL_ID,
   })
 
-const navigateToPrivateBrazilVMSViewer = () =>
-  navigateToVesselViewer({
-    vesselId: PRIVATE_BRAZIL_VMS_VESSEL_ID,
-    vesselDatasetId: 'private-vms-bra-vessel-identity:v4.0',
-    vesselIdentitySource: 'selfReportedInfo',
-    vesselSelfReportedId: PRIVATE_BRAZIL_VMS_VESSEL_ID,
-  })
-
 describe('Vessel identity properties based on the VMS source', () => {
   it('should render public VMS Brazil identity fields', async () => {
     const store = makeStore(defaultState)
 
-    const { getByText, router } = await render({ store })
+    const { getByText, getByRole, router } = await render({ store })
     await router.navigate(navigateToPublicBrazilVMSViewer())
 
-    await expect.element(getByText('Fishing zone')).toBeVisible()
-    await expect.element(getByText('Main gear')).toBeVisible()
-    await expect.element(getByText('Target species')).toBeVisible()
-    await expect.element(getByText('External ID')).toBeVisible()
+    await expect.element(getByRole('tab', { name: 'VMS-BRA', selected: true })).toBeVisible()
+    const identity = getByRole('tabpanel').first()
 
-    expect(getByText('Fishing license code', { exact: true }).elements()).toHaveLength(0)
-    expect(getByText('Fleet code', { exact: true }).elements()).toHaveLength(0)
-    expect(getByText('Vessel registration number', { exact: true }).elements()).toHaveLength(0)
-  })
+    // Identity fields every source has
+    await expect.element(identity.getByText('Dom Rodrigo')).toBeVisible()
+    await expect.element(identity).toMatchTextContent(/Flag\s*Brazil/)
+    await expect.element(identity).toMatchTextContent(/Gear type.*Purse seine/)
 
-  it('should render private-only VMS Brazil identity fields', async () => {
-    const store = makeStore(defaultState)
+    // The VMS-BRA group is shown, empty: none of these values are public
+    for (const field of VMS_BRA_FIELDS) {
+      await expect.element(identity).toMatchTextContent(new RegExp(`${field}\\s*---`))
+    }
 
-    const { getByText, router } = await render({ store, authenticated: true })
-    await router.navigate(navigateToPrivateBrazilVMSViewer())
-
-    await expect.element(getByText('Vessel registration number')).toBeVisible()
-    await expect.element(getByText('Fleet code')).toBeVisible()
-    await expect.element(getByText('Fishing license code')).toBeVisible()
-    await expect.element(getByText('Fishing license status')).toBeVisible()
-    await expect.element(getByText('Fishing license start date')).toBeVisible()
-    await expect.element(getByText('Fishing license end date')).toBeVisible()
-    await expect.element(getByText('Horse power')).toBeVisible()
-
-    expect(getByText('Fishing zone', { exact: true }).elements()).toHaveLength(0)
-    expect(getByText('Main gear', { exact: true }).elements()).toHaveLength(0)
-    expect(getByText('Target species', { exact: true }).elements()).toHaveLength(0)
+    // Pipe 3 fields are no longer part of the Brazil VMS identity
+    for (const field of ['Fishing zone', 'Main gear', 'Target species']) {
+      await expect.element(getByText(field, { exact: true })).not.toBeInTheDocument()
+    }
   })
 })

@@ -1,0 +1,12 @@
+{
+  "method": "GET",
+  "key": "GET /v3/datasets/public-hawaii-1774533835094/user-context-layers/4/1/7?cache=dataset-upload-tmp%2Fd3477389-d453-402b-b048-274bc0247b87",
+  "status": 200,
+  "headers": {
+    "content-type": "application/vnd.mapbox-vector-tile",
+    "x-ratelimit-ip-limit": "600",
+    "x-ratelimit-ip-remaining": "589",
+    "x-ratelimit-ip-reset": "6"
+  },
+  "body": "bin"
+}

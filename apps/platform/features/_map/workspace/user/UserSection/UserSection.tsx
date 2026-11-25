@@ -10,6 +10,7 @@ import { getMergedDataviewId, type UrlDataviewInstance } from '@globalfishingwat
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
+import { DRAW_POLYGON_BUTTON_TESTID } from '@platform/config/selectors/map'
 
 import { useAddDataset } from 'features/_map/datasets/datasets.hook'
 import { selectDatasetsStatus } from 'features/_map/datasets/datasets.slice'
@@ -162,7 +163,7 @@ export function UserSection(): React.ReactElement<any> {
               tooltipPlacement="top"
               onClick={() => onDrawClick('polygons')}
               loginTooltip={t((t) => t.download.eventsDownloadLogin)}
-              testId="draw-polygon-button"
+              testId={DRAW_POLYGON_BUTTON_TESTID}
             />
             <UserLoggedIconButton
               loginSource="draw-points"

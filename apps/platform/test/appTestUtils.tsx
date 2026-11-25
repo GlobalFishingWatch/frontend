@@ -6,7 +6,8 @@ import { page } from 'vitest/browser'
 import type { RenderOptions } from 'vitest-browser-react'
 import { render as vitestRender } from 'vitest-browser-react'
 
-import { getGuestUser, GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import type { UserData } from '@globalfishingwatch/api-types'
 import { stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
@@ -19,6 +20,8 @@ import { getIsBrowser } from 'utils/dom'
 import { getCreateRouterOptions } from '../router'
 import type { AppStore } from '../store/store'
 import { makeStore } from '../store/store'
+
+import { INTEGRATION_TEST_TOKEN, IS_RECORD_MODE } from './utils/network/mock-network'
 
 export type JotaiStore = ReturnType<typeof createJotaiStore>
 
@@ -42,22 +45,52 @@ function seedBrowserHistory(location?: LocationState) {
   window.history.replaceState(null, '', buildInitialHref(location))
 }
 
-export async function withGuestUser(store: AppStore) {
-  store.dispatch(setLoggedUser(getGuestUser()))
-  return store
+// The root loader resolves the user on the server only (`loadUser` in routes/__root.tsx returns
+// null on the client), so `useInitAppStore` logs in a guest when the app boots in vitest. Re-apply
+// the real user right after that one dispatch: setting it before render() gets overwritten, and
+// setting it after render() races the async root loader.
+function keepUserLoggedIn(store: AppStore, user: UserData) {
+  const dispatch = store.dispatch
+  store.dispatch = ((action: Parameters<typeof dispatch>[0]) => {
+    const result = dispatch(action)
+    if (setLoggedUser.match(action) && action.payload.id !== user.id) {
+      store.dispatch = dispatch
+      dispatch(setLoggedUser(user))
+    }
+    return result
+  }) as typeof dispatch
 }
 
 export async function render(options: AppRenderOptions = {}) {
   const { store, jotaiStore, authenticated, ...renderOptions } = options
 
   return page.mark('render app', async () => {
-    if (authenticated) {
+    let user: UserData | null = null
+    if (authenticated && !IS_RECORD_MODE) {
+      // No login: the network stub answers /auth/me from the recordings. The token only has to
+      // exist so GFWAPI treats the session as logged in.
+      localStorage.setItem('GFW_API_USER_TOKEN', INTEGRATION_TEST_TOKEN)
+      localStorage.setItem('GFW_API_USER_REFRESH_TOKEN', INTEGRATION_TEST_TOKEN)
+      user = await GFWAPI.fetchUser({ token: INTEGRATION_TEST_TOKEN }).catch(() => {
+        console.warn('Authentication requested but /auth/me is not recorded')
+        return null
+      })
+      vi.spyOn(GFWAPI, 'logout').mockImplementation(async () => {
+        localStorage.removeItem('GFW_API_USER_TOKEN')
+        localStorage.removeItem('GFW_API_USER_REFRESH_TOKEN')
+        return true
+      })
+    } else if (authenticated) {
       try {
         const response = await fetch('/.auth/tokens.json').catch(() => null)
         if (response?.ok) {
           const tokens = await response.json()
           localStorage.setItem('GFW_API_USER_TOKEN', tokens?.token)
           localStorage.setItem('GFW_API_USER_REFRESH_TOKEN', tokens?.refreshToken)
+          user = await GFWAPI.fetchUser({ token: tokens?.token }).catch(() => {
+            console.warn('Authentication requested but the user could not be fetched')
+            return null
+          })
         } else {
           throw new Error('Authentication requested but tokens not available')
         }
@@ -76,6 +109,7 @@ export async function render(options: AppRenderOptions = {}) {
     }
 
     const storeToUse = store || makeStore()
+    if (user) keepUserLoggedIn(storeToUse, user)
     const jotaiStoreToUse = jotaiStore || createJotaiStore()
 
     const location = storeToUse.getState().location
@@ -107,6 +141,6 @@ export async function render(options: AppRenderOptions = {}) {
       ...renderOptions,
     })
 
-    return Object.assign(renderResult, { router, store: storeToUse })
+    return Object.assign(renderResult, { router, store: storeToUse, jotaiStore: jotaiStoreToUse })
   })
 }

@@ -13,6 +13,9 @@ Integration tests verify that different parts of the Fishing Map application wor
 - **Routing:** TanStack Router (navigation source of truth; synced to Redux via `setupRouterSync`)
 - **State Management:** Redux + Jotai
 - **User Interactions:** @vitest/browser userEvent API
+- **Network:** no live API. A `fetch` stub answers every request from handlers or from responses
+  recorded once from the dev API (`test/fixtures/api/recorded/`); an unanswered request fails the
+  test. How it works, and how to re-record: [`../README.md`](../README.md#the-network-stub).
 - **Artifacts:** Screenshots and Playwright traces
 
 ## Test Structure
@@ -72,14 +75,13 @@ describe('Feature Name', () => {
 Shared constants for all specs:
 
 ```typescript
-import { WAIT, TEST_END_DATE } from 'test/setup/config'
+import { TEST_END_DATE } from 'test/setup/config'
 
 // System clock is frozen at TEST_END_DATE in vitest.setup.ts
-// Use WAIT constants instead of magic numbers:
-await new Promise((resolve) => setTimeout(resolve, WAIT.MAP_INIT)) // 3000ms – full map bootstrap
-await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD)) // 2000ms – layer + tile fetch
-await new Promise((resolve) => setTimeout(resolve, WAIT.DEBOUNCE)) // 1500ms – debounced URL update
 ```
+
+There are no fixed waits. Wait for the state the next step needs instead — see
+[Wait for Async Operations](#2-wait-for-async-operations).
 
 ### `test/utils/store/`
 
@@ -144,30 +146,20 @@ it('should open vessel popup on vessel click', async () => {
   const jotaiStore = createJotaiStore()
   const { getByTestId } = await render({ store, jotaiStore })
 
-  // WHY: Wait WAIT.MAP_INIT (3000ms) for map initialization and vessel data to fully load
-  // Map must: initialize deck.gl, fetch tiles, render layers, and position vessels
-  // This is longer than layer loading (WAIT.LAYER_LOAD) because it includes full map bootstrap
-  // ⚠️ IMPORTANT: This wait is REQUIRED because we're about to interact with map features
-  // that depend on tiles being loaded. Without it, the click coordinates won't find any vessels.
-  await new Promise((resolve) => setTimeout(resolve, WAIT.MAP_INIT))
+  // WHY: the click only picks a vessel once its layer and tiles are loaded. waitForLayersLoaded
+  // (test/utils/map.ts) waits for every deck layer to report loaded — the same state the map
+  // spinner shows — and for that to hold briefly, so it does not pass before a load starts.
+  await waitForLayersLoaded(jotaiStore)
 
-  const mapInstance = jotaiStore.get(mapInstanceAtom)
-  const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
   // WHY: Convert geographic coordinates [longitude, latitude] to screen pixels [x, y]
   // The map uses geographic coordinates, but user interactions (clicks) require screen coordinates
-  // viewport.project() handles the transformation based on current zoom/pan state
-  const [x, y] = viewport?.project([-17.3, 26.4]) || [0, 0]
+  // projectToMap() uses the deck viewport for the current zoom/pan state.
+  // clickMapAtCoordinates() does both and hovers before clicking.
+  const { x, y } = await projectToMap(jotaiStore, -17.3, 26.4)
 
-  // WHY: Hovering before clicking ensures the map's hover state is properly set
-  // This makes feature selection more reliable, especially with overlapping features
-  await userEvent.hover(mapElement, { position: { x, y } })
-
-  // WHY: Wait 500ms for hover state to stabilize before clicking
-  // The map hover detection has debouncing logic; immediate clicks may miss the feature
-  // ⚠️ IMPORTANT: This wait is REQUIRED because hover state is debounced
-  await new Promise((resolve) => setTimeout(resolve, 500))
-
-  await userEvent.click(mapElement, { position: { x, y } })
+  // WHY: Hover first so deck picks the feature under the pointer. hoverThenClickMap waits for the
+  // hover popup (not a fixed delay), then clicks. clickMapAtCoordinates does the projection too.
+  await hoverThenClickMap(getByTestId, { x, y })
 
   // ℹ️ NOTE: No wait needed here - expect.element() will retry until popup is visible
   await expect.element(mapPopup.getByText('Gabu Reefer')).toBeVisible()
@@ -190,16 +182,15 @@ Testing adding, removing, and configuring data layers.
 ```typescript
 it('should add reference data layer', async () => {
   const store = makeStore(defaultState)
-  const { getByTestId } = await render({ store })
+  // render() also returns the Jotai store it used
+  const { getByTestId, jotaiStore } = await render({ store })
 
   await getByTestId('activity-add-layer-button').click()
   await getByTestId('add-layer-eez-button').click()
 
-  // WHY: Wait WAIT.LAYER_LOAD (2000ms) for layer data to load and tiles to be fetched from the API
-  // Layer addition triggers async operations: API calls, tile loading, and deck.gl layer creation
-  // ⚠️ IMPORTANT: This wait is ONLY needed if we're going to interact with the map after this
-  // (e.g., clicking on a feature that depends on the loaded tiles)
-  await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD))
+  // WHY: Layer addition triggers async operations: API calls, tile loading, and deck.gl layer
+  // creation. Only needed if the test then interacts with the map (e.g. clicks a feature).
+  await waitForLayersLoaded(jotaiStore)
 
   await expect
     .poll(() => store.getState().location.query)
@@ -219,31 +210,18 @@ it('should add reference data layer', async () => {
 
 ### 4. **Authentication Setup**
 
-Authentication is handled in `test/setup/login/` and runs once before all tests.
+Normal runs never log in. `render({ authenticated: true })` stores a fake token, and the stub
+answers `/auth/me` from an anonymised recording (and a token renewal with the same fake token).
+Logged-in requests are recorded and replayed under their own `[user]` keys, so a guest and a
+logged-in test see different responses for the same URL.
 
-### How it works
+Only **record mode** (`VITEST_RECORD=true`) logs in for real, once, in global setup
+(`test/setup/login/`): Playwright fills the GFW login form with `TEST_USER_EMAIL` /
+`TEST_USER_PASSWORD` from `.env`, and a local proxy on `localhost:3000` catches the OAuth callback
+so the browser never leaves `localhost` (navigating the vitest iframe away breaks the runner).
 
-1. **`auth-setup.ts`** checks if `.auth/tokens.json` already holds a valid token by calling `/auth/me`. If valid, setup is skipped entirely.
-2. If tokens are missing or expired, it reads `TEST_USER_EMAIL` / `TEST_USER_PASSWORD` from `.env` and launches a headless Chromium browser via Playwright.
-3. It starts a **local proxy server** (`proxy-server.ts`) on `localhost:3000` that acts as the OAuth callback receiver.
-4. The browser navigates to `http://localhost:3000/login`, which immediately redirects to the GFW OAuth login page (`GFWAPI.getLoginUrl(callbackUrl)`).
-5. Playwright fills in the credentials and submits the form.
-6. On success, the GFW gateway redirects to `http://localhost:3000/auth/callback?access_token=…`. The proxy server captures the access token from the query string and resolves its internal promise.
-7. The access token is exchanged for long-lived API tokens via `GFWAPI.exchangeTokens()`.
-8. Tokens are saved to `.auth/tokens.json` for all tests to reuse.
-
-### Why a proxy server?
-
-Vitest Browser Mode runs tests inside an iframe. Navigating to an external OAuth page would break the iframe connection and hang the test runner. The local proxy keeps the OAuth redirect loop entirely within `localhost`, so the browser never leaves the controlled environment during test execution. The proxy only runs during the global setup phase, not during tests themselves.
-
-### Credentials
-
-Set in `.env` (not committed):
-
-```
-TEST_USER_EMAIL=your@email.com
-TEST_USER_PASSWORD=yourpassword
-```
+Anything that depends on the test user's real grants (private workspaces, private datasets) cannot be
+replayed: private data is never recorded. Test it in `apps/platform-e2e`.
 
 Testing authenticated vs. unauthenticated user experiences.
 
@@ -262,9 +240,7 @@ it('should show login prompt when user is not logged in', async () => {
 })
 
 it('should show user dataset sections when user is logged in', async () => {
-  // WHY: authenticated: true loads pre-fetched auth tokens from /.auth/tokens.json
-  // This avoids navigating to external OAuth pages which would break the iframe-based test environment
-  // Global setup authenticates once and saves tokens; tests reuse them for speed and reliability
+  // WHY: authenticated: true renders as the (recorded, anonymised) test user, without a login
   const { getByRole, getByText } = await render({ store, authenticated: true })
 
   await getByTestId('activity-add-layer-button').click()
@@ -297,14 +273,18 @@ it('the map should be interactive after timebar interaction', async () => {
   const { getByTestId } = await render({ store, jotaiStore })
   const timebarWrapper = getByTestId('timebar-wrapper')
 
-  // WHY: Wait 3000ms for map and timebar to fully initialize
-  await new Promise((resolve) => setTimeout(resolve, 3000))
+  // WHY: Drag once the layers have loaded, not after a guessed delay
+  await waitForLayersLoaded(jotaiStore)
+
+  // WHY: the synthetic heatmap tiles hold data on one day (DATA_DAY); a fixed pixel lands on a
+  // day with none. getDataDayTimebarX (test/utils/timebar.ts) returns that day's x position
+  const dataDayX = await getDataDayTimebarX(getByTestId, jotaiStore)
 
   // WHY steps: 5 → Multi-step drags are required to properly trigger drag events
   // Single-step drags are not captured by the event system; intermediate steps ensure proper event firing
   await userEvent.dragAndDrop(timebarWrapper, timebarWrapper, {
-    sourcePosition: { x: 400, y: 35 },
-    targetPosition: { x: 700, y: 35 },
+    sourcePosition: { x: dataDayX - 40, y: 35 },
+    targetPosition: { x: dataDayX + 40, y: 35 },
     steps: 5,
   })
 
@@ -369,7 +349,8 @@ it('can search for a vessel and see it on the map', async () => {
   await userEvent.type(getByTestId('search-vessels-basic-input'), 'Gabu Reefer')
   await userEvent.click(getByTestId('link-vessel-profile'))
 
-  await new Promise((resolve) => setTimeout(resolve, 3000))
+  // WHY: the track has to be loaded before it can be clicked on the map
+  await waitForVesselTrackReady(jotaiStore)
 
   // Verify vessel appears on map
 })
@@ -396,11 +377,11 @@ it('should request tiles with correct parameters', async () => {
   const { getByTestId } = await render({ store, jotaiStore })
 
   // ⚠️ IMPORTANT: Wait for initial data to load before assertions
-  await new Promise((resolve) => setTimeout(resolve, 1000))
+  await waitForLayersLoaded(jotaiStore)
 
-  // Perform action that triggers API calls
+  // Perform action that triggers API calls, then wait for the new zoom's tiles
   await userEvent.click(getByTestId('map-control-zoom-in'))
-  await new Promise((resolve) => setTimeout(resolve, 1000))
+  await waitForLayersLoaded(jotaiStore)
 
   // WHY: Extract information from all fetch calls
   // mock.calls contains all arguments passed to the spied function
@@ -480,7 +461,8 @@ it('should preserve map previous state on layer toggle', async () => {
   const { getByTestId } = await render({ store })
 
   await getByTestId('map-control-zoom-in').click()
-  await new Promise((resolve) => setTimeout(resolve, 1100))
+  // WHY: the viewport reaches the URL after a debounce; poll for it instead of sleeping past it
+  await expect.poll(() => store.getState().location.query.zoom).toBe(2.49)
   await getByTestId('activity-layer-panel-switch-ais').click()
 
   const expectedResult = {
@@ -543,31 +525,24 @@ it('should display data after loading', async () => {
   // - NO if we're just checking that UI elements appear (expect.element() retries automatically)
 
   // Example 1: Wait IS needed - interacting with loaded data
-  await new Promise((resolve) => setTimeout(resolve, 2000))
-  const mapElement = getByTestId('app-main')
-  await userEvent.click(mapElement, { position: { x: 100, y: 100 } })
+  await waitForLayersLoaded(jotaiStore)
+  await clickMapAtCoordinates({ jotaiStore, getByTestId, longitude: -15, latitude: 28 })
 
   // Example 2: Wait NOT needed - just checking UI rendered
   await expect.element(getByTestId('data-display')).toBeVisible()
 })
 ```
 
-**Wait Times by Operation:**
+**What to wait for, by operation** (never a fixed delay):
 
-> **⚠️ IMPORTANT:** These wait times are **NOT required in every test**. Only add waits when you detect timing issues or flakiness. Many tests will work without explicit waits because `expect.element()` has built-in retry logic. Add waits only when:
->
-> - Data must be fetched from an API before interaction
-> - Animations/transitions must complete before next action
-> - Debounced operations need time to settle
-> - Map layers need time to render tiles
->
-> Start without waits, then add them only if tests fail due to timing.
-
-- Map initialization: `3000ms` (only when interacting with map features immediately after render)
-- Layer data loading: `2000ms` (only when clicking map features that depend on loaded tiles)
-- Debounced URL updates: `1500ms` (only when asserting URL state after map interactions)
-- Hover tooltip delay: `300ms-500ms` (only when clicking elements revealed by hover)
-- UI animations: `200ms` (only when elements have CSS transitions)
+| Operation                                | Wait                                                          |
+| ---------------------------------------- | ------------------------------------------------------------- |
+| Map ready to receive drags or clicks     | `waitForMapViewport(jotaiStore)`                              |
+| Layer data / tiles loaded                | `waitForLayersLoaded(jotaiStore)` (basemap excluded)          |
+| Click a lon/lat on the map               | `clickMapAtCoordinates(...)` (waits for the camera to settle) |
+| Debounced URL updates                    | `expect.poll(() => store.getState().location.query...)`       |
+| Buttons revealed by hovering a layer row | `clickLayerAction(getByTestId, { row, action })`              |
+| Something appearing in the UI            | `expect.element(...)` (retries on its own)                    |
 
 ## Best Practices
 
@@ -602,20 +577,27 @@ await getByText('AIS Layer').click()
 
 ### 2. **Wait for Async Operations**
 
-⚠️ **Use waits sparingly** - Only add them when tests fail due to timing issues.
+⚠️ **Never sleep (`setTimeout`).** A fixed wait is too short on a slow machine and wasted time on a
+fast one. Wait for the state the next step depends on:
 
-Many assertions don't need explicit waits because `expect.element()` has built-in retry logic. Add waits only when:
+| Waiting for                       | Use                                                                 |
+| --------------------------------- | ------------------------------------------------------------------- |
+| an element to appear              | `await expect.element(locator).toBeVisible()` (retries on its own)  |
+| map layers / tiles to load        | `await waitForLayersLoaded(jotaiStore)` from `test/utils/map.ts`    |
+| a specific layer to appear        | `await waitForLayersLoaded(jotaiStore, { layerIds: ['presence'] })` |
+| a click/hover on a map position   | `clickMapAtCoordinates` / `hoverThenClickMap` from `test/utils/map` |
+| a hover-revealed layer row button | `clickLayerAction` from `test/utils/layers.ts`                      |
+| debounced or async store state    | `await expect.poll(() => store.getState()…).toBe(…)`                |
 
-- Testing behavior that occurs AFTER an async operation completes
-- Interacting with elements that appear after data loads
-- Asserting state changes from debounced operations
+Don't wait for the map spinner to be hidden right after an action: the new load may not have
+started yet, so the spinner is still hidden and the wait passes too early. `waitForLayersLoaded`
+requires the loaded state to hold for a moment, which covers that gap.
 
 ```typescript
-// ✅ Good - Wait only when needed (e.g., for debounced URL updates)
+// ✅ Good - Poll the debounced state until it arrives
 await getByTestId('map-control-zoom-in').click()
-// WHY: URL updates are debounced 1000ms, so we wait 1500ms (1000ms + buffer)
-await new Promise((resolve) => setTimeout(resolve, 1500))
-expect(store.getState().location.query.zoom).toBe(2.49)
+// WHY: URL updates are debounced; poll instead of guessing how long the debounce takes
+await expect.poll(() => store.getState().location.query.zoom).toBe(2.49)
 
 // ✅ Also Good - No wait needed when expect.element() can retry
 await getByTestId('open-modal-button').click()
@@ -706,18 +688,17 @@ For elements with hover states, hover first to ensure consistent behavior.
 
 ```typescript
 // ✅ Good
-// WHY: Hovering reveals hidden UI elements (buttons, tooltips, menus)
-// Layer panel buttons are hidden until hover to reduce visual clutter
-await userEvent.hover(removeButton)
-
-// WHY: Wait 300ms for hover animation/transition to complete
-// Without this, the click might occur before buttons are fully visible and clickable
-await new Promise((resolve) => setTimeout(resolve, 300))
-await removeButton.click()
+// WHY: layer panel buttons only show while their row is hovered, and they slide in over each
+// other. clickLayerAction (test/utils/layers.ts) waits for the button and clicks it once through
+// the DOM, so Playwright's hit-target check cannot fail a click the app already handled
+await clickLayerAction(getByTestId, {
+  row: 'activity-layer-panel-switch-presence',
+  action: 'activity-layer-panel-remove-presence',
+})
 
 // ❌ May miss hover-dependent actions
-// This could fail if the button isn't visible without hovering first
-await removeButton.click()
+// The button is hidden until its row is hovered
+await getByTestId('activity-layer-panel-remove-presence').click()
 ```
 
 ### 8. **Use Multi-Step Drags**
@@ -748,8 +729,7 @@ it('shows login for guests', async () => {
 })
 
 it('shows content for logged-in users', async () => {
-  // WHY: authenticated: true loads pre-fetched auth tokens from /.auth/tokens.json
-  // This avoids navigating to external OAuth pages which would break the iframe-based test environment
+  // WHY: authenticated: true renders as the (recorded, anonymised) test user, without a login
   await render({ store, authenticated: true }) // Authenticated
   // assertions...
 })
@@ -792,13 +772,11 @@ await render({
 **Features:**
 
 - Wraps component in Redux and Jotai providers
-- Handles authentication token loading from `.auth/tokens.json`
-  - WHY: Tokens are fetched only once and reused across all tests for performance
-  - WHY: Re-authenticating for every test would be slow and unnecessary since tokens are long-lived
-- Mocks `GFWAPI.logout()` for authenticated tests
-  - WHY: Tests share the same auth tokens for performance (one global authentication)
-  - WHY: If a test calls logout() and it hits the real API, it would invalidate the token for all tests
-  - Solution: Mock logout to only clear localStorage (local effect) without API calls (global effect)
+- `authenticated: true` stores a fake token; `/auth/me` is answered from the anonymised recording
+  - WHY: no login and no real token outside record mode, so runs are offline and deterministic
+  - In record mode it loads the real tokens from `.auth/tokens.json` (written by global setup)
+- Mocks `GFWAPI.logout()` for authenticated tests: it only clears localStorage
+- Returns the Redux `store`, the `router` and the `jotaiStore` it used
 - Ensures `__root__` element exists for modals (ROOT_DOM_ELEMENT)
   - WHY: Next.js modals and portals render into #\_\_next element by default
   - WHY: In the test environment, this element doesn't exist automatically
@@ -971,28 +949,19 @@ await getByTestId('login-button').click() // This will break in iframe mode
 
 **Cause:** Async operations not fully completed before assertions.
 
-**Solution:** Add wait times **only when needed** - don't add them preemptively!
+**Solution:** Wait for the state the next step depends on — see the table in
+[Async Data Loading](#11-async-data-loading). A fixed `setTimeout` is either too short on a slow
+machine or wasted time on a fast one, and it hides the race instead of removing it.
 
-```typescript
-// WHY: Wait for async operations (API calls, animations, state updates)
-// Without waiting, assertions may execute before data is ready, causing flaky failures
-await new Promise((resolve) => setTimeout(resolve, 2000))
-```
+Common races found in this suite:
 
-**When to add waits:**
-
-1. **Start without waits** - Let `expect.element()` retry logic handle most cases
-2. **Run the test** - See if it fails due to timing
-3. **Add targeted waits** - Only where timing issues are detected
-4. **Use minimum wait time** - Don't add extra buffer "just in case"
-
-**Standard wait times by operation:**
-
-- Map initialization: `3000ms` (full bootstrap with tiles)
-- Layer data loading: `2000ms` (API + rendering)
-- Debounced URL updates: `1500ms` (1000ms debounce + 500ms buffer)
-- Hover tooltip delay: `300ms-500ms` (CSS transitions)
-- UI animations: `200ms` (simple transitions)
+- **Spinner already hidden:** right after an action the new load may not have started, so "spinner
+  hidden" passes too early. `waitForLayersLoaded` requires the loaded state to hold for a moment.
+- **Sidebar reflow:** a layer row moves while legends load, so a hover lands on the wrong row. For
+  row actions use `clickLayerAction`; elsewhere wrap hover + check in `vi.waitFor`. Never retry a
+  click that changes state: if it landed, the retry acts twice or fails on the new UI.
+- **Camera still moving:** a lon/lat projected mid-animation hits a different pixel and 4wings cell.
+  `projectToMap` / `clickMapAtCoordinates` wait for the viewport to settle.
 
 **Remember:** Most UI assertions don't need waits because `expect.element()` retries automatically!
 
