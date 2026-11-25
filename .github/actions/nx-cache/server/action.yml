@@ -1,7 +1,0 @@
-name: Nx cache server
-description: Internal to nx-cache. Starts the cache server and exports its URL; the post step stops it and drops the entries this job did not use.
-
-runs:
-  using: node24
-  main: start.mjs
-  post: stop.mjs

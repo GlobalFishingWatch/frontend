@@ -28,13 +28,13 @@ runs:
         node-version-file: .nvmrc
         cache: pnpm
 
+    - shell: bash
+      run: pnpm install --frozen-lockfile
+
     - uses: ./.github/actions/nx-cache
       with:
         key: nx-${{ inputs.app }}-${{ inputs.image }}
         restore-keys: nx-${{ inputs.app }}-
-
-    - shell: bash
-      run: pnpm install --frozen-lockfile
 
     - name: Read build env
       shell: bash
