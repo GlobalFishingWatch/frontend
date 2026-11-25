@@ -82,7 +82,9 @@ const playwrightProvider: BrowserProviderOption = playwright({
 export default defineConfig(({ mode }): ViteUserConfig => {
   const env = loadEnv(mode, process.cwd(), '')
 
-  const isChromeOnly = env.TEST_CHROME_ONLY === 'true'
+  // Chromium only unless asked. CI runs only Chromium, so Firefox and WebKit are not kept green:
+  // a run without an opt-in used to pick them up and fail for anyone who had not set a local flag.
+  const isAllBrowsers = env.TEST_ALL_BROWSERS === 'true'
   const isUiTarget = env.NX_TASK_TARGET_TARGET === 'test:ui'
   const isUiMode = mode === 'ui' || env.VITEST_UI === 'true' || isUiTarget
   const isCoverageMode = mode === 'coverage' || env.VITEST_COVERAGE === 'true'
@@ -174,7 +176,7 @@ export default defineConfig(({ mode }): ViteUserConfig => {
           mode: isUiMode ? 'on' : 'on-first-retry',
         },
         instances:
-          isUiMode || isChromeOnly
+          isUiMode || !isAllBrowsers
             ? [
                 {
                   browser: 'chromium',

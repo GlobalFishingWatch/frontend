@@ -27,7 +27,6 @@ jobs:
       CI: '1'
       VITE_API_GATEWAY: https://gateway.api.${{ github.event.pull_request.base.ref == 'main' && 'staging' || 'dev' }}.globalfishingwatch.org
       VITE_WORKSPACE_ENV: development
-      TEST_CHROME_ONLY: 'true'
 
     steps:
       - name: Notify the developer about integration tests running

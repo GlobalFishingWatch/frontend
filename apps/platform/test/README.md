@@ -19,17 +19,18 @@ are only needed to [re-record](#re-recording-the-api-responses).
 
 Run everything from the workspace root, through Nx. `--` passes the rest to `vitest`.
 
-| Task                        | Command                                                                        |
-| --------------------------- | ------------------------------------------------------------------------------ |
-| Whole suite, Chromium only  | `TEST_CHROME_ONLY=true pnpm nx test platform`                                  |
-| Whole suite, all 3 browsers | `pnpm nx test platform`                                                        |
-| One spec file               | `TEST_CHROME_ONLY=true pnpm nx test platform -- test/integration/App.spec.tsx` |
-| One test by name            | `TEST_CHROME_ONLY=true pnpm nx test platform -- -t "layer toggle"`             |
-| Interactive UI (Chromium)   | `pnpm nx test:ui platform`                                                     |
-| Watch mode                  | `pnpm nx test:watch platform`                                                  |
+| Task                        | Command                                                  |
+| --------------------------- | -------------------------------------------------------- |
+| Whole suite (Chromium)      | `pnpm nx test platform`                                  |
+| Whole suite, all 3 browsers | `TEST_ALL_BROWSERS=true pnpm nx test platform`           |
+| One spec file               | `pnpm nx test platform -- test/integration/App.spec.tsx` |
+| One test by name            | `pnpm nx test platform -- -t "layer toggle"`             |
+| Interactive UI (Chromium)   | `pnpm nx test:ui platform`                               |
+| Watch mode                  | `pnpm nx test:watch platform`                            |
 
-- `TEST_CHROME_ONLY=true` is what CI uses. Without it every spec runs three times (Chromium,
-  Firefox, WebKit), serially.
+- Runs use Chromium only, like CI. `TEST_ALL_BROWSERS=true` adds Firefox and WebKit (serially,
+  three times as long). They are not run in CI, so expect failures there; install them first with
+  `pnpm exec playwright install firefox webkit`.
 - Specs listed in `LEGACY_SPECS` (`vitest.config.ts`) are excluded from every run, CI included.
   `INTEGRATION_INCLUDE_LEGACY=true` runs them anyway, e.g. to see what one still needs.
 - `VITEST_NETWORK_DEBUG=true` logs every external request, how it was answered and how it settled.
@@ -38,7 +39,7 @@ Run everything from the workspace root, through Nx. `--` passes the rest to `vit
   the browser session is lost, and vitest waits on it for a long time before failing.
 
 CI: `.github/workflows/integration-tests.yml` runs `nx affected -t integration-ci --parallel=1`
-(one Nx task per spec file) with `TEST_CHROME_ONLY=true`, offline and without logging in, and
+(one Nx task per spec file) on Chromium, offline and without logging in, and
 posts the result as a sticky PR comment.
 
 ## What happens during a run
@@ -110,7 +111,7 @@ Record locally when you write a new spec or change which requests one makes, so 
 before the daily job runs:
 
 ```bash
-TEST_CHROME_ONLY=true VITEST_RECORD=true pnpm nx test platform --skip-nx-cache -- test/integration/<Spec>.spec.tsx
+VITEST_RECORD=true pnpm nx test platform --skip-nx-cache -- test/integration/<Spec>.spec.tsx
 ```
 
 Then check the recordings before committing. Integration Tests runs the same script on every PR and

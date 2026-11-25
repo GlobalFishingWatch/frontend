@@ -45,7 +45,7 @@ Libs are consumed via built `dist/`, not src paths. Each `libs/*/package.json` e
 | Build app          | `pnpm nx build platform`                           |
 | e2e                | `pnpm nx test platform-e2e`                        |
 
-`platform` integration specs run offline against recorded API responses (as of 2026-11-19): `TEST_CHROME_ONLY=true pnpm nx test platform -- test/integration/<Spec>.spec.tsx`. Anything needing the real backend goes to `platform-e2e`. See `apps/platform/.claude/memory/platform-testing.md`.
+`platform` integration specs run offline against recorded API responses (as of 2026-11-19): `pnpm nx test platform -- test/integration/<Spec>.spec.tsx`. Anything needing the real backend goes to `platform-e2e`. See `apps/platform/.claude/memory/platform-testing.md`.
 
 ## Team knowledge
 

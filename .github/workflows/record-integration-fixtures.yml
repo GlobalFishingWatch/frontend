@@ -23,7 +23,6 @@ jobs:
       # Same API the integration specs run against on PRs to develop
       VITE_API_GATEWAY: https://gateway.api.dev.globalfishingwatch.org
       VITE_WORKSPACE_ENV: development
-      TEST_CHROME_ONLY: 'true'
       FIXTURES_BRANCH: chore/integration-fixtures
       RECORDED_DIR: apps/platform/test/fixtures/api/recorded
 

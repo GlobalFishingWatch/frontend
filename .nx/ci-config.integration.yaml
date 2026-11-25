@@ -13,5 +13,4 @@ workers:
     - CI
     - VITE_API_GATEWAY
     - VITE_WORKSPACE_ENV
-    - TEST_CHROME_ONLY
     - TEST_AUTH_TOKENS

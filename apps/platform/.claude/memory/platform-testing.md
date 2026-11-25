@@ -16,8 +16,11 @@ nothing about your change. Replayed responses make it deterministic.
 
 **How to apply:**
 
-- Integration specs, Chromium only:
-  `TEST_CHROME_ONLY=true pnpm nx test platform -- test/integration/<Spec>.spec.tsx`.
+- Integration specs (Chromium only by default since 2026-11-25; `TEST_ALL_BROWSERS=true` adds
+  Firefox and WebKit, which CI never runs):
+  `pnpm nx test platform -- test/integration/<Spec>.spec.tsx`.
+  The default used to be all three browsers behind a `TEST_CHROME_ONLY` opt-out. Whoever had it in
+  their gitignored root `.env` saw a green suite; everyone else hit Firefox/WebKit-only failures.
   Needs Node ≥ 24 — under Node 22 the Nx project graph fails to load.
 - Specs in `LEGACY_SPECS` (`vitest.config.ts`) never run, CI included. As of 2026-11-19 two are
   listed: `HelpHub` (needs `VITE_PLATFORM_MODE=true`; the config pins it to `false`) and
