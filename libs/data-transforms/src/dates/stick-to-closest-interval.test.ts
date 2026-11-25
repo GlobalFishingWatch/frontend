@@ -21,3 +21,4 @@ describe('stickToClosestInterval', () => {
 // cache probe 1, throwaway
 // cache probe 2, throwaway
 // cache probe 3, throwaway
+// cache probe 4, throwaway
