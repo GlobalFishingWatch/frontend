@@ -1,9 +1,9 @@
 name: Nx cache
-description: Restores the Nx cache and serves it to Nx as a self-hosted remote cache. At the end of a successful job, saves only the entries the job used.
+description: Restores the Nx cache and serves it to Nx as a self-hosted remote cache. At the end of the job, also when it fails, saves only the entries the job used. Run it after pnpm install.
 
 inputs:
   key:
-    description: Cache key prefix. The commit SHA is appended.
+    description: Cache key prefix. The commit SHA and run attempt are appended.
     required: true
   restore-keys:
     description: Newline-separated fallback prefixes, tried after the key prefix
@@ -11,15 +11,8 @@ inputs:
     default: ''
 
 runs:
-  using: composite
-  steps:
-    # Post steps run in reverse order, so the server's post (stop + prune) runs before this one saves.
-    - uses: actions/cache@v6
-      with:
-        path: ${{ runner.temp }}/nx-cache
-        key: ${{ inputs.key }}-${{ github.sha }}
-        restore-keys: |
-          ${{ inputs.key }}-
-          ${{ inputs.restore-keys }}
-
-    - uses: ./.github/actions/nx-cache/server
+  using: node24
+  main: main.mjs
+  post: post.mjs
+  # Nx never caches a failed task, so what a failed job saves is only what passed
+  post-if: always()
