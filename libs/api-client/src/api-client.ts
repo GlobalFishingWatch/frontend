@@ -27,7 +27,7 @@ import {
   parseRateLimit,
 } from './utils/rate-limit'
 import type { TokenStorage } from './utils/token-storage'
-import { createLocalStorageTokenStorage } from './utils/token-storage'
+import { createLocalStorageTokenStorage, getTokenExpiry } from './utils/token-storage'
 import { renderCaptchaChallenge } from './utils/turnstile'
 import { isUrlAbsolute } from './utils/url'
 import {
@@ -543,6 +543,11 @@ export class GFW_API_CLASS {
 
   get token() {
     return this.accessTokenStorage.get()
+  }
+
+  isTokenExpired(marginMs = 60_000) {
+    const exp = getTokenExpiry(this.token)
+    return exp !== undefined && exp * 1000 - marginMs <= Date.now()
   }
 
   private set token(token: string) {

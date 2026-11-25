@@ -1,12 +1,17 @@
 {
-  "generatedAt": "2026-09-23T00:00:00.000Z",
-  "source": "bootstrap from gfw-terraform-api-resources (resources/datasets, resources/dataviews/activity_v4.tf) - replace with `pnpm nx sync-dataset-filters skills`",
+  "generatedAt": "2026-11-24T11:36:12.500Z",
+  "source": "https://gateway.api.dev.globalfishingwatch.org",
   "dataviews": {
-    "apparent-fishing-effort-ais-v-4": ["public-global-fishing-effort:v4.0"],
-    "apparent-fishing-effort-vms-v-4": ["public-belize-fishing-effort:v20220304", "public-indonesia-fishing-effort:v20200320", "public-vms-bra-fishing-effort:v4.0", "public-vms-chl-fishing-effort:v4.1", "public-vms-cri-fishing-effort:v4.0", "public-vms-ecu-fishing-effort:v4.0", "public-vms-nor-fishing-effort:v4.0", "public-vms-pan-fishing-effort:v4.1", "public-vms-per-fishing-effort:v4.0", "public-vms-png-fishing-effort:v4.0"],
-    "encounter-cluster-events-v-4": ["public-global-encounters-events:v4.0"],
-    "loitering-cluster-events-v-4": ["public-global-loitering-events:v4.0"],
-    "port-visit-cluster-events-v-4": ["public-global-port-visits-events:v4.0"]
+    "apparent-fishing-effort-ais-v-5": ["public-global-fishing-effort:v5.0"],
+    "apparent-fishing-effort-vms-v-5": ["public-belize-fishing-effort:v20220304", "public-indonesia-fishing-effort:v20200320", "public-vms-bra-fishing-effort:v5.0", "public-vms-chl-fishing-effort:v5.0", "public-vms-cri-fishing-effort:v5.0", "public-vms-ecu-fishing-effort:v5.0", "public-vms-nor-fishing-effort:v5.0", "public-vms-pan-fishing-effort:v5.0", "public-vms-per-fishing-effort:v5.0", "public-vms-plw-fishing-effort:v5.0", "public-vms-png-fishing-effort:v5.0"],
+    "encounter-cluster-events-v-5": ["public-global-encounters-events:v5.0"],
+    "loitering-cluster-events-v-5": ["public-global-loitering-events:v5.0"],
+    "port-visit-cluster-events-v-5": ["public-global-port-visits-events:v5.0"],
+    "presence-activity-v-5": ["public-global-presence:v5.0"],
+    "sar-v-5": ["public-global-sar-presence:v5.0"],
+    "sentinel-2-v-5": ["public-global-sentinel2-presence:v5.0"],
+    "viirs-match-skylight-v-4": ["public-global-skylight-viirs:v1.0"],
+    "viirs-match-v-4": ["public-global-viirs-presence:v4.0"]
   },
   "datasets": {
     "public-belize-fishing-effort:v20220304": {
@@ -15,30 +20,34 @@
           {
             "id": "flag",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
           },
           {
             "id": "geartype",
             "type": "string",
             "enabled": true,
+            "array": false,
             "enum": ["purse_seine", "trawler", "longline"]
           },
           {
             "id": "vessel-groups",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
           }
         ]
       }
     },
-    "public-global-encounters-events:v4.0": {
+    "public-global-encounters-events:v5.0": {
       "filters": {
         "events": [
           {
             "id": "duration",
             "type": "range",
             "enabled": true,
-            "enum": [2, 48],
+            "array": false,
+            "enum": ["2", "48"],
             "unit": "hours"
           },
           {
@@ -51,112 +60,319 @@
           {
             "id": "flag",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
           },
           {
             "id": "next_port_id",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
           },
           {
             "id": "vessel-groups",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
           }
         ]
       }
     },
-    "public-global-fishing-effort:v4.0": {
+    "public-global-fishing-effort:v5.0": {
       "filters": {
         "fourwings": [
           {
             "id": "distance_from_port_km",
             "type": "number",
             "enabled": true,
-            "enum": [0, 1, 2, 3, 4, 5],
+            "array": false,
+            "enum": ["0", "1", "2", "3", "4", "5"],
             "operation": "gte",
             "unit": "km"
           },
           {
+            "id": "elevation_m",
+            "type": "string",
+            "enabled": true,
+            "array": false,
+            "enum": ["<100", "100-200", "200-300", "300-400", "400-500", "500-600", "600-700", "700-800", "800-900", "900-1000", "1000-2000", "2000-3000", "3000-4000", "4000-5000", ">5000"],
+            "unit": "m"
+          },
+          {
             "id": "flag",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
           },
           {
             "id": "geartype",
             "type": "string",
             "enabled": true,
+            "array": false,
             "enum": ["tuna_purse_seines", "driftnets", "trollers", "set_longlines", "purse_seines", "pots_and_traps", "other_fishing", "dredge_fishing", "set_gillnets", "fixed_gear", "trawlers", "fishing", "seiners", "other_purse_seines", "other_seines", "squid_jigger", "pole_and_line", "drifting_longlines"]
           },
           {
             "id": "vessel-groups",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
           }
         ]
       }
     },
-    "public-global-loitering-events:v4.0": {
+    "public-global-loitering-events:v5.0": {
       "filters": {
         "events": [
           {
             "id": "duration",
             "type": "range",
             "enabled": true,
-            "enum": [2, 48],
+            "array": false,
+            "enum": ["2", "48"],
             "unit": "hours"
           },
           {
             "id": "flag",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
           },
           {
             "id": "next_port_id",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
           },
           {
             "id": "type",
             "type": "string",
             "enabled": true,
             "array": true,
-            "enum": ["CARGO", "DISCREPANCY", "CARRIER", "FISHING", "GEAR", "OTHER", "PASSENGER", "SEISMIC_VESSEL", "SUPPORT"]
+            "enum": ["OTHER_NON_FISHING", "CARGO", "PASSENGER", "FISHING", "INSUFFICIENT_DATA", "BUNKER", "CARRIER", "SEISMIC_VESSEL", "GEAR", "INACTIVE", "SUPPORT"]
           },
           {
             "id": "vessel-groups",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
           }
         ]
       }
     },
-    "public-global-port-visits-events:v4.0": {
+    "public-global-port-visits-events:v5.0": {
       "filters": {
         "events": [
           {
             "id": "duration",
             "type": "range",
             "enabled": true,
-            "enum": [2, 48],
+            "array": false,
+            "enum": ["2", "48"],
             "unit": "hours"
           },
           {
             "id": "flag",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
           },
           {
             "id": "type",
             "type": "string",
             "enabled": true,
             "array": true,
-            "enum": ["CARGO", "DISCREPANCY", "CARRIER", "FISHING", "GEAR", "OTHER", "PASSENGER", "SEISMIC_VESSEL", "SUPPORT"]
+            "enum": ["OTHER_NON_FISHING", "CARGO", "PASSENGER", "FISHING", "INSUFFICIENT_DATA", "BUNKER", "CARRIER", "SEISMIC_VESSEL", "GEAR", "INACTIVE", "SUPPORT"]
           },
           {
             "id": "vessel-groups",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
+          }
+        ]
+      }
+    },
+    "public-global-presence:v5.0": {
+      "filters": {
+        "fourwings": [
+          {
+            "id": "flag",
+            "type": "string",
+            "enabled": true,
+            "array": false
+          },
+          {
+            "id": "speed_range",
+            "type": "string",
+            "enabled": true,
+            "array": false,
+            "enum": ["<2", "2-4", "4-6", "6-10", "10-15", "15-25", ">25"]
+          },
+          {
+            "id": "vessel_type",
+            "type": "string",
+            "enabled": true,
+            "array": false,
+            "enum": ["fishing", "other_non_fishing", "passenger", "cargo", "carrier", "insufficient_data", "bunker", "seismic_vessel", "gear", "support", "inactive"]
+          },
+          {
+            "id": "vessel-groups",
+            "type": "string",
+            "enabled": true,
+            "array": false
+          }
+        ]
+      }
+    },
+    "public-global-sar-presence:v5.0": {
+      "filters": {
+        "fourwings": [
+          {
+            "id": "flag",
+            "type": "string",
+            "enabled": true,
+            "array": false
+          },
+          {
+            "id": "geartype",
+            "type": "string",
+            "enabled": true,
+            "array": false,
+            "enum": ["fishing", "gear", "tanker", "trawlers", "cargo", "other_non_fishing", "driftnets", "cargo_or_tanker", "carrier", "passenger", "bunker", "insufficient_data", "dredge_non_fishing", "patrol_vessel", "fixed_gear", "seismic_vessel", "squid_jigger", "set_longlines", "drifting_longlines", "pots_and_traps", "dredge_fishing", "set_gillnets", "tuna_purse_seines", "other_seines", "other_purse_seines", "seiners", "pole_and_line", "purse_seines", "trollers", "other_fishing", "inactive", "purse_seine_support", "research"]
+          },
+          {
+            "id": "matched",
+            "type": "boolean",
+            "enabled": true,
+            "array": false,
+            "enum": ["true", "false"]
+          },
+          {
+            "id": "neural_vessel_type",
+            "type": "string",
+            "enabled": true,
+            "array": false,
+            "enum": ["Likely non-fishing", "Likely Fishing", "Unknown"]
+          },
+          {
+            "id": "shiptype",
+            "type": "string",
+            "enabled": true,
+            "array": false,
+            "enum": ["fishing", "gear", "other_non_fishing", "cargo", "insufficient_data", "passenger", "carrier", "bunker", "seismic_vessel", "support", "inactive"]
+          },
+          {
+            "id": "vessel_id",
+            "type": "string",
+            "enabled": true,
+            "array": false
+          }
+        ]
+      }
+    },
+    "public-global-sentinel2-presence:v5.0": {
+      "filters": {
+        "fourwings": [
+          {
+            "id": "flag",
+            "type": "string",
+            "enabled": true,
+            "array": false
+          },
+          {
+            "id": "geartype",
+            "type": "string",
+            "enabled": true,
+            "array": false,
+            "enum": ["cargo", "other_non_fishing", "passenger", "tanker", "patrol_vessel", "trawlers", "carrier", "seismic_vessel", "fishing", "driftnets", "gear", "dredge_non_fishing", "cargo_or_tanker", "insufficient_data", "bunker", "squid_jigger", "fixed_gear", "purse_seines", "drifting_longlines", "tuna_purse_seines", "trollers", "set_gillnets", "pole_and_line", "dredge_fishing", "set_longlines", "pots_and_traps", "purse_seine_support", "seiners", "other_seines", "other_purse_seines", "research", "inactive", "other_fishing"]
+          },
+          {
+            "id": "length",
+            "type": "string",
+            "enabled": true,
+            "array": false,
+            "enum": ["<20", "20-60", "60-100", ">100"]
+          },
+          {
+            "id": "matched",
+            "type": "boolean",
+            "enabled": true,
+            "array": false,
+            "enum": ["true", "false"]
+          },
+          {
+            "id": "shiptype",
+            "type": "string",
+            "enabled": true,
+            "array": false,
+            "enum": ["cargo", "fishing", "other_non_fishing", "bunker", "carrier", "passenger", "insufficient_data", "seismic_vessel", "gear", "support", "inactive"]
+          },
+          {
+            "id": "vessel_id",
+            "type": "string",
+            "enabled": true,
+            "array": false
+          }
+        ]
+      }
+    },
+    "public-global-skylight-viirs:v1.0": {
+      "filters": {
+        "fourwings": [
+          {
+            "id": "flag",
+            "type": "string",
+            "enabled": true,
+            "array": false
+          },
+          {
+            "id": "matched",
+            "type": "boolean",
+            "enabled": true,
+            "array": false,
+            "enum": ["true", "false"]
+          },
+          {
+            "id": "radiance",
+            "type": "range",
+            "enabled": true,
+            "array": false,
+            "enum": ["0", "1000"],
+            "unit": "SI"
+          }
+        ]
+      }
+    },
+    "public-global-viirs-presence:v4.0": {
+      "filters": {
+        "fourwings": [
+          {
+            "id": "flag",
+            "type": "string",
+            "enabled": true,
+            "array": false
+          },
+          {
+            "id": "matched",
+            "type": "boolean",
+            "enabled": true,
+            "array": false,
+            "enum": ["true", "false"]
+          },
+          {
+            "id": "radiance",
+            "type": "range",
+            "enabled": true,
+            "array": false,
+            "enum": ["0", "10000"],
+            "unit": "SI"
+          },
+          {
+            "id": "shiptype",
+            "type": "string",
+            "enabled": true,
+            "array": false,
+            "enum": ["unknown", "fishing", "carrier", "support"]
           }
         ]
       }
@@ -167,270 +383,355 @@
           {
             "id": "flag",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
           },
           {
             "id": "geartype",
             "type": "string",
             "enabled": true,
+            "array": false,
             "enum": ["Purse Seine Group (2 boat) Small Pelagics", "Purse Seine Group (2 boat) Big Pelagics", "Cast Nets", "Pots", "Anchored gillnets", "Lampara Seine Nets", "Shrimp net", "Purse Seine Big Pelagics with one boat", "Basic longline", "Pole-and-line", "Hand Line Tuna", "Handline", "Purse Seine Small Pelagics", "Stick-Held lift net", "Oceanic gillnet", "Longline Tuna", "Fish net/dragnet", "Squid hooking"]
           },
           {
             "id": "vessel-groups",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
           }
         ]
       }
     },
-    "public-vms-bra-fishing-effort:v4.0": {
+    "public-vms-bra-fishing-effort:v5.0": {
       "filters": {
         "fourwings": [
           {
             "id": "distance_from_port_km",
             "type": "number",
             "enabled": true,
-            "enum": [0, 1, 2, 3, 4, 5],
+            "array": false,
+            "enum": ["0", "1", "2", "3", "4", "5"],
             "operation": "gte",
             "unit": "km"
           },
           {
             "id": "flag",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
+          },
+          {
+            "id": "fleet_code",
+            "type": "string",
+            "enabled": true,
+            "array": false,
+            "enum": ["1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9", "1.10", "1.11", "1.12", "1.13", "1.14", "1.15", "1.16", "1.17", "1.18", "2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "2.8", "2.9", "2.10", "2.11", "2.12", "2.13", "3.1", "3.2", "3.3", "3.4", "3.5", "3.6", "3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "4.1", "4.2", "4.3", "4.4", "4.5", "4.6", "5.1", "5.2", "5.3", "5.4", "5.5", "5.6", "5.7", "5.8", "5.9", "5.10", "5.11", "5.12", "6.1", "6.2", "6.3", "6.4", "6.5", "6.6", "6.7", "Sem código IN", "nan"]
           },
           {
             "id": "geartype",
             "type": "string",
             "enabled": true,
-            "enum": ["", "associated_school", "bottom_trawl", "drifting_longlines", "gillnet", "handline", "midwater_trawl", "pole_and_line", "pots_and_traps", "purse_seine", "set_gillnet", "set_handline", "set_longline", "vertical_longline"]
-          },
-          {
-            "id": "license_category",
-            "type": "string",
-            "enabled": true,
-            "enum": ["", "1.1 - Espinhel horizontal (superfície)", "1.10 - Espinhel vertical/Covos", "1.11 - Espinhel vertical", "1.12 - Linha de mão (fundo)", "1.13 - Linha/vara - com isca viva", "1.14 - Linha de mão (fundo)", "1.15 - Linha de mão (superfície)", "1.17 - Cardume associado", "1.18 - Cardume associado", "1.2 - Espinhel horizontal (superfície)", "1.3 - Espinhel horizontal (superfície) - com isca-viva", "1.4 - Espinhel horizontal (superfície)", "1.5 - Espinhel horizontal (fundo)", "1.6 - Espinhel horizontal (fundo)", "1.7 - Espinhel horizontal (fundo)", "1.8 - Espinhel vertical/covos", "1.9 - Espinhel vertical/Covos", "2.10 - Emalhe costeiro (fundo)", "2.11 - Emalhe costeiro (fundo)", "2.12 - Emalhe costeiro (fundo)", "2.13 - Emalhe Costeiro Diversificado", "2.2 - Emalhe costeiro (superfície)", "2.3 - Emalhe oceânico (fundo)", "2.4 - Emalhe costeiro (fundo)", "2.5 - Emalhe costeiro (superfície)", "2.6 - Emalhe costeiro (superfície)", "2.7 - Emalhe costeiro (superfície)", "2.8 - Emalhe costeiro (superfície)", "3.1 - Arrasto (fundo) parelha ou trilheira (*)", "3.10 - Arrasto costeiro (fundo) - duplo", "3.11 - Arrasto costeiro (fundo simples e parelha", "3.12 - Arrasto oceânico (fundo) – simples e duplo", "3.13 - Arrasto oceânico (fundo) – simples e duplo", "3.14 - Arrasto (meia água)", "3.2 - Arrasto (fundo) – Simples ou parelha", "3.3 - Arrasto (fundo) - duplo ou simples (**)", "3.4 - Arrasto (fundo) - duplo ou simples", "3.5 - Arrasto (fundo) - duplo ou simples", "3.6 - Arrasto (fundo) - duplo", "3.7 - Arrasto (fundo)– duplo", "3.8 - Arrasto (fundo) - duplo ou simples", "3.9 - Arrasto (fundo) - duplo ou simples", "4.1 - Cerco", "4.2 - Cerco", "4.3 - Cerco", "4.4 - Cerco", "4.6 - Cerco", "5.1 - Covos", "5.10 - Potes", "5.11 - Potes", "5.12 - Potes", "5.2 - Covos", "5.3 - Covos", "5.4 - Covos", "5.5 - Covos", "5.6 - Covos", "5.9 - Covos", "Sem código IN - Covos"]
-          },
-          {
-            "id": "target_species",
-            "type": "string",
-            "enabled": true,
-            "enum": ["", "Agulha", "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).", "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante", "Anchova, tainha e sororoca", "Anchoíta, galo, calamar", "Atuns (albacora laje, albacora branca e albacora bandolim)", "Bagres (Ariidae), dourada e pescada branca, arraia, pescada amarela, pescada gó, corvina, tainha.", "Batata, Abrótea de profundidade, Namorado, Garoupa,Bagre e cherne verdadeiro", "Bonito listrado", "Camarão rosa (santana e barba ruça)", "Camarão rosa, sete- barbas e branco", "Camarão santana e barba ruça", "Camarão sete barbas (Santana e barba ruça)", "Camarões (sete- barbas, branco, rosa)", "Camarões de profundidade", "Caranguejo de profundidade (Chaceon spp.)", "Caranguejo vermelho (Chaceon notialis)", "Cavalas, Albacorinhas", "Corvina, castanha, pescada e pescadinha real", "Corvina, castanha, pescada e pescadinha real, linguado, abrotea, cabrinha.", "Corvina, pescada, castanha, abrótea", "Dourada, Piramutaba e Gurijuba", "Dourado", "Espadarte", "Galo-de-fundo, abrótea-de-fundo, merluza", "Lagosta verde e lagosta vermelha", "Pargo", "Pargo rosa", "Peixe sapo", "Peroá, Garoupa e Corvina", "Pescada amarela gurijuba e camurim", "Pescada gó, camurim e corvina", "Piramutaba", "Piramutaba e dourada", "Polvo", "Saramunete", "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha", "Sardinha verdadeira", "Sardinha-lage", "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)", "Serra", "Serranidae e caranjidae (detalhar)", "Tainha", "Vermelhos (especificar)"]
+            "array": false,
+            "enum": ["DRIFTING_LONGLINES", "FISHING", "OTHER_FISHING", "OTHER_PURSE_SEINES", "POLE_AND_LINE", "POTS_AND_TRAPS", "SET_GILLNETS", "SET_LONGLINES", "SQUID_JIGGER", "TRAWLERS"]
           },
           {
             "id": "vessel-groups",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
           }
         ]
       }
     },
-    "public-vms-chl-fishing-effort:v4.1": {
+    "public-vms-chl-fishing-effort:v5.0": {
       "filters": {
         "fourwings": [
           {
             "id": "distance_from_port_km",
             "type": "number",
             "enabled": true,
-            "enum": [0, 1, 2, 3, 4, 5],
+            "array": false,
+            "enum": ["0", "1", "2", "3", "4", "5"],
             "operation": "gte",
             "unit": "km"
           },
           {
             "id": "flag",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
           },
           {
             "id": "geartype",
             "type": "string",
             "enabled": true,
-            "enum": ["", "PURSE_SEINES", "TRAWLERS", "SET_LONGLINES", "DRIFTING_LONGLINES", "PURSE_SEINES|TRAWLERS"]
+            "array": false,
+            "enum": ["", "OTHER_PURSE_SEINES", "TRAWLERS", "SET_LONGLINES", "OTHER_PURSE_SEINES|TRAWLERS"]
           },
           {
             "id": "source_fleet",
             "type": "string",
             "enabled": true,
+            "array": false,
             "enum": ["INDUSTRY", "SMALL_FISHERIES"]
           },
           {
             "id": "vessel-groups",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
           }
         ]
       }
     },
-    "public-vms-cri-fishing-effort:v4.0": {
+    "public-vms-cri-fishing-effort:v5.0": {
       "filters": {
         "fourwings": [
           {
             "id": "distance_from_port_km",
             "type": "number",
             "enabled": true,
-            "enum": [0, 1, 2, 3, 4, 5],
+            "array": false,
+            "enum": ["0", "1", "2", "3", "4", "5"],
             "operation": "gte",
             "unit": "km"
           },
           {
             "id": "flag",
             "type": "string",
-            "enabled": true
-          },
-          {
-            "id": "source_fleet",
-            "type": "string",
             "enabled": true,
-            "enum": ["ATUNEROS", "AVANZADOS", "SARDINEROS", "UFIND"]
-          },
-          {
-            "id": "vessel-groups",
-            "type": "string",
-            "enabled": true
-          }
-        ]
-      }
-    },
-    "public-vms-ecu-fishing-effort:v4.0": {
-      "filters": {
-        "fourwings": [
-          {
-            "id": "distance_from_port_km",
-            "type": "number",
-            "enabled": true,
-            "enum": [0, 1, 2, 3, 4, 5],
-            "operation": "gte",
-            "unit": "km"
-          },
-          {
-            "id": "flag",
-            "type": "string",
-            "enabled": true
-          },
-          {
-            "id": "vessel-groups",
-            "type": "string",
-            "enabled": true
-          }
-        ]
-      }
-    },
-    "public-vms-nor-fishing-effort:v4.0": {
-      "filters": {
-        "fourwings": [
-          {
-            "id": "distance_from_port_km",
-            "type": "number",
-            "enabled": true,
-            "enum": [0, 1, 2, 3, 4, 5],
-            "operation": "gte",
-            "unit": "km"
-          },
-          {
-            "id": "flag",
-            "type": "string",
-            "enabled": true
+            "array": false
           },
           {
             "id": "geartype",
             "type": "string",
             "enabled": true,
-            "enum": ["", "drifting_longlines", "fishing", "pole_and_line", "pots_and_traps", "purse_seines", "seiners", "set_gillnets", "set_longlines", "trawlers", "trollers", "unknown_geartype"]
-          },
-          {
-            "id": "vessel-groups",
-            "type": "string",
-            "enabled": true
-          }
-        ]
-      }
-    },
-    "public-vms-pan-fishing-effort:v4.1": {
-      "filters": {
-        "fourwings": [
-          {
-            "id": "distance_from_port_km",
-            "type": "number",
-            "enabled": true,
-            "enum": [0, 1, 2, 3, 4, 5],
-            "operation": "gte",
-            "unit": "km"
-          },
-          {
-            "id": "flag",
-            "type": "string",
-            "enabled": true
+            "array": false,
+            "enum": ["", "DRIFTING_LONGLINES|SET_LONGLINES", "DRIFTNETS|SET_GILLNETS", "POTS_AND_TRAPS", "PURSE_SEINES"]
           },
           {
             "id": "source_fleet",
             "type": "string",
             "enabled": true,
-            "enum": ["INTERNATIONAL", "LONGLINE", "TRAWLER"]
+            "array": false,
+            "enum": ["ATUNEROS", "AVANZADOS", "SARDINEROS", "UFIND"]
           },
           {
             "id": "vessel-groups",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
           }
         ]
       }
     },
-    "public-vms-per-fishing-effort:v4.0": {
+    "public-vms-ecu-fishing-effort:v5.0": {
       "filters": {
         "fourwings": [
           {
             "id": "distance_from_port_km",
             "type": "number",
             "enabled": true,
-            "enum": [0, 1, 2, 3, 4, 5],
+            "array": false,
+            "enum": ["0", "1", "2", "3", "4", "5"],
             "operation": "gte",
             "unit": "km"
           },
           {
             "id": "flag",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
+          },
+          {
+            "id": "geartype",
+            "type": "string",
+            "enabled": true,
+            "array": false,
+            "enum": ["", "TUNA_PURSE_SEINES", "PURSE_SEINES", "DRIFTING_LONGLINES|SET_LONGLINES", "TRAWLERS", "POTS_AND_TRAPS"]
+          },
+          {
+            "id": "vessel-groups",
+            "type": "string",
+            "enabled": true,
+            "array": false
+          }
+        ]
+      }
+    },
+    "public-vms-nor-fishing-effort:v5.0": {
+      "filters": {
+        "fourwings": [
+          {
+            "id": "distance_from_port_km",
+            "type": "number",
+            "enabled": true,
+            "array": false,
+            "enum": ["0", "1", "2", "3", "4", "5"],
+            "operation": "gte",
+            "unit": "km"
+          },
+          {
+            "id": "flag",
+            "type": "string",
+            "enabled": true,
+            "array": false
+          },
+          {
+            "id": "geartype",
+            "type": "string",
+            "enabled": true,
+            "array": false,
+            "enum": ["", "drifting_longlines", "fishing", "pole_and_line", "pots_and_traps", "purse_seines", "seiners", "set_gillnets", "set_longlines", "trawlers", "trollers", "unknown_geartype"]
+          },
+          {
+            "id": "vessel-groups",
+            "type": "string",
+            "enabled": true,
+            "array": false
+          }
+        ]
+      }
+    },
+    "public-vms-pan-fishing-effort:v5.0": {
+      "filters": {
+        "fourwings": [
+          {
+            "id": "distance_from_port_km",
+            "type": "number",
+            "enabled": true,
+            "array": false,
+            "enum": ["0", "1", "2", "3", "4", "5"],
+            "operation": "gte",
+            "unit": "km"
+          },
+          {
+            "id": "flag",
+            "type": "string",
+            "enabled": true,
+            "array": false
+          },
+          {
+            "id": "geartype",
+            "type": "string",
+            "enabled": true,
+            "array": false,
+            "enum": ["", "LONGLINE", "LONGLINE_GIGGING", "PURSE_SEINE", "TORCHLIGHT_NET"]
+          },
+          {
+            "id": "source_fleet",
+            "type": "string",
+            "enabled": true,
+            "array": false,
+            "enum": ["INTERNATIONAL", "LONGLINE", "TRAWLER"]
+          },
+          {
+            "id": "vessel-groups",
+            "type": "string",
+            "enabled": true,
+            "array": false
+          }
+        ]
+      }
+    },
+    "public-vms-per-fishing-effort:v5.0": {
+      "filters": {
+        "fourwings": [
+          {
+            "id": "distance_from_port_km",
+            "type": "number",
+            "enabled": true,
+            "array": false,
+            "enum": ["0", "1", "2", "3", "4", "5"],
+            "operation": "gte",
+            "unit": "km"
+          },
+          {
+            "id": "flag",
+            "type": "string",
+            "enabled": true,
+            "array": false
           },
           {
             "id": "origin",
             "type": "string",
             "enabled": true,
+            "array": false,
             "enum": ["Foreign", "PER", ""]
           },
           {
             "id": "source_fleet",
             "type": "string",
             "enabled": true,
+            "array": false,
             "enum": ["", "SMALL-SCALE", "INDUSTRIAL", "ARTISANAL"]
           },
           {
             "id": "vessel-groups",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
           }
         ]
       }
     },
-    "public-vms-png-fishing-effort:v4.0": {
+    "public-vms-plw-fishing-effort:v5.0": {
       "filters": {
         "fourwings": [
           {
             "id": "distance_from_port_km",
             "type": "number",
             "enabled": true,
-            "enum": [0, 1, 2, 3, 4, 5],
+            "array": false,
+            "enum": ["0", "1", "2", "3", "4", "5"],
             "operation": "gte",
             "unit": "km"
           },
           {
             "id": "flag",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
+          },
+          {
+            "id": "geartype",
+            "type": "string",
+            "enabled": true,
+            "array": false,
+            "enum": ["drifting_longlines", "purse_seines", "tuna_purse_seines"]
           },
           {
             "id": "vessel-groups",
             "type": "string",
-            "enabled": true
+            "enabled": true,
+            "array": false
+          }
+        ]
+      }
+    },
+    "public-vms-png-fishing-effort:v5.0": {
+      "filters": {
+        "fourwings": [
+          {
+            "id": "distance_from_port_km",
+            "type": "number",
+            "enabled": true,
+            "array": false,
+            "enum": ["0", "1", "2", "3", "4", "5"],
+            "operation": "gte",
+            "unit": "km"
+          },
+          {
+            "id": "flag",
+            "type": "string",
+            "enabled": true,
+            "array": false
+          },
+          {
+            "id": "vessel-groups",
+            "type": "string",
+            "enabled": true,
+            "array": false
           }
         ]
       }

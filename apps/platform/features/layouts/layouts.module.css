@@ -5,6 +5,7 @@
   width: 100%;
   position: relative;
   transform: translateZ(0);
+  overflow: clip;
 }
 
 .helpHubBackground {

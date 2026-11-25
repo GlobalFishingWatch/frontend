@@ -34,6 +34,21 @@ export type PopoverProps = {
   onClickOutside?: () => void
 }
 
+// tabbable >= 6.4 (used by FloatingFocusManager) matches `:not([inert] *)`.
+// Browsers without complex selectors inside :not() (Chrome < 88, e.g. Tizen TVs) throw a SyntaxError,
+// so they get the popover without focus management instead of a crash.
+const SUPPORTS_COMPLEX_NOT_SELECTOR = (() => {
+  if (typeof document === 'undefined') {
+    return true
+  }
+  try {
+    document.querySelector(':not(a b)')
+    return true
+  } catch {
+    return false
+  }
+})()
+
 function OptionalPortal({ enabled, children }: { enabled: boolean; children: React.ReactNode }) {
   return enabled ? <FloatingPortal>{children}</FloatingPortal> : <Fragment>{children}</Fragment>
 }
@@ -95,7 +110,11 @@ export function Popover({
         React.cloneElement(children, getReferenceProps({ ref: refs.setReference }))}
       {isOpen && (
         <OptionalPortal enabled={portal}>
-          <FloatingFocusManager context={context} modal={false}>
+          <FloatingFocusManager
+            context={context}
+            modal={false}
+            disabled={!SUPPORTS_COMPLEX_NOT_SELECTOR}
+          >
             <div
               className={cx(styles.contentContainer, className)}
               ref={refs.setFloating}

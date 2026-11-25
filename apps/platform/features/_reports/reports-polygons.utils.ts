@@ -131,6 +131,10 @@ export function getPolygonsCoverage({
       })
     }
 
+    if (reportAreaM2 > 0) {
+      intersectionM2 = Math.min(intersectionM2, reportAreaM2)
+    }
+
     return {
       areaCoverageRatio: reportAreaM2 > 0 ? intersectionM2 / reportAreaM2 : 0,
       areaCoverageKm2: intersectionM2 / 1_000_000,
@@ -148,8 +152,8 @@ export function getPolygonsCoverage({
               (nameProperty ? feature.properties?.[nameProperty] : undefined) ??
               feature.value ??
               feature.id,
-            km2,
-            ratio: reportAreaM2 > 0 ? (km2 * 1_000_000) / reportAreaM2 : 0,
+            km2: reportAreaM2 > 0 ? Math.min(km2, reportAreaM2 / 1_000_000) : km2,
+            ratio: reportAreaM2 > 0 ? Math.min((km2 * 1_000_000) / reportAreaM2, 1) : 0,
           }
         }),
     }
