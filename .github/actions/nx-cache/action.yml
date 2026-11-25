@@ -1,0 +1,49 @@
+name: Nx cache
+description: >-
+  Local Nx remote-cache server backed by actions/cache. Run with mode "restore" before the first
+  nx command, and with mode "save" (same key) after the last one. Nx rejects a copied cache
+  directory, so Nx talks to server.mjs over NX_SELF_HOSTED_REMOTE_CACHE_SERVER instead.
+
+inputs:
+  mode:
+    description: '"restore" (restore entries and start the server) or "save" (prune unused entries and save)'
+    required: true
+  key:
+    description: actions/cache key
+    required: true
+  restore-keys:
+    description: actions/cache restore-keys, used by mode "restore"
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - if: inputs.mode == 'restore'
+      uses: actions/cache/restore@v6
+      with:
+        path: ${{ runner.temp }}/nx-cache
+        key: ${{ inputs.key }}
+        restore-keys: ${{ inputs.restore-keys }}
+
+    - name: Start Nx cache server
+      if: inputs.mode == 'restore'
+      shell: bash
+      run: |
+        touch "$RUNNER_TEMP/nx-cache-start"
+        node "$GITHUB_ACTION_PATH/server.mjs" "$RUNNER_TEMP/nx-cache" > "$RUNNER_TEMP/nx-cache.log" 2>&1 &
+        echo "NX_NO_CLOUD=true" >> "$GITHUB_ENV"
+        echo "NX_SELF_HOSTED_REMOTE_CACHE_SERVER=http://127.0.0.1:4911" >> "$GITHUB_ENV"
+
+    # The caller gates saving. !cancelled() keeps the implicit success() from skipping a save after
+    # a failed test step. The server touches every entry it serves, so older entries went unused.
+    - name: Drop Nx cache entries this run did not use
+      if: ${{ !cancelled() && inputs.mode == 'save' }}
+      shell: bash
+      run: find "$RUNNER_TEMP/nx-cache" -type f ! -newer "$RUNNER_TEMP/nx-cache-start" -delete
+
+    - if: ${{ !cancelled() && inputs.mode == 'save' }}
+      uses: actions/cache/save@v6
+      with:
+        path: ${{ runner.temp }}/nx-cache
+        key: ${{ inputs.key }}

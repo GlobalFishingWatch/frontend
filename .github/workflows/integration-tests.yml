@@ -59,17 +59,12 @@ jobs:
           node-version-file: .nvmrc
           cache: 'pnpm'
 
-      # Cache entries are scoped to this PR's ref, so they only help later pushes to the same PR
       - name: Restore Nx cache
-        uses: actions/cache/restore@v6
+        uses: ./.github/actions/nx-cache
         with:
-          path: ${{ runner.temp }}/nx-cache
+          mode: restore
           key: nx-integration-${{ github.event.pull_request.number }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: nx-integration-${{ github.event.pull_request.number }}-
-      - name: Start Nx cache server
-        run: |
-          touch "$RUNNER_TEMP/nx-cache-start"
-          node .github/actions/build-image/nx-cache-server.mjs "$RUNNER_TEMP/nx-cache" > "$RUNNER_TEMP/nx-cache.log" 2>&1 &
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -151,14 +146,11 @@ jobs:
           echo -e "\n[Job log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> summary.md
 
       # Nx only stores successful tasks, so saving after a failure keeps the ones that passed
-      - name: Drop Nx cache entries this run did not use
-        if: ${{ !cancelled() }}
-        run: find "$RUNNER_TEMP/nx-cache" -type f ! -newer "$RUNNER_TEMP/nx-cache-start" -delete
       - name: Save Nx cache
         if: ${{ !cancelled() }}
-        uses: actions/cache/save@v6
+        uses: ./.github/actions/nx-cache
         with:
-          path: ${{ runner.temp }}/nx-cache
+          mode: save
           key: nx-integration-${{ github.event.pull_request.number }}-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Comment on PR with test results

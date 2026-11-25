@@ -29,19 +29,13 @@ runs:
         cache: pnpm
 
     - name: Restore Nx cache
-      uses: actions/cache/restore@v6
+      uses: ./.github/actions/nx-cache
       with:
-        path: ${{ runner.temp }}/nx-cache
+        mode: restore
         key: nx-${{ inputs.app }}-${{ inputs.image }}-${{ github.sha }}
         restore-keys: |
           nx-${{ inputs.app }}-${{ inputs.image }}-
           nx-${{ inputs.app }}-
-
-    - name: Start Nx cache server
-      shell: bash
-      run: |
-        touch "$RUNNER_TEMP/nx-cache-start"
-        node "$GITHUB_ACTION_PATH/nx-cache-server.mjs" "$RUNNER_TEMP/nx-cache" > "$RUNNER_TEMP/nx-cache.log" 2>&1 &
 
     - shell: bash
       run: pnpm install --frozen-lockfile
@@ -89,8 +83,6 @@ runs:
         COMMIT_SHA: ${{ github.sha }}
         NODE_ENV: production
         NODE_OPTIONS: --max-old-space-size=6144
-        NX_NO_CLOUD: 'true'
-        NX_SELF_HOSTED_REMOTE_CACHE_SERVER: http://127.0.0.1:4911
       run: |
         pnpm nx run "$APP:build" --parallel=4
         docker build . \
@@ -100,13 +92,9 @@ runs:
           --build-arg VITE_WORKSPACE_ENV \
           --tag "$IMAGE"
 
-    - name: Drop Nx cache entries this build did not use
-      shell: bash
-      run: find "$RUNNER_TEMP/nx-cache" -type f ! -newer "$RUNNER_TEMP/nx-cache-start" -delete
-
     - name: Save Nx cache
       if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
-      uses: actions/cache/save@v6
+      uses: ./.github/actions/nx-cache
       with:
-        path: ${{ runner.temp }}/nx-cache
+        mode: save
         key: nx-${{ inputs.app }}-${{ inputs.image }}-${{ github.sha }}

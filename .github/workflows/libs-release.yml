@@ -82,6 +82,13 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${{ secrets.GH_PA_TOKEN }}@github.com/${{ github.repository }}.git
 
+      - name: Restore Nx cache
+        uses: ./.github/actions/nx-cache
+        with:
+          mode: restore
+          key: nx-libs-release-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: nx-libs-release-
+
       - run: pnpm install --frozen-lockfile
 
       - name: Resolve projects to release
@@ -122,6 +129,13 @@ jobs:
             ${{ inputs.dry_run && '--dry-run' || '' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Save Nx cache
+        if: ${{ !cancelled() && steps.resolve.outputs.list != '' }}
+        uses: ./.github/actions/nx-cache
+        with:
+          mode: save
+          key: nx-libs-release-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Push version commit and tags
         if: steps.resolve.outputs.list != '' && !inputs.dry_run
