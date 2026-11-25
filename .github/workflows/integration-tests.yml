@@ -34,6 +34,8 @@ jobs:
         with:
           message: |
             ## ⏳ Integration tests are running...
+
+            [Follow the run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
       - name: Checkout code
         uses: actions/checkout@v7
         with:
