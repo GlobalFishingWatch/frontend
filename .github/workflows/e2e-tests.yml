@@ -1,8 +1,8 @@
 name: E2E Tests
 
-# Runs the affected Playwright suite on the runner with `test:local`, which starts the platform
-# server itself. Nx Cloud is disabled (NX_NO_CLOUD): no remote cache and no distributed workers, and
-# the split `test-ci--<file>` tasks refuse to run without it.
+# Runs the affected Playwright specs on the runner as `test-ci`, which the Playwright plugin splits
+# into one `test-ci--<file>` task per spec; each waits for `platform:start`. Nx Cloud is disabled
+# (NX_NO_CLOUD): no distributed workers. Task results are cached per PR by the nx-cache action.
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
@@ -47,11 +47,24 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Each push restores the previous push's results. A spec's hash covers all of platform and its
+      # libs (implicitDependencies), so a spec reruns on any app change, and a failed job still
+      # saves the specs that passed.
+      - name: Nx cache
+        uses: ./.github/actions/nx-cache
+        with:
+          key: nx-e2e-tests
+
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
 
+      # --parallel=2 matches the 2 Playwright workers the unsplit suite used on this runner
       - name: Run affected e2e specs
-        run: pnpm exec nx affected -t test:local --base=origin/${{ github.event.pull_request.base.ref }} --head=HEAD
+        run: pnpm exec nx affected -t test-ci --parallel=2 --base=origin/${{ github.event.pull_request.base.ref }} --head=HEAD
+        env:
+          # Nx refuses atomized tasks (test-ci--*) when Nx Cloud is off. Running them on the runner
+          # is intended, so skip that check.
+          NX_SKIP_ATOMIZER_VALIDATION: 'true'
 
       - name: Upload Playwright reports
         if: failure()

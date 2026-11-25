@@ -30,5 +30,9 @@ remotely — verified on Nx 24.0.4 with an always-failing cacheable target.
 - The key is `<key>-<sha>-<run attempt>`. Without the attempt, a re-run of a failed job would find
   its own key taken and could not save what it added. Restore falls back to the newest `<key>-`.
 - PR runs can read their own PR's caches and the base branch's, never another PR's.
+- Users (as of 2026-11-25): `build-image` (app builds), `integration-tests.yml` and `e2e-tests.yml`.
+  Not the daily e2e or recording runs. The e2e specs hit the live API, so a cached pass can hide
+  an API-side break within a PR; deploy smoke runs stay uncached. `test:local` has `cache: false`,
+  which is why the PR workflow runs the split `test-ci` tasks.
 
 See [[task-based-affected]] for which build tasks this cache serves.
