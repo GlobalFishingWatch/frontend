@@ -9,6 +9,7 @@ import {
 import { getIsInjectedDataview } from 'features/_map/dataviews/selectors/dataviews.injected.utils'
 import {
   selectWorkspaceDataviewInstances,
+  selectWorkspaceFetchParams,
   selectWorkspaceStatus,
 } from 'features/_map/workspace/workspace.selectors'
 import { selectIsRouteWithWorkspace, selectUrlDataviewInstances } from 'router/routes.selectors'
@@ -22,16 +23,21 @@ export const selectWorkspaceDataviewInstancesMerged = createSelector(
   [
     selectIsRouteWithWorkspace,
     selectWorkspaceStatus,
+    selectWorkspaceFetchParams,
     selectWorkspaceDataviewInstances,
     selectUrlDataviewInstances,
   ],
   (
     isWorkspaceLocation,
     workspaceStatus,
+    workspaceFetchParams,
     workspaceDataviewInstances,
     urlDataviewInstances = EMPTY_ARRAY
   ): UrlDataviewInstance[] | undefined => {
-    if (isWorkspaceLocation && workspaceStatus !== AsyncReducerStatus.Finished) {
+    if (
+      isWorkspaceLocation &&
+      (workspaceStatus !== AsyncReducerStatus.Finished || workspaceFetchParams)
+    ) {
       return
     }
     // There was a bug where the windows.prompt asked to the user to save the workspace before leaving the page and
