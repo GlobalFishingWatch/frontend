@@ -34,5 +34,11 @@ remotely — verified on Nx 24.0.4 with an always-failing cacheable target.
   Not the daily e2e or recording runs. The e2e specs hit the live API, so a cached pass can hide
   an API-side break within a PR; deploy smoke runs stay uncached. `test:local` has `cache: false`,
   which is why the PR workflow runs the split `test-ci` tasks.
+- A task's hash includes the hashes of everything in its `dependsOn`, continuous tasks included.
+  Every `test-ci--*` waits for `platform:start`, which waits for `platform:i18n:watch`. With no
+  `inputs`, the watcher fell back to `default` + `^default` and pulled every lib's test files into
+  all e2e hashes. On 2026-11-25 a lib test edit reran all 8 specs. It now declares
+  `inputs: ["i18nSources"]`, like the `i18n` target that runs the same commands. Check
+  `nx show target inputs <dependent>` when a cache miss makes no sense.
 
 See [[task-based-affected]] for which build tasks this cache serves.
