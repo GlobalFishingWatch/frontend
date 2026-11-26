@@ -23,6 +23,9 @@ overrides:
   # GHSA-g3hv-75wg-m249 has no 10.x fix, but nx only matches our own config globs.
   # Drop once nx depends on minimatch >= 11.0.1.
   nx>minimatch: 10.2.5
+  # Same for @actions/glob 0.7 (calls minimatch's matchOne, also removed in 11), used by
+  # @actions/cache in .github/actions/nx-cache. It only matches that action's cache path.
+  '@actions/glob>minimatch': 10.2.5
   nanoid@3: 3.3.18
   piscina@4: 4.9.4
   postcss@8: 8.5.25

@@ -11,7 +11,16 @@ concurrency:
 
 jobs:
   pr-preview:
-    if: github.head_ref != 'i18n_dev' # Crowdin translation PRs
+    # i18n_dev = Crowdin translation PRs.
+    # labeled/unlabeled: the label added or removed must be ours. Other events: the PR must carry it.
+    if: >-
+      github.head_ref != 'i18n_dev' &&
+      (
+        ((github.event.action == 'labeled' || github.event.action == 'unlabeled') &&
+          github.event.label.name == 'deploy-preview-prod') ||
+        (github.event.action != 'labeled' && github.event.action != 'unlabeled' &&
+          contains(github.event.pull_request.labels.*.name, 'deploy-preview-prod'))
+      )
     uses: ./.github/workflows/_pr-preview.yml
     with:
       preview_label: deploy-preview-prod
