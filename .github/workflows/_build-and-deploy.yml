@@ -55,6 +55,12 @@ on:
         description: JSON array of the apps this run deployed
         value: ${{ jobs.resolve.outputs.apps }}
 
+env:
+  # Names the environment in Slack failure messages. One develop push fans out to three
+  # dev envs that share a ref and an env-suffix, so only the image tag tells them apart.
+  # sta and pro are already named by their ref (main, or the release tag).
+  FAILED_ENV: ${{ startsWith(inputs.env-suffix, 'dev') && (inputs.image-tag || format('latest-{0}', inputs.env-suffix)) || github.ref_name }}
+
 jobs:
   resolve:
     name: Resolve Apps
@@ -121,6 +127,16 @@ jobs:
             echo "::notice::'$APP' has no entry in $CONFIG — not a deployable app, skipping"
             echo "apps=[]" >> "$GITHUB_OUTPUT"
           fi
+
+      # A step, not a separate `if: failure()` job: that job would show as a skipped
+      # check on every successful run.
+      - name: Notify Slack on failure
+        if: failure()
+        uses: ./.github/actions/notify-slack
+        with:
+          channel: '#eng-cloud-build'
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
+          message: ":red_circle: *Build and Deploy failed* (resolving apps) on `${{ env.FAILED_ENV }}`\n<!subteam^S091F43KM6F> please take a look. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
 
   build-and-deploy:
     name: Build and Deploy / ${{ inputs.service-prefix }} / ${{ matrix.app }}
@@ -190,35 +206,12 @@ jobs:
           cloudrun-service-account: ${{ env.CLOUDRUN_SA }}
           cloudrun-project: ${{ inputs.cloudrun-project }}
 
-  notify-failure:
-    name: Notify Slack on failure
-    runs-on: ubuntu-latest
-    needs: [resolve, build-and-deploy]
-    if: failure()
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
-
-      # One develop push fans out to three dev envs that share a ref and an
-      # env-suffix, so only the image tag tells them apart. sta and pro are already
-      # named by their ref (main, or the release tag).
-      - name: Name the environment
-        id: env
-        shell: bash
-        env:
-          TAG: ${{ inputs.image-tag || format('latest-{0}', inputs.env-suffix) }}
-          SUFFIX: ${{ inputs.env-suffix }}
-          REF: ${{ github.ref_name }}
-        run: |
-          set -euo pipefail
-          case "$SUFFIX" in
-            dev*) echo "name=${TAG#latest-}" >> "$GITHUB_OUTPUT" ;;
-            *)    echo "name=$REF"           >> "$GITHUB_OUTPUT" ;;
-          esac
-
-      - name: Notify Slack
+      # A step, not a separate `if: failure()` job: that job would show as a skipped
+      # check on every successful run.
+      - name: Notify Slack on failure
+        if: failure()
         uses: ./.github/actions/notify-slack
         with:
           channel: '#eng-cloud-build'
           token: ${{ secrets.SLACK_BOT_TOKEN }}
-          message: ":red_circle: *Build and Deploy failed* on `${{ steps.env.outputs.name }}`\n<!subteam^S091F43KM6F> please take a look. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
+          message: ":red_circle: *Build and Deploy failed* for `${{ matrix.app }}` on `${{ env.FAILED_ENV }}`\n<!subteam^S091F43KM6F> please take a look. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
