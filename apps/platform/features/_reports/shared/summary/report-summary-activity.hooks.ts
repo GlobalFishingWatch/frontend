@@ -213,7 +213,7 @@ export function useReportActivitySummaryData({
       const hoursBySublayer = sublayerIds.map((_, i) => sumSublayer((t) => t.avg?.[i]))
       const maxHoursBySublayer = sublayerIds.map((_, i) => sumSublayer((t) => t.range?.[i]?.[1]))
       const sublayerDataviews = sublayerIds.flatMap(
-        (id) => reportDataviews.find((dataview) => dataview.id === id) || []
+        (id) => dataviews.find((dataview) => dataview.id === id) || []
       )
       const tilesMode: TilesHoursMode =
         sublayerDataviews.length === sublayerIds.length
@@ -264,6 +264,5 @@ export function useReportActivitySummaryData({
     reportVessels,
     datasetIdsWithVessels,
     timeseriesLoading,
-    reportDataviews,
   ])
 }
