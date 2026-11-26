@@ -44,7 +44,7 @@ export const useMapViewStateUrlSync = () => {
 
 const VIEW_STATE_URL_DEBOUNCE = 300
 
-export const useUpdateViewStateUrlParams = () => {
+export const useUpdateViewStateUrlParams = (enabled: boolean) => {
   const viewState = useAtomValue(viewStateAtom)
   const isWorkspaceReady = useSelector(selectIsWorkspaceReady)
   const { replaceQueryParams } = useReplaceQueryParams()
@@ -58,14 +58,14 @@ export const useUpdateViewStateUrlParams = () => {
   )
 
   useEffect(() => {
-    if (isWorkspaceReady) {
+    if (enabled && isWorkspaceReady) {
       const { longitude, latitude, zoom } = viewState
       debouncedReplace({ longitude, latitude, zoom })
     }
     return () => {
       debouncedReplace.cancel()
     }
-  }, [viewState, isWorkspaceReady, debouncedReplace])
+  }, [enabled, viewState, isWorkspaceReady, debouncedReplace])
 }
 
 export const MAP_CONTAINER_ID = 'map-container'

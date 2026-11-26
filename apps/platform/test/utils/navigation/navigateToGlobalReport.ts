@@ -19,7 +19,6 @@ export function navigateToGlobalReport(): NavigationConfig<typeof ROUTE_PATHS.WO
         { id: 'presence', origin: 'report', config: { visible: true } },
         { id: 'sar', origin: 'report', config: { visible: true } },
         { id: 'sentinel2', origin: 'report', config: { visible: true } },
-        { id: 'viirs', origin: 'report', config: { visible: true } },
         { id: 'encounters', origin: 'report', config: { visible: true } },
         { id: 'loitering', origin: 'report', config: { visible: true } },
         { id: 'port-visits', origin: 'report', config: { visible: true } },

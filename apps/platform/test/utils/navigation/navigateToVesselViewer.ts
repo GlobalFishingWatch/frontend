@@ -1,10 +1,16 @@
+import { PIPE_DATASET_VERSION } from '@globalfishingwatch/datasets-client/constants'
 import { ROUTE_PATHS } from '@platform/config/routes'
 
 import type { QueryParams } from 'types'
 
 import type { NavigationConfig } from './navigation-config'
 
+/** Gabu Reefer */
 const DEFAULT_VESSEL_ID = '9827ea1ea-a120-f374-0cc6-138b38bd8130'
+// Registry ids belong to an identity dataset version: under v4.0 Gabu Reefer has no registry
+// records at all (checked 2026-11-19), under v5.0 this one, owned by FISHING CARGO SERVICES.
+// Re-check it whenever PIPE_DATASET_VERSION changes.
+const DEFAULT_REGISTRY_ID = 'b16ca93ea690fc725e9237d5cf9a798d'
 
 type VesselViewerParams = {
   vesselId?: string
@@ -19,9 +25,9 @@ export function navigateToVesselViewer(
 ): NavigationConfig<typeof ROUTE_PATHS.WORKSPACE_VESSEL> {
   const {
     vesselId = DEFAULT_VESSEL_ID,
-    vesselDatasetId = 'public-global-vessel-identity:v4.0',
+    vesselDatasetId = `public-global-vessel-identity:v${PIPE_DATASET_VERSION}.0`,
     vesselIdentitySource = 'registryInfo',
-    vesselRegistryId = '0821b07e716fbf183233ec819e3e626e',
+    vesselRegistryId = DEFAULT_REGISTRY_ID,
     vesselSelfReportedId,
   } = params ?? {}
 

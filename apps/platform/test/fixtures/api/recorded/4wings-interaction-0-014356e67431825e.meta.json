@@ -1,0 +1,12 @@
+{
+  "method": "GET",
+  "key": "GET /v3/4wings/interaction/0/0/0/59/11?datasets%5B0%5D=public-global-presence%3Av5.0&date-range=2025-11-15T00%3A00%3A00.000Z%2C2026-02-15T00%3A00%3A00.000Z&filters%5B0%5D=",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8",
+    "x-ratelimit-ip-limit": "600",
+    "x-ratelimit-ip-remaining": "596",
+    "x-ratelimit-ip-reset": "45"
+  },
+  "body": "json"
+}

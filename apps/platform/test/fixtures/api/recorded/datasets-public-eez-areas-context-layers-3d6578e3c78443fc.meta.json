@@ -1,0 +1,9 @@
+{
+  "method": "GET",
+  "key": "GET /v3/datasets/public-eez-areas/context-layers/8489?simplify=0.001",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8"
+  },
+  "body": "json"
+}

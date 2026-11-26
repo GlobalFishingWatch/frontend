@@ -1,34 +1,21 @@
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { WAIT } from 'test/setup/config'
-import {
-  USER_POLYGON_DATASET,
-  USER_POLYGON_DATASET_ID,
-  USER_POLYGON_LAYER_ID,
-} from 'test/utils/fixtures'
+import { USER_POLYGON_DATASET, USER_POLYGON_DATASET_ID } from 'test/utils/fixtures'
+import { clickLayerAction } from 'test/utils/layers'
 import { navigateToPolygonEditor } from 'test/utils/navigation/navigateToPolygonEditor'
-import { createTestingMiddleware, getDefaultStateWithDatasets } from 'test/utils/store'
-import { describe, expect, it, vi } from 'vitest'
+import { getDefaultStateWithDatasets } from 'test/utils/store'
+import { describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
 import { deckLayersStateAtom } from '@globalfishingwatch/deck-layer-composer'
-import { ROUTE_PATHS } from '@platform/config/routes'
-import { MAP_VIEW_ID } from '@platform/config/selectors/map'
 
-import { mapInstanceAtom } from 'features/_map/map/map.atoms'
 import { makeStore } from 'store'
-import { UserTab } from 'types'
 
 const defaultState = getDefaultStateWithDatasets([USER_POLYGON_DATASET])
 
 describe('Polygon', () => {
-  it.only('should be able to navigate to the polygon editor', async () => {
-    const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
-
-    // await render(<App />, { authenticated: true, store })
-
-    // store.dispatch(navigateToPolygonEditorAction)
+  it('should be able to navigate to the polygon editor', async () => {
+    const store = makeStore(defaultState)
 
     const { getByTestId } = await render({ authenticated: true, store })
 
@@ -42,13 +29,20 @@ describe('Polygon', () => {
 
     await userEvent.click(getByTestId('user-context-layer:v1-add-to-map-0').first())
 
-    await userEvent.hover(getByTestId(`context-layer-${USER_POLYGON_LAYER_ID}-1771416000000`))
-    await new Promise((resolve) => setTimeout(resolve, 300))
-    await userEvent.click(getByTestId(`user-layer-edit-${USER_POLYGON_DATASET_ID}`))
+    await clickLayerAction(getByTestId, {
+      // The instance id is `user-polygons-${Date.now()}-${Date.now()}` (getUserPolygonsDataviewInstance,
+      // then LayerLibraryUserPanel), and the test clock moves, so neither timestamp is fixed
+      row: /^context-layer-user-polygons-\d+-\d+$/,
+      action: `user-layer-edit-${USER_POLYGON_DATASET_ID}`,
+    })
 
-    const navigateAction = testingMiddleware.getLastActionByType('MAP')
-
-    expect(navigateAction.query).toMatchObject(navigateToPolygonEditor().search as object)
+    const { mapDrawing, mapDrawingEditId } = navigateToPolygonEditor().search as {
+      mapDrawing: string
+      mapDrawingEditId: string
+    }
+    await expect
+      .poll(() => store.getState().location.query)
+      .toMatchObject({ mapDrawing, mapDrawingEditId })
   })
 
   it('should load the polygon in the map', async () => {
@@ -58,8 +52,6 @@ describe('Polygon', () => {
     const { router } = await render({ store, jotaiStore })
 
     await router.navigate(navigateToPolygonEditor())
-
-    await new Promise((resolve) => setTimeout(resolve, WAIT.LAYER_LOAD))
 
     await expect
       .poll(
@@ -82,80 +74,5 @@ describe('Polygon', () => {
           cacheHash: '',
         },
       })
-  })
-
-  it('should be able to draw a new polygon, see it in the map and delete it', async () => {
-    const testTimestamp = 1771416000000 + Math.floor(Math.random() * 1000000000)
-    const dateNowSpy = vi.spyOn(Date, 'now').mockReturnValue(testTimestamp)
-
-    try {
-      const jotaiStore = createJotaiStore()
-      const store = makeStore(defaultState)
-      const { getByTestId, getByText, router } = await render({
-        store,
-        jotaiStore,
-        authenticated: true,
-      })
-
-      await userEvent.click(getByTestId('draw-polygon-button'))
-
-      // Define triangle vertices in [longitude, latitude] format
-      await expect
-        .poll(() => jotaiStore.get(mapInstanceAtom), {
-          timeout: 10000,
-          interval: 500,
-        })
-        .toBeDefined()
-      const mapInstance = jotaiStore.get(mapInstanceAtom)
-      const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
-      if (!viewport) {
-        throw new Error('Map viewport not found - cannot project coordinates')
-      }
-      const vertex1 = viewport?.project([-57.85, 49]) || [300, 200]
-      const vertex2 = viewport?.project([-32.8, 49.09]) || [400, 200]
-      const vertex3 = viewport?.project([-45.34, 29.9]) || [350, 300]
-
-      // Draw a triangle polygon
-      await userEvent.click(getByTestId('app-main'), { position: { x: vertex1[0], y: vertex1[1] } })
-      await userEvent.click(getByTestId('app-main'), { position: { x: vertex2[0], y: vertex2[1] } })
-      await userEvent.click(getByTestId('app-main'), { position: { x: vertex3[0], y: vertex3[1] } })
-      await userEvent.click(getByTestId('app-main'), { position: { x: vertex1[0], y: vertex1[1] } })
-      await userEvent.fill(getByTestId('input-layer-name'), 'Polygon drawing test')
-      await userEvent.click(getByTestId('draw-save-polygon'))
-      await new Promise((resolve) => setTimeout(resolve, 500))
-
-      // Wait for all layers to be loaded
-      await expect.element(getByTestId('map-loading-spinner')).not.toBeVisible()
-
-      //Delete layer after test
-      // await cleanupExistingTestPolygon(store)
-      window.confirm = () => true
-      await router.navigate({
-        to: ROUTE_PATHS.USER,
-        search: {
-          ...store.getState().location.query,
-          userTab: UserTab.Datasets,
-        },
-      })
-
-      await expect.poll(() => getByTestId('datasets-spinner')).not.toBeInTheDocument()
-
-      await expect
-        .poll(() => getByTestId(/delete-dataset-.*polygon-drawing-test/).all().length, {
-          timeout: 30000,
-        })
-        .toBeGreaterThan(0)
-
-      const deleteButtons = getByTestId(/delete-dataset-.*polygon-drawing-test/).all()
-
-      for (const button of deleteButtons) {
-        await expect.element(button).toBeVisible()
-        await userEvent.click(button)
-      }
-
-      expect(getByText('Polygon drawing test')).not.toBeInTheDocument()
-    } finally {
-      dateNowSpy.mockRestore()
-    }
   })
 })

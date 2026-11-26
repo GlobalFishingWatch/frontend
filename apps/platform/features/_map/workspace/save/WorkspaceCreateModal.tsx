@@ -18,7 +18,10 @@ import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, InputText, Modal, Select } from '@globalfishingwatch/ui-components'
 import { WorkspaceCategory } from '@platform/config/map/workspaces'
 import { ROUTE_PATHS } from '@platform/config/routes'
-import { CREATE_WORKSPACE_NAME_TESTID } from '@platform/config/selectors/workspace'
+import {
+  CREATE_WORKSPACE_NAME_TESTID,
+  WORKSPACE_PASSWORD_INPUT_TESTID,
+} from '@platform/config/selectors/workspace'
 
 import { selectPrivateDatasetsInWorkspace } from 'features/_map/dataviews/selectors/dataviews.selectors'
 import { useTimerangeConnect } from 'features/_map/timebar/timerange.hooks'
@@ -321,7 +324,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
               value={password}
               className={styles.select}
               type="password"
-              testId="create-workspace-password"
+              testId={WORKSPACE_PASSWORD_INPUT_TESTID}
               label={t((t) => t.common.setNewPassword)}
               onChange={(e) => setPassword(e.target.value)}
             />

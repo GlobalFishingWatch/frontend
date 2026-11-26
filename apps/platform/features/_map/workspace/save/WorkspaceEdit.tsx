@@ -9,7 +9,10 @@ import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PRIVATE_ACCESS } from '@globalfish
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, InputText, Select } from '@globalfishingwatch/ui-components'
 import { ROUTE_PATHS } from '@platform/config/routes'
-import { CREATE_WORKSPACE_NAME_TESTID } from '@platform/config/selectors/workspace'
+import {
+  CREATE_WORKSPACE_NAME_TESTID,
+  WORKSPACE_PASSWORD_INPUT_TESTID,
+} from '@platform/config/selectors/workspace'
 
 import { selectIsWorkspaceOwner } from 'features/_map/workspace/workspace.selectors'
 import type {
@@ -214,7 +217,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
             value={password}
             className={styles.select}
             type="password"
-            testId="create-workspace-password"
+            testId={WORKSPACE_PASSWORD_INPUT_TESTID}
             label={
               isWorkspaceOwner ? t((t) => t.common.setNewPassword) : t((t) => t.common.password)
             }

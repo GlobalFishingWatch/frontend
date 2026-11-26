@@ -20,8 +20,8 @@ platform:
   deploy:
     env_vars:
       BASIC_AUTH: Restricted
-      BASIC_AUTH_USER: gfw-fish
     secrets:
+      BASIC_AUTH_USER: projects/706952489382/secrets/FISHING_MAP_BASIC_AUTH_USER/versions/latest
       BASIC_AUTH_PASS: projects/706952489382/secrets/FISHING_MAP_BASIC_AUTH_PASS/versions/latest
       DETECTIONS_FEEDBACK_SPREADSHEET_ID: projects/706952489382/secrets/FISHING_MAP_DETECTIONS_FEEDBACK_SPREADSHEET_ID/versions/latest
       DOWNLOAD_SURVEY_SPREADSHEET_ID: projects/706952489382/secrets/FISHING_MAP_DOWNLOAD_SURVEY_SPREADSHEET_ID/versions/latest

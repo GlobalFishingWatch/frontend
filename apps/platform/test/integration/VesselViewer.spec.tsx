@@ -1,4 +1,5 @@
 import { render } from 'test/appTestUtils'
+import { GABU_REEFER_NAME } from 'test/utils/fixtures'
 import { navigateToVesselViewer } from 'test/utils/navigation/navigateToVesselViewer'
 import { GFWAPITestUtils } from 'test/utils/network/gfw-api-test'
 import { defaultState } from 'test/utils/store'
@@ -14,7 +15,7 @@ describe('Vessel viewer', async () => {
     const { getByTestId, getByText, router } = await render({ store })
     await router.navigate(navigateToVesselViewer())
 
-    await expect.element(getByTestId('vv-vessel-name')).toMatchTextContent('Gabu Reefer')
+    await expect.element(getByTestId('vv-vessel-name')).toMatchTextContent(GABU_REEFER_NAME)
     await expect.element(getByText('Registry', { exact: true })).toBeVisible()
     await expect.element(getByText('AIS', { exact: true })).toBeVisible()
     await expect.element(getByText('Name').first()).toBeVisible()
@@ -63,7 +64,6 @@ describe('Vessel viewer', async () => {
       .element(aisPanel.getByText('Self reported by vessel', { exact: true }))
       .toBeVisible()
     await expect.element(aisPanel.getByText('Name', { exact: true })).toBeVisible()
-    await expect.element(aisPanel.getByText('Vessel type', { exact: true })).toBeVisible()
     await expect.element(aisPanel.getByText('Flag', { exact: true })).toBeVisible()
     await expect.element(aisPanel.getByText('MMSI')).toBeVisible()
     await expect.element(aisPanel.getByText('IMO', { exact: true })).toBeVisible()

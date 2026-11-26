@@ -34,8 +34,14 @@ type _FixtureKeysAreEager<Extra extends never = Exclude<keyof DefaultState, Eage
 
 export function getDefaultState(override?: DeepPartial<DefaultState>): DefaultState {
   const state = override ? merge(REDUX_STORE_DEFAULT_STATE, override) : REDUX_STORE_DEFAULT_STATE
+  // Move the snapshot's time range so it ends at TEST_END_DATE, keeping its length. Moving only
+  // `endAt` left `startAt` (2026-07-25 in the snapshot) after the end (2026-02-18): an inverted
+  // range, so every vessel profile showed "0 Events between Jul 25, 2026 and Feb 18, 2026".
+  const { startAt, endAt } = state.workspace.data
+  const span = Date.parse(endAt) - Date.parse(startAt)
   const workspaceData = {
     ...state.workspace.data,
+    startAt: new Date(Date.parse(TEST_END_DATE) - span).toISOString(),
     endAt: TEST_END_DATE,
   }
 

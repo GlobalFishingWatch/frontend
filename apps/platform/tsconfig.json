@@ -25,5 +25,6 @@
       "utils/*": ["./utils/*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx"]
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", "dist", "exported", ".output", ".tanstack", "**/__traces__/**"]
 }

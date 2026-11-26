@@ -1,0 +1,114 @@
+name: Record integration fixtures
+
+# Re-records the API responses the platform integration specs replay
+# (apps/platform/test/fixtures/api/recorded) and opens one PR against develop when they changed.
+# Every run force-pushes the same PR, so review it before merging, not on every run.
+on:
+  schedule:
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+
+jobs:
+  record-integration-fixtures:
+    name: Re-record integration API responses
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      NX_NO_CLOUD: 'true'
+      CI: '1'
+      NX_DAEMON: 'false'
+      # Same API the integration specs run against on PRs to develop
+      VITE_API_GATEWAY: https://gateway.api.dev.globalfishingwatch.org
+      VITE_WORKSPACE_ENV: development
+      FIXTURES_BRANCH: chore/integration-fixtures
+      RECORDED_DIR: apps/platform/test/fixtures/api/recorded
+
+    steps:
+      # develop, not main: the PR targets develop, so the recordings must match its specs
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          ref: develop
+
+      - name: Setup pnpm
+        uses: pnpm/setup@v3
+        with:
+          install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Record API responses
+        id: record
+        env:
+          VITEST_RECORD: 'true'
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+        run: |
+          rm -rf "$RECORDED_DIR"
+          mkdir -p "$RECORDED_DIR"
+          pnpm exec nx test platform --skip-nx-cache --output-style=static -- test/integration 2>&1 | tee record-output.txt || true
+          # Nx prefixes each line with 'platform: '
+          grep -E '(Test Files|Tests) +[0-9]' record-output.txt | tail -2 | sed -E 's/^platform: +//' | tr -s ' ' > record-summary.txt || true
+
+      - name: Check recordings for private data
+        env:
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+        run: apps/platform/scripts/check-recordings.sh "$RECORDED_DIR"
+
+      # A PR opened with GITHUB_TOKEN does not trigger other workflows, so Integration Tests never
+      # runs on it. Replay here instead and put the result in the PR body.
+      - name: Replay offline
+        run: |
+          pnpm exec nx test platform --skip-nx-cache --output-style=static -- test/integration 2>&1 | tee replay-output.txt || true
+          # Nx prefixes each line with 'platform: '
+          grep -E '(Test Files|Tests) +[0-9]' replay-output.txt | tail -2 | sed -E 's/^platform: +//' | tr -s ' ' > replay-summary.txt || true
+
+      - name: Open or update the fixtures PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git add -A "$RECORDED_DIR" apps/platform/test/fixtures/api/heatmap-grid
+          if git diff --cached --quiet; then
+            echo "Recordings unchanged, no PR needed"
+            exit 0
+          fi
+          {
+            echo "Daily re-recording of the API responses the platform integration specs replay."
+            echo
+            echo "**Review before merging:** check the diff for anything that should not be public"
+            echo "(private datasets, personal data, tokens). This branch is overwritten by the next"
+            echo "run; don't push to it."
+            echo
+            echo "Integration Tests does not run on this PR (it was opened by GITHUB_TOKEN). Results"
+            echo "from the run that produced it:"
+            echo
+            echo '| Run | Result |'
+            echo '| --- | --- |'
+            echo "| Recording, live dev API | $(tr '\n' ' ' < record-summary.txt) |"
+            echo "| Replay, offline | $(tr '\n' ' ' < replay-summary.txt) |"
+            echo
+            echo "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          } > pr-body.md
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898308+github-actions[bot]@users.noreply.github.com'
+          git switch -c "$FIXTURES_BRANCH"
+          git commit -m 'test(platform): re-record integration API responses'
+          git push --force origin "$FIXTURES_BRANCH"
+          if [ "$(gh pr view "$FIXTURES_BRANCH" --json state -q .state 2>/dev/null)" = "OPEN" ]; then
+            gh pr edit "$FIXTURES_BRANCH" --body-file pr-body.md
+          else
+            gh pr create --base develop --head "$FIXTURES_BRANCH" --draft \
+              --title 'test(platform): re-record integration API responses' --body-file pr-body.md
+          fi

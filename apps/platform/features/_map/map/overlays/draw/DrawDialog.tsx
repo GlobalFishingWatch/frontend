@@ -8,6 +8,10 @@ import { useSetAtom } from 'jotai'
 
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers/draw'
 import { Button, IconButton, InputText, SwitchRow } from '@globalfishingwatch/ui-components'
+import {
+  DRAW_LAYER_NAME_INPUT_TESTID,
+  DRAW_SAVE_BUTTON_TESTID,
+} from '@platform/config/selectors/map'
 
 import {
   useAddDataviewFromDatasetToWorkspace,
@@ -250,7 +254,7 @@ function MapDraw() {
         disabled={!!mapDrawEditDataset}
         onChange={onInputChange}
         className={styles.input}
-        testId="input-layer-name"
+        testId={DRAW_LAYER_NAME_INPUT_TESTID}
       />
       <div className={cx(styles.flex, styles.iconsWrapper)}>
         <IconButton
@@ -289,7 +293,7 @@ function MapDraw() {
             {t((t) => t.common.cancel)}
           </Button>
           <Button
-            testId="draw-save-polygon"
+            testId={DRAW_SAVE_BUTTON_TESTID}
             className={styles.button}
             loading={loading || mapDrawEditGeometry?.status === AsyncReducerStatus.Loading}
             disabled={

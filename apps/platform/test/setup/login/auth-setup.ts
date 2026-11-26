@@ -27,6 +27,10 @@ const AUTH_LOCK_STALE_MS = 60000
 const AUTH_LOCK_POLL_MS = 500
 const NAVIGATION_TIMEOUT_MS = 10000
 const INVALID_CREDENTIALS_MESSAGE = 'email or password incorrect'
+// The gateway login page loads Google Tag Manager and the ad/analytics requests it fires. Logging in
+// needs none of them, and they only add load time against NAVIGATION_TIMEOUT_MS.
+const THIRD_PARTY_TRACKERS =
+  /^https:\/\/([^/]+\.)?(googletagmanager\.com|google-analytics\.com|doubleclick\.net)\/|^https:\/\/www\.google\.[a-z.]+\/ads\//
 
 async function hasValidTokens(): Promise<boolean> {
   if (!fs.existsSync(TOKENS_FILE)) {
@@ -122,6 +126,7 @@ async function runLoginFlow(email: string, password: string) {
   log('Launching Playwright browser...')
   const browser = await chromium.launch()
   const context = await browser.newContext()
+  await context.route(THIRD_PARTY_TRACKERS, (route) => route.abort())
   const page = await context.newPage()
   let authProxyServer: Server | null = null
 
