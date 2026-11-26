@@ -84,6 +84,14 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # A PR's caches are visible only to that PR, so each push restores the previous push's
+      # results. Tasks whose inputs did not change come from the cache. A failed job still saves
+      # the specs that passed.
+      - name: Nx cache
+        uses: ./.github/actions/nx-cache
+        with:
+          key: nx-libs-release
+
       - name: Resolve projects to release
         id: resolve
         env:
