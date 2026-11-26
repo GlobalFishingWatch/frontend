@@ -120,6 +120,7 @@
     "i18n:watch": {
       "executor": "nx:run-commands",
       "continuous": true,
+      "inputs": ["i18nSources"],
       "readyWhen": { "logMatches": "Watching for changes" },
       "options": {
         "command": "i18next-cli types && i18next-cli extract --watch --with-types",

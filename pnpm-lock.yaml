@@ -6,6 +6,9 @@ importers:
   .:
     configDependencies: {}
     packageManagerDependencies:
+      '@pnpm/exe':
+        specifier: 12.10.1
+        version: 12.10.1
       pnpm:
         specifier: 12.10.1
         version: 12.10.1
@@ -89,6 +92,11 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@pnpm/exe@12.10.1':
+    resolution: {integrity: sha512-q6RXJFGkDmECWt5gmvAozciaU9HU5FqCRsu3rRMQJX7z8EvtAsJ9BXpyVbkNrwe6mwjlM4avqm/XUyszTL1Htw==}
+    engines: {node: '>=18.*'}
+    hasBin: true
+
   pnpm@12.10.1:
     resolution: {integrity: sha512-ukCjfrGjcNYP6oxM8dNkwTvMzvUY6YrSvO6VT1OdONo3RY5YJho/pV4GUjRQ6g//+fSXsTW+QfLBXBZCusrObA==}
     engines: {node: '>=18.*'}
@@ -138,6 +146,23 @@ snapshots:
   '@pnpm/exe.win32-x64@12.10.1':
     optional: true
 
+  '@pnpm/exe@12.10.1':
+    optionalDependencies:
+      '@pnpm/exe.android-arm64': 12.10.1
+      '@pnpm/exe.android-x64': 12.10.1
+      '@pnpm/exe.darwin-arm64': 12.10.1
+      '@pnpm/exe.darwin-x64': 12.10.1
+      '@pnpm/exe.freebsd-x64': 12.10.1
+      '@pnpm/exe.linux-arm64': 12.10.1
+      '@pnpm/exe.linux-arm64-musl': 12.10.1
+      '@pnpm/exe.linux-ppc64': 12.10.1
+      '@pnpm/exe.linux-riscv64': 12.10.1
+      '@pnpm/exe.linux-s390x': 12.10.1
+      '@pnpm/exe.linux-x64': 12.10.1
+      '@pnpm/exe.linux-x64-musl': 12.10.1
+      '@pnpm/exe.win32-arm64': 12.10.1
+      '@pnpm/exe.win32-x64': 12.10.1
+
   pnpm@12.10.1:
     optionalDependencies:
       '@pnpm/exe.android-arm64': 12.10.1
@@ -175,6 +200,7 @@ overrides:
   minimatch@10: 11.0.4
   minimatch@9: 11.0.4
   nx>minimatch: 10.2.5
+  '@actions/glob>minimatch': 10.2.5
   nanoid@3: 3.3.18
   piscina@4: 4.9.4
   postcss@8: 8.5.25
@@ -611,6 +637,12 @@ importers:
         specifier: 4.6.7
         version: 4.6.7
     devDependencies:
+      '@actions/cache':
+        specifier: 6.3.0
+        version: 6.3.0(supports-color@8.1.1)
+      '@actions/core':
+        specifier: 3.0.1
+        version: 3.0.1
       '@deck.gl/test-utils':
         specifier: 9.4.1
         version: 9.4.1(@deck.gl/core@9.4.1(@luma.gl/webgpu@9.4.1(@luma.gl/core@9.4.2)(@luma.gl/shadertools@9.4.2(@luma.gl/core@9.4.2))))(@luma.gl/core@9.4.2)(@luma.gl/engine@9.4.2(@luma.gl/core@9.4.2)(@luma.gl/shadertools@9.4.2(@luma.gl/core@9.4.2)))(@luma.gl/shadertools@9.4.2(@luma.gl/core@9.4.2))(@luma.gl/webgpu@9.4.1(@luma.gl/core@9.4.2)(@luma.gl/shadertools@9.4.2(@luma.gl/core@9.4.2)))(@probe.gl/test-utils@4.1.1)(vitest@5.1.0)
@@ -1697,6 +1729,24 @@ importers:
 
 packages:
 
+  '@actions/cache@6.3.0':
+    resolution: {integrity: sha512-SJKaVMqTgetQgJF0wifi5N2+2mffCLy/D4w/3sJtRanBBGECdi1/OD0wswyLVmqEmPbYB/rVJk41Qn/xEbFjAw==}
+
+  '@actions/core@3.0.1':
+    resolution: {integrity: sha512-a6d/Nwahm9fliVGRhdhofo40HjHQasUPusmc7vBfyky+7Z+P2A1J68zyFVaNcEclc/Se+eO595oAr5nwEIoIUA==}
+
+  '@actions/exec@3.0.0':
+    resolution: {integrity: sha512-6xH/puSoNBXb72VPlZVm7vQ+svQpFyA96qdDBvhB8eNZOE8LtPf9L4oAsfzK/crCL8YZ+19fKYVnM63Sl+Xzlw==}
+
+  '@actions/glob@0.7.0':
+    resolution: {integrity: sha512-+7s3wM+cXapDLmLL1NVWHawqcJOZzXZy2df/VhNn8DnZtS/x83iTCKaUn9F0llur4h3CII0AilvKKH4CMPL8Gw==}
+
+  '@actions/http-client@4.0.1':
+    resolution: {integrity: sha512-+Nvd1ImaOZBSoPbsUtEhv+1z99H12xzncCkz0a3RuehINE81FZSe2QTj3uvAPTcJX/SCzUQHQ0D1GrPMbrPitg==}
+
+  '@actions/io@3.0.2':
+    resolution: {integrity: sha512-nRBchcMM+QK1pdjO7/idu86rbJI5YHUKCvKs0KxnSYbVe3F51UfGxuZX4Qy/fWlp6l7gWFwIkrOzN+oUK03kfw==}
+
   '@adobe/css-tools@4.5.0':
     resolution: {integrity: sha512-6OzddxPio9UiWTCemp4N8cYLV2ZN1ncRnV1cVGtve7dhPOtRkleRyx32GQCYSwDYgaHU3USMm84tNsvKzRCa1Q==}
 
@@ -1735,6 +1785,65 @@ packages:
   '@asamuzakjp/dom-selector@10.0.5':
     resolution: {integrity: sha512-EgmJ7oEaGQECTn3H3wmnQpEy4hKY66VvM7VQndwPIQob3p877BgbyOUE3EX0LgXQCciF2H8KMdR+RznqjMNOLw==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+
+  '@azure/abort-controller@2.2.0':
+    resolution: {integrity: sha512-fNAjWnA/nZ2jz31kxR/AqRaUT8ewHBw/WuBIosK0moMy1C9e5ValbDfFdIxJzVOOYaYkV/b2F1S4H/aHiqfVQg==}
+    engines: {node: '>=22.0.0'}
+
+  '@azure/core-auth@1.11.0':
+    resolution: {integrity: sha512-IUZydyTUkDnYdstOW9pFOOUQlBjAepK5teihDE3x6yxsPJs/hsAaaYpeGxdxrgtOiJbBKSjKW7MDk7AEhb4LRg==}
+    engines: {node: '>=22.0.0'}
+
+  '@azure/core-client@1.11.2':
+    resolution: {integrity: sha512-ajuIU1aMoTs/ERYrKnIqQrV5Vz3RL8mwDC5RdedIXUvR7pi6cWzeYmt0LfNz6+W91CuCO4WJG0zA6+PhU1X+hw==}
+    engines: {node: '>=22.0.0'}
+
+  '@azure/core-http-compat@2.5.0':
+    resolution: {integrity: sha512-BoSmXPx2er1Ai+wKlDvj29jIQespCNBwEmKyZVHO2kEFsWbGjAjwMCGzug3DJM5/QYIV3vej0S1zcU5bq9fa8w==}
+    engines: {node: '>=22.0.0'}
+    peerDependencies:
+      '@azure/core-client': ^1.10.0
+      '@azure/core-rest-pipeline': ^1.22.0
+
+  '@azure/core-lro@2.7.2':
+    resolution: {integrity: sha512-0YIpccoX8m/k00O7mDDMdJpbr6mf1yWo2dfmxt5A8XVZVVMz2SSKaEbMCeJRvgQ0IaSlqhjT47p4hVIRRy90xw==}
+    engines: {node: '>=18.0.0'}
+
+  '@azure/core-paging@1.7.0':
+    resolution: {integrity: sha512-7GEAoIsaoBr6KELNRb8nypowCqvk8dnCHFCYg4XD4lOQGY2GqjQg5IhkRjyBFRO18CGSMq05PaNqSOE9GQro3g==}
+    engines: {node: '>=22.0.0'}
+
+  '@azure/core-rest-pipeline@1.23.0':
+    resolution: {integrity: sha512-Evs1INHo+jUjwHi1T6SG6Ua/LHOQBCLuKEEE6efIpt4ZOoNonaT1kP32GoOcdNDbfqsD2445CPri3MubBy5DEQ==}
+    engines: {node: '>=20.0.0'}
+
+  '@azure/core-rest-pipeline@1.25.1':
+    resolution: {integrity: sha512-fTIA3CAm/cdODqiXkO6jYOIkU2Ylld7vq65KGc70gTwl12sLQsC8v7I5t6tp2N2CfUONzZBXyeFw7KEu6Ks2zg==}
+    engines: {node: '>=22.0.0'}
+
+  '@azure/core-tracing@1.4.0':
+    resolution: {integrity: sha512-eGwxD0AtncrxeBM4tG8R55Pc3rdX1hNW2WibJAgYpCVA6E93mvvVH+LcssoVjOBrSKWS55yEIHsk0X8ctHmfOQ==}
+    engines: {node: '>=22.0.0'}
+
+  '@azure/core-util@1.14.0':
+    resolution: {integrity: sha512-9n2pWK61veAuN0V20t9lOuoV4CFMdyAZ1ygZzvBGk/pBBJRib/PjL9PLXa/aI2CcPpyHfqVsxxqLCYl6uZlfDw==}
+    engines: {node: '>=22.0.0'}
+
+  '@azure/core-xml@1.6.1':
+    resolution: {integrity: sha512-u+SvC+010CAdbqfGJki2Ppk8LVReOpSRM/xbNqHe53IXgXEWkq4lJkCw3cBvHN8OtGAusQ2eI/AGfFmreaHFRw==}
+    engines: {node: '>=22.0.0'}
+
+  '@azure/logger@1.4.0':
+    resolution: {integrity: sha512-rbAE25KUfjU/s3XHUdJgceoCP5dEOpMx85J04kF+QMdta73XkuG9JGHHinch+XIoKpBdqljin+KqURpJriSzLA==}
+    engines: {node: '>=22.0.0'}
+
+  '@azure/storage-blob@12.31.0':
+    resolution: {integrity: sha512-DBgNv10aCSxopt92DkTDD0o9xScXeBqPKGmR50FPZQaEcH4JLQ+GEOGEDv19V5BMkB7kxr+m4h6il/cCDPvmHg==}
+    engines: {node: '>=20.0.0'}
+
+  '@azure/storage-common@12.5.0':
+    resolution: {integrity: sha512-bttzuhQiCIwrkzjPDA+AtAR7dg19L/CC6ztcqJ5LfvWpXuys9mHp0UQ0udYnoUvv9SCT9KTR5kqFvFr0e6k0lQ==}
+    engines: {node: '>=22.0.0'}
 
   '@babel/code-frame@7.29.7':
     resolution: {integrity: sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==}
@@ -4570,6 +4679,12 @@ packages:
       puppeteer:
         optional: true
 
+  '@protobuf-ts/runtime-rpc@2.11.1':
+    resolution: {integrity: sha512-4CqqUmNA+/uMz00+d3CYKgElXO9VrEbucjnBFEjqI4GuDrEQ32MaI3q+9qPBvIGOlL4PmHXrzM32vBPWRhQKWQ==}
+
+  '@protobuf-ts/runtime@2.11.1':
+    resolution: {integrity: sha512-KuDaT1IfHkugM2pyz+FwiY80ejWrkH1pAtOBOZFuR6SXEFTsnb/jiQWQ1rCIrcKx2BtyxnxW6BWwsVSA/Ie+WQ==}
+
   '@react-types/shared@3.37.0':
     resolution: {integrity: sha512-VNlZuifu4tHdxWPfHvoMfKsHA9kVTCGkduv5vKVTdinm8wHFJNhyVB5RzIMiRFj0q3RKoCbP68u2zaoBSiFueg==}
     peerDependencies:
@@ -6495,6 +6610,10 @@ packages:
   '@typescript/typescript6@6.0.2':
     resolution: {integrity: sha512-mbCddXd+jm7hfx7w2YU64/Av4/NqqeG3GoRZgxPcgoTxYjhrcfJRw9ULch71SS4G+Q3bOXFhRvPqjguN0Hyp5w==}
     hasBin: true
+
+  '@typespec/ts-http-runtime@0.3.11':
+    resolution: {integrity: sha512-KZlacW7zFdcIOAcpNiV5U9fy0Tfgw7xdEc4rVyuUtQS+UR1Sn32PXuAz+AJ70Y0yzTWh62/pEEpFmWUJl6YySw==}
+    engines: {node: '>=22.0.0'}
 
   '@uiw/react-json-view@2.0.0-alpha.44':
     resolution: {integrity: sha512-zfP0LSdbn8xqZc11j+E+O7SI8xqrUUtEpNU3xugFnGKBCNvdC688a8KERHI4yQVLUST6IUMM+pRsNkiPJAKJeQ==}
@@ -8793,6 +8912,10 @@ packages:
 
   http-cache-semantics@4.2.0:
     resolution: {integrity: sha512-dTxcvPXqPvXBQpq5dUr6mEMJX4oIEFv6bwom3FDwKRDsuIjjJGANqhBuoAn9c1RQJIdAKav33ED65E2ys+87QQ==}
+
+  http-proxy-agent@7.0.2:
+    resolution: {integrity: sha512-T1gkAiYYDWYx3V5Bmyu7HcfcvL7mUrTWiM6yOfa3PIphViJ/gFPbvidQ+veqSOHci/PxBcDabeUNCzpOODJZig==}
+    engines: {node: '>= 14'}
 
   http-proxy@1.18.1:
     resolution: {integrity: sha512-7mz/721AbnJwIVbnaSv1Cz3Am0ZLT/UBwkC92VlxhXv/k/BBQfM2fXElQNC27BVGr0uwUpplYPQM9LnaBMR5NQ==}
@@ -11644,6 +11767,10 @@ packages:
   tslib@2.9.1:
     resolution: {integrity: sha512-a4Ux9VKuIMHsOS7ENbEq6hK2ZGYIT27Rtl0E4eD9KqwxhKiQeMZE/9xb3IdYwWaSOyIBQLExhQgXDTYoiCxnWA==}
 
+  tunnel@0.0.6:
+    resolution: {integrity: sha512-1h/Lnq9yajKY2PEbBadPXj3VxsDDu844OnaAo52UVmIzIvwwtBPIuNvkjuzBlTWpfJyUbG3ez0KSBibQkj4ojg==}
+    engines: {node: '>=0.6.11 <=0.7.0 || >=0.7.3'}
+
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
@@ -11729,6 +11856,10 @@ packages:
 
   undici-types@8.9.0:
     resolution: {integrity: sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg==}
+
+  undici@6.29.1:
+    resolution: {integrity: sha512-EvRlUt/QqAEvXdQeRMYUfwOQsfzpDztykrG2owGEE/rBOBoYv9uF39ZzsNDh4lTFHhTr2XOZjKkYgueD12ZmGA==}
+    engines: {node: '>=18.17'}
 
   undici@7.30.1:
     resolution: {integrity: sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg==}
@@ -12329,6 +12460,41 @@ packages:
 
 snapshots:
 
+  '@actions/cache@6.3.0(supports-color@8.1.1)':
+    dependencies:
+      '@actions/core': 3.0.1
+      '@actions/exec': 3.0.0
+      '@actions/glob': 0.7.0
+      '@actions/http-client': 4.0.1
+      '@actions/io': 3.0.2
+      '@azure/core-rest-pipeline': 1.23.0(supports-color@8.1.1)
+      '@azure/storage-blob': 12.31.0(supports-color@8.1.1)
+      '@protobuf-ts/runtime-rpc': 2.11.1
+      semver: 7.8.5
+    transitivePeerDependencies:
+      - supports-color
+
+  '@actions/core@3.0.1':
+    dependencies:
+      '@actions/exec': 3.0.0
+      '@actions/http-client': 4.0.1
+
+  '@actions/exec@3.0.0':
+    dependencies:
+      '@actions/io': 3.0.2
+
+  '@actions/glob@0.7.0':
+    dependencies:
+      '@actions/core': 3.0.1
+      minimatch: 10.2.5
+
+  '@actions/http-client@4.0.1':
+    dependencies:
+      tunnel: 0.0.6
+      undici: 6.29.1
+
+  '@actions/io@3.0.2': {}
+
   '@adobe/css-tools@4.5.0': {}
 
   '@ai-sdk/gateway@4.0.132(zod@4.6.7)':
@@ -12385,6 +12551,137 @@ snapshots:
       css-tree: 3.2.1
       is-potential-custom-element-name: 1.0.1
       lru-cache: 11.5.3
+
+  '@azure/abort-controller@2.2.0':
+    dependencies:
+      tslib: 2.9.1
+
+  '@azure/core-auth@1.11.0(supports-color@8.1.1)':
+    dependencies:
+      '@azure/abort-controller': 2.2.0
+      '@azure/core-util': 1.14.0(supports-color@8.1.1)
+      tslib: 2.9.1
+    transitivePeerDependencies:
+      - supports-color
+
+  '@azure/core-client@1.11.2(supports-color@8.1.1)':
+    dependencies:
+      '@azure/abort-controller': 2.2.0
+      '@azure/core-auth': 1.11.0(supports-color@8.1.1)
+      '@azure/core-rest-pipeline': 1.23.0(supports-color@8.1.1)
+      '@azure/core-tracing': 1.4.0
+      '@azure/core-util': 1.14.0(supports-color@8.1.1)
+      '@azure/logger': 1.4.0(supports-color@8.1.1)
+      tslib: 2.9.1
+    transitivePeerDependencies:
+      - supports-color
+
+  '@azure/core-http-compat@2.5.0(@azure/core-client@1.11.2(supports-color@8.1.1))(@azure/core-rest-pipeline@1.23.0(supports-color@8.1.1))':
+    dependencies:
+      '@azure/abort-controller': 2.2.0
+      '@azure/core-client': 1.11.2(supports-color@8.1.1)
+      '@azure/core-rest-pipeline': 1.23.0(supports-color@8.1.1)
+
+  '@azure/core-http-compat@2.5.0(@azure/core-client@1.11.2(supports-color@8.1.1))(@azure/core-rest-pipeline@1.25.1(supports-color@8.1.1))':
+    dependencies:
+      '@azure/abort-controller': 2.2.0
+      '@azure/core-client': 1.11.2(supports-color@8.1.1)
+      '@azure/core-rest-pipeline': 1.25.1(supports-color@8.1.1)
+
+  '@azure/core-lro@2.7.2(supports-color@8.1.1)':
+    dependencies:
+      '@azure/abort-controller': 2.2.0
+      '@azure/core-util': 1.14.0(supports-color@8.1.1)
+      '@azure/logger': 1.4.0(supports-color@8.1.1)
+      tslib: 2.9.1
+    transitivePeerDependencies:
+      - supports-color
+
+  '@azure/core-paging@1.7.0':
+    dependencies:
+      tslib: 2.9.1
+
+  '@azure/core-rest-pipeline@1.23.0(supports-color@8.1.1)':
+    dependencies:
+      '@azure/abort-controller': 2.2.0
+      '@azure/core-auth': 1.11.0(supports-color@8.1.1)
+      '@azure/core-tracing': 1.4.0
+      '@azure/core-util': 1.14.0(supports-color@8.1.1)
+      '@azure/logger': 1.4.0(supports-color@8.1.1)
+      '@typespec/ts-http-runtime': 0.3.11(supports-color@8.1.1)
+      tslib: 2.9.1
+    transitivePeerDependencies:
+      - supports-color
+
+  '@azure/core-rest-pipeline@1.25.1(supports-color@8.1.1)':
+    dependencies:
+      '@azure/abort-controller': 2.2.0
+      '@azure/core-auth': 1.11.0(supports-color@8.1.1)
+      '@azure/core-tracing': 1.4.0
+      '@azure/core-util': 1.14.0(supports-color@8.1.1)
+      '@azure/logger': 1.4.0(supports-color@8.1.1)
+      '@typespec/ts-http-runtime': 0.3.11(supports-color@8.1.1)
+      tslib: 2.9.1
+    transitivePeerDependencies:
+      - supports-color
+
+  '@azure/core-tracing@1.4.0':
+    dependencies:
+      tslib: 2.9.1
+
+  '@azure/core-util@1.14.0(supports-color@8.1.1)':
+    dependencies:
+      '@azure/abort-controller': 2.2.0
+      '@typespec/ts-http-runtime': 0.3.11(supports-color@8.1.1)
+      tslib: 2.9.1
+    transitivePeerDependencies:
+      - supports-color
+
+  '@azure/core-xml@1.6.1':
+    dependencies:
+      fast-xml-parser: 5.12.0
+      tslib: 2.9.1
+
+  '@azure/logger@1.4.0(supports-color@8.1.1)':
+    dependencies:
+      '@typespec/ts-http-runtime': 0.3.11(supports-color@8.1.1)
+      tslib: 2.9.1
+    transitivePeerDependencies:
+      - supports-color
+
+  '@azure/storage-blob@12.31.0(supports-color@8.1.1)':
+    dependencies:
+      '@azure/abort-controller': 2.2.0
+      '@azure/core-auth': 1.11.0(supports-color@8.1.1)
+      '@azure/core-client': 1.11.2(supports-color@8.1.1)
+      '@azure/core-http-compat': 2.5.0(@azure/core-client@1.11.2(supports-color@8.1.1))(@azure/core-rest-pipeline@1.23.0(supports-color@8.1.1))
+      '@azure/core-lro': 2.7.2(supports-color@8.1.1)
+      '@azure/core-paging': 1.7.0
+      '@azure/core-rest-pipeline': 1.23.0(supports-color@8.1.1)
+      '@azure/core-tracing': 1.4.0
+      '@azure/core-util': 1.14.0(supports-color@8.1.1)
+      '@azure/core-xml': 1.6.1
+      '@azure/logger': 1.4.0(supports-color@8.1.1)
+      '@azure/storage-common': 12.5.0(@azure/core-client@1.11.2(supports-color@8.1.1))(supports-color@8.1.1)
+      events: 3.3.0
+      tslib: 2.9.1
+    transitivePeerDependencies:
+      - supports-color
+
+  '@azure/storage-common@12.5.0(@azure/core-client@1.11.2(supports-color@8.1.1))(supports-color@8.1.1)':
+    dependencies:
+      '@azure/abort-controller': 2.2.0
+      '@azure/core-auth': 1.11.0(supports-color@8.1.1)
+      '@azure/core-http-compat': 2.5.0(@azure/core-client@1.11.2(supports-color@8.1.1))(@azure/core-rest-pipeline@1.25.1(supports-color@8.1.1))
+      '@azure/core-rest-pipeline': 1.25.1(supports-color@8.1.1)
+      '@azure/core-tracing': 1.4.0
+      '@azure/core-util': 1.14.0(supports-color@8.1.1)
+      '@azure/logger': 1.4.0(supports-color@8.1.1)
+      events: 3.3.0
+      tslib: 2.9.1
+    transitivePeerDependencies:
+      - '@azure/core-client'
+      - supports-color
 
   '@babel/code-frame@7.29.7':
     dependencies:
@@ -15694,6 +15991,12 @@ snapshots:
       '@types/pngjs': 6.0.5
       pixelmatch: 4.0.2
 
+  '@protobuf-ts/runtime-rpc@2.11.1':
+    dependencies:
+      '@protobuf-ts/runtime': 2.11.1
+
+  '@protobuf-ts/runtime@2.11.1': {}
+
   '@react-types/shared@3.37.0(react@19.3.1)':
     dependencies:
       react: 19.3.1
@@ -18363,6 +18666,14 @@ snapshots:
     dependencies:
       '@typescript/old': typescript@6.0.3
 
+  '@typespec/ts-http-runtime@0.3.11(supports-color@8.1.1)':
+    dependencies:
+      http-proxy-agent: 7.0.2(supports-color@8.1.1)
+      https-proxy-agent: 7.0.6(supports-color@8.1.1)
+      tslib: 2.9.1
+    transitivePeerDependencies:
+      - supports-color
+
   '@uiw/react-json-view@2.0.0-alpha.44(@babel/runtime@7.29.7)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -20468,8 +20779,7 @@ snapshots:
       - bare-abort-controller
     optional: true
 
-  events@3.3.0:
-    optional: true
+  events@3.3.0: {}
 
   eventsource-parser@3.1.1: {}
 
@@ -21085,6 +21395,13 @@ snapshots:
 
   http-cache-semantics@4.2.0:
     optional: true
+
+  http-proxy-agent@7.0.2(supports-color@8.1.1):
+    dependencies:
+      agent-base: 7.1.4
+      debug: 4.4.3(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - supports-color
 
   http-proxy@1.18.1(debug@4.4.3(supports-color@8.1.1)):
     dependencies:
@@ -24462,6 +24779,8 @@ snapshots:
 
   tslib@2.9.1: {}
 
+  tunnel@0.0.6: {}
+
   type-check@0.4.0:
     dependencies:
       prelude-ls: 1.2.1
@@ -24577,6 +24896,8 @@ snapshots:
   undici-types@7.24.6: {}
 
   undici-types@8.9.0: {}
+
+  undici@6.29.1: {}
 
   undici@7.30.1: {}
 

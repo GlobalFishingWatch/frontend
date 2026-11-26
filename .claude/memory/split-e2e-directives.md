@@ -5,6 +5,15 @@ description: How platform-e2e specs run as split Nx tasks on Nx Cloud workers, a
 
 # Split e2e: per-spec tasks on workers, no scoping directives (as of 2026-10-24)
 
+**Superseded on 2026-11-25:** Nx Cloud is off (`NX_NO_CLOUD`, `.nx/ci-config*.yaml` deleted). Both
+workflows run the split tasks on the GitHub runner with `NX_SKIP_ATOMIZER_VALIDATION=true`:
+`e2e-tests.yml` runs `test-ci` with `--parallel=2` (the unsplit suite's 2 Playwright workers), and
+`integration-tests.yml` runs `integration-ci` with `--parallel=1`. Results are cached per PR by
+[[nx-ci-cache-server]], not Nx Cloud, so there is no Ultracache: every `test-ci--*` task hashes all
+of platform-e2e plus platform and its libs (`implicitDependencies: ["platform"]`), and any app or
+e2e edit reruns every spec. Continuous tasks (`platform:start` and its watchers) do not take a
+`--parallel` slot. The worker, ci-config and CIPE details below are historical.
+
 `.github/workflows/e2e-tests.yml` runs `nx affected -t test-ci` on Nx Cloud workers
 (`.nx/ci-config.yaml`, launch template in `.nx/workflows/agents.yaml`). The Playwright plugin splits
 the suite into one `test-ci--src/tests/<file>` task per spec. Ultracache and dynamic task packing are
