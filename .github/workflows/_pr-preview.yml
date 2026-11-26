@@ -40,12 +40,8 @@ jobs:
   deploy-preview:
     name: Deploy Preview
     runs-on: ubuntu-latest
-    if: |
-      github.event.action != 'closed' &&
-      (
-        (github.event.action == 'labeled' && github.event.label.name == inputs.preview_label) ||
-        (github.event.action != 'labeled' && github.event.action != 'unlabeled' && contains(github.event.pull_request.labels.*.name, inputs.preview_label))
-      )
+    # The caller only invokes this workflow when the event concerns preview_label.
+    if: github.event.action != 'closed' && github.event.action != 'unlabeled'
     permissions:
       contents: read
       id-token: write
@@ -98,9 +94,7 @@ jobs:
   teardown-preview:
     name: Teardown Preview
     runs-on: ubuntu-latest
-    if: |
-      (github.event.action == 'unlabeled' && github.event.label.name == inputs.preview_label) ||
-      (github.event.action == 'closed' && contains(github.event.pull_request.labels.*.name, inputs.preview_label))
+    if: github.event.action == 'closed' || github.event.action == 'unlabeled'
     permissions:
       contents: read
       id-token: write
