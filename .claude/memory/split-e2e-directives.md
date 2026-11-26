@@ -96,7 +96,7 @@ tests` step runs `nx show projects -t <target> --affected --json`. When platform
 were cancelled`, even when Integration Tests only read the remote cache and started no workers.
   `NX_CI_EXECUTION_ENV` did not help (tried 2026-10-28): it separates main jobs inside **one**
   CIPE, not two CIPEs. E2E keeps the plain PR number, which the Nx Cloud GitHub integration needs.
-  Integration Tests posts its own PR comment, so it does not need that integration.
+  Integration Tests writes its result to the job summary, so it does not need that integration.
 - Split tasks do not inherit `test`'s `dependsOn`. `targetDefaults["integration-ci--**/**"]`
   adds `prepare-loaders`. `clean-test-artifacts` is left out on purpose: it would delete
   `__traces__` while sibling specs are writing to them.

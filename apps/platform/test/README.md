@@ -40,7 +40,7 @@ Run everything from the workspace root, through Nx. `--` passes the rest to `vit
 
 CI: `.github/workflows/integration-tests.yml` runs `nx affected -t integration-ci --parallel=1`
 (one Nx task per spec file) on Chromium, offline and without logging in, and
-posts the result as a sticky PR comment.
+writes the result to the job summary.
 
 ## What happens during a run
 
