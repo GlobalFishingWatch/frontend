@@ -9,6 +9,7 @@ import type {
   Workspace,
 } from '@globalfishingwatch/api-types'
 import { DatasetStatus } from '@globalfishingwatch/api-types'
+import { getFlattenDatasetFilters } from '@globalfishingwatch/datasets-client'
 import type {
   AssistantContextToolOutput,
   AssistantResourceVisibility,
@@ -46,7 +47,19 @@ import type {
 const MAX_ITEMS = 200
 const MAX_NAME_LENGTH = 80
 
+// ponytail: an id/name column lists every feature; over the cap the filter is kept without values.
+const MAX_FILTER_VALUES = 50
+
 const name = (value = '') => value.slice(0, MAX_NAME_LENGTH)
+// Filterable properties of an uploaded dataset, as the API config enables them
+const datasetFilters = (dataset: Dataset) =>
+  getFlattenDatasetFilters(dataset.filters)
+    .filter((f) => f.enabled !== false)
+    .map((f) => ({
+      id: f.id,
+      type: f.type,
+      ...(f.enum?.length && f.enum.length <= MAX_FILTER_VALUES ? { values: f.enum } : {}),
+    }))
 const byNewest = <T extends { createdAt?: string }>(a: T, b: T) =>
   (b.createdAt ?? '').localeCompare(a.createdAt ?? '')
 const summary = <T>(items: T[]) => ({ total: items.length, items: items.slice(0, MAX_ITEMS) })
@@ -100,6 +113,7 @@ async function fetchUserContext(
           category: d.category,
           type: d.type,
           visibility: (isPrivateDataset(d) ? 'private' : 'public') as AssistantResourceVisibility,
+          filters: datasetFilters(d),
         }))
     ),
     vesselGroups: summary(

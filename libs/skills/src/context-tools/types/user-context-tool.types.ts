@@ -17,12 +17,16 @@ export type AssistantUserResources = {
     category?: string
     visibility: AssistantResourceVisibility
   }>
+  /** Private workspaces of the user's groups, owned by GFW (user page, private workspaces list) */
+  privateWorkspaces?: AssistantResourceList<{ id: string; name: string; category?: string }>
   datasets: AssistantResourceList<{
     id: string
     name: string
     category?: string
     type: string
     visibility: AssistantResourceVisibility
+    /** Properties the layer can be filtered by (`config.filters`), with their values when listed */
+    filters?: { id: string; type: string; values?: (string | number | boolean)[] }[]
   }>
   vesselGroups: AssistantResourceList<{
     id: string

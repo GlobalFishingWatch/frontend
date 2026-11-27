@@ -170,6 +170,23 @@ Own dataview (no `datasetsConfig`, only `id` + `dataviewId`): `currents` → `cu
 
 Value range on a heatmap environment layer ("water between 20 and 25 degrees", the layer's histogram filter) → `config.minVisibleValue` / `config.maxVisibleValue` (numbers, layer units: °C for `sst`). Omit the bound the user did not give.
 
+## User-uploaded datasets
+
+"My dataset", "the polygons I uploaded" → read it from the `get_user_resources` context tool: `id`, `type`, `filters`. Never guess a dataset id.
+
+Polygons (`type: user-context-layer:v1`) — same shape the app writes when adding one from the layer library:
+
+```json
+{
+  "id": "user-polygons-<timestamp>",
+  "dataviewId": "default-context-layer",
+  "config": { "visible": true, "color": "#F95E5E", "colorCyclingType": "line" },
+  "datasetsConfig": [{ "datasetId": "<dataset id>", "params": [], "endpoint": "context-tiles" }]
+}
+```
+
+Filter by one of its properties → `config.filters: { "<filter id>": ["<value>"] }`, ids and values only from that dataset's `filters` (a filter listed without `values` has too many to list: use the value the user names, exactly as written in the data). **One layer per value** ("a layer per continent", "each region in its own color") → one instance per value: same `datasetsConfig`, distinct `id` (`user-polygons-<timestamp>-<n>`), its own single-value filter and a distinct `color`. Property not in `filters` → it can't be filtered: say so (it must be set as a filter field in the dataset, user page → datasets) and add the dataset unfiltered only if the user wants it.
+
 ## Vessel track layers
 
 Instance id `vessel-<vesselId>` — added automatically when pinning a vessel; rarely built by hand.
