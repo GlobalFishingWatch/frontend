@@ -57,6 +57,8 @@ import type {
 import { getOceanAreaNameFn } from 'hooks/ocean-areas'
 import type { MapCoordinates, QueryParams } from 'types'
 
+import { getTimebar } from './timebar-assistant-tool'
+
 /**
  * Summary of what the user sees on the map right now, read from the deck layers
  * already loaded for the viewport. Read when the agent calls a map context tool, so it
@@ -580,6 +582,7 @@ export const tools: AssistantContextModule['tools'] = {
   get_workspace: getWorkspace,
   get_map_view: getCurrentMapView,
   get_clicked_feature: getClickedFeature,
+  get_timebar: getTimebar,
 }
 
 export function onNavigate(search: QueryParams, { jotaiStore }: AssistantContextDeps) {

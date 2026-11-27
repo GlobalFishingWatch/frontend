@@ -4,23 +4,14 @@ import { useAtomValue } from 'jotai'
 
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
-import {
-  deckLayerInstancesAtom,
-  getAvailableIntervalsInDataviews,
-  useGetDeckLayer,
-} from '@globalfishingwatch/deck-layer-composer'
+import { deckLayerInstancesAtom, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type {
   FourwingsColorObject,
   FourwingsLayer,
   FourwingsTileLayerColorDomain,
 } from '@globalfishingwatch/deck-layers'
-import { getFourwingsChunk, getSublayersVisibleValuesHash } from '@globalfishingwatch/deck-layers'
+import { getSublayersVisibleValuesHash } from '@globalfishingwatch/deck-layers'
 import { isMultiHueColorRampId, rgbaToString } from '@globalfishingwatch/deck-layers/utils'
-import type {
-  FourwingsPositionFeature,
-  FourwingsValuesAndStartFrameFeature,
-} from '@globalfishingwatch/deck-loaders'
-import { FOURWINGS_REAL_TIME_INTERVALS } from '@globalfishingwatch/deck-loaders'
 import type { ActivityTimeseriesFrame, TimebarColorScale } from '@globalfishingwatch/timebar'
 import { useTimebar } from '@globalfishingwatch/timebar'
 
@@ -32,13 +23,9 @@ import {
 import { selectViewport } from 'features/_map/workspace/selectors/app.viewport.selectors'
 import { selectIsRealTimeMode } from 'features/_map/workspace/workspace.selectors'
 
-import {
-  getGraphDataFromFourwingsHeatmap,
-  getGraphDataFromFourwingsPositions,
-  getLegendColorScale,
-} from './timebar.utils'
+import { getLegendColorScale } from './timebar.utils'
+import { getHeatmapActivityFrames, getTimebarChunk } from './timebar-frames'
 
-const EMPTY_ACTIVITY_DATA = [] as ActivityTimeseriesFrame[]
 const lastLegendRampByLayer = new Map<string, { domain: number[]; colors: string[] }>()
 
 export const useHeatmapActivityGraph = () => {
@@ -56,20 +43,7 @@ export const useHeatmapActivityGraph = () => {
   const start = getUTCDate(rangeStart).getTime()
   const end = getUTCDate(rangeEnd).getTime()
   const id = dataviews?.length ? getMergedDataviewId(dataviews) : ''
-  const availableIntervals = isRealTimeMode
-    ? FOURWINGS_REAL_TIME_INTERVALS
-    : getAvailableIntervalsInDataviews(dataviews)
-  const chunk = getFourwingsChunk({
-    start,
-    end,
-    availableIntervals,
-    ...(isRealTimeMode &&
-      realTimeTimerange && {
-        intervalCacheMode: 'NONE',
-        bufferedStartTime: getUTCDate(realTimeTimerange.start).getTime(),
-        bufferedEndTime: getUTCDate(realTimeTimerange.end).getTime(),
-      }),
-  })
+  const chunk = getTimebarChunk({ start, end, dataviews, isRealTimeMode, realTimeTimerange })
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(id)
   const { loaded, instance } = fourwingsActivityLayer || {}
   const layerInstances = useAtomValue(deckLayerInstancesAtom)
@@ -99,42 +73,9 @@ export const useHeatmapActivityGraph = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [instance, layerInstances, id, colorDomainHash])
 
-  const setFourwingsPositionsData = async (viewportData: FourwingsPositionFeature[]) => {
-    const data =
-      getGraphDataFromFourwingsPositions(viewportData, {
-        start: chunk.bufferedStart,
-        end: chunk.bufferedEnd,
-        interval: chunk.interval,
-        sublayersLength: instance.props.sublayers.length,
-      }) || EMPTY_ACTIVITY_DATA
-    setData(data)
-  }
-
-  const setFourwingsHeatmapData = (data: FourwingsValuesAndStartFrameFeature[]) => {
-    if (data?.length) {
-      setData(
-        getGraphDataFromFourwingsHeatmap(data, {
-          start: chunk.bufferedStart,
-          end: chunk.bufferedEnd,
-          interval: chunk.interval,
-          sublayers: instance.props.sublayers,
-          aggregationOperation: instance.props.aggregationOperation,
-        })
-      )
-    } else {
-      setData(EMPTY_ACTIVITY_DATA)
-    }
-  }
-
   const onViewportDataChange = useEffectEvent(() => {
-    if (loaded) {
-      if (visualizationMode === 'positions') {
-        const viewportData = instance?.getViewportData?.()
-        setFourwingsPositionsData(viewportData as FourwingsPositionFeature[])
-      } else {
-        const viewportData = instance?.getViewportData?.({ onlyValuesAndStartFrame: true })
-        setFourwingsHeatmapData(viewportData as FourwingsValuesAndStartFrameFeature[])
-      }
+    if (loaded && instance) {
+      setData(getHeatmapActivityFrames(instance, chunk, visualizationMode))
     }
   })
 

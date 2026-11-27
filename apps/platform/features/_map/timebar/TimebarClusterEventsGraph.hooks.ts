@@ -1,15 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import {
-  getAvailableIntervalsInDataviews,
-  useGetDeckLayers,
-} from '@globalfishingwatch/deck-layer-composer'
+import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsClustersLayer } from '@globalfishingwatch/deck-layers'
-import { getFourwingsChunk } from '@globalfishingwatch/deck-layers'
-import type { FourwingsPointFeature } from '@globalfishingwatch/deck-loaders'
-import { FOURWINGS_REAL_TIME_INTERVALS } from '@globalfishingwatch/deck-loaders'
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 import { useTimebar } from '@globalfishingwatch/timebar'
 
@@ -20,9 +14,7 @@ import {
 import { selectViewport } from 'features/_map/workspace/selectors/app.viewport.selectors'
 import { selectIsRealTimeMode } from 'features/_map/workspace/workspace.selectors'
 
-import { getGraphDataFromFourwingsPositions } from './timebar.utils'
-
-const EMPTY_ACTIVITY_DATA = [] as ActivityTimeseriesFrame[]
+import { getClusterEventsFrames, getTimebarChunk } from './timebar-frames'
 
 export const useClusterEventsGraph = () => {
   const [data, setData] = useState<ActivityTimeseriesFrame[]>([])
@@ -35,20 +27,7 @@ export const useClusterEventsGraph = () => {
   const end = getUTCDate(rangeEnd).getTime()
   const dataviewIds = useMemo(() => dataviews?.map(({ id }) => id), [dataviews])
   const clusterEventsLayers = useGetDeckLayers<FourwingsClustersLayer>(dataviewIds)
-  const availableIntervals = isRealTimeMode
-    ? FOURWINGS_REAL_TIME_INTERVALS
-    : getAvailableIntervalsInDataviews(dataviews)
-  const chunk = getFourwingsChunk({
-    start,
-    end,
-    availableIntervals,
-    ...(isRealTimeMode &&
-      realTimeTimerange && {
-        intervalCacheMode: 'NONE',
-        bufferedStartTime: getUTCDate(realTimeTimerange.start).getTime(),
-        bufferedEndTime: getUTCDate(realTimeTimerange.end).getTime(),
-      }),
-  })
+  const chunk = getTimebarChunk({ start, end, dataviews, isRealTimeMode, realTimeTimerange })
 
   const viewportChangeHash = useMemo(() => {
     if (!viewport) return ''
@@ -63,34 +42,9 @@ export const useClusterEventsGraph = () => {
     return clusterEventsLayers?.map(({ instance }) => instance)
   }, [clusterEventsLayers])
 
-  const setFourwingsPositionsData = useCallback(
-    async (viewportData: FourwingsPointFeature[]) => {
-      const data =
-        getGraphDataFromFourwingsPositions(viewportData, {
-          start: chunk.bufferedStart,
-          end: chunk.bufferedEnd,
-          interval: chunk.interval,
-          sublayersLength: dataviews.length,
-        }) || EMPTY_ACTIVITY_DATA
-      setData(data)
-    },
-    [dataviews, chunk.bufferedStart, chunk.bufferedEnd, chunk.interval]
-  )
-
   useEffect(() => {
     if (loaded) {
-      const viewportData = instances.flatMap((instance, index) => {
-        return instance?.getViewportData?.().map((feature) => {
-          return {
-            ...feature,
-            properties: {
-              ...feature.properties,
-              layer: index,
-            } as any,
-          } as FourwingsPointFeature
-        })
-      })
-      setFourwingsPositionsData(viewportData)
+      setData(getClusterEventsFrames(instances, chunk, dataviews.length))
     }
     // Chunk bounds only move when the playhead crosses a chunk, so playback frames
     // don't recompute identical graph data 60 times per second.

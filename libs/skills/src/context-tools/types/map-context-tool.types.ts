@@ -2,7 +2,9 @@
 
 import type {
   AssistantBbox,
+  AssistantDatedValue,
   AssistantLonLat,
+  AssistantTimeRange,
   AssistantVesselRef,
 } from './shared-context-tool.types.js'
 
@@ -233,6 +235,46 @@ export type AssistantClickedFeature = {
   latitude: number
   features: AssistantClickedFeatureSummary[]
 } | null
+
+/** Summary of a series: `series` when short, else `monthly` */
+export type AssistantSeriesSummary = {
+  points: number
+  total: number
+  mean?: number
+  max?: AssistantDatedValue
+  min?: AssistantDatedValue
+  /** [date, value] */
+  series?: [string, number][]
+  monthly?: { month: string; total: number; mean: number }[]
+}
+
+export type AssistantTimebarTrack = {
+  dataviewId: string
+  name?: string
+  loaded?: false
+  /** Whole loaded track, any date */
+  trackStart?: string
+  trackEnd?: string
+  /** Of the rows below: 'day' or 'month' */
+  interval: string
+  /** [date, mean, max] in knots */
+  speedKnots?: [string, number, number][]
+  /** [date, mean, deepest] in meters, negative below sea level */
+  depthM?: [string, number, number][]
+}
+
+export type AssistantTimebar = {
+  /** heatmap, heatmapDetections, vesselGroup, environment, events, points or vessel */
+  visualisation: string
+  timeRange: AssistantTimeRange
+  interval?: string
+  loading?: true
+  /** Value on screen per interval, one entry per sublayer of the graph */
+  layers?: (AssistantSeriesSummary & { id: string; unit?: string })[]
+  /** vessel visualisation: the graph open under the tracks (speed, elevation or none) */
+  trackGraph?: string
+  tracks?: AssistantTimebarTrack[]
+}
 
 export type AssistantWorkspacesList = {
   category?: string

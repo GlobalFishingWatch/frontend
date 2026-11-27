@@ -24,6 +24,7 @@ import type {
   AssistantReportArea,
   AssistantReportEvents,
   AssistantReportVessels,
+  AssistantTimebar,
   AssistantUserResources,
   AssistantVesselActivity,
   AssistantVesselAreas,
@@ -44,6 +45,7 @@ export type AssistantContextToolOutputs = {
   get_workspace: AssistantWorkspace
   get_map_view: AssistantMapView
   get_clicked_feature: AssistantClickedFeature
+  get_timebar: AssistantTimebar
   get_workspaces_list: AssistantWorkspacesList
   get_vessel_identity: AssistantVesselIdentityContext
   get_vessel_activity: AssistantVesselActivity
@@ -105,6 +107,12 @@ export const ASSISTANT_CONTEXT_TOOLS = {
     '- position: vessel. Area: id, label.',
     'This is what "this point", "this cell", "this encounter", "this port visit", "here" on a track refer to.',
     MAP_RULES,
+  ].join('\n'),
+  get_timebar: [
+    'Map routes. The timebar graph for the current `timeRange`: how things changed over time ("over the year", "each month", "when was the peak", "value at this date").',
+    '- Heatmaps (activity, detections, vessel group, environment), events clusters and uploaded points: `layers`, one per sublayer (`id` = dataviewId, `unit`), the value ON SCREEN per `interval`: `total`, `mean`, `max` / `min` with their `date`, and `series` ([date, value]) or `monthly` (`total` for sum layers, `mean` for environment). `loading: true`: still computing.',
+    '- `vessel` visualisation: `tracks` per vessel or uploaded track: `trackStart` / `trackEnd` (whole loaded track), `speedKnots` [date, mean, max] and `depthM` [date, mean, deepest] by `interval` (day or month), whether or not the speed / depth graph (`trackGraph`) is open.',
+    'Only the current viewport and time range, like the map: approximate, send the user to a report for exact area figures.',
   ].join('\n'),
   get_workspaces_list:
     'Workspaces list page (`/map/<category>`). `category` and the workspaces listed: `id`, `name`, `description`, `category`. Open one with the workspace route.',

@@ -35,6 +35,7 @@ import type {
   AssistantContextDeps,
   AssistantContextModule,
 } from 'features/assistant/assistant-context'
+import { roundValue, summarizeSeries } from 'features/assistant/assistant-series.utils'
 import type { RootState } from 'store'
 
 /**
@@ -136,55 +137,24 @@ function getReportEvents({
   }
 }
 
-const round = (n: number) => Number(n.toPrecision(4))
-
-/** Past this many points the series goes by month, to keep the output small */
-const MAX_SERIES_POINTS = 62
+const round = roundValue
 
 function getActivityLayers(timeseries: ReportGraphProps[]) {
   return timeseries.flatMap((layer) =>
-    layer.sublayers.map((sublayer, i) => {
+    layer.sublayers.map((sublayer, i) => ({
+      id: sublayer.id,
+      unit: sublayer.legend.unit,
+      interval: layer.interval,
       // same value the graphs plot: the middle of the estimate bounds
-      const points = layer.timeseries
-        .map((point) => ({
+      ...summarizeSeries(
+        layer.timeseries.map((point) => ({
           date: point.date,
           value: bucketAvg(point.min[i], point.max[i]),
           min: point.min[i],
           max: point.max[i],
         }))
-        .filter((point) => Number.isFinite(point.value))
-      const total = points.reduce((acc, point) => acc + point.value, 0)
-      const byMax = points.toSorted((a, b) => b.max - a.max)
-      const byMin = points.toSorted((a, b) => a.min - b.min)
-      const months = Object.entries(
-        points.reduce<Record<string, number[]>>((acc, { date, value }) => {
-          ;(acc[date.slice(0, 7)] ??= []).push(value)
-          return acc
-        }, {})
-      )
-      return {
-        id: sublayer.id,
-        unit: sublayer.legend.unit,
-        interval: layer.interval,
-        points: points.length,
-        total: round(total),
-        mean: points.length ? round(total / points.length) : undefined,
-        max: byMax[0] && { date: byMax[0].date, value: round(byMax[0].max) },
-        min: byMin[0] && { date: byMin[0].date, value: round(byMin[0].min) },
-        ...(points.length <= MAX_SERIES_POINTS
-          ? {
-              series: points.map(
-                ({ date, value }) => [date.slice(0, 10), round(value)] as [string, number]
-              ),
-            }
-          : {
-              monthly: months.map(([month, values]) => {
-                const sum = values.reduce((acc, v) => acc + v, 0)
-                return { month, total: round(sum), mean: round(sum / values.length) }
-              }),
-            }),
-      }
-    })
+      ),
+    }))
   )
 }
 

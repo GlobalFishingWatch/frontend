@@ -92,18 +92,25 @@ Names and descriptions (what the model reads about each output) live in
 `@globalfishingwatch/skills/context-tools` (`libs/skills`), shared with gfw-agent, so a
 change reaches the agent only after a skills release and a version bump there.
 
-| Page                | Tools                                                                                                         |
-| ------------------- | ------------------------------------------------------------------------------------------------------------- |
-| any map route       | `get_workspace`, `get_map_view`, `get_clicked_feature`                                                        |
-| workspaces list     | `get_workspaces_list`                                                                                         |
-| vessel profile      | `get_vessel_identity`, `get_vessel_activity`, `get_vessel_areas`, `get_vessel_related`, `get_vessel_insights` |
-| area report         | `get_report_area`, `get_report_activity`, `get_report_vessels`, `get_report_events`                           |
+| Page                | Tools                                                                                                             |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| any map route       | `get_workspace`, `get_map_view`, `get_clicked_feature`, `get_timebar`                                             |
+| workspaces list     | `get_workspaces_list`                                                                                             |
+| vessel profile      | `get_vessel_identity`, `get_vessel_activity`, `get_vessel_areas`, `get_vessel_related`, `get_vessel_insights`     |
+| area report         | `get_report_area`, `get_report_activity`, `get_report_vessels`, `get_report_events`                               |
 | vessel group report | `get_vessel_group`, `get_vessel_group_insights`, `get_report_activity`, `get_report_vessels`, `get_report_events` |
-| port report         | `get_port_report`, `get_report_events`                                                                        |
-| ports / areas       | `get_places_page` (list state only: the agent has its own place lookup)                                       |
-| vessel search       | `get_vessel_search_results`                                                                                   |
-| help hub            | `get_help_page`                                                                                               |
-| every page          | `get_user_resources`: the user's workspaces, datasets, vessel groups and reports, fetched when asked          |
+| port report         | `get_port_report`, `get_report_events`                                                                            |
+| ports / areas       | `get_places_page` (list state only: the agent has its own place lookup)                                           |
+| vessel search       | `get_vessel_search_results`                                                                                       |
+| help hub            | `get_help_page`                                                                                                   |
+| every page          | `get_user_resources`: the user's workspaces, datasets, vessel groups and reports, fetched when asked              |
+
+`get_timebar` computes the timebar graph when the agent asks, with the same pure functions the
+graph hooks call (`_map/timebar/timebar-frames.ts`: heatmap activity, events clusters, user points),
+from the deck layers' viewport data. Nothing is copied out of the hooks' state, and it answers
+whether or not the graph is mounted. Vessel and user track speed and depth are read from the track
+segments, so they answer with the speed / depth graph closed.
+`summarizeSeries` (`assistant/assistant-series.utils.ts`) shapes both this and the report graph.
 
 `get_report_activity`, `get_report_vessels` and `get_report_events` live in
 `_reports/assistant/report-assistant-tools.ts` and are spread into each report module. In a time

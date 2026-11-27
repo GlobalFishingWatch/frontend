@@ -162,7 +162,6 @@ function getVesselActivity({
   }
 }
 
-// ponytail: fixed count, add a type / date argument if the agent needs older events
 const MAX_LATEST_EVENTS = 10
 
 /** Encounters, loitering, port visits and gaps of the time range, most recent first */
