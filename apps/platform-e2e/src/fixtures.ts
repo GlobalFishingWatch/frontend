@@ -9,6 +9,7 @@ import { MapPage } from './pages/MapPage'
 import { ReportPage } from './pages/ReportPage'
 import { SearchPage } from './pages/SearchPage'
 import { VesselProfilePage } from './pages/VesselProfilePage'
+import { WorkspacePage } from './pages/WorkspacePage'
 
 export const test = base.extend<{
   loginPage: LoginPage
@@ -16,6 +17,7 @@ export const test = base.extend<{
   reportPage: ReportPage
   searchPage: SearchPage
   vesselProfilePage: VesselProfilePage
+  workspacePage: WorkspacePage
   welcomePopupsDisabled: void
   lowResActivityTiles: void
   userResourcesCleanup: void
@@ -69,6 +71,9 @@ export const test = base.extend<{
   },
   vesselProfilePage: async ({ page }, use) => {
     await use(new VesselProfilePage(page))
+  },
+  workspacePage: async ({ page }, use) => {
+    await use(new WorkspacePage(page))
   },
 })
 
