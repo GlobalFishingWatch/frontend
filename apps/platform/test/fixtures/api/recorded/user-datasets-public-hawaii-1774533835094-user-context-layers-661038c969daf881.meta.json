@@ -1,9 +1,0 @@
-{
-  "method": "GET",
-  "key": "GET [user] /v3/datasets/public-hawaii-1774533835094/user-context-layers/1/1/0?cache=dataset-upload-tmp%2F56922286-0551-4f56-9e2b-7ba58325cb0e",
-  "status": 204,
-  "headers": {
-    "content-type": "text/html"
-  },
-  "body": "bin"
-}

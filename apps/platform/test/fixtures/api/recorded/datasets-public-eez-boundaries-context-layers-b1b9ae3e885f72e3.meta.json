@@ -5,8 +5,8 @@
   "headers": {
     "content-type": "application/vnd.mapbox-vector-tile",
     "x-ratelimit-ip-limit": "600",
-    "x-ratelimit-ip-remaining": "566",
-    "x-ratelimit-ip-reset": "26"
+    "x-ratelimit-ip-remaining": "578",
+    "x-ratelimit-ip-reset": "40"
   },
   "body": "bin"
 }

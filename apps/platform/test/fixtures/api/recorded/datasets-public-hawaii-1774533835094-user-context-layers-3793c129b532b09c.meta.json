@@ -6,7 +6,7 @@
     "content-type": "text/html",
     "x-ratelimit-ip-limit": "600",
     "x-ratelimit-ip-remaining": "590",
-    "x-ratelimit-ip-reset": "16"
+    "x-ratelimit-ip-reset": "49"
   },
   "body": "bin"
 }
