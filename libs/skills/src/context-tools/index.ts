@@ -135,7 +135,7 @@ export const ASSISTANT_CONTEXT_TOOLS = {
   get_report_area:
     'Area report. The area (`datasetId`, `areaId`, `name`, `bounds`, buffer, `global`), the saved report if any, the open `category` / `subcategory` tab, `unit`, time range and time comparison settings.',
   get_report_activity: [
-    'Area or vessel group report, activity tab (activity, detections, environment, user layers). The `graph` for the current time range, one entry per layer (`id`, `unit`): `interval`, `points`, `total`, `mean`, and `max` / `min` with their `date`.',
+    'Area or vessel group report, activity tab (activity, detections, environment, user layers). The `graph` for the current time range, one entry per layer (`id`, `unit`): `interval`, `points`, `total` (± `imprecision` %), `mean`, and `max` / `min` with their `date`. These are the exact numbers the report summary and graph tooltip show: quote them as given (e.g. "2,568 hours ± 1%"), never recompute them from `series`.',
     '- Evolution: `series` ([date, value] per interval) or, for long ranges, `monthly` (`total` for sum layers such as hours or detections, `mean` for average layers such as environment).',
     '- Time comparison graphs (periodComparison, beforeAfter): `comparison` per layer: `baseline`, `comparison`, `change`, `changePercentage`, the totals the report shows. Periods are in `get_report_area` `timeComparison`.',
     '- `stats` per layer, over the whole area: `mean` / `min` / `max` (environment: the true extremes of the area), uploaded points `total` / `count`, polygons `contained` / `overlapping` / `areaCoverageRatio` / `topAreas`.',

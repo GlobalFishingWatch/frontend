@@ -15,7 +15,6 @@ import { selectReportUnit } from 'features/_reports/reports.selectors'
 import type { ReportGraphProps, ReportGraphStats } from 'features/_reports/reports-timeseries.hooks'
 import { reportStateAtom } from 'features/_reports/reports-timeseries.hooks'
 import {
-  bucketAvg,
   filterTimeseriesByTimerange,
   getTimeComparisonTotals,
 } from 'features/_reports/reports-timeseries.utils'
@@ -25,6 +24,7 @@ import {
   selectReportVesselsPagination,
 } from 'features/_reports/shared/vessels/report-vessels.selectors'
 import { selectReportVesselsStatus } from 'features/_reports/tabs/activity/reports-activity.slice'
+import { formatEvolutionData } from 'features/_reports/tabs/activity/reports-activity-timeseries.utils'
 import {
   selectEventsStatsData,
   selectEventsStatsStatus,
@@ -139,23 +139,40 @@ function getReportEvents({
 
 const round = roundValue
 
-function getActivityLayers(timeseries: ReportGraphProps[]) {
-  return timeseries.flatMap((layer) =>
-    layer.sublayers.map((sublayer, i) => ({
-      id: sublayer.id,
-      unit: sublayer.legend.unit,
-      interval: layer.interval,
-      // same value the graphs plot: the middle of the estimate bounds
-      ...summarizeSeries(
-        layer.timeseries.map((point) => ({
-          date: point.date,
-          value: bucketAvg(point.min[i], point.max[i]),
-          min: point.min[i],
-          max: point.max[i],
+/**
+ * Same buckets the evolution graph and the report summary use (`formatEvolutionData`): `end` is
+ * exclusive and empty buckets count as 0, so `total`, `max` and `imprecision` match the report.
+ */
+export function getActivityLayers(timeseries: ReportGraphProps[], start: string, end: string) {
+  return timeseries.flatMap((layer) => {
+    const buckets = formatEvolutionData(layer, {
+      start,
+      end,
+      timeseriesInterval: layer.interval,
+    })
+    return layer.sublayers.map((sublayer, i) => {
+      const summary = summarizeSeries(
+        buckets.map(({ date, avg }) => ({
+          date: new Date(date).toISOString(),
+          value: Number(avg[i]) || 0,
         }))
-      ),
-    }))
-  )
+      )
+      const maxTotal = buckets.reduce(
+        (acc, { range }) => acc + (Number((range[i] as number[] | undefined)?.[1]) || 0),
+        0
+      )
+      return {
+        id: sublayer.id,
+        unit: sublayer.legend.unit,
+        interval: layer.interval,
+        ...summary,
+        // the ± % the report summary shows next to the total
+        imprecision: summary.total
+          ? Math.round(((maxTotal - summary.total) / summary.total) * 100)
+          : 0,
+      }
+    })
+  })
 }
 
 /** Whole area stats without the per cell value lists */
@@ -235,7 +252,7 @@ function getReportActivity({
     unit: selectReportUnit(state),
     timeRange: { start, end },
     graph,
-    layers: getActivityLayers(filterTimeseriesByTimerange(timeseries, start, end)),
+    layers: getActivityLayers(filterTimeseriesByTimerange(timeseries, start, end), start, end),
     stats: getReportStats(stats),
   }
 }

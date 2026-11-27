@@ -1,20 +1,23 @@
 /** Summaries of a time series for the context tools: the report activity graph and the timebar */
 
-export const roundValue = (n: number) => Number(n.toPrecision(4))
+/**
+ * Two decimals, like the graph tooltips (`formatI18nNumber`), so the agent quotes the numbers the
+ * user sees. Values under 1 keep 4 significant digits: environment layers can be that small.
+ */
+export const roundValue = (n: number) =>
+  Math.abs(n) >= 1 ? Math.round(n * 100) / 100 : Number(n.toPrecision(4))
 
 /** Past this many points the series goes by month, to keep the output small */
 export const MAX_SERIES_POINTS = 62
 
-/** `min` / `max`: the bounds of the bucket when the graph draws a band, else `value` */
-export type SeriesPoint = { date: string; value: number; min?: number; max?: number }
+export type SeriesPoint = { date: string; value: number }
 
 export function summarizeSeries(points: SeriesPoint[]) {
   const valid = points.filter((point) => Number.isFinite(point.value))
   const total = valid.reduce((acc, point) => acc + point.value, 0)
-  const top = (point: SeriesPoint) => point.max ?? point.value
-  const bottom = (point: SeriesPoint) => point.min ?? point.value
-  const byMax = valid.toSorted((a, b) => top(b) - top(a))
-  const byMin = valid.toSorted((a, b) => bottom(a) - bottom(b))
+  const byValue = valid.toSorted((a, b) => b.value - a.value)
+  const max = byValue[0]
+  const min = byValue.at(-1)
   const months = Object.entries(
     valid.reduce<Record<string, number[]>>((acc, { date, value }) => {
       ;(acc[date.slice(0, 7)] ??= []).push(value)
@@ -25,8 +28,8 @@ export function summarizeSeries(points: SeriesPoint[]) {
     points: valid.length,
     total: roundValue(total),
     mean: valid.length ? roundValue(total / valid.length) : undefined,
-    max: byMax[0] && { date: byMax[0].date, value: roundValue(top(byMax[0])) },
-    min: byMin[0] && { date: byMin[0].date, value: roundValue(bottom(byMin[0])) },
+    max: max && { date: max.date, value: roundValue(max.value) },
+    min: min && { date: min.date, value: roundValue(min.value) },
     ...(valid.length <= MAX_SERIES_POINTS
       ? {
           series: valid.map(

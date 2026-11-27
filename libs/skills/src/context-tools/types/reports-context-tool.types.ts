@@ -38,6 +38,8 @@ export type AssistantReportActivityLayer = {
   mean?: number
   max?: AssistantDatedValue
   min?: AssistantDatedValue
+  /** ± % of the `total` estimate, shown next to it in the report summary. 0 when exact */
+  imprecision?: number
   /** [date, value] per interval, when there are few points */
   series?: [string, number][]
   /** Per month otherwise: `total` for sum layers, `mean` for average layers (environment) */
