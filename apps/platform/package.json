@@ -24,6 +24,7 @@
     "@globalfishingwatch/ocean-areas": "workspace:^",
     "@globalfishingwatch/react-hooks": "workspace:^",
     "@globalfishingwatch/responsive-visualizations": "workspace:^",
+    "@globalfishingwatch/skills": "workspace:^",
     "@globalfishingwatch/timebar": "workspace:^",
     "@globalfishingwatch/ui-components": "workspace:^",
     "@platform/config": "workspace:*"

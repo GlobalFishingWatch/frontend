@@ -5,7 +5,7 @@ import { FourwingsLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
 
 import type { SliceInteractionEvent } from 'features/_map/map/map.slice'
 
-import { getMapView } from './map-assistant-context'
+import { getClickedSummary, getMapView } from './map-assistant-context'
 
 // cell polygon ring [minX, minY, maxX, minY, maxX, maxY, minX, maxY, minX, minY]
 const cell = (x: number, y: number, aggregatedValues: (number | undefined)[]) => ({
@@ -36,7 +36,6 @@ describe('getMapView', () => {
       bounds: { west: -20, south: -10, east: 20, north: 10 },
       viewport: { latitude: 0, longitude: 0, zoom: 3 },
       datasets: [],
-      clicked: null,
     })
     expect(view.layers).toEqual([
       {
@@ -68,7 +67,6 @@ describe('getMapView', () => {
       bounds: { west: -20, south: -10, east: 20, north: 10 },
       viewport: { latitude: 0, longitude: 0, zoom: 3 },
       datasets: [],
-      clicked: null,
     })
     expect(view.layers[0]).toMatchObject({ loaded: false })
   })
@@ -100,7 +98,6 @@ describe('getMapView', () => {
       bounds: { west: 160, south: -10, east: 200, north: 10 },
       viewport: { latitude: 0, longitude: 180, zoom: 3 },
       datasets: [],
-      clicked: null,
     })
     expect(view.layers[0]).toMatchObject({
       name: 'NAUTILUS',
@@ -111,7 +108,9 @@ describe('getMapView', () => {
       eventsInView: { fishing: 1 },
     })
   })
+})
 
+describe('getClickedSummary', () => {
   it('summarizes the clicked cell with its vessels', () => {
     const clicked = {
       type: 'click',
@@ -137,14 +136,7 @@ describe('getMapView', () => {
         },
       ],
     } as unknown as SliceInteractionEvent
-    const view = getMapView({
-      deckLayers: [],
-      bounds: { west: -20, south: -10, east: 20, north: 10 },
-      viewport: { latitude: 0, longitude: 0, zoom: 3 },
-      datasets: [],
-      clicked,
-    })
-    expect(view.clicked).toEqual({
+    expect(getClickedSummary(clicked, [])).toEqual({
       longitude: 1.23,
       latitude: 2.35,
       features: [
@@ -175,6 +167,66 @@ describe('getMapView', () => {
           ],
         },
       ],
+    })
+  })
+
+  it('keeps what a track point and an encounter popup show', () => {
+    const clicked = {
+      longitude: 10,
+      latitude: 20,
+      features: [
+        {
+          category: 'vessels',
+          layerId: 'vessel-1',
+          subcategory: 'TRACK',
+          title: 'NAUTILUS',
+          vesselId: 'v1',
+          timestamp: 0,
+          speed: 9.876,
+          depth: -1234,
+          course: 90,
+        },
+        {
+          category: 'vessels',
+          layerId: 'vessel-1',
+          subcategory: 'VESSEL_EVENTS',
+          vesselId: 'v1',
+          id: 'e1',
+          type: 'encounter',
+          start: 0,
+          end: 3_600_000,
+          position: { lon: 10, lat: 20 },
+          vessel: { id: 'v1', name: 'NAUTILUS', flag: 'ESP', nextPort: { name: 'VIGO' } },
+          distances: { startDistanceFromShoreKm: 120.456 },
+          encounter: {
+            vessel: { id: 'c1', name: 'CARRIER', flag: 'PAN' },
+            authorizationStatus: 'partially',
+            regionAuthorizations: [{ rfmo: 'iccat', authorized: true }],
+          },
+        },
+      ],
+    } as unknown as SliceInteractionEvent
+    const [trackPoint, encounter] = getClickedSummary(clicked, [])!.features
+    expect(trackPoint).toEqual({
+      category: 'vessels',
+      layerId: 'vessel-1',
+      trackPoint: {
+        name: 'NAUTILUS',
+        vesselId: 'v1',
+        timestamp: new Date(0).toISOString(),
+        speedKnots: 9.88,
+        depthM: -1234,
+        courseDeg: 90,
+      },
+    })
+    expect(encounter).toMatchObject({
+      event: {
+        type: 'encounter',
+        encounteredVessel: { id: 'c1', name: 'CARRIER', flag: 'PAN' },
+        distanceFromShoreKm: 120.46,
+        nextPort: 'VIGO',
+        authorization: { status: 'partially', rfmos: [{ rfmo: 'iccat', authorized: true }] },
+      },
     })
   })
 })

@@ -204,7 +204,10 @@
     "toolNavigate": "Navigated to view",
     "toolNavigateBack": "Go back to this view",
     "toolNavigation": "Navigated to view",
+    "toolReadMap": "Reading the map",
+    "toolReadPage": "Reading the page",
     "toolReadSkillResource": "Reading skill resource",
+    "toolReadUserResources": "Reading your workspaces and groups",
     "toolRegionLookup": "Looking up region",
     "toolRunSkillScript": "Running skill script"
   },

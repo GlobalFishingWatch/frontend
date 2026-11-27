@@ -1,14 +1,17 @@
 import { isNil, omitBy } from 'es-toolkit'
 
 import type { ApiEvent, Dataset, TrackSegment } from '@globalfishingwatch/api-types'
+import { DataviewType } from '@globalfishingwatch/api-types'
 import type { DeckLayerAtom } from '@globalfishingwatch/deck-layer-composer'
 import { deckLayersAtom } from '@globalfishingwatch/deck-layer-composer'
 import type {
+  BathymetryContourPickingObject,
   ContextFeature,
   ContextPickingObject,
   FourwingsDeckSublayer,
   UserLayerPickingObject,
   VesselEventPickingObject,
+  VesselTrackPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import {
   ContextLayer,
@@ -25,6 +28,7 @@ import type {
   FourwingsPositionFeature,
 } from '@globalfishingwatch/deck-loaders'
 import { OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
+import type { AssistantContextToolOutput } from '@globalfishingwatch/skills/context-tools'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
 
 import { selectAllDatasets } from 'features/_map/datasets/datasets.slice'
@@ -38,19 +42,26 @@ import type {
   SliceInteractionEvent,
 } from 'features/_map/map/map.slice'
 import { selectClickedEvent } from 'features/_map/map/map.slice'
+import { isBathymetryContour } from 'features/_map/map/map-interaction.utils'
 import { setMapCoordinates } from 'features/_map/map/map-view-state.hooks'
 import { getContextValue } from 'features/_map/map/popups/map-popups.utils'
 import { timerangeState } from 'features/_map/timebar/timerange.hooks'
 import { filterFeaturesByDistance } from 'features/_map/workspace/context-areas/context.utils'
 import { selectViewport } from 'features/_map/workspace/selectors/app.viewport.selectors'
 import { selectWorkspaceWithCurrentState } from 'features/_map/workspace/selectors/app.workspace.selectors'
-import type { AssistantContextDeps } from 'features/assistant/assistant-context'
+import type {
+  AssistantContextDeps,
+  AssistantContextModule,
+  AssistantPageMatch,
+} from 'features/assistant/assistant-context'
 import { getOceanAreaNameFn } from 'hooks/ocean-areas'
 import type { MapCoordinates, QueryParams } from 'types'
 
+import { getTimebar } from './timebar-assistant-tool'
+
 /**
  * Summary of what the user sees on the map right now, read from the deck layers
- * already loaded for the viewport. Sent to the agent with each assistant message so it
+ * already loaded for the viewport. Read when the agent calls a map context tool, so it
  * can answer "is there any vessel here?", "what areas are visible?" or "where is
  * the activity?". Only what is rendered in the viewport for the current time range:
  * tiles outside the view are not loaded, so this is never a global answer.
@@ -291,14 +302,12 @@ type GetMapViewParams = {
   viewport: MapCoordinates
   datasets: Dataset[]
   areaName?: string
-  clicked: SliceInteractionEvent | null
 }
 
-export function getMapView(params: GetMapViewParams) {
-  const { deckLayers, bounds, areaName, clicked, datasets } = params
+export function getMapView(params: GetMapViewParams): AssistantContextToolOutput<'get_map_view'> {
+  const { deckLayers, bounds, areaName } = params
   return {
     areaName,
-    clicked: getClickedSummary(clicked, datasets),
     bounds: roundBbox([bounds.west, bounds.south, bounds.east, bounds.north]),
     layers: deckLayers.flatMap((layer) => {
       if (layer.instance.props.visible === false) return []
@@ -320,6 +329,46 @@ type VesselLike = { id?: string; name?: string; shipname?: string; flag?: string
 const pickVessel = (vessel?: VesselLike) =>
   vessel && { id: vessel.id, name: vessel.name ?? vessel.shipname, flag: vessel.flag }
 
+const roundOptional = (n?: number) => (Number.isFinite(n) ? round(n as number) : undefined)
+
+const pickRfmoAuthorization = ({ rfmo, authorized }: { rfmo: string; authorized: boolean }) => ({
+  rfmo,
+  authorized,
+})
+
+/** One event as the popups and the vessel profile show it. Shared with the vessel profile tools */
+export function getSingleEventSummary(event: ApiEvent) {
+  const { encounter } = event
+  return {
+    id: event.id,
+    type: event.type,
+    start: toISO(event.start),
+    end: toISO(event.end),
+    position: event.position && [round(event.position.lon), round(event.position.lat)],
+    vessel: pickVessel(event.vessel),
+    encounteredVessel: pickVessel(encounter?.vessel),
+    port: event.port_visit?.intermediateAnchorage?.name ?? event.port?.name,
+    durationHrs: roundOptional(
+      event.port_visit?.durationHrs ?? event.loitering?.totalTimeHours ?? event.gap?.durationHours
+    ),
+    distanceFromShoreKm: roundOptional(
+      event.distances?.startDistanceFromShoreKm ?? event.loitering?.averageDistanceFromShoreKm
+    ),
+    nextPort: event.vessel?.nextPort?.name ?? event.nextPort?.name,
+    encounteredVesselNextPort: encounter?.vessel?.nextPort?.name,
+    ...(encounter && {
+      authorization: {
+        status: encounter.authorizationStatus,
+        rfmos: encounter.regionAuthorizations?.map(pickRfmoAuthorization),
+        vessels: encounter.vesselAuthorizations?.map(({ id, authorizations }) => ({
+          id,
+          rfmos: authorizations.map(pickRfmoAuthorization),
+        })),
+      },
+    }),
+  }
+}
+
 function getEventSummary(apiEvent: ExtendedFeatureEvent | VesselEventPickingObject) {
   if ('vessels' in apiEvent) {
     // events grouped by vessel (e.g. port visits in one port)
@@ -334,18 +383,7 @@ function getEventSummary(apiEvent: ExtendedFeatureEvent | VesselEventPickingObje
         .map((v) => ({ ...pickVessel(v), events: v.events })),
     }
   }
-  const event = apiEvent as ApiEvent
-  return {
-    id: event.id,
-    type: event.type,
-    start: toISO(event.start),
-    end: toISO(event.end),
-    position: event.position && [round(event.position.lon), round(event.position.lat)],
-    vessel: pickVessel(event.vessel),
-    encounteredVessel: pickVessel(event.encounter?.vessel),
-    port: event.port_visit?.intermediateAnchorage?.name ?? event.port?.name,
-    durationHrs: event.port_visit?.durationHrs,
-  }
+  return getSingleEventSummary(apiEvent as ApiEvent)
 }
 
 function getClickedFeatureSummary(feature: SliceExtendedFeature, datasets: Dataset[]) {
@@ -361,6 +399,36 @@ function getClickedFeatureSummary(feature: SliceExtendedFeature, datasets: Datas
   }
   if ('vesselId' in feature && 'start' in feature) {
     return { ...base, event: getEventSummary(feature) }
+  }
+  if (feature.subcategory === DataviewType.Track) {
+    // a point of a vessel or user track: time, speed and depth as the popup shows them
+    const point = feature as unknown as VesselTrackPickingObject
+    return {
+      ...base,
+      trackPoint: {
+        name: point.title,
+        vesselId: point.vesselId,
+        timestamp: toISO(point.timestamp),
+        speedKnots: roundOptional(point.speed),
+        depthM: roundOptional(point.depth),
+        courseDeg: roundOptional(point.course),
+      },
+    }
+  }
+  if (feature.subcategory === DataviewType.FourwingsVector) {
+    const vector = feature as SliceExtendedFourwingsPickingObject
+    const [speed, direction] = vector.aggregatedValues || []
+    return {
+      ...base,
+      ...('coordinates' in vector && { cellCenter: getCellCenter(vector.coordinates).map(round) }),
+      speed: roundOptional(speed),
+      directionDeg: roundOptional(direction),
+      unit: vector.sublayers?.[0]?.unit,
+    }
+  }
+  if (isBathymetryContour(feature)) {
+    const contour = feature as unknown as BathymetryContourPickingObject
+    return { ...base, elevationM: contour.properties?.elevation }
   }
   if ('sublayers' in feature && 'coordinates' in feature) {
     // activity / detections / environment cell, with the vessels the API returned for it
@@ -412,7 +480,10 @@ function getClickedFeatureSummary(feature: SliceExtendedFeature, datasets: Datas
 }
 
 /** The last place the user clicked on the map and what the popup showed there */
-function getClickedSummary(clicked: SliceInteractionEvent | null, datasets: Dataset[]) {
+export function getClickedSummary(
+  clicked: SliceInteractionEvent | null,
+  datasets: Dataset[]
+): AssistantContextToolOutput<'get_clicked_feature'> | undefined {
   if (!clicked) return undefined
   return {
     longitude: round(clicked.longitude),
@@ -472,7 +543,6 @@ async function getCurrentMapView({ reduxStore, jotaiStore }: AssistantContextDep
       viewport,
       datasets: selectAllDatasets(state),
       areaName,
-      clicked: selectClickedEvent(state),
     })
   } catch (e) {
     console.warn('assistant: could not read the map view', e)
@@ -480,20 +550,40 @@ async function getCurrentMapView({ reduxStore, jotaiStore }: AssistantContextDep
   }
 }
 
-export async function getContext(deps: AssistantContextDeps) {
+/** Workspace settings and layers the url does not hold: the agent has the url already */
+function getWorkspace(
+  { reduxStore }: AssistantContextDeps,
+  match: AssistantPageMatch
+): AssistantContextToolOutput<'get_workspace'> {
   const { id, name, state, dataviewInstances } = selectWorkspaceWithCurrentState(
-    deps.reduxStore.getState()
+    reduxStore.getState()
   )
-  const workspace = {
+  const urlState = (match.search ?? {}) as Record<string, unknown>
+  const urlInstances = (urlState.dataviewInstances ?? []) as { id?: string }[]
+  const inUrl = new Set(urlInstances.map((d) => d.id))
+  return {
     id,
     name,
-    state: omitBy(state || {}, isNil),
-    dataviewInstances: dataviewInstances?.filter((d) => d.config?.visible !== false),
+    state: omitBy(state || {}, (value, key) => isNil(value) || key in urlState),
+    dataviewInstances: dataviewInstances?.filter(
+      (d) => d.config?.visible !== false && !inUrl.has(d.id)
+    ),
   }
-  return { workspace, mapView: await getCurrentMapView(deps) }
 }
 
-export type MapAssistantContext = Awaited<ReturnType<typeof getContext>>
+function getClickedFeature({
+  reduxStore,
+}: AssistantContextDeps): AssistantContextToolOutput<'get_clicked_feature'> {
+  const state = reduxStore.getState()
+  return getClickedSummary(selectClickedEvent(state), selectAllDatasets(state)) ?? null
+}
+
+export const tools: AssistantContextModule['tools'] = {
+  get_workspace: getWorkspace,
+  get_map_view: getCurrentMapView,
+  get_clicked_feature: getClickedFeature,
+  get_timebar: getTimebar,
+}
 
 export function onNavigate(search: QueryParams, { jotaiStore }: AssistantContextDeps) {
   const { start, end, latitude, longitude, zoom } = search

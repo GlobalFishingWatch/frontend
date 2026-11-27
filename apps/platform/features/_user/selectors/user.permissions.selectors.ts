@@ -126,21 +126,30 @@ export const selectUserReports = createSelector(
   }
 )
 
-export const selectUserWorkspacesPrivate = createSelector(
-  [selectPrivateUserGroups, selectWorkspaces],
-  (groupsWithAccess = [], workspaces) => {
-    const privateWorkspaces = workspaces?.filter(
+/** Private workspaces of the user's groups (owned by GFW, not the user), newest first */
+export const getGroupPrivateWorkspaces = <T extends { id: string; createdAt?: string }>(
+  workspaces: T[] = [],
+  groupsWithAccess: string[] = []
+) =>
+  orderBy(
+    workspaces.filter(
       (workspace) =>
         getIsPrivateWorkspace(workspace) &&
         !workspace.id.includes(USER_SUFIX) &&
-        groupsWithAccess.some(
-          (g) =>
-            workspace.id.includes(g) ||
-            (USER_GROUP_WORKSPACE[g] && workspace.id.includes(USER_GROUP_WORKSPACE[g]))
-        )
-    )
-    return orderBy(privateWorkspaces, ['createdAt'], ['desc'])
-  }
+        groupsWithAccess.some((g) => {
+          const groupWorkspace = USER_GROUP_WORKSPACE[g as keyof typeof USER_GROUP_WORKSPACE]
+          return (
+            workspace.id.includes(g) || (!!groupWorkspace && workspace.id.includes(groupWorkspace))
+          )
+        })
+    ),
+    ['createdAt'],
+    ['desc']
+  )
+
+export const selectUserWorkspacesPrivate = createSelector(
+  [selectPrivateUserGroups, selectWorkspaces],
+  (groupsWithAccess = [], workspaces) => getGroupPrivateWorkspaces(workspaces, groupsWithAccess)
 )
 
 const filterActiveWorkspaces = (workspaces: AppWorkspace[]) =>

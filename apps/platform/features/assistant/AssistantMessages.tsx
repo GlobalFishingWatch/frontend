@@ -11,6 +11,7 @@ import { Spinner } from '@globalfishingwatch/ui-components/spinner'
 import { TextArea } from '@globalfishingwatch/ui-components/textarea'
 
 import { pendingPromptAtom } from 'features/assistant/assistant.atoms'
+import { isAssistantContextTool } from 'features/assistant/assistant-context'
 import type { FeedbackRating } from 'features/assistant/assistant-session.hooks'
 import { getFeedbackState, useAssistantSession } from 'features/assistant/assistant-session.hooks'
 import { useSetThreadLoading } from 'features/assistant/assistant-threads.hooks'
@@ -47,8 +48,14 @@ function toolActionLabel(t: TFunction, name: string): string | undefined {
       return t((t) => t.assistant.toolBash)
     case 'gfw_region-id-lookup':
       return t((t) => t.assistant.toolRegionLookup)
+    case 'get_map_view':
+    case 'get_clicked_feature':
+    case 'get_workspace':
+      return t((t) => t.assistant.toolReadMap)
+    case 'get_user_resources':
+      return t((t) => t.assistant.toolReadUserResources)
     default:
-      return undefined
+      return isAssistantContextTool(name) ? t((t) => t.assistant.toolReadPage) : undefined
   }
 }
 

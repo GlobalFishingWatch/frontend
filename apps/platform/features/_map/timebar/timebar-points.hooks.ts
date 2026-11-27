@@ -1,16 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { DatasetStatus } from '@globalfishingwatch/api-types'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import {
-  getAvailableIntervalsInDataviews,
-  useGetDeckLayers,
-} from '@globalfishingwatch/deck-layer-composer'
+import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import type { UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
-import { getFourwingsChunk } from '@globalfishingwatch/deck-layers'
-import type { FourwingsPointFeature } from '@globalfishingwatch/deck-loaders'
-import { FOURWINGS_REAL_TIME_INTERVALS } from '@globalfishingwatch/deck-loaders'
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 import { useTimebar } from '@globalfishingwatch/timebar'
 
@@ -20,11 +14,8 @@ import {
 } from 'features/_map/timebar/timebar.selectors'
 import { selectViewport } from 'features/_map/workspace/selectors/app.viewport.selectors'
 import { selectIsRealTimeMode } from 'features/_map/workspace/workspace.selectors'
-import type { PointsFeaturesToTimeseriesParams } from 'features/_reports/tabs/others/reports-points-timeseries.utils'
 
-import { getGraphDataFromPoints } from './timebar.utils'
-
-const EMPTY_ACTIVITY_DATA = [] as ActivityTimeseriesFrame[]
+import { getPointsFrames, getTimebarChunk } from './timebar-frames'
 
 export const useTimebarPoints = () => {
   const [data, setData] = useState<ActivityTimeseriesFrame[]>([])
@@ -51,20 +42,8 @@ export const useTimebarPoints = () => {
     ? userPointsLayers.every(({ instance }) => instance.isLoaded) && !datasetImporting
     : false
 
-  const availableIntervals = isRealTimeMode
-    ? FOURWINGS_REAL_TIME_INTERVALS
-    : getAvailableIntervalsInDataviews(dataviews)
-  const { interval, bufferedStart, bufferedEnd } = getFourwingsChunk({
-    start,
-    end,
-    availableIntervals,
-    ...(isRealTimeMode &&
-      realTimeTimerange && {
-        intervalCacheMode: 'NONE',
-        bufferedStartTime: getUTCDate(realTimeTimerange.start).getTime(),
-        bufferedEndTime: getUTCDate(realTimeTimerange.end).getTime(),
-      }),
-  })
+  const chunk = getTimebarChunk({ start, end, dataviews, isRealTimeMode, realTimeTimerange })
+  const { interval, bufferedStart, bufferedEnd } = chunk
 
   const instanceCacheHash = useMemo(() => {
     if (!userPointsLayers[0]?.instance) return ''
@@ -81,50 +60,9 @@ export const useTimebarPoints = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [instanceCacheHash])
 
-  const setFourwingsPointsData = useCallback(
-    async (data: FourwingsPointFeature[], params: PointsFeaturesToTimeseriesParams) => {
-      const {
-        start,
-        end,
-        sublayers,
-        startTimeProperty,
-        endTimeProperty,
-        interval,
-        timeFilterType,
-      } = params
-
-      const result =
-        getGraphDataFromPoints(data, {
-          start: start,
-          end: end,
-          interval: interval || 'MONTH',
-          sublayersLength: sublayers.length,
-          startTimeProperty: startTimeProperty,
-          endTimeProperty: endTimeProperty,
-          timeFilterType: timeFilterType,
-        }) || EMPTY_ACTIVITY_DATA
-      setData(result)
-    },
-    []
-  )
-
   useEffect(() => {
     if (loaded && instance) {
-      const { startTimeProperty, endTimeProperty, layers, timeFilterType } = instance?.props || {}
-      const viewportData =
-        (instance?.getViewportData?.({ skipTemporalFilter: true }) as FourwingsPointFeature[]) || []
-
-      const params = {
-        startTimeProperty: startTimeProperty,
-        endTimeProperty,
-        sublayers: layers.flatMap((l) => l.sublayers) || [],
-        start: bufferedStart,
-        end: bufferedEnd,
-        interval: interval || 'MONTH',
-        timeFilterType: timeFilterType,
-      } as PointsFeaturesToTimeseriesParams
-
-      setFourwingsPointsData(viewportData, params)
+      setData(getPointsFrames(instance, chunk))
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

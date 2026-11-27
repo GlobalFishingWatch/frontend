@@ -2,7 +2,9 @@
 
 import type {
   AssistantBbox,
+  AssistantDatedValue,
   AssistantLonLat,
+  AssistantTimeRange,
   AssistantVesselRef,
 } from './shared-context-tool.types.js'
 
@@ -130,6 +132,18 @@ export type AssistantGroupedEvent = {
   vessels: (AssistantVesselRef & { events?: number })[]
 }
 
+type AssistantRfmoAuthorization = { rfmo: string; authorized: boolean }
+
+/** Encounters: public authorizations by the RFMOs of the event area */
+export type AssistantEventAuthorization = {
+  /** Main vessel: authorized (by every RFMO), partially or unmatched (no known authorization) */
+  status?: string
+  /** Main vessel, per RFMO */
+  rfmos?: AssistantRfmoAuthorization[]
+  /** Each vessel of the encounter, by vessel `id` */
+  vessels?: { id: string; rfmos: AssistantRfmoAuthorization[] }[]
+}
+
 export type AssistantSingleEvent = {
   id: string
   type: string
@@ -139,7 +153,13 @@ export type AssistantSingleEvent = {
   vessel?: AssistantVesselRef
   encounteredVessel?: AssistantVesselRef
   port?: string
+  /** Port visit, loitering or gap duration */
   durationHrs?: number
+  distanceFromShoreKm?: number
+  /** Port the vessel visited next */
+  nextPort?: string
+  encounteredVesselNextPort?: string
+  authorization?: AssistantEventAuthorization
 }
 
 export type AssistantEventSummary = AssistantGroupedEvent | AssistantSingleEvent
@@ -171,12 +191,41 @@ export type AssistantClickedPosition = ClickedFeatureBase & {
   value?: number
 }
 
-export type AssistantClickedArea = ClickedFeatureBase & { id?: string | number; label?: string }
+/** A point of a vessel or user track */
+export type AssistantClickedTrackPoint = ClickedFeatureBase & {
+  trackPoint: {
+    name?: string
+    vesselId?: string
+    timestamp?: string
+    speedKnots?: number
+    /** Negative: below sea level */
+    depthM?: number
+    courseDeg?: number
+  }
+}
+
+/** Currents / winds cell */
+export type AssistantClickedVector = ClickedFeatureBase & {
+  cellCenter?: AssistantLonLat
+  speed?: number
+  /** Degrees the flow goes towards */
+  directionDeg?: number
+  unit?: string
+}
+
+export type AssistantClickedArea = ClickedFeatureBase & {
+  id?: string | number
+  label?: string
+  /** Bathymetry contour */
+  elevationM?: number
+}
 
 export type AssistantClickedFeatureSummary =
   | AssistantClickedCluster
   | AssistantClickedEvent
   | AssistantClickedCell
+  | AssistantClickedTrackPoint
+  | AssistantClickedVector
   | AssistantClickedPosition
   | AssistantClickedArea
 
@@ -186,6 +235,46 @@ export type AssistantClickedFeature = {
   latitude: number
   features: AssistantClickedFeatureSummary[]
 } | null
+
+/** Summary of a series: `series` when short, else `monthly` */
+export type AssistantSeriesSummary = {
+  points: number
+  total: number
+  mean?: number
+  max?: AssistantDatedValue
+  min?: AssistantDatedValue
+  /** [date, value] */
+  series?: [string, number][]
+  monthly?: { month: string; total: number; mean: number }[]
+}
+
+export type AssistantTimebarTrack = {
+  dataviewId: string
+  name?: string
+  loaded?: false
+  /** Whole loaded track, any date */
+  trackStart?: string
+  trackEnd?: string
+  /** Of the rows below: 'day' or 'month' */
+  interval: string
+  /** [date, mean, max] in knots */
+  speedKnots?: [string, number, number][]
+  /** [date, mean, deepest] in meters, negative below sea level */
+  depthM?: [string, number, number][]
+}
+
+export type AssistantTimebar = {
+  /** heatmap, heatmapDetections, vesselGroup, environment, events, points or vessel */
+  visualisation: string
+  timeRange: AssistantTimeRange
+  interval?: string
+  loading?: true
+  /** Value on screen per interval, one entry per sublayer of the graph */
+  layers?: (AssistantSeriesSummary & { id: string; unit?: string })[]
+  /** vessel visualisation: the graph open under the tracks (speed, elevation or none) */
+  trackGraph?: string
+  tracks?: AssistantTimebarTrack[]
+}
 
 export type AssistantWorkspacesList = {
   category?: string
