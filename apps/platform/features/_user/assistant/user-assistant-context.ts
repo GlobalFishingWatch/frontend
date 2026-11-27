@@ -20,8 +20,12 @@ import {
   DEFAULT_PAGINATION_PARAMS,
 } from 'data/map/config'
 import { isPrivateDataset, isPrivateVesselGroup } from 'features/_map/datasets/datasets.utils'
-import { selectGroupsWithoutDatasetPermission } from 'features/_user/selectors/user.groups.selectors'
 import {
+  selectGroupsWithoutDatasetPermission,
+  selectPrivateUserGroups,
+} from 'features/_user/selectors/user.groups.selectors'
+import {
+  getGroupPrivateWorkspaces,
   selectUserGroupsClean,
   selectUserId,
 } from 'features/_user/selectors/user.permissions.selectors'
@@ -39,7 +43,7 @@ import type {
  */
 
 // ponytail: most recent N per type plus `total`; add arguments when the agent needs more.
-const MAX_ITEMS = 20
+const MAX_ITEMS = 200
 const MAX_NAME_LENGTH = 80
 
 const name = (value = '') => value.slice(0, MAX_NAME_LENGTH)
@@ -54,7 +58,8 @@ async function fetchEntries<T>(path: string, params: Record<string, unknown>) {
 }
 
 async function fetchUserContext(
-  userId: number
+  userId: number,
+  privateGroups: string[]
 ): Promise<AssistantContextToolOutput<'get_user_resources'>> {
   const owned = <T extends { ownerId?: number }>(entries: T[]) =>
     entries.filter((entry) => entry.ownerId === userId)
@@ -75,6 +80,14 @@ async function fetchUserContext(
           category: w.category,
           visibility: w.viewAccess as AssistantResourceVisibility,
         }))
+    ),
+    // Same list as the user page's private workspaces: group workspaces owned by GFW
+    privateWorkspaces: summary(
+      getGroupPrivateWorkspaces(workspaces, privateGroups).map((w) => ({
+        id: w.id,
+        name: name(w.name),
+        category: w.category,
+      }))
     ),
     datasets: summary(
       owned(datasets)
@@ -124,7 +137,7 @@ async function getUserResources({ reduxStore }: AssistantContextDeps) {
   return {
     groups: selectUserGroupsClean(state),
     groupsWithoutDatasetPermission: selectGroupsWithoutDatasetPermission(state),
-    ...(await fetchUserContext(userId)),
+    ...(await fetchUserContext(userId, selectPrivateUserGroups(state))),
   }
 }
 
