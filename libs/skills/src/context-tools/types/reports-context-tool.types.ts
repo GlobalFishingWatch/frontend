@@ -38,7 +38,36 @@ export type AssistantReportActivityLayer = {
   mean?: number
   max?: AssistantDatedValue
   min?: AssistantDatedValue
+  /** [date, value] per interval, when there are few points */
+  series?: [string, number][]
+  /** Per month otherwise: `total` for sum layers, `mean` for average layers (environment) */
+  monthly?: { month: string; total: number; mean: number }[]
 }
+
+/** Time comparison graphs (periodComparison, beforeAfter): the totals the report shows */
+export type AssistantReportComparison = {
+  id: string
+  unit?: string
+  baseline: number
+  comparison: number
+  change: number
+  changePercentage?: number
+}
+
+/** Whole area stats per layer id, from the cells inside the area */
+export type AssistantReportStats = Record<
+  string,
+  | { type: 'fourwings'; mean: number; min?: number; max?: number }
+  | { type: 'points'; total: number; count: number }
+  | {
+      type: 'polygons'
+      contained: number
+      overlapping: number
+      areaCoverageRatio?: number
+      areaCoverageKm2?: number
+      topAreas?: { id: string; label: string; km2: number; ratio: number }[]
+    }
+>
 
 /** `isLoading` alone: still computing, nothing to show yet */
 export type AssistantReportActivity =
@@ -47,7 +76,10 @@ export type AssistantReportActivity =
       isLoading: boolean
       unit?: string
       timeRange: AssistantTimeRange
+      graph?: string
       layers: AssistantReportActivityLayer[]
+      comparison?: AssistantReportComparison[]
+      stats?: AssistantReportStats
     }
 
 export type AssistantCountByValue = { value: string; vessels: number }

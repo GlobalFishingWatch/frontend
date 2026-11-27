@@ -7,6 +7,10 @@ export type AssistantResourceVisibility = 'public' | 'private' | 'password'
 export type AssistantResourceList<T> = { total: number; items: T[] }
 
 export type AssistantUserResources = {
+  /** User groups (info tab of the user page) */
+  groups?: string[]
+  /** Groups the user belongs to that do not grant access to their datasets yet */
+  groupsWithoutDatasetPermission?: string[]
   workspaces: AssistantResourceList<{
     id: string
     name: string

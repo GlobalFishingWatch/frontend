@@ -7,7 +7,7 @@ import type {
   RegionType,
   VesselRegistryInfo,
 } from '@globalfishingwatch/api-types'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { EventTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type {
   AssistantContextToolOutput,
   AssistantContextToolResult,
@@ -15,6 +15,7 @@ import type {
   AssistantVesselInsight,
 } from '@globalfishingwatch/skills/context-tools'
 
+import { getSingleEventSummary } from 'features/_map/assistant/map-assistant-context'
 import { selectTimeRange } from 'features/_map/workspace/selectors/app.timebar.selectors'
 import {
   selectActivitySummary,
@@ -28,6 +29,7 @@ import {
   INSIGHTS_NON_FISHING,
   MIN_INSIGHTS_YEAR,
 } from 'features/_vessels/vessel/insights/insights.config'
+import { selectVesselEventsFilteredByTimerange } from 'features/_vessels/vessel/selectors/vessel.resources.selectors'
 import {
   selectVesselInfoData,
   selectVesselInfoStatus,
@@ -156,6 +158,22 @@ function getVesselActivity({
       ])
     ),
     mostVisitedPortCountries: mostVisitedPortCountries.slice(0, MAX_ITEMS),
+    ...getLatestEvents(state),
+  }
+}
+
+// ponytail: fixed count, add a type / date argument if the agent needs older events
+const MAX_LATEST_EVENTS = 10
+
+/** Encounters, loitering, port visits and gaps of the time range, most recent first */
+function getLatestEvents(state: State) {
+  const newestFirst = selectVesselEventsFilteredByTimerange(state).toReversed()
+  return {
+    latestEvents: newestFirst
+      .filter((event) => event.type !== EventTypes.Fishing)
+      .slice(0, MAX_LATEST_EVENTS)
+      .map(getSingleEventSummary),
+    lastEvent: newestFirst[0] && getSingleEventSummary(newestFirst[0]),
   }
 }
 

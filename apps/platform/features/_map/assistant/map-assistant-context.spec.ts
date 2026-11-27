@@ -169,4 +169,64 @@ describe('getClickedSummary', () => {
       ],
     })
   })
+
+  it('keeps what a track point and an encounter popup show', () => {
+    const clicked = {
+      longitude: 10,
+      latitude: 20,
+      features: [
+        {
+          category: 'vessels',
+          layerId: 'vessel-1',
+          subcategory: 'TRACK',
+          title: 'NAUTILUS',
+          vesselId: 'v1',
+          timestamp: 0,
+          speed: 9.876,
+          depth: -1234,
+          course: 90,
+        },
+        {
+          category: 'vessels',
+          layerId: 'vessel-1',
+          subcategory: 'VESSEL_EVENTS',
+          vesselId: 'v1',
+          id: 'e1',
+          type: 'encounter',
+          start: 0,
+          end: 3_600_000,
+          position: { lon: 10, lat: 20 },
+          vessel: { id: 'v1', name: 'NAUTILUS', flag: 'ESP', nextPort: { name: 'VIGO' } },
+          distances: { startDistanceFromShoreKm: 120.456 },
+          encounter: {
+            vessel: { id: 'c1', name: 'CARRIER', flag: 'PAN' },
+            authorizationStatus: 'partially',
+            regionAuthorizations: [{ rfmo: 'iccat', authorized: true }],
+          },
+        },
+      ],
+    } as unknown as SliceInteractionEvent
+    const [trackPoint, encounter] = getClickedSummary(clicked, [])!.features
+    expect(trackPoint).toEqual({
+      category: 'vessels',
+      layerId: 'vessel-1',
+      trackPoint: {
+        name: 'NAUTILUS',
+        vesselId: 'v1',
+        timestamp: new Date(0).toISOString(),
+        speedKnots: 9.88,
+        depthM: -1234,
+        courseDeg: 90,
+      },
+    })
+    expect(encounter).toMatchObject({
+      event: {
+        type: 'encounter',
+        encounteredVessel: { id: 'c1', name: 'CARRIER', flag: 'PAN' },
+        distanceFromShoreKm: 120.46,
+        nextPort: 'VIGO',
+        authorization: { status: 'partially', rfmos: [{ rfmo: 'iccat', authorized: true }] },
+      },
+    })
+  })
 })

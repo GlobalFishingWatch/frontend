@@ -30,6 +30,7 @@ import {
   getPointsTimeseriesStats,
 } from 'features/_reports/tabs/others/reports-points-timeseries.utils'
 import { getPolygonsTimeseries } from 'features/_reports/tabs/others/reports-polygons-timeseries.utils'
+import { getUTCDateTime } from 'utils/dates'
 
 export type ReportFourwingsDeckLayer = FourwingsLayer | FourwingsVectorsTileLayer
 export type ReportPointsDeckLayer = UserPointsTileLayer
@@ -193,4 +194,67 @@ export const filterTimeseriesByTimerange = (
       }),
     }
   })
+}
+
+export type TimeComparisonGraph = 'beforeAfter' | 'periodComparison'
+
+// min and max are the bounds of the estimate for each bucket, same average the graphs plot
+export const bucketAvg = (min: number, max: number) => (min + max) / 2
+
+/** Baseline and comparison totals of a time comparison graph, as the report shows them */
+export function getTimeComparisonTotals(
+  timeseries: ReportGraphProps['timeseries'] | undefined,
+  graph: TimeComparisonGraph,
+  compareStart: string | undefined,
+  latestAvailableDataDate: string
+) {
+  if (!timeseries?.length || !compareStart) {
+    return null
+  }
+  const latestDataMillis = getUTCDateTime(latestAvailableDataDate)?.toMillis()
+
+  if (graph === 'periodComparison') {
+    const compareStartIndex = timeseries.findIndex((t) => t.date === compareStart)
+    if (compareStartIndex <= 0) {
+      return null
+    }
+    const baselineBuckets = timeseries.slice(0, compareStartIndex)
+    const comparisonBuckets = timeseries.slice(compareStartIndex)
+    // The graph pairs both periods bucket by bucket, so only paired buckets are comparable
+    const pairs = Math.min(baselineBuckets.length, comparisonBuckets.length)
+    let baseline = 0
+    let comparison = 0
+    for (let index = 0; index < pairs; index++) {
+      const comparisonDate = getUTCDateTime(comparisonBuckets[index].date)?.toMillis()
+      if (latestDataMillis && comparisonDate > latestDataMillis) {
+        // Beyond the last available data the comparison period has no values to compare against
+        break
+      }
+      baseline += bucketAvg(baselineBuckets[index].min[0], baselineBuckets[index].max[0])
+      comparison += bucketAvg(comparisonBuckets[index].min[1], comparisonBuckets[index].max[1])
+    }
+    return { baseline, comparison }
+  }
+
+  // Before/after: values before the comparison date are in sublayer 0 and values after in sublayer 1
+  const compareStartMillis = getUTCDateTime(compareStart)?.toMillis()
+  return timeseries.reduce(
+    (acc, { date, min, max }) => {
+      const dateMillis = getUTCDateTime(date)?.toMillis()
+      if (latestDataMillis && dateMillis > latestDataMillis) {
+        return acc
+      }
+      const value = bucketAvg(
+        min.reduce((total, v) => total + v, 0),
+        max.reduce((total, v) => total + v, 0)
+      )
+      if (dateMillis < compareStartMillis) {
+        acc.baseline += value
+      } else {
+        acc.comparison += value
+      }
+      return acc
+    },
+    { baseline: 0, comparison: 0 }
+  )
 }

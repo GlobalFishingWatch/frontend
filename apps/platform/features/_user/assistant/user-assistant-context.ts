@@ -20,7 +20,11 @@ import {
   DEFAULT_PAGINATION_PARAMS,
 } from 'data/map/config'
 import { isPrivateDataset, isPrivateVesselGroup } from 'features/_map/datasets/datasets.utils'
-import { selectUserId } from 'features/_user/selectors/user.permissions.selectors'
+import { selectGroupsWithoutDatasetPermission } from 'features/_user/selectors/user.groups.selectors'
+import {
+  selectUserGroupsClean,
+  selectUserId,
+} from 'features/_user/selectors/user.permissions.selectors'
 import type {
   AssistantContextDeps,
   AssistantContextModule,
@@ -113,9 +117,15 @@ async function fetchUserContext(
 }
 
 /** Fetched when the agent asks, so a resource created a moment ago is already there */
-function getUserResources({ reduxStore }: AssistantContextDeps) {
-  const userId = selectUserId(reduxStore.getState())
-  return userId ? fetchUserContext(userId) : undefined
+async function getUserResources({ reduxStore }: AssistantContextDeps) {
+  const state = reduxStore.getState()
+  const userId = selectUserId(state)
+  if (!userId) return undefined
+  return {
+    groups: selectUserGroupsClean(state),
+    groupsWithoutDatasetPermission: selectGroupsWithoutDatasetPermission(state),
+    ...(await fetchUserContext(userId)),
+  }
 }
 
 export const tools: AssistantContextModule['tools'] = { get_user_resources: getUserResources }

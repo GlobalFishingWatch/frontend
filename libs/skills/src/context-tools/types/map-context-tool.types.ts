@@ -130,6 +130,18 @@ export type AssistantGroupedEvent = {
   vessels: (AssistantVesselRef & { events?: number })[]
 }
 
+type AssistantRfmoAuthorization = { rfmo: string; authorized: boolean }
+
+/** Encounters: public authorizations by the RFMOs of the event area */
+export type AssistantEventAuthorization = {
+  /** Main vessel: authorized (by every RFMO), partially or unmatched (no known authorization) */
+  status?: string
+  /** Main vessel, per RFMO */
+  rfmos?: AssistantRfmoAuthorization[]
+  /** Each vessel of the encounter, by vessel `id` */
+  vessels?: { id: string; rfmos: AssistantRfmoAuthorization[] }[]
+}
+
 export type AssistantSingleEvent = {
   id: string
   type: string
@@ -139,7 +151,13 @@ export type AssistantSingleEvent = {
   vessel?: AssistantVesselRef
   encounteredVessel?: AssistantVesselRef
   port?: string
+  /** Port visit, loitering or gap duration */
   durationHrs?: number
+  distanceFromShoreKm?: number
+  /** Port the vessel visited next */
+  nextPort?: string
+  encounteredVesselNextPort?: string
+  authorization?: AssistantEventAuthorization
 }
 
 export type AssistantEventSummary = AssistantGroupedEvent | AssistantSingleEvent
@@ -171,12 +189,41 @@ export type AssistantClickedPosition = ClickedFeatureBase & {
   value?: number
 }
 
-export type AssistantClickedArea = ClickedFeatureBase & { id?: string | number; label?: string }
+/** A point of a vessel or user track */
+export type AssistantClickedTrackPoint = ClickedFeatureBase & {
+  trackPoint: {
+    name?: string
+    vesselId?: string
+    timestamp?: string
+    speedKnots?: number
+    /** Negative: below sea level */
+    depthM?: number
+    courseDeg?: number
+  }
+}
+
+/** Currents / winds cell */
+export type AssistantClickedVector = ClickedFeatureBase & {
+  cellCenter?: AssistantLonLat
+  speed?: number
+  /** Degrees the flow goes towards */
+  directionDeg?: number
+  unit?: string
+}
+
+export type AssistantClickedArea = ClickedFeatureBase & {
+  id?: string | number
+  label?: string
+  /** Bathymetry contour */
+  elevationM?: number
+}
 
 export type AssistantClickedFeatureSummary =
   | AssistantClickedCluster
   | AssistantClickedEvent
   | AssistantClickedCell
+  | AssistantClickedTrackPoint
+  | AssistantClickedVector
   | AssistantClickedPosition
   | AssistantClickedArea
 

@@ -1,14 +1,17 @@
 import { isNil, omitBy } from 'es-toolkit'
 
 import type { ApiEvent, Dataset, TrackSegment } from '@globalfishingwatch/api-types'
+import { DataviewType } from '@globalfishingwatch/api-types'
 import type { DeckLayerAtom } from '@globalfishingwatch/deck-layer-composer'
 import { deckLayersAtom } from '@globalfishingwatch/deck-layer-composer'
 import type {
+  BathymetryContourPickingObject,
   ContextFeature,
   ContextPickingObject,
   FourwingsDeckSublayer,
   UserLayerPickingObject,
   VesselEventPickingObject,
+  VesselTrackPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import {
   ContextLayer,
@@ -39,6 +42,7 @@ import type {
   SliceInteractionEvent,
 } from 'features/_map/map/map.slice'
 import { selectClickedEvent } from 'features/_map/map/map.slice'
+import { isBathymetryContour } from 'features/_map/map/map-interaction.utils'
 import { setMapCoordinates } from 'features/_map/map/map-view-state.hooks'
 import { getContextValue } from 'features/_map/map/popups/map-popups.utils'
 import { timerangeState } from 'features/_map/timebar/timerange.hooks'
@@ -323,6 +327,46 @@ type VesselLike = { id?: string; name?: string; shipname?: string; flag?: string
 const pickVessel = (vessel?: VesselLike) =>
   vessel && { id: vessel.id, name: vessel.name ?? vessel.shipname, flag: vessel.flag }
 
+const roundOptional = (n?: number) => (Number.isFinite(n) ? round(n as number) : undefined)
+
+const pickRfmoAuthorization = ({ rfmo, authorized }: { rfmo: string; authorized: boolean }) => ({
+  rfmo,
+  authorized,
+})
+
+/** One event as the popups and the vessel profile show it. Shared with the vessel profile tools */
+export function getSingleEventSummary(event: ApiEvent) {
+  const { encounter } = event
+  return {
+    id: event.id,
+    type: event.type,
+    start: toISO(event.start),
+    end: toISO(event.end),
+    position: event.position && [round(event.position.lon), round(event.position.lat)],
+    vessel: pickVessel(event.vessel),
+    encounteredVessel: pickVessel(encounter?.vessel),
+    port: event.port_visit?.intermediateAnchorage?.name ?? event.port?.name,
+    durationHrs: roundOptional(
+      event.port_visit?.durationHrs ?? event.loitering?.totalTimeHours ?? event.gap?.durationHours
+    ),
+    distanceFromShoreKm: roundOptional(
+      event.distances?.startDistanceFromShoreKm ?? event.loitering?.averageDistanceFromShoreKm
+    ),
+    nextPort: event.vessel?.nextPort?.name ?? event.nextPort?.name,
+    encounteredVesselNextPort: encounter?.vessel?.nextPort?.name,
+    ...(encounter && {
+      authorization: {
+        status: encounter.authorizationStatus,
+        rfmos: encounter.regionAuthorizations?.map(pickRfmoAuthorization),
+        vessels: encounter.vesselAuthorizations?.map(({ id, authorizations }) => ({
+          id,
+          rfmos: authorizations.map(pickRfmoAuthorization),
+        })),
+      },
+    }),
+  }
+}
+
 function getEventSummary(apiEvent: ExtendedFeatureEvent | VesselEventPickingObject) {
   if ('vessels' in apiEvent) {
     // events grouped by vessel (e.g. port visits in one port)
@@ -337,18 +381,7 @@ function getEventSummary(apiEvent: ExtendedFeatureEvent | VesselEventPickingObje
         .map((v) => ({ ...pickVessel(v), events: v.events })),
     }
   }
-  const event = apiEvent as ApiEvent
-  return {
-    id: event.id,
-    type: event.type,
-    start: toISO(event.start),
-    end: toISO(event.end),
-    position: event.position && [round(event.position.lon), round(event.position.lat)],
-    vessel: pickVessel(event.vessel),
-    encounteredVessel: pickVessel(event.encounter?.vessel),
-    port: event.port_visit?.intermediateAnchorage?.name ?? event.port?.name,
-    durationHrs: event.port_visit?.durationHrs,
-  }
+  return getSingleEventSummary(apiEvent as ApiEvent)
 }
 
 function getClickedFeatureSummary(feature: SliceExtendedFeature, datasets: Dataset[]) {
@@ -364,6 +397,36 @@ function getClickedFeatureSummary(feature: SliceExtendedFeature, datasets: Datas
   }
   if ('vesselId' in feature && 'start' in feature) {
     return { ...base, event: getEventSummary(feature) }
+  }
+  if (feature.subcategory === DataviewType.Track) {
+    // a point of a vessel or user track: time, speed and depth as the popup shows them
+    const point = feature as unknown as VesselTrackPickingObject
+    return {
+      ...base,
+      trackPoint: {
+        name: point.title,
+        vesselId: point.vesselId,
+        timestamp: toISO(point.timestamp),
+        speedKnots: roundOptional(point.speed),
+        depthM: roundOptional(point.depth),
+        courseDeg: roundOptional(point.course),
+      },
+    }
+  }
+  if (feature.subcategory === DataviewType.FourwingsVector) {
+    const vector = feature as SliceExtendedFourwingsPickingObject
+    const [speed, direction] = vector.aggregatedValues || []
+    return {
+      ...base,
+      ...('coordinates' in vector && { cellCenter: getCellCenter(vector.coordinates).map(round) }),
+      speed: roundOptional(speed),
+      directionDeg: roundOptional(direction),
+      unit: vector.sublayers?.[0]?.unit,
+    }
+  }
+  if (isBathymetryContour(feature)) {
+    const contour = feature as unknown as BathymetryContourPickingObject
+    return { ...base, elevationM: contour.properties?.elevation }
   }
   if ('sublayers' in feature && 'coordinates' in feature) {
     // activity / detections / environment cell, with the vessels the API returned for it

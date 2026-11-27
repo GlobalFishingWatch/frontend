@@ -1,5 +1,6 @@
 /** Vessel profile: get_vessel_identity, get_vessel_activity, get_vessel_areas, get_vessel_related, get_vessel_insights */
 
+import type { AssistantSingleEvent } from './map-context-tool.types.js'
 import type { AssistantLoadStatus, AssistantTimeRange } from './shared-context-tool.types.js'
 
 export type AssistantVesselIdentity = {
@@ -51,6 +52,10 @@ export type AssistantVesselActivity = {
   /** By region type (eez, fao, rfmo, mpa) */
   regions: Record<string, { id: string; name: string; events: number }[]>
   mostVisitedPortCountries: { flag: string; count: number }[]
+  /** Most recent first, fishing events left out */
+  latestEvents: AssistantSingleEvent[]
+  /** The last event of any type: where and when the vessel was last seen in this time range */
+  lastEvent?: AssistantSingleEvent
 }
 
 export type AssistantVesselAreas = {

@@ -98,15 +98,19 @@ change reaches the agent only after a skills release and a version bump there.
 | workspaces list     | `get_workspaces_list`                                                                                         |
 | vessel profile      | `get_vessel_identity`, `get_vessel_activity`, `get_vessel_areas`, `get_vessel_related`, `get_vessel_insights` |
 | area report         | `get_report_area`, `get_report_activity`, `get_report_vessels`, `get_report_events`                           |
-| vessel group report | `get_vessel_group`, `get_vessel_group_insights`, `get_report_vessels`, `get_report_events`                    |
+| vessel group report | `get_vessel_group`, `get_vessel_group_insights`, `get_report_activity`, `get_report_vessels`, `get_report_events` |
 | port report         | `get_port_report`, `get_report_events`                                                                        |
 | ports / areas       | `get_places_page` (list state only: the agent has its own place lookup)                                       |
 | vessel search       | `get_vessel_search_results`                                                                                   |
 | help hub            | `get_help_page`                                                                                               |
 | every page          | `get_user_resources`: the user's workspaces, datasets, vessel groups and reports, fetched when asked          |
 
-`get_report_vessels` and `get_report_events` live in `_reports/assistant/report-assistant-tools.ts`
-and are spread into each report module. Modules get the route match as a second argument, so they
+`get_report_activity`, `get_report_vessels` and `get_report_events` live in
+`_reports/assistant/report-assistant-tools.ts` and are spread into each report module. In a time
+comparison graph `get_report_activity` returns the totals the report shows
+(`getTimeComparisonTotals`, shared with `ReportActivityComparisonTotals`), never a cut of the
+timebar range. Event summaries (`getSingleEventSummary`, in the map module) are shared by
+`get_clicked_feature` and the vessel profile `latestEvents`. Modules get the route match as a second argument, so they
 read `match.params`, `match.search` and `match.loaderData` instead of fetching.
 
 ## The agent navigates
