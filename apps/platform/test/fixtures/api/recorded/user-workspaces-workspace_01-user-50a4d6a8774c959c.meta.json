@@ -1,9 +1,0 @@
-{
-  "method": "GET",
-  "key": "GET [user] /v3/workspaces/workspace_01-user",
-  "status": 200,
-  "headers": {
-    "content-type": "application/json; charset=utf-8"
-  },
-  "body": "json"
-}

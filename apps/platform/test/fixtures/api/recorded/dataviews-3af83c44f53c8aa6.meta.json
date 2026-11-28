@@ -1,0 +1,12 @@
+{
+  "method": "GET",
+  "key": "GET /v3/dataviews?cache=false&ids=presence-activity-v-4%2Capparent-fishing-effort-ais-v-4%2Capparent-fishing-effort-vms-v-4%2Csentinel-2-v-4%2Csar-v-4%2Cencounter-cluster-events-v-4%2Cloitering-cluster-events-v-4%2Cport-visit-cluster-events-v-4&limit=999999&offset=0",
+  "status": 200,
+  "headers": {
+    "content-type": "application/json; charset=utf-8",
+    "x-ratelimit-ip-limit": "600",
+    "x-ratelimit-ip-remaining": "574",
+    "x-ratelimit-ip-reset": "20"
+  },
+  "body": "json"
+}
