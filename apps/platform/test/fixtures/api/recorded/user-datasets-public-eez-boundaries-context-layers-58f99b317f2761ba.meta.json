@@ -1,9 +1,0 @@
-{
-  "method": "GET",
-  "key": "GET [user] /v3/datasets/public-eez-boundaries/context-layers/0/0/0",
-  "status": 200,
-  "headers": {
-    "content-type": "application/vnd.mapbox-vector-tile"
-  },
-  "body": "bin"
-}
